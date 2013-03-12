@@ -43,9 +43,10 @@ addZvalue <- function(data, ref, byName=TRUE, ignoreCase=TRUE, matchSource="ref"
   # If Z column does not exist. Call function and add a Z column.
   # NB! TODO: This adds number of peaks, NOT z-value??
   if(!'Z' %in% colnames(ref)){
-    ref$Z<-numberOfPeaks(ref)$Peaks
+    refZ <- countPeaks(data=ref, col="Allele", unique=TRUE)
+    ref$Z<- refZ$Peaks
   }
-  
+
   # Get the sample names.
   if(matchSource=="data"){
     names <- unique(data$Sample.Name)

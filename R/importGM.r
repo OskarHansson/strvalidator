@@ -2,7 +2,7 @@
 # TODO LIST
 # TODO: Use choose.files instead of file.choose to avoid error if no file?
 # TODO: re-make function to read line and specify type for each column.
-# TODO: now will sample name "F" get converted to "FALSE".
+# TODO: now sample name "F" is converted to "FALSE".
 
 ################################################################################
 # CHANGE LOG
@@ -28,14 +28,10 @@
 #' without showing the file open dialogue. 
 #' @param resultFolder string if fodler name is provided files in folder
 #' will be imported without showing the select folder dialogue. 
+#' @param extension string providing the file extension.
 #' 
 #' @return data.frame with imported result.
-#' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come")
+
 
 importGM <- function (folder = TRUE, extension="txt", 
                       suffix = NA, prefix = NA, 

@@ -21,6 +21,8 @@
   \item{resultFolder}{string if fodler name is provided
   files in folder will be imported without showing the
   select folder dialogue.}
+
+  \item{extension}{string providing the file extension.}
 }
 \value{
   data.frame with imported result.
@@ -33,8 +35,4 @@
   Imports GeneMapper results exported as tab delimited text
   files.
 }
-\examples{
-print("Example will come")
-}
-\keyword{internal}
 

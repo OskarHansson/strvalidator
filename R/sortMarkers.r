@@ -25,11 +25,7 @@
 #' 
 #' @return data.frame with factor levels sorted according to 'kit'.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come")
+
 
 
 sortMarkers <- function(data, kit, addMissingLevels = FALSE){

@@ -23,24 +23,19 @@
 #' @param word logical indicating if a word boundary should be added to 
 #'  \code{samples} and \code{columns}.
 #' @param ignoreCase logical, TRUE ignore case in sample names.
-#' @param exact logical, FALSE match if sample/column contain string
-#' while TRUE requires exact matching of sample/column names.
 #' @param invertS logical, FALSE samples given will be removed from 'data'
 #' while TRUE will remove samples NOT given.
 #' @param invertC logical, FALSE columns given will be removed from 'data'
 #' while TRUE will remove columns NOT given.
-#' @param rmNAcols logical, TRUE columns with no values are removed from 'data'
-#' while FALSE will preserve all columns.
+#' @param rmNaCol logical, TRUE columns with only NA are removed from 'data'
+#' while FALSE will preserve the columns.
+#' @param rmEmptyCol logical, TRUE columns with no values are removed from 'data'
+#' while FALSE will preserve the columns.
 #' @param missing value to replace missing values with.
 #' 
 #' @return data.frame with extracted result.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' # Remove all except ladder.
-#' set1 <- trim(data=set1, samples="Ladder")
+
 
 trim <- function(data, samples=NULL, columns=NULL, 
 	word=FALSE, ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,

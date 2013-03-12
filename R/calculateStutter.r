@@ -33,11 +33,7 @@
 #' 
 #' @return data.frame with extracted result.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come later")
+
 
 calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
 

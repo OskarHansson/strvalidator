@@ -46,9 +46,4 @@
   'markerSubset' and a string 'subsetName' defines a
   subtype of 'Partial' "Complete [subsetName]".
 }
-\examples{
-calculateResultType(data=data, dropoutT=450, partialLimits=c(10,20), subsetName="SGM Plus",
-markerSubset="D3S1358|vWA|D16S539|D2S1338|AMEL|D8S1179|D21S11|D18S51|D19S433|TH01|FGA")
-}
-\keyword{internal}
 

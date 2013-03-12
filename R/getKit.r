@@ -39,7 +39,7 @@
 #' 
 #' @keywords internal
 #' 
-#' @export true
+#' @export 
 #' @examples
 #' getKit("ESX17")
 
@@ -99,7 +99,7 @@ getKit<-function(kitNameOrIndex=NULL, showMessages=FALSE) {
 			# SGM Plus
 			kit<-list(
 				shortName = kits[index],
-				fullName = "AmpFlSTR® SGM Plus® PCR Amplification Kit",
+				fullName = "AmpFlSTR\u00AE SGM Plus\u00AE PCR Amplification Kit",
 				locus = c("D3S1358","vWA","D16S539","D2S1338","Amelogenin","D8S1179","D21S11","D18S51","D19S433","TH01","FGA"),
 				dye = c("B","B","B","B","G","G","G","G","Y","Y","Y"),
 				offset = c(65,112,213,233,100,95,90,236,70,148,146),
@@ -111,7 +111,7 @@ getKit<-function(kitNameOrIndex=NULL, showMessages=FALSE) {
 
 			kit<-list(
 				shortName = kits[index],
-				fullName = "AmpFlSTR® NGM ™ PCR Amplification Kit",
+				fullName = "AmpFlSTR\u00AE NGM PCR Amplification Kit",
 				locus = c("D10S1248","vWA","D16S539","D2S1338","Amelogenin","D8S1179","D21S11","D18S51","D22S1045","D19S433","TH01","FGA","D2S441","D3S1358","D1S1656","D12S391"),
 				dye = c("B","B","B","B","G","G","G","G","Y","Y","Y","Y","R","R","R","R"),
 				offset = c(72,149,223.6,281.6,100,117.9,178.8,259.5,76,122.3,176.4,221.6,74.5,114.4,170,225),
@@ -124,7 +124,7 @@ getKit<-function(kitNameOrIndex=NULL, showMessages=FALSE) {
 
 			kit<-list(
 				shortName = kits[index],
-				fullName = "PowerPlex® ESX 17 System",
+				fullName = "PowerPlex\u00AE ESX 17 System",
 				locus = c("AMEL","D3S1358","TH01","D21S11","D18S51","D10S1248","D1S1656","D2S1338","D16S539","D22S1045","vWA","D8S1179","FGA","D2S441","D12S391","D19S433","SE33"),
 				dye = c("B","B","B","B","B","G","G","G","G","Y","Y","Y","Y","R","R","R","R"),
 				offset = c(76,62,137,103,253,45,95,152,253,57,85,176,208,56,77,171,253),
@@ -141,7 +141,7 @@ getKit<-function(kitNameOrIndex=NULL, showMessages=FALSE) {
 		  
 		  kit<-list(
 		    shortName = kits[index],
-		    fullName = "AmpFlSTR® Identifiler® Plus PCR Amplification Kit",
+		    fullName = "AmpFlSTR\u00AE Identifiler\u00AE Plus PCR Amplification Kit",
 		    locus = c("D8S1179","D21S11","D7S820","CSF1PO","D3S1358","TH01","D13S317","D16S539","D2S1338","D19S433","vWA","TPOX","D18S51","AMEL","D5S818","FGA"),
 		    dye = c("B","B","B","B","G","G","G","G","G","Y","Y","Y","Y","R","R","R"),
 		    offset = c(86,88,227,278,50,143,173,235,244,65,107,193,236,97,100,138),

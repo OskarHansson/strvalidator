@@ -30,8 +30,4 @@
   homozygous loci. Gets all observations (e.g. 90/0, 105/95
   -> 90-1, 105-0, 95-0)
 }
-\examples{
-print("Example will come")
-}
-\keyword{internal}
 

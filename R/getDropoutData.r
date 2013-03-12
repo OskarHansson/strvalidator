@@ -29,11 +29,6 @@
 #' 'Marker' (locus name), 'Height' (peak height in rfu of the surviving allele),
 #' 'Dropout' (indicates if the sister allele has dropped out '1' or not '0').
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come")
 
 getDropoutData <- function(data){
   

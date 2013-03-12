@@ -21,11 +21,7 @@
 #' 
 #' @return data.frame with summarized result.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come")
+
 
 tableStutter <- function(data, per="stutter"){
   

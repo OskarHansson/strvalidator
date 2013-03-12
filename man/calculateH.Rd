@@ -26,12 +26,4 @@
   number of observed heterozygote alleles n[hom] = number
   of observed homozygote alleles
 }
-\examples{
-# Create test data.
-x <- data("PositiveControl")
-y <- alleleToSize(data=x, kit="ESX17")
-print(x)
-print(y)
-}
-\keyword{internal}
 

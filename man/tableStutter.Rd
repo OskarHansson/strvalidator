@@ -22,8 +22,4 @@
   Summarize the stutter analysis in table format with
   different scope.
 }
-\examples{
-print("Example will come")
-}
-\keyword{internal}
 

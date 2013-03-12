@@ -5,10 +5,11 @@ Version: 0.1
 Date: 2013-03-08
 Author: Oskar Hansson
 Maintainer: Oskar Hansson <oskar.hansson@fhi.no>
-Description: strValidator provide tools that make it easier to perform an internal
+URL: https://github.com/OskarHansson/strvalidator
+Description: strvalidator provide tools that make it easier to perform an internal
  validation of a forensic short tandem repeat (STR) kit for human 
  identification. The tools are developed to provide all necessary data
- to conform with the guidelines in REF... 
+ to conform with the ENFSI guidelines. 
  More information about each function can be found in 
  its help documentation.
 License: GPL (>= 2)

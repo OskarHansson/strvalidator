@@ -5,14 +5,14 @@
   countPeaks(data, col = "Height", unique = TRUE)
 }
 \arguments{
-  \item{data}{a data frame containing at least the 'key'
-  and 'target' columns.}
+  \item{data}{a data frame containing at least columns
+  'Sample.Name', 'Marker', and \code{col}.}
 
-  \item{col}{'Height' count using height columns, 'Allele'
-  count using allele columns.}
+  \item{col}{string specifying the column(s) to count
+  values in.}
 
-  \item{target}{a vector indicating the columns for wich
-  summary statistics should be calculated.}
+  \item{unique}{logical indicating if counting occurences
+  or unique values per marker.}
 }
 \value{
   data.frame with columns 'Sample.Name', 'Marker', and
@@ -26,8 +26,4 @@
   Takes (GM-formatted) data for samples as input. Counts
   the number of peaks per marker (values in 'col' columns).
 }
-\examples{
-print("Example will come later")
-}
-\keyword{internal}
 

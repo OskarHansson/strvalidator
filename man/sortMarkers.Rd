@@ -24,8 +24,4 @@
   Re-level 'Marker' and 'Dye' as defined in 'kit'. Levels
   in data must be identical with kit information.
 }
-\examples{
-print("Example will come")
-}
-\keyword{internal}
 

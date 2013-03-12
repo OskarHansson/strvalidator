@@ -20,12 +20,6 @@
 #' @param ref a data frame in GeneMapper format containing column 'Sample.Name', 
 #'  OR an atomic vector e.g. a single sample name string.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' #checkSubset(data=data.frame,ref=ref.data.frame)
-#' #checkSubset(data=data.frame,ref="SampleName")
 
 checkSubset <- function(data, ref){
 

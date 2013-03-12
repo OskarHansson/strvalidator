@@ -16,7 +16,8 @@
 #' @details Compares a data set to reference profiles.
 #' Adds zygosity (i.e. the number of expected peaks) to a new column in 'data'.
 #'   
-#' @param data Data frame containing at least a column named 'Alleles'.
+#' @param data data frame containing at least columns 'Sample.Name', 'Marker', and 'Alleles'.
+#' @param ref data frame containing at least columns 'Sample.Name', 'Marker', and 'Alleles'.
 #' @param byName  if TRUE matching of samples and ref by name, 
 #' if FALSE by position.
 #' @param matchSource if 'ref' sample names from 'ref' is used as source for
@@ -28,13 +29,7 @@
 #' 
 #' @return data.frame the original data frame containing additional columns.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' # Make some test data
-#' x <- data.frame(Marker=c("D3","D18","FGA"), Allele.1=c(10,8,20), Allele.2=c(12,11,22))
-#' addZygosity(x)
+
 
 addZygosity <- function(data, ref, 
 			byName=TRUE, ignoreCase=TRUE, matchSource="ref"){

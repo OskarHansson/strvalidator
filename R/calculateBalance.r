@@ -43,6 +43,8 @@
 #' 
 #' @export true
 #' @examples 
+#' data(ref1)
+#' data(set1)
 #' # Format data frame.
 #' ref1 <- slim(data=ref1, fix=c("Sample.Name","Marker"), stack=c("Allele"))
 #' 

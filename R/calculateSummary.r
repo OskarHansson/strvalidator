@@ -24,11 +24,6 @@
 #' @return data.frame with columns 'Min', 'Max', 'Mean', n', and
 #' 'Sd' for each target column.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' calculateSummary(data=data, key=c("Marker","Allele"), target=c("Size"))
 
 
 calculateSummary <- function(data, key, target){

@@ -30,10 +30,4 @@
   would result in this data frame (NB! 'Data.Point' is
   lost): Sample.Name|Marker|Allele|Size
 }
-\examples{
-ref1
-# Format data frame.
-ref1 <- slim(data=ref1, fix=c("Sample.Name","Marker"), stack=c("Allele"))
-}
-\keyword{internal}
 

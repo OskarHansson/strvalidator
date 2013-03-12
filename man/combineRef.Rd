@@ -26,8 +26,4 @@
   Combines two data frames with reference samples into one
   data frame.
 }
-\examples{
-print("Example will come later")
-}
-\keyword{internal}
 

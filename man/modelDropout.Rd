@@ -41,7 +41,7 @@
 }
 \details{
   Models the probability of dropout P(D) using logistic
-  regression logit P(P;H) = ß0 + ß1*log(H), where 'H' is
+  regression logit P(P;H) = B0 + B1*log(H), where 'H' is
   the peak height. Produce a plot showing the model
   prediction, optionally with given prediction interval.
   Parameters 'xmin', 'ymin', and 'ymax' affect the plot,
@@ -49,8 +49,4 @@
   prediction line and prediction interval lines
   respectively.
 }
-\examples{
-print("Example will come")
-}
-\keyword{internal}
 

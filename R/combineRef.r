@@ -24,11 +24,7 @@
 #' @return data.frame with columns 'Min', 'Max', 'Mean', n', and
 #' 'Sd' for each target column.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come later")
+
 
 combineRef <- function(ref1, ref2, sort=FALSE, unique=FALSE){
 

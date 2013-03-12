@@ -22,10 +22,6 @@
   \item{ignoreCase}{logical, TRUE ignore case in sample
   names.}
 
-  \item{exact}{logical, FALSE match if sample/column
-  contain string while TRUE requires exact matching of
-  sample/column names.}
-
   \item{invertS}{logical, FALSE samples given will be
   removed from 'data' while TRUE will remove samples NOT
   given.}
@@ -34,8 +30,12 @@
   removed from 'data' while TRUE will remove columns NOT
   given.}
 
-  \item{rmNAcols}{logical, TRUE columns with no values are
-  removed from 'data' while FALSE will preserve all
+  \item{rmNaCol}{logical, TRUE columns with only NA are
+  removed from 'data' while FALSE will preserve the
+  columns.}
+
+  \item{rmEmptyCol}{logical, TRUE columns with no values
+  are removed from 'data' while FALSE will preserve the
   columns.}
 
   \item{missing}{value to replace missing values with.}
@@ -50,9 +50,4 @@
   Simplifies extraction of specific data from a larger set
   of typing data.
 }
-\examples{
-# Remove all except ladder.
-set1 <- trim(data=set1, samples="Ladder")
-}
-\keyword{internal}
 

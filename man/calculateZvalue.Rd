@@ -26,8 +26,4 @@
   name other information is attached to 'data' in new
   columns.
 }
-\examples{
-print("Example will come later")
-}
-\keyword{internal}
 

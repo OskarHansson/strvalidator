@@ -18,17 +18,12 @@
 #' Takes (GM-formatted) data for samples as input.
 #' Counts the number of peaks per marker (values in 'col' columns).
 #'  
-#' @param data a data frame containing at least the 'key' and 'target' columns.
-#' @param col 'Height' count using height columns, 'Allele' count using allele columns.
-#' @param target a vector indicating the columns for wich summary statistics should be calculated.
+#' @param data a data frame containing at least columns 'Sample.Name', 'Marker', and \code{col}.
+#' @param col string specifying the column(s) to count values in.
+#' @param unique logical indicating if counting occurences or unique values per marker.
 #' 
 #' @return data.frame with columns 'Sample.Name', 'Marker', and 'Peaks'.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come later")
 
 countPeaks <- function(data, col="Height", unique=TRUE){
 

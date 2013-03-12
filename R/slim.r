@@ -33,13 +33,7 @@
 #' 
 #' @return list with simulation results.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' ref1
-#' # Format data frame.
-#' ref1 <- slim(data=ref1, fix=c("Sample.Name","Marker"), stack=c("Allele"))
+
 
 slim <- function(data, fix=NULL, 
                  stack=NULL, keepAllFixed=TRUE){

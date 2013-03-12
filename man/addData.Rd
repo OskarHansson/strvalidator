@@ -23,8 +23,8 @@
   to data frame 'data' based on value in column 'byCol'.
 }
 \examples{
-# Get marker names for Promega PowerPlex ESX 17. Expand data frame.
-x <- data.frame(Marker = rep(getKit("ESX17")$locus, c(1,2,3)))
+# Get marker names for Promega PowerPlex ESX 17.
+x <- data.frame(Marker = getKit("ESX17")$locus)
 # Get offsets for Promega PowerPlex ESX 17.
 y <- data.frame(Marker = getKit("ESX17")$locus, Offset = getKit("ESX17")$offset)
 # Get other kit information using string name.

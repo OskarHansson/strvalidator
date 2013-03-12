@@ -19,9 +19,4 @@
   Check if ref and sample names are unique for subsetting.
   Prints the result to the R-prompt.
 }
-\examples{
-#checkSubset(data=data.frame,ref=ref.data.frame)
-#checkSubset(data=data.frame,ref="SampleName")
-}
-\keyword{internal}
 

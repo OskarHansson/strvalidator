@@ -6,8 +6,11 @@
     matchSource = "ref")
 }
 \arguments{
-  \item{data}{Data frame containing at least a column named
-  'Alleles'.}
+  \item{data}{data frame containing at least columns
+  'Sample.Name', 'Marker', and 'Alleles'.}
+
+  \item{ref}{data frame containing at least columns
+  'Sample.Name', 'Marker', and 'Alleles'.}
 
   \item{byName}{if TRUE matching of samples and ref by
   name, if FALSE by position.}
@@ -35,10 +38,4 @@
   (i.e. the number of expected peaks) to a new column in
   'data'.
 }
-\examples{
-# Make some test data
-x <- data.frame(Marker=c("D3","D18","FGA"), Allele.1=c(10,8,20), Allele.2=c(12,11,22))
-addZygosity(x)
-}
-\keyword{internal}
 

@@ -26,8 +26,4 @@
   each unique 'key' combination.  NB! Requires a 'slimmed'
   data frame.
 }
-\examples{
-calculateSummary(data=data, key=c("Marker","Allele"), target=c("Size"))
-}
-\keyword{internal}
 

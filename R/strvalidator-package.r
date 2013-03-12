@@ -26,3 +26,40 @@
 #' @section Warning: This package is experimental and has not been thoroughly validated.
 #' @keywords package
 NULL
+
+#' ESX17 Positive Control Profile
+#' 
+#' A dataset in 'GeneMaper' format containing the DNA profile of
+#' the ESX17 positive control sample with homozygotes as one entry.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref1
+#' @usage data(ref1)
+#' @format A data frame with 17 rows and 4 variables
+NULL
+
+#' ESX17 Positive Control Profile
+#' 
+#' A dataset in 'GeneMaper' format containing the DNA profile of
+#' the ESX17 positive control sample with homozygotes as two entries.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref11
+#' @usage data(ref11)
+#' @format A data frame with 17 rows and 4 variables
+NULL
+
+
+#' Typing data in 'GeneMapper' format
+#' 
+#' A dataset containing ESX17 genotyping result for 8 replicates
+#' of the positive control sample, a negative control and ladder.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name set1
+#' @usage data(set1)
+#' @format A data frame with 170 rows and 13 variables
+NULL

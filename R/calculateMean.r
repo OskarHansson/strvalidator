@@ -31,6 +31,7 @@
 #' 
 #' @export true
 #' @examples
+#' data(set1)
 #' # Remove all except positive control samples.
 #' set1 <- trim(data=set1, samples="PC")
 #' 

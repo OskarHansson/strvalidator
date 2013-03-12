@@ -22,11 +22,6 @@
 #' 
 #' @return data.frame the original data frame containing additional columns.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come later")
 
 calculateZygosity <- function(data){
 

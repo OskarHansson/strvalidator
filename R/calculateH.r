@@ -28,15 +28,7 @@
 #' 
 #' @return data.frame with with three columns: 'Sample.Name', 'H', and 'Peaks'.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' # Create test data.
-#' x <- data("PositiveControl")
-#' y <- alleleToSize(data=x, kit="ESX17")
-#' print(x)
-#' print(y)
+
 
 calculateH <- function(data){
 

@@ -22,8 +22,4 @@
   as '1' for homozygous and '2' for a heterozygous loci.
   Sample names must be unique.
 }
-\examples{
-print("Example will come later")
-}
-\keyword{internal}
 

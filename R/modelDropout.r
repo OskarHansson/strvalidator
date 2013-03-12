@@ -14,7 +14,7 @@
 #'
 #' @details
 #' Models the probability of dropout P(D) using logistic regression
-#' logit P(P;H) = ß0 + ß1*log(H), where 'H' is the peak height.
+#' logit P(P;H) = B0 + B1*log(H), where 'H' is the peak height.
 #' Produce a plot showing the model prediction, optionally with given prediction interval.
 #' Parameters 'xmin', 'ymin', and 'ymax' affect the plot, 
 #' and 'col.line' and 'col.conf' is the colour of the prediction line and 
@@ -31,17 +31,13 @@
 #' @param col.line value setting the line color of the prediction.
 #' @param col.conf value setting the line color of the prediction interval.
 #' 
-#' @keywords internal
-#' 
-#' @export true
-#' @examples
-#' print("Example will come")
+
 
 modelDropout <- function(data, plotPI=TRUE, conf=0.95, xmin=NA, xmax=NA,
                          ymin=0, ymax=1, col.line=1, col.conf=3){
   
   # Legends
-  legend.model <- "Fitted model (" # ß0 + ß1 will be added.
+  legend.model <- "Fitted model (" # B0 + B1 will be added.
   legend.conf <- paste(conf*100,"% prediction interval")
   legend.col <- col.line
   
@@ -66,7 +62,7 @@ modelDropout <- function(data, plotPI=TRUE, conf=0.95, xmin=NA, xmax=NA,
   }
   
   # Model.
-  model<-glm(Dropout~log(Height), data=data.drop,family=binomial ("logit"))
+  model<-glm(Dropout~log(Height), data=data, family=binomial ("logit"))
   sumfit<-summary(model)
   
   # Build prediction interval and plot.
@@ -87,8 +83,8 @@ modelDropout <- function(data, plotPI=TRUE, conf=0.95, xmin=NA, xmax=NA,
        xlab = "Peak height (rfu)", las = 1)
   
   # Create legend text.
-  legend.text <- paste(legend.model, "ß0=", round(model$coefficients[1],3),
-                       ", ß1=", round(model$coefficients[2],3),")", sep="")
+  legend.text <- paste(legend.model, "B0=", round(model$coefficients[1],3),
+                       ", B1=", round(model$coefficients[2],3),")", sep="")
   
   # Prediction interval.
   if(plotPI){

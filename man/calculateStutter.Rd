@@ -36,8 +36,4 @@
   set. NB! Be careful when there are pull-ups in stutter
   positions.
 }
-\examples{
-print("Example will come later")
-}
-\keyword{internal}
 
