@@ -12,6 +12,9 @@
 
   \item{ignoreCase}{logical, default TRUE for case
   insensitive.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
   data.frame with columns 'Dropout', indicating no dropout
@@ -30,7 +33,7 @@
   doubled (X -> X/X).
 }
 \examples{
-#newData<-dropStat(data=data, ref=ref)
+#newData<-calculateDropout(data=data, ref=ref)
 }
 \keyword{internal}
 

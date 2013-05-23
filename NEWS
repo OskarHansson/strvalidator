@@ -1,3 +1,19 @@
+Version 0.2.0
+------------------------------------------------------------------------------
+
+* Graphical user interface added: strvalidator - Main GUI.
+* New functions: calculateHeterozygous, concatenate_gui, detectKit, 
+    editData_gui, guessProfile, guessProfile_gui, listObjects,
+    savePlot_gui.
+* GUI wrappers added for most functions: addData_gui, addDye_gui,
+    calculateBalance_gui, calculateDropoout_gui, calculateH_gui,
+    calculateHeterozygous_gui, calculateStutter_gui, checkSubset_gui,
+    filterProfile_gui, import_gui, modelDropout_gui, plotBalance_gui,
+    plotDropout_gui, plotStutter_gui, slim_gui, trim_gui.
+* Functions removed: addZvalue, addZygosity, getDropoutData,
+* Functions renamed: importGM -> import
+* Added globals.R to suppress NOTES when checking package.
+
 Version 0.1
 ------------------------------------------------------------------------------
 

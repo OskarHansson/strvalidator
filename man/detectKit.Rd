@@ -1,0 +1,25 @@
+\name{detectKit}
+\alias{detectKit}
+\title{Detect kit}
+\usage{
+  detectKit(data, index = TRUE)
+}
+\arguments{
+  \item{data}{data frame.}
+
+  \item{index}{logical, returns kit index if TRUE or short
+  name if FALSE.}
+}
+\value{
+  integer or string indicating the detected kit.
+}
+\description{
+  \code{detectKit} finds the most likely STR kit for a
+  dataset.
+}
+\details{
+  The function looks at the markers in the dataset and
+  returns the kit(s) with the highest proportions of
+  matching markers.
+}
+

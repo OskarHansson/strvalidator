@@ -1,0 +1,25 @@
+\name{calculateStutter_gui}
+\alias{calculateStutter_gui}
+\title{Calculate Stutters}
+\usage{
+  calculateStutter_gui(env = parent.frame(), debug = FALSE)
+}
+\arguments{
+  \item{env}{environment in wich to search for data frames
+  and save result.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\value{
+  data.frame in slim format.
+}
+\description{
+  \code{calculateStutter_gui} is a GUI wrapper for the
+  \code{calculateStutter} function.
+}
+\details{
+  Simplifies the use of the \code{calculateStutter}
+  function by providing a graphical user interface to it.
+}
+

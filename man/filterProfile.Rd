@@ -2,7 +2,8 @@
 \alias{filterProfile}
 \title{Filter out profiles from DNA results}
 \usage{
-  filterProfile(data, ref)
+  filterProfile(data, ref, addMissingLoci = FALSE,
+    keepNA = FALSE, ignoreCase = TRUE, debug = FALSE)
 }
 \arguments{
   \item{data}{data frame with genotype data in 'slim'
@@ -10,6 +11,15 @@
 
   \item{ref}{data frame with reference profile in 'slim'
   format.}
+
+  \item{keepNA}{logical. FALSE discards NA alleles.}
+
+  \item{addMissingLoci}{logical.}
+
+  \item{ignoreCase}{logical TRUE ignore case.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
   data.frame with extracted result.

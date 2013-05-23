@@ -1,8 +1,8 @@
-\name{importGM}
-\alias{importGM}
+\name{import}
+\alias{import}
 \title{Import GeneMapper.}
 \usage{
-  importGM(folder = TRUE, extension = "txt", suffix = NA,
+  import(folder = TRUE, extension = "txt", suffix = NA,
     prefix = NA, resultFiles = NA, resultFolder = NA)
 }
 \arguments{
@@ -28,7 +28,7 @@
   data.frame with imported result.
 }
 \description{
-  \code{importGM} imports text files exported from
+  \code{import} imports text files exported from
   GeneMapper.
 }
 \details{

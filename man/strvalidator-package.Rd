@@ -12,12 +12,15 @@
   an internal validation of a forensic short tandem repeat
   (STR) kit for human identification. The tools are
   developed to provide all necessary data to conform with
-  the guidelines in REF... More information about each
-  function can be found in its help documentation.
-
-  \tabular{ll}{ Package: \tab strValidator\cr Type: \tab
-  Package\cr Version: \tab 0.1\cr Date: \tab 2013-02-06\cr
-  License: \tab GPL (>= 2)\cr LazyLoad: \tab yes\cr }
+  the ENFSI guidelines in "Recommended Minimum Criteria for
+  the Validation of Various Aspects of the DNA Profiling
+  Process - New Multiplex Kit" More information about each
+  function can be found in its help documentation. The
+  package is still in an early developmental stage and
+  things will likely change in coming versions. Manually
+  check the results thoroughly, the software has not been
+  validated. Please report bugs to:
+  https://github.com/OskarHansson/strvalidator/issues
 }
 \section{Warning}{
   This package is experimental and has not been thoroughly

@@ -1,5 +1,6 @@
 ################################################################################
 # TODO LIST
+# TODO: 'Mean' and 'N' gets overwritten if a dataframe is passed "two times".
 # TODO: Also calculate sd.
 # TODO: Automatically convert to numeric if factors. If factors convert to numeric.
 #data$Amount.1<-as.numeric(levels(data$Amount.1))[data$Amount.1]

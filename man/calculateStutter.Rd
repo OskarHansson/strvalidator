@@ -7,10 +7,12 @@
 }
 \arguments{
   \item{data}{data frame with genotype data in 'slim'
-  format. Requires one or more allele columns 'Allele'.}
+  format. Requires columns 'Sample.Name', 'Marker',
+  'Allele', 'Height'.}
 
-  \item{ref}{data frame in slim format with the known
-  profiles.}
+  \item{ref}{data frame in 'slim' format with the known
+  profiles. Requires columns 'Sample.Name', 'Marker',
+  'Allele'.}
 
   \item{back}{integer for the maximal number of backward
   stutters (max size difference 2 = n-2 repeats).}
@@ -33,7 +35,8 @@
 }
 \details{
   Calculates stutter ratios based on the 'reference' data
-  set. NB! Be careful when there are pull-ups in stutter
-  positions.
+  set. NB! Off-ladder alleles ('OL') is NOT included in the
+  analysis. NB! Labelled pull-ups or artefacts within
+  stutter range IS included in the analysis.
 }
 

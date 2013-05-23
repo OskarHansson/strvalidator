@@ -2,7 +2,8 @@
 \alias{slim}
 \title{Slim data frames}
 \usage{
-  slim(data, fix = NULL, stack = NULL, keepAllFixed = TRUE)
+  slim(data, fix = NULL, stack = NULL, keepAllFixed = TRUE,
+    debug = FALSE)
 }
 \arguments{
   \item{data}{data frame.}
@@ -12,7 +13,11 @@
 
   \item{stack}{vector of strings with colum names to slim.}
 
-  \item{keepAllFixed}{logical, .}
+  \item{keepAllFixed}{logical, keep a rows even if no
+  data.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
   list with simulation results.

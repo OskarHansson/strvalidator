@@ -2,13 +2,20 @@
 \alias{addData}
 \title{Adds new data columns to a data frame}
 \usage{
-  addData(data, newData, byCol, exact = TRUE)
+  addData(data, newData, byCol, thenByCol = NULL,
+    exact = TRUE)
 }
 \arguments{
+  \item{data}{Data frame containing your main data.}
+
   \item{newData}{Data frame containing information you want
   to add to 'data'.}
 
-  \item{data}{Data frame containing your main data.}
+  \item{byCol}{character, key column.}
+
+  \item{thenByCol}{character, key column level 2.}
+
+  \item{exact}{logical, TRUE matches keys exact.}
 }
 \value{
   data.frame the original data frame containing additional
@@ -20,7 +27,8 @@
 }
 \details{
   Information in columns in data frame 'newData' is added
-  to data frame 'data' based on value in column 'byCol'.
+  to data frame 'data' based on value in column 'byCol' and
+  optionally on 'thenByCol'.
 }
 \examples{
 # Get marker names for Promega PowerPlex ESX 17.

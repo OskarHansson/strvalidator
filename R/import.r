@@ -6,6 +6,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08: Renamed from importGM to import.
 # 07: Added parameter 'resultFiles' and 'ResultFolder' for direct import.
 # 07: Changed regex from (".",".",extension, sep="") to (".*","\\.",extension, sep="")
 # 06: Roxygenized.
@@ -15,7 +16,7 @@
 #' @title Import GeneMapper.
 #'
 #' @description
-#' \code{importGM} imports text files exported from GeneMapper.
+#' \code{import} imports text files exported from GeneMapper.
 #'
 #' @details
 #' Imports GeneMapper results exported as tab delimited text files.
@@ -33,11 +34,35 @@
 #' @return data.frame with imported result.
 
 
-importGM <- function (folder = TRUE, extension="txt", 
+import <- function (folder = TRUE, extension="txt", 
                       suffix = NA, prefix = NA, 
                       resultFiles=NA, resultFolder=NA){
 
+  debug <- FALSE
+  
+  if(debug){
+    print("IN: import")
+    print("folder")
+    print(folder)
+    print("extension")
+    print(extension)
+    print("suffix")
+    print(suffix)
+    print("prefix")
+    print(prefix)
+    print("resultFiles")
+    print(resultFiles)
+    print("resultFolder")
+    print(resultFolder)
+  }
+  
+  
   manualPick <- is.na(resultFiles) && is.na(resultFolder)
+
+  if(debug){
+    print("manualPick")
+    print(manualPick)
+  }  
   
 	# Check if result files in folder.
 	if (folder) {
@@ -75,6 +100,12 @@ importGM <- function (folder = TRUE, extension="txt",
 
 	}
 
+
+  if(debug){
+    print("resultFiles")
+    print(resultFiles)
+  }  
+  
   # Check if files are specified.
 	if (length(resultFiles)>1 || !is.na(resultFiles)) {
 

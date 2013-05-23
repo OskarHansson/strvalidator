@@ -1,0 +1,35 @@
+\name{listObjects}
+\alias{listObjects}
+\title{List objects}
+\usage{
+  listObjects(env = parent.frame(), objClass = NULL,
+    debug = FALSE)
+}
+\arguments{
+  \item{env}{environment in wich to search for objects.}
+
+  \item{objClass}{character string specifying the object
+  class.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\value{
+  character vector with the object names.
+}
+\description{
+  \code{listObjects} returns a list of objects.
+}
+\details{
+  Helper function to retrieve a list of objects from a
+  workspace. Take an environment as argument and optionally
+  an object class. Returns a list of objects of the
+  specified class in the environment.
+}
+\examples{
+# List data frames in the workspace.
+listObjects(objClass="data.frame")
+# List functions in the workspace.
+listObjects(objClass="function")
+}
+

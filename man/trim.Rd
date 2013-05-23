@@ -4,11 +4,11 @@
 \usage{
   trim(data, samples = NULL, columns = NULL, word = FALSE,
     ignoreCase = TRUE, invertS = FALSE, invertC = FALSE,
-    rmNaCol = TRUE, rmEmptyCol = TRUE, missing = NA)
+    rmNaCol = TRUE, rmEmptyCol = TRUE, missing = NA,
+    debug = FALSE)
 }
 \arguments{
-  \item{data}{data frame with genotype data in 'slim'
-  format.}
+  \item{data}{data frame with genotype data.}
 
   \item{samples}{string giving sample names separated by
   pipe.}
@@ -39,6 +39,9 @@
   columns.}
 
   \item{missing}{value to replace missing values with.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
   data.frame with extracted result.

@@ -3,12 +3,14 @@
 # TODO: option to filter peaks below (LOD) or above a treshold. (e.g. <50 or >5000 rfu)
 # TODO: Fix "NAs introduced by coercion"
 # TODO: script cant handle if ref is not in data.
-# TODO: Detect pull-ups and other nois within stutter range.
+# TODO: Detect pull-ups and other noise within stutter range.
 
 ################################################################################
 # CHANGE LOG
-# 10: Roxygenized and changed name from stutterStatSlim to calculateStutter.
-# 09: New function StutterStatSlim works with slimmed data.
+# 11.04.2013: Added some more data controls.
+# <11.04.2013: Fix bug mixed numeric/character, slim data required.
+# <11.04.2013: Roxygenized and changed name from stutterStatSlim to calculateStutter.
+# <11.04.2013: New function StutterStatSlim works with slimmed data.
 
 #' @title Calculate stutter
 #'
@@ -17,11 +19,14 @@
 #'
 #' @details
 #' Calculates stutter ratios based on the 'reference' data set.
-#' NB! Be careful when there are pull-ups in stutter positions. 
+#' NB! Off-ladder alleles ('OL') is NOT included in the analysis.
+#' NB! Labelled pull-ups or artefacts within stutter range
+#'  IS included in the analysis. 
 #' 
 #' @param data data frame with genotype data in 'slim' format.
-#' Requires one or more allele columns 'Allele'.
-#' @param ref data frame in slim format with the known profiles.
+#' Requires columns 'Sample.Name', 'Marker', 'Allele', 'Height'.
+#' @param ref data frame in 'slim' format with the known profiles.
+#' Requires columns 'Sample.Name', 'Marker', 'Allele'.
 #' @param back integer for the maximal number of backward stutters
 #'  (max size difference 2 = n-2 repeats).
 #' @param forward integer for the maximal number of forward stutters
@@ -45,6 +50,64 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
                             "Ratio", "Type")
   # Remove all NAs
   stutterRatio  <- stutterRatio [-1,]
+
+  debug = FALSE
+  
+  # CHECK DATA ----------------------------------------------------------------
+
+  # Check columns in dataset.
+  if(!any(grepl("Sample.Name", names(data)))){
+    stop("'data' must contain a column 'Sample.Name'",
+         call. = TRUE)
+  }
+  if(!any(grepl("Marker", names(data)))){
+    stop("'data' must contain a column 'Marker'",
+         call. = TRUE)
+  }
+  if(!any(grepl("Allele", names(data)))){
+    stop("'data' must contain a column 'Allele'",
+         call. = TRUE)
+  }
+  if(!any(grepl("Height", names(data)))){
+    stop("'data' must contain a column 'Height'",
+         call. = TRUE)
+  }
+  
+  # Check columns in reference dataset.
+  if(!any(grepl("Sample.Name", names(ref)))){
+    stop("'ref' must contain a column 'Sample.Name'",
+         call. = TRUE)
+  }
+  if(!any(grepl("Marker", names(ref)))){
+    stop("'ref' must contain a column 'Marker'",
+         call. = TRUE)
+  }
+  if(!any(grepl("Allele", names(ref)))){
+    stop("'ref' must contain a column 'Allele'",
+         call. = TRUE)
+  }
+  
+  # Check if slim format.  
+  if(sum(grepl("Allele", names(ref))) > 1){
+    stop("'ref' must be in 'slim' format",
+         call. = TRUE)
+  }
+  if(sum(grepl("Allele", names(data))) > 1){
+    stop("'data' must be in 'slim' format",
+         call. = TRUE)
+  }
+
+  # Check data type.
+  if(!is.character(data$Allele)){
+    warning("'Allele' must be character. 'data$Allele' converted")
+    data$Allele <- as.character(data$Allele)
+  }
+  if(!is.numeric(data$Height)){
+    warning("'Height' must be numeric. 'data$Height' converted")
+    data$Height <- as.numeric(data$Height)
+  }
+  
+  # GET VARIABLES -------------------------------------------------------------
   
   # Get columns.
   col.m <- grepl("Marker", names(data))
@@ -58,38 +121,40 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
   # Get sample and reference names.
   sample.names <- unique(data$Sample.Name)
   ref.sample.names <- unique(ref$Sample.Name)
+
+  # CALCULATE -----------------------------------------------------------------
   
   # Loop through all reference samples.
-  for(s in seq(along=ref.sample.names)){
-    # s<-1
+  for(r in seq(along=ref.sample.names)){
+
     # Select current ref sample.
-    selected.refs <- grepl(ref.sample.names[s], ref$Sample.Name)
+    selected.refs <- grepl(ref.sample.names[r], ref$Sample.Name)
     ref.subset <- ref[selected.refs, ]
     
     # Select samples from this ref.
-    selected.samples <- grepl(ref.sample.names[s], data$Sample.Name)
+    selected.samples <- grepl(ref.sample.names[r], data$Sample.Name)
     data.subset <- data[selected.samples, ]
     
     # Get subset sample names.
     ss.names <- unique(data.subset$Sample.Name)
     
     # Loop over all samples in subset.
-    for(ss in seq(along=ss.names)){
-      # ss<-1  ss<-ss+1
-      
+    for(s in seq(along=ss.names)){
+
       # Select samples from this ref.
-      selected.samples <- grepl(ss.names[ss], data.subset$Sample.Name)
+      selected.samples <- grepl(ss.names[s], data.subset$Sample.Name)
       data.ss <- data.subset[selected.samples, ]
       
       # Get current marker names.
-      marker.names <- unique(data.ss$Marker[data.ss$Sample.Name==ss.names[ss]])
-      #m<-1  m<-m+1 m<-7
+      marker.names <- unique(data.ss$Marker[data.ss$Sample.Name==ss.names[s]])
+
       # Loop over all markers in subset.
       for(m in seq(along=marker.names)){
         
         # Get reference alleles (true alleles).
-        tA1 <- ref.subset$Allele.1[ref.subset$Marker==marker.names[m]]
-        tA2 <- ref.subset$Allele.2[ref.subset$Marker==marker.names[m]]
+        tA <- ref.subset$Allele[ref.subset$Marker==marker.names[m]]
+        tA1 <- tA[1]
+        tA2 <- tA[2]
         
         # Check zygosity.
         if(tA1==tA2 || is.na(tA2)) {
@@ -129,6 +194,13 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
         currentAllele1<-NA
         currentAllele2<-NA
         
+        if(debug){
+          print("Reference/Sample/Marker")
+          print(r)
+          print(r)
+          print(m)
+        }
+        
         # Calculate stutter ratio.
         if (interference==0){
           if(bolA1){
@@ -137,6 +209,10 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
             # Calculate for stutters smaller than A2 stutters/allele
             sel <- as.numeric(sA1) < min(as.numeric(sA2), as.numeric(tA2))
             
+            if(length(sel) == 0 || is.na(sel)){
+              sel <- FALSE
+            }
+
             if(all(sel)==FALSE){
               srA1 <- numeric()
             } else {
@@ -165,6 +241,10 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
             # Calculate for stutters bigger than A1 stutters/allele
             sel <- as.numeric(sA2) > max(as.numeric(sA1), as.numeric(tA1))
             
+            if(length(sel) == 0 || is.na(sel)){
+              sel <- FALSE
+            }
+
             if(all(sel)==FALSE){
               srA2 <- numeric()
             } else {
@@ -196,6 +276,10 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
             # Calculate for stutters smaller than A2 allele
             sel <- as.numeric(sA1) < as.numeric(tA2)
             
+            if(length(sel) == 0 || is.na(sel)){
+              sel <- FALSE
+            }
+
             if(all(sel)==FALSE){
               srA1 <- numeric()
             } else {
@@ -223,6 +307,10 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
             
             # Calculate for stutters bigger than A1 allele
             sel <- as.numeric(sA2) > as.numeric(tA1)
+            
+            if(length(sel) == 0 || is.na(sel)){
+              sel <- FALSE
+            }
             
             if(all(sel)==FALSE){
               srA2 <- numeric()
@@ -256,6 +344,10 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
             #Calculate for stutters even if allele interference.
             sel <- sA1 != tA2
             
+            if(length(sel) == 0 || is.na(sel)){
+              sel <- FALSE
+            }
+            
             if(all(sel)==FALSE){
               srA1 <- numeric()
             } else {
@@ -281,6 +373,10 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
           if (heterozygote && bolA2) {
             
             sel <- sA2 != tA1
+            
+            if(length(sel) == 0 || is.na(sel)){
+              sel <- FALSE
+            }
             
             if(all(sel)==FALSE){
               srA2 <- numeric()

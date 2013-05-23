@@ -2,28 +2,30 @@
 \alias{calculateH}
 \title{Calculate average peak height.}
 \usage{
-  calculateH(data)
+  calculateH(data, debug = FALSE)
 }
 \arguments{
-  \item{data}{a data frame with at least 'Sample.Name',
-  'Z', and 'Height' columns.}
+  \item{data}{a data frame in 'slim' format with at least
+  columns 'Sample.Name', 'Heterozygous', and 'Height'.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
-  data.frame with with three columns: 'Sample.Name', 'H',
-  and 'Peaks'.
+  data.frame with with columns: 'Sample.Name', 'H', and
+  'Peaks'.
 }
 \description{
   \code{calculateH} calculates the average peak height for
   a sample.
 }
 \details{
-  Calculates the average peak height (H) for a sample.
-  Takes (GM-formatted) data for samples as input. Sample
-  data must contain a column "Z", where 1 = heterozygote
-  loci, and 2 = homozygote loci as known from the reference
-  sample. Calculates H according to the formula: \eqn{H =
-  sum(peak heights)/(n[het] + 2n[hom]} Where: n[het] =
-  number of observed heterozygote alleles n[hom] = number
-  of observed homozygote alleles
+  Calculates the average peak height (H) for each sample.
+  Sample data must contain a column "Heterozygous", where 1
+  = heterozygous loci, and 0 = homozygous loci as known
+  from the reference sample. Calculates H according to the
+  formula: \eqn{H = sum(peak heights)/(n[het] + 2n[hom]}
+  Where: n[het] = number of observed heterozygous alleles
+  n[hom] = number of observed homozygous alleles
 }
 

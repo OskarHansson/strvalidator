@@ -2,7 +2,8 @@
 \alias{getKit}
 \title{Get kit}
 \usage{
-  getKit(kitNameOrIndex = NULL, showMessages = FALSE)
+  getKit(kitNameOrIndex = NULL, showMessages = FALSE,
+    .kitInfo = NULL, debug = FALSE)
 }
 \arguments{
   \item{kitNameOrIndex}{string or integer specifying the
@@ -18,8 +19,8 @@
   \code{getKit} provides information about STR kits.
 }
 \details{
-  The function returns the following information for a
-  supported kit: Short kit name, Full kit name,
+  The function returns the following information for a kit
+  specified in kits.txt: Short kit name, Full kit name,
   Marker/locus names, Dye for each marker/locus, Start
   offset (in base pairs) for each marker, Size of repeating
   unit (in base pairs) for each marker.  If no matching kit

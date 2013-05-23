@@ -4,10 +4,11 @@
 
 ################################################################################
 # CHANGE LOG
-# 05: Roxygenized.
-# 04: new name 'trimData' -> 'trim'
-# 03: remove NA/empty cols.
-# 02: handle no sample/ no columns.
+# 27.04.2013: Fixed error when result is only 1 column.
+# <27.04.2013: Roxygenized.
+# <27.04.2013: new name 'trimData' -> 'trim'
+# <27.04.2013: remove NA/empty cols.
+# <27.04.2013: handle no sample/ no columns.
 
 #' @title Trim data
 #'
@@ -17,7 +18,7 @@
 #' @details
 #' Simplifies extraction of specific data from a larger set of typing data.
 #' 
-#' @param data data frame with genotype data in 'slim' format.
+#' @param data data frame with genotype data.
 #' @param samples string giving sample names separated by pipe.
 #' @param columns string giving column names separated by pipe.
 #' @param word logical indicating if a word boundary should be added to 
@@ -32,6 +33,7 @@
 #' @param rmEmptyCol logical, TRUE columns with no values are removed from 'data'
 #' while FALSE will preserve the columns.
 #' @param missing value to replace missing values with.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with extracted result.
 #' 
@@ -39,8 +41,14 @@
 
 trim <- function(data, samples=NULL, columns=NULL, 
 	word=FALSE, ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
-	rmNaCol=TRUE, rmEmptyCol=TRUE, missing=NA){
+	rmNaCol=TRUE, rmEmptyCol=TRUE, missing=NA, debug=FALSE){
 
+  colNames <- columns
+  
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+  }
+  
 	# Add word anchor.
 	if(word){
 		samples <- gsub("|", "\\b|\\b", samples, fixed=TRUE)
@@ -83,13 +91,28 @@ trim <- function(data, samples=NULL, columns=NULL,
 		data[data==""] <- missing
 	}
 
-	if(rmEmptyCol){
-		data <- data[ , colSums(data=="") != nrow(data) | colSums(is.na(data))>0]
+  if(rmEmptyCol){
+    if(!is.null(ncol(data))){
+		  data <- data[ , colSums(data=="") != nrow(data) | colSums(is.na(data))>0]
+    }
 	}
 
 	if(rmNaCol){
-		data <- data[,colSums(is.na(data))<nrow(data)]
+	  if(!is.null(ncol(data))){
+	    data <- data[,colSums(is.na(data))<nrow(data)]
+	  }
 	}
 
-	return(data)
+  debug <- TRUE
+  
+  if(debug){
+    print(paste("EXIT:", match.call()[[1]]))
+  }
+
+  if(is.null(ncol(data))){
+    data <- data.frame(Name=data)
+    names(data) <- colNames
+  }
+  
+    return(data)
 }

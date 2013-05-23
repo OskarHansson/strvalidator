@@ -29,15 +29,28 @@
 #' @param data data frame.
 #' @param fix vector of strings with colum names to keep fixed.
 #' @param stack vector of strings with colum names to slim.
-#' @param keepAllFixed logical, .
+#' @param keepAllFixed logical, keep a rows even if no data.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return list with simulation results.
 #' 
 
 
-slim <- function(data, fix=NULL, 
-                 stack=NULL, keepAllFixed=TRUE){
+slim <- function(data, fix=NULL, stack=NULL, 
+                 keepAllFixed=TRUE, debug=FALSE){
 
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+    print("data")
+    print(names(data))
+    print("fix")
+    print(fix)
+    print("stack")
+    print(stack)
+    print("keepAllFixed")
+    print(keepAllFixed)
+  }
+  
   # Initiate result row counter.
   resRow <- 0
   

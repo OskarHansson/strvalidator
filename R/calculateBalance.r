@@ -1,20 +1,24 @@
 ################################################################################
 # TODO LIST
-# TODO: noMissing must also check that all expected peaks are in all loci.
-# TODO: also, check perDye so that Lb can be calculated even if some loci is missing.
-# TODO: check how to calc total Lb.
+# TODO: Autodetect if data has not been filtered and warn. 
+# TODO: check how to calc total Lb when using min/max. Should give NA is a 
+#       peak has been removed in a color/sample.
 # TODO: calculate the distributions...
 
 ################################################################################
 # CHANGE LOG
-# 12: Roxygenized. Name changed from 'balanceSlim' to 'calculateBalance'.
-# 11: new option option 'calculateNA'
-# 11: Changed min/max to include given values.
-# 11: Calculates MpH for homozygotes ('balanceSlim').
-# 10: Implemented parameter 'perDye' in 'balanceSlim'. 'balance' deleted.
-# 09: 'balanceSlim' is working.
-# NB! To correctly calculate Hb one needs to know if it is heterozygotic or homozygotic and if a peak is missing.
-# Especially if one use cut-off minHeight and maxHeight (ex. max=1000, and peaks 1200/900 --> false homozygote)
+# 20.04.2013: Lb can be calculated per dye channel with no missing markers.
+# 20.04.2013: Changes max/min to max1/max2 so can handle unfiltered data.
+# 20.04.2013: If ref=NULL use guess 'ref' from 'data' and issue a warning.
+# 20.04.2013: Fixed bug for homozygous: min/2 to max/2.
+# 14.04.2013: Reworked the code:
+#             Removed dependency of column 'Zygosity' by adding parameter 'ref'.
+# <14.04.2013: Roxygenized. Name changed from 'balanceSlim' to 'calculateBalance'.
+# <14.04.2013: new option option 'calculateNA'
+# <14.04.2013: Changed min/max to include given values.
+# <14.04.2013: Calculates MpH for homozygotes ('balanceSlim').
+# <14.04.2013: Implemented parameter 'perDye' in 'balanceSlim'. 'balance' deleted.
+# <14.04.2013: 'balanceSlim' is working.
 
 #' @title Calculate balance
 #'
@@ -22,12 +26,14 @@
 #' \code{calculateBalance} calculates the inter and intra locus balance.
 #'
 #' @details
-#' Takes (GM-formatted) data for samples as input (Must be filtered to contain the clean profile??)
-#' Seem to give the same result filtered/not filtered). NB! Remove ladder
+#' Calculates the inter and intra locus balance for a filtered dataset.
+#' Takes 'slimmed' data for samples and references as input.At the moment
+#' it is better to discard data prior to analysis than to use min/maxHeight.
 #' 
-#' @param data a data frame containing at least 'Sample.Name', 'Marker', 'Height', Dye', and 'Zygosity'.
+#' @param data a data frame containing at least
+#'  'Sample.Name', 'Marker', 'Height', 'Allele', and Dye'.
 #' @param perSample logical, default TRUE calculates balance for each sample, 
-#'  FALSE calculates the avrage across all samples.
+#'  FALSE calculates the average across all samples.
 #' @param lb string. 'prop' is defualt and locus balance is calculated proportionally
 #'  in relation to the whole sample. 'norm' locus balance is normalised in relation to 
 #'  the locus with the highest total peakheight.  
@@ -35,6 +41,11 @@
 #'  FALSE locus balance is calculated globally.
 #' @param minHeight integer giving the lower bound.
 #' @param maxHeight integer giving the upper bound.
+#' @param ignoreCase logical indicating if sample matching should ignore case.
+#' @param matchSource string. Use 'ref' for wildcard matching of unique sample
+#'  names in 'ref' with sample names in 'data' (e.g. 'F' match 'F1' and 'AFG').
+#'  Use 'data' for exact matching of unique sample names in 'data' with sample
+#'  names in 'ref' (e.g. 'F' match 'F' but not 'F1' or 'AFG').
 #' 
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Hb', 'Lb', 'MpH'. 
 #' Or 'Sample.Name','Marker','Hb.n', 'Hb.Mean', 'Hb.Sd', 'Hb.95','Lb.n', 'Lb.Mean', 'Lb.Sd'.
@@ -43,68 +54,80 @@
 #' 
 #' @export true
 #' @examples 
-#' data(ref1)
-#' data(set1)
-#' # Format data frame.
-#' ref1 <- slim(data=ref1, fix=c("Sample.Name","Marker"), stack=c("Allele"))
-#' 
-#' # Indicate heterozygous / homozygous alleles.
-#' ref1 <- calculateZygosity(ref1)
-#'        
-#' # Remove all except positive control samples.
-#' set1 <- trim(data=set1, samples="PC")
-#'        
-#' # Format data frame.
-#' set1 <- slim(data=set1, fix=c("Sample.Name","Marker"), stack=c("Allele","Height"))
-#' 
-#' # Filter out data matching alleles in reference.
-#' set1 <- filterProfile(data=set1, ref=ref1)
-#' 
-#' # Add zygosity.
-#' set1$Zygosity <- rep(ref1$Zygosity,8)
-#' 
-#' # Add dye. 
-#' set1 <- addDye(data=set1, kit="ESX17")
-#' 
+#' data(ref2)
+#' data(set2)
 #' # Calculate average balances.
-#' calculateBalance(data=set1, perSample=FALSE)
+#' calculateBalance(data=set2, ref=ref2, perSample=FALSE)
 
-calculateBalance <- function(data, perSample=TRUE, lb="prop", perDye=TRUE, minHeight=NULL, maxHeight=NULL){
+calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
+                             minHeight=NULL, maxHeight=NULL,
+                             ignoreCase=TRUE, matchSource="ref", debug=FALSE){
   
-  ## TODO: Fix error handling!
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+  }
+  
+  # Check data ----------------------------------------------------------------
+  
   if(perDye){
     # Keep track of dyes.
-    if(is.null(data$Dye)){
+      if(is.null(data$Dye)){
       stop("'Dye' does not exist!")
     }
   }
-  if(is.null(data$Zygosity)){
-    stop("'Zygosity' does not exist!")
-  }
-  if(is.null(data$Height)){
-    stop("'Height' does not exist!")
-  }
+  
   if(is.null(data$Sample.Name)){
     stop("'Sample.Name' does not exist!")
   }
+
   if(is.null(data$Marker)){
     stop("'Marker' does not exist!")
   }
   
-  # Get the sample names.
-  sampleNames <- unique(data$Sample.Name)
+  if(!any(grepl("Allele", names(data)))){
+    stop("'Allele' does not exist!")
+  }
   
-  # Get the marker names.
-  markerNames <- unique(data$Marker)
+  if(!any(grepl("Height", names(data)))){
+    stop("'Height' does not exist!")
+  }
   
-  # Get hight columns.
-  heightColumns <- grepl("Height",names(data))
+  # Check if slim format.  
+  if(sum(grepl("Allele", names(data))) > 1){
+    stop("'data' must be in 'slim' format",
+         call. = TRUE)
+  }
   
+  if(sum(grepl("Height", names(data))) > 1){
+    stop("'data' must be in 'slim' format",
+         call. = TRUE)
+  }
+    
+  if(is.null(ref$Sample.Name)){
+      stop("'Sample.Name' does not exist in ref!")
+  }
+  
+  if(is.null(ref$Marker)){
+    stop("'Marker' does not exist in ref!")
+  }
+  
+  if(!any(grepl("Allele", names(ref)))){
+    stop("'Allele' does not exist in ref!")
+  }
+
+  # Check if slim format.  
+  if(sum(grepl("Allele", names(ref))) > 1){
+    stop("'ref' must be in 'slim' format",
+         call. = TRUE)
+  }
+  
+  # Prepare -------------------------------------------------------------------
+
   # Check data type of Height.
   if(typeof(data$Height)!="integer" & typeof(data$Height)!="double" ){
+    warning("'Height' not numeric. Converting to numeric.")
     # Convert to numeric.
     data$Height <- as.numeric(data$Height)
-    
   }
   
   # Create empty result data frame with NAs.
@@ -114,136 +137,246 @@ calculateBalance <- function(data, perSample=TRUE, lb="prop", perDye=TRUE, minHe
   # Remove all NAs
   res <- res[-1,]
   
+  # Get the sample names.
+  if(matchSource=="data"){
+    sampleNames <- unique(data$Sample.Name)
+  }
+  if(matchSource=="ref"){
+    sampleNames <- unique(ref$Sample.Name)
+  }
+
+  # Analyse -------------------------------------------------------------------
+  
   # Loop through all samples.
-  for (s in seq(along = sampleNames)) {
-    
-    # Initialise variables.
-    markerSum <- vector()
-    markerDye <- vector()
-    hetBalance <- vector()
-    mph <- vector()
-    locusBalance <- vector()
-    
+  for (r in seq(along = sampleNames)) {
+
     # Get sample name.
-    cSampleName <- sampleNames[s]
+    subsetBy <- sampleNames[r]
     
     # Subset sample data.
-    cSampleRows <- data$Sample.Name == cSampleName
-    currentData <- data[cSampleRows,]
-    
-    # Loop through all markers.
-    for (m in seq(along = markerNames)) {
-      
-      # Get marker name.
-      cMarkerName <- markerNames[m]
-      
-      # Get rows for current marker.
-      markerRows <- currentData$Marker==markerNames[m]
-      
-      # Filter high/low peaks.
-      minOk <- TRUE
-      if(!is.null(minHeight)){
-        minOk <- currentData[markerRows,heightColumns] >= minHeight
-      }
-      maxOk <- TRUE
-      if(!is.null(maxHeight)){
-        maxOk <- currentData[markerRows,heightColumns] <= maxHeight
-      }
-      ok <- minOk & maxOk
-      
-      markerSum[m] <- sum(currentData[markerRows,heightColumns][ok], na.rm=TRUE)
-      if(perDye){
-        # Keep track of dyes.
-        markerDye[m] <- currentData[markerRows, ]$Dye
-      }
-      
-      # Count number of height values.
-      nbOfPeaks <- sum(!is.na(currentData[markerRows,heightColumns][ok]))
-      expPeaks <- currentData[markerRows,]$Zygosity
-      
-      # TODO: This is just a control until all is tested.			
-      if(length(expPeaks)!=0 & length(unique(expPeaks))!=1){
-        warning(paste("Zygosity not consistent for sample",cSampleName,"marker",cMarkerName))
+    if(matchSource=="data"){
+      if(ignoreCase){
+        cSampleRows <- toupper(data$Sample.Name) == toupper(subsetBy)
       } else {
-        expPeaks <- unique(expPeaks)
+        cSampleRows <- data$Sample.Name == subsetBy
       }
+      cSubsetData <- data[cSampleRows,]
+    }
+    if(matchSource=="ref"){
+      if(ignoreCase){
+        cSampleRows <- grepl(toupper(subsetBy), toupper(data$Sample.Name))
+      } else {
+        cSampleRows <- grepl(subsetBy, data$Sample.Name)
+      }
+      cSubsetData <- data[cSampleRows,]
+    }
+    
+    # Subset reference data.
+    if(matchSource=="data"){
+      if(ignoreCase){
+        cReferenceRows <- toupper(ref$Sample.Name) == toupper(subsetBy)
+      } else {
+        cReferenceRows <- ref$Sample.Name == subsetBy
+      }
+      cSubsetRef <- ref[cReferenceRows,]
+    }
+    if(matchSource=="ref"){
+      if(ignoreCase){
+        cReferenceRows <- grepl(toupper(subsetBy), toupper(ref$Sample.Name))
+      } else {
+        cReferenceRows <- grepl(subsetBy, ref$Sample.Name)
+      }
+      cSubsetRef <- ref[cReferenceRows,]
+    }
       
-      # Get min and max peak height.
-      min <- min(currentData[markerRows,heightColumns][ok], na.rm=TRUE)
-      max <- max(currentData[markerRows,heightColumns][ok], na.rm=TRUE)
+    # Get data for current subset.
+    cRef <- cSubsetRef[cSubsetRef$Sample.Name == subsetBy, ]
+    markerNames <- unique(cSubsetRef$Marker)
+    cSampleNames <- unique(cSubsetData$Sample.Name)
+
+    # Loop through all samples in subset.
+    for(s in seq(along=cSampleNames)){
+
+      # Initialise variables.
+      markerPeakHeightSum <- vector()
+      markerDye <- vector()
+      hetBalance <- vector()
+      mph <- vector()
+      locusBalance <- vector()
       
-      # Calculate Hb for two peak loci.
-      if(expPeaks==2 && nbOfPeaks==2){
+      # Current sample name.
+      cSample <- cSampleNames[s]
+
+      # Get data for current sample.
+      cData <- cSubsetData[cSubsetData$Sample.Name == cSample, ]
+      
+      # Loop through all markers.
+      for (m in seq(along = markerNames)) {
         
-        # Heterozygote balance.
-        hetBalance[m] <- min / max
+        # Get rows for current marker.
+        markerRows <- cData$Marker == markerNames[m]
+        markerRowsRef <- cRef$Marker == markerNames[m]
         
-        # Mean peak height.
-        mph[m] <-  sum(min,max) / 2
+        # Filter high/low peaks.
+        minOk <- TRUE
+        if(!is.null(minHeight)){
+          minOk <- cData$Height[markerRows] >= minHeight
+        }
+        maxOk <- TRUE
+        if(!is.null(maxHeight)){
+          maxOk <- cData$Height[markerRows] <= maxHeight
+        }
+        ok <- minOk & maxOk
         
-      } else if(expPeaks==1 && nbOfPeaks==1){
-        
-        # Heterozygote balance.
-        hetBalance[m] <- NA
-        
-        # Mean peak height.
-        mph[m] <-  min / 2
-        
-        # TODO: This is just a control until all is tested.			
-        if(min!=max){
-          warning(paste("min!=max",cSampleName,"marker",cMarkerName))
+        markerPeakHeightSum[m] <- sum(cData$Height[markerRows][ok], na.rm=TRUE)
+        if(perDye){
+          # Keep track of dyes.
+          markerDye[m] <- unique(cData$Dye[markerRows])
         }
         
-      } else {
-        hetBalance[m] <- NA
-        mph[m] <-  NA
+        # Count number of height values.
+        nbOfPeaks <- sum(!is.na(cData$Height[markerRows][ok]))
+        expPeaks <- sum(!is.na(unique(cRef$Allele[markerRowsRef])))
+        
+        if(expPeaks != 1 && expPeaks != 2){
+        
+          msg <- paste("Expected peaks is not 1 or 2 in reference",
+                        subsetBy,
+                        "marker",
+                        markerNames[m],
+                        ". \nThis case is not handled and will result in 'NA'.",
+                       collapse = " ")
+          warning(msg)
+          
+          if(debug){
+            print(msg)
+          }
+          
+        }
+
+        # Get heights.
+        cHeights <- cData$Height[markerRows][ok]
+
+        # Get min and max peak height.
+        if(!all(is.na(cHeights))){
+          max1 <- max(cHeights, na.rm=TRUE)
+          remainingPeaks <- cHeights[cHeights!=max1]
+          if(!all(is.na(remainingPeaks))){
+            max2 <- max(cHeights[cHeights!=max1], na.rm=TRUE)
+          } else {
+            max2 <- NA
+          }
+        } else {
+          max2 <- NA
+          max1 <- NA
+        }
+
+        # Calculate Hb for two peak loci.
+        if(expPeaks == 2){
+            
+          # Heterozygote balance.
+          hetBalance[m] <- max2 / max1
+          
+          # Mean peak height.
+          mph[m] <-  sum(max2,max1) / 2
+          
+        } else if(expPeaks == 1){
+          
+          # Heterozygote balance.
+          hetBalance[m] <- NA
+          
+          # Mean peak height.
+          mph[m] <-  max1 / 2
+          
+        } else {
+          hetBalance[m] <- NA
+          mph[m] <-  NA
+        }
+
       }
-    }
-    # TODO: noMissing must also check that all expected peaks are in all loci.
-    # TODO: also, check perDye so that Lb can be calculated even if some loci is missing.
-    
-    # Check if missing markers.
-    noMissing <- TRUE
-    if(sum(markerSum==0) > 0) {  #### TODO OR: length(markerSum)<numberOfExpectedMarkers
-      noMissing <- FALSE
-    }
-    if(perDye){
-      # Get dye names.
-      dyes <- unique(markerDye)
-    }
-    
-    # Calculate inter locus balance.
-    if(noMissing & lb=="norm"){
+
+      # Check ok dye channels.
+      dyeOk <- logical(0)
       if(perDye){
+        dyes <- unique(markerDye)
         for(d in seq(along=dyes)){
-          lbTmp <- markerSum[markerDye==dyes[d]] / max(markerSum[markerDye==dyes[d]])
-          locusBalance <- c(locusBalance, lbTmp)
+          # Channel is marked as ok if peaks in all markers in that channel.
+          dyeOk[d] <- sum(markerPeakHeightSum[markerDye==dyes[d]] == 0) == 0
+        }
+      }
+      
+      # Check if missing markers.
+      allMarkersOk <- TRUE
+      if(sum(markerPeakHeightSum == 0) > 0) {
+        allMarkersOk <- FALSE
+      }
+
+      # Calculate inter locus balance.
+      if(lb=="norm"){
+        if(perDye & any(dyeOk)){
+          for(d in seq(along=dyes)){
+            # Calculate per dye.
+            if(dyeOk[d]){
+              lbTmp <- markerPeakHeightSum[markerDye==dyes[d]] / max(markerPeakHeightSum[markerDye==dyes[d]])
+            } else {
+              lbTmp <- rep(NA, length(markerPeakHeightSum[markerDye==dyes[d]]))
+            }
+            # Here we must concatenate per dye.
+            locusBalance <- c(locusBalance, lbTmp)
+          }
+        } else if (allMarkersOk) {
+          # Calculate all at once.
+          locusBalance <- markerPeakHeightSum / max(markerPeakHeightSum)
+        } else {
+          locusBalance <- rep(NA, length(markerPeakHeightSum))
+        }
+      } else if(lb=="prop"){
+        if(perDye & any(dyeOk)){
+          for(d in seq(along=dyes)){
+            # Calculate per dye.
+            if(dyeOk[d]){
+              lbTmp <- markerPeakHeightSum[markerDye==dyes[d]] / sum(markerPeakHeightSum[markerDye==dyes[d]])
+            } else {
+              lbTmp <- rep(NA, length(markerPeakHeightSum[markerDye==dyes[d]]))
+            }
+            # Here we must concatenate per dye.
+            locusBalance <- c(locusBalance, lbTmp)
+          }
+        } else if (allMarkersOk) {
+          # Calculate all at once.
+          locusBalance <- markerPeakHeightSum / sum(markerPeakHeightSum)
+        } else {
+          locusBalance <- rep(NA, length(markerPeakHeightSum))
         }
       } else {
-        locusBalance <- markerSum / max(markerSum)
+        warning(paste("Invalid 'lb' (", lb, "). Lb will be NA."))
+        locusBalance <- rep(NA, length(markerPeakHeightSum))
       }
-    } else if(noMissing & lb=="prop"){
-      if(perDye){
-        for(d in seq(along=dyes)){
-          lbTmp <- markerSum[markerDye==dyes[d]] / sum(markerSum[markerDye==dyes[d]])
-          locusBalance <- c(locusBalance, lbTmp)
-        }
-      } else {
-        locusBalance <- markerSum / sum(markerSum)
+
+      if(debug){
+        print("cSample")
+        print(cSample)
+        print("markerNames")
+        print(markerNames)
+        print("hetBalance")
+        print(hetBalance)
+        print("locusBalance")
+        print(locusBalance)
+        print("mph")
+        print(mph)
       }
-    } else {
-      locusBalance <- NA
+      
+      # Save result in temporary data frame.
+      tmp <- data.frame(Sample.Name = cSample,
+                        Marker = markerNames,
+                        Hb = hetBalance,
+                        Lb = locusBalance,
+                        MpH = mph)
+      
+      # Add result to data frame.
+      res <- rbind(res, tmp)
+
     }
-    
-    # Save result in temporary data frame.
-    tmp <- data.frame(Sample.Name = cSampleName,
-                      Marker = markerNames,
-                      Hb = hetBalance,
-                      Lb = locusBalance,
-                      MpH = mph)
-    
-    # Add result to data frame.
-    res <- rbind(res, tmp)
     
   }
   
@@ -256,6 +389,9 @@ calculateBalance <- function(data, perSample=TRUE, lb="prop", perDye=TRUE, minHe
     hbMean <- vector()
     hbSd <- vector()
     hb95 <- vector()
+    
+    # Get the marker names.
+    markerNames <- unique(res$Marker)
     
     # Loop through all markers.
     for (m in seq(along = markerNames)) {
@@ -295,8 +431,16 @@ calculateBalance <- function(data, perSample=TRUE, lb="prop", perDye=TRUE, minHe
                                Lb.Mean = lbMean,
                                Lb.Sd = lbSd)
     
+    if(debug){
+      print(paste("EXIT:", match.call()[[1]]))
+    }
+
     # Return result.
     return(resPerSample )
+  }
+
+  if(debug){
+    print(paste("EXIT:", match.call()[[1]]))
   }
   
   # Return result.
