@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 23.05.2013: Fixed save with correct name.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
 # 18.04.2013: Added reference drop down and ref in call to calculateBalance.
@@ -340,6 +341,7 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
     val_match <- svalue(f3_match_opt, index=TRUE)
     val_data <- gData
     val_ref <- gRef
+    val_name <- svalue(f4_save_edt)
     
     if(debug){
       print("Read Values:")
@@ -355,6 +357,14 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
       print(val_max)
       print("val_ignore")
       print(val_ignore)
+      print("val_match")
+      print(val_match)
+      print("val_name")
+      print(val_name)
+      print("val_data")
+      print(head(val_data))
+      print("val_ref")
+      print((val_ref))
     }
     
     if(!is.null(gData) & !is.null(gRef)){
@@ -412,7 +422,7 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
                                   matchSource=val_match)
       
       # Save data.
-      assign(".result", datanew, envir=env)
+      assign(val_name, datanew, envir=env)
   
       if(debug){
         print(datanew)
