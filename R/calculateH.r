@@ -32,7 +32,13 @@
 #' 
 #' @return data.frame with with columns: 'Sample.Name', 'H', and 'Peaks'.
 #' 
-
+#' @references
+#' Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
+#'  Evaluating the weight of evidence by using quantitative short tandem repeat data in DNA mixtures
+#'  Journal of the Royal Statistical Society: Series C (Applied Statistics),
+#'  Volume 59, Issue 5, 2010,
+#'  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
+#' \url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
 
 calculateH <- function(data, debug=FALSE){
 

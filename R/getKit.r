@@ -12,6 +12,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 05.06.2013: Added 'gender.marker'
 # 19.05.2013: Re-written for reading data from text file.
 
 #' @title Get kit
@@ -29,6 +30,7 @@
 #' 
 #' @param kitNameOrIndex string or integer specifying the kit.
 #' @param showMessages logical, default TRUE for printing messages to the R promt.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return list with kit information.
 #' 
@@ -36,6 +38,7 @@
 #' 
 #' @export 
 #' @examples
+#' # Show all information stored for kit with short name 'ESX17'.
 #' getKit("ESX17")
 
 getKit<-function(kitNameOrIndex=NULL, showMessages=FALSE, .kitInfo=NULL, debug=FALSE) {
@@ -115,7 +118,8 @@ getKit<-function(kitNameOrIndex=NULL, showMessages=FALSE, .kitInfo=NULL, debug=F
 				locusBalanceSd = .kitInfo$Locus.Balance.Sd[.kitInfo$Short.Name==kits[index]],
         rangeMin = .kitInfo$Range.Min[.kitInfo$Short.Name==kits[index]],
         rangeMax = .kitInfo$Range.Max[.kitInfo$Short.Name==kits[index]],
-        probPCR = .kitInfo$PCR.Efficiency[.kitInfo$Short.Name==kits[index]]
+        probPCR = .kitInfo$PCR.Efficiency[.kitInfo$Short.Name==kits[index]],
+        genderMarker = .kitInfo$Gender.Marker[.kitInfo$Short.Name==kits[index]]
       )
 		} 
 

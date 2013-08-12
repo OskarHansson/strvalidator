@@ -1,12 +1,25 @@
 ################################################################################
 # TODO LIST
+# TODO: New (simpler) complementary function for calculating stutters.
+#   Pros: possibility to get proportion with stutter/no stutter
+#   Cons: difficult to include microvariant stutters.
+#   1) Get true alleles from reference, 2) Construct stutter range from these, 
+#   3) Mask for interference according to 0/1/2 system,
+#   4) Match to alleles. No match scores as no stutter,
+#   5) Match/pick peak heights, 6) calculate ratios.
 # TODO: option to filter peaks below (LOD) or above a treshold. (e.g. <50 or >5000 rfu)
-# TODO: Fix "NAs introduced by coercion"
-# TODO: script cant handle if ref is not in data.
 # TODO: Detect pull-ups and other noise within stutter range.
 
 ################################################################################
 # CHANGE LOG
+# 01.07.2013: Added "Sample.Name" in result.
+# 01.07.2013: Fixed "NAs introduced by coercion".
+# 25.06.2013: Fixed bug for 'interference = 1'.
+# 25.06.2013: Fixed bug for 'interference = 2'.
+# 25.06.2013: Fixed bug excluding homozygotes when using 'double notation' (16/16).
+# 25.06.2013: Fixed bug excluding homozygotes when using 'single notation' (16).
+# 30.05.2013: New parameters 'replaceVal' and 'byVal' to fix 'false' stutters.
+# 30.05.2013: 'Type' rounded to 1 digit (avoid floating point 'bug' when ==)
 # 11.04.2013: Added some more data controls.
 # <11.04.2013: Fix bug mixed numeric/character, slim data required.
 # <11.04.2013: Roxygenized and changed name from stutterStatSlim to calculateStutter.
@@ -35,24 +48,30 @@
 #'  0 = no overlap between stutters and alleles is allowed.
 #'  1 = stutter-stutter interference is allowed.
 #'  2 = stutter-allele interference is allowed.
+#' @param replaceVal numeric vector with 'false' stutters to replace.
+#' @param byVal numeric vector with correct stutters.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with extracted result.
 #' 
 
 
-calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
+calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
+                             replaceVal=NULL, byVal=NULL, debug=FALSE){
+
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+  }
 
   # Create an empty data frame to hold the result.
-  stutterRatio <- data.frame(t(rep(NA,7)))
+  stutterRatio <- data.frame(t(rep(NA,8)))
   # Add column names.
-  names(stutterRatio ) <- c("Marker", "Allele",
+  names(stutterRatio ) <- c("Sample.Name","Marker", "Allele",
                             "HeightA", "Stutter", "HeightS",
                             "Ratio", "Type")
   # Remove all NAs
   stutterRatio  <- stutterRatio [-1,]
 
-  debug = FALSE
-  
   # CHECK DATA ----------------------------------------------------------------
 
   # Check columns in dataset.
@@ -104,79 +123,74 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
   }
   if(!is.numeric(data$Height)){
     warning("'Height' must be numeric. 'data$Height' converted")
-    data$Height <- as.numeric(data$Height)
+    data$Height <- suppressWarnings(as.numeric(data$Height))
   }
   
   # GET VARIABLES -------------------------------------------------------------
   
   # Get columns.
-  col.m <- grepl("Marker", names(data))
-  col.a <- grepl("Allele", names(data))
-  col.h <- grepl("Height", names(data))
-  
-  # Get column names.
-  col.a.names <- names(data[,col.a])
-  col.h.names <- names(data[,col.h])
+  colA <- grepl("Allele", names(data))
+  colH <- grepl("Height", names(data))
   
   # Get sample and reference names.
-  sample.names <- unique(data$Sample.Name)
-  ref.sample.names <- unique(ref$Sample.Name)
+  refSampleNames <- unique(ref$Sample.Name)
 
   # CALCULATE -----------------------------------------------------------------
   
   # Loop through all reference samples.
-  for(r in seq(along=ref.sample.names)){
+  for(r in seq(along=refSampleNames)){
 
     # Select current ref sample.
-    selected.refs <- grepl(ref.sample.names[r], ref$Sample.Name)
-    ref.subset <- ref[selected.refs, ]
+    selected.refs <- grepl(refSampleNames[r], ref$Sample.Name)
+    refSubset <- ref[selected.refs, ]
     
     # Select samples from this ref.
-    selected.samples <- grepl(ref.sample.names[r], data$Sample.Name)
-    data.subset <- data[selected.samples, ]
+    selectedSamples <- grepl(refSampleNames[r], data$Sample.Name)
+    dataSubset <- data[selectedSamples, ]
     
     # Get subset sample names.
-    ss.names <- unique(data.subset$Sample.Name)
+    ssName <- unique(dataSubset$Sample.Name)
     
     # Loop over all samples in subset.
-    for(s in seq(along=ss.names)){
+    for(s in seq(along=ssName)){
 
       # Select samples from this ref.
-      selected.samples <- grepl(ss.names[s], data.subset$Sample.Name)
-      data.ss <- data.subset[selected.samples, ]
+      selectedSamples <- grepl(ssName[s], dataSubset$Sample.Name)
+      dataSs <- dataSubset[selectedSamples, ]
       
       # Get current marker names.
-      marker.names <- unique(data.ss$Marker[data.ss$Sample.Name==ss.names[s]])
+      markerNames <- unique(dataSs$Marker[dataSs$Sample.Name==ssName[s]])
 
       # Loop over all markers in subset.
-      for(m in seq(along=marker.names)){
+      for(m in seq(along=markerNames)){
         
         # Get reference alleles (true alleles).
-        tA <- ref.subset$Allele[ref.subset$Marker==marker.names[m]]
+        tA <- refSubset$Allele[refSubset$Marker==markerNames[m]]
         tA1 <- tA[1]
         tA2 <- tA[2]
         
         # Check zygosity.
         if(tA1==tA2 || is.na(tA2)) {
           heterozygote <- FALSE
+          tA2 <- NA # It is a homozygote.
         } else {
           heterozygote <- TRUE
         }
         
         # Get data for current marker.
-        allele.v <- as.matrix(data.ss[data.ss$Marker==marker.names[m],col.a])
-        height.v <- as.matrix(data.ss[data.ss$Marker==marker.names[m],col.h])
+        alleleV <- as.matrix(dataSs[dataSs$Marker==markerNames[m],colA])
+        heightV <- as.matrix(dataSs[dataSs$Marker==markerNames[m],colH])
         
         # Remove NA
-        sel <- !is.na(allele.v)
-        allele.v <- allele.v[sel]
-        height.v <- height.v[sel]
+        sel <- !is.na(alleleV)
+        alleleV <- alleleV[sel]
+        heightV <- heightV[sel]
         
         # Identify possible stutters for allele 1 and 2.
-        sA1 <- allele.v[as.numeric(allele.v)>=as.numeric(tA1)-back & 
-                          as.numeric(allele.v)<=as.numeric(tA1)+forward]
-        sA2 <- allele.v[as.numeric(allele.v)>=as.numeric(tA2)-back & 
-                          as.numeric(allele.v)<=as.numeric(tA2)+forward]
+        sA1 <- alleleV[suppressWarnings(as.numeric(alleleV)) >= suppressWarnings(as.numeric(tA1)) - back & 
+                         suppressWarnings(as.numeric(alleleV)) <= suppressWarnings(as.numeric(tA1)) + forward]
+        sA2 <- alleleV[suppressWarnings(as.numeric(alleleV)) >= suppressWarnings(as.numeric(tA2)) - back & 
+                         suppressWarnings(as.numeric(alleleV)) <= suppressWarnings(as.numeric(tA2)) + forward]
         sA1 <- sA1[!is.na(sA1)]
         sA2 <- sA2[!is.na(sA2)]
         # Check if true allele exist!
@@ -186,10 +200,10 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
         sA2 <- sA2[sA2 != tA2]
         
         # Get heights for alleles and stutters.
-        hA1 <- height.v[match(tA1,allele.v)]
-        hA2 <- height.v[match(tA2,allele.v)]
-        shA1 <- height.v[match(sA1,allele.v)]
-        shA2 <- height.v[match(sA2,allele.v)]
+        hA1 <- heightV[match(tA1,alleleV)]
+        hA2 <- heightV[match(tA2,alleleV)]
+        shA1 <- heightV[match(sA1,alleleV)]
+        shA2 <- heightV[match(sA2,alleleV)]
         
         currentAllele1<-NA
         currentAllele2<-NA
@@ -197,73 +211,142 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
         if(debug){
           print("Reference/Sample/Marker")
           print(r)
-          print(r)
+          print(s)
           print(m)
         }
         
+        if(debug){
+          print(paste("True allele 1:", tA1, "height", hA1))
+          print("Stutters for allele 1:")
+          print(sA1)
+          print("Stutter heights:")
+          print(shA1)
+          print(paste("True allele 2:", tA2, "height", hA2))
+          print("Stutters for allele 2:")
+          print(sA2)
+          print("Stutter heights:")
+          print(shA2)
+        }
+
         # Calculate stutter ratio.
         if (interference==0){
           if(bolA1){
             
+            if(debug){
+              print("No interference")
+              print("True allele 1 in stutter array 1")
+            }
+
             #Calculate for all stutters.
             # Calculate for stutters smaller than A2 stutters/allele
             sel <- as.numeric(sA1) < min(as.numeric(sA2), as.numeric(tA2))
             
-            if(length(sel) == 0 || is.na(sel)){
-              sel <- FALSE
+            if(length(sel) == 0){
+              sel <- FALSE # FALSE to avoid error later in next function.
+            } else if(all(is.na(sel))){
+              sel <- TRUE # TRUE to calculate homozygotes (gives NA in function above).
             }
 
-            if(all(sel)==FALSE){
-              srA1 <- numeric()
-            } else {
+            # Calculate if any stutter is smaller or set to 'empty'.
+            if(any(sel)){
               srA1 <- as.numeric(shA1[sel]) / as.numeric(hA1)
+            } else {
+              srA1 <- numeric()
             }
             
             if(length(srA1) > 0 && !tA1 %in% sA2){
               rp <- length(srA1)
-              df.marker <- rep(marker.names[m],rp)
-              df.allele <- rep(tA1,rp)
-              df.height.a <- rep(hA1,rp)
-              df.stutter <- sA1[sel]
-              df.height.s <- shA1
-              df.ratio <- srA1
-              df.type <- as.numeric(sA1[sel])-as.numeric(tA1)
+              dfMarker <- rep(markerNames[m],rp)
+              dfAllele <- rep(tA1,rp)
+              dfHeightA <- rep(hA1,rp)
+              dfStutter <- sA1[sel]
+              dfHeightS <- shA1[sel]
+              dfRatio <- srA1
+              dfType <- as.numeric(sA1[sel])-as.numeric(tA1)
               
-              currentAllele1 <- data.frame("Marker"=df.marker, "Allele"=df.allele,
-                                           "HeightA"=df.height.a, "Stutter"=df.stutter, "HeightS"=df.height.s,
-                                           "Ratio"=df.ratio,	"Type"=df.type)
+              if(debug){
+                print("rp:")
+                print(rp)
+                print("dfMarker:")
+                print(dfMarker)
+                print("dfAllele:")
+                print(dfAllele)
+                print("dfHeightA:")
+                print(dfHeightA)
+                print("dfStutter:")
+                print(dfStutter)
+                print("dfHeightS:")
+                print(dfHeightS)
+                print("dfRatio:")
+                print(dfRatio)
+                print("dfType:")
+                print(dfType)
+              }
+
+              # NB! 'Type' must be rounded, because floating point substraction.
+              currentAllele1 <- data.frame("Sample.Name"=ssName[s],"Marker"=dfMarker, "Allele"=dfAllele,
+                                           "HeightA"=dfHeightA, "Stutter"=dfStutter, "HeightS"=dfHeightS,
+                                           "Ratio"=dfRatio,	"Type"=round(dfType,2))
               
               stutterRatio <- rbind(stutterRatio, currentAllele1)
             }
           }
           if (heterozygote && bolA2) {
             
+            if(debug){
+              print("No interference")
+              print("True allele 2 in stutter array 2")
+            }
+
             # Calculate for stutters bigger than A1 stutters/allele
             sel <- as.numeric(sA2) > max(as.numeric(sA1), as.numeric(tA1))
             
-            if(length(sel) == 0 || is.na(sel)){
-              sel <- FALSE
-            }
-
-            if(all(sel)==FALSE){
-              srA2 <- numeric()
-            } else {
-              srA2 <- as.numeric(shA2[sel]) / as.numeric(hA2)
+            if(length(sel) == 0){
+              sel <- FALSE # FALSE to avoid error later in next function.
+            } else if(all(is.na(sel))){
+              sel <- TRUE # TRUE to calculate homozygotes (gives NA in function above).
             }
             
-            if(length(srA2) > 0){
+            # Calculate if any stutter is bigger or set to 'empty'.
+            if(any(sel)){
+              srA2 <- as.numeric(shA2[sel]) / as.numeric(hA2)
+            } else {
+              srA2 <- numeric()
+            }
+            
+            if(length(srA2) > 0 && !tA2 %in% sA1){
               rp <- length(srA2)
-              df.marker <- rep(marker.names[m],rp)
-              df.allele <- rep(tA2,rp)
-              df.height.a <- rep(hA2,rp)
-              df.stutter <- sA2[sel]
-              df.height.s <- shA2
-              df.ratio <- srA2
-              df.type <- as.numeric(sA2[sel]) - as.numeric(tA2)
+              dfMarker <- rep(markerNames[m],rp)
+              dfAllele <- rep(tA2,rp)
+              dfHeightA <- rep(hA2,rp)
+              dfStutter <- sA2[sel]
+              dfHeightS <- shA2[sel]
+              dfRatio <- srA2
+              dfType <- as.numeric(sA2[sel]) - as.numeric(tA2)
               
-              currentAllele2 <- data.frame("Marker"=df.marker, "Allele"=df.allele,
-                                           "HeightA"=df.height.a, "Stutter"=df.stutter, "HeightS"=df.height.s, 
-                                           "Ratio"=df.ratio,	"Type"=df.type)
+              if(debug){
+                print("rp:")
+                print(rp)
+                print("dfMarker:")
+                print(dfMarker)
+                print("dfAllele:")
+                print(dfAllele)
+                print("dfHeightA:")
+                print(dfHeightA)
+                print("dfStutter:")
+                print(dfStutter)
+                print("dfHeightS:")
+                print(dfHeightS)
+                print("dfRatio:")
+                print(dfRatio)
+                print("dfType:")
+                print(dfType)
+              }
+
+              # NB! 'Type' must be rounded, because floating point substraction.
+              currentAllele2 <- data.frame("Sample.Name"=ssName[s], "Marker"=dfMarker, "Allele"=dfAllele,
+                                           "HeightA"=dfHeightA, "Stutter"=dfStutter, "HeightS"=dfHeightS, 
+                                           "Ratio"=dfRatio,	"Type"=round(dfType,2))
               
               stutterRatio <- rbind(stutterRatio, currentAllele2)
             }
@@ -272,66 +355,122 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
         } else if (interference == 1){
           if(bolA1){
             
+            if(debug){
+              print("Stutter-stutter interference allowed")
+              print("True allele 1 in stutter array 1")
+            }
+
             #Calculate for stutters even if stutter interference.
             # Calculate for stutters smaller than A2 allele
             sel <- as.numeric(sA1) < as.numeric(tA2)
             
-            if(length(sel) == 0 || is.na(sel)){
-              sel <- FALSE
+            if(length(sel) == 0){
+              sel <- FALSE # FALSE to avoid error later in next function.
+            } else if(all(is.na(sel))){
+              sel <- TRUE # TRUE to calculate homozygotes (gives NA in function above).
             }
-
-            if(all(sel)==FALSE){
-              srA1 <- numeric()
-            } else {
+            
+            # Calculate if any stutter is smaller or set to 'empty'.
+            if(any(sel)){
               srA1 <- as.numeric(shA1[sel]) / as.numeric(hA1)
+            } else {
+              srA1 <- numeric()
             }
             
             if(length(srA1) > 0){
               rp <- length(srA1)
-              df.marker <- rep(marker.names[m], rp)
-              df.allele <- rep(tA1, rp)
-              df.height.a <- rep(hA1, rp)
-              df.stutter <- sA1[sel]
-              df.height.s <- shA1
-              df.ratio <- srA1
-              df.type <- as.numeric(sA1[sel]) - as.numeric(tA1)
+              dfMarker <- rep(markerNames[m], rp)
+              dfAllele <- rep(tA1, rp)
+              dfHeightA <- rep(hA1, rp)
+              dfStutter <- sA1[sel]
+              dfHeightS <- shA1[sel]
+              dfRatio <- srA1
+              dfType <- as.numeric(sA1[sel]) - as.numeric(tA1)
               
-              currentAllele1 <- data.frame("Marker"=df.marker, "Allele"=df.allele,
-                                           "HeightA"=df.height.a, "Stutter"=df.stutter, "HeightS"=df.height.s,
-                                           "Ratio"=df.ratio,	"Type"=df.type)
+              if(debug){
+                print("rp:")
+                print(rp)
+                print("dfMarker:")
+                print(dfMarker)
+                print("dfAllele:")
+                print(dfAllele)
+                print("dfHeightA:")
+                print(dfHeightA)
+                print("dfStutter:")
+                print(dfStutter)
+                print("dfHeightS:")
+                print(dfHeightS)
+                print("dfRatio:")
+                print(dfRatio)
+                print("dfType:")
+                print(dfType)
+              }
+              
+              # NB! 'Type' must be rounded, because floating point substraction.
+              currentAllele1 <- data.frame("Sample.Name"=ssName[s], "Marker"=dfMarker, "Allele"=dfAllele,
+                                           "HeightA"=dfHeightA, "Stutter"=dfStutter, "HeightS"=dfHeightS,
+                                           "Ratio"=dfRatio,	"Type"=round(dfType,2))
               
               stutterRatio <- rbind(stutterRatio, currentAllele1)
             }
           }
           if (heterozygote && bolA2) {
             
+            if(debug){
+              print("Stutter-stutter interference allowed")
+              print("True allele 2 in stutter array 2")
+            }
+
             # Calculate for stutters bigger than A1 allele
             sel <- as.numeric(sA2) > as.numeric(tA1)
             
-            if(length(sel) == 0 || is.na(sel)){
-              sel <- FALSE
+            if(length(sel) == 0){
+              sel <- FALSE # FALSE to avoid error later in next function.
+            } else if(all(is.na(sel))){
+              sel <- TRUE # TRUE to calculate homozygotes (gives NA in function above).
             }
             
-            if(all(sel)==FALSE){
-              srA2 <- numeric()
-            } else {
+            # Calculate if any stutter is bigger or set to 'empty'.
+            if(any(sel)){
               srA2 <- as.numeric(shA2[sel]) / as.numeric(hA2)
+            } else {
+              srA2 <- numeric()
             }
             
             if(length(srA2) > 0){
               
               rp <- length(srA2)
-              df.marker <- rep(marker.names[m], rp)
-              df.allele <- rep(tA2, rp)
-              df.height.a <- rep(hA2, rp)
-              df.stutter <- sA2[sel]
-              df.height.s <- shA2
-              df.ratio <- srA2
-              df.type <- as.numeric(sA2[sel]) - as.numeric(tA2)
+              dfMarker <- rep(markerNames[m], rp)
+              dfAllele <- rep(tA2, rp)
+              dfHeightA <- rep(hA2, rp)
+              dfStutter <- sA2[sel]
+              dfHeightS <- shA2[sel]
+              dfRatio <- srA2
+              dfType <- as.numeric(sA2[sel]) - as.numeric(tA2)
               
-              currentAllele2 <- data.frame("Marker"=df.marker, "Allele"=df.allele,
-                                           "HeightA"=df.height.a, "Stutter"=df.stutter, "HeightS"=df.height.s,
-                                           "Ratio"=df.ratio,	"Type"=df.type)
+              if(debug){
+                print("rp:")
+                print(rp)
+                print("dfMarker:")
+                print(dfMarker)
+                print("dfAllele:")
+                print(dfAllele)
+                print("dfHeightA:")
+                print(dfHeightA)
+                print("dfStutter:")
+                print(dfStutter)
+                print("dfHeightS:")
+                print(dfHeightS)
+                print("dfRatio:")
+                print(dfRatio)
+                print("dfType:")
+                print(dfType)
+              }
+              
+              # NB! 'Type' must be rounded, because floating point substraction.
+              currentAllele2 <- data.frame("Sample.Name"=ssName[s], "Marker"=dfMarker, "Allele"=dfAllele,
+                                           "HeightA"=dfHeightA, "Stutter"=dfStutter, "HeightS"=dfHeightS,
+                                           "Ratio"=dfRatio,	"Type"=round(dfType,2))
               
               stutterRatio <- rbind(stutterRatio, currentAllele2)
             }
@@ -341,74 +480,154 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0){
         } else if (interference == 2){
           if(bolA1){
             
+            if(debug){
+              print("Allele-stutter interference allowed")
+              print("True allele 1 in stutter array 1")
+            }
+
             #Calculate for stutters even if allele interference.
             sel <- sA1 != tA2
-            
-            if(length(sel) == 0 || is.na(sel)){
-              sel <- FALSE
+
+            if(length(sel) == 0){
+              sel <- FALSE # FALSE to avoid error later in next function.
+            } else if(all(is.na(sel))){
+              sel <- TRUE # TRUE to calculate homozygotes (gives NA in function above).
             }
-            
-            if(all(sel)==FALSE){
-              srA1 <- numeric()
-            } else {
+
+            # Calculate if any stutter or set to 'empty'.
+            if(any(sel)){
               srA1 <- as.numeric(shA1[sel]) / as.numeric(hA1)
+            } else {
+              srA1 <- numeric()
             }
-            
-            rp <- length(srA1)
-            df.marker <- rep(marker.names[m], rp)
-            df.allele <- rep(tA1, rp)
-            df.height.a <- rep(hA1, rp)
-            df.stutter <- sA1[sel]
-            df.height.s <- shA1
-            df.ratio <- srA1
-            df.type <- as.numeric(sA1[sel]) - as.numeric(tA1)
-            
-            # Create data frame.
-            currentAllele1 <- data.frame("Marker"=df.marker, "Allele"=df.allele,
-                                         "HeightA"=df.height.a, "Stutter"=df.stutter, "HeightS"=df.height.s,
-                                         "Ratio"=df.ratio, "Type"=df.type)
-            
-            stutterRatio <- rbind(stutterRatio, currentAllele1)
+
+            if(length(srA1) > 0){
+              
+              rp <- length(srA1)
+              dfMarker <- rep(markerNames[m], rp)
+              dfAllele <- rep(tA1, rp)
+              dfHeightA <- rep(hA1, rp)
+              dfStutter <- sA1[sel]
+              dfHeightS <- shA1[sel]
+              dfRatio <- srA1
+              dfType <- as.numeric(sA1[sel]) - as.numeric(tA1)
+              
+              if(debug){
+                print("rp:")
+                print(rp)
+                print("dfMarker:")
+                print(dfMarker)
+                print("dfAllele:")
+                print(dfAllele)
+                print("dfHeightA:")
+                print(dfHeightA)
+                print("dfStutter:")
+                print(dfStutter)
+                print("dfHeightS:")
+                print(dfHeightS)
+                print("dfRatio:")
+                print(dfRatio)
+                print("dfType:")
+                print(dfType)
+              }
+              
+              # Create data frame.
+              # NB! 'Type' must be rounded, because floating point substraction.
+              currentAllele1 <- data.frame("Sample.Name"=ssName[s], "Marker"=dfMarker, "Allele"=dfAllele,
+                                           "HeightA"=dfHeightA, "Stutter"=dfStutter, "HeightS"=dfHeightS,
+                                           "Ratio"=dfRatio, "Type"=round(dfType,2))
+              
+              stutterRatio <- rbind(stutterRatio, currentAllele1)
+            }
           }
           if (heterozygote && bolA2) {
             
+            if(debug){
+              print("Allele-stutter interference allowed")
+              print("True allele 2 in stutter array 2")
+            }
+
+            #Calculate for stutters even if allele interference.
             sel <- sA2 != tA1
             
-            if(length(sel) == 0 || is.na(sel)){
-              sel <- FALSE
+            if(length(sel) == 0){
+              sel <- FALSE # FALSE to avoid error later in next function.
+            } else if(all(is.na(sel))){
+              sel <- TRUE # TRUE to calculate homozygotes (gives NA in function above).
             }
             
-            if(all(sel)==FALSE){
-              srA2 <- numeric()
-            } else {
+            # Calculate if any stutter or set to 'empty'.
+            if(any(sel)){
               srA2 <- as.numeric(shA2[sel]) / as.numeric(hA2)
+            } else {
+              srA2 <- numeric()
             }
             
-            rp <- length(srA2)
-            df.marker <- rep(marker.names[m], rp)
-            df.allele <- rep(tA2, rp)
-            df.height.a <- rep(hA2, rp)
-            df.stutter <- sA2[sel]
-            df.height.s <- shA2
-            df.ratio <- srA2
-            df.type <- as.numeric(sA2[sel]) - as.numeric(tA2)
-            
-            # Create data frame.
-            currentAllele2 <- data.frame("Marker"=df.marker, "Allele"=df.allele,
-                                         "HeightA"=df.height.a, "Stutter"=df.stutter, "HeightS"=df.height.s,
-                                         "Ratio"=df.ratio,	"Type"=df.type)
-            
-            stutterRatio <- rbind(stutterRatio, currentAllele2)
+            if(length(srA2) > 0){
+              
+              rp <- length(srA2)
+              dfMarker <- rep(markerNames[m], rp)
+              dfAllele <- rep(tA2, rp)
+              dfHeightA <- rep(hA2, rp)
+              dfStutter <- sA2[sel]
+              dfHeightS <- shA2[sel]
+              dfRatio <- srA2
+              dfType <- as.numeric(sA2[sel]) - as.numeric(tA2)
+              
+              if(debug){
+                print("rp:")
+                print(rp)
+                print("dfMarker:")
+                print(dfMarker)
+                print("dfAllele:")
+                print(dfAllele)
+                print("dfHeightA:")
+                print(dfHeightA)
+                print("dfStutter:")
+                print(dfStutter)
+                print("dfHeightS:")
+                print(dfHeightS)
+                print("dfRatio:")
+                print(dfRatio)
+                print("dfType:")
+                print(dfType)
+              }
+              
+              # Create data frame.
+              # NB! 'Type' must be rounded, because floating point substraction.
+              currentAllele2 <- data.frame("Sample.Name"=ssName[s], "Marker"=dfMarker, "Allele"=dfAllele,
+                                           "HeightA"=dfHeightA, "Stutter"=dfStutter, "HeightS"=dfHeightS,
+                                           "Ratio"=dfRatio,	"Type"=round(dfType,2))
+              
+              stutterRatio <- rbind(stutterRatio, currentAllele2)
+            }
           }
           
           
         } else{
           print("Stutter not calculated for:")
-          print(data.subset[ref.subset$Marker==marker.names[m], 1:5])
+          print(dataSubset[refSubset$Marker==markerNames[m], 1:5])
         }
       }
     }
   }
   
+  if(debug){
+    print(unique(stutterRatio$Type))
+  }
+  
+  if(!is.null(replaceVal) & !is.null(byVal)){
+    for(i in seq(along=replaceVal)){
+      stutterRatio$Type[stutterRatio$Type == replaceVal[i]] <- byVal[i]
+    }
+    if(debug){
+      print(unique(stutterRatio$Type))
+    }
+  }
+  
+  if(debug){
+    print(paste("EXIT:", match.call()[[1]]))
+  }
+
   return(stutterRatio)
 }

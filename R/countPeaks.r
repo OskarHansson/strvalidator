@@ -1,5 +1,8 @@
 ################################################################################
 # TODO LIST
+# TODO: Change into 'slim' format.
+# TODO: Count peaks per 'sample'/'marker'
+# TODO: Option to discard '0' rows.
 # TODO: Option to ignore "OL"
 # TODO: rfu threshold.
 

@@ -2,11 +2,15 @@
 \alias{slim_gui}
 \title{Slim data frames}
 \usage{
-  slim_gui(env = parent.frame(), debug = FALSE)
+  slim_gui(env = parent.frame(), savegui = NULL,
+    debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data frames
   and save result.}
+
+  \item{savegui}{logical indicating if GUI settings should
+  be saved in the environment.}
 
   \item{debug}{logical indicating printing debug
   information.}

@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG
+# 18.07.2013: Check before overwrite object.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
+# 04.06.2013: Fixed bug in 'missingCol'.
+# 24.05.2013: Improved error message for missing columns.
 # 20.05.2013: First version.
 
 
@@ -29,16 +33,17 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
   require(gWidgets)
   options(guiToolkit="RGtk2")
   
-  gData <- NULL
-  gDataName <- NULL
+  # Global variables.
+  .gData <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
   
-  
+  # Main window.
   w <- gwindow(title="Calculate heterozygous", visible=FALSE)
   
+  # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
@@ -71,38 +76,41 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gData <<- get(val_obj, envir=env)
+      .gData <<- get(val_obj, envir=env)
       requiredCol <- c("Sample.Name", "Marker", "Allele")
       
-      if(!all(requiredCol %in% colnames(gData))){
+      if(!all(requiredCol %in% colnames(.gData))){
         
-        gData <<- NULL
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(f0g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-        message <- paste("The following columns are required:\n",
-                         paste(requiredCol, collapse="\n"), sep="")
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
         
         gmessage(message, title="Data error",
                  icon = "error",
                  parent = w) 
+      
+        # Reset components.
+        .gData <<- NULL
+        svalue(dataset_drp, index=TRUE) <- 1
+        svalue(f0g0_samples_lbl) <- " 0 samples"
+        svalue(f2_save_edt) <- ""
         
       } else {
-        
-        gDataName <<- val_obj
-        
-        samples <- length(unique(gData$Sample.Name))
+
+        # Load or change components.
+        samples <- length(unique(.gData$Sample.Name))
         svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(gDataName, "_het", sep="")
+        svalue(f2_save_edt) <- paste(val_obj, "_het", sep="")
         
       }
       
     } else {
       
-      gData <<- NULL
+      # Reset components.
+      .gData <<- NULL
       svalue(dataset_drp, index=TRUE) <- 1
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -132,16 +140,16 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_name <- svalue(f2_save_edt)
     
-    if(!is.null(gData)){
+    if(!is.null(.gData)){
       
       # Change button.
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
-      datanew <- calculateHeterozygous(data=gData)
+      datanew <- calculateHeterozygous(data=.gData)
       
       # Save data.
-      assign(val_name, datanew, envir=env)
+      saveObject(name=val_name, object=datanew, parent=w, env=env)
       
       if(debug){
         print(datanew)

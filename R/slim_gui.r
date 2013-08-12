@@ -4,6 +4,14 @@
 
 ################################################################################
 # CHANGE LOG
+# 06.08.2013: Added rows and columns to info.
+# 18.07.2013: Check before overwrite object.
+# 16.07.2013: Added save GUI settings.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
+# 06.06.2013: Set initial table height to 200.
+# 04.06.2013: Fixed bug in 'missingCol'.
+# 24.05.2013: Suggestions for columns to fix/stack is provided.
+# 24.05.2013: Improved error message for missing columns.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
 # 25.04.2013: Add selection of dataset in gui. Removed parameter 'data'.
@@ -20,44 +28,54 @@
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
+#' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame in slim format.
 
-slim_gui <- function(env=parent.frame(), debug=FALSE){
+slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Load dependencies.  
   require(gWidgets)
   options(guiToolkit="RGtk2")
   
-  gData <- data.frame(No.Data=NA)
-  gDataName <- NULL
+  # Global variables.
+  .gData <- data.frame(No.Data=NA)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
   
-  
+  # Main window.  
   w <- gwindow(title="Slim dataset", visible=FALSE)
   
+  # Handler for saving GUI state.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    .saveSettings()
+  })
+
+  # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=5,
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
-  
+
+  # Vertical sub group.
   g0 <- ggroup(horizontal=FALSE,
               spacing=5,
               use.scrollwindow=FALSE,
               container = gv,
               expand=FALSE) 
 
+  # Horizontal sub group.
   g1 <- ggroup(horizontal=TRUE,
               spacing=5,
               use.scrollwindow=FALSE,
               container = gv,
               expand=TRUE) 
   
+  # Vertical sub group.
   g2 <- ggroup(horizontal=FALSE,
                spacing=5,
                use.scrollwindow=FALSE,
@@ -73,69 +91,91 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
                spacing = 5,
                container = g0) 
   
-  grid0 <- glayout(container = frame0, spacing = 1)
+  g0 <- glayout(container = frame0, spacing = 1)
   
-  grid0[1,1] <- glabel(text="Select dataset:", container=grid0)
+  g0[1,1] <- glabel(text="Select dataset:", container=g0)
   
-  grid0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
+  g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              objClass="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = grid0)
+                                         container = g0)
   
-  grid0[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
-                                              container=grid0)
+  g0[1,3] <- g0_samples_lbl <- glabel(text=" 0 samples,", container=g0)
+  g0[1,4] <- g0_columns_lbl <- glabel(text=" 0 columns,", container=g0)
+  g0[1,5] <- g0_rows_lbl <- glabel(text=" 0 rows", container=g0)
+  
   
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gData <<- get(val_obj, envir=env)
+      .gData <<- get(val_obj, envir=env)
       requiredCol <- c("Sample.Name", "Marker")
       
-      if(!all(requiredCol %in% colnames(gData))){
+      if(!all(requiredCol %in% colnames(.gData))){
         
-        gData <<- data.frame(No.Data=NA)
-        svalue(fix_txt) <- ""
-        svalue(stack_txt) <- ""
-        .refresh_fix_tbl()
-        .refresh_stack_tbl()
-
-        svalue(dataset_samples_lbl) <- "0 samples"
-        svalue(f2_save_edt) <- ""
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
         
-        message <- paste("The dataset is not typing data\n\n",
-                         "The following columns are required:\n",
-                         paste(requiredCol, collapse="\n"), sep="")
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
         
         gmessage(message, title="Data error",
                  icon = "error",
                  parent = w) 
         
-      } else {
+        # Reset components.
+        .gData <<- data.frame(No.Data=NA)
+        svalue(fix_txt) <- ""
+        svalue(stack_txt) <- ""
+        .refresh_fix_tbl()
+        .refresh_stack_tbl()
+        svalue(g0_samples_lbl) <- " 0 samples,"
+        svalue(g0_columns_lbl) <- " 0 columns,"
+        svalue(g0_rows_lbl) <- " 0 rows"
+        svalue(f2_save_edt) <- ""
         
+      } else {
+
+        # Load or change components.
         .refresh_fix_tbl()
         .refresh_stack_tbl()
         
-        gDataName <<- val_obj
+        samples <- length(unique(.gData$Sample.Name))
+        # Info.
+        if("Sample.Name" %in% names(.gData)){
+          samples <- length(unique(.gData$Sample.Name))
+          svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
+        } else {
+          svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
+        }
+        svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
+        svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
+        # Result name.
+        svalue(f2_save_edt) <- paste(val_obj, "_slim", sep="")
 
-        samples <- length(unique(gData$Sample.Name))
-        svalue(dataset_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(gDataName, "_slim", sep="")
+        # Guess column names to keep fixed.
+        svalue(fix_txt) <- colNames(.gData, slim=TRUE, concatenate="|")
         
+        # Guess column names to stack.
+        svalue(stack_txt) <- colNames(.gData, slim=FALSE, concatenate="|")
       }
       
     } else {
       
-      gData <<- data.frame(No.Data=NA)
+      # Reset components.
+      .gData <<- data.frame(No.Data=NA)
       svalue(fix_txt) <- ""
       svalue(stack_txt) <- ""
       .refresh_fix_tbl()
       .refresh_stack_tbl()
-      svalue(dataset_samples_lbl) <- " 0 samples"
+      svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
+      svalue(g0_columns_lbl) <- paste(" ", "<NA>", "columns,")
+      svalue(g0_rows_lbl) <- paste(" ", "<NA>", "rows")
+      
       svalue(f2_save_edt) <- ""
       
     }
@@ -145,7 +185,7 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
 
   if(debug){
     print("SAMPLES")
-    print(unique(gData$Sample.Name))
+    print(unique(.gData$Sample.Name))
   }  
   
   fix_f <- gframe("Fix", horizontal=FALSE, container=g1, expand=TRUE)
@@ -158,9 +198,12 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
                    width = 40,
                    container=fix_f)
   
-  fix_tbl <- gtable(items=names(gData), 
+  fix_tbl <- gtable(items=names(.gData), 
                     container=fix_f,
                     expand=TRUE)
+  
+  # Set initial size (only height is important here).
+  size(fix_tbl) <- c(100,200)
   
   addDropTarget(fix_txt, handler=function(h,...) {
     
@@ -204,7 +247,7 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
                      width = 40,
                      container=stack_f)
   
-  stack_tbl <- gtable(items=names(gData),
+  stack_tbl <- gtable(items=names(.gData),
                       container=stack_f,
                       expand=TRUE)
   
@@ -229,23 +272,27 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
     
   })
   
-  # OPTIONS ###################################################################
+  # FRAME 1 ###################################################################
 
   if(debug){
     print("OPTIONS")
   }  
   
-  option_f <- gframe("Options", horizontal=FALSE, container=g0)
+  f1 <- gframe("Options", horizontal=FALSE, container=g0)
+
+  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
+                              checked=FALSE,
+                              container=f1)
   
-  keep_chk <- gcheckbox(text="Keep all rows in fixed columns",
+  f1_keep_chk <- gcheckbox(text="Keep rows in fixed columns even if no data in stacked columns",
                         checked=TRUE,
-                        container=option_f)
+                        container=f1)
   
-  tip_lbl <- glabel(text=paste("\nTip:", 
-                      "Manually edit the columns to fix and stack.\n",
-                      "e.g. 'Allele' will stack 'Allele.1', 'Allele.2'..."),
-                      container=option_f,
-                      anchor=c(-1 ,0))
+  glabel(text=paste("\nTip:",
+                    "Manually edit the columns to fix and stack.\n",
+                    "e.g. 'Allele' will stack 'Allele.1', 'Allele.2'..."),
+         container=f1,
+         anchor=c(-1 ,0))
   
   # FRAME 2 ###################################################################
   
@@ -278,15 +325,15 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
       # Get values.
       fix_val <- svalue(fix_txt)
       stack_val <- svalue(stack_txt)
-      keep_val <- svalue(keep_chk)
+      keep_val <- svalue(f1_keep_chk)
       
       # Slim require a vector of strings.
       fix_val <- unlist(strsplit(fix_val, "|", fixed = TRUE))
       stack_val <- unlist(strsplit(stack_val, "|", fixed = TRUE))
       
       if(debug){
-        print("gData")
-        print(names(gData))
+        print(".gData")
+        print(names(.gData))
         print("fix_val")
         print(fix_val)
         print("stack_val")
@@ -299,12 +346,11 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
       svalue(slim_btn) <- "Processing..."
       enabled(slim_btn) <- FALSE
       
-      datanew <- slim(data=gData, fix=fix_val, stack=stack_val,
+      datanew <- slim(data=.gData, fix=fix_val, stack=stack_val,
                       keepAllFixed=keep_val)
       
-      
       # Save data.
-      assign(val_name, datanew, envir=env)
+      saveObject(name=val_name, object=datanew, parent=w, env=env)
       
       # Close GUI.
       dispose(w)
@@ -331,7 +377,7 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
     delete(fix_f, fix_tbl)
     
     # ...creating a new table.
-    fix_tbl <<- gtable(items=names(gData), 
+    fix_tbl <<- gtable(items=names(.gData), 
                            container=fix_f,
                            expand=TRUE)
   
@@ -370,7 +416,7 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
     delete(stack_f, stack_tbl)
     
     # ...creating a new table.
-    stack_tbl <<- gtable(items=names(gData), 
+    stack_tbl <<- gtable(items=names(.gData), 
                        container=stack_f,
                        expand=TRUE)
     
@@ -398,5 +444,75 @@ slim_gui <- function(env=parent.frame(), debug=FALSE){
     } )
     
   }
+  
+  # INTERNAL FUNCTIONS ########################################################
+  
+  .loadSavedSettings <- function(){
+    
+    # First check status of save flag.
+    if(!is.null(savegui)){
+      svalue(f1_savegui_chk) <- savegui
+      enabled(f1_savegui_chk) <- FALSE
+      if(debug){
+        print("Save GUI status set!")
+      }  
+    } else {
+      # Load save flag.
+      if(exists(".slim_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".slim_gui_savegui", envir=env)
+      }
+      if(debug){
+        print("Save GUI status loaded!")
+      }  
+    }
+    if(debug){
+      print(svalue(f1_savegui_chk))
+    }  
+    
+    # Then load settings if true.
+    if(svalue(f1_savegui_chk)){
+      if(exists(".slim_gui_title", envir=env, inherits = FALSE)){
+        svalue(f1_keep_chk) <- get(".slim_gui_title", envir=env)
+      }
+      
+      if(debug){
+        print("Saved settings loaded!")
+      }
+    }
+    
+  }
+  
+  .saveSettings <- function(){
+    
+    # Then save settings if true.
+    if(svalue(f1_savegui_chk)){
+      
+      assign(x=".slim_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".slim_gui_title", value=svalue(f1_keep_chk), envir=env)
+      
+    } else { # or remove all saved values if false.
+      
+      if(exists(".slim_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".slim_gui_savegui", envir = env)
+      }
+      if(exists(".slim_gui_title", envir=env, inherits = FALSE)){
+        remove(".slim_gui_title", envir = env)
+      }
+      
+      if(debug){
+        print("Settings cleared!")
+      }
+    }
+    
+    if(debug){
+      print("Settings saved!")
+    }
+    
+  }
+  
+  # END GUI ###################################################################
+  
+  # Load GUI settings.
+  .loadSavedSettings()
   
 } # End of GUI

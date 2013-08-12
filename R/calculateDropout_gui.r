@@ -4,6 +4,12 @@
 
 ################################################################################
 # CHANGE LOG
+# 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
+# 18.07.2013: Check before overwrite object.
+# 11.07.2013: Added save GUI settings.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
+# 04.06.2013: Fixed bug in 'missingCol'.
+# 24.05.2013: Improved error message for missing columns.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: First version.
 
@@ -15,26 +21,35 @@
 #'
 #' @details Scores dropouts for a dataset.
 #' @param env environment in wich to search for data frames and save result.
+#' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
 
-calculateDropout_gui <- function(env=parent.frame(), debug=FALSE){
+calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
+                                 debug=FALSE){
   
   # Load dependencies.  
   require(ggplot2)
   require(gWidgets)
   options(guiToolkit="RGtk2")
   
-  gData <- NULL
-  gDataName <- NULL
-  gRef <- NULL
+  # Global variables.
+  .gData <- NULL
+  .gRef <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
-  
+
+  # Main window.
   w <- gwindow(title="Calculate dropout", visible=FALSE)
   
+  # Handler for saving GUI state.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    .saveSettings()
+  })
+
+  # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
@@ -67,38 +82,41 @@ calculateDropout_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
 
-      gData <<- get(val_obj, envir=env)
+      .gData <<- get(val_obj, envir=env)
       requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
       
-      if(!all(requiredCol %in% colnames(gData))){
+      if(!all(requiredCol %in% colnames(.gData))){
   
-        gData <<- NULL
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-        message <- paste("The following columns are required:\n",
-                         paste(requiredCol, collapse="\n"), sep="")
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
         
         gmessage(message, title="Data error",
                  icon = "error",
                  parent = w) 
         
-      } else {
-  
-        gDataName <<- val_obj
+        # Reset components.
+        .gData <<- NULL
+        svalue(dataset_drp, index=TRUE) <- 1
+        svalue(g0_samples_lbl) <- " 0 samples"
+        svalue(f2_save_edt) <- ""
         
-        samples <- length(unique(gData$Sample.Name))
+      } else {
+
+        # Load or change components.
+        samples <- length(unique(.gData$Sample.Name))
         svalue(g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(gDataName, "_dropout", sep="")
+        svalue(f2_save_edt) <- paste(val_obj, "_dropout", sep="")
         
       }
       
     } else {
       
-      gData <<- NULL
+      # Reset components.
+      .gData <<- NULL
       svalue(dataset_drp, index=TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -121,36 +139,40 @@ calculateDropout_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(refset_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gRef <<- get(val_obj, envir=env)
+      .gRef <<- get(val_obj, envir=env)
 
       requiredCol <- c("Sample.Name", "Marker", "Allele")
       
-      if(!all(requiredCol %in% colnames(gData))){
+      if(!all(requiredCol %in% colnames(.gData))){
         
-        gRef <<- NULL
-        svalue(refset_drp, index=TRUE) <- 1
-        svalue(g0_ref_lbl) <- " 0 references"
-        
-        message <- paste("The dataset is not a reference dataset\n\n",
-                         "The following columns are required:\n",
-                         paste(requiredCol, collapse="\n"), sep="")
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gRef)]
+
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
         
         gmessage(message, title="Data error",
                  icon = "error",
                  parent = w) 
+      
+        # Reset components.
+        .gRef <<- NULL
+        svalue(refset_drp, index=TRUE) <- 1
+        svalue(g0_ref_lbl) <- " 0 references"
         
       } else {
-        
-        ref <- length(unique(gRef$Sample.Name))
+
+        # Load or change components.
+        ref <- length(unique(.gRef$Sample.Name))
         svalue(g0_ref_lbl) <- paste("", ref, "references")
         
       }
       
     } else {
       
-      gRef <<- NULL
+      # Reset components.
+      .gRef <<- NULL
       svalue(refset_drp, index=TRUE) <- 1
       svalue(g0_ref_lbl) <- " 0 references"
       
@@ -164,17 +186,17 @@ calculateDropout_gui <- function(env=parent.frame(), debug=FALSE){
     print("CHECK")
   }  
   
-  g0[3,2] <- check_btn <- gbutton(text="Subset",
+  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting",
                        border=TRUE,
                        container=g0)
   
-  addHandlerChanged(check_btn, handler = function(h, ...) {
+  addHandlerChanged(g0_check_btn, handler = function(h, ...) {
     
     # Get values.
-    val_data <- gData
-    val_ref <- gRef
+    val_data <- .gData
+    val_ref <- .gRef
     
-    if (!is.null(gData) || !is.null(gRef)){
+    if (!is.null(.gData) || !is.null(.gRef)){
       
       chksubset_w <- gwindow(title = "Check subsetting",
                              visible = FALSE, name=title,
@@ -183,7 +205,9 @@ calculateDropout_gui <- function(env=parent.frame(), debug=FALSE){
       
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_ref,
-                                   console=FALSE)
+                                   console=FALSE,
+                                   ignoreCase=TRUE,
+                                   word=FALSE)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
              wrap = FALSE, container = chksubset_w)
@@ -209,7 +233,11 @@ calculateDropout_gui <- function(env=parent.frame(), debug=FALSE){
                spacing = 5,
                container = gv) 
 
-  ignore_case_chk <- gcheckbox(text="Ignore case",
+  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
+                              checked=FALSE,
+                              container=f1)
+  
+  f1_ignore_case_chk <- gcheckbox(text="Ignore case",
                            checked = TRUE,
                            container = f1)
 
@@ -233,21 +261,21 @@ calculateDropout_gui <- function(env=parent.frame(), debug=FALSE){
   
   addHandlerChanged(dropout_btn, handler = function(h, ...) {
     
-    val_ignore_case <- svalue(ignore_case_chk)
+    val_ignore_case <- svalue(f1_ignore_case_chk)
     val_name <- svalue(f2_save_edt)
     
-    if(!is.null(gData) & !is.null(gRef)){
+    if(!is.null(.gData) & !is.null(.gRef)){
       
       # Change button.
       svalue(dropout_btn) <- "Processing..."
       enabled(dropout_btn) <- FALSE
   
-      datanew <- calculateDropout(data=gData,
-                                  ref=gRef,
+      datanew <- calculateDropout(data=.gData,
+                                  ref=.gRef,
                                   ignoreCase=val_ignore_case)
       
       # Save data.
-      assign(val_name, datanew, envir=env)
+      saveObject(name=val_name, object=datanew, parent=w, env=env)
       
       if(debug){
         print(datanew)
@@ -269,6 +297,75 @@ calculateDropout_gui <- function(env=parent.frame(), debug=FALSE){
     
   } )
 
+  # INTERNAL FUNCTIONS ########################################################
+  
+  .loadSavedSettings <- function(){
+    
+    # First check status of save flag.
+    if(!is.null(savegui)){
+      svalue(f1_savegui_chk) <- savegui
+      enabled(f1_savegui_chk) <- FALSE
+      if(debug){
+        print("Save GUI status set!")
+      }  
+    } else {
+      # Load save flag.
+      if(exists(".calculateDropout_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".calculateDropout_gui_savegui", envir=env)
+      }
+      if(debug){
+        print("Save GUI status loaded!")
+      }  
+    }
+    if(debug){
+      print(svalue(f1_savegui_chk))
+    }  
+    
+    # Then load settings if true.
+    if(svalue(f1_savegui_chk)){
+      if(exists(".calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
+        svalue(f1_ignore_case_chk) <- get(".calculateDropout_gui_ignore", envir=env)
+      }
+      if(debug){
+        print("Saved settings loaded!")
+      }
+    }
+    
+  }
+  
+  .saveSettings <- function(){
+    
+    # Then save settings if true.
+    if(svalue(f1_savegui_chk)){
+      
+      assign(x=".calculateDropout_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".calculateDropout_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
+      
+    } else { # or remove all saved values if false.
+      
+      if(exists(".calculateDropout_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".calculateDropout_gui_savegui", envir = env)
+      }
+      if(exists(".calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
+        remove(".calculateDropout_gui_ignore", envir = env)
+      }
+      
+      if(debug){
+        print("Settings cleared!")
+      }
+    }
+    
+    if(debug){
+      print("Settings saved!")
+    }
+    
+  }
+  
+  # END GUI ###################################################################
+  
+  # Load GUI settings.
+  .loadSavedSettings()
+  
   # Show GUI.
   visible(w) <- TRUE
   

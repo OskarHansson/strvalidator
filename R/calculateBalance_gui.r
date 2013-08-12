@@ -1,10 +1,20 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Pass option ignoreCase to subset (and implement in subset)
 
 ################################################################################
 # CHANGE LOG
-# 23.05.2013: Fixed save with correct name.
+# 26.07.2013: Removed parameters 'minHeight', 'maxHeight', 'matchSource' and related code.
+# 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
+# 18.07.2013: Check before overwrite object (new function).
+# 17.07.2013: Added check subsetting.
+# 11.07.2013: Added save GUI settings.
+# 10.07.2013: Check if object exist and ask for overwrite or new name if it does.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
+# 04.06.2013: Fixed bug in 'missingCol'.
+# 29.05.2013: Added subset check.
+# 24.05.2013: Improved error message for missing columns.
+# 24.05.2013: Fixed save with correct name.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
 # 18.04.2013: Added reference drop down and ref in call to calculateBalance.
@@ -21,22 +31,22 @@
 #' a graphical user interface.
 #' 
 #' @param env environment in wich to search for data frames and save result.
+#' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame in slim format.
 #' 
 
-calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
+calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
+                                 debug=FALSE){
   
   # Load dependencies.  
   require("gWidgets")
   options(guiToolkit="RGtk2")
 
-  # Variables and constants.
-  gData <- NULL
-  gDataName <- NULL
-  gRef <- NULL
-  separator <- .Platform$file.sep # Platform dependent path separator.
+  # Global variables.
+  .gData <- NULL
+  .gRef <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -48,7 +58,13 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
     print("WINDOW")
   }  
 
+  # Main window.
   w <- gwindow(title="Calculate balance", visible=FALSE)
+
+  # Handler for saving GUI state.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    .saveSettings()
+  })
   
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
@@ -85,36 +101,33 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(g0_data_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gData <<- get(val_obj, envir=env)
+      .gData <<- get(val_obj, envir=env)
       
       # Check if required columns...
       requiredCol <- c("Sample.Name", "Marker", "Dye", "Height")
-      slimmed <- sum(grepl("Height",names(gData), fixed=TRUE)) == 1
+      slimmed <- sum(grepl("Height",names(.gData), fixed=TRUE)) == 1
       
-      if(!all(requiredCol %in% colnames(gData))){
+      if(!all(requiredCol %in% colnames(.gData))){
         
-        gData <<- NULL
-        svalue(g0_data_drp, index=TRUE) <- 1
-        svalue(g0_data_samples_lbl) <- ""
-        svalue(f4_save_edt) <- ""
-        
-        message <- paste("The following columns are required:\n",
-                         paste(requiredCol, collapse ="\n"),
-                         "\n\nFix the dataset in the 'EDIT' tab", sep="")
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
         
         gmessage(message, title="message",
                  icon = "error",
                  parent = w) 
-        
-      } else if (!slimmed) {
-  
-        gData <<- NULL
+      
+        # Reset components.
+        .gData <<- NULL
         svalue(g0_data_drp, index=TRUE) <- 1
         svalue(g0_data_samples_lbl) <- ""
         svalue(f4_save_edt) <- ""
         
+      } else if (!slimmed) {
+  
         message <- paste("The dataset is too fat!\n\n",
                          "There can only be 1 'Height' column\n",
                          "Slim the dataset in the 'EDIT' tab", sep="")
@@ -123,26 +136,27 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
                  icon = "error",
                  parent = w) 
         
+        # Reset components.
+        .gData <<- NULL
+        svalue(g0_data_drp, index=TRUE) <- 1
+        svalue(g0_data_samples_lbl) <- ""
+        svalue(f4_save_edt) <- ""
+        
       }else {
-        
-        gDataName <<- val_obj
-        
-        svalue(g0_data_samples_lbl) <- paste(length(unique(gData$Sample.Name)),
+
+        # Load or change components.
+
+        svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
                                           "samples.")
-        # Get min/max peak height.
-        dataMin <- min(as.numeric(gData$Height, na.rm=TRUE))
-        dataMax <- max(as.numeric(gData$Height, na.rm=TRUE))
-        svalue(f2_min_lbl) <- paste("(dataset min:", dataMin, ")")
-        svalue(f2_max_lbl) <- paste("(dataset max:", dataMax, ")")
-        
-        svalue(f4_save_edt) <- paste(gDataName, "_balance", sep="")
+        svalue(f4_save_edt) <- paste(val_obj, "_balance", sep="")
         
       }
       
     } else {
       
+      # Reset components.
       svalue(g0_data_samples_lbl) <- ""
-      gData <<- NULL
+      .gData <<- NULL
       svalue(f4_save_edt) <- ""
       
     }    
@@ -163,34 +177,31 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(g0_ref_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gRef <<- get(val_obj, envir=env)
+      .gRef <<- get(val_obj, envir=env)
       
       # Check if required columns...
       requiredCol <- c("Sample.Name", "Marker", "Allele")
-      slimmed <- sum(grepl("Allele",names(gRef), fixed=TRUE)) == 1
+      slimmed <- sum(grepl("Allele",names(.gRef), fixed=TRUE)) == 1
       
-      if(!all(requiredCol %in% colnames(gRef))){
+      if(!all(requiredCol %in% colnames(.gRef))){
         
-        gRef <<- NULL
-        svalue(g0_ref_drp, index=TRUE) <- 1
-        svalue(g0_ref_samples_lbl) <- ""
-        
-        message <- paste("The dataset is missing one or more columns.\n\n",
-                         "The following columns are required:\n",
-                         paste(requiredCol, collapse="\n"),
-                         "\n\nFix the dataset in the 'EDIT' tab", sep="")
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gRef)]
+
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
         
         gmessage(message, title="message",
                  icon = "error",
                  parent = w) 
-        
-      } else if (!slimmed) {
-        
-        gRef <<- NULL
+      
+        # Reset components.
+        .gRef <<- NULL
         svalue(g0_ref_drp, index=TRUE) <- 1
         svalue(g0_ref_samples_lbl) <- ""
+        
+      } else if (!slimmed) {
         
         message <- paste("The dataset is too fat!\n\n",
                          "There can only be 1 'Allele' column\n",
@@ -200,20 +211,74 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
                  icon = "error",
                  parent = w) 
         
+        # Reset components.
+        .gRef <<- NULL
+        svalue(g0_ref_drp, index=TRUE) <- 1
+        svalue(g0_ref_samples_lbl) <- ""
+        
       }else {
         
-        svalue(g0_ref_samples_lbl) <- paste(length(unique(gRef$Sample.Name)),
+        # Load or change components.
+        svalue(g0_ref_samples_lbl) <- paste(length(unique(.gRef$Sample.Name)),
                                           "samples.")
         
       }
       
     } else {
       
+      # Reset components.
       svalue(g0_ref_samples_lbl) <- ""
-      gRef <<- NULL
+      .gRef <<- NULL
       
     }    
   } )  
+  
+  # CHECK ---------------------------------------------------------------------
+  
+  if(debug){
+    print("CHECK")
+  }  
+  
+  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting",
+                                  border=TRUE,
+                                  container=g0)
+  
+  addHandlerChanged(g0_check_btn, handler = function(h, ...) {
+    
+    # Get values.
+    val_data <- .gData
+    val_ref <- .gRef
+    val_ignore <- svalue(f1_ignore_chk)
+    val_word <- FALSE
+    
+    if (!is.null(.gData) || !is.null(.gRef)){
+      
+      chksubset_w <- gwindow(title = "Check subsetting",
+                             visible = FALSE, name=title,
+                             width = NULL, height= NULL, parent=w,
+                             handler = NULL, action = NULL)
+      
+      chksubset_txt <- checkSubset(data=val_data,
+                                   ref=val_ref,
+                                   console=FALSE,
+                                   ignoreCase=val_ignore,
+                                   word=val_word)
+      
+      gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
+             wrap = FALSE, container = chksubset_w)
+      
+      visible(chksubset_w) <- TRUE
+      
+    } else {
+      
+      gmessage(message="Data frame is NULL!\n\n
+               Make sure to select a dataset and a reference set",
+               title="Error",
+               icon = "error")      
+      
+    } 
+    
+  } )
   
   # FRAME 1 ###################################################################
   
@@ -221,88 +286,42 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
     print("FRAME 1")
   }  
   
-  f1 <- gframe(text = "Settings",
+  f1 <- gframe(text = "Options",
                horizontal=FALSE,
-               spacing = 5,
+               spacing = 10,
                container = gv) 
+
+  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
+                              checked=FALSE,
+                              container=f1)
   
-  g1 <- glayout(container = f1, spacing = 1)
-  
+  f1_ignore_chk <- gcheckbox(text="Ignore case",
+                         checked=TRUE,
+                         container=f1)
+
   f1_options1 <- c("Calculate balance for each sample",
                 "Calculate average balance across all samples")
   
-  g1[1,1] <- f1_perSample_opt <- gradio(items=f1_options1,
+  f1_perSample_opt <- gradio(items=f1_options1,
                              selected=1,
                              horizontal=FALSE,
-                             container=g1)
+                             container=f1)
   
-  g1[2,1] <- glabel("", container=g1)  # Adds some space.
-                                     
   f1_options2 <- c("Calculate locus balance proportional to the whole sample",
                 "Normalise locus balance to the locus with the highest total peak height")
   
-  g1[3,1] <- f1_lb_opt <- gradio(items=f1_options2,
-                                     selected=1,
-                                     horizontal=FALSE,
-                                     container=g1)
+  f1_lb_opt <- gradio(items=f1_options2,
+                      selected=1,
+                      horizontal=FALSE,
+                      container=f1)
 
-  g1[4,1] <- glabel("", container=g1)  # Adds some space.
-
-  options3 <- c("Calculate locus balance within each dye",
+  f1_options3 <- c("Calculate locus balance within each dye",
                 "Calculate locus balance global across all dyes")
   
-  g1[5,1] <- f1_perDye_opt <- gradio(items=options3,
-                                     selected=1,
-                                     horizontal=FALSE,
-                                     container=g1)
-
-  # FRAME 2 ###################################################################
-  
-  if(debug){
-    print("FRAME 2")
-  }  
-
-  f2 <- gframe(text = "Trim dataset",
-               horizontal=FALSE,
-               spacing = 5,
-               container = gv) 
-  
-  g2 <- glayout(container = f2, spacing = 1)
-  
-  g2[1,1] <- glabel(text="Exclude peaks below:", container=g2)
-  g2[1,2] <- f2_min_txt <- gedit(text="", container=g2)
-  g2[1,3] <- f2_min_lbl <- glabel(text=paste("(dataset min:", NA, ")"),
-                                  container=g2)
-                    
-  g2[2,1] <- glabel(text="Exclude peaks above:", container=g2)
-  g2[2,2] <- f2_max_txt <- gedit(text="", container=g2)
-  g2[2,3] <- f2_max_lbl <- glabel(text=paste("(dataset max:", NA, ")"),
-                                  container=g2)
-  
-  # FRAME 3 ###################################################################
-  
-  if(debug){
-    print("FRAME 3")
-  }  
-  
-  f3 <- gframe(text = "Sample name matching",
-               horizontal=FALSE,
-               spacing = 5,
-               container = gv) 
-  
-  g3 <- glayout(container = f3, spacing = 1)
-  
-  f3_options <- c("Reference (e.g. 'F' match 'F', 'F1' and 'AFG')",
-                "Dataset (e.g. 'F' match 'F' but not 'F1' or 'AFG')")
-  
-  g3[1,1] <- f3_match_opt <- gradio(items=f3_options,
-                              selected=1,
-                              horizontal=FALSE,
-                              container=g3)
-  
-  g3[2,1] <- f3_ignore <- gcheckbox(text="Ignore case",
-                                  checked=TRUE,
-                                  container=g3)
+  f1_perDye_opt <- gradio(items=f1_options3,
+                          selected=1,
+                          horizontal=FALSE,
+                          container=f1)
 
   # FRAME 4 ###################################################################
   
@@ -335,12 +354,9 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
     val_perSample <- svalue(f1_perSample_opt, index=TRUE) == 1
     val_lb <- svalue(f1_lb_opt, index=TRUE)
     val_perDye <- svalue(f1_perDye_opt, index=TRUE) == 1
-    val_min <- as.numeric(svalue(f2_min_txt))
-    val_max <- as.numeric(svalue(f2_max_txt))
-    val_ignore <- svalue(f3_ignore)
-    val_match <- svalue(f3_match_opt, index=TRUE)
-    val_data <- gData
-    val_ref <- gRef
+    val_ignore <- svalue(f1_ignore_chk)
+    val_data <- .gData
+    val_ref <- .gRef
     val_name <- svalue(f4_save_edt)
     
     if(debug){
@@ -351,14 +367,8 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
       print(val_lb)
       print("val_perDye")
       print(val_perDye)
-      print("val_min")
-      print(val_min)
-      print("val_max")
-      print(val_max)
       print("val_ignore")
       print(val_ignore)
-      print("val_match")
-      print(val_match)
       print("val_name")
       print(val_name)
       print("val_data")
@@ -367,7 +377,7 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
       print((val_ref))
     }
     
-    if(!is.null(gData) & !is.null(gRef)){
+    if(!is.null(.gData) & !is.null(.gRef)){
       
       if(val_lb == 1){
         val_lb <- "prop"
@@ -375,20 +385,6 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
         val_lb <- "norm"
       }
 
-      if(val_match == 1){
-        val_match <- "ref"
-      } else {
-        val_match <- "data"
-      }
-      
-      if(is.na(val_min)){
-        val_min <- NULL
-      }
-      
-      if(is.na(val_max)){
-        val_max <- NULL
-      }
-      
       if(debug){
         print("Sent Values:")
         print("val_perSample")
@@ -397,14 +393,8 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
         print(val_lb)
         print("val_perDye")
         print(val_perDye)
-        print("val_min")
-        print(val_min)
-        print("val_max")
-        print(val_max)
         print("val_ignore")
         print(val_ignore)
-        print("val_match")
-        print(val_match)
       }
   
       # Change button.
@@ -416,14 +406,11 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
                                   perSample=val_perSample,
                                   lb=val_lb,
                                   perDye=val_perDye,
-                                  minHeight=val_min,
-                                  maxHeight=val_max,
-                                  ignoreCase=val_ignore,
-                                  matchSource=val_match)
+                                  ignoreCase=val_ignore)
       
       # Save data.
-      assign(val_name, datanew, envir=env)
-  
+      saveObject(name=val_name, object=datanew, parent=w, env=env)
+      
       if(debug){
         print(datanew)
         print(paste("EXIT:", match.call()[[1]]))
@@ -431,6 +418,7 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
       
       # Close GUI.
       dispose(w)
+      
     } else {
 
       message <- "A dataset and a reference dataset have to be selected."
@@ -442,6 +430,96 @@ calculateBalance_gui <- function(env=parent.frame(), debug=FALSE){
     }
     
   } )
+
+  # INTERNAL FUNCTIONS ########################################################
+  
+  .loadSavedSettings <- function(){
+    
+    # First check status of save flag.
+    if(!is.null(savegui)){
+      svalue(f1_savegui_chk) <- savegui
+      enabled(f1_savegui_chk) <- FALSE
+      if(debug){
+        print("Save GUI status set!")
+      }  
+    } else {
+      # Load save flag.
+      if(exists(".calculateBalance_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".calculateBalance_gui_savegui", envir=env)
+      }
+      if(debug){
+        print("Save GUI status loaded!")
+      }  
+    }
+    if(debug){
+      print(svalue(f1_savegui_chk))
+    }  
+    
+    # Then load settings if true.
+    if(svalue(f1_savegui_chk)){
+      if(exists(".calculateBalance_gui_perSample", envir=env, inherits = FALSE)){
+        svalue(f1_perSample_opt) <- get(".calculateBalance_gui_perSample", envir=env)
+      }
+      if(exists(".calculateBalance_gui_lb", envir=env, inherits = FALSE)){
+        svalue(f1_lb_opt) <- get(".calculateBalance_gui_lb", envir=env)
+      }
+      if(exists(".calculateBalance_gui_perDye", envir=env, inherits = FALSE)){
+        svalue(f1_perDye_opt) <- get(".calculateBalance_gui_perDye", envir=env)
+      }
+      if(exists(".calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
+        svalue(f1_ignore_chk) <- get(".calculateBalance_gui_ignore", envir=env)
+      }
+      if(debug){
+        print("Saved settings loaded!")
+      }
+    }
+    
+  }
+  
+  .saveSettings <- function(){
+    
+    # Then save settings if true.
+    if(svalue(f1_savegui_chk)){
+      
+      assign(x=".calculateBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".calculateBalance_gui_perSample", value=svalue(f1_perSample_opt), envir=env)
+      assign(x=".calculateBalance_gui_lb", value=svalue(f1_lb_opt), envir=env)
+      assign(x=".calculateBalance_gui_perDye", value=svalue(f1_perDye_opt), envir=env)
+      assign(x=".calculateBalance_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
+      
+    } else { # or remove all saved values if false.
+      
+      if(exists(".calculateBalance_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".calculateBalance_gui_savegui", envir = env)
+      }
+      if(exists(".calculateBalance_gui_perSample", envir=env, inherits = FALSE)){
+        remove(".calculateBalance_gui_perSample", envir = env)
+      }
+      if(exists(".calculateBalance_gui_lb", envir=env, inherits = FALSE)){
+        remove(".calculateBalance_gui_lb", envir = env)
+      }
+      if(exists(".calculateBalance_gui_perDye", envir=env, inherits = FALSE)){
+        remove(".calculateBalance_gui_perDye", envir = env)
+      }
+      if(exists(".calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
+        remove(".calculateBalance_gui_ignore", envir = env)
+      }
+      
+      if(debug){
+        print("Settings cleared!")
+      }
+    }
+    
+    if(debug){
+      print("Settings saved!")
+    }
+    
+  }
+  
+  # END GUI ###################################################################
+  
+  # Load GUI settings.
+  .loadSavedSettings()
   
   # Show GUI.
   visible(w) <- TRUE

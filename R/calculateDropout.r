@@ -1,10 +1,12 @@
 ################################################################################
 # TODO LIST
-# TODO: change to ggplot2 perform lm and use add CI all-in-one?
+# TODO: ...
 
 
 ################################################################################
 # CHANGE LOG
+# 18.07.2013: Fixed "OL" bug.
+# 18.07.2013: Added 'debug' parameter, example, and text in details.
 # 15.05.2013: Added check that 'Height' is numeric, convert if not.
 # 13.04.2013: Rewritten function for 'slim' data only.
 # <11.04.2013: Roxygenized and changed name from 'dropStat' to 'calculateDropout'.
@@ -17,27 +19,30 @@
 #'
 #' @details
 #' Calculates drop-out events. In case of allele dropout the peak height of the surviving allele is given.
+#' Homozygous alleles in the reference set can be either single or double notation (X or X X).
+#' Markers present in the reference set but not in the data set will be added to the result.
 #' NB! "Sample Names" in 'ref' must be unique 'core' name of replicate sample names in 'data'.
-#' NB! Homozygous alleles must be doubled (X -> X/X).
+#' Use \code{checkSubset} to make sure subsetting works as intended.
 #' 
 #' @param data data frame in GeneMapper format containing at least a column 'Allele'.
 #' @param ref data frame in GeneMapper format.
 #' @param ignoreCase logical, default TRUE for case insensitive.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame with columns 'Dropout', indicating no dropout (0), 
-#' allele (1) and locus dropout (2), and 'Rfu', 'Heterozygous'.
-#' 
-#' @keywords internal
+#' @return data.frame with columns 'Sample.Name', 'Marker', 'Allele', 'Height', 'Dropout',
+#' 'Rfu', and 'Heterozygous'.
+#' Dropout: 0 indicate no dropout, 1 indicate allele dropout, and 2 indicate locus dropout.
+#' Rfu: height of surviving allele.
+#' Heterozygous: 1 for heterozygous and 0 for homozygous.
 #' 
 #' @export true
 #' @examples
-#' #newData<-calculateDropout(data=data, ref=ref)
+#' data(set4)
+#' data(ref4)
+#' drop <- calculateDropout(data=set4, ref=ref4, ignoreCase=TRUE)
 
 
-calculateDropout <- function(data, ref, ignoreCase=TRUE){
-  
-  debug <- FALSE
+calculateDropout <- function(data, ref, ignoreCase=TRUE, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -115,6 +120,13 @@ calculateDropout <- function(data, ref, ignoreCase=TRUE){
   dropoutVec <- numeric()
   rfuVec <- numeric()
   hetVec <- numeric()
+  samplesTmp <- NULL
+  markersTmp <- NULL
+  allelesTmp <- NULL
+  heightsTmp <- NULL
+  dropoutTmp <- NULL
+  rfuTmp <- NULL
+  hetTmp <- NULL
   
   # Get sample names.
   sampleNamesRef <- unique(ref$Sample.Name)
@@ -163,7 +175,7 @@ calculateDropout <- function(data, ref, ignoreCase=TRUE){
         
         # Get sample alleles and peak heights.
         selectMarker <- dataSample$Marker == markers[m]
-        dataAlleles <- unique(dataSample$Allele[selectMarker])
+        dataAlleles <- dataSample$Allele[selectMarker]
         dataHeight <- dataSample$Height[selectMarker]
 
         # Get data mathcing ref alleles and heights.
@@ -172,37 +184,52 @@ calculateDropout <- function(data, ref, ignoreCase=TRUE){
         observed <- length(matchedAlleles)
         peakHeight <- dataHeight[matching]
 
+        if(debug){
+          if(length(dataHeight) != length(dataAlleles)){
+            print("dataAlleles")
+            print(dataAlleles)
+            print("dataHeight")
+            print(dataHeight)
+          }
+        }
+        
         # Count observed reference alleles.
         dropCount <- expected - observed
         
         # Handle locus dropout.
         if(observed == 0){
           
-          allelesVec <- c(allelesVec, NA)
-          heightsVec <- c(heightsVec, NA)
+          allelesTmp <- NA
+          heightsTmp <- NA
           records <- 1
           
         } else {
           
-          allelesVec <- c(allelesVec, matchedAlleles)
-          heightsVec <- c(heightsVec, peakHeight)
+          allelesTmp <- matchedAlleles
+          heightsTmp <- peakHeight
           records <- length(matchedAlleles)
           
         }
+        # Uppdate vector.
+        allelesVec <- c(allelesVec, allelesTmp)
+        heightsVec <- c(heightsVec, heightsTmp)
         
-        # Add to result vectors.
-        samplesVec <- c(samplesVec, rep(sampleNames[s], records))
-        markersVec <- c(markersVec, rep(markers[m], records))
-        
+        # Samples and markers.
+        samplesTmp <- rep(sampleNames[s], records)
+        markersTmp <- rep(markers[m], records)
+        # Update vectors.
+        samplesVec <- c(samplesVec, samplesTmp)
+        markersVec <- c(markersVec, markersTmp)
+
         # Indicate zygosity (1-Heterozygote, 0-Homozygote).
         if(expected == 1){
           
-          hetVec<- c(hetVec, rep(0, records))
+          hetTmp <- rep(0, records)
           het=FALSE
           
         } else if(expected == 2){
           
-          hetVec <- c(hetVec, rep(1, records))
+          hetTmp <- rep(1, records)
           het=TRUE
           
         } else {
@@ -212,24 +239,26 @@ calculateDropout <- function(data, ref, ignoreCase=TRUE){
                   call. = TRUE, immediate. = FALSE, domain = NULL)
           
         }
+        # Update vector.
+        hetVec <- c(hetVec, hetTmp)
         
         # Indicate dropout:
         # 0 - for no dropout, 1 - for allele dropout, 2 - for locus dropout
         if(dropCount == 0){
           
-          dropoutVec <- c(dropoutVec, rep(0, records))
+          dropoutTmp <- rep(0, records)
           
         } else if(dropCount == 1 & het){
           
-          dropoutVec<- c(dropoutVec, rep(1, records))
+          dropoutTmp <- rep(1, records)
           
         } else if(dropCount == 1 & !het){
           
-          dropoutVec <- c(dropoutVec, rep(2, records))
+          dropoutTmp <- rep(2, records)
           
         } else if(dropCount == 2 & het){
           
-          dropoutVec <- c(dropoutVec, rep(2, records))
+          dropoutTmp <- rep(2, records)
           
         } else {
           
@@ -238,22 +267,73 @@ calculateDropout <- function(data, ref, ignoreCase=TRUE){
                   call. = TRUE, immediate. = FALSE, domain = NULL)
           
         }
-        
+        # Update vector.
+        dropoutVec <- c(dropoutVec, dropoutTmp)
+
         # Store peak height of surviving allele, or NA.
         if(dropCount == 1 & observed > 0){
           
-          rfuVec <- c(rfuVec, peakHeight)
+          rfuTmp <- peakHeight
           
         } else {
           
-          rfuVec <- c(rfuVec, rep(NA, records))
+          rfuTmp <- rep(NA, records)
           
+        }
+        # Update vector.
+        rfuVec <- c(rfuVec, rfuTmp)
+                
+        if(debug){
+          nb <- vector()
+          nb[1] <- length(samplesTmp)
+          nb[2] <- length(markersTmp)
+          nb[3] <- length(allelesTmp)
+          nb[4] <- length(heightsTmp)
+          nb[5] <- length(dropoutTmp)
+          nb[6] <- length(rfuTmp)
+          nb[7] <- length(hetTmp)
+          
+          if(!all(nb[1] == nb)){
+            print("records")
+            print(records)
+            print("samplesTmp")
+            print(samplesTmp)
+            print("markersTmp")
+            print(markersTmp)
+            print("allelesTmp")
+            print(allelesTmp)
+            print("heightsTmp")
+            print(heightsTmp)
+            print("dropoutTmp")
+            print(dropoutTmp)
+            print("rfuTmp")
+            print(rfuTmp)
+            print("hetTmp")
+            print(hetTmp)
+          }
         }
         
       }
 
     }
     
+  }
+  
+  if(debug){
+    print("samplesVec")
+    print(str(samplesVec))
+    print("markersVec")
+    print(str(markersVec))
+    print("allelesVec")
+    print(str(allelesVec))
+    print("heightsVec")
+    print(str(heightsVec))
+    print("dropooutVec")
+    print(str(dropoutVec))
+    print("rfuVec")
+    print(str(rfuVec))
+    print("hetVec")
+    print(str(hetVec))
   }
 
   # Create return dataframe.

@@ -2,7 +2,7 @@
 \alias{calculateHeterozygous}
 \title{Calculate heterozygous loci}
 \usage{
-  calculateHeterozygous(data, debug = TRUE)
+  calculateHeterozygous(data, debug = FALSE)
 }
 \arguments{
   \item{data}{Data frame containing at least columns

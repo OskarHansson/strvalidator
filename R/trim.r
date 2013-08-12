@@ -103,8 +103,6 @@ trim <- function(data, samples=NULL, columns=NULL,
 	  }
 	}
 
-  debug <- TRUE
-  
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

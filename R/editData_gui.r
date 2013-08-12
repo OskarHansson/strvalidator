@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 18.07.2013: Check before overwrite object.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 21.05.2013: Added 'copy to clipboard'
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: First version.
@@ -21,13 +23,12 @@
 
 editData_gui <- function(env=parent.frame(), debug=FALSE){
 
-  # Load dependencies.  
-  require(ggplot2)
+  # Load dependencies.
   require(gWidgets)
   options(guiToolkit="RGtk2")
   
-  gData <- NULL
-  gDataName <- NULL
+  .gData <- NULL
+  .gDataName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -67,20 +68,20 @@ editData_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gData <<- get(val_obj, envir=env)
+      .gData <<- get(val_obj, envir=env)
       
-      gDataName <<- val_obj
+      .gDataName <<- val_obj
       
-      if("Sample.Name" %in% names(gData)){
-        samples <- length(unique(gData$Sample.Name))
+      if("Sample.Name" %in% names(.gData)){
+        samples <- length(unique(.gData$Sample.Name))
         svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
       } else {
         svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
       }
-      svalue(g0_columns_lbl) <- paste(" ", ncol(gData), "columns,")
-      svalue(g0_rows_lbl) <- paste(" ", nrow(gData), "rows")
+      svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
+      svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
       
       .refresh_tbl()
       
@@ -104,7 +105,7 @@ editData_gui <- function(env=parent.frame(), debug=FALSE){
                               border=TRUE,
                               container = g1) 
   
-  g1[1,2] <- save_txt <- gedit(text=gDataName,
+  g1[1,2] <- save_txt <- gedit(text=.gDataName,
                             container=g1,
                             anchor=c(-1 ,0))
 
@@ -136,17 +137,17 @@ editData_gui <- function(env=parent.frame(), debug=FALSE){
 
   addHandlerChanged(save_btn, handler = function(h, ...) {
     
-    name_val <- svalue(save_txt)
-    val_tbl <- data_tbl[]
+    val_name <- svalue(save_txt)
+    datanew <- data_tbl[]
     
-    if (!is.na(name_val) && !is.null(name_val)){
+    if (!is.na(val_name) && !is.null(val_name)){
       
       # Change button.
       svalue(save_btn) <- "Saving..."
       enabled(save_btn) <- FALSE
 
       # Save data.
-      assign(name_val, val_tbl, envir=env)
+      saveObject(name=val_name, object=datanew, parent=w, env=env)
       
       # Change button.
       svalue(save_btn) <- "Save as"
@@ -182,14 +183,14 @@ editData_gui <- function(env=parent.frame(), debug=FALSE){
     }
     
     # Update "save as" with current dataset name.
-    svalue(save_txt) <- paste(gDataName, "_edit", sep="")
+    svalue(save_txt) <- paste(.gDataName, "_edit", sep="")
     
     # Refresh widget by removing it and...
     delete(f2, data_tbl)
     
     visible(f2) <- FALSE
     # ...creating a new table.
-    data_tbl <<- gdf(items=gData,
+    data_tbl <<- gdf(items=.gData,
                         container=f2,
                         expand=TRUE)
     

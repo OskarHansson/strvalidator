@@ -3,7 +3,8 @@
 \title{Calculate stutter}
 \usage{
   calculateStutter(data, ref, back = 2, forward = 1,
-    interference = 0)
+    interference = 0, replaceVal = NULL, byVal = NULL,
+    debug = FALSE)
 }
 \arguments{
   \item{data}{data frame with genotype data in 'slim'
@@ -25,6 +26,14 @@
   stutters and alleles is allowed.  1 = stutter-stutter
   interference is allowed.  2 = stutter-allele interference
   is allowed.}
+
+  \item{replaceVal}{numeric vector with 'false' stutters to
+  replace.}
+
+  \item{byVal}{numeric vector with correct stutters.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
   data.frame with extracted result.

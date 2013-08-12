@@ -1,3 +1,16 @@
+Version 0.3.0
+------------------------------------------------------------------------------
+
+* Save GUI state option added.
+* Removed dependency on pcrsim.
+* Numerous bug fixes and some clean-up.
+* New functions: colNames, cropData_gui, dyeToColor, export, export_gui,
+    saveObject, tableStutter_gui
+* Functions removed: savePlot_gui
+* Added external data: set3.txt, ref3.txt
+* Added datasets: set4, ref4
+
+
 Version 0.2.0
 ------------------------------------------------------------------------------
 

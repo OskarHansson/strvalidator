@@ -3,7 +3,8 @@
 \title{Import GeneMapper.}
 \usage{
   import(folder = TRUE, extension = "txt", suffix = NA,
-    prefix = NA, resultFiles = NA, resultFolder = NA)
+    prefix = NA, resultFiles = NA, resultFolder = NA,
+    debug = FALSE)
 }
 \arguments{
   \item{folder}{logical, TRUE all files in folder will be
@@ -23,6 +24,9 @@
   select folder dialogue.}
 
   \item{extension}{string providing the file extension.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
   data.frame with imported result.

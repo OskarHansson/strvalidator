@@ -5,9 +5,12 @@
 
 ################################################################################
 # CHANGE LOG
+# 18.07.2013: Check before overwrite object.
+# 15.07.2013: Added save GUI settings.
+# 11.06.2013: Fixed 'exists' added 'inherits=FALSE'. Added parameter 'debug'.
 # 16.04.2013: Added object name check.
 
-#' @title Import from GMIDX
+#' @title Import from text file
 #'
 #' @description
 #' \code{import_gui} is a GUI wrapper for the \code{import} function.
@@ -18,24 +21,48 @@
 #' 
 #' @param env environment into which the object will be saved.
 #' Default is the current environment.
+#' @param savegui logical indicating if GUI settings should be saved in the environment.
+#' @param debug logical indicating printing debug information.
 
 
-import_gui <- function(env=parent.frame()){
+import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Load dependencies.  
   library(gWidgets)
   options(guiToolkit="RGtk2")
   
   # Global variables.
-  debug=FALSE
-#  separator <- .Platform$file.sep # Platform dependent path separator.
+  # separator <- .Platform$file.sep # Platform dependent path separator.
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
   
+  # Define variables.
+  defaultDir <- "Select a directory..."
+  defaultFile <- "Select a file..."
+
+  
+# Add new parameter , settings=FALSE  
+#  # Load settings.
+#   if(settings){
+#     if(exists(".import_gui_file")){
+#       defaultFile <- .import_gui_file
+#     }
+#     if(exists(".import_gui_dir")){
+#       defaultDir <- .import_gui_dir
+#     }
+#     
+#   }
+  
+  
   w <- gwindow(title="Import data from exported GeneMapper result files", 
                visible=FALSE)
+
+  # Handler for saving GUI state.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    .saveSettings()
+  })
 
   g <- ggroup(horizontal=FALSE,
                spacing=5,
@@ -44,8 +71,15 @@ import_gui <- function(env=parent.frame()){
                expand=TRUE) 
   
   # GUI #######################################################################
+
+  savegui_chk <- gcheckbox(text="Save GUI settings",
+                              checked=FALSE,
+                              container=g)
   
-  import_opt <- gradio(items=c("Import multiple files from a directory into one dataset", "Import a single file"),
+  options <- c("Import multiple files from a directory into one dataset", 
+               "Import a single file")
+
+  import_opt <- gradio(items=options,
                        selected=2,
                        horizontal=FALSE,
                        container=g)
@@ -71,23 +105,25 @@ import_gui <- function(env=parent.frame()){
     
   })
 
-  import_file <- gfilebrowse(text="Select a file...", 
+  import_file <- gfilebrowse(text=defaultFile,
+                             initial.filename = defaultFile, # Not implemented in current version?
                              type="open",
                              quote = FALSE,
                              container=g)
   
   
-  import_folder <- gfilebrowse(text="Select a directory...", 
-                             type="selectdir",
-                             quote = FALSE,
-                             container=g)
+  import_folder <- gfilebrowse(text=defaultDir, 
+                               initial.dir = defaultFile, # Not implemented in current version?
+                               type="selectdir",
+                               quote = FALSE,
+                               container=g)
   
   enabled(import_folder) <- FALSE
   
   
   # OPTIONS -------------------------------------------------------------------
   
-  opt_frm <- gframe(text="Import options",
+  opt_frm <- gframe(text="Options",
                        pos=0,
                        horizontal=FALSE,
                        container=g)
@@ -146,19 +182,19 @@ import_gui <- function(env=parent.frame()){
     suffix_val <- svalue(opt_suf_txt)
     extension_val <- svalue(opt_ext_txt)
     folder_opt_val <- if(svalue(import_opt, index=TRUE)==1){TRUE}else{FALSE}
-    name_val <- svalue(import_txt)
+    val_name <- svalue(import_txt)
 
     ok <- TRUE
     
     # Check that a name has been provided for the new data object.
-    if(nchar(name_val) > 0){
+    if(nchar(val_name) > 0){
       
       # Check for existing object and ask for user input.
-      if(exists(name_val, where=env)){
+      if(exists(val_name, envir=env, inherits = FALSE)){
 
         dialog <- gbasicdialog(title="Warning!", parent=w, do.buttons=TRUE)
         
-        msg <- glabel(text=paste("An object named '",name_val,"' already exist.\n\n",
+        msg <- glabel(text=paste("An object named '",val_name,"' already exist.\n\n",
                                  "Do you want to overwrite?", sep=""),
                       container=dialog)
         
@@ -189,7 +225,7 @@ import_gui <- function(env=parent.frame()){
     
     # Check if ok to import data to 'env'.
     if(ok){
-      
+
       # Set arguments.
       if(folder_opt_val){
         file_val <- NA
@@ -206,8 +242,8 @@ import_gui <- function(env=parent.frame()){
       }
       
       if(debug){
-        print("name_val")
-        print(name_val)
+        print("val_name")
+        print(val_name)
         print("prefix_val")
         print(prefix_val)
         print("suffix_val")
@@ -220,8 +256,12 @@ import_gui <- function(env=parent.frame()){
         print(folder_val)
       }
       
+      # Change button.
+      svalue(import_btn) <- "Processing..."
+      enabled(import_btn) <- FALSE
+      
       # Call function.
-      data <- import(folder=folder_opt_val,
+      datanew <- import(folder=folder_opt_val,
                      extension=extension_val,
                      suffix=suffix_val,
                      prefix=prefix_val,
@@ -229,7 +269,7 @@ import_gui <- function(env=parent.frame()){
                      resultFolder=folder_val)
       
       # Save data.
-      assign(x=name_val, value=data, envir=env)
+      saveObject(name=val_name, object=datanew, parent=w, env=env)
       
       # Close GUI.
       dispose(w)
@@ -238,6 +278,96 @@ import_gui <- function(env=parent.frame()){
     
   } )
 
+  # INTERNAL FUNCTIONS ########################################################
+  
+  .loadSavedSettings <- function(){
+    
+    # First check status of save flag.
+    if(!is.null(savegui)){
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
+      if(debug){
+        print("Save GUI status set!")
+      }  
+    } else {
+      # Load save flag.
+      if(exists(".import_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(savegui_chk) <- get(".import_gui_savegui", envir=env)
+      }
+      if(debug){
+        print("Save GUI status loaded!")
+      }  
+    }
+    if(debug){
+      print(svalue(savegui_chk))
+    }  
+    
+    # Then load settings if true.
+    if(svalue(savegui_chk)){
+      if(exists(".import_gui_import_opt", envir=env, inherits = FALSE)){
+        svalue(import_opt) <- get(".import_gui_import_opt", envir=env)
+      }
+      if(exists(".import_gui_prefix", envir=env, inherits = FALSE)){
+        svalue(opt_pre_txt) <- get(".import_gui_prefix", envir=env)
+      }
+      if(exists(".import_gui_suffix", envir=env, inherits = FALSE)){
+        svalue(opt_suf_txt) <- get(".import_gui_suffix", envir=env)
+      }
+      if(exists(".import_gui_extension", envir=env, inherits = FALSE)){
+        svalue(opt_ext_txt) <- get(".import_gui_extension", envir=env)
+      }
+      if(debug){
+        print("Saved settings loaded!")
+      }
+    }
+    
+  }
+  
+  .saveSettings <- function(){
+    
+    # Then save settings if true.
+    if(svalue(savegui_chk)){
+      
+      assign(x=".import_gui_savegui", value=svalue(savegui_chk), envir=env)
+      assign(x=".import_gui_import_opt", value=svalue(import_opt), envir=env)
+      assign(x=".import_gui_prefix", value=svalue(opt_pre_txt), envir=env)
+      assign(x=".import_gui_suffix", value=svalue(opt_suf_txt), envir=env)
+      assign(x=".import_gui_extension", value=svalue(opt_ext_txt), envir=env)
+      
+    } else { # or remove all saved values if false.
+      
+      if(exists(".import_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".import_gui_savegui", envir = env)
+      }
+      if(exists(".import_gui_import_opt", envir=env, inherits = FALSE)){
+        remove(".import_gui_import_opt", envir = env)
+      }
+      if(exists(".import_gui_prefix", envir=env, inherits = FALSE)){
+        remove(".import_gui_prefix", envir = env)
+      }
+      if(exists(".import_gui_suffix", envir=env, inherits = FALSE)){
+        remove(".import_gui_suffix", envir = env)
+      }
+      if(exists(".import_gui_extension", envir=env, inherits = FALSE)){
+        remove(".import_gui_extension", envir = env)
+      }
+      
+      if(debug){
+        print("Settings cleared!")
+      }
+    }
+    
+    if(debug){
+      print("Settings saved!")
+    }
+    
+  }
+  
+  # END GUI ###################################################################
+  
+  # Load GUI settings.
+  .loadSavedSettings()
+  
   # Show GUI.
   visible(w) <- TRUE
   

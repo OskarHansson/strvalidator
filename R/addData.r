@@ -1,10 +1,12 @@
 ################################################################################
 # TODO LIST
-# NB! Might be better to use Merge when 'slim' data is used...
 # TODO: optional columns.
+# TODO: make 'exact' a vector.
 
 ################################################################################
 # CHANGE LOG
+# 31.07.2013: Added parameter 'ignoreCase'.
+# 28.05.2013: Fixed bug any(..., na.rm=TRUE)
 # 21.05.2013: Added a second 'by' level and bugs fixed.
 # 20.05.2013: Handle keys with no match.
 # <20.05.2013: Roxygenized.
@@ -24,6 +26,8 @@
 #' @param byCol character, key column.
 #' @param thenByCol character, key column level 2.
 #' @param exact logical, TRUE matches keys exact.
+#' @param ignoreCase logical, TRUE ignore case.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame the original data frame containing additional columns.
 #' 
@@ -41,9 +45,15 @@
 #' print(y)
 #' print(z)
 
-addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE){
+addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE,
+                    ignoreCase=TRUE, debug=FALSE){
+  
   # Adds columns in 'newData' to 'data' by column 'byCol.
   
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+  }
+
   colNames <- names(data)
   
   colNamesNew <- names(newData)
@@ -61,6 +71,13 @@ addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE){
   # Get unique identifiers.
   keys <- unique(as.character(data[ , byCol]))
   keysNew <- unique(as.character(newData[ , byCol]))
+
+  if(debug){
+    print("keys")
+    print(keys)
+    print("keysNew")
+    print(keysNew)
+  }
   
   # Loop through keys.
   for(k in seq(along=keys)){
@@ -70,15 +87,24 @@ addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE){
       selectedData <- data[ , byCol] == keys[k]
       selectedNewData <- newData[ , byCol] == keys[k]
     } else {
-      selectedData <- grepl(keysNew[k], data[ , byCol])
-      selectedNewData <- grepl(keysNew[k], newData[ , byCol])
+      selectedData <- grepl(keysNew[k], data[ , byCol],
+                            ignore.case=ignoreCase)
+      selectedNewData <- grepl(keysNew[k], newData[ , byCol],
+                               ignore.case=ignoreCase)
+    }
+
+    if(debug){
+      print("selectedData")
+      print(data[selectedData, ])
+      print("selectedNewData")
+      print(newData[selectedNewData, ])
     }
 
     if(!is.null(selectedData)){
       
       if(is.null(thenByCol)){
         
-        if(any(selectedData) & any(selectedNewData)){
+        if(any(selectedData, na.rm = TRUE) && any(selectedNewData, na.rm = TRUE)){
           for(c in seq(along=colNamesNew)){
             
             dataLen <- length(data[selectedData , colNamesNew[c]])
@@ -113,6 +139,13 @@ addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE){
         keys2 <- unique(as.character(data[ , thenByCol]))
         keysNew2 <- unique(as.character(newData[ , thenByCol]))
         
+        if(debug){
+          print("keys2")
+          print(keys2)
+          print("keysNew2")
+          print(keysNew2)
+        }
+
         # Loop through keys.
         for(k2 in seq(along=keys2)){
           
@@ -121,12 +154,20 @@ addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE){
             selectedData2 <- data[ , thenByCol] == keys2[k2] & selectedData
             selectedNewData2 <- newData[ , thenByCol] == keys2[k2] & selectedNewData
           } else {
-            selectedData2 <- grepl(keysNew2[k2], data [ , thenByCol]) & selectedData
-            selectedNewData2 <- grepl(keysNew2[k2], newData[ , thenByCol]) & selectedNewData
+            selectedData2 <- grepl(keysNew2[k2], data [ , thenByCol],
+                                   ignore.case=ignoreCase) & selectedData
+            selectedNewData2 <- grepl(keysNew2[k2], newData[ , thenByCol],
+                                      ignore.case=ignoreCase) & selectedNewData
           }
           
-          
-          if(any(selectedData2) & any(selectedNewData2)){
+          if(debug){
+            print("selectedData2")
+            print(data[selectedData2, ])
+            print("selectedNewData2")
+            print(newData[selectedNewData2, ])
+          }
+
+          if(any(selectedData2, na.rm = TRUE) && any(selectedNewData2, na.rm = TRUE)){
             
             for(c2 in seq(along=colNamesNew)){
               
@@ -135,6 +176,13 @@ addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE){
               
               if(dataLen == dataNewLen){
                 
+                if(debug){
+                  print("SelectedData")
+                  print(data[selectedData2 , colNamesNew[c2]])
+                  print("SelectedNewData")
+                  print(newData[selectedNewData2 , colNamesNew[c2]])
+                }
+
                 # Add new data.
                 data[selectedData2 , colNamesNew[c2]] <- 
                 newData[selectedNewData2 , colNamesNew[c2]]
@@ -143,10 +191,16 @@ addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE){
                 
                 uniqueNewData <- unique(newData[selectedNewData2 , colNamesNew[c2]])
                 
+                if(debug){
+                  print("uniqueNewData")
+                  print(uniqueNewData)
+                }
+
                 # See if all the same value.
                 if(length(uniqueNewData) == 1) {
                   # Add new data.
                   data[selectedData2 , colNamesNew[c2]] <- uniqueNewData
+                  
                 } else {
                   warning(paste("Ambiguous data could not be added at key",
                                 keys[k],"sub key:", keys2[k2]),
@@ -155,11 +209,13 @@ addData <- function(data, newData, byCol, thenByCol=NULL, exact=TRUE){
               }
             }
           }
-          
         }
-        
       }
     }
+  }
+  
+  if(debug){
+    print(paste("EXIT:", match.call()[[1]]))
   }
   
   return(data)

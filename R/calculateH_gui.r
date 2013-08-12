@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG
+# 18.07.2013: Check before overwrite object.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
+# 04.06.2013: Fixed bug in 'missingCol'.
+# 24.05.2013: Improved error message for missing columns.
 # 20.05.2013: First version.
 
 
@@ -20,6 +24,13 @@
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame in slim format.
+#' @references
+#' Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
+#'  Evaluating the weight of evidence by using quantitative short tandem repeat data in DNA mixtures
+#'  Journal of the Royal Statistical Society: Series C (Applied Statistics),
+#'  Volume 59, Issue 5, 2010,
+#'  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
+#' \url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
 
 calculateH_gui <- function(env=parent.frame(), debug=FALSE){
   
@@ -28,16 +39,17 @@ calculateH_gui <- function(env=parent.frame(), debug=FALSE){
   require(gWidgets)
   options(guiToolkit="RGtk2")
   
-  gData <- NULL
-  gDataName <- NULL
+  # Global variables.
+  .gData <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
   
-  
+  # Main window.
   w <- gwindow(title="Calculate average peak height", visible=FALSE)
   
+  # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
@@ -70,39 +82,41 @@ calculateH_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gData <<- get(val_obj, envir=env)
+      .gData <<- get(val_obj, envir=env)
       requiredCol <- c("Sample.Name", "Heterozygous", "Height")
       
-      if(!all(requiredCol %in% colnames(gData))){
-        
-        gData <<- NULL
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(f0g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-        message <- paste("The dataset is not typing data\n\n",
-                         "The following columns are required:\n",
-                         paste(requiredCol, collapse="\n"), sep="")
+      if(!all(requiredCol %in% colnames(.gData))){
+
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
         
         gmessage(message, title="Data error",
                  icon = "error",
                  parent = w) 
+      
+        # Reset components.
+        .gData <<- NULL
+        svalue(dataset_drp, index=TRUE) <- 1
+        svalue(f0g0_samples_lbl) <- " 0 samples"
+        svalue(f2_save_edt) <- ""
         
       } else {
-        
-        gDataName <<- val_obj
-        
-        samples <- length(unique(gData$Sample.Name))
+
+        # Load or change components.
+        samples <- length(unique(.gData$Sample.Name))
         svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(gDataName, "_H", sep="")
+        svalue(f2_save_edt) <- paste(val_obj, "_H", sep="")
         
       }
       
     } else {
       
-      gData <<- NULL
+      # Reset components.
+      .gData <<- NULL
       svalue(dataset_drp, index=TRUE) <- 1
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -132,16 +146,16 @@ calculateH_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_name <- svalue(f2_save_edt)
     
-    if(!is.null(gData)){
+    if(!is.null(.gData)){
       
       # Change button.
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
-      datanew <- calculateH(data=gData)
+      datanew <- calculateH(data=.gData)
       
       # Save data.
-      assign(val_name, datanew, envir=env)
+      saveObject(name=val_name, object=datanew, parent=w, env=env)
       
       if(debug){
         print(datanew)

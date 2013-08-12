@@ -2,13 +2,15 @@
 \alias{detectKit}
 \title{Detect kit}
 \usage{
-  detectKit(data, index = TRUE)
+  detectKit(data, index = TRUE, debug = FALSE)
 }
 \arguments{
   \item{data}{data frame.}
 
   \item{index}{logical, returns kit index if TRUE or short
   name if FALSE.}
+
+  \item{debug}{logical, prints debug information if TRUE.}
 }
 \value{
   integer or string indicating the detected kit.

@@ -1,6 +1,7 @@
 ################################################################################
 # TODO LIST
 # TODO: option to drop/keep unspecified columns.
+# TODO: option to drop/keep 'unspecified columns'OL'.
 
 ################################################################################
 # CHANGE LOG

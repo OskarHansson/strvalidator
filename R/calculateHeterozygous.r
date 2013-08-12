@@ -27,7 +27,7 @@
 #' @return data.frame the original data frame containing additional columns.
 #' 
 
-calculateHeterozygous <- function(data, debug=TRUE){
+calculateHeterozygous <- function(data, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))

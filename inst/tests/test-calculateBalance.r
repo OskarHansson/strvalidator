@@ -1,8 +1,7 @@
 context("calculateBalance")
 
-# TODO: Test matchSource.
 # TODO: Test ignoreCase.
-
+# test_dir("inst/tests/")
 
 test_that("calculateBalance", {
 
@@ -14,8 +13,8 @@ test_that("calculateBalance", {
   
   # Analyse dataframe.
   res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="prop",
-                         perDye=TRUE, minHeight=NULL, maxHeight=NULL,
-                         ignoreCase=TRUE, matchSource="ref")
+                         perDye=TRUE,
+                         ignoreCase=TRUE)
 
   # Warn that 'Height' was not numeric.
   test01 <- set2
@@ -114,8 +113,8 @@ test_that("calculateBalance", {
   # TEST 02 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="prop",
-                          perDye=FALSE, minHeight=NULL, maxHeight=NULL,
-                          ignoreCase=TRUE, matchSource="ref")
+                          perDye=FALSE,
+                          ignoreCase=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -209,8 +208,8 @@ test_that("calculateBalance", {
   # TEST 03 -------------------------------------------------------------------
 
   res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="norm",
-                          perDye=TRUE, minHeight=NULL, maxHeight=NULL,
-                          ignoreCase=TRUE, matchSource="ref")
+                          perDye=TRUE,
+                          ignoreCase=TRUE)
 
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -305,8 +304,8 @@ test_that("calculateBalance", {
   # TEST 04 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="norm",
-                          perDye=FALSE, minHeight=NULL, maxHeight=NULL,
-                          ignoreCase=TRUE, matchSource="ref")
+                          perDye=FALSE,
+                          ignoreCase=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -402,8 +401,8 @@ test_that("calculateBalance", {
   # TEST 05 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="prop",
-                          perDye=TRUE, minHeight=NULL, maxHeight=NULL,
-                          ignoreCase=TRUE, matchSource="ref")
+                          perDye=TRUE,
+                          ignoreCase=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -521,8 +520,8 @@ test_that("calculateBalance", {
   # TEST 06 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="prop",
-                          perDye=FALSE, minHeight=NULL, maxHeight=NULL,
-                          ignoreCase=TRUE, matchSource="ref")
+                          perDye=FALSE,
+                          ignoreCase=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -639,8 +638,8 @@ test_that("calculateBalance", {
   # TEST 07 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="norm",
-                          perDye=TRUE, minHeight=NULL, maxHeight=NULL,
-                          ignoreCase=TRUE, matchSource="ref")
+                          perDye=TRUE,
+                          ignoreCase=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -758,8 +757,8 @@ test_that("calculateBalance", {
   # TEST 08 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="norm",
-                          perDye=FALSE, minHeight=NULL, maxHeight=NULL,
-                          ignoreCase=TRUE, matchSource="ref")
+                          perDye=FALSE,
+                          ignoreCase=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -874,103 +873,30 @@ test_that("calculateBalance", {
   expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
   
   # TEST 09 -------------------------------------------------------------------
+  # Test when a marker is missing from dataset.
+
+  # Remove TH01 from dataset.
+  setMissing <- set2[set2$Marker!="TH01",]
+  setMissing <- set2[set2$Dye!="Y",]
   
   # Analyse dataframe.
-  res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="prop",
-                          perDye=TRUE, minHeight=200, maxHeight=600,
-                          ignoreCase=TRUE, matchSource="ref")
+  expect_that(calculateBalance(data=setMissing, ref=ref2, perSample=TRUE, lb="prop",
+                               perDye=TRUE,
+                               ignoreCase=TRUE),
+              throws_error()) 
   
-  # Check return class.  
-  expect_that(class(res), matches(class(data.frame())))
+
+  # TEST 10 -------------------------------------------------------------------
+  # Test when all markers in one dye channel is missing from dataset.
   
-  # Check that expected columns exist.  
-  expect_false(is.null(res$Sample.Name))
-  expect_false(is.null(res$Marker))
-  expect_false(is.null(res$Hb))
-  expect_false(is.null(res$Lb))
-  expect_false(is.null(res$MpH))
+  # Remove yellow dye channel from dataset.
+  setMissing <- set2[set2$Dye!="Y",]
   
-  # Check for NA's.
-  expect_false(any(is.na(res$Sample.Name)))
-  expect_false(any(is.na(res$Marker)))
-  
-  # Check result: Heterozygous balance.
-  expect_that(res$Hb[1], equals(402/460))
-  expect_that(res$Hb[2], equals(as.numeric(NA)))
-  expect_that(res$Hb[3], equals(423/491))
-  expect_that(res$Hb[4], equals(as.numeric(NA)))
-  expect_that(res$Hb[5], equals(as.numeric(NA)))
-  expect_that(res$Hb[6], equals(as.numeric(NA)))
-  expect_that(res$Hb[7], equals(as.numeric(NA)))
-  expect_that(res$Hb[8], equals(361/398))
-  expect_that(res$Hb[9], equals(as.numeric(NA)))
-  expect_that(res$Hb[10], equals(359/384))
-  expect_that(res$Hb[11], equals(as.numeric(NA)))
-  
-  expect_that(res$Hb[12], equals(215/225))
-  expect_that(res$Hb[13], equals(as.numeric(NA)))
-  expect_that(res$Hb[14], equals(as.numeric(NA)))
-  expect_that(res$Hb[15], equals(as.numeric(NA)))
-  expect_that(res$Hb[16], equals(312/326))
-  expect_that(res$Hb[17], equals(as.numeric(NA)))
-  expect_that(res$Hb[18], equals(as.numeric(NA)))
-  expect_that(res$Hb[19], equals(as.numeric(NA)))
-  expect_that(res$Hb[20], equals(as.numeric(NA)))
-  expect_that(res$Hb[21], equals(as.numeric(NA)))
-  expect_that(res$Hb[22], equals(as.numeric(NA)))
-  
-  # Check result: Mean peak height.
-  expect_that(res$MpH[1], equals(431))
-  expect_that(res$MpH[2], equals(253))
-  expect_that(res$MpH[3], equals(457))
-  expect_that(res$MpH[4], equals(as.numeric(NA)))
-  expect_that(res$MpH[5], equals(as.numeric(NA)))
-  expect_that(res$MpH[6], equals(as.numeric(NA)))
-  expect_that(res$MpH[7], equals(as.numeric(NA)))
-  expect_that(res$MpH[8], equals(379.5))
-  expect_that(res$MpH[9], equals(296))
-  expect_that(res$MpH[10], equals(371.5))
-  expect_that(res$MpH[11], equals(212.5))
-  
-  expect_that(res$MpH[12], equals(220))
-  expect_that(res$MpH[13], equals(152))
-  expect_that(res$MpH[14], equals(as.numeric(NA)))
-  expect_that(res$MpH[15], equals(173.5))
-  expect_that(res$MpH[16], equals(319))
-  expect_that(res$MpH[17], equals(154.5))
-  expect_that(res$MpH[18], equals(201))
-  expect_that(res$MpH[19], equals(as.numeric(NA)))
-  expect_that(res$MpH[20], equals(142))
-  expect_that(res$MpH[21], equals(as.numeric(NA)))
-  expect_that(res$MpH[22], equals(as.numeric(NA)))
-  
-  # Check result: Locus balance.
-  expect_that(res$Lb[1], equals(as.numeric(NA)))
-  expect_that(res$Lb[2], equals(as.numeric(NA)))
-  expect_that(res$Lb[3], equals(as.numeric(NA)))
-  expect_that(res$Lb[4], equals(as.numeric(NA)))
-  expect_that(res$Lb[5], equals(as.numeric(NA)))
-  expect_that(res$Lb[6], equals(as.numeric(NA)))
-  expect_that(res$Lb[7], equals(as.numeric(NA)))
-  expect_that(res$Lb[8], equals(as.numeric(NA)))
-  expect_that(res$Lb[9], equals(592/1760))
-  expect_that(res$Lb[10], equals(743/1760))
-  expect_that(res$Lb[11], equals(425/1760))
-  
-  # TODO: check how to calc total Lb when using min/max. Should give NA is a 
-  #       peak has been removed in a color/sample.
-  expect_that(res$Lb[12], equals(440/1332))
-  expect_that(res$Lb[13], equals(304/1332))
-  expect_that(res$Lb[14], equals(241/1332))
-  expect_that(res$Lb[15], equals(347/1332))
-  expect_that(res$Lb[16], equals(638/1555))
-  expect_that(res$Lb[17], equals(309/1555))
-  expect_that(res$Lb[18], equals(402/1555))
-  expect_that(res$Lb[19], equals(206/1555))
-  expect_that(res$Lb[20], equals(as.numeric(NA)))
-  expect_that(res$Lb[21], equals(as.numeric(NA)))
-  expect_that(res$Lb[22], equals(as.numeric(NA)))
-  
+  # Analyse dataframe.
+  expect_that(calculateBalance(data=setMissing, ref=ref2, perSample=TRUE, lb="prop",
+                               perDye=TRUE,
+                               ignoreCase=TRUE),
+              throws_error()) 
   
   
 })

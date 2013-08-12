@@ -1,61 +1,100 @@
-Short.Name	Full.Name	Loci	Dye	Offset	Range.Min	Range.Max	Repeat.Unit	Locus.Balance.Mean	Locus.Balance.Sd	PCR.Efficiency
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D3S1358	B	65			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	vWA	B	112			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D16S539	B	213			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D2S1338	B	233			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	Amelogenin	G	100			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D8S1179	G	95			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D21S11	G	90			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D18S51	G	236			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D19S433	Y	70			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	TH01	Y	148			4			
-SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	FGA	Y	146			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D10S1248	B	72			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	vWA	B	149			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D16S539	B	223.6			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D2S1338	B	281.6			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	Amelogenin	G	100			9			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D8S1179	G	117.9			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D21S11	G	178.8			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D18S51	G	259.5			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D22S1045	Y	76			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D19S433	Y	122.3			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	TH01	Y	176.4			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	FGA	Y	221.6			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D2S441	R	74.5			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D3S1358	R	114.4			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D1S1656	R	170			4			
-NGM	AmpFlSTR NGM PCR Amplification Kit	D12S391	R	225			4			
-ESX17	PowerPlex ESX 17 System	AMEL	B	76	78	92	6	1	0.1	0.742
-ESX17	PowerPlex ESX 17 System	D3S1358	B	62	 92.01	 148.2	4	0.7	0.07	 0.798
-ESX17	PowerPlex ESX 17 System	TH01	B	137	 148.21	195	4	1.1	0.11	 0.797
-ESX17	PowerPlex ESX 17 System	D21S11	B	103	 195.01	270	4	0.9	0.09	 0.718
-ESX17	PowerPlex ESX 17 System	D18S51	B	253	 270.01	370	4	0.8	0.08	 0.710
-ESX17	PowerPlex ESX 17 System	D10S1248	G	45	70	125	4	1	0.1	 0.798
-ESX17	PowerPlex ESX 17 System	D1S1656	G	95	 125.01	184	4	0.8	0.08	 0.754
-ESX17	PowerPlex ESX 17 System	D2S1338	G	152	 184.01	265	4	0.7	0.07	 0.840
-ESX17	PowerPlex ESX 17 System	D16S539	G	253	 265.01	330	4	1.2	0.12	 0.755
-ESX17	PowerPlex ESX 17 System	D22S1045	Y	57	70	120	4	0.9	0.09	 0.835
-ESX17	PowerPlex ESX 17 System	vWA	Y	85	 120.01	200	4	0.9	0.09	 0.788
-ESX17	PowerPlex ESX 17 System	D8S1179	Y	176	 200.01	 257.5	4	1	0.1	 0.730
-ESX17	PowerPlex ESX 17 System	FGA	Y	208	 257.51	420	4	1	0.1	 0.715
-ESX17	PowerPlex ESX 17 System	D2S441	R	56	80	127	4	0.6	0.06	 0.931
-ESX17	PowerPlex ESX 17 System	D12S391	R	77	 127.01	188	4	0.8	0.08	 0.953
-ESX17	PowerPlex ESX 17 System	D19S433	R	171	 188.01	262	4	1	0.5	 0.871
-ESX17	PowerPlex ESX 17 System	SE33	R	253	 262.01	460	4	0.6	0.5	 0.665
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D8S1179	B	86	118	183.5	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D21S11	B	88	184.5	247.5	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D7S820	B	227	251	298.5	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	CSF1PO	B	278	302.12	348.63	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D3S1358	G	50	98	148	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	TH01	G	143	159	205	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D13S317	G	173	205.65	250.16	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D16S539	G	235	255.3	301.81	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D2S1338	G	244	304.8	370.31	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D19S433	Y	65	101	148	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	vWA	Y	107	151	213.5	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	TPOX	Y	193	216.99	260.99	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D18S51	Y	236	264.49	350	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	AMEL	R	97	106	114	9			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D5S818	R	100	128	180	4			
-Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	FGA	R	138	206.25	360	4			
+Short.Name	Full.Name	Loci	Dye	Offset	Range.Min	Range.Max	Repeat.Unit	Locus.Balance.Mean	Locus.Balance.Sd	PCR.Efficiency	Gender.Marker
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D3S1358	B	65			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	vWA	B	112			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D16S539	B	213			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D2S1338	B	233			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	Amelogenin	G	100			4				TRUE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D8S1179	G	95			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D21S11	G	90			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D18S51	G	236			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	D19S433	Y	70			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	TH01	Y	148			4				FALSE
+SGM Plus	AmpFlSTR SGM Plus PCR Amplification Kit	FGA	Y	146			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D10S1248	B	72			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	vWA	B	149			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D16S539	B	223.6			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D2S1338	B	281.6			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	Amelogenin	G	100			9				TRUE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D8S1179	G	117.9			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D21S11	G	178.8			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D18S51	G	259.5			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D22S1045	Y	76			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D19S433	Y	122.3			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	TH01	Y	176.4			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	FGA	Y	221.6			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D2S441	R	74.5			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D3S1358	R	114.4			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D1S1656	R	170			4				FALSE
+NGM	AmpFlSTR NGM PCR Amplification Kit	D12S391	R	225			4				FALSE
+ESX17	PowerPlex ESX 17 System	AMEL	B	76	78	92	6	1	0.1	0.742	TRUE
+ESX17	PowerPlex ESX 17 System	D3S1358	B	62	92.01	148.2	4	0.7	0.07	0.798	FALSE
+ESX17	PowerPlex ESX 17 System	TH01	B	137	148.21	195	4	1.1	0.11	0.797	FALSE
+ESX17	PowerPlex ESX 17 System	D21S11	B	103	195.01	270	4	0.9	0.09	0.718	FALSE
+ESX17	PowerPlex ESX 17 System	D18S51	B	253	270.01	370	4	0.8	0.08	0.71	FALSE
+ESX17	PowerPlex ESX 17 System	D10S1248	G	45	70	125	4	1	0.1	0.798	FALSE
+ESX17	PowerPlex ESX 17 System	D1S1656	G	95	125.01	184	4	0.8	0.08	0.754	FALSE
+ESX17	PowerPlex ESX 17 System	D2S1338	G	152	184.01	265	4	0.7	0.07	0.84	FALSE
+ESX17	PowerPlex ESX 17 System	D16S539	G	253	265.01	330	4	1.2	0.12	0.755	FALSE
+ESX17	PowerPlex ESX 17 System	D22S1045	Y	57	70	120	4	0.9	0.09	0.835	FALSE
+ESX17	PowerPlex ESX 17 System	vWA	Y	85	120.01	200	4	0.9	0.09	0.788	FALSE
+ESX17	PowerPlex ESX 17 System	D8S1179	Y	176	200.01	257.5	4	1	0.1	0.73	FALSE
+ESX17	PowerPlex ESX 17 System	FGA	Y	208	257.51	420	4	1	0.1	0.715	FALSE
+ESX17	PowerPlex ESX 17 System	D2S441	R	56	80	127	4	0.6	0.06	0.931	FALSE
+ESX17	PowerPlex ESX 17 System	D12S391	R	77	127.01	188	4	0.8	0.08	0.953	FALSE
+ESX17	PowerPlex ESX 17 System	D19S433	R	171	188.01	262	4	1	0.5	0.871	FALSE
+ESX17	PowerPlex ESX 17 System	SE33	R	253	262.01	460	4	0.6	0.5	0.665	FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D8S1179	B	86	118	183.5	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D21S11	B	88	184.5	247.5	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D7S820	B	227	251	298.5	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	CSF1PO	B	278	302.12	348.63	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D3S1358	G	50	98	148	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	TH01	G	143	159	205	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D13S317	G	173	205.65	250.16	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D16S539	G	235	255.3	301.81	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D2S1338	G	244	304.8	370.31	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D19S433	Y	65	101	148	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	vWA	Y	107	151	213.5	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	TPOX	Y	193	216.99	260.99	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D18S51	Y	236	264.49	350	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	AMEL	R	97	106	114	9				TRUE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	D5S818	R	100	128	180	4				FALSE
+Identifiler	AmpFlSTR Identifiler Plus PCR Amplification Kit	FGA	R	138	206.25	360	4				FALSE
+ESI17	PowerPlex ESI 17 System	AMEL	B				6				TRUE
+ESI17	PowerPlex ESI 17 System	D3S1358	B				4				FALSE
+ESI17	PowerPlex ESI 17 System	D19S433	B				4				FALSE
+ESI17	PowerPlex ESI 17 System	D2S1338	B				4				FALSE
+ESI17	PowerPlex ESI 17 System	D22S1045	B				4				FALSE
+ESI17	PowerPlex ESI 17 System	D16S539	G				4				FALSE
+ESI17	PowerPlex ESI 17 System	D18S51	G				4				FALSE
+ESI17	PowerPlex ESI 17 System	D1S1656	G				4				FALSE
+ESI17	PowerPlex ESI 17 System	D10S1248	G				4				FALSE
+ESI17	PowerPlex ESI 17 System	D2S441	G				4				FALSE
+ESI17	PowerPlex ESI 17 System	TH01	Y				4				FALSE
+ESI17	PowerPlex ESI 17 System	vWA	Y				4				FALSE
+ESI17	PowerPlex ESI 17 System	D21S11	Y				4				FALSE
+ESI17	PowerPlex ESI 17 System	D12S391	Y				4				FALSE
+ESI17	PowerPlex ESI 17 System	D8S1179	R				4				FALSE
+ESI17	PowerPlex ESI 17 System	FGA	R				4				FALSE
+ESI17	PowerPlex ESI 17 System	SE33	R				4				FALSE
+Y23	PowerPlex Y23 System	DYS576	B								
+Y23	PowerPlex Y23 System	DYS389 I	B								
+Y23	PowerPlex Y23 System	DYS448	B								
+Y23	PowerPlex Y23 System	DYS389 II	B								
+Y23	PowerPlex Y23 System	DYS19	B								
+Y23	PowerPlex Y23 System	DYS391	G								
+Y23	PowerPlex Y23 System	DYS481	G								
+Y23	PowerPlex Y23 System	DYS549	G								
+Y23	PowerPlex Y23 System	DYS533	G								
+Y23	PowerPlex Y23 System	DYS438	G								
+Y23	PowerPlex Y23 System	DYS437	G								
+Y23	PowerPlex Y23 System	DYS570	Y								
+Y23	PowerPlex Y23 System	DYS635	Y								
+Y23	PowerPlex Y23 System	DYS390	Y								
+Y23	PowerPlex Y23 System	DYS439	Y								
+Y23	PowerPlex Y23 System	DYS392	Y								
+Y23	PowerPlex Y23 System	DYS643	Y								
+Y23	PowerPlex Y23 System	DYS393	R								
+Y23	PowerPlex Y23 System	DYS458	R								
+Y23	PowerPlex Y23 System	DYS385	R								
+Y23	PowerPlex Y23 System	DYS456	R								
+Y23	PowerPlex Y23 System	YGATAH4	R								

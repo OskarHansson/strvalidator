@@ -5,6 +5,14 @@
 
 ################################################################################
 # CHANGE LOG
+# 19.07.2013: Changed edit widget to spinbutton for 'shape' and 'alpha'.
+# 18.07.2013: Check before overwrite object.
+# 15.07.2013: Save as ggplot object to workspace instead of image.
+# 15.07.2013: Added save GUI settings.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
+# 05.06.2013: Added option to exclude gender marker and dropdown for kit.
+# 04.06.2013: Fixed bug in 'missingCol'.
+# 24.05.2013: Improved error message for missing columns.
 # 17.05.2013: save plot moved to external function.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 15.05.2013: Heights as character, added as.numeric.
@@ -24,28 +32,39 @@
 #' prediction interval lines respectively.
 #' 
 #' @param env environment in wich to search for data frames and save result.
+#' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
-#' 
+#' @references
+#' Peter Gill, Roberto Puch-Solis, James Curran,
+#'  The low-template-DNA (stochastic) threshold-Its determination relative to
+#'  risk analysis for national DNA databases,
+#'  Forensic Science International: Genetics, Volume 3, Issue 2, March 2009,
+#'  Pages 104-111, ISSN 1872-4973, 10.1016/j.fsigen.2008.11.009.
+#' \url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
 
-modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
+modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
   # Load dependencies.  
   require(ggplot2)
   library(gWidgets)
   options(guiToolkit="RGtk2")
   
-  gData <- NULL
-  gData_name <- NULL
-  dropout_plot <- NULL
-  separator <- .Platform$file.sep # Platform dependent path separator.
+  # Global variables.
+  .gData <- NULL
+  .gPlot <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
   
-  
+  # Main window.
   w <- gwindow(title="Plot dropout prediction", visible=FALSE)
   
+  # Handler for saving GUI state.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    .saveSettings()
+  })
+
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
@@ -68,51 +87,72 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
                            editable = FALSE,
                            container = f0) 
   
+  glabel(text=" and the kit used:", container=f0)
+  
+  kit_drp <- gdroplist(items=getKit(), 
+                       selected = 1,
+                       editable = FALSE,
+                       container = f0) 
+
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
 
-      gData <<- get(val_obj, envir=env)
+      .gData <<- get(val_obj, envir=env)
       
       requiredCol <- c("Marker", "Allele", "Height", "Dropout")
     
       # Check if suitable for plot dropout...
-      if(!all(requiredCol %in% colnames(gData))){
+      if(!all(requiredCol %in% colnames(.gData))){
       
-      gData <<- NULL
-      
-      message <- paste("The dataset is not a dropout table\n\n",
-                       "The following columns are required:\n",
-                       paste(requiredCol, collapse="\n"), sep="")
-      
-      gmessage(message, title="message",
-               icon = "info",
-               parent = w) 
-      
-      } else {
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
         
-        gData_name <<- val_obj
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
+        
+        gmessage(message, title="message",
+                 icon = "info",
+                 parent = w) 
+      
+        # Reset components.
+        .gData <<- NULL
+        svalue(f5_save_edt) <- ""
+        
+      } else {
+
+        # Load or change components.
+        
+        # Suggest name.
+        svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
+        
+        # Detect kit.
+        kitIndex <- detectKit(.gData)
+        # Select in dropdown.
+        svalue(kit_drp, index=TRUE) <- kitIndex
         
         # Only heterozygotes can be analysed.
-        if("Heterozygous" %in% names(gData)){
+        if("Heterozygous" %in% names(.gData)){
           # Make sure numeric, then find min and max.
-          heights <- as.numeric(gData$Height[gData$Heterozygous==1])
+          heights <- as.numeric(.gData$Height[.gData$Heterozygous==1])
           svalue(e1g2_predlow_edt) <- min(heights, na.rm=TRUE)
           svalue(e1g2_predhigh_edt) <- max(heights, na.rm=TRUE)
         } else {
           # Make sure numeric, then find min and max.
-          heights <- as.numeric(gData$Height)
+          heights <- as.numeric(.gData$Height)
           svalue(e1g2_predlow_edt) <- min(heights)
           svalue(e1g2_predhigh_edt) <- max(heights)
         }
         
       }
     } else {
-      gData <<- NULL
+
+      # Reset components.
+      .gData <<- NULL
+      svalue(f5_save_edt) <- ""
       
-      message <- paste("Select a dropoout dataset")
+      message <- paste("Select a dropout dataset")
       
       gmessage(message, title="Could not find dataset",
                icon = "error",
@@ -122,38 +162,44 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
   
   # FRAME 1 ###################################################################
   
-  f1 <- gframe(text = "Plot settings",
+  f1 <- gframe(text = "Options",
                horizontal=FALSE,
                spacing = 5,
                container = gv) 
   
-  grid1 <- glayout(container = f1, spacing = 1)
+  f1g1 <- glayout(container = f1, spacing = 1)
 
   # Legends
   #legendModel <- "Fitted model (" # B0 + B1 will be added.
   #legendConf <- paste(conf*100,"% prediction interval")
   #legend.col <- col.line
   
-  grid1[1,1] <- glabel(text="Plot title:", container=grid1)
-  grid1[1,2] <- title_edt <- gedit(text="Dropout probability as a function of present-allele height",
+  f1g1[1,1] <- glabel(text="Plot title:", container=f1g1)
+  f1g1[1,2] <- f1_title_edt <- gedit(text="Dropout probability as a function of present-allele height",
                                    width=50,
-                                   container=grid1)
+                                   container=f1g1)
   
-  grid1[2,1] <- glabel(text="X title:", container=grid1)
-  grid1[2,2] <- x_title_edt <- gedit(text="Peak height (RFU)",
+  f1g1[2,1] <- glabel(text="X title:", container=f1g1)
+  f1g1[2,2] <- f1_x_title_edt <- gedit(text="Peak height (RFU)",
                                      width=50,
-                                     container=grid1)
+                                     container=f1g1)
   
-  grid1[3,1] <- glabel(text="Y title:", container=grid1)
-  grid1[3,2] <- y_title_edt <- gedit(text="Dropout probability, P(D)",
+  f1g1[3,1] <- glabel(text="Y title:", container=f1g1)
+  f1g1[3,2] <- f1_y_title_edt <- gedit(text="Dropout probability, P(D)",
                                      width=50,
-                                     container=grid1)
+                                     container=f1g1)
   
-  grid1[4,1] <- f1g1_printmodel_chk <- gcheckbox(text="Print model",
-                                                 checked = FALSE,
-                                                 container = grid1)
+  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
+                              checked=FALSE,
+                              container=f1)
   
+  f1_removeAM_chk <- gcheckbox(text="Exclude gender marker",
+                               checked = TRUE,
+                               container = f1)
 
+  f1_printmodel_chk <- gcheckbox(text="Print model",
+                                 checked = FALSE,
+                                 container = f1)
   
   # FRAME 7 ###################################################################
   
@@ -161,21 +207,21 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
                horizontal=FALSE,
                container = gv) 
   
-  grid7 <- glayout(container = f7)
+  f7g1 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_drop_btn <- gbutton(text="Plot dropout probability",
+  f7g1[1,1] <- f7_plot_drop_btn <- gbutton(text="Plot predicted dropout probability",
                                            border=TRUE,
-                                           container=grid7) 
+                                           container=f7g1) 
   
   
-  addHandlerChanged(plot_drop_btn, handler = function(h, ...) {
+  addHandlerChanged(f7_plot_drop_btn, handler = function(h, ...) {
     
-    if(!is.null(gData)){
-      enabled(plot_drop_btn) <- FALSE
-      svalue(plot_drop_btn) <- "Processing..."
+    if(!is.null(.gData)){
+      enabled(f7_plot_drop_btn) <- FALSE
+      svalue(f7_plot_drop_btn) <- "Processing..."
       .plotDrop()
-      svalue(plot_drop_btn) <- "Plot dropout probability"
-      enabled(plot_drop_btn) <- TRUE
+      svalue(f7_plot_drop_btn) <- "Plot dropout probability"
+      enabled(f7_plot_drop_btn) <- TRUE
     } else {
       message <- paste("Select a dropoout dataset")
       
@@ -189,23 +235,37 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
   
   # FRAME 5 ###################################################################
   
-  f5 <- gframe(text = "Save plot as image",
-               horizontal=FALSE,
+  f5 <- gframe(text = "Save as",
+               horizontal=TRUE,
                spacing = 5,
                container = gv) 
   
-  grid5 <- glayout(container = f5)
+  glabel(text="Name for result:", container=f5)
   
-  grid5[1,1] <- g5_save_btn <- gbutton(text = "Save",
-                                       border=TRUE,
-                                       container = grid5) 
+  f5_save_edt <- gedit(text="", container=f5)
+
+  f5_save_btn <- gbutton(text = "Save",
+                         border=TRUE,
+                         container = f5) 
   
-  
-  addHandlerChanged(g5_save_btn, handler = function(h, ...) {
+  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
     
-    savePlot_gui(object=dropout_plot)
+    val_name <- svalue(f5_save_edt)
+
+    # Change button.
+    svalue(f5_save_btn) <- "Processing..."
+    enabled(f5_save_btn) <- FALSE
+    
+    # Save data.
+    saveObject(name=val_name, object=.gPlot, parent=w, env=env)
+    
+    # Change button.
+    svalue(f5_save_btn) <- "Save"
+    enabled(f5_save_btn) <- TRUE
     
   } )
+  
+  
   
   # ADVANCED OPTIONS ##########################################################
 
@@ -244,7 +304,7 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
   linetypes <- c("blank", "solid", "dashed", "dotted", "dotdash","longdash","twodash")
   
   e1g2[2,2:3] <- glabel("Line type") 
-  e1g2[2,4] <- e1g2_linetypepred_drp <- gdroplist(items=linetypes,
+  e1g2[2,4] <- e1g2_predlinetype_drp <- gdroplist(items=linetypes,
                                                   selected=2,
                                                   container = e1g2)
   
@@ -279,20 +339,24 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
                      horizontal=FALSE,
                      container = f1)
   
-  grid2 <- glayout(container = e2)
+  e2g1 <- glayout(container = e2)
   
-  grid2[1,1] <- e2_plotpoints_chk <- gcheckbox(text="Plot data points",
+  e2g1[1,1] <- e2_plotpoints_chk <- gcheckbox(text="Plot data points",
                                                checked = TRUE,
-                                               container = grid2)
-  grid2[1,2] <- glabel(text="Shape:", container=grid2)
-  grid2[1,3] <- shape_txt <- gedit(text="18", width=4, container=grid2)
+                                               container = e2g1)
+  e2g1[1,2] <- glabel(text="Shape:", container=e2g1)
+  e2g1[1,3] <- e2g1_shape_spb <- gspinbutton(from=0, to=25,
+                                         by=1, value=18,
+                                         container=e2g1)
+    
+  e2g1[1,4] <- glabel(text="Alpha:", container=e2g1)
+  e2g1[1,5] <- e2g1_alpha_spb <- gspinbutton(from=0, to=1,
+                                         by=0.01, value=0.60,
+                                         container=e2g1)
   
-  grid2[1,4] <- glabel(text="Alpha:", container=grid2)
-  grid2[1,5] <- alpha_txt <- gedit(text="0.6", width=4, container=grid2)
-  
-  grid2[1,6] <- glabel(text="Jitter (h/v):", container=grid2)
-  grid2[1,7] <- jitterh_txt <- gedit(text="0", width=4, container=grid2)
-  grid2[1,8] <- jitterv_txt <- gedit(text="0", width=4, container=grid2)
+  e2g1[1,6] <- glabel(text="Jitter (h/v):", container=e2g1)
+  e2g1[1,7] <- e2g1_jitterh_edt <- gedit(text="0", width=4, container=e2g1)
+  e2g1[1,8] <- e2g1_jitterv_edt <- gedit(text="0", width=4, container=e2g1)
   
   # EXPAND 3 ##################################################################
   
@@ -300,24 +364,24 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
                      horizontal=FALSE,
                      container = f1)
   
-  grid3 <- glayout(container = e3, spacing = 1)
+  e3g1 <- glayout(container = e3, spacing = 1)
   
-  grid3[1,1:2] <- glabel(text="Limit Y axis (min-max)", container=grid3)
-  grid3[2,1] <- y_min_txt <- gedit(text="0", width=5, container=grid3)
-  grid3[2,2] <- y_max_txt <- gedit(text="1", width=5, container=grid3)
+  e3g1[1,1:2] <- glabel(text="Limit Y axis (min-max)", container=e3g1)
+  e3g1[2,1] <- e3_y_min_edt <- gedit(text="0", width=5, container=e3g1)
+  e3g1[2,2] <- e3_y_max_edt <- gedit(text="1", width=5, container=e3g1)
   
-  grid3[3,1:2] <- glabel(text="Limit X axis (min-max)", container=grid3)
-  grid3[4,1] <- x_min_txt <- gedit(text="", width=5, container=grid3)
-  grid3[4,2] <- x_max_txt <- gedit(text="", width=5, container=grid3)
+  e3g1[3,1:2] <- glabel(text="Limit X axis (min-max)", container=e3g1)
+  e3g1[4,1] <- e3_x_min_edt <- gedit(text="", width=5, container=e3g1)
+  e3g1[4,2] <- e3_x_max_edt <- gedit(text="", width=5, container=e3g1)
   
-  grid3[1,3] <- glabel(text="    ", container=grid3) # Add some space.
+  e3g1[1,3] <- glabel(text="    ", container=e3g1) # Add some space.
   
-  grid3[1,4] <- glabel(text="Scales:", container=grid3)
-  grid3[2:4,4] <- scales_opt <- gradio(items=c("fixed","free_x","free_y","free"),
+  e3g1[1,4] <- glabel(text="Scales:", container=e3g1)
+  e3g1[2:4,4] <- e3_scales_opt <- gradio(items=c("fixed","free_x","free_y","free"),
                                        selected = 2,
                                        horizontal = FALSE,
-                                       container = grid3)
-  enabled(scales_opt) <- FALSE # Not in use...
+                                       container = e3g1)
+  enabled(e3_scales_opt) <- FALSE # Not in use...
   
   # FRAME 4 ###################################################################
   
@@ -325,24 +389,24 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
                      horizontal=FALSE,
                      container = f1)
   
-  grid4 <- glayout(container = e4)
+  e4g1 <- glayout(container = e4)
   
-  grid4[1,1] <- glabel(text="Text size (pts):", container=grid4)
-  grid4[1,2] <- size_txt <- gedit(text="8", width=4, container=grid4)
+  e4g1[1,1] <- glabel(text="Text size (pts):", container=e4g1)
+  e4g1[1,2] <- e4_size_edt <- gedit(text="8", width=4, container=e4g1)
   
-  grid4[1,3] <- glabel(text="Angle:", container=grid4)
-  grid4[1,4] <- angle_spb <- gspinbutton (from=0, to=360, by=1,
+  e4g1[1,3] <- glabel(text="Angle:", container=e4g1)
+  e4g1[1,4] <- e4_angle_spb <- gspinbutton (from=0, to=360, by=1,
                                           value=0,
-                                          container=grid4) 
+                                          container=e4g1) 
   
-  grid4[2,1] <- glabel(text="Justification (v/h):", container=grid4)
-  grid4[2,2] <- vjust_spb <- gspinbutton (from=0, to=1, by=0.1,
+  e4g1[2,1] <- glabel(text="Justification (v/h):", container=e4g1)
+  e4g1[2,2] <- e4_vjust_spb <- gspinbutton (from=0, to=1, by=0.1,
                                           value=0.5,
-                                          container=grid4)
+                                          container=e4g1)
   
-  grid4[2,3] <- hjust_spb <- gspinbutton (from=0, to=1, by=0.1,
+  e4g1[2,3] <- e4_hjust_spb <- gspinbutton (from=0, to=1, by=0.1,
                                           value=0.5,
-                                          container=grid4)
+                                          container=e4g1)
   
   
   # MODEL #####################################################################
@@ -369,6 +433,16 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
       message(paste("Analyse",n1,"homozygous data rows out of", n0))
     }
     
+    # Remove gender marker.
+    if(svalue(f1_removeAM_chk)){
+      n0 <- nrow(fData)
+      kit <- getKit(svalue(kit_drp))
+      genderMarker <- kit$locus[kit$genderMarker]
+      fData <- fData[fData$Marker != genderMarker, ]
+      n1 <- nrow(fData)
+      message(paste("Analyse",n1,"rows (",n0-n1,"gender marker rows removed."))
+    }
+
     # Xmin.
     if(is.na(xmin)){
       # Get xmin from dataset.
@@ -437,29 +511,29 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
     
     # Get values.
     val_interval <- svalue(e1g1_interval_spn)
-    val_predline <- svalue(e1g2_linetypepred_drp)
+    val_predline <- svalue(e1g2_predlinetype_drp)
     val_predcol <- svalue(e1g2_colpred_drp)
     
     val_pred_xmin <- as.numeric(svalue(e1g2_predlow_edt))
     val_pred_xmax <- as.numeric(svalue(e1g2_predhigh_edt))
-    val_title <- svalue(title_edt)
-    val_xtitle <- svalue(x_title_edt)
-    val_ytitle <- svalue(y_title_edt)
-    val_shape <- as.numeric(svalue(shape_txt))
-    val_alpha <- as.numeric(svalue(alpha_txt))
-    val_jitterh <- as.numeric(svalue(jitterh_txt))
-    val_jitterv <- as.numeric(svalue(jitterv_txt))
-    val_ymin <- as.numeric(svalue(y_min_txt))
-    val_ymax <- as.numeric(svalue(y_max_txt))
-    val_xmin <- as.numeric(svalue(x_min_txt))
-    val_xmax <- as.numeric(svalue(x_max_txt))
-    val_angle <- as.numeric(svalue(angle_spb))
-    val_vjust <- as.numeric(svalue(vjust_spb))
-    val_hjust <- as.numeric(svalue(hjust_spb))
-    val_size <- as.numeric(svalue(size_txt))
-    val_scales <- svalue(scales_opt)
-    val_data <- .modelDropout(fData=gData,conf=val_interval,val_pred_xmin,val_pred_xmax)
-    val_model <- svalue(f1g1_printmodel_chk)
+    val_title <- svalue(f1_title_edt)
+    val_xtitle <- svalue(f1_x_title_edt)
+    val_ytitle <- svalue(f1_y_title_edt)
+    val_shape <- as.numeric(svalue(e2g1_shape_spb))
+    val_alpha <- as.numeric(svalue(e2g1_alpha_spb))
+    val_jitterh <- as.numeric(svalue(e2g1_jitterh_edt))
+    val_jitterv <- as.numeric(svalue(e2g1_jitterv_edt))
+    val_ymin <- as.numeric(svalue(e3_y_min_edt))
+    val_ymax <- as.numeric(svalue(e3_y_max_edt))
+    val_xmin <- as.numeric(svalue(e3_x_min_edt))
+    val_xmax <- as.numeric(svalue(e3_x_max_edt))
+    val_angle <- as.numeric(svalue(e4_angle_spb))
+    val_vjust <- as.numeric(svalue(e4_vjust_spb))
+    val_hjust <- as.numeric(svalue(e4_hjust_spb))
+    val_size <- as.numeric(svalue(e4_size_edt))
+    val_scales <- svalue(e3_scales_opt)
+    val_data <- .modelDropout(fData=.gData,conf=val_interval,val_pred_xmin,val_pred_xmax)
+    val_model <- svalue(f1_printmodel_chk)
     val_points <- svalue(e2_plotpoints_chk)
     val_threshold <- svalue(e1g1_threshold_chk)
     val_prediction <- svalue(e1g2_prediction_chk)
@@ -501,9 +575,9 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
       
       # Call functions.
       # Add color information.
-      #gData <- addDye(data=gData, kit=val_kit)
+      #.gData <- addDye(data=.gData, kit=val_kit)
       # Sort by marker in kit
-      #gData <- sortMarkers(data=gData,
+      #.gData <- sortMarkers(data=.gData,
       #                    kit=val_kit,
       #                    addMissingLevels = TRUE)
 
@@ -512,7 +586,7 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
       gp <- ggplot(data = val_data, aes_string(y = "Prob", x="Height")) + geom_line() 
       
       if(val_points){
-          gp <- gp + geom_point(data=gData, aes_string(x="Height", y="Dropout"),
+          gp <- gp + geom_point(data=.gData, aes_string(x="Height", y="Dropout"),
                               shape=val_shape, alpha=val_alpha, 
                               position=position_jitter(width=val_jitterh,
                                                        height=val_jitterv)) 
@@ -526,7 +600,8 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
                                alpha = val_interval_alpha) 
         
       }
-      
+
+      # Limit y-axis.
       if(!is.na(val_ymin) && !is.na(val_ymax)){
         gp <- gp + ylim(val_ymin,val_ymax)
       }
@@ -535,15 +610,12 @@ modelDropout_gui <- function(env=parent.frame(), debug=FALSE){
       if(val_threshold){
         px <- attr(val_data,"tx")
         p <- attr(val_data,"p")
-flush.console()
-print(head(val_data))
-print(px)
-print(p)
-        print("val_predcol")
-        print(val_predcol)
-        print("val_predline")
-        print(val_predline)
-        flush.console()        
+        if(debug){
+          print("val_predcol")
+          print(val_predcol)
+          print("val_predline")
+          print(val_predline)
+        }
         # Add threshold label.
         text <- paste("P(D)=", p, "@ T =", round(px,0), "rfu")
 
@@ -552,15 +624,25 @@ print(p)
                                      label = text)
 
         # Horizontal threshold line.
+        if(!is.na(val_xmin)){
+          xtemp <- val_xmin
+        } else {
+          xtemp <- 0
+        }
         gp <- gp + geom_segment(data=thresholdLabel,
-                                aes_string(x = 0, y = "Prob",
+                                aes_string(x = xtemp, y = "Prob",
                                     xend = "Height",
                                     yend = "Prob"),
                                     color = val_predcol,
                                     linetype=val_predline)
         # Vertical threshold line.
+        if(!is.na(val_xmin)){
+          ytemp <- val_ymin
+        } else {
+          ytemp <- 0
+        }
         gp <- gp + geom_segment(data=thresholdLabel,
-                                aes_string(x = "Height", y = 0, 
+                                aes_string(x = "Height", y = ytemp, 
                                     xend = "Height",
                                     yend = "Prob"),
                                     color = val_predcol,
@@ -602,7 +684,8 @@ print(p)
         gp <- gp + geom_text(data=modelLabel, aes_string(x = Inf, y = Inf, label = "label"),
                         hjust=1, vjust=1)
       }
-      
+
+      # Limit x-axis.
       if(!is.na(val_xmin) && !is.na(val_xmax)){
         gp <- gp + xlim(val_xmin,val_xmax)
       }
@@ -619,7 +702,7 @@ print(p)
       print(gp)
       
       # Store in global variable.
-      dropout_plot <<- gp
+      .gPlot <<- gp
       
     } else {
       
@@ -630,6 +713,266 @@ print(p)
     } 
     
   }
+
+  # INTERNAL FUNCTIONS ########################################################
+  
+  .loadSavedSettings <- function(){
+    
+    # First check status of save flag.
+    if(!is.null(savegui)){
+      svalue(f1_savegui_chk) <- savegui
+      enabled(f1_savegui_chk) <- FALSE
+      if(debug){
+        print("Save GUI status set!")
+      }  
+    } else {
+      # Load save flag.
+      if(exists(".modelDropout_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".modelDropout_gui_savegui", envir=env)
+      }
+      if(debug){
+        print("Save GUI status loaded!")
+      }  
+    }
+    if(debug){
+      print(svalue(f1_savegui_chk))
+    }  
+    
+    # Then load settings if true.
+    if(svalue(f1_savegui_chk)){
+      if(exists(".modelDropout_gui_title", envir=env, inherits = FALSE)){
+        svalue(f1_title_edt) <- get(".modelDropout_gui_title", envir=env)
+      }
+      if(exists(".modelDropout_gui_x_title", envir=env, inherits = FALSE)){
+        svalue(f1_x_title_edt) <- get(".modelDropout_gui_x_title", envir=env)
+      }
+      if(exists(".modelDropout_gui_y_title", envir=env, inherits = FALSE)){
+        svalue(f1_y_title_edt) <- get(".modelDropout_gui_y_title", envir=env)
+      }
+      if(exists(".modelDropout_gui_remove_am", envir=env, inherits = FALSE)){
+        svalue(f1_removeAM_chk) <- get(".modelDropout_gui_remove_am", envir=env)
+      }
+      if(exists(".modelDropout_gui_print_model", envir=env, inherits = FALSE)){
+        svalue(f1_printmodel_chk) <- get(".modelDropout_gui_print_model", envir=env)
+      }
+      if(exists(".modelDropout_gui_mark_threshold", envir=env, inherits = FALSE)){
+        svalue(e1g1_threshold_chk) <- get(".modelDropout_gui_mark_threshold", envir=env)
+      }
+      if(exists(".modelDropout_gui_confidence_interval", envir=env, inherits = FALSE)){
+        svalue(e1g1_interval_spn) <- get(".modelDropout_gui_confidence_interval", envir=env)
+      }
+      if(exists(".modelDropout_gui_predict", envir=env, inherits = FALSE)){
+        svalue(e1g2_prediction_chk) <- get(".modelDropout_gui_predict", envir=env)
+      }
+      if(exists(".modelDropout_gui_predict_low", envir=env, inherits = FALSE)){
+        svalue(e1g2_predlow_edt) <- get(".modelDropout_gui_predict_low", envir=env)
+      }
+      if(exists(".modelDropout_gui_predict_high", envir=env, inherits = FALSE)){
+        svalue(e1g2_predhigh_edt) <- get(".modelDropout_gui_predict_high", envir=env)
+      }
+      if(exists(".modelDropout_gui_predict_line", envir=env, inherits = FALSE)){
+        svalue(e1g2_predlinetype_drp) <- get(".modelDropout_gui_predict_line", envir=env)
+      }
+      if(exists(".modelDropout_gui_predict_color", envir=env, inherits = FALSE)){
+        svalue(e1g2_colpred_drp) <- get(".modelDropout_gui_predict_color", envir=env)
+      }
+      if(exists(".modelDropout_gui_mark_interval", envir=env, inherits = FALSE)){
+        svalue(e1g3_interval_chk) <- get(".modelDropout_gui_mark_interval", envir=env)
+      }
+      if(exists(".modelDropout_gui_interval_alpha", envir=env, inherits = FALSE)){
+        svalue(e1g3_interval_spb) <- get(".modelDropout_gui_interval_alpha", envir=env)
+      }
+      if(exists(".modelDropout_gui_interval_color", envir=env, inherits = FALSE)){
+        svalue(e1g3_interval_drp) <- get(".modelDropout_gui_interval_color", envir=env)
+      }
+      if(exists(".modelDropout_gui_points_plot", envir=env, inherits = FALSE)){
+        svalue(e2_plotpoints_chk) <- get(".modelDropout_gui_points_plot", envir=env)
+      }
+      if(exists(".modelDropout_gui_points_shape", envir=env, inherits = FALSE)){
+        svalue(e2g1_shape_spb) <- get(".modelDropout_gui_points_shape", envir=env)
+      }
+      if(exists(".modelDropout_gui_points_alpha", envir=env, inherits = FALSE)){
+        svalue(e2g1_alpha_spb) <- get(".modelDropout_gui_points_alpha", envir=env)
+      }
+      if(exists(".modelDropout_gui_points_jitterh", envir=env, inherits = FALSE)){
+        svalue(e2g1_jitterh_edt) <- get(".modelDropout_gui_points_jitterh", envir=env)
+      }
+      if(exists(".modelDropout_gui_points_jitterv", envir=env, inherits = FALSE)){
+        svalue(e2g1_jitterv_edt) <- get(".modelDropout_gui_points_jitterv", envir=env)
+      }
+      if(exists(".modelDropout_gui_axes_y_min", envir=env, inherits = FALSE)){
+        svalue(e3_y_min_edt) <- get(".modelDropout_gui_axes_y_min", envir=env)
+      }
+      if(exists(".modelDropout_gui_axes_y_max", envir=env, inherits = FALSE)){
+        svalue(e3_y_max_edt) <- get(".modelDropout_gui_axes_y_max", envir=env)
+      }
+      if(exists(".modelDropout_gui_axes_x_min", envir=env, inherits = FALSE)){
+        svalue(e3_x_min_edt) <- get(".modelDropout_gui_axes_x_min", envir=env)
+      }
+      if(exists(".modelDropout_gui_axes_x_max", envir=env, inherits = FALSE)){
+        svalue(e3_x_max_edt) <- get(".modelDropout_gui_axes_x_max", envir=env)
+      }
+      if(exists(".modelDropout_gui_xlabel_size", envir=env, inherits = FALSE)){
+        svalue(e4_size_edt) <- get(".modelDropout_gui_xlabel_size", envir=env)
+      }
+      if(exists(".modelDropout_gui_xlabel_angle", envir=env, inherits = FALSE)){
+        svalue(e4_angle_spb) <- get(".modelDropout_gui_xlabel_angle", envir=env)
+      }
+      if(exists(".modelDropout_gui_xlabel_justh", envir=env, inherits = FALSE)){
+        svalue(e4_hjust_spb) <- get(".modelDropout_gui_xlabel_justh", envir=env)
+      }
+      if(exists(".modelDropout_gui_xlabel_justv", envir=env, inherits = FALSE)){
+        svalue(e4_vjust_spb) <- get(".modelDropout_gui_xlabel_justv", envir=env)
+      }
+      
+      if(debug){
+        print("Saved settings loaded!")
+      }
+    }
+    
+  }
+  
+  .saveSettings <- function(){
+    
+    # Then save settings if true.
+    if(svalue(f1_savegui_chk)){
+      
+      assign(x=".modelDropout_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".modelDropout_gui_title", value=svalue(f1_title_edt), envir=env)
+      assign(x=".modelDropout_gui_x_title", value=svalue(f1_x_title_edt), envir=env)
+      assign(x=".modelDropout_gui_y_title", value=svalue(f1_y_title_edt), envir=env)
+      assign(x=".modelDropout_gui_remove_am", value=svalue(f1_removeAM_chk), envir=env)
+      assign(x=".modelDropout_gui_print_model", value=svalue(f1_printmodel_chk), envir=env)
+      assign(x=".modelDropout_gui_mark_threshold", value=svalue(e1g1_threshold_chk), envir=env)
+      assign(x=".modelDropout_gui_confidence_interval", value=svalue(e1g1_interval_spn), envir=env)
+      assign(x=".modelDropout_gui_predict", value=svalue(e1g2_prediction_chk), envir=env)
+      assign(x=".modelDropout_gui_predict_low", value=svalue(e1g2_predlow_edt), envir=env)
+      assign(x=".modelDropout_gui_predict_high", value=svalue(e1g2_predhigh_edt), envir=env)
+      assign(x=".modelDropout_gui_predict_line", value=svalue(e1g2_predlinetype_drp), envir=env)
+      assign(x=".modelDropout_gui_predict_color", value=svalue(e1g2_colpred_drp), envir=env)
+      assign(x=".modelDropout_gui_mark_interval", value=svalue(e1g3_interval_chk), envir=env)
+      assign(x=".modelDropout_gui_interval_alpha", value=svalue(e1g3_interval_spb), envir=env)
+      assign(x=".modelDropout_gui_interval_color", value=svalue(e1g3_interval_drp), envir=env)
+      assign(x=".modelDropout_gui_points_plot", value=svalue(e2_plotpoints_chk), envir=env)
+      assign(x=".modelDropout_gui_points_shape", value=svalue(e2g1_shape_spb), envir=env)
+      assign(x=".modelDropout_gui_points_alpha", value=svalue(e2g1_alpha_spb), envir=env)
+      assign(x=".modelDropout_gui_points_jitterh", value=svalue(e2g1_jitterh_edt), envir=env)
+      assign(x=".modelDropout_gui_points_jitterv", value=svalue(e2g1_jitterv_edt), envir=env)
+      assign(x=".modelDropout_gui_axes_y_min", value=svalue(e3_y_min_edt), envir=env)
+      assign(x=".modelDropout_gui_axes_y_max", value=svalue(e3_y_max_edt), envir=env)
+      assign(x=".modelDropout_gui_axes_x_min", value=svalue(e3_x_min_edt), envir=env)
+      assign(x=".modelDropout_gui_axes_x_max", value=svalue(e3_x_max_edt), envir=env)
+      assign(x=".modelDropout_gui_xlabel_size", value=svalue(e4_size_edt), envir=env)
+      assign(x=".modelDropout_gui_xlabel_angle", value=svalue(e4_angle_spb), envir=env)
+      assign(x=".modelDropout_gui_xlabel_justh", value=svalue(e4_hjust_spb), envir=env)
+      assign(x=".modelDropout_gui_xlabel_justv", value=svalue(e4_vjust_spb), envir=env)
+            
+    } else { # or remove all saved values if false.
+      
+      if(exists(".modelDropout_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_savegui", envir = env)
+      }
+      if(exists(".modelDropout_gui_title", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_title", envir = env)
+      }
+      if(exists(".modelDropout_gui_x_title", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_x_title", envir = env)
+      }
+      if(exists(".modelDropout_gui_y_title", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_y_title", envir = env)
+      }
+      if(exists(".modelDropout_gui_remove_am", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_remove_am", envir = env)
+      }
+      if(exists(".modelDropout_gui_print_model", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_print_model", envir = env)
+      }
+      if(exists(".modelDropout_gui_mark_threshold", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_mark_threshold", envir = env)
+      }
+      if(exists(".modelDropout_gui_confidence_interval", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_confidence_interval", envir = env)
+      }
+      if(exists(".modelDropout_gui_predict", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_predict", envir = env)
+      }
+      if(exists(".modelDropout_gui_predict_low", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_predict_low", envir = env)
+      }
+      if(exists(".modelDropout_gui_predict_high", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_predict_high", envir = env)
+      }
+      if(exists(".modelDropout_gui_predict_line", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_predict_line", envir = env)
+      }
+      if(exists(".modelDropout_gui_predict_color", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_predict_color", envir = env)
+      }
+      if(exists(".modelDropout_gui_mark_interval", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_mark_interval", envir = env)
+      }
+      if(exists(".modelDropout_gui_interval_alpha", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_interval_alpha", envir = env)
+      }
+      if(exists(".modelDropout_gui_interval_color", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_interval_color", envir = env)
+      }
+      if(exists(".modelDropout_gui_points_plot", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_points_plot", envir = env)
+      }
+      if(exists(".modelDropout_gui_points_shape", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_points_shape", envir = env)
+      }
+      if(exists(".modelDropout_gui_points_alpha", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_points_alpha", envir = env)
+      }
+      if(exists(".modelDropout_gui_points_jitterh", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_points_jitterh", envir = env)
+      }
+      if(exists(".modelDropout_gui_points_jitterv", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_points_jitterv", envir = env)
+      }
+      if(exists(".modelDropout_gui_axes_y_min", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_axes_y_min", envir = env)
+      }
+      if(exists(".modelDropout_gui_axes_y_max", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_axes_y_max", envir = env)
+      }
+      if(exists(".modelDropout_gui_axes_x_min", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_axes_x_min", envir = env)
+      }
+      if(exists(".modelDropout_gui_axes_x_max", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_axes_x_max", envir = env)
+      }
+      if(exists(".modelDropout_gui_xlabel_size", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_xlabel_size", envir = env)
+      }
+      if(exists(".modelDropout_gui_xlabel_angle", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_xlabel_angle", envir = env)
+      }
+      if(exists(".modelDropout_gui_xlabel_justh", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_xlabel_justh", envir = env)
+      }
+      if(exists(".modelDropout_gui_xlabel_justv", envir=env, inherits = FALSE)){
+        remove(".modelDropout_gui_xlabel_justv", envir = env)
+      }
+      
+      
+      if(debug){
+        print("Settings cleared!")
+      }
+    }
+    
+    if(debug){
+      print("Settings saved!")
+    }
+    
+  }
+  
+  # END GUI ###################################################################
+  
+  # Load GUI settings.
+  .loadSavedSettings()
   
   # Show GUI.
   visible(w) <- TRUE

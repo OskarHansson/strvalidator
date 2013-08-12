@@ -2,11 +2,15 @@
 \alias{addData_gui}
 \title{Add data GUI}
 \usage{
-  addData_gui(env = parent.frame(), debug = FALSE)
+  addData_gui(env = parent.frame(), savegui = NULL,
+    debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data
   frames.}
+
+  \item{savegui}{logical indicating if GUI settings should
+  be saved in the environment.}
 
   \item{debug}{logical indicating printing debug
   information.}

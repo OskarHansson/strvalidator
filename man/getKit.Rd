@@ -11,6 +11,9 @@
 
   \item{showMessages}{logical, default TRUE for printing
   messages to the R promt.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
   list with kit information.
@@ -28,6 +31,7 @@
   of available kits is printed and NA returned.
 }
 \examples{
+# Show all information stored for kit with short name 'ESX17'.
 getKit("ESX17")
 }
 \keyword{internal}

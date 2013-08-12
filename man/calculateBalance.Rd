@@ -3,9 +3,8 @@
 \title{Calculate balance}
 \usage{
   calculateBalance(data, ref, perSample = TRUE,
-    lb = "prop", perDye = TRUE, minHeight = NULL,
-    maxHeight = NULL, ignoreCase = TRUE,
-    matchSource = "ref", debug = FALSE)
+    lb = "prop", perDye = TRUE, ignoreCase = TRUE,
+    debug = FALSE)
 }
 \arguments{
   \item{data}{a data frame containing at least
@@ -24,19 +23,8 @@
   is calculated within each dye.  FALSE locus balance is
   calculated globally.}
 
-  \item{minHeight}{integer giving the lower bound.}
-
-  \item{maxHeight}{integer giving the upper bound.}
-
   \item{ignoreCase}{logical indicating if sample matching
   should ignore case.}
-
-  \item{matchSource}{string. Use 'ref' for wildcard
-  matching of unique sample names in 'ref' with sample
-  names in 'data' (e.g. 'F' match 'F1' and 'AFG').  Use
-  'data' for exact matching of unique sample names in
-  'data' with sample names in 'ref' (e.g. 'F' match 'F' but
-  not 'F1' or 'AFG').}
 }
 \value{
   data.frame with with columns 'Sample.Name', 'Marker',
@@ -51,7 +39,9 @@
   Calculates the inter and intra locus balance for a
   filtered dataset. Takes 'slimmed' data for samples and
   references as input.At the moment it is better to discard
-  data prior to analysis than to use min/maxHeight.
+  data prior to analysis than to use min/maxHeight. NB!
+  Requires at least one row for each marker per sample,
+  even if no data.
 }
 \examples{
 data(ref2)

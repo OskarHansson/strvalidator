@@ -82,3 +82,58 @@ NULL
 #' @usage data(set2)
 #' @format A data frame with 32 rows and 5 variables
 NULL
+
+#' ESX17 example data for dropout analysis.
+#' 
+#' Data from dilution experiment for dropout analysis.
+#' Text file with exported GeneMapper genotypes table.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name set3
+#' @usage set3 <- read.table(file=paste(path.package("strvalidator",
+#'  quiet = FALSE),"/extdata/set3.txt",sep=""), 
+#'  header=TRUE, sep="\t", stringsAsFactors=FALSE)
+#' @format ASCII text file
+NULL
+
+#' ESX17 example data for dropout analysis.
+#' 
+#' Reference profiles for source samples.
+#' Text file in GeneMapper format.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref3
+#' @usage ref3 <- read.table(file=paste(path.package("strvalidator",
+#'  quiet = FALSE),"/extdata/ref3.txt",sep=""), 
+#'  header=TRUE, sep="\t", stringsAsFactors=FALSE)
+#' @format ASCII text file
+NULL
+
+#' ESX17 example data for dropout analysis.
+#' 
+#' A slimmed dataset containing data from
+#' dilution experiment for dropout analysis (from set3).
+#' One sample replicate has lower case sample name (bc9).
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name set4
+#' @usage data(set4)
+#' @format A data frame with 1609 rows and 5 variables
+NULL
+
+#' ESX17 example data for dropout analysis.
+#' 
+#' A slimmed dataset containing reference profiles for source samples in set4.
+#' Reference 'A2' has douoble entries for homozygotes.
+#' Reference 'F2' has single entries for homozygotes.
+#' Reference 'bc' has douoble entries for homozygotes, and lower case sample name. 
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref4
+#' @usage data(ref4)
+#' @format A data frame with 98 rows and 3 variables
+NULL

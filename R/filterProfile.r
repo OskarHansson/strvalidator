@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: Test if 'fat' warning is working.
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG
+# 06.06.2013: Fixed bug in checking for 'fat' data.
+# 03.06.2013: Fixed bug discarding NA loci when addMissingLoci=TRUE.
 # 28.04.2013: Fixed "NA" bug (NA worked but not "NA").
 # 15.04.2013: Option 'ignoreCase'.
 # 12.04.2013: Options 'keepNA' and 'addMissingLoci' implemented as 'slow' method. 
@@ -77,11 +79,11 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
   }
   
   # Check if slim format.
-  if(sum(grepl("Allele", names(ref))>1)){
+  if(sum(grepl("Allele", names(ref))) > 1){
     stop("'ref' must be in 'slim' format",
          call. = TRUE)
   }
-  if(sum(grepl("Allele", names(data))>1)){
+  if(sum(grepl("Allele", names(data))) > 1){
     stop("'data' must be in 'slim' format",
          call. = TRUE)
   }
@@ -255,7 +257,7 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
             height <- dataHeight[selected]
             
             # matching is of length 0 if no matching allele.
-            if(length(matching) == 0 & keepNA){
+            if(length(matching) == 0 & (keepNA | addMissingLoci)){
               # Setting matching=NA causes the below loop to be executed once.
               matching <- NA
               

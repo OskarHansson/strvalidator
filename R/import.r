@@ -6,12 +6,13 @@
 
 ################################################################################
 # CHANGE LOG
-# 08: Renamed from importGM to import.
-# 07: Added parameter 'resultFiles' and 'ResultFolder' for direct import.
-# 07: Changed regex from (".",".",extension, sep="") to (".*","\\.",extension, sep="")
-# 06: Roxygenized.
-# 05: add column 'File' when importing from a folder.
-# 04: new parameter 'extension' (fixes error in folder import)
+# 13.06.2013: Added parameter 'debug'. Fixed regexbug when importing from folder.
+# <13.06.2013: Renamed from importGM to import.
+# <13.06.2013: Added parameter 'resultFiles' and 'ResultFolder' for direct import.
+# <13.06.2013: Changed regex from (".",".",extension, sep="") to (".*","\\.",extension, sep="")
+# <13.06.2013: Roxygenized.
+# <13.06.2013: add column 'File' when importing from a folder.
+# <13.06.2013: new parameter 'extension' (fixes error in folder import)
 
 #' @title Import GeneMapper.
 #'
@@ -30,16 +31,16 @@
 #' @param resultFolder string if fodler name is provided files in folder
 #' will be imported without showing the select folder dialogue. 
 #' @param extension string providing the file extension.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with imported result.
 
 
 import <- function (folder = TRUE, extension="txt", 
-                      suffix = NA, prefix = NA, 
-                      resultFiles=NA, resultFolder=NA){
+                    suffix = NA, prefix = NA, 
+                    resultFiles=NA, resultFolder=NA,
+                    debug=FALSE){
 
-  debug <- FALSE
-  
   if(debug){
     print("IN: import")
     print("folder")
@@ -79,14 +80,29 @@ import <- function (folder = TRUE, extension="txt",
 		if (!is.na(resFolder)) {
 
 			# Create file filter.
-			fileFilter <- paste(".*","\\.",extension, sep="")
+			fileFilter <- paste(".*", sep="")
 			if (!is.na(prefix) && nchar(prefix) > 0) {
 				fileFilter <- paste(prefix, fileFilter, sep="") 
+				if(debug){
+				  print("prefix added:")
+				  print(fileFilter)
+				}  
 			}
 			if (!is.na(suffix) && nchar(suffix) > 0) {
 				fileFilter <- paste(fileFilter, suffix, sep="") 
+				if(debug){
+				  print("suffix added:")
+				  print(fileFilter)
+				}  
 			}
-
+			fileFilter <- paste(fileFilter,"\\.", extension, sep="") 
+			if(debug){
+			  print("fileFilter")
+			  print(fileFilter)
+			  print("resFolder")
+			  print(resFolder)
+			}  
+			
       # Get list of result files.
 			resultFiles <- list.files(path = resFolder, pattern = fileFilter,
 						full.names = TRUE, recursive = FALSE,

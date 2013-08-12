@@ -1,14 +1,24 @@
 ################################################################################
 # TODO LIST
 # TODO: Update saved object in dataset-env
+# TODO: Require gWidgetsRGtk2 ??
+# TODO: Save .importPath in ws for last used path (only in coming gWidgets2 ??)
 # TODO: STUTTER TAB:  button, copy to clipboard.
 # TODO: Multiple selection not working.
 
 # NOTE:
 # \u00B5 is the unicode for µ 
+# Access a file: system.file('doc', 'example', package = 'mypackage')
+# NOTE: Can't import data frame named 'drop'
+# NOTE: Buttons named 'Plot' will show up 'plot'.
+# NOTE: Some button names will change due to locale.
 
 ################################################################################
 # CHANGE LOG
+# 11.07.2013: Removed section 'export', new function export_gui().
+# 11.07.2013: Removed section 'load .RData', renamed button load ws -> load.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
+# 10.06.2013: Added a 'save gui' option.
 # 20.05.2013: New functions 'AddData', 'calculateH'.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 13.05.2013: Save/Load workspace added.
@@ -57,15 +67,18 @@ strvalidator <- function(debug=FALSE){
   }
 
   # Global variables.
-  .strvalidator_dataset <- new.env()
+  .strvalidator_env <- new.env()
   .separator <- .Platform$file.sep # Platform dependent path separator.
+  .save_gui <- TRUE
   .start_tab_name <- "Welcome"
-  .file_tab_name <- "File"
+  .file_tab_name <- "Workspace"
   .drylab_tab_name <- "DryLab"
   .edit_tab_name <- "Edit"
   .stutter_tab_name <- "Stutter"
   .balance_tab_name <- "Balance"
   .drop_tab_name <- "Dropout"
+  .object_classes_view <- c("data.frame", "ggplot")
+  .object_classes_import <- c("data.frame")
   
   # MAIN WINDOW  ##############################################################
   
@@ -138,51 +151,47 @@ strvalidator <- function(debug=FALSE){
   
   # STR TYPING KIT ------------------------------------------------------------
   
-  start_frame_1 <- gframe(text = "STR validator",
-                          markup = FALSE,
-                          pos = 0,
-                          horizontal=TRUE,
-                          container = start_tab,
-                          expand=TRUE) 
-  
   about_txt <- paste("STR validator is a package intended for validation of ",
                      "forensic short tandem repeat (STR)  DNA typing kit. ",
                      "This graphical user interface make it very easy to ",
                      "analyse data from internal validations. ",
-                     "Keep in mind that this is an early version still under ",
-                     "development (check the result carefully).\n\n",
+                     "The code has been extensively tested in order to assure correct results. ",
+                     "However, some bugs might still persist, so check the result carefully.\n\n",
+                     "Created by:\n",
+                     "Oskar Hansson, Department of Forensic Biology (NIPH, Norway)\n\n",
                      "Please report bugs to:\n",
                      "https://github.com/OskarHansson/strvalidator/issues\n\n",
                      "The source is hosted at GitHub:\n",
                      "https://github.com/OskarHansson/strvalidator", sep="")
   
-  gtext(text=about_txt, width = NULL, height = 300, font.attr = NULL, 
-        wrap = TRUE, expand=TRUE, container = start_frame_1) 
+  gtext(text=about_txt, width = NULL, height = NULL, font.attr = NULL, 
+        wrap = TRUE, expand=TRUE, container = start_tab) 
   
-  start_frame_2 <- gframe(text = "License",
-                          markup = FALSE,
-                          pos = 0,
-                          horizontal=TRUE,
-                          container = start_tab,
-                          expand=TRUE) 
-  
-  license_txt <- paste("Copyright (C) 2013 Oskar Hansson\n\n",
-                       "This program is free software; you can redistribute it and/or ",
-                       "modify it under the terms of the GNU General Public License ",
-                       "as published by the Free Software Foundation; either version 2 ",
-                       "of the License, or (at your option) any later version.\n\n",
-                       "This program is distributed in the hope that it will be useful, ",
-                       "but WITHOUT ANY WARRANTY; without even the implied warranty of ",
-                       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the ",
-                       "GNU General Public License for more details.\n\n",
-                       "You should have received a copy of the GNU General Public License ",
-                       "along with this program; if not, write to the Free Software ",
-                       "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, ",
-                       "MA  02110-1301, USA.", sep="")
-  
-  gtext(text=license_txt, width = NULL, height = 300, font.attr = NULL, 
-        wrap = TRUE, expand=TRUE, container = start_frame_2) 
-  
+  start_license_btn <- gbutton(text = "License", container = start_tab, expand=FALSE) 
+
+  addHandlerChanged(start_license_btn, handler = function (h, ...) {
+    
+    license_txt <- paste("Copyright (C) 2013 Oskar Hansson\n\n",
+                         "This program is free software; you can redistribute it and/or ",
+                         "modify it under the terms of the GNU General Public License ",
+                         "as published by the Free Software Foundation; either version 2 ",
+                         "of the License, or (at your option) any later version.\n\n",
+                         "This program is distributed in the hope that it will be useful, ",
+                         "but WITHOUT ANY WARRANTY; without even the implied warranty of ",
+                         "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the ",
+                         "GNU General Public License for more details.\n\n",
+                         "You should have received a copy of the GNU General Public License ",
+                         "along with this program; if not, write to the Free Software ",
+                         "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, ",
+                         "MA  02110-1301, USA.", sep="")
+
+    gmessage(message = license_txt,
+             title="License",
+             icon = "info",
+             parent = w) 
+    
+    
+  } )
   
   # FILE ######################################################################
   
@@ -197,7 +206,7 @@ strvalidator <- function(debug=FALSE){
     print("LOADED DATASETS")
   }
   
-  file_loaded_f <- gframe(text = "Loaded datasets",
+  file_loaded_f <- gframe(text = "Project",
                           markup = FALSE,
                           pos = 0,
                           horizontal=TRUE,
@@ -208,37 +217,57 @@ strvalidator <- function(debug=FALSE){
                           container = file_loaded_f,
                           expand=FALSE)
   
-  file_loaded_ws_btn <- gbutton(text="Load workspace",
+  file_loaded_ws_btn <- gbutton(text="Open",
                                     border=TRUE,
                                     container = file_loaded_f1)
   
-  file_loaded_import_btn <- gbutton(text="Import from GMIDX",
+  file_loaded_ws_save_btn <- gbutton(text="Save",
                                      border=TRUE,
                                      container = file_loaded_f1)
   
-  file_loaded_refresh_btn <- gbutton(text="Refresh list",
+  file_loaded_import_btn <- gbutton(text="Import",
+                                     border=TRUE,
+                                     container = file_loaded_f1)
+  
+  file_loaded_export_btn <- gbutton(text="Export",
+                                    border=TRUE,
+                                    container = file_loaded_f1)
+  
+  file_loaded_refresh_btn <- gbutton(text="Refresh",
                                      border=TRUE,
                                      container = file_loaded_f1) 
   
-  file_loaded_rm_btn <- gbutton(text="Remove selected",
+  file_loaded_rm_btn <- gbutton(text="Remove",
                                  border=TRUE,
                                  container = file_loaded_f1) 
 
-  file_loaded_ws_save_btn <- gbutton(text="Save workspace",
-                                border=TRUE,
-                                container = file_loaded_f1)
-  
   file_loaded_rename_btn <- gbutton(text="Rename",
                                      border=TRUE,
                                      container = file_loaded_f1)
   
-  file_loaded_tbl <- gtable(items=listObjects(env=.strvalidator_dataset,
-                                              objClass="data.frame"), 
+  file_loaded_savegui_chk <- gcheckbox(text="Save GUI settings",
+                                             checked=.save_gui,
+                                             container=file_loaded_f1)
+  
+  
+  file_loaded_tbl <- gtable(items=listObjects(env=.strvalidator_env,
+                                              objClass=.object_classes_view), 
                             multiple = TRUE,
                             expand = TRUE,
                             container = file_loaded_f) 
 
   
+  addHandlerChanged(file_loaded_savegui_chk, handler = function (h, ...) {
+    
+    .save_gui <<- svalue(file_loaded_savegui_chk)
+
+    if (debug){
+      print("In save GUI handler:")
+      print(.save_gui)
+    }
+    
+  } )
+
   addHandlerChanged(file_loaded_rename_btn, handler = function (h, ...) {
     
     
@@ -259,10 +288,10 @@ strvalidator <- function(debug=FALSE){
       }
       
       assign(newName_inp,
-             get(object, envir = .strvalidator_dataset)
-             , envir = .strvalidator_dataset)
+             get(object, envir = .strvalidator_env)
+             , envir = .strvalidator_env)
       
-      remove(list=object, envir=.strvalidator_dataset)
+      remove(list=object, envir=.strvalidator_env)
       
       .refreshLoaded()
       
@@ -279,15 +308,16 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(file_loaded_ws_btn, handler = function (h, ...) {
     
     
-    ws_path <- gfile(text="Select a saved workspace", type="open",
+    ws_path <- gfile(text="Select a saved workspace or dataset", type="open",
                      filter = list("R files" = list(patterns = c("*.R","*.Rdata"))),
                      multi=FALSE)
     
     if(!is.na(ws_path)){
       if(file.exists(ws_path)){
         
-        load(file=ws_path, envir = .strvalidator_dataset)
+        load(file=ws_path, envir = .strvalidator_env)
         .refreshLoaded()
+        .loadSavedSettings()
         
       } else {
         
@@ -302,8 +332,14 @@ strvalidator <- function(debug=FALSE){
   
   addHandlerChanged(file_loaded_import_btn, handler = function (h, ...) {
     
-    import_gui(env=.strvalidator_dataset)
+    import_gui(env=.strvalidator_env, savegui=.save_gui)
     .refreshLoaded()
+    
+  } )  
+
+  addHandlerChanged(file_loaded_export_btn, handler = function (h, ...) {
+    
+    export_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )  
 
@@ -327,7 +363,7 @@ strvalidator <- function(debug=FALSE){
     if (!is.na(val_obj) && !is.null(val_obj)){
       
       # Get active reference data frame.
-      remove(list=val_obj, envir=.strvalidator_dataset)
+      remove(list=val_obj, envir=.strvalidator_env)
       
       .refreshLoaded()
       
@@ -338,16 +374,16 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(file_loaded_ws_save_btn, handler = function (h, ...) {
     
     
-    ws_save_path <- gfile(text="Select a directory to save workspace in",
+    ws_save_path <- gfile(text="Select a directory to save project in",
                           type="selectdir",
                           filter = list("R files" = list(patterns = c("*.R","*.Rdata"))),
                           multi=FALSE)
     
-    
-    ws_name <- ginput(message="Save current workspace as", text="",
-           title="Input",
-           icon ="info",
-           parent=w)
+    ws_name <- ginput(message="Input project name",
+                      text="",
+                      title="Save as",
+                      icon ="info",
+                      parent=w)
     
     if(!is.na(ws_name) && !ws_name==""){
       
@@ -358,25 +394,27 @@ strvalidator <- function(debug=FALSE){
       }
       
       # TODO: check if file exists. ask for overwrite.
-      #if(file.exists(ws_save_path)){
+      #if(file.exists(ws_full_name)){
         
       if(file.exists(ws_save_path)){
         
+        .saveSettings()
+        
         save(file=ws_full_name, 
-             list=ls(envir = .strvalidator_dataset, all.names = TRUE),
-             envir = .strvalidator_dataset)
+             list=ls(envir = .strvalidator_env, all.names = TRUE),
+             envir = .strvalidator_env)
         
       } else {
         
-        gmessage(message="The workspace file was not found",
-                 title="File not found",
+        gmessage(message="The project directory was not found",
+                 title="Directory not found",
                  icon = "error",
                  parent = w) 
       }
     
     } else {
       gmessage(message="A file name must be given",
-               title="No file name",
+               title="File name required",
                icon = "error",
                parent = w) 
     }
@@ -417,8 +455,8 @@ strvalidator <- function(debug=FALSE){
   glabel("", container=file_ws_f1) # Adds some space.
   
   file_ws_drp <- gdroplist(items=c("<Select dataframe>", 
-                                   listObjects(env=.strvalidator_dataset,
-                                             objClass="data.frame")), 
+                                   listObjects(env=.strvalidator_env,
+                                             objClass=.object_classes_import)), 
                            selected = 1,
                            editable = FALSE,
                            container = file_ws_f) 
@@ -431,12 +469,13 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(file_ws_load_btn, handler = function(h, ...) {
     
     # Get selected dataset name.
-    val_obj <- svalue(file_ws_drp)
+    val_name <- svalue(file_ws_drp)
     
-    if (!is.na(val_obj) && !is.null(val_obj)){
+    if (!is.na(val_name) && !is.null(val_name)){
       
       # Load dataset.
-      assign(val_obj, get(val_obj), envir=.strvalidator_dataset)
+      saveObject(name=val_name, object=get(val_name),
+                 parent=w, env=.strvalidator_env)
       
       # Update list.
       .refreshLoaded()
@@ -451,248 +490,6 @@ strvalidator <- function(debug=FALSE){
     print("STR TYPING KIT")
   }
   
-  #glabel("", container=file_tab) # Adds some space.
-  
-  
-  # LOAD ----------------------------------------------------------------------  
-  
-  if(debug){
-    print("LOAD")
-  }
-  
-  file_load_f <- gframe(text = "Load .RData file",
-                        markup = FALSE,
-                        pos = 0,
-                        horizontal=TRUE,
-                        container = file_tab,
-                        expand=FALSE)
-
-  glabel("", container=file_load_f) # Adds some space.
-  
-  loadDefText <- "Select file..."
-  file_load_brw <- gfilebrowse(text=loadDefText,
-                               quote=FALSE,
-                               type="open",
-                               container=file_load_f)
-  
-  file_load_btn <- gbutton(text="Load",
-                           border=TRUE,
-                           expand=FALSE,
-                           container=file_load_f)
-  
-  glabel("", container=file_load_f) # Adds some space.
-
-  addHandlerChanged(file_load_btn, handler = function(h, ...) {
-    
-    # Get values.
-    file_val <- svalue(file_load_brw)
-    
-    if(file.exists(file_val)){
-      #if(file_val != "" && file_val != loadDefText){
-      
-      load(file_val, envir = .strvalidator_dataset)
-      
-      .refreshLoaded()
-      
-    } else {
-      
-      gmessage(message="File not found.",
-               title="Error",
-               icon = "error")      
-    }       
-  } )
-  
-  
-  
-  
-  # EXPORT --------------------------------------------------------------------
-
-  file_export_f <- gframe(text = "Export | Save",
-                        markup = FALSE,
-                        pos = 0,
-                        horizontal=FALSE,
-                        container = file_tab,
-                        expand=FALSE)
-  
-
-  file_export_grid <- glayout(container = file_export_f)
-
-  file_export_grid[1,1] <- file_export_chk <- gcheckbox(text="Use object names",
-                                                        checked = TRUE,
-                                                        container = file_export_grid)
-  
-  file_export_grid[2,1] <- glabel(text="File name (separated by | ):",
-                                  container=file_export_grid,
-                                  anchor=c(-1 ,0))
-  
-  
-  file_export_grid[3,1] <- file_export_name_txt <- gedit(text="",
-                                                     container=file_export_grid)
-  
-  enabled(file_export_name_txt) <- FALSE
-  
-  file_export_grid[2,2] <- glabel(text="File extension:",
-                                  container=file_export_grid,
-                                  anchor=c(-1 ,0))
-  
-
-  file_export_grid[3,2] <- file_export_ext_cbo <- gcombobox(items=c(".txt", ".RData"),
-                                                            selected = 1,
-                                                            editable = TRUE,
-                                                            container = file_export_grid)
-  
-  file_export_grid[2,3] <- glabel(text="Delimeter:",
-                                  container=file_export_grid,
-                                  anchor=c(-1 ,0))
-  
-  file_export_grid[3,3] <- file_export_del_drp <- gdroplist(items=c("TAB","SPACE","COMMA"), 
-                                                   selected = 1,
-                                                   editable = FALSE,
-                                                   container = file_export_grid) 
-  
-
-  file_export_grid[4,1] <- glabel(text="File path:",
-                                    container=file_export_grid,
-                                    anchor=c(-1 ,0))
-  
-  expDefText <- "Select folder..."
-  file_export_grid[5,1:2] <- file_export_save_brw <- gfilebrowse(text=expDefText,
-                                                        quote=FALSE,
-                                                        type="selectdir",
-                                                        container=file_export_grid)
-  
-  file_export_grid[5,3] <- file_export_save_btn <- gbutton(text="Save",
-                                                    border=TRUE,
-                                                    container=file_export_grid) 
-  
-  addHandlerChanged(file_export_chk, handler = function(h, ...) {
-    
-    # Get values.
-    ext_val <- svalue(file_export_chk)
-    
-    if(ext_val){
-      enabled(file_export_name_txt) <- FALSE
-    } else {
-      enabled(file_export_name_txt) <- TRUE
-    }    
-  } )
-  
-  addHandlerChanged(file_export_ext_cbo, handler = function(h, ...) {
-    
-    # Get values.
-    ext_val <- svalue(file_export_ext_cbo)
-    
-    if(ext_val == ".RData"){
-      enabled(file_export_del_drp) <- FALSE
-    } else {
-      enabled(file_export_del_drp) <- TRUE
-    }    
-  } )
-  
-  addHandlerChanged(file_export_save_btn, handler = function(h, ...) {
-    
-    # Get values.
-    path_val <- svalue(file_export_save_brw)
-    file_val <- svalue(file_export_name_txt)
-    ext_val <- svalue(file_export_ext_cbo)
-    del_val <- svalue(file_export_del_drp, index=TRUE)
-    data_val <- svalue(file_loaded_tbl)
-    chk_val <- svalue(file_export_chk)
-    
-    if(debug){
-      print("path_val")
-      print(path_val)
-      print("file_val")
-      print(file_val)
-      print("ext_val")
-      print(ext_val)
-      print("del_val")
-      print(del_val)
-      print("data_val")
-      print(data_val)
-    }
-
-    # Create file names.
-    nbObj <- length(data_val)
-    if(chk_val){
-      #file_val <- deparse(substitute(data_val))
-      file_val <- data_val
-    } else {
-      file_val <-  unlist(strsplit(file_val, "\\|"))
-      if(length(file_val) == nbObj){
-        file_val <- make.names(file_val, unique=TRUE)
-      } else {
-        file_val <- make.names(rep(file_val[1], nbObj), unique=TRUE)
-      }
-    }
-
-    if(debug){
-      print("file_val")
-      print(file_val)
-    }
-    
-    if(file_val != "" && path_val != expDefText){
-
-      # Add trailing path separator if not present.
-      if(substr(path_val, nchar(path_val), nchar(path_val)+1) != .separator){
-        path_val <- paste(path_val, .separator, sep="")
-      }
-
-      if(debug){
-        print("path_val")
-        print(path_val)
-      }
-      
-      # Use 'save' or 'write.table'.
-      if(ext_val == ".RData"){
-
-        for(i in seq(along=nbObj)){
-          
-          # Construct complete file name.
-          complete_file_name <- paste(path_val, file_val[i], ".RData", sep="")
-          
-          save(list=data_val[i], file=complete_file_name, envir=.strvalidator_dataset)
-        }
-        
-      } else {
-
-        # Assign a delimeter character.
-        if(del_val == 1){
-          delimeter <- "\t"   
-        } else if(del_val == 2){
-          delimeter <- " "
-        } else if(del_val == 3){
-          delimeter <- ","
-        } 
-
-        if(debug){
-          print("del_val")
-          print(del_val)
-        }
-
-        for(i in seq(along=nbObj)){
-          
-          # Construct complete file name.
-          complete_file_name <- paste(path_val, file_val[i], ext_val, sep="")
-          
-          write.table(x=get(data_val[i], envir=.strvalidator_dataset),
-                      file = complete_file_name,
-                      append = FALSE, quote = FALSE, sep = delimeter,
-                      dec = ".", row.names = FALSE,
-                      col.names = TRUE)
-        }
-      }
-      
-    } else {
-      
-      gmessage(message="File name and path must be provided.",
-               title="Error",
-               icon = "error")      
-    }    
-  } )
-  
-  
-
   # DRY LAB  ##################################################################
   
   if(debug){
@@ -733,14 +530,14 @@ strvalidator <- function(debug=FALSE){
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[1,2] <- glabel(text="View or edit a data frame.",
+  edit_grid[1,2] <- glabel(text="View or edit a dataset",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_dataset)
+    editData_gui(env=.strvalidator_env)
     
   } )
 
@@ -750,7 +547,7 @@ strvalidator <- function(debug=FALSE){
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[2,2] <- glabel(text="Trim a dataset.",
+  edit_grid[2,2] <- glabel(text="Trim/discard samples or columns from a dataset.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
@@ -758,7 +555,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_trim_btn, handler = function(h, ...) {
     
     # Open GUI.
-    trim_gui(env=.strvalidator_dataset)
+    trim_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
 
@@ -768,7 +565,7 @@ strvalidator <- function(debug=FALSE){
                                         border=TRUE,
                                         container = edit_grid) 
   
-  edit_grid[3,2] <- glabel(text="Slim a dataset.",
+  edit_grid[3,2] <- glabel(text="Slim a dataset to 'long' format.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
@@ -776,7 +573,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_slim_btn, handler = function(h, ...) {
 
       # Open GUI.
-      slim_gui(env=.strvalidator_dataset)
+      slim_gui(env=.strvalidator_env, savegui=.save_gui)
       
   } )
   
@@ -793,126 +590,144 @@ strvalidator <- function(debug=FALSE){
   
   addHandlerChanged(edit_filter_btn, handler = function(h, ...) {
     
-    filterProfile_gui(env=.strvalidator_dataset)
+    filterProfile_gui(env=.strvalidator_env, savegui=.save_gui)
+    
+  } )
+
+  # CROP ----------------------------------------------------------------------
+  
+  edit_grid[5,1] <- edit_crop_btn <- gbutton(text="Crop",
+                                             border=TRUE,
+                                             container = edit_grid) 
+  
+  edit_grid[5,2] <- glabel(text="Crop/discard, or replace data.",
+                           container=edit_grid,
+                           anchor=c(-1 ,0))
+  
+  
+  addHandlerChanged(edit_crop_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    cropData_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
 
   # GUESS ---------------------------------------------------------------------
   
-  edit_grid[5,1] <- edit_guess_btn <- gbutton(text="Guess",
+  edit_grid[6,1] <- edit_guess_btn <- gbutton(text="Guess",
                                                border=TRUE,
                                                container = edit_grid) 
   
-  edit_grid[5,2] <- glabel(text="Guess the profile from a dataset.",
+  edit_grid[6,2] <- glabel(text="Guess the profile from raw DNA result.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   
   addHandlerChanged(edit_guess_btn, handler = function(h, ...) {
     
-    guessProfile_gui(env=.strvalidator_dataset)
+    guessProfile_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
 
   # ADD DYE -------------------------------------------------------------------
   
-  edit_grid[6,1] <- edit_addDye_btn <- gbutton(text="Add Dye",
+  edit_grid[7,1] <- edit_addDye_btn <- gbutton(text="Add Dye",
                                                border=TRUE,
                                                container = edit_grid) 
   
-  edit_grid[6,2] <- glabel(text="Add dye according to kit.",
+  edit_grid[7,2] <- glabel(text="Add dye information according to kit.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_addDye_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addDye_gui(env=.strvalidator_dataset)
+    addDye_gui(env=.strvalidator_env)
     
   } )
   
   # ADD DATA -------------------------------------------------------------------
   
-  edit_grid[7,1] <- edit_addData_btn <- gbutton(text="Add Data",
+  edit_grid[8,1] <- edit_addData_btn <- gbutton(text="Add Data",
                                                border=TRUE,
                                                container = edit_grid) 
   
-  edit_grid[7,2] <- glabel(text="Add new information to a dataset.",
+  edit_grid[8,2] <- glabel(text="Add new information to a dataset.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_addData_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addData_gui(env=.strvalidator_dataset)
+    addData_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
 
   # CHECK SUBSET --------------------------------------------------------------
   
-  edit_grid[8,1] <- edit_check_btn <- gbutton(text="Check",
+  edit_grid[9,1] <- edit_check_btn <- gbutton(text="Check",
                                                border=TRUE,
                                                container = edit_grid) 
   
-  edit_grid[8,2] <- glabel(text="Check the subsetting of a dataset.",
+  edit_grid[9,2] <- glabel(text="Check the subsetting of a dataset.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_check_btn, handler = function(h, ...) {
     
     # Open GUI.
-    checkSubset_gui(env=.strvalidator_dataset)
+    checkSubset_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
 
   # CONCATENATE --------------------------------------------------------------
   
-  edit_grid[9,1] <- edit_conc_btn <- gbutton(text="Concatenate",
+  edit_grid[10,1] <- edit_conc_btn <- gbutton(text="Concatenate",
                                               border=TRUE,
                                               container = edit_grid) 
   
-  edit_grid[9,2] <- glabel(text="Concatenates two dataset.",
+  edit_grid[10,2] <- glabel(text="Concatenate two datasets.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_conc_btn, handler = function(h, ...) {
     
     # Open GUI.
-    concatenate_gui(env=.strvalidator_dataset)
+    concatenate_gui(env=.strvalidator_env)
     
   } )
   
   # CALCULATE HETEROZYGOUS ----------------------------------------------------
   
-  edit_grid[10,1] <- edit_het_btn <- gbutton(text="Heterozygous",
+  edit_grid[11,1] <- edit_het_btn <- gbutton(text="Heterozygous",
                                            border=TRUE,
                                            container = edit_grid) 
   
-  edit_grid[10,2] <- glabel(text="Indicate heterozygous loci.",
+  edit_grid[11,2] <- glabel(text="Indicate heterozygous loci.",
                             container=edit_grid,
                             anchor=c(-1 ,0))
   
   addHandlerChanged(edit_het_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateHeterozygous_gui(env=.strvalidator_dataset)
+    calculateHeterozygous_gui(env=.strvalidator_env)
     
   } )
 
   # CALCULATE H ---------------------------------------------------------------
   
-  edit_grid[11,1] <- edit_h_btn <- gbutton(text="Calculate H",
+  edit_grid[12,1] <- edit_h_btn <- gbutton(text="Calculate H",
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[11,2] <- glabel(text="Calculate the average peak height per sample.",
+  edit_grid[12,2] <- glabel(text="Calculate the average peak height per sample.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_h_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateH_gui(env=.strvalidator_dataset)
+    calculateH_gui(env=.strvalidator_env)
     
   } )
   
@@ -937,7 +752,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_dataset)
+    editData_gui(env=.strvalidator_env)
     
   } )
 
@@ -954,7 +769,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_subset_btn, handler = function(h, ...) {
     
     # Open GUI.
-    checkSubset_gui(env=.strvalidator_dataset)
+    checkSubset_gui(env=.strvalidator_env)
     
   } )
  
@@ -973,7 +788,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_calculate_btn, handler = function(h, ...) {
 
       # Open GUI.
-      calculateStutter_gui(env=.strvalidator_dataset)
+      calculateStutter_gui(env=.strvalidator_env, savegui=.save_gui)
       
   } )
 
@@ -983,35 +798,32 @@ strvalidator <- function(debug=FALSE){
                                                     border=TRUE,
                                                     container = stutter_grid) 
   
-  stutter_grid[4,2] <- glabel(text="Create plots for analysed data",
+  stutter_grid[4,2] <- glabel(text="Create plots for analysed data.",
                                container=stutter_grid)
    
   addHandlerChanged(stutter_plot_btn, handler = function(h, ...) {
     
       # Call function.
-      plotStutter_gui(env=.strvalidator_dataset)
+      plotStutter_gui(env=.strvalidator_env, savegui=.save_gui)
       
   } )
   
   
   # SUMMARY TABLE -------------------------------------------------------------
   
-  stutter_grid[5,1] <- stutter_table_btn <- gbutton(text="Summarize in table",
+  stutter_grid[5,1] <- stutter_table_btn <- gbutton(text="Summarize",
                                                         border=TRUE,
                                                         container = stutter_grid) 
   
-  stutter_grid[5,2] <- stutter_table_opt <- gradio(items=c("global","locus","stutter"),
-                                                    selected = 3,
-                                                    horizontal = FALSE,
-                                                    container = stutter_grid)
-  
-  # TODO: Implement
-  enabled(stutter_table_btn) <- FALSE
-  
+  stutter_grid[5,2] <- glabel(text="Summarize stutterdata in a table.",
+                              container=stutter_grid)
+
   addHandlerChanged(stutter_table_btn, handler = function(h, ...) {
     
-    val_opt <- svalue(stutter_table_opt)
+    val_save <- svalue(file_loaded_savegui_chk)
     
+    # Call function.
+    tableStutter_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
 
@@ -1049,7 +861,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_dataset)
+    editData_gui(env=.strvalidator_env)
     
   } )
 
@@ -1067,7 +879,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_calculate_btn, handler = function(h, ...) {
     
       # Open GUI.
-      calculateBalance_gui(env=.strvalidator_dataset)
+      calculateBalance_gui(env=.strvalidator_env, savegui=.save_gui)
       
   } )
   
@@ -1083,7 +895,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_plot_btn, handler = function(h, ...) {
     
     # Call function.
-    plotBalance_gui(env=.strvalidator_dataset)
+    plotBalance_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
   
@@ -1110,7 +922,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_dataset)
+    editData_gui(env=.strvalidator_env)
     
   } )
 
@@ -1128,7 +940,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_calculate_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateDropout_gui(env=.strvalidator_dataset)
+    calculateDropout_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
   
@@ -1144,7 +956,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_model_btn, handler = function(h, ...) {
     
     # Call function.
-    modelDropout_gui(env=.strvalidator_dataset)
+    modelDropout_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
   
@@ -1160,7 +972,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_plot_btn, handler = function(h, ...) {
     
     # Call function.
-    plotDropout_gui(env=.strvalidator_dataset)
+    plotDropout_gui(env=.strvalidator_env, savegui=.save_gui)
     
   } )
   
@@ -1211,10 +1023,57 @@ strvalidator <- function(debug=FALSE){
       
   })
 
+  # INTERNAL FUNCTIONS ########################################################
+  
+  .loadSavedSettings <- function(){
+    
+    # First load save flag.
+    if(exists(".strvalidator_savegui", envir=.strvalidator_env, inherits = FALSE)){
+      svalue(file_loaded_savegui_chk) <- get(".strvalidator_savegui", envir=.strvalidator_env)
+      # .save_gui <<- svalue(file_loaded_savegui_chk) # Already saved in handler?
+    }
+    
+    # Then load settings if true.
+    if(svalue(file_loaded_savegui_chk)){
+#       if(exists(".strvalidator...", envir=.strvalidator_env, inherits = FALSE)){
+#         svalue(f1g1_ratio_spb) <- get(".strvalidator...", envir=.strvalidator_env)
+#       }
+    }
+    
+    if(debug){
+      print("Saved settings loaded!")
+    }
+    
+  }
+  
+  .saveSettings <- function(){
+    
+    # Then save settings if true.
+    if(svalue(file_loaded_savegui_chk)){
+      
+      assign(x=".strvalidator_savegui", value=svalue(file_loaded_savegui_chk), envir=.strvalidator_env)
+      
+    } else { # or remove all saved values if false.
+      
+      if(exists(".strvalidator_savegui", envir=.strvalidator_env, inherits = FALSE)){
+        remove(".strvalidator_savegui", envir = .strvalidator_env)
+      }
+      
+      if(debug){
+        print("Settings cleared!")
+      }
+    }
+    
+    if(debug){
+      print("Settings saved!")
+    }
+    
+  }
+  
   .refreshWs <- function(){
       
     # Get data frames in global workspace.
-    dfs <- listObjects(env=.GlobalEnv, objClass="data.frame")
+    dfs <- listObjects(env=.GlobalEnv, objClass=.object_classes_import)
     
     if(!is.null(dfs)){
       
@@ -1238,7 +1097,7 @@ strvalidator <- function(debug=FALSE){
     }
     
     # Get data frames.
-    dfs <- listObjects(env=.strvalidator_dataset, objClass="data.frame")
+    dfs <- listObjects(env=.strvalidator_env, objClass=.object_classes_view)
     
     if(!is.null(dfs)){
       

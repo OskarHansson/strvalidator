@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: .
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG
+# 26.07.2013: 'objClass' can now be a vector.
 # 17.05.2013: New parameters 'objClass', 'debug'.
 # 17.05.2013: Made general. Changed name from listDataFrames -> listObjects.
 # <17.05.2013: First version.
@@ -19,7 +20,7 @@
 #' Returns a list of objects of the specified class in the environment.
 #' 
 #' @param env environment in wich to search for objects.
-#' @param objClass character string specifying the object class.
+#' @param objClass character string or vector specifying the object class.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return character vector with the object names.
@@ -60,10 +61,12 @@ listObjects <- function(env=parent.frame(), objClass=NULL, debug=FALSE){
       
     }
     
-    # Filter objects with specified class.
-    for(i in seq(along=classes)){
-      if(objClass %in% classes[[i]]){
-        res <- c(res, wsObj[i])
+    # Filter objects with specified classes.
+    for(c in seq(along=objClass)){
+      for(i in seq(along=classes)){
+        if(objClass[c] %in% classes[[i]]){
+          res <- c(res, wsObj[i])
+        }
       }
     }
     

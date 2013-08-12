@@ -8,8 +8,8 @@
 \arguments{
   \item{env}{environment in wich to search for objects.}
 
-  \item{objClass}{character string specifying the object
-  class.}
+  \item{objClass}{character string or vector specifying the
+  object class.}
 
   \item{debug}{logical indicating printing debug
   information.}

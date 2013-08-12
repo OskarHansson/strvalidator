@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 18.07.2013: Check before overwrite object.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 17.05.2013: First version.
 
 
@@ -26,18 +28,20 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
   require(gWidgets)
   options(guiToolkit="RGtk2")
   
-  gData1 <- NULL
-  gData2 <- NULL
-  gData1Name <- NULL
-  gData2Name <- NULL
+  # Global variables.
+  .gData1 <- NULL
+  .gData2 <- NULL
+  .gData1Name <- NULL
+  .gData2Name <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
   
-  
+  # Main window.
   w <- gwindow(title="Concatenate", visible=FALSE)
   
+  # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=15,
                use.scrollwindow=FALSE,
@@ -68,18 +72,18 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(f1g1_data1_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gData1 <<- get(val_obj, envir=env)
-      gData1Name <<- val_obj
+      .gData1 <<- get(val_obj, envir=env)
+      .gData1Name <<- val_obj
       
-      svalue(f1g1_data1_col_lbl) <- paste(" ", ncol(gData1), " columns")
-      svalue(f2_name) <- paste(gData1Name, gData2Name, sep="_")
+      svalue(f1g1_data1_col_lbl) <- paste(" ", ncol(.gData1), " columns")
+      svalue(f2_name) <- paste(.gData1Name, .gData2Name, sep="_")
         
     } else {
       
-      gData1 <<- NULL
-      gData1Name <<- NULL
+      .gData1 <<- NULL
+      .gData1Name <<- NULL
       svalue(f1g1_data1_col_lbl) <- " 0 columns"
       svalue(f2_name) <- ""
       
@@ -102,18 +106,18 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(f1g1_data2_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gData2 <<- get(val_obj, envir=env)
-      gData2Name <<- val_obj
+      .gData2 <<- get(val_obj, envir=env)
+      .gData2Name <<- val_obj
       
-      svalue(f1g1_data2_col_lbl) <- paste(" ", ncol(gData2), " columns")
-      svalue(f2_name) <- paste(gData1Name, gData2Name, sep="_")
+      svalue(f1g1_data2_col_lbl) <- paste(" ", ncol(.gData2), " columns")
+      svalue(f2_name) <- paste(.gData1Name, .gData2Name, sep="_")
       
     } else {
       
-      gData2 <<- NULL
-      gData1Name <<- NULL
+      .gData2 <<- NULL
+      .gData1Name <<- NULL
       svalue(f1g1_data2_col_lbl) <- " 0 samples"
       svalue(f2_name) <- ""
       
@@ -141,15 +145,16 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
   
   addHandlerChanged(concatenate_btn, handler = function(h, ...) {
     
-    colOk <- all(names(gData1) == names(gData2))
+    colOk <- all(names(.gData1) == names(.gData2))
     
     if (colOk){
       
-      datanew <- rbind(gData1,gData2)
-      newName <- svalue(f2_name)
+      datanew <- rbind(.gData1,.gData2)
+      val_name <- svalue(f2_name)
       
-      assign(newName, datanew, envir = env)
-
+      # Save data.
+      saveObject(name=val_name, object=datanew, parent=w, env=env)
+      
       if(debug){
         print(datanew)
         print(paste("EXIT:", match.call()[[1]]))

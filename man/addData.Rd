@@ -3,7 +3,7 @@
 \title{Adds new data columns to a data frame}
 \usage{
   addData(data, newData, byCol, thenByCol = NULL,
-    exact = TRUE)
+    exact = TRUE, ignoreCase = TRUE, debug = FALSE)
 }
 \arguments{
   \item{data}{Data frame containing your main data.}
@@ -16,6 +16,11 @@
   \item{thenByCol}{character, key column level 2.}
 
   \item{exact}{logical, TRUE matches keys exact.}
+
+  \item{ignoreCase}{logical, TRUE ignore case.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
   data.frame the original data frame containing additional

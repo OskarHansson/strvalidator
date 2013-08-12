@@ -1,0 +1,26 @@
+\name{export_gui}
+\alias{export_gui}
+\title{Export objects}
+\usage{
+  export_gui(env = parent.frame(), savegui = NULL,
+    debug = FALSE)
+}
+\arguments{
+  \item{env}{environment where the objects exist. Default
+  is the current environment.}
+
+  \item{savegui}{logical indicating if GUI settings should
+  be saved in the environment.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\description{
+  \code{export_gui} is a GUI wrapper for the \code{export}
+  function.
+}
+\details{
+  Simplifies the use of the \code{export} function by
+  providing a graphical user interface to it.
+}
+

@@ -4,9 +4,12 @@
 
 ################################################################################
 # CHANGE LOG
-# 04: Added option 'console'.
-# 03: Roxygenized.
-# 02: Works with atomic vector.
+# 25.07.2013: Added 'debug' option.
+# 25.07.2013: Fixed bug option 'word' was not correctly implemented.
+# 15.07.2013: Added parameter 'ingoreCase' and 'fixed'.
+# <15.07.2013: Added option 'console'.
+# <15.07.2013: Roxygenized.
+# <15.07.2013: Works with atomic vector.
 
 #' @title check subset
 #'
@@ -22,11 +25,18 @@
 #'  OR an atomic vector e.g. a single sample name string.
 #' @param console logical, if TRUE result is printed to R console,
 #' if FALSE a string is returned. 
+#' @param ignoreCase logical, if TRUE case insesitive matching is used.
+#' @param word logical, if TRUE only exact match.
+#' @param debug logical indicating printing debug information.
 #' 
 
-checkSubset <- function(data, ref, console=TRUE){
+checkSubset <- function(data, ref, console=TRUE, ignoreCase=TRUE, word=FALSE, debug=FALSE){
 
-	# Get reference name(s).
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+  }
+  
+  # Get reference name(s).
 	if(is.atomic(ref)){
 		ref.names <- ref
 	} else {
@@ -34,17 +44,40 @@ checkSubset <- function(data, ref, console=TRUE){
 	}
 
   res <- list()
+  
+  samples <- unique(data$Sample.Name)
 	
 	# Subset 'data$Sample.Name' using 'ref.name'.
 	for(n in seq(along=ref.names)){
 
     cRef <- ref.names[n]
-		cSamples <- grep(ref.names[n],unique(data$Sample.Name), value=TRUE)
-    res[n] <- paste("Reference name: ", cRef, "\n",
+
+    # Add word anchor.
+    if(word){
+      cRef <- paste("\\b", cRef, "\\b", sep="")
+    }
+    
+    if(debug){
+      print("cRef")
+      print(cRef)
+      print("samples")
+      print(samples)
+      print("ignoreCase")
+      print(ignoreCase)
+      print("word")
+      print(word)
+    }
+    
+    cSamples <- grep(cRef, samples,
+                     value = TRUE, fixed = FALSE, ignore.case = ignoreCase)
+    
+    res[n] <- paste("Reference name: ", ref.names[n], "\n",
                     "Subsetted samples: ", paste(cSamples, collapse=", "), "\n\n", sep="")
     
-    
-
+    if(debug){
+      print("cSamples")
+      print(cSamples)
+    }
 	}
   
   if(console){

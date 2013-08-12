@@ -1,0 +1,26 @@
+\name{cropData_gui}
+\alias{cropData_gui}
+\title{Crop or replace GUI}
+\usage{
+  cropData_gui(env = parent.frame(), savegui = NULL,
+    debug = FALSE)
+}
+\arguments{
+  \item{env}{environment in wich to search for data
+  frames.}
+
+  \item{savegui}{logical indicating if GUI settings should
+  be saved in the environment.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\description{
+  \code{cropData_gui} is a GUI simplifying cropping and
+  replacing values in data frames.
+}
+\details{
+  Select a data frame from the dropdown and crop/replace.
+  Optionally save as a new dataframe.
+}
+

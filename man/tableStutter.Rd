@@ -2,14 +2,16 @@
 \alias{tableStutter}
 \title{Table stutter}
 \usage{
-  tableStutter(data, per = "stutter")
+  tableStutter(data, scope = "stutter", quant = 0.95)
 }
 \arguments{
   \item{data}{data frame from a stutter analysis by
   \code{calculateStutter}.}
 
-  \item{per}{string, summarize the analysis 'global', by
-  'locus', or by 'stutter'.}
+  \item{scope}{string, summarize 'global', by 'locus', or
+  by 'stutter'.}
+
+  \item{quant}{numeric, quantile to calculate.}
 }
 \value{
   data.frame with summarized result.

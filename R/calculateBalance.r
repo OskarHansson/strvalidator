@@ -1,12 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: Autodetect if data has not been filtered and warn. 
-# TODO: check how to calc total Lb when using min/max. Should give NA is a 
-#       peak has been removed in a color/sample.
 # TODO: calculate the distributions...
 
 ################################################################################
 # CHANGE LOG
+# 26.07.2013: Removed parameters 'minHeight', 'maxHeight', 'matchSource' and related code.
+# 04.06.2013: Added warning/stop for missing markers.
 # 20.04.2013: Lb can be calculated per dye channel with no missing markers.
 # 20.04.2013: Changes max/min to max1/max2 so can handle unfiltered data.
 # 20.04.2013: If ref=NULL use guess 'ref' from 'data' and issue a warning.
@@ -29,6 +28,7 @@
 #' Calculates the inter and intra locus balance for a filtered dataset.
 #' Takes 'slimmed' data for samples and references as input.At the moment
 #' it is better to discard data prior to analysis than to use min/maxHeight.
+#' NB! Requires at least one row for each marker per sample, even if no data.
 #' 
 #' @param data a data frame containing at least
 #'  'Sample.Name', 'Marker', 'Height', 'Allele', and Dye'.
@@ -39,13 +39,7 @@
 #'  the locus with the highest total peakheight.  
 #' @param perDye logical, default is TRUE and locus balance is calculated within each dye.
 #'  FALSE locus balance is calculated globally.
-#' @param minHeight integer giving the lower bound.
-#' @param maxHeight integer giving the upper bound.
 #' @param ignoreCase logical indicating if sample matching should ignore case.
-#' @param matchSource string. Use 'ref' for wildcard matching of unique sample
-#'  names in 'ref' with sample names in 'data' (e.g. 'F' match 'F1' and 'AFG').
-#'  Use 'data' for exact matching of unique sample names in 'data' with sample
-#'  names in 'ref' (e.g. 'F' match 'F' but not 'F1' or 'AFG').
 #' 
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Hb', 'Lb', 'MpH'. 
 #' Or 'Sample.Name','Marker','Hb.n', 'Hb.Mean', 'Hb.Sd', 'Hb.95','Lb.n', 'Lb.Mean', 'Lb.Sd'.
@@ -60,8 +54,7 @@
 #' calculateBalance(data=set2, ref=ref2, perSample=FALSE)
 
 calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
-                             minHeight=NULL, maxHeight=NULL,
-                             ignoreCase=TRUE, matchSource="ref", debug=FALSE){
+                             ignoreCase=TRUE, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -121,6 +114,18 @@ calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
          call. = TRUE)
   }
   
+  # Check if all markers for all samples.
+  testMarkers <- unique(data$Marker)
+  testSamples <- unique(data$Sample.Name)
+  for(s in seq(along=testSamples)){
+    comp <- testMarkers %in% unique(data$Marker[data$Sample.Name == testSamples[s]])
+    if(!all(comp)){
+      stop(paste("Marker", testMarkers[!comp],
+                 "is missing for sample", testSamples[s],"!"),
+           call. = TRUE)
+    }
+  }
+
   # Prepare -------------------------------------------------------------------
 
   # Check data type of Height.
@@ -138,56 +143,23 @@ calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
   res <- res[-1,]
   
   # Get the sample names.
-  if(matchSource=="data"){
-    sampleNames <- unique(data$Sample.Name)
-  }
-  if(matchSource=="ref"){
-    sampleNames <- unique(ref$Sample.Name)
-  }
+  sampleNames <- unique(ref$Sample.Name)
 
   # Analyse -------------------------------------------------------------------
   
   # Loop through all samples.
   for (r in seq(along = sampleNames)) {
 
-    # Get sample name.
+    # get current sample name.
     subsetBy <- sampleNames[r]
     
     # Subset sample data.
-    if(matchSource=="data"){
-      if(ignoreCase){
-        cSampleRows <- toupper(data$Sample.Name) == toupper(subsetBy)
-      } else {
-        cSampleRows <- data$Sample.Name == subsetBy
-      }
-      cSubsetData <- data[cSampleRows,]
-    }
-    if(matchSource=="ref"){
-      if(ignoreCase){
-        cSampleRows <- grepl(toupper(subsetBy), toupper(data$Sample.Name))
-      } else {
-        cSampleRows <- grepl(subsetBy, data$Sample.Name)
-      }
-      cSubsetData <- data[cSampleRows,]
-    }
+    cSampleRows <- grepl(subsetBy, data$Sample.Name, ignore.case=ignoreCase)
+    cSubsetData <- data[cSampleRows,]
     
     # Subset reference data.
-    if(matchSource=="data"){
-      if(ignoreCase){
-        cReferenceRows <- toupper(ref$Sample.Name) == toupper(subsetBy)
-      } else {
-        cReferenceRows <- ref$Sample.Name == subsetBy
-      }
-      cSubsetRef <- ref[cReferenceRows,]
-    }
-    if(matchSource=="ref"){
-      if(ignoreCase){
-        cReferenceRows <- grepl(toupper(subsetBy), toupper(ref$Sample.Name))
-      } else {
-        cReferenceRows <- grepl(subsetBy, ref$Sample.Name)
-      }
-      cSubsetRef <- ref[cReferenceRows,]
-    }
+    cReferenceRows <- grepl(subsetBy, ref$Sample.Name, ignore.case=ignoreCase)
+    cSubsetRef <- ref[cReferenceRows,]
       
     # Get data for current subset.
     cRef <- cSubsetRef[cSubsetRef$Sample.Name == subsetBy, ]
@@ -217,25 +189,15 @@ calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
         markerRows <- cData$Marker == markerNames[m]
         markerRowsRef <- cRef$Marker == markerNames[m]
         
-        # Filter high/low peaks.
-        minOk <- TRUE
-        if(!is.null(minHeight)){
-          minOk <- cData$Height[markerRows] >= minHeight
-        }
-        maxOk <- TRUE
-        if(!is.null(maxHeight)){
-          maxOk <- cData$Height[markerRows] <= maxHeight
-        }
-        ok <- minOk & maxOk
+        markerPeakHeightSum[m] <- sum(cData$Height[markerRows], na.rm=TRUE)
         
-        markerPeakHeightSum[m] <- sum(cData$Height[markerRows][ok], na.rm=TRUE)
         if(perDye){
           # Keep track of dyes.
           markerDye[m] <- unique(cData$Dye[markerRows])
         }
         
         # Count number of height values.
-        nbOfPeaks <- sum(!is.na(cData$Height[markerRows][ok]))
+        nbOfPeaks <- sum(!is.na(cData$Height[markerRows]))
         expPeaks <- sum(!is.na(unique(cRef$Allele[markerRowsRef])))
         
         if(expPeaks != 1 && expPeaks != 2){
@@ -255,7 +217,7 @@ calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
         }
 
         # Get heights.
-        cHeights <- cData$Height[markerRows][ok]
+        cHeights <- cData$Height[markerRows]
 
         # Get min and max peak height.
         if(!all(is.na(cHeights))){

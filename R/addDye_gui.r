@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG
+# 18.07.2013: Check before overwrite object.
+# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
+# 04.06.2013: Fixed bug in 'missingCol'.
+# 24.05.2013: Improved error message for missing columns.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
 # 27.04.2013: First version.
@@ -29,13 +33,14 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
   require("gWidgets")
   options(guiToolkit="RGtk2")
   
-  gData <- data.frame(No.Data=NA)
-  gDataName <- NULL
-  gKit <- 1
+  # Global variables.
+  .gData <- data.frame(No.Data=NA)
+  .gDataName <- NULL
+  .gKit <- 1
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
-    print(head(gData))
+    print(head(.gData))
   }
   
   
@@ -71,42 +76,50 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env)){
+    if(exists(val_obj, envir=env, inherits = FALSE)){
       
-      gData <<- get(val_obj, envir=env)
+      .gData <<- get(val_obj, envir=env)
       requiredCol <- c("Sample.Name", "Marker")
       
-      if(!all(requiredCol %in% colnames(gData))){
+      if(!all(requiredCol %in% colnames(.gData))){
         
-        gData <<- data.frame(No.Data=NA)
-        gDataName <<- NULL
+        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
-        svalue(dataset_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-        message <- paste("The dataset is not typing data\n\n",
-                         "The following columns are required:\n",
-                         paste(requiredCol, collapse="\n"), sep="")
+        message <- paste("Additional columns required:\n",
+                         paste(missingCol, collapse="\n"), sep="")
         
         gmessage(message, title="Data error",
                  icon = "error",
                  parent = w) 
+      
+        # Reset components.
+        .gData <<- data.frame(No.Data=NA)
+        .gDataName <<- NULL
+        svalue(dataset_samples_lbl) <- " 0 samples"
+        svalue(f2_save_edt) <- ""
         
       } else {
-        
-        gDataName <<- val_obj
-        samples <- length(unique(gData$Sample.Name))
+
+        # Load or change components.
+        .gDataName <<- val_obj
+        samples <- length(unique(.gData$Sample.Name))
         svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
-        gKit <<- detectKit(gData, index=FALSE)
-        svalue(kit_drp) <- gKit
-        svalue(f2_save_edt) <- paste(gDataName, "_dye", sep="")
+        .gKit <<- detectKit(.gData, index=TRUE)
+        svalue(kit_drp, index=TRUE) <- .gKit
+        svalue(f2_save_edt) <- paste(.gDataName, "_dye", sep="")
+        
+        if(debug){
+          print("Detected kit index")
+          print(.gKit)
+        }
         
       }
       
     } else {
       
-      gData <<- data.frame(No.Data=NA)
-      gDataName <<- NULL
+      # Reset components.
+      .gData <<- data.frame(No.Data=NA)
+      .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
       
@@ -149,12 +162,12 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     
     # Get values.
     val_kit <- svalue(kit_drp)
-    val_data <- gData
+    val_data <- .gData
     val_name <- svalue(f2_save_edt)
     
     if(debug){
-      print("gData")
-      print(names(gData))
+      print(".gData")
+      print(names(.gData))
       print("val_kit")
       print(val_kit)
     }
@@ -163,10 +176,10 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     svalue(add_btn) <- "Processing..."
     enabled(add_btn) <- FALSE
     
-    datanew <- addDye(data=gData, kit=val_kit)
+    datanew <- addDye(data=.gData, kit=val_kit)
     
     # Save data.
-    assign(val_name, datanew, envir=env)
+    saveObject(name=val_name, object=datanew, parent=w, env=env)
     
     # Close GUI.
     dispose(w)
