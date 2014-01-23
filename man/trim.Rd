@@ -2,10 +2,9 @@
 \alias{trim}
 \title{Trim data}
 \usage{
-  trim(data, samples = NULL, columns = NULL, word = FALSE,
-    ignoreCase = TRUE, invertS = FALSE, invertC = FALSE,
-    rmNaCol = TRUE, rmEmptyCol = TRUE, missing = NA,
-    debug = FALSE)
+trim(data, samples = NULL, columns = NULL, word = FALSE,
+  ignoreCase = TRUE, invertS = FALSE, invertC = FALSE, rmNaCol = TRUE,
+  rmEmptyCol = TRUE, missing = NA, debug = FALSE)
 }
 \arguments{
   \item{data}{data frame with genotype data.}
@@ -44,13 +43,13 @@
   information.}
 }
 \value{
-  data.frame with extracted result.
+data.frame with extracted result.
 }
 \description{
-  \code{trim} Extracts data from a larger data set.
+\code{trim} Extracts data from a larger data set.
 }
 \details{
-  Simplifies extraction of specific data from a larger set
-  of typing data.
+Simplifies extraction of specific data from a larger set of
+typing data.
 }
 

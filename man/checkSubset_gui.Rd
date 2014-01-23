@@ -2,8 +2,7 @@
 \alias{checkSubset_gui}
 \title{Check subsetting of a dataset}
 \usage{
-  checkSubset_gui(env = parent.frame(), savegui = NULL,
-    debug = FALSE)
+checkSubset_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data
@@ -16,11 +15,11 @@
   information.}
 }
 \description{
-  \code{checkSubset_gui} is a GUI wrapper for the
-  \code{checkSubset} function.
+\code{checkSubset_gui} is a GUI wrapper for the
+\code{checkSubset} function.
 }
 \details{
-  Simplifies the use of the \code{checkSubset} function by
-  providing a graphical user interface to it.
+Simplifies the use of the \code{checkSubset} function by
+providing a graphical user interface to it.
 }
 

@@ -2,8 +2,7 @@
 \alias{plotBalance_gui}
 \title{Plot Balance GUI}
 \usage{
-  plotBalance_gui(env = parent.frame(), savegui = NULL,
-    debug = FALSE)
+plotBalance_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data frames
@@ -16,10 +15,10 @@
   information.}
 }
 \description{
-  \code{plotBalance_gui} is a GUI simplifying the creation
-  of plots from balance data.
+\code{plotBalance_gui} is a GUI simplifying the creation of
+plots from balance data.
 }
 \details{
-  Plot balance data.
+Plot balance data.
 }
 

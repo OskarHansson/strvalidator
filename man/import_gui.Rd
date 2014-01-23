@@ -2,8 +2,7 @@
 \alias{import_gui}
 \title{Import from text file}
 \usage{
-  import_gui(env = parent.frame(), savegui = NULL,
-    debug = FALSE)
+import_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment into which the object will be
@@ -16,11 +15,11 @@
   information.}
 }
 \description{
-  \code{import_gui} is a GUI wrapper for the \code{import}
-  function.
+\code{import_gui} is a GUI wrapper for the \code{import}
+function.
 }
 \details{
-  Simplifies the use of the \code{import} function by
-  providing a graphical user interface to it.
+Simplifies the use of the \code{import} function by
+providing a graphical user interface to it.
 }
 

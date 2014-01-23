@@ -2,8 +2,7 @@
 \alias{calculateStutter_gui}
 \title{Calculate Stutters}
 \usage{
-  calculateStutter_gui(env = parent.frame(),
-    savegui = NULL, debug = FALSE)
+calculateStutter_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data frames
@@ -16,14 +15,14 @@
   information.}
 }
 \value{
-  data.frame in slim format.
+data.frame in slim format.
 }
 \description{
-  \code{calculateStutter_gui} is a GUI wrapper for the
-  \code{calculateStutter} function.
+\code{calculateStutter_gui} is a GUI wrapper for the
+\code{calculateStutter} function.
 }
 \details{
-  Simplifies the use of the \code{calculateStutter}
-  function by providing a graphical user interface to it.
+Simplifies the use of the \code{calculateStutter} function
+by providing a graphical user interface to it.
 }
 

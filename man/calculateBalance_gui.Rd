@@ -2,8 +2,7 @@
 \alias{calculateBalance_gui}
 \title{Calculate Balance}
 \usage{
-  calculateBalance_gui(env = parent.frame(),
-    savegui = NULL, debug = FALSE)
+calculateBalance_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data frames
@@ -16,14 +15,14 @@
   information.}
 }
 \value{
-  data.frame in slim format.
+data.frame in slim format.
 }
 \description{
-  \code{calculateBalance_gui} is a GUI wrapper for the
-  \code{calculateBalance} function.
+\code{calculateBalance_gui} is a GUI wrapper for the
+\code{calculateBalance} function.
 }
 \details{
-  Simplifies the use of the \code{calculateBalance}
-  function by providing a graphical user interface.
+Simplifies the use of the \code{calculateBalance} function
+by providing a graphical user interface.
 }
 

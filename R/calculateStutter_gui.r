@@ -40,10 +40,6 @@
 
 calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
-  # Load dependencies.  
-  library(gWidgets)
-  options(guiToolkit="RGtk2")
-  
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
@@ -349,7 +345,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       val_by <- NULL      
     }
     
-    if(!is.null(.gData) & !is.null(.gRef)){
+    if(!is.null(val_data) & !is.null(val_ref)){
         
       if(debug){
         print("val_data")
@@ -376,7 +372,8 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                   back=val_back, forward=val_forward,
                                   interference=val_interference,
                                   replaceVal=val_replace,
-                                  byVal=val_by)
+                                  byVal=val_by,
+                                  debug=debug)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -415,8 +412,8 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".calculateStutter_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".calculateStutter_gui_savegui", envir=env)
+      if(exists(".strvalidator_calculateStutter_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_calculateStutter_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -428,17 +425,17 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists(".calculateStutter_gui_back", envir=env, inherits = FALSE)){
-        svalue(f1g1_range_b_spb) <- get(".calculateStutter_gui_back", envir=env)
+      if(exists(".strvalidator_calculateStutter_gui_back", envir=env, inherits = FALSE)){
+        svalue(f1g1_range_b_spb) <- get(".strvalidator_calculateStutter_gui_back", envir=env)
       }
-      if(exists(".calculateStutter_gui_forward", envir=env, inherits = FALSE)){
-        svalue(f1g1_range_f_spb) <- get(".calculateStutter_gui_forward", envir=env)
+      if(exists(".strvalidator_calculateStutter_gui_forward", envir=env, inherits = FALSE)){
+        svalue(f1g1_range_f_spb) <- get(".strvalidator_calculateStutter_gui_forward", envir=env)
       }
-      if(exists(".calculateStutter_gui_interference", envir=env, inherits = FALSE)){
-        svalue(interference_opt) <- get(".calculateStutter_gui_interference", envir=env)
+      if(exists(".strvalidator_calculateStutter_gui_interference", envir=env, inherits = FALSE)){
+        svalue(interference_opt) <- get(".strvalidator_calculateStutter_gui_interference", envir=env)
       }
-      if(exists(".calculateStutter_gui_replace", envir=env, inherits = FALSE)){
-        f3_default_gdf[,] <- get(".calculateStutter_gui_replace", envir=env)
+      if(exists(".strvalidator_calculateStutter_gui_replace", envir=env, inherits = FALSE)){
+        f3_default_gdf[,] <- get(".strvalidator_calculateStutter_gui_replace", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -452,28 +449,28 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(f1_savegui_chk)){
       
-      assign(x=".calculateStutter_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x=".calculateStutter_gui_back", value=svalue(f1g1_range_b_spb), envir=env)
-      assign(x=".calculateStutter_gui_forward", value=svalue(f1g1_range_f_spb), envir=env)
-      assign(x=".calculateStutter_gui_interference", value=svalue(interference_opt), envir=env)
-      assign(x=".calculateStutter_gui_replace", value=f3_default_gdf[], envir=env)
+      assign(x=".strvalidator_calculateStutter_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateStutter_gui_back", value=svalue(f1g1_range_b_spb), envir=env)
+      assign(x=".strvalidator_calculateStutter_gui_forward", value=svalue(f1g1_range_f_spb), envir=env)
+      assign(x=".strvalidator_calculateStutter_gui_interference", value=svalue(interference_opt), envir=env)
+      assign(x=".strvalidator_calculateStutter_gui_replace", value=f3_default_gdf[], envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".calculateStutter_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".calculateStutter_gui_savegui", envir = env)
+      if(exists(".strvalidator_calculateStutter_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateStutter_gui_savegui", envir = env)
       }
-      if(exists(".calculateStutter_gui_back", envir=env, inherits = FALSE)){
-        remove(".calculateStutter_gui_back", envir = env)
+      if(exists(".strvalidator_calculateStutter_gui_back", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateStutter_gui_back", envir = env)
       }
-      if(exists(".calculateStutter_gui_forward", envir=env, inherits = FALSE)){
-        remove(".calculateStutter_gui_forward", envir = env)
+      if(exists(".strvalidator_calculateStutter_gui_forward", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateStutter_gui_forward", envir = env)
       }
-      if(exists(".calculateStutter_gui_interference", envir=env, inherits = FALSE)){
-        remove(".calculateStutter_gui_interference", envir = env)
+      if(exists(".strvalidator_calculateStutter_gui_interference", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateStutter_gui_interference", envir = env)
       }
-      if(exists(".calculateStutter_gui_replace", envir=env, inherits = FALSE)){
-        remove(".calculateStutter_gui_replace", envir = env)
+      if(exists(".strvalidator_calculateStutter_gui_replace", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateStutter_gui_replace", envir = env)
       }
       
       if(debug){

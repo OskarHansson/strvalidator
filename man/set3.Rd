@@ -4,8 +4,8 @@
 \title{ESX17 example data for dropout analysis.}
 \format{ASCII text file}
 \description{
-  Data from dilution experiment for dropout analysis. Text
-  file with exported GeneMapper genotypes table.
+Data from dilution experiment for dropout analysis. Text
+file with exported GeneMapper genotypes table.
 }
 \keyword{datasets}
 

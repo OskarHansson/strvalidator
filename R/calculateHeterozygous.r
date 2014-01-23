@@ -102,6 +102,10 @@ calculateHeterozygous <- function(data, debug=FALSE){
   # Store heterozygous as 1 and homozygous as 0.
   data$Heterozygous[data$Heterozygous==1] <- 0
   data$Heterozygous[data$Heterozygous==2] <- 1
+
+  if(debug){
+    print(paste("EXIT:", match.call()[[1]]))
+  }
   
   # Return data frame.
   return(data)

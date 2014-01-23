@@ -2,8 +2,7 @@
 \alias{filterProfile_gui}
 \title{Filter Profile GUI}
 \usage{
-  filterProfile_gui(env = parent.frame(), savegui = NULL,
-    debug = FALSE)
+filterProfile_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data
@@ -16,12 +15,12 @@
   information.}
 }
 \description{
-  \code{filterProfile_gui} is a GUI simplifying the
-  filtering of typing data.
+\code{filterProfile_gui} is a GUI simplifying the filtering
+of typing data.
 }
 \details{
-  All data not matching the reference will be discarded.
-  Useful for filtering stutters and artifacts from raw
-  typing data.
+All data not matching the reference will be discarded.
+Useful for filtering stutters and artifacts from raw typing
+data.
 }
 

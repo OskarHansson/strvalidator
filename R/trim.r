@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 14.01.2014: Support dataframes without a 'Sample.Name' column.
+# 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
 # 27.04.2013: Fixed error when result is only 1 column.
 # <27.04.2013: Roxygenized.
 # <27.04.2013: new name 'trimData' -> 'trim'
@@ -57,31 +59,52 @@ trim <- function(data, samples=NULL, columns=NULL,
 		columns <- paste("\\b", columns, "\\b", sep="")
 	}
 
-	# Grab rows.
-	sampleNames <- data$Sample.Name
-	if(is.null(samples)){
-		# Default is to keep all samples.
-		rows <- rep(TRUE, length(sampleNames))
-	} else {
-		rows <- grepl(samples, sampleNames, ignore.case=ignoreCase)
-	}
+  # Check if column 'Sample.Name' exist.
+  if("Sample.Name" %in% names(data)){
+    
+    # Grab rows.
+    sampleNames <- data$Sample.Name
+    if(is.null(samples)){
+      
+      # Default is to keep all samples.
+      rows <- rep(TRUE, length(sampleNames))
+      
+    } else {
+      
+      # Get matching rows.
+      rows <- grepl(samples, sampleNames, ignore.case=ignoreCase)
+      
+      # Invert selection of samples.
+      if(invertS){
+        rows <- !rows
+      }
+      
+    }
+    
+  } else {
+    
+    # Keep all rows.
+    rows <- rep(TRUE, nrow(data))
+    
+  }
 
 	# Grab columns.
 	columnNames <- names(data)
 	if(is.null(columns)){
+    
 		# Default is to keep all columns.
 		columns <- rep(TRUE, length(columnNames))
+    
 	} else {
+    
+    # Get matching columns.
 		columns <- grepl(columns, columnNames, ignore.case=ignoreCase)
-	}
-
-	# Invert selection of samples.
-	if(invertS){
-		rows <- !rows
-	}
-	# Invert selection of columns.
-	if(invertC){
-		columns <- !columns
+    
+		# Invert selection of columns.
+		if(invertC){
+		  columns <- !columns
+		}
+		
 	}
 
 	# Trim data.

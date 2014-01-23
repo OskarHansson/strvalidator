@@ -1,14 +1,19 @@
 ################################################################################
 # TODO LIST
 # TODO: use string constants instead of hard coding.
+# TODO: Add missing markers to samples IMPORTANT!.
 
 ################################################################################
 # CHANGE LOG
-# 05: Roxygenized.
-# 04: Added factors.
-# 03: Grouping of mixed results.
-# 02: Grouping of partial results.
-# 01: First version.
+# 22.01.2014: Fixed bug by adding check that 'Height' is numeric and convert.
+# 15.01.2014: Fixed NA's when 'mixtureLimits' and 'partialLimits' is NULL.
+# 15.01.2014: Added message to show progress.
+# 03.11.2013: Added debug parameter and data check.
+# <03.11.2013: Roxygenized.
+# <03.11.2013: Added factors.
+# <03.11.2013: Grouping of mixed results.
+# <03.11.2013: Grouping of partial results.
+# <03.11.2013: First version.
 
 #' @title Calculate result type
 #'
@@ -19,38 +24,122 @@
 #' Calculates result types for samples in 'data'.
 #' Defined types are: 'No result', 'Mixture', 'Partial', and 'Complete'.
 #' Subtypes can be defined by parameters.
-#' An integer passed to 'dropoutT' defines a subtype of 'Complete' "Complete profile all peaks >dropoutT".
+#' An integer passed to 'threshold' defines a subtype of 'Complete' "Complete profile all peaks >threshold".
 #' An integer or vector passed to 'mixtureLimits' define subtypes of 'Mixture' "> [mixtureLimits] markers".
 #' An integer or vector passed to 'partialLimits' define subtypes of 'Partial' "> [partialLimits] peaks".
 #' A string with marker names separated by pipe (|) passed to 'markerSubset' and
 #'  a string 'subsetName' defines a subtype of 'Partial' "Complete [subsetName]".
 #'  
 #' @param data a data frame containing at least the column 'Sample.Name'.
-#' @param dropoutT integer indicating the dropout threshold.
+#' @param kit character string or integer defining the kit.
+#' @param addMissingMarker logical, defualt is TRUE which adds missing markers.
+#' @param threshold integer indicating the dropout threshold.
 #' @param mixtureLimits integer or vector indicating subtypes of 'Mixture'.
 #' @param partialLimits integer or vector indicating subtypes of 'Partial'.
 #' @param subsetName string naming the subset of 'Complete'.
 #' @param markerSubset string with marker names defining the subset of 'Complete'.
+#' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame with columns 'Sample.Name','Type','Sub.Type'
+#' @return data.frame with columns 'Sample.Name','Type','Subtype'
 #' 
 
-calculateResultType <- function(data, dropoutT=NULL, mixtureLimits=NULL, 
-				partialLimits=NULL, subsetName=NA, markerSubset=NULL){
+calculateResultType <- function(data, kit=NULL, addMissingMarker=TRUE,
+                                threshold=NULL, mixtureLimits=NULL,
+                                partialLimits=NULL, subsetName=NA,
+                                markerSubset=NULL, debug=FALSE){
 
-	# Get sample names.
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+    print("Parameters:")
+    print("head(data)")
+    print(head(data))
+    print("threshold")
+    print(threshold)
+    print("mixtureLimits")
+    print(mixtureLimits)
+    print("partialLimits")
+    print(partialLimits)
+    print("subsetName")
+    print(subsetName)
+    print("markerSubset")
+    print(markerSubset)
+  }
+  
+  # CHECK DATA ----------------------------------------------------------------
+  
+  # Check dataset.
+  if(!any(grepl("Sample.Name", names(data)))){
+    stop("'data' must contain a column 'Sample.Name'",
+         call. = TRUE)
+  }
+  
+  if(!any(grepl("Marker", names(data)))){
+    stop("'data' must contain a column 'Marker'",
+         call. = TRUE)
+  }
+  if(!any(grepl("Allele", names(data)))){
+    stop("'data' must contain a column 'Allele'",
+         call. = TRUE)
+  }
+  
+  # Check if slim format.  
+  if(sum(grepl("Allele", names(data))) > 1){
+    stop("'data' must be in 'slim' format",
+         call. = TRUE)
+  }
+  
+  if(addMissingMarker){
+    if(is.null(kit)){
+      stop("'kit' must be provided if 'addMissingMarker' is TRUE",
+           call. = TRUE)
+    } else {
+      if(is.na(getKit(kit=kit, what="Short.Name"))){
+        stop(paste("'kit' does not exist", "\nAvailable kits:",
+                   paste(getKit(), collapse=", ")), call. = TRUE)
+      }
+    }
+  }
+
+  # PREPARE -------------------------------------------------------------------
+  
+  if(addMissingMarker){
+    # Add missing markers to samples.
+    markers <- getKit(kit=kit, what="Marker")
+    data <- addMarker(data=data, marker=markers, ignoreCase=TRUE, debug=debug)
+  }
+  
+  if(!is.numeric(data$Height)){
+    message("'Height' not numeric. Converting to numeric.")
+    data$Height <- as.numeric(data$Height)
+  }
+  
+  # CALCULATE -----------------------------------------------------------------
+  # NB! Strings used for classification must be identical to the ones used to
+  # create factors.
+  
+  # Get sample names.
 	sampleNames <- unique(data$Sample.Name)
 
 	# Create result data frame.
 	res <- data.frame(matrix(NA, length(sampleNames), 3))
-	names(res) <- paste(c("Sample.Name","Type","Sub.Type"))  # Add new column names.
+	# Add new column names.
+	names(res) <- paste(c("Sample.Name","Type","Subtype"))  
 
 	# Loop over all samples.
 	for(s in seq(along=sampleNames)){
 
+	  # Show progress.
+	  message(paste("Calculate result type for sample (",
+                  s, " of ", length(sampleNames), "): ", sampleNames[s], sep=""))
+	  
 		# Get current sample.
 		sampleData <- data[data$Sample==sampleNames[s],]
-
+    
+    if(debug){
+		  print("Current sample data:")
+		  print(sampleData)
+		}
+		
 		# Check result type.
 		if(all(is.na(sampleData$Allele))){
 			# No result.
@@ -70,7 +159,7 @@ calculateResultType <- function(data, dropoutT=NULL, mixtureLimits=NULL,
 					}
 				}
 			} else {
-					subtype <- paste(markers, "markers")
+					subtype <- paste("Mixture")
 			}
 			res[s, ] <- c(sampleNames[s], "Mixture", subtype)
 			
@@ -84,13 +173,12 @@ calculateResultType <- function(data, dropoutT=NULL, mixtureLimits=NULL,
 						subtype <- paste("<=", partialLimits[t], "peaks")
 					} else if(alleles > partialLimits[length(partialLimits)]){
 						subtype <- paste(">", partialLimits[length(partialLimits)], "peaks")
-					}
+					} 
 				}
 			} else {
-					subtype <- paste(alleles, "peaks")
+					subtype <- paste("Partial")
 			}
 			res[s, ] <- c(sampleNames[s], "Partial", subtype)
-		
 
 			# Check for subset.
 			if(!is.null(markerSubset)){
@@ -107,15 +195,18 @@ calculateResultType <- function(data, dropoutT=NULL, mixtureLimits=NULL,
 			res[s, ] <- c(sampleNames[s], "Complete profile", "Complete profile")
 
 			# Check against threshold.
-			if(!is.null(dropoutT) && all(sampleData$Height>dropoutT)){
+			if(!is.null(threshold) && all(sampleData$Height>threshold)){
 				# Complete profile, all peaks > T.
-				res[s, ] <- c(sampleNames[s], "Complete profile", paste("all peaks >", dropoutT))
+				res[s, ] <- c(sampleNames[s], "Complete profile", paste("all peaks >", threshold))
 			}
 
 		}
 	}
 
-	# Construct factor levels.
+  # FACTORS -------------------------------------------------------------------
+  
+	# Construct factor levels in correct order.
+  # NB! Strings must be identical to the ones used in classification.
 	factorLabels <- NULL
 	blankLabels <- NULL
 	mixtureLabels <- NULL
@@ -131,7 +222,7 @@ calculateResultType <- function(data, dropoutT=NULL, mixtureLimits=NULL,
 	# Partial Labels.
 
 	if(!is.null(markerSubset)){
-		partialLabelsSub <- c(partialLabelsSub, subsetName)
+		partialLabelsSub <- c(partialLabelsSub, paste("Complete", subsetName))
 	}
 	if(!is.null(partialLimits)){
 		for(t in rev(seq(along=partialLimits))){
@@ -157,8 +248,8 @@ calculateResultType <- function(data, dropoutT=NULL, mixtureLimits=NULL,
 	mixtureLabelsSub <- c("Mixture", mixtureLabelsSub)
 
 	# Complete Labels.
-	if(!is.null(dropoutT)){
-		completeLabelsSub <- c(completeLabelsSub, paste("all peaks >", dropoutT))
+	if(!is.null(threshold)){
+		completeLabelsSub <- c(completeLabelsSub, paste("all peaks >", threshold))
 	}
 	completeLabels <- "Complete profile"
 	completeLabelsSub <- c(completeLabelsSub, "Complete profile")
@@ -171,10 +262,23 @@ calculateResultType <- function(data, dropoutT=NULL, mixtureLimits=NULL,
 	factorLabels <- c(mixtureLabels, completeLabels, partialLabels, blankLabels)
 	factorLabelsSub <- c(mixtureLabelsSub, completeLabelsSub, partialLabelsSub, blankLabelsSub)
 
+  if(debug){
+    print("factorLabels")
+    print(factorLabels)
+    print("factorLabelsSub")
+    print(factorLabelsSub)
+  }
+  
 	# Assign factors.
 	res$Type <- factor(res$Type, levels = factorLabels)
-	res$Sub.Type <- factor(res$Sub.Type, levels = factorLabelsSub)
+	res$Subtype <- factor(res$Subtype, levels = factorLabelsSub)
 
+  if(debug){
+    print("head(res):")
+    print(head(res))
+    print(paste("EXIT:", match.call()[[1]]))
+  }
+  
 	return(res)
 }
 

@@ -2,8 +2,7 @@
 \alias{guessProfile_gui}
 \title{Guess profile}
 \usage{
-  guessProfile_gui(env = parent.frame(), savegui = NULL,
-    debug = FALSE)
+guessProfile_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data
@@ -16,11 +15,11 @@
   information.}
 }
 \description{
-  \code{guessProfile_gui} is a GUI wrapper for the
-  \code{guessProfile} function.
+\code{guessProfile_gui} is a GUI wrapper for the
+\code{guessProfile} function.
 }
 \details{
-  Simplifies the use of the \code{guessProfile} function by
-  providing a graphical user interface to it.
+Simplifies the use of the \code{guessProfile} function by
+providing a graphical user interface to it.
 }
 

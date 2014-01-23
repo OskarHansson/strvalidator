@@ -1,0 +1,24 @@
+\name{readBinsFile}
+\alias{readBinsFile}
+\title{Read Bins file}
+\usage{
+readBinsFile(binFiles, debug = FALSE)
+}
+\arguments{
+  \item{binFiles}{string, complete path to Bins file.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\value{
+data.frame containing the columns 'Panel', 'Marker',
+'Allele', 'Size', 'Size.Min', 'Size.Max', 'Virtual'.
+}
+\description{
+\code{readBinsFile} reads GeneMapper 'Bins' files.
+}
+\details{
+Reads useful information from 'Bins' files and save it as a
+data.frame.
+}
+

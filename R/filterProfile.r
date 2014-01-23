@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG
+# 22.01.2014: Fixed bug. AddMissingLoci=TRUE now overrides keepNA=FALSE.
+# 10.12.2013: Fixed bug returning all NAs when addMissingLoci=TRUE.
+# 08.12.2013: Does not discard columns anymore.
+# 08.12.2013: Possible to use a 'ref' without 'Sample.Name' i.e. one profile
+#             for all samples in 'data'.
 # 06.06.2013: Fixed bug in checking for 'fat' data.
 # 03.06.2013: Fixed bug discarding NA loci when addMissingLoci=TRUE.
 # 28.04.2013: Fixed "NA" bug (NA worked but not "NA").
@@ -19,6 +24,9 @@
 #' @description
 #' \code{filterProfile} Filters out the result matching a specified
 #' known profiles from typing data containing 'noise' such as stutters.
+#' If 'ref' does not contain a 'Sample.Name' column it will be used
+#' as reference for all samples in 'data'.
+#' NB! addMissingLoci overrides keepNA.
 #'
 #' @details
 #' Returns data where allele names match 'ref' allele names.
@@ -27,7 +35,9 @@
 #' @param data data frame with genotype data in 'slim' format.
 #' @param ref data frame with reference profile in 'slim' format.
 #' @param keepNA logical. FALSE discards NA alleles.
-#' @param addMissingLoci logical.
+#'  TRUE keep loci/sample even if no matching allele.
+#' @param addMissingLoci logical. TRUE add loci present in ref but not in data.
+#' Overrides keepNA=FALSE.   
 #' @param ignoreCase logical TRUE ignore case.
 #' @param debug logical indicating printing debug information.
 #' 
@@ -39,6 +49,16 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
+    print("data:")
+    print(str(data))
+    print("ref:")
+    print(str(ref))
+    print("addMissingLoci:")
+    print(addMissingLoci)
+    print("keepNA:")
+    print(keepNA)
+    print("ignoreCase:")
+    print(ignoreCase)
   }
 
   # CHECK DATA ----------------------------------------------------------------
@@ -59,15 +79,10 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
          call. = TRUE)
   }
 
-  if(!any(grepl("Height", names(data)))){
-    stop("'data' must contain a column 'Height'",
-         call. = TRUE)
-  }
-
   # Check reference dataset.
   if(!any(grepl("Sample.Name", names(ref)))){
-    stop("'ref' must contain a column 'Sample.Name'",
-         call. = TRUE)
+    message(paste("'ref' does not contain a column 'Sample.Name'!",
+                  "\nThe same reference will be used for all samples."))
   }
   if(!any(grepl("Marker", names(ref)))){
     stop("'ref' must contain a column 'Marker'",
@@ -88,30 +103,33 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
          call. = TRUE)
   }
 
+  # PREPARE -------------------------------------------------------------------
+  
   # Check if character data.
   if(!is.character(ref$Allele)){
-    warning("'Allele' must be character. 'ref' converted")
+    message("'Allele' must be character. 'ref' converted")
     data$Allele <- as.character(data$Allele)
   }
   if(!is.character(data$Allele)){
-    warning("'Allele' must be character. 'data' converted")
+    message("'Allele' must be character. 'data' converted")
     data$Allele <- as.character(data$Allele)
   }
 
+  if(addMissingLoci & !keepNA){
+    warning("addMissingLoci overrides 'keepNA'. Setting keepNA=TRUE")
+    keepNA=TRUE
+  }
   
   # SELECT METHOD -------------------------------------------------------------
   
   if(!addMissingLoci & !keepNA){
   
     # 'FAST' METHOD -----------------------------------------------------------
-    # NB! Discards all NA alleles/loci.
+    # NB! Discards all NA alleles/loci/samples.
     
     if(debug){
       print("'fast' method")
     }
-
-    # Get reference names.
-    refSampleNames<- unique(ref$Sample.Name)
 
     # Clean NA (both 'false' and true NA).
     naAllele <- length(data$Allele[data$Allele=="NA"])
@@ -124,7 +142,16 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
       data <- data[!is.na(data$Allele),]
       message(paste("Removed", naAllele, "rows where Allele=<NA>"))
     }
-    
+
+    # Get reference names.
+    if("Sample.Name" %in% names(ref)){
+      # Get reference names from reference dataset.
+      refSampleNames <- unique(ref$Sample.Name)
+    } else {
+      # Get reference names from dataset.
+      refSampleNames <- unique(data$Sample.Name)
+    }
+      
     if(debug){
       print("ref samples:")
       print(refSampleNames)
@@ -133,53 +160,56 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
       flush.console()
     }
     
-  	# Initiate boolean match vector to FALSE.
-  	matchingData <- is.na(data$Sample.Name)
-  
-  	# Loop through all reference samples.
-  	for(s in seq(along=refSampleNames)){
-  
-  	  # Get current reference subset.
-  	  currentRef <- ref[ref$Sample.Name==refSampleNames[s],]
-  	  
+    # Initiate boolean match vector to FALSE.
+    matchingData <- is.na(data$Sample.Name)
+    
+    # Get reference sample i.e. use one reference for all samples.
+    # NB! only used if no 'Sample.Name' column in ref.
+    currentRef <- ref
+    
+    # Loop through all reference samples.
+    for(s in seq(along=refSampleNames)){
+      
+      if("Sample.Name" %in% names(ref)){
+        # Get current reference subset.
+        currentRef <- ref[ref$Sample.Name==refSampleNames[s],]
+      }
+      
       # Select current subset.
-  		if(ignoreCase){
-  		  selectedSamples <- grepl(toupper(refSampleNames[s]),
+      if(ignoreCase){
+        selectedSamples <- grepl(toupper(refSampleNames[s]),
                                  toupper(data$Sample.Name))
-  		} else {
-  		  selectedSamples <- grepl(refSampleNames[s], data$Sample.Name)
-  		}
-  	  
-  		# Get current marker.
-  		refMarkers <- unique(currentRef$Marker)
-  	
-  		# Loop through all markers.
-  		for(m in seq(along=refMarkers)){
-  
-  			# Get reference alleles.
-  			refAlleles <- currentRef$Allele[currentRef$Marker==refMarkers[m]]
-  
-  			# Loop through all alleles.
-  			for(a in seq(along=refAlleles)){
-  
+      } else {
+        selectedSamples <- grepl(refSampleNames[s], data$Sample.Name)
+      }
+      
+      # Get current marker.
+      refMarkers <- unique(currentRef$Marker)
+      
+      # Loop through all markers.
+      for(m in seq(along=refMarkers)){
+        
+        # Get reference alleles.
+        refAlleles <- currentRef$Allele[currentRef$Marker==refMarkers[m]]
+        
+        # Loop through all alleles.
+        for(a in seq(along=refAlleles)){
           
-  			  # Get matching alleles in data.
-  				mM <- data$Marker==refMarkers[m]
-  				#mM[is.na(mM)]<-FALSE
-  				mA <- data$Allele==refAlleles[a]
-  				#mA[is.na(mA)]<-FALSE
-  				currentMatch <- selectedSamples & mM & mA
-  				
+          # Get matching alleles in data.
+          mM <- data$Marker==refMarkers[m]
+          mA <- data$Allele==refAlleles[a]
+          currentMatch <- selectedSamples & mM & mA
+          
           # 'Concatenate' booleans
-  				matchingData <- matchingData | currentMatch
+          matchingData <- matchingData | currentMatch
           
-  			}
-  		}
-  	}
-
+        }
+      }
+    }
+    
     # Create return data frame.
     resDf <- data[matchingData, ]
-    
+      
   } else {
     
     # 'SLOW' METHOD -----------------------------------------------------------
@@ -188,24 +218,41 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
     if(debug){
       print("'slow' method")
     }
+    
+    # Create an empty data frame to hold the result.
+    resDf <- data.frame(t(rep(NA,length(data))))
+    # Add column names.
+    names(resDf) <- names(data)
+    # Remove all NAs
+    resDf  <- resDf [-1,]
+    
+    if(debug){
+      print("resDf:")
+      print(resDf)
+    }
 
     # Get reference names.
-    refSampleNames<- unique(ref$Sample.Name)
-    
-    # Create result vectors.
-    resSample <- character(0)
-    resMarker <- character(0)
-    resAllele <- character(0)
-    resHeight <- numeric(0)
-    
+    if("Sample.Name" %in% names(ref)){
+      # Get reference names from reference dataset.
+      refSampleNames<- unique(ref$Sample.Name)
+    } else {
+      # Get reference names from dataset.
+      refSampleNames<- unique(data$Sample.Name)
+    }
+      
+    # Get reference sample i.e. use one reference for all samples.
+    # NB! only used if no 'Sample.Name' column in ref.
+    currentRef <- ref
+      
     # Loop through all reference samples.
     for(r in seq(along=refSampleNames)){
       
-      # Get current reference subset.
-      currentRef <- ref[ref$Sample.Name==refSampleNames[r],]
-
+      if("Sample.Name" %in% names(ref)){
+        # Get current reference subset.
+        currentRef <- ref[ref$Sample.Name==refSampleNames[r],]
+      }
+      
       # Get current data subset.
-      # Select current subset.
       if(ignoreCase){
         selectedSamples <- grepl(toupper(refSampleNames[r]),
                                  toupper(data$Sample.Name))
@@ -231,64 +278,56 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
           # Get reference alleles.
           refAlleles <- currentRef$Allele[currentRef$Marker==refMarkers[m]]
 
-          # Get 
-          dataAlleles <- currentData$Allele[currentData$Marker==refMarkers[m]]
-          dataHeight <- currentData$Height[currentData$Marker==refMarkers[m]]
-          
+          # Select current marker.
+          selection <- currentData$Marker==refMarkers[m]
+          tmpDf <- currentData[selection, ]
+
           # dataAlleles is of length 0 if no matching marker.
-          if(length(dataAlleles) == 0 & addMissingLoci){
+          if(nrow(tmpDf) == 0 & addMissingLoci){
             
-            # Add missing marker and set NA in allele.      
-            resSample <- c(resSample, dataSampleNames[s])
-            resMarker <- c(resMarker, refMarkers[m])
-            resAllele <- c(resAllele, NA)
-            resHeight <- c(resHeight, NA)
+            # Add missing marker, allele will become NA in rbind.fill.
+            tmpDf <- data.frame(Sample.Name=dataSampleNames[s],
+                                Marker=refMarkers[m],
+                                stringsAsFactors=FALSE)
+            
             if(debug){
               print(paste("missing marker added:", refMarkers[m]))
             }
-          }
-          
-          # dataAlleles is of length >0 if there are alleles.
-          if(length(dataAlleles) > 0){
-          
-            # Filter allales.
-            selected <- dataAlleles %in% refAlleles
-            matching <- dataAlleles[selected]
-            height <- dataHeight[selected]
+            
+          } else {
+
+            # Filter alleles and add to selection.
+            selection <- selection & currentData$Allele %in% refAlleles
+            tmpDf <- currentData[selection, ]
             
             # matching is of length 0 if no matching allele.
-            if(length(matching) == 0 & (keepNA | addMissingLoci)){
-              # Setting matching=NA causes the below loop to be executed once.
-              matching <- NA
+            if(nrow(tmpDf) == 0 & keepNA){
+              
+              # Add missing marker, allele will become NA in rbind.fill.
+              tmpDf <- data.frame(Sample.Name=dataSampleNames[s],
+                                  Marker=refMarkers[m],
+                                  stringsAsFactors=FALSE)
               
               if(debug){
                 print(paste("NA kept for marker", refMarkers[m]))
               }
-
+              
             }
             
-            # Loop through all alleles.
-            for(a in seq(along=matching)){
-              
-              # Add to result.
-              resSample <- c(resSample, dataSampleNames[s])
-              resMarker <- c(resMarker, refMarkers[m])
-              resAllele <- c(resAllele, matching[a])
-              resHeight <- c(resHeight, height[a])
-              
-            }
           }
+          
+          if(debug){
+            print("tmpDf:")
+            print(tmpDf)
+          }
+          
+          resDf <- plyr::rbind.fill(resDf, tmpDf)
+          
         }
+        
       }
     }
 
-    # Create return data frame.
-    resDf <- data.frame(Sample.Name=resSample,
-                        Marker=resMarker,
-                        Allele=resAllele,
-                        Height=as.numeric(resHeight),
-                        stringsAsFactors=FALSE)
-    
   }
   
   # RETURN --------------------------------------------------------------------

@@ -1,0 +1,31 @@
+\name{sortMarker}
+\alias{sortMarker}
+\title{Sort markers}
+\usage{
+sortMarker(data, kit, addMissingLevels = FALSE, debug = FALSE)
+}
+\arguments{
+  \item{data}{data.frame containing a column 'Marker' and
+  optionally 'Dye'.}
+
+  \item{kit}{string or integer indicating kit.}
+
+  \item{addMissingLevels}{logical, TRUE missing markers are
+  added, FALSE missing markers are not added.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\value{
+data.frame with factor levels sorted according to 'kit'.
+}
+\description{
+\code{sortMarkers} Sort markers and dye as they appear in
+the EPG.
+}
+\details{
+Change the order of factor levels for 'Marker' and 'Dye'
+according to 'kit'. Levels in data must be identical with
+kit information.
+}
+

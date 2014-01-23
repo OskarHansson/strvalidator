@@ -1,0 +1,24 @@
+\name{readPanelsFile}
+\alias{readPanelsFile}
+\title{Read Panels file}
+\usage{
+readPanelsFile(panelFiles, debug = FALSE)
+}
+\arguments{
+  \item{panelFiles}{string, complete path to Panels file.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\value{
+data.frame containing the columns 'Panel', 'Marker',
+'Color', 'Marker.Min', 'Marker.Max', 'Repeat'.
+}
+\description{
+\code{readPanelsFile} reads GeneMapper Panels files.
+}
+\details{
+Reads useful information from Panels files and save it as a
+data.frame.
+}
+

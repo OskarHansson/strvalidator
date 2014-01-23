@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 15.12.2013: Fixed cropping column names with multiple periods.
 # 25.05.2013: Fixed returning original column names for single occuring names.
 # 24.05.2013: First version.
 
@@ -15,7 +16,7 @@
 #' @details
 #' \code{colNames} takes a data frame as input and return either column names
 #' occuring once or multiple times. Matching is done by the 'base name'
-#' (the substring to the left of the first period, if any). The return type
+#' (the substring to the left of the last period, if any). The return type
 #' is a string vector by default, or a single string of colum names separated
 #' by a string 'concatenate' (see 'collapse' in \code{paste} for details).
 #' 
@@ -24,19 +25,44 @@
 #' FALSE returns column names occuring multiple times.
 #' @param concatenate string, if not NULL returns a single string with column
 #' names concatenated by the provided string instead of a vector.
+#' @param debug logical indicating printing debug information.
 #' 
-#' @return character, vector or single string.
+#' @return character, vector or string.
 #' 
 
-colNames <- function(df, slim=TRUE, concatenate=NULL){
+colNames <- function(df, slim=TRUE, concatenate=NULL, debug=FALSE){
+  
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+    print("Parameters:")
+    print("df")
+    print(str(df))
+    print("slim")
+    print(slim)
+    print("concatenate")
+    print(concatenate)
+  }
   
   ret <- NA
   colNames <- names(df)
   
+  if(debug){
+    print("colNames")
+    print(colNames)
+  }
+  
   if(!is.null(colNames)){
   
     # Guess base names i.e. "Allele.1" -> "Allele"
-    baseNames <- unique(gsub( "(\\w*)\\..*", "\\1", colNames))
+    # To the first dot.
+    #baseNames <- unique(gsub("(\\w*)\\..*", "\\1", colNames))
+    # To the last dot.
+    baseNames <- unique(gsub("(.*)\\.(.*)", "\\1", colNames))
+    
+    if(debug){
+      print("baseNames")
+      print(baseNames)
+    }
     
     matches<-vector()
     for(v in seq(along=baseNames)){
@@ -82,6 +108,10 @@ colNames <- function(df, slim=TRUE, concatenate=NULL){
     ret <- NA
   }
     
+  if(debug){
+    print(paste("EXIT:", match.call()[[1]]))
+  }
+  
   return(ret)
   
 }

@@ -2,8 +2,7 @@
 \alias{cropData_gui}
 \title{Crop or replace GUI}
 \usage{
-  cropData_gui(env = parent.frame(), savegui = NULL,
-    debug = FALSE)
+cropData_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data
@@ -16,11 +15,11 @@
   information.}
 }
 \description{
-  \code{cropData_gui} is a GUI simplifying cropping and
-  replacing values in data frames.
+\code{cropData_gui} is a GUI simplifying cropping and
+replacing values in data frames.
 }
 \details{
-  Select a data frame from the dropdown and crop/replace.
-  Optionally save as a new dataframe.
+Select a data frame from the dropdown and crop/replace.
+Optionally save as a new dataframe.
 }
 

@@ -2,33 +2,44 @@
 \alias{getKit}
 \title{Get kit}
 \usage{
-  getKit(kitNameOrIndex = NULL, showMessages = FALSE,
-    .kitInfo = NULL, debug = FALSE)
+getKit(kit = NULL, what = NA, showMessages = FALSE, .kitInfo = NULL,
+  debug = FALSE)
 }
 \arguments{
-  \item{kitNameOrIndex}{string or integer specifying the
-  kit.}
+  \item{kit}{string or integer specifying the kit.}
+
+  \item{what}{string specifying information to return.
+  Default is 'NA' which return all info. Not case
+  sensitive.}
 
   \item{showMessages}{logical, default TRUE for printing
   messages to the R promt.}
+
+  \item{.kitInfo}{data frame, run function on a data frame
+  instead of the kits.txt file.}
 
   \item{debug}{logical indicating printing debug
   information.}
 }
 \value{
-  list with kit information.
+data.frame with kit information.
 }
 \description{
-  \code{getKit} provides information about STR kits.
+\code{getKit} provides information about STR kits.
 }
 \details{
-  The function returns the following information for a kit
-  specified in kits.txt: Short kit name, Full kit name,
-  Marker/locus names, Dye for each marker/locus, Start
-  offset (in base pairs) for each marker, Size of repeating
-  unit (in base pairs) for each marker.  If no matching kit
-  or kit index is found NA is returned.  If NULL a vector
-  of available kits is printed and NA returned.
+The function returns the following information for a kit
+specified in kits.txt: Panel name, short kit name (unique,
+user defined), full kit name (user defined), marker names,
+allele names, allele sizes (bp), minimum allele size,
+maximum allele size (bp), flag for virtual alleles, marker
+color, marker repeat unit size (bp), minimum marker size,
+maximum marker, marker offset (bp), flag for gender marker
+(TRUE/FALSE).
+
+If no matching kit or kit index is found NA is returned. If
+'NULL' or '0' a vector of available kits is printed and NA
+returned.
 }
 \examples{
 # Show all information stored for kit with short name 'ESX17'.

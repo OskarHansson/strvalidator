@@ -3,9 +3,12 @@
 \alias{ref2}
 \title{ESX17 example data}
 \format{A data frame with 16 rows and 3 variables}
+\usage{
+data(ref2)
+}
 \description{
-  A slimmed reference dataset containing an arbitrary ESX17
-  DNA profile.
+A slimmed reference dataset containing an arbitrary ESX17
+DNA profile.
 }
 \keyword{datasets}
 

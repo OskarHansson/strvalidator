@@ -2,9 +2,12 @@
 # TODO LIST
 # TODO: Check folder DOES NOT WORK BECAUSE \ IS ESCAPE CHARACTER.
 
-
 ################################################################################
 # CHANGE LOG
+# 20.01.2014: Remove redundant "overwrite?" message dialog.
+# 13.01.2014: Handle empty dataframe by stay in gui and show message.
+# 10.12.2013: Updated with new parameter names in function 'import'.
+# 12.11.2013: Pass debug to function.
 # 18.07.2013: Check before overwrite object.
 # 15.07.2013: Added save GUI settings.
 # 11.06.2013: Fixed 'exists' added 'inherits=FALSE'. Added parameter 'debug'.
@@ -27,10 +30,6 @@
 
 import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
-  # Load dependencies.  
-  library(gWidgets)
-  options(guiToolkit="RGtk2")
-  
   # Global variables.
   # separator <- .Platform$file.sep # Platform dependent path separator.
   
@@ -46,11 +45,11 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 # Add new parameter , settings=FALSE  
 #  # Load settings.
 #   if(settings){
-#     if(exists(".import_gui_file")){
-#       defaultFile <- .import_gui_file
+#     if(exists(".strvalidator_import_gui_file")){
+#       defaultFile <- .strvalidator_import_gui_file
 #     }
-#     if(exists(".import_gui_dir")){
-#       defaultDir <- .import_gui_dir
+#     if(exists(".strvalidator_import_gui_dir")){
+#       defaultDir <- .strvalidator_import_gui_dir
 #     }
 #     
 #   }
@@ -187,22 +186,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     ok <- TRUE
     
     # Check that a name has been provided for the new data object.
-    if(nchar(val_name) > 0){
-      
-      # Check for existing object and ask for user input.
-      if(exists(val_name, envir=env, inherits = FALSE)){
-
-        dialog <- gbasicdialog(title="Warning!", parent=w, do.buttons=TRUE)
-        
-        msg <- glabel(text=paste("An object named '",val_name,"' already exist.\n\n",
-                                 "Do you want to overwrite?", sep=""),
-                      container=dialog)
-        
-        ok <- visible(dialog, set=TRUE)
-        
-      }
-      
-    } else {
+    if(nchar(val_name) == 0){
       
       gmessage("A name for the dataset must be provided.",
                title="Error", icon="error", parent=w)
@@ -262,17 +246,34 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
       # Call function.
       datanew <- import(folder=folder_opt_val,
-                     extension=extension_val,
-                     suffix=suffix_val,
-                     prefix=prefix_val,
-                     resultFiles=file_val, 
-                     resultFolder=folder_val)
+                        extension=extension_val,
+                        suffix=suffix_val,
+                        prefix=prefix_val,
+                        fileName=file_val,
+                        folderName=folder_val,
+                        debug=debug)
       
-      # Save data.
-      saveObject(name=val_name, object=datanew, parent=w, env=env)
-      
-      # Close GUI.
-      dispose(w)
+      if(length(datanew) == 0){
+        
+        # Show warning.
+        gmessage(message="Dataset empty!\nCheck your file filter.",
+                 title="Error",
+                 icon = "error",
+                 parent = w)
+        
+        # Change button.
+        svalue(import_btn) <- "Import"
+        enabled(import_btn) <- TRUE
+        
+      } else {
+
+        # Save data.
+        saveObject(name=val_name, object=datanew, parent=w, env=env)
+        
+        # Close GUI.
+        dispose(w)
+        
+      }
       
     }
     
@@ -291,8 +292,8 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".import_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(savegui_chk) <- get(".import_gui_savegui", envir=env)
+      if(exists(".strvalidator_import_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(savegui_chk) <- get(".strvalidator_import_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -304,17 +305,17 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(savegui_chk)){
-      if(exists(".import_gui_import_opt", envir=env, inherits = FALSE)){
-        svalue(import_opt) <- get(".import_gui_import_opt", envir=env)
+      if(exists(".strvalidator_import_gui_import_opt", envir=env, inherits = FALSE)){
+        svalue(import_opt) <- get(".strvalidator_import_gui_import_opt", envir=env)
       }
-      if(exists(".import_gui_prefix", envir=env, inherits = FALSE)){
-        svalue(opt_pre_txt) <- get(".import_gui_prefix", envir=env)
+      if(exists(".strvalidator_import_gui_prefix", envir=env, inherits = FALSE)){
+        svalue(opt_pre_txt) <- get(".strvalidator_import_gui_prefix", envir=env)
       }
-      if(exists(".import_gui_suffix", envir=env, inherits = FALSE)){
-        svalue(opt_suf_txt) <- get(".import_gui_suffix", envir=env)
+      if(exists(".strvalidator_import_gui_suffix", envir=env, inherits = FALSE)){
+        svalue(opt_suf_txt) <- get(".strvalidator_import_gui_suffix", envir=env)
       }
-      if(exists(".import_gui_extension", envir=env, inherits = FALSE)){
-        svalue(opt_ext_txt) <- get(".import_gui_extension", envir=env)
+      if(exists(".strvalidator_import_gui_extension", envir=env, inherits = FALSE)){
+        svalue(opt_ext_txt) <- get(".strvalidator_import_gui_extension", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -328,28 +329,28 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(savegui_chk)){
       
-      assign(x=".import_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".import_gui_import_opt", value=svalue(import_opt), envir=env)
-      assign(x=".import_gui_prefix", value=svalue(opt_pre_txt), envir=env)
-      assign(x=".import_gui_suffix", value=svalue(opt_suf_txt), envir=env)
-      assign(x=".import_gui_extension", value=svalue(opt_ext_txt), envir=env)
+      assign(x=".strvalidator_import_gui_savegui", value=svalue(savegui_chk), envir=env)
+      assign(x=".strvalidator_import_gui_import_opt", value=svalue(import_opt), envir=env)
+      assign(x=".strvalidator_import_gui_prefix", value=svalue(opt_pre_txt), envir=env)
+      assign(x=".strvalidator_import_gui_suffix", value=svalue(opt_suf_txt), envir=env)
+      assign(x=".strvalidator_import_gui_extension", value=svalue(opt_ext_txt), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".import_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".import_gui_savegui", envir = env)
+      if(exists(".strvalidator_import_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_savegui", envir = env)
       }
-      if(exists(".import_gui_import_opt", envir=env, inherits = FALSE)){
-        remove(".import_gui_import_opt", envir = env)
+      if(exists(".strvalidator_import_gui_import_opt", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_import_opt", envir = env)
       }
-      if(exists(".import_gui_prefix", envir=env, inherits = FALSE)){
-        remove(".import_gui_prefix", envir = env)
+      if(exists(".strvalidator_import_gui_prefix", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_prefix", envir = env)
       }
-      if(exists(".import_gui_suffix", envir=env, inherits = FALSE)){
-        remove(".import_gui_suffix", envir = env)
+      if(exists(".strvalidator_import_gui_suffix", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_suffix", envir = env)
       }
-      if(exists(".import_gui_extension", envir=env, inherits = FALSE)){
-        remove(".import_gui_extension", envir = env)
+      if(exists(".strvalidator_import_gui_extension", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_extension", envir = env)
       }
       
       if(debug){

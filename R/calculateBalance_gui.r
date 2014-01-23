@@ -1,9 +1,13 @@
 ################################################################################
 # TODO LIST
-# TODO: Pass option ignoreCase to subset (and implement in subset)
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG
+# 18.12.2013: Fixed dropdown state not saved (wrong object saved)...
+# 27.11.2013: Passed debug to calculateBalance.
+# 21.10.2013: Fixed dropdown state not loaded.
+# 09.09.2013: Added option 'hb' to specify the definition of Hb.
 # 26.07.2013: Removed parameters 'minHeight', 'maxHeight', 'matchSource' and related code.
 # 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
 # 18.07.2013: Check before overwrite object (new function).
@@ -40,10 +44,6 @@
 calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                                  debug=FALSE){
   
-  # Load dependencies.  
-  require("gWidgets")
-  options(guiToolkit="RGtk2")
-
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
@@ -95,7 +95,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                            selected = 1,
                            editable = FALSE,
                            container = g0)
-  g0[1,3] <- g0_data_samples_lbl <- glabel(text="", container=g0)
+  g0[1,3] <- g0_data_samples_lbl <- glabel(text=" 0 samples", container=g0)
   
   addHandlerChanged(g0_data_drp, handler = function (h, ...) {
     
@@ -123,7 +123,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         # Reset components.
         .gData <<- NULL
         svalue(g0_data_drp, index=TRUE) <- 1
-        svalue(g0_data_samples_lbl) <- ""
+        svalue(g0_data_samples_lbl) <- " 0 samples"
         svalue(f4_save_edt) <- ""
         
       } else if (!slimmed) {
@@ -139,7 +139,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         # Reset components.
         .gData <<- NULL
         svalue(g0_data_drp, index=TRUE) <- 1
-        svalue(g0_data_samples_lbl) <- ""
+        svalue(g0_data_samples_lbl) <- " 0 samples"
         svalue(f4_save_edt) <- ""
         
       }else {
@@ -155,7 +155,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     } else {
       
       # Reset components.
-      svalue(g0_data_samples_lbl) <- ""
+      svalue(g0_data_samples_lbl) <- " 0 samples"
       .gData <<- NULL
       svalue(f4_save_edt) <- ""
       
@@ -171,7 +171,8 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                                    selected = 1,
                                    editable = FALSE,
                                    container = g0)
-  g0[2,3] <- g0_ref_samples_lbl <- glabel(text="", container=g0)
+  
+  g0[2,3] <- g0_ref_samples_lbl <- glabel(text=" 0 references", container=g0)
   
   addHandlerChanged(g0_ref_drp, handler = function (h, ...) {
     
@@ -199,7 +200,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         # Reset components.
         .gRef <<- NULL
         svalue(g0_ref_drp, index=TRUE) <- 1
-        svalue(g0_ref_samples_lbl) <- ""
+        svalue(g0_ref_samples_lbl) <- " 0 references"
         
       } else if (!slimmed) {
         
@@ -214,7 +215,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         # Reset components.
         .gRef <<- NULL
         svalue(g0_ref_drp, index=TRUE) <- 1
-        svalue(g0_ref_samples_lbl) <- ""
+        svalue(g0_ref_samples_lbl) <- " 0 references"
         
       }else {
         
@@ -298,7 +299,15 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   f1_ignore_chk <- gcheckbox(text="Ignore case",
                          checked=TRUE,
                          container=f1)
-
+  
+  f1g1 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
+  glabel(text="Calculate balance using:", anchor=c(-1 ,0), container=f1g1)
+  f1_methods <- c("High molecular weight / low molecular weight", "High peak / low peak")
+  f1_method_drp <- gdroplist(items=f1_methods,
+                             selected = 2,
+                             expand = FALSE,
+                             container = f1g1)
+  
   f1_options1 <- c("Calculate balance for each sample",
                 "Calculate average balance across all samples")
   
@@ -307,8 +316,8 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                              horizontal=FALSE,
                              container=f1)
   
-  f1_options2 <- c("Calculate locus balance proportional to the whole sample",
-                "Normalise locus balance to the locus with the highest total peak height")
+  f1_options2 <- c("Calculate proportional locus balance",
+                "Calculate normalised locus balance")
   
   f1_lb_opt <- gradio(items=f1_options2,
                       selected=1,
@@ -316,7 +325,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                       container=f1)
 
   f1_options3 <- c("Calculate locus balance within each dye",
-                "Calculate locus balance global across all dyes")
+                "Calculate locus balance globally across all dyes")
   
   f1_perDye_opt <- gradio(items=f1_options3,
                           selected=1,
@@ -351,9 +360,10 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   addHandlerChanged(calculate_btn, handler = function(h, ...) {
     
     # Get values.
-    val_perSample <- svalue(f1_perSample_opt, index=TRUE) == 1
+    val_method <- svalue(f1_method_drp, index=TRUE)
+    val_perSample <- svalue(f1_perSample_opt, index=TRUE) == 1 # TRUE / FALSE
     val_lb <- svalue(f1_lb_opt, index=TRUE)
-    val_perDye <- svalue(f1_perDye_opt, index=TRUE) == 1
+    val_perDye <- svalue(f1_perDye_opt, index=TRUE) == 1 # TRUE / FALSE
     val_ignore <- svalue(f1_ignore_chk)
     val_data <- .gData
     val_ref <- .gRef
@@ -374,7 +384,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       print("val_data")
       print(head(val_data))
       print("val_ref")
-      print((val_ref))
+      print(head(val_ref))
     }
     
     if(!is.null(.gData) & !is.null(.gRef)){
@@ -406,13 +416,16 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                                   perSample=val_perSample,
                                   lb=val_lb,
                                   perDye=val_perDye,
-                                  ignoreCase=val_ignore)
+                                  hb=val_method,
+                                  ignoreCase=val_ignore,
+                                  debug=debug)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       
       if(debug){
-        print(datanew)
+        print(str(datanew))
+        print(head(datanew))
         print(paste("EXIT:", match.call()[[1]]))
       }
       
@@ -444,8 +457,8 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       }  
     } else {
       # Load save flag.
-      if(exists(".calculateBalance_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".calculateBalance_gui_savegui", envir=env)
+      if(exists(".strvalidator_calculateBalance_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_calculateBalance_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -454,20 +467,23 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     if(debug){
       print(svalue(f1_savegui_chk))
     }  
-    
+        
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists(".calculateBalance_gui_perSample", envir=env, inherits = FALSE)){
-        svalue(f1_perSample_opt) <- get(".calculateBalance_gui_perSample", envir=env)
+      if(exists(".strvalidator_calculateBalance_gui_method", envir=env, inherits = FALSE)){
+        svalue(f1_method_drp) <- get(".strvalidator_calculateBalance_gui_method", envir=env)
       }
-      if(exists(".calculateBalance_gui_lb", envir=env, inherits = FALSE)){
-        svalue(f1_lb_opt) <- get(".calculateBalance_gui_lb", envir=env)
+      if(exists(".strvalidator_calculateBalance_gui_perSample", envir=env, inherits = FALSE)){
+        svalue(f1_perSample_opt) <- get(".strvalidator_calculateBalance_gui_perSample", envir=env)
       }
-      if(exists(".calculateBalance_gui_perDye", envir=env, inherits = FALSE)){
-        svalue(f1_perDye_opt) <- get(".calculateBalance_gui_perDye", envir=env)
+      if(exists(".strvalidator_calculateBalance_gui_lb", envir=env, inherits = FALSE)){
+        svalue(f1_lb_opt) <- get(".strvalidator_calculateBalance_gui_lb", envir=env)
       }
-      if(exists(".calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
-        svalue(f1_ignore_chk) <- get(".calculateBalance_gui_ignore", envir=env)
+      if(exists(".strvalidator_calculateBalance_gui_perDye", envir=env, inherits = FALSE)){
+        svalue(f1_perDye_opt) <- get(".strvalidator_calculateBalance_gui_perDye", envir=env)
+      }
+      if(exists(".strvalidator_calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
+        svalue(f1_ignore_chk) <- get(".strvalidator_calculateBalance_gui_ignore", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -481,28 +497,32 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     # Then save settings if true.
     if(svalue(f1_savegui_chk)){
       
-      assign(x=".calculateBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x=".calculateBalance_gui_perSample", value=svalue(f1_perSample_opt), envir=env)
-      assign(x=".calculateBalance_gui_lb", value=svalue(f1_lb_opt), envir=env)
-      assign(x=".calculateBalance_gui_perDye", value=svalue(f1_perDye_opt), envir=env)
-      assign(x=".calculateBalance_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_method", value=svalue(f1_method_drp), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_perSample", value=svalue(f1_perSample_opt), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_lb", value=svalue(f1_lb_opt), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_perDye", value=svalue(f1_perDye_opt), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".calculateBalance_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".calculateBalance_gui_savegui", envir = env)
+      if(exists(".strvalidator_calculateBalance_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateBalance_gui_savegui", envir = env)
       }
-      if(exists(".calculateBalance_gui_perSample", envir=env, inherits = FALSE)){
-        remove(".calculateBalance_gui_perSample", envir = env)
+      if(exists(".strvalidator_calculateBalance_gui_method", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateBalance_gui_method", envir = env)
       }
-      if(exists(".calculateBalance_gui_lb", envir=env, inherits = FALSE)){
-        remove(".calculateBalance_gui_lb", envir = env)
+      if(exists(".strvalidator_calculateBalance_gui_perSample", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateBalance_gui_perSample", envir = env)
       }
-      if(exists(".calculateBalance_gui_perDye", envir=env, inherits = FALSE)){
-        remove(".calculateBalance_gui_perDye", envir = env)
+      if(exists(".strvalidator_calculateBalance_gui_lb", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateBalance_gui_lb", envir = env)
       }
-      if(exists(".calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
-        remove(".calculateBalance_gui_ignore", envir = env)
+      if(exists(".strvalidator_calculateBalance_gui_perDye", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateBalance_gui_perDye", envir = env)
+      }
+      if(exists(".strvalidator_calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateBalance_gui_ignore", envir = env)
       }
       
       if(debug){

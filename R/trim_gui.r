@@ -5,6 +5,9 @@
 # NB! Can't handle Sample.Names as factors?
 ################################################################################
 # CHANGE LOG
+# 14.01.2014: Removed requirement for column 'Sample.Name'.
+# 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
+# 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
 # 06.08.2013: Added rows and columns to info.
 # 18.07.2013: Check before overwrite object.
 # 16.07.2013: Added save GUI settings.
@@ -38,10 +41,6 @@
 
 
 trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
-
-  # Load dependencies.  
-  library(gWidgets)
-  options(guiToolkit="RGtk2")
 
   # Global variables.
   .gData <- data.frame(Sample.Name="NA")
@@ -121,47 +120,20 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
       .gData <<- get(val_obj, envir=env)
 
-      requiredCol <- c("Sample.Name")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-
-        # Reset components.
-        .gData <<- data.frame(Sample.Name="NA")
-        svalue(sample_txt) <- ""
-        svalue(column_txt) <- ""
-        .refresh_samples_tbl()
-        .refresh_columns_tbl()
-        svalue(g0_samples_lbl) <- " 0 samples,"
-        svalue(g0_columns_lbl) <- " 0 columns,"
-        svalue(g0_rows_lbl) <- " 0 rows"
-        svalue(f2_save_edt) <- ""
-        
+      # Load or change components.
+      .refresh_samples_tbl()
+      .refresh_columns_tbl()
+      # Info.
+      if("Sample.Name" %in% names(.gData)){
+        samples <- length(unique(.gData$Sample.Name))
+        svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
       } else {
-
-        # Load or change components.
-        .refresh_samples_tbl()
-        .refresh_columns_tbl()
-        # Info.
-        if("Sample.Name" %in% names(.gData)){
-          samples <- length(unique(.gData$Sample.Name))
-          svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
-        } else {
-          svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
-        }
-        svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
-        svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
-        # Result name.
-        svalue(f2_save_edt) <- paste(val_obj, "_trim", sep="")
+        svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
       }
+      svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
+      svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
+      # Result name.
+      svalue(f2_save_edt) <- paste(val_obj, "_trim", sep="")
       
     } else {
       
@@ -201,7 +173,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                       width = 40,
                       container=sample_f)
 
-  sample_tbl <- gtable(items=data.frame(Sample.Names=unique(.gData$Sample.Name),
+  sample_tbl <- gWidgets::gtable(items=data.frame(Sample.Names=unique(.gData$Sample.Name),
                                         stringsAsFactors=FALSE),
                        container=sample_f,
                        expand=TRUE)
@@ -253,7 +225,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                       container=column_f)
   
   
-  column_tbl <- gtable(items=names(.gData), 
+  column_tbl <- gWidgets::gtable(items=names(.gData), 
                        container=column_f,
                        expand=TRUE)
 
@@ -360,10 +332,22 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(na_txt_val == "NA"){
         na_txt_val <- NA
       }
+
+      # Empty string -> NULL.
+      if(sample_val == ""){
+        sample_val <- NULL
+      }
+      
+      # Empty string -> NULL.
+      if(column_val == ""){
+        column_val <- NULL
+      }
       
       if(debug){
         print(".gData")
         print(names(.gData))
+        print("sample_val")
+        print(sample_val)
         print("column_val")
         print(column_val)
         print("word_val")
@@ -404,6 +388,8 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     }
     
   } )
+
+  # INTERNAL FUNCTIONS ########################################################
   
   .refresh_samples_tbl <- function(){
     
@@ -411,43 +397,45 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       print(paste("IN:", match.call()[[1]]))
     }
     
-    # Refresh widget by removing it and...
-    delete(sample_f, sample_tbl)
-    
-    # ...creating a new table.
-    sample_tbl <<- gtable(items=data.frame(Sample.Names=unique(.gData$Sample.Name),
-                                           stringsAsFactors=FALSE),
-                       container=sample_f,
-                       expand=TRUE)
-    
-    
-    addDropSource(sample_tbl, handler=function(h,...) svalue(h$obj))
+    if("Sample.Name" %in% names(.gData)){
 
-    addHandlerDoubleclick(sample_tbl, handler = function(h, ...) {
-        
-      # Get values.
-      tbl_val <- svalue (h$obj)
-      sample_val <- svalue(sample_txt)
-
-      # Add new value to selected.
-      new <- ifelse(nchar(sample_val) > 0,
-                    paste(sample_val, tbl_val, sep="|"),
-                    tbl_val)
-        
-      # Update text box.
-      svalue(sample_txt) <- new
       
+      # Refresh widget by removing it and...
+      delete(sample_f, sample_tbl)
+      
+      # ...creating a new table.
+      sample_tbl <<- gWidgets::gtable(items=data.frame(Sample.Names=unique(.gData$Sample.Name),
+                                                       stringsAsFactors=FALSE),
+                                      container=sample_f,
+                                      expand=TRUE)
+      
+      addDropSource(sample_tbl, handler=function(h,...) svalue(h$obj))
+      
+      addHandlerDoubleclick(sample_tbl, handler = function(h, ...) {
         
-      # Update sample name table.
+        # Get values.
+        tbl_val <- svalue (h$obj)
+        sample_val <- svalue(sample_txt)
+        
+        # Add new value to selected.
+        new <- ifelse(nchar(sample_val) > 0,
+                      paste(sample_val, tbl_val, sep="|"),
+                      tbl_val)
+        
+        # Update text box.
+        svalue(sample_txt) <- new
+        
+        
+        # Update sample name table.
         tmp_tbl <- sample_tbl[,]  # Get all values.
         tmp_tbl <- tmp_tbl[tmp_tbl!=tbl_val]  # Remove value added to selected.
         sample_tbl[,] <- tmp_tbl  # Update table.
         
       } )
+      
+    }
     
   }
-  
-  # INTERNAL FUNCTIONS ########################################################
   
   .refresh_columns_tbl <- function(){
     
@@ -459,7 +447,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     delete(column_f, column_tbl)
     
     # ...creating a new table.
-    column_tbl <<- gtable(items=names(.gData), 
+    column_tbl <<- gWidgets::gtable(items=names(.gData), 
                          container=column_f,
                          expand=TRUE)
     
@@ -499,8 +487,8 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".trim_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(savegui_chk) <- get(".trim_gui_savegui", envir=env)
+      if(exists(".strvalidator_trim_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(savegui_chk) <- get(".strvalidator_trim_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -512,26 +500,26 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
     # Then load settings if true.
     if(svalue(savegui_chk)){
-      if(exists(".trim_gui_sample_option", envir=env, inherits = FALSE)){
-        svalue(sample_opt) <- get(".trim_gui_sample_option", envir=env)
+      if(exists(".strvalidator_trim_gui_sample_option", envir=env, inherits = FALSE)){
+        svalue(sample_opt) <- get(".strvalidator_trim_gui_sample_option", envir=env)
       }
-      if(exists(".trim_gui_column_option", envir=env, inherits = FALSE)){
-        svalue(column_opt) <- get(".trim_gui_column_option", envir=env)
+      if(exists(".strvalidator_trim_gui_column_option", envir=env, inherits = FALSE)){
+        svalue(column_opt) <- get(".strvalidator_trim_gui_column_option", envir=env)
       }
-      if(exists(".trim_gui_remove_empty", envir=env, inherits = FALSE)){
-        svalue(empty_chk) <- get(".trim_gui_remove_empty", envir=env)
+      if(exists(".strvalidator_trim_gui_remove_empty", envir=env, inherits = FALSE)){
+        svalue(empty_chk) <- get(".strvalidator_trim_gui_remove_empty", envir=env)
       }
-      if(exists(".trim_gui_remove_na", envir=env, inherits = FALSE)){
-        svalue(na_chk) <- get(".trim_gui_remove_na", envir=env)
+      if(exists(".strvalidator_trim_gui_remove_na", envir=env, inherits = FALSE)){
+        svalue(na_chk) <- get(".strvalidator_trim_gui_remove_na", envir=env)
       }
-      if(exists(".trim_gui_add_word", envir=env, inherits = FALSE)){
-        svalue(word_chk) <- get(".trim_gui_add_word", envir=env)
+      if(exists(".strvalidator_trim_gui_add_word", envir=env, inherits = FALSE)){
+        svalue(word_chk) <- get(".strvalidator_trim_gui_add_word", envir=env)
       }
-      if(exists(".trim_gui_ignore_case", envir=env, inherits = FALSE)){
-        svalue(case_chk) <- get(".trim_gui_ignore_case", envir=env)
+      if(exists(".strvalidator_trim_gui_ignore_case", envir=env, inherits = FALSE)){
+        svalue(case_chk) <- get(".strvalidator_trim_gui_ignore_case", envir=env)
       }
-      if(exists(".trim_gui_replace_na", envir=env, inherits = FALSE)){
-        svalue(na_txt) <- get(".trim_gui_replace_na", envir=env)
+      if(exists(".strvalidator_trim_gui_replace_na", envir=env, inherits = FALSE)){
+        svalue(na_txt) <- get(".strvalidator_trim_gui_replace_na", envir=env)
       }
       
       if(debug){
@@ -546,40 +534,40 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(savegui_chk)){
       
-      assign(x=".trim_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".trim_gui_sample_option", value=svalue(sample_opt), envir=env)
-      assign(x=".trim_gui_column_option", value=svalue(column_opt), envir=env)
-      assign(x=".trim_gui_remove_empty", value=svalue(empty_chk), envir=env)
-      assign(x=".trim_gui_remove_na", value=svalue(na_chk), envir=env)
-      assign(x=".trim_gui_add_word", value=svalue(word_chk), envir=env)
-      assign(x=".trim_gui_ignore_case", value=svalue(case_chk), envir=env)
-      assign(x=".trim_gui_replace_na", value=svalue(na_txt), envir=env)
+      assign(x=".strvalidator_trim_gui_savegui", value=svalue(savegui_chk), envir=env)
+      assign(x=".strvalidator_trim_gui_sample_option", value=svalue(sample_opt), envir=env)
+      assign(x=".strvalidator_trim_gui_column_option", value=svalue(column_opt), envir=env)
+      assign(x=".strvalidator_trim_gui_remove_empty", value=svalue(empty_chk), envir=env)
+      assign(x=".strvalidator_trim_gui_remove_na", value=svalue(na_chk), envir=env)
+      assign(x=".strvalidator_trim_gui_add_word", value=svalue(word_chk), envir=env)
+      assign(x=".strvalidator_trim_gui_ignore_case", value=svalue(case_chk), envir=env)
+      assign(x=".strvalidator_trim_gui_replace_na", value=svalue(na_txt), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".trim_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".trim_gui_savegui", envir = env)
+      if(exists(".strvalidator_trim_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_trim_gui_savegui", envir = env)
       }
-      if(exists(".trim_gui_sample_option", envir=env, inherits = FALSE)){
-        remove(".trim_gui_sample_option", envir = env)
+      if(exists(".strvalidator_trim_gui_sample_option", envir=env, inherits = FALSE)){
+        remove(".strvalidator_trim_gui_sample_option", envir = env)
       }
-      if(exists(".trim_gui_column_option", envir=env, inherits = FALSE)){
-        remove(".trim_gui_column_option", envir = env)
+      if(exists(".strvalidator_trim_gui_column_option", envir=env, inherits = FALSE)){
+        remove(".strvalidator_trim_gui_column_option", envir = env)
       }
-      if(exists(".trim_gui_remove_empty", envir=env, inherits = FALSE)){
-        remove(".trim_gui_remove_empty", envir = env)
+      if(exists(".strvalidator_trim_gui_remove_empty", envir=env, inherits = FALSE)){
+        remove(".strvalidator_trim_gui_remove_empty", envir = env)
       }
-      if(exists(".trim_gui_remove_na", envir=env, inherits = FALSE)){
-        remove(".trim_gui_remove_na", envir = env)
+      if(exists(".strvalidator_trim_gui_remove_na", envir=env, inherits = FALSE)){
+        remove(".strvalidator_trim_gui_remove_na", envir = env)
       }
-      if(exists(".trim_gui_add_word", envir=env, inherits = FALSE)){
-        remove(".trim_gui_add_word", envir = env)
+      if(exists(".strvalidator_trim_gui_add_word", envir=env, inherits = FALSE)){
+        remove(".strvalidator_trim_gui_add_word", envir = env)
       }
-      if(exists(".trim_gui_ignore_case", envir=env, inherits = FALSE)){
-        remove(".trim_gui_ignore_case", envir = env)
+      if(exists(".strvalidator_trim_gui_ignore_case", envir=env, inherits = FALSE)){
+        remove(".strvalidator_trim_gui_ignore_case", envir = env)
       }
-      if(exists(".trim_gui_replace_na", envir=env, inherits = FALSE)){
-        remove(".trim_gui_replace_na", envir = env)
+      if(exists(".strvalidator_trim_gui_replace_na", envir=env, inherits = FALSE)){
+        remove(".strvalidator_trim_gui_replace_na", envir = env)
       }
       
       if(debug){

@@ -1,15 +1,13 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Calculates NA if no peaks. Replace 'NA' with 0 to simplify plotting? 
+# TODO: Option to add directly to dataset.
 
 ################################################################################
 # CHANGE LOG
 # 13.04.2013: Rewrote the function to work with 'slim' data.
 # 11.04.2013: Changed 'Z' to 'Heterozygous' (het/hom now indicated by 1/0,
 #             but changed to 2 in function)
-# <11.04.2013: Roxygenized and changed name from 'averagePeakHeight' to 'calculateH'.
-# <11.04.2013: Added if condition for 'slim' and option 'debugInfo'.
-# <11.04.2013: First version
 
 #' @title Calculate average peak height.
 #'
@@ -72,7 +70,7 @@ calculateH <- function(data, debug=FALSE){
   
   # Check if character data.
   if(!is.numeric(data$Height)){
-    warning("'Height' must be numeric. 'data' converted")
+    message("'Height' must be numeric. 'data' converted")
     data$Height <- as.numeric(data$Height)
   }
   

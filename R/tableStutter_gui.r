@@ -33,10 +33,6 @@
 
 tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
-  # Load dependencies.  
-  require(gWidgets)
-  options(guiToolkit="RGtk2")
-  
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -241,8 +237,8 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".tableStutter_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".tableStutter_gui_savegui", envir=env)
+      if(exists(".strvalidator_tableStutter_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_tableStutter_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -254,11 +250,11 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists(".tableStutter_gui_quant", envir=env, inherits = FALSE)){
-        svalue(f1g1_quant_spb) <- get(".tableStutter_gui_quant", envir=env)
+      if(exists(".strvalidator_tableStutter_gui_quant", envir=env, inherits = FALSE)){
+        svalue(f1g1_quant_spb) <- get(".strvalidator_tableStutter_gui_quant", envir=env)
       }
-      if(exists(".tableStutter_gui_scope", envir=env, inherits = FALSE)){
-        svalue(f1g1_scope_opt) <- get(".tableStutter_gui_scope", envir=env)
+      if(exists(".strvalidator_tableStutter_gui_scope", envir=env, inherits = FALSE)){
+        svalue(f1g1_scope_opt) <- get(".strvalidator_tableStutter_gui_scope", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -272,20 +268,20 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(f1_savegui_chk)){
       
-      assign(x=".tableStutter_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x=".tableStutter_gui_quant", value=svalue(f1g1_quant_spb), envir=env)
-      assign(x=".tableStutter_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
+      assign(x=".strvalidator_tableStutter_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_tableStutter_gui_quant", value=svalue(f1g1_quant_spb), envir=env)
+      assign(x=".strvalidator_tableStutter_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".tableStutter_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".tableStutter_gui_savegui", envir = env)
+      if(exists(".strvalidator_tableStutter_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableStutter_gui_savegui", envir = env)
       }
-      if(exists(".tableStutter_gui_quant", envir=env, inherits = FALSE)){
-        remove(".tableStutter_gui_quant", envir = env)
+      if(exists(".strvalidator_tableStutter_gui_quant", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableStutter_gui_quant", envir = env)
       }
-      if(exists(".tableStutter_gui_scope", envir=env, inherits = FALSE)){
-        remove(".tableStutter_gui_scope", envir = env)
+      if(exists(".strvalidator_tableStutter_gui_scope", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableStutter_gui_scope", envir = env)
       }
 
       if(debug){

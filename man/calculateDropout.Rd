@@ -2,14 +2,23 @@
 \alias{calculateDropout}
 \title{Calculate drop-out events}
 \usage{
-  calculateDropout(data, ref, ignoreCase = TRUE,
-    debug = FALSE)
+calculateDropout(data, ref, threshold = NULL, method = c("1", "2", "X",
+  "L"), ignoreCase = TRUE, debug = FALSE)
 }
 \arguments{
   \item{data}{data frame in GeneMapper format containing at
   least a column 'Allele'.}
 
   \item{ref}{data frame in GeneMapper format.}
+
+  \item{threshold}{numeric, threshold in RFU defining a
+  dropout event. Default is 'NULL' and dropout is scored
+  purely on the absence of a peak.}
+
+  \item{method}{character vector, specifying which scoring
+  method(s) to use. Method 'X' for random allele, '1' or
+  '2' for the low/high molecular weight allele, and 'L' for
+  the locus method (the option is case insensitive).}
 
   \item{ignoreCase}{logical, default TRUE for case
   insensitive.}
@@ -18,31 +27,77 @@
   information.}
 }
 \value{
-  data.frame with columns 'Sample.Name', 'Marker',
-  'Allele', 'Height', 'Dropout', 'Rfu', and 'Heterozygous'.
-  Dropout: 0 indicate no dropout, 1 indicate allele
-  dropout, and 2 indicate locus dropout. Rfu: height of
-  surviving allele. Heterozygous: 1 for heterozygous and 0
-  for homozygous.
+data.frame with columns 'Sample.Name', 'Marker', 'Allele',
+'Height', 'Dropout', 'Rfu', 'Heterozygous', and 'Model'.
+Dropout: 0 indicate no dropout, 1 indicate allele dropout,
+and 2 indicate locus dropout. Rfu: height of surviving
+allele. Heterozygous: 1 for heterozygous and 0 for
+homozygous. And any of the following containing the
+response (or explanatory) variable used for modelling by
+logistic regression in function \code{modelDropout}:
+'MethodX', 'Method1', 'Method2', 'MethodL' and
+'MethodL.Ph'.
 }
 \description{
-  \code{calculateDropout} calculate drop-out events (allele
-  and locus) and records the surviving peak height.
+\code{calculateDropout} calculate drop-out events (allele
+and locus) and records the surviving peak height.
 }
 \details{
-  Calculates drop-out events. In case of allele dropout the
-  peak height of the surviving allele is given. Homozygous
-  alleles in the reference set can be either single or
-  double notation (X or X X). Markers present in the
-  reference set but not in the data set will be added to
-  the result. NB! "Sample Names" in 'ref' must be unique
-  'core' name of replicate sample names in 'data'. Use
-  \code{checkSubset} to make sure subsetting works as
-  intended.
+Calculates drop-out events. In case of allele dropout the
+peak height of the surviving allele is given. Homozygous
+alleles in the reference set can be either single or double
+notation (X or X X). Markers present in the reference set
+but not in the data set will be added to the result. NB!
+"Sample Names" in 'ref' must be unique 'core' name of
+replicate sample names in 'data'. Use \code{checkSubset} to
+make sure subsetting works as intended.
+
+NB! There are several methods of scoring drop-out events
+for regression. Currently the 'MethodX', 'Method1', and
+'Method2' are endorsed by the DNA commission (see Appendix
+B in ref 1). However, an alternative method is to consider
+the whole locus and score drop-out if any allele is
+missing.
+
+Explanation of the methods: Dropout - all alleles are
+scored according to LDT. This is pure observations and is
+not used for modelling. MethodX - a random reference allele
+is selected and drop-out is scored in relation to the the
+partner allele. Method1 - the low molecular weight allele
+is selected and drop-out is scored in relation to the
+partner allele. Method2 - the high molecular weight allele
+is selected and drop-out is scored in relation to the
+partner allele. MethodL - drop-out is scored per locus i.e.
+drop-out if any allele has dropped out.
+
+Method X/1/2 records the peak height of the partner allele
+to be used as the explanatory variable in the logistic
+regression. The locus method L also do this when there has
+been a drop-out, if not the the mean peak height for the
+locus is used. Peak heights for the locus method are stored
+in a separate column.
 }
 \examples{
 data(set4)
 data(ref4)
 drop <- calculateDropout(data=set4, ref=ref4, ignoreCase=TRUE)
+}
+\references{
+Peter Gill et.al., DNA commission of the International
+Society of Forensic Genetics: Recommendations on the
+evaluation of STR typing results that may include drop-out
+and/or drop-in using probabilistic methods, Forensic
+Science International: Genetics, Volume 6, Issue 6,
+December 2012, Pages 679-688, ISSN 1872-4973,
+10.1016/j.fsigen.2012.06.002.
+\url{http://www.sciencedirect.com/science/article/pii/S1872497312001354}
+
+Peter Gill, Roberto Puch-Solis, James Curran, The
+low-template-DNA (stochastic) threshold-Its determination
+relative to risk analysis for national DNA databases,
+Forensic Science International: Genetics, Volume 3, Issue
+2, March 2009, Pages 104-111, ISSN 1872-4973,
+10.1016/j.fsigen.2008.11.009.
+\url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
 }
 

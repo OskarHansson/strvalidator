@@ -5,6 +5,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
+# 27.10.2013: Added warning when no object selected.
 # 15.07.2013: Added save GUI settings.
 # 10.07.2013: First version.
 
@@ -24,10 +26,6 @@
 
 
 export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
-  
-  # Load dependencies.  
-  library(gWidgets)
-  options(guiToolkit="RGtk2")
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -61,7 +59,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   itemList <- listObjects(env=env, objClass="data.frame")
   itemList <- c(itemList, listObjects(env=env, objClass="ggplot"))
   
-  f0_object_tbl <- gtable(items=itemList, multiple = TRUE,
+  f0_object_tbl <- gWidgets::gtable(items=itemList, multiple = TRUE,
                           expand=TRUE, container = f0)
 
   # Set initial minimal size.
@@ -274,6 +272,11 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Check for file name and path.
     ok <- val_use_obj || !is.na(val_name)
     ok <- ok && !is.na(val_path)
+    
+    # Check if any objects have been selected.
+    if(length(val_object) == 0){
+      ok <- FALSE
+    }
 
     if(ok){
       
@@ -351,7 +354,8 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
     } else {
       
-      gmessage(message="File name and path must be provided.",
+      gmessage(message=paste("At least one object must be selected.",
+                             "\nFile name and path must be provided."),
                title="Error",
                parent=w,
                icon = "error")      
@@ -371,8 +375,8 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".export_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f2_savegui_chk) <- get(".export_gui_savegui", envir=env)
+      if(exists(".strvalidator_export_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f2_savegui_chk) <- get(".strvalidator_export_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -384,26 +388,26 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(f2_savegui_chk)){
-      if(exists(".export_gui_objName", envir=env, inherits = FALSE)){
-        svalue(f1g1_name_chk) <- get(".export_gui_objName", envir=env)
+      if(exists(".strvalidator_export_gui_objName", envir=env, inherits = FALSE)){
+        svalue(f1g1_name_chk) <- get(".strvalidator_export_gui_objName", envir=env)
       }
-      if(exists(".export_gui_replace", envir=env, inherits = FALSE)){
-        svalue(f1g1_replace_chk) <- get(".export_gui_replace", envir=env)
+      if(exists(".strvalidator_export_gui_replace", envir=env, inherits = FALSE)){
+        svalue(f1g1_replace_chk) <- get(".strvalidator_export_gui_replace", envir=env)
       }
-      if(exists(".export_gui_ext", envir=env, inherits = FALSE)){
-        svalue(f2g1_ext_drp) <- get(".export_gui_ext", envir=env)
+      if(exists(".strvalidator_export_gui_ext", envir=env, inherits = FALSE)){
+        svalue(f2g1_ext_drp) <- get(".strvalidator_export_gui_ext", envir=env)
       }
-      if(exists(".export_gui_del", envir=env, inherits = FALSE)){
-        svalue(f2g1_del_drp) <- get(".export_gui_del", envir=env)
+      if(exists(".strvalidator_export_gui_del", envir=env, inherits = FALSE)){
+        svalue(f2g1_del_drp) <- get(".strvalidator_export_gui_del", envir=env)
       }
-      if(exists(".export_gui_width", envir=env, inherits = FALSE)){
-        svalue(f3g1_width_edt) <- get(".export_gui_width", envir=env)
+      if(exists(".strvalidator_export_gui_width", envir=env, inherits = FALSE)){
+        svalue(f3g1_width_edt) <- get(".strvalidator_export_gui_width", envir=env)
       }
-      if(exists(".export_gui_height", envir=env, inherits = FALSE)){
-        svalue(f3g1_height_edt) <- get(".export_gui_height", envir=env)
+      if(exists(".strvalidator_export_gui_height", envir=env, inherits = FALSE)){
+        svalue(f3g1_height_edt) <- get(".strvalidator_export_gui_height", envir=env)
       }
-      if(exists(".export_gui_res", envir=env, inherits = FALSE)){
-        svalue(f3g1_res_edt) <- get(".export_gui_res", envir=env)
+      if(exists(".strvalidator_export_gui_res", envir=env, inherits = FALSE)){
+        svalue(f3g1_res_edt) <- get(".strvalidator_export_gui_res", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -417,40 +421,40 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(f2_savegui_chk)){
       
-      assign(x=".export_gui_savegui", value=svalue(f2_savegui_chk), envir=env)
-      assign(x=".export_gui_objName", value=svalue(f1g1_name_chk), envir=env)
-      assign(x=".export_gui_replace", value=svalue(f1g1_replace_chk), envir=env)
-      assign(x=".export_gui_ext", value=svalue(f2g1_ext_drp), envir=env)
-      assign(x=".export_gui_del", value=svalue(f2g1_del_drp), envir=env)
-      assign(x=".export_gui_width", value=svalue(f3g1_width_edt), envir=env)
-      assign(x=".export_gui_height", value=svalue(f3g1_height_edt), envir=env)
-      assign(x=".export_gui_res", value=svalue(f3g1_res_edt), envir=env)
+      assign(x=".strvalidator_export_gui_savegui", value=svalue(f2_savegui_chk), envir=env)
+      assign(x=".strvalidator_export_gui_objName", value=svalue(f1g1_name_chk), envir=env)
+      assign(x=".strvalidator_export_gui_replace", value=svalue(f1g1_replace_chk), envir=env)
+      assign(x=".strvalidator_export_gui_ext", value=svalue(f2g1_ext_drp), envir=env)
+      assign(x=".strvalidator_export_gui_del", value=svalue(f2g1_del_drp), envir=env)
+      assign(x=".strvalidator_export_gui_width", value=svalue(f3g1_width_edt), envir=env)
+      assign(x=".strvalidator_export_gui_height", value=svalue(f3g1_height_edt), envir=env)
+      assign(x=".strvalidator_export_gui_res", value=svalue(f3g1_res_edt), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".export_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".export_gui_savegui", envir = env)
+      if(exists(".strvalidator_export_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_export_gui_savegui", envir = env)
       }
-      if(exists(".export_gui_objName", envir=env, inherits = FALSE)){
-        remove(".export_gui_objName", envir = env)
+      if(exists(".strvalidator_export_gui_objName", envir=env, inherits = FALSE)){
+        remove(".strvalidator_export_gui_objName", envir = env)
       }
-      if(exists(".export_gui_replace", envir=env, inherits = FALSE)){
-        remove(".export_gui_replace", envir = env)
+      if(exists(".strvalidator_export_gui_replace", envir=env, inherits = FALSE)){
+        remove(".strvalidator_export_gui_replace", envir = env)
       }
-      if(exists(".export_gui_ext", envir=env, inherits = FALSE)){
-        remove(".export_gui_ext", envir = env)
+      if(exists(".strvalidator_export_gui_ext", envir=env, inherits = FALSE)){
+        remove(".strvalidator_export_gui_ext", envir = env)
       }
-      if(exists(".export_gui_del", envir=env, inherits = FALSE)){
-        remove(".export_gui_del", envir = env)
+      if(exists(".strvalidator_export_gui_del", envir=env, inherits = FALSE)){
+        remove(".strvalidator_export_gui_del", envir = env)
       }
-      if(exists(".export_gui_width", envir=env, inherits = FALSE)){
-        remove(".export_gui_width", envir = env)
+      if(exists(".strvalidator_export_gui_width", envir=env, inherits = FALSE)){
+        remove(".strvalidator_export_gui_width", envir = env)
       }
-      if(exists(".export_gui_height", envir=env, inherits = FALSE)){
-        remove(".export_gui_height", envir = env)
+      if(exists(".strvalidator_export_gui_height", envir=env, inherits = FALSE)){
+        remove(".strvalidator_export_gui_height", envir = env)
       }
-      if(exists(".export_gui_res", envir=env, inherits = FALSE)){
-        remove(".export_gui_res", envir = env)
+      if(exists(".strvalidator_export_gui_res", envir=env, inherits = FALSE)){
+        remove(".strvalidator_export_gui_res", envir = env)
       }
       
       if(debug){

@@ -2,8 +2,7 @@
 \alias{calculateDropout_gui}
 \title{Calculate Dropout GUI}
 \usage{
-  calculateDropout_gui(env = parent.frame(),
-    savegui = NULL, debug = FALSE)
+calculateDropout_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data frames
@@ -16,10 +15,10 @@
   information.}
 }
 \description{
-  \code{calculateDropout_gui} is a GUI wrapper for the
-  \code{calculateDropout} function.
+\code{calculateDropout_gui} is a GUI wrapper for the
+\code{calculateDropout} function.
 }
 \details{
-  Scores dropouts for a dataset.
+Scores dropouts for a dataset.
 }
 

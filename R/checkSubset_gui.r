@@ -30,10 +30,6 @@
 
 checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
-  # Load dependencies.  
-  require(gWidgets)
-  options(guiToolkit="RGtk2")
-  
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
@@ -249,8 +245,8 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".checkSubset_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".checkSubset_gui_savegui", envir=env)
+      if(exists(".strvalidator_checkSubset_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_checkSubset_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -262,11 +258,11 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists(".checkSubset_gui_ignore", envir=env, inherits = FALSE)){
-        svalue(f1_ignore_case_chk) <- get(".checkSubset_gui_ignore", envir=env)
+      if(exists(".strvalidator_checkSubset_gui_ignore", envir=env, inherits = FALSE)){
+        svalue(f1_ignore_case_chk) <- get(".strvalidator_checkSubset_gui_ignore", envir=env)
       }
-      if(exists(".checkSubset_gui_fixed", envir=env, inherits = FALSE)){
-        svalue(f1_word_chk) <- get(".checkSubset_gui_fixed", envir=env)
+      if(exists(".strvalidator_checkSubset_gui_fixed", envir=env, inherits = FALSE)){
+        svalue(f1_word_chk) <- get(".strvalidator_checkSubset_gui_fixed", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -280,20 +276,20 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(f1_savegui_chk)){
       
-      assign(x=".checkSubset_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x=".checkSubset_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
-      assign(x=".checkSubset_gui_fixed", value=svalue(f1_word_chk), envir=env)
+      assign(x=".strvalidator_checkSubset_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_checkSubset_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
+      assign(x=".strvalidator_checkSubset_gui_fixed", value=svalue(f1_word_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".checkSubset_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".checkSubset_gui_savegui", envir = env)
+      if(exists(".strvalidator_checkSubset_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_checkSubset_gui_savegui", envir = env)
       }
-      if(exists(".checkSubset_gui_ignore", envir=env, inherits = FALSE)){
-        remove(".checkSubset_gui_ignore", envir = env)
+      if(exists(".strvalidator_checkSubset_gui_ignore", envir=env, inherits = FALSE)){
+        remove(".strvalidator_checkSubset_gui_ignore", envir = env)
       }
-      if(exists(".checkSubset_gui_fixed", envir=env, inherits = FALSE)){
-        remove(".checkSubset_gui_fixed", envir = env)
+      if(exists(".strvalidator_checkSubset_gui_fixed", envir=env, inherits = FALSE)){
+        remove(".strvalidator_checkSubset_gui_fixed", envir = env)
       }
       
       if(debug){

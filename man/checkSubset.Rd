@@ -2,8 +2,8 @@
 \alias{checkSubset}
 \title{check subset}
 \usage{
-  checkSubset(data, ref, console = TRUE, ignoreCase = TRUE,
-    word = FALSE, debug = FALSE)
+checkSubset(data, ref, console = TRUE, ignoreCase = TRUE, word = FALSE,
+  debug = FALSE)
 }
 \arguments{
   \item{data}{a data frame in GeneMapper format containing
@@ -25,10 +25,10 @@
   information.}
 }
 \description{
-  \code{checkSubset} checks the result of subsetting
+\code{checkSubset} checks the result of subsetting
 }
 \details{
-  Check if ref and sample names are unique for subsetting.
-  Prints the result to the R-prompt.
+Check if ref and sample names are unique for subsetting.
+Prints the result to the R-prompt.
 }
 

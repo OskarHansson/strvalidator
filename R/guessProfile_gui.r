@@ -34,8 +34,8 @@
 guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Load dependencies.  
-  require(gWidgets)
-  options(guiToolkit="RGtk2")
+  #require(gWidgets)
+  #options(guiToolkit="RGtk2")
   
   # Global variables.
   .gData <- NULL
@@ -230,8 +230,8 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".guessProfile_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1g1_savegui_chk) <- get(".guessProfile_gui_savegui", envir=env)
+      if(exists(".strvalidator_guessProfile_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1g1_savegui_chk) <- get(".strvalidator_guessProfile_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -243,14 +243,14 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
     # Then load settings if true.
     if(svalue(f1g1_savegui_chk)){
-      if(exists(".guessProfile_gui_ratio", envir=env, inherits = FALSE)){
-        svalue(f1g1_ratio_spb) <- get(".guessProfile_gui_ratio", envir=env)
+      if(exists(".strvalidator_guessProfile_gui_ratio", envir=env, inherits = FALSE)){
+        svalue(f1g1_ratio_spb) <- get(".strvalidator_guessProfile_gui_ratio", envir=env)
       }
-      if(exists(".guessProfile_gui_height", envir=env, inherits = FALSE)){
-        svalue(f1g1_height_edt) <- get(".guessProfile_gui_height", envir=env)
+      if(exists(".strvalidator_guessProfile_gui_height", envir=env, inherits = FALSE)){
+        svalue(f1g1_height_edt) <- get(".strvalidator_guessProfile_gui_height", envir=env)
       }
-      if(exists(".guessProfile_gui_na", envir=env, inherits = FALSE)){
-        svalue(f1g1_na_chk) <- get(".guessProfile_gui_na", envir=env)
+      if(exists(".strvalidator_guessProfile_gui_na", envir=env, inherits = FALSE)){
+        svalue(f1g1_na_chk) <- get(".strvalidator_guessProfile_gui_na", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -264,24 +264,24 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(f1g1_savegui_chk)){
       
-      assign(x=".guessProfile_gui_savegui", value=svalue(f1g1_savegui_chk), envir=env)
-      assign(x=".guessProfile_gui_ratio", value=svalue(f1g1_ratio_spb), envir=env)
-      assign(x=".guessProfile_gui_height", value=svalue(f1g1_height_edt), envir=env)
-      assign(x=".guessProfile_gui_na", value=svalue(f1g1_na_chk), envir=env)
+      assign(x=".strvalidator_guessProfile_gui_savegui", value=svalue(f1g1_savegui_chk), envir=env)
+      assign(x=".strvalidator_guessProfile_gui_ratio", value=svalue(f1g1_ratio_spb), envir=env)
+      assign(x=".strvalidator_guessProfile_gui_height", value=svalue(f1g1_height_edt), envir=env)
+      assign(x=".strvalidator_guessProfile_gui_na", value=svalue(f1g1_na_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".guessProfile_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".guessProfile_gui_savegui", envir = env)
+      if(exists(".strvalidator_guessProfile_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_guessProfile_gui_savegui", envir = env)
       }
-      if(exists(".guessProfile_gui_ratio", envir=env, inherits = FALSE)){
-        remove(".guessProfile_gui_ratio", envir = env)
+      if(exists(".strvalidator_guessProfile_gui_ratio", envir=env, inherits = FALSE)){
+        remove(".strvalidator_guessProfile_gui_ratio", envir = env)
       }
-      if(exists(".guessProfile_gui_height", envir=env, inherits = FALSE)){
-        remove(".guessProfile_gui_height", envir = env)
+      if(exists(".strvalidator_guessProfile_gui_height", envir=env, inherits = FALSE)){
+        remove(".strvalidator_guessProfile_gui_height", envir = env)
       }
-      if(exists(".guessProfile_gui_na", envir=env, inherits = FALSE)){
-        remove(".guessProfile_gui_na", envir = env)
+      if(exists(".strvalidator_guessProfile_gui_na", envir=env, inherits = FALSE)){
+        remove(".strvalidator_guessProfile_gui_na", envir = env)
       }
 
       if(debug){

@@ -1,3 +1,84 @@
+Version 1.0.0
+------------------------------------------------------------------------------
+* NB! Version 1.0.0 includes many fixes and it is recommended to re-import
+   and re-analyse previous data.
+* New kit file structure pre-loaded with ESI17, ESI17Fast, ESX17, ESX17Fast,
+    Y23, Identifiler, NGM, ESSPlexSE (fixed virtual alleles), NGMSElect, SGMPlus
+* New functions for creating new kit definitions and edit the kit definition file.
+* New functions for analysis of 'bins' and 'panels' files.
+* New functions for process control (e.g. contamination).
+* New 'database.txt' file including allele frequency databases:
+    "SGM Norway", R. Andreassen et al. / Forensic Science International 170 (2007) 59-61
+    "ESX 17 Hill", C.R. Hill et al. / Forensic Science International: Genetics 5 (2011) 269-275
+* New function for saving plots as various formats.
+* Numerous bug fixes and improvements made to the following functions.
+  The most significant changes are listed below:
+  calculateBalance/calculateBalance_gui
+    - Alleles are now filtered and only peaks matching reference are considered.
+    - Added calculation of 'delta' i.e. difference in repeat number.
+    - Fixed bug when two peaks have identical height.
+    - Added a second definition of Hb (HMW/LMW).
+    - Additional data checks.
+  calculateDropout/calculateDropout_gui
+    - Now complies with the recommendations from the ISFG DNA commission.
+    - Implemented a scoring threshold (LDT).
+    - Multiple scoring methods implemented.
+  filterProfile/filterProfile_gui
+    - Possible to use 'ref' without 'Sample.Name' column i.e. one profile for all.
+    - Does not discard columns anymore.
+    - Fixed bug when adding missing loci.
+  getKit
+    - Changed to support new kit file structure.
+    - New parameter 'what' for specifying the information returned.
+  import
+    - Changed name on some parameters.
+    - Progress messages added.
+    - Strings "NA" and "" now replaced with NA.
+    - All data is imported as character data.
+  modelDropout_gui
+    - Implemented modelling from several dropout scoring methods.
+    - Removed subset modelling because a subset must be scored again.
+    - Changed logistic regression in accordance to ref. 2012.
+    - Implemented 'Hosmer-Lemeshow test'.
+    - Improved control over plot.
+  plotBalance_gui
+    - New plot option 'Hb by Delta'.
+    - Correctly handles different number of markers per dye.
+    - Better control over plot elements, and fixed zoom.
+  plotDropout_gui
+    - New plot options 'plot by sample name' and empirical cumulative distribution plot.
+    - Correctly handles different number of markers per dye.
+    - Better control over plot elements, and fixed zoom.
+  plotStutter
+    - Correctly handles different number of markers per dye.
+    - Better control over plot elements, and fixed zoom.
+  slim
+    - Re-written for better performance.
+  tableStutter/tableStutter_gui
+    - User defined quantile.
+  trim/trim_gui
+    - Supports dataframe without 'Sample.Name' column.
+    - Fixed bug when samples=NULL, and invertS=TRUE.
+  calculatePeaks (former countPeaks)
+    - Completely re-written.
+* Various bug fixes and improvements in functions:
+    addData, calculateResultType, colNames, cropData_gui, detectKit,
+    editData_gui, export_gui, addColor, sortMarker.
+* New functions: addMarker, addMarker_gui, calculateOL, calculateOL_gui,
+    calculateOverlap, calculateOverlap_gui, calculatePeaks_gui,
+    calculatePrecision, calculatePrecision_gui, calculateResultType_gui,
+    combineBinsAndPanels, getDb, ggsave_gui, loadPackage, makeKit_gui,
+    plotKit_gui, plotPeaks_gui, plotPrecision_gui, plotResultType_gui,
+    readBinsFile, readPanelsFile.
+* Removed functions: addKitInfo, calculateMx (dev. version), dyeToColor,
+    calculateMean, calculateSummary, combineRef, getDropoutData
+* Renamed or replaced functions: addDye -> addColor, sortMarkers -> sortMarker,
+    countPeaks -> calculatePeaks, modelDropout -> modelDropout_gui.
+* Renamed files: kits.txt -> kit.txt
+* Files moved: inst\tests\ -> tests\testthat\
+* Added tests for calculateOL
+
+
 Version 0.3.0
 ------------------------------------------------------------------------------
 

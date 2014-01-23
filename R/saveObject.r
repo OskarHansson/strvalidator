@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 20.01.2014: Added 'debug' parameter.
 # 17.07.2013: First version.
 
 #' @title Save object
@@ -19,12 +20,20 @@
 #' @param object object to save.
 #' @param parent object specifying the parent GUI object to center the message box.
 #' @param env environment in wich to save and search for existing objects.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return logical TRUE if object was saved FALSE if not.
 #' 
 
-saveObject <- function(name, object, parent=NULL, env=parent.frame()){
+saveObject <- function(name, object, parent=NULL,
+                       env=parent.frame(), debug=FALSE){
 
+  if(debug){
+    print(paste("IN:", match.call()[[1]]))
+    print("name:")
+    print(name)
+  }
+  
   # Initiate flag.
   ok <- TRUE
   

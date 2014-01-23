@@ -1,13 +1,12 @@
 ################################################################################
 # TODO LIST
-# TODO: Update saved object in dataset-env
+# TODO: Object size not sorting correctly (seem to sort as character)
 # TODO: Require gWidgetsRGtk2 ??
 # TODO: Save .importPath in ws for last used path (only in coming gWidgets2 ??)
-# TODO: STUTTER TAB:  button, copy to clipboard.
 # TODO: Multiple selection not working.
 
 # NOTE:
-# \u00B5 is the unicode for µ 
+# \u00B5 is the unicode for µ
 # Access a file: system.file('doc', 'example', package = 'mypackage')
 # NOTE: Can't import data frame named 'drop'
 # NOTE: Buttons named 'Plot' will show up 'plot'.
@@ -15,6 +14,19 @@
 
 ################################################################################
 # CHANGE LOG
+# 13.01.2014: Fixed bug not updating ws when empty, last df shows after removed.
+# 11.01.2014: Added buttons for analysis of peaks in 'Result' tab.
+# 07.12.2013: Added buttons for analysis of precision in new 'Precision' tab.
+# 27.11.2013: Added 'Add Marker' button in edit tab.
+# 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
+# 15.11.2013: Added 'view' button in workspace tab.
+# 13.11.2013: Pass 'debug' parameter to called functions.
+# 03.11.2013: Added buttons for analysis of result type in new 'Result' tab.
+# 29.10.2013: Added buttons for analysis of capillary balance in 'Balance' tab.
+# 01.10.2013: Added button 'Analyse bins' in 'DryLab' tab.
+# 21.09.2013: Added button 'Plot Kit' in 'DryLab' tab.
+# 19.09.2013: List objects with name and size.
+# 15.09.2013: Added button 'Kit' in 'DryLab' tab.
 # 11.07.2013: Removed section 'export', new function export_gui().
 # 11.07.2013: Removed section 'load .RData', renamed button load ws -> load.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
@@ -25,9 +37,6 @@
 # 09.05.2013: Removed tables and 'save as' from tabs, new function editData_gui()
 # 27.04.2013: Trim updated with dataset selection.
 # 25.04.2013: Slim updated with dataset selection.
-# <25.04.2013: Added BALANCE tab.
-# <25.04.2013: Test using an environment for passing data.
-# <25.04.2013: First version.
 
 #' @title GUI for STR Validator
 #'
@@ -50,18 +59,6 @@
 
 strvalidator <- function(debug=FALSE){
   
-#   # Load packages.
-#   if(!require("gWidgets")){
-#     print("trying to install gWidgets...")
-#     install.packages("gWidgets")
-#     if(!require(gWidgets)){
-#      stop("could not install gWidgets")
-#     }
-#   }
-  #if (!require("gWidgetsRGtk2")) install.packages("gWidgetsRGtk2")
-  #require(gWidgets)
-  options(guiToolkit="RGtk2")
-  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
@@ -77,6 +74,8 @@ strvalidator <- function(debug=FALSE){
   .stutter_tab_name <- "Stutter"
   .balance_tab_name <- "Balance"
   .drop_tab_name <- "Dropout"
+  .result_tab_name <- "Result"
+  .precision_tab_name <- "Precision"
   .object_classes_view <- c("data.frame", "ggplot")
   .object_classes_import <- c("data.frame")
   
@@ -125,26 +124,40 @@ strvalidator <- function(debug=FALSE){
                       expand=FALSE)
   
   stutter_tab <- ggroup(horizontal = FALSE,
-                  spacing=5,
+                  spacing=10,
                   use.scrollwindow=FALSE,
                   container = nb,
                   label=.stutter_tab_name,
                   expand=FALSE)
 
   balance_tab <- ggroup(horizontal = FALSE,
-                        spacing=5,
+                        spacing=10,
                         use.scrollwindow=FALSE,
                         container = nb,
                         label=.balance_tab_name,
                         expand=FALSE)
   
   drop_tab <- ggroup(horizontal = FALSE,
-                        spacing=5,
+                        spacing=10,
                         use.scrollwindow=FALSE,
                         container = nb,
                         label=.drop_tab_name,
                         expand=FALSE)
 
+  result_tab <- ggroup(horizontal = FALSE,
+                     spacing=10,
+                     use.scrollwindow=FALSE,
+                     container = nb,
+                     label=.result_tab_name,
+                     expand=FALSE)
+  
+  precision_tab <- ggroup(horizontal = FALSE,
+                       spacing=10,
+                       use.scrollwindow=FALSE,
+                       container = nb,
+                       label=.precision_tab_name,
+                       expand=FALSE)
+  
   # START #####################################################################
   
   glabel("", container=start_tab) # Adds some space.
@@ -159,6 +172,8 @@ strvalidator <- function(debug=FALSE){
                      "However, some bugs might still persist, so check the result carefully.\n\n",
                      "Created by:\n",
                      "Oskar Hansson, Department of Forensic Biology (NIPH, Norway)\n\n",
+                     "General information and tutorials:\n",
+                     "https://sites.google.com/site/forensicapps/strvalidator\n\n",
                      "Please report bugs to:\n",
                      "https://github.com/OskarHansson/strvalidator/issues\n\n",
                      "The source is hosted at GitHub:\n",
@@ -195,16 +210,7 @@ strvalidator <- function(debug=FALSE){
   
   # FILE ######################################################################
   
-  if(debug){
-    print("TAB: FILE")
-  }
-  
-  
   # LOADED DATASETS -----------------------------------------------------------
-  
-  if(debug){
-    print("LOADED DATASETS")
-  }
   
   file_loaded_f <- gframe(text = "Project",
                           markup = FALSE,
@@ -245,14 +251,19 @@ strvalidator <- function(debug=FALSE){
                                      border=TRUE,
                                      container = file_loaded_f1)
   
+  file_loaded_view_btn <- gbutton(text="View",
+                                    border=TRUE,
+                                    container = file_loaded_f1)
+
   file_loaded_savegui_chk <- gcheckbox(text="Save GUI settings",
                                              checked=.save_gui,
                                              container=file_loaded_f1)
   
   
-  file_loaded_tbl <- gtable(items=listObjects(env=.strvalidator_env,
-                                              objClass=.object_classes_view), 
+  file_loaded_tbl <- gWidgets::gtable(items=data.frame(Object="", Size="",
+                                             stringsAsFactors=FALSE), 
                             multiple = TRUE,
+                            chosencol = 1,
                             expand = TRUE,
                             container = file_loaded_f) 
 
@@ -280,24 +291,28 @@ strvalidator <- function(debug=FALSE){
                         icon = "info",
                         parent=w)
       
-      newName_inp <- make.names(newName_inp)
-      
-      if(debug){
-        print("newName_inp")
-        print(newName_inp)
+      if(!is.na(newName_inp)){
+        
+        # Make syntactically valid name.
+        newName_inp <- make.names(newName_inp)
+        
+        if(debug){
+          print("newName_inp")
+          print(newName_inp)
+        }
+        
+        assign(newName_inp,
+               get(object, envir = .strvalidator_env)
+               , envir = .strvalidator_env)
+        
+        remove(list=object, envir=.strvalidator_env)
+        
+        .refreshLoaded()
+        
       }
       
-      assign(newName_inp,
-             get(object, envir = .strvalidator_env)
-             , envir = .strvalidator_env)
-      
-      remove(list=object, envir=.strvalidator_env)
-      
-      .refreshLoaded()
-      
-      
     } else {
-      gmessage(message="You can only rename one object at a time!",
+      gmessage(message="Currently you can only rename one object at a time!",
                title="Error",
                icon = "error",
                parent = w) 
@@ -332,14 +347,16 @@ strvalidator <- function(debug=FALSE){
   
   addHandlerChanged(file_loaded_import_btn, handler = function (h, ...) {
     
-    import_gui(env=.strvalidator_env, savegui=.save_gui)
+    # Open GUI.
+    import_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     .refreshLoaded()
     
   } )  
 
   addHandlerChanged(file_loaded_export_btn, handler = function (h, ...) {
     
-    export_gui(env=.strvalidator_env, savegui=.save_gui)
+    # Open GUI.
+    export_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )  
 
@@ -349,6 +366,28 @@ strvalidator <- function(debug=FALSE){
     
   })
   
+  addHandlerChanged(file_loaded_view_btn, handler = function(h, ...) {
+    
+    # Get selected dataset name(s).
+    val_obj <- svalue(file_loaded_tbl)
+    
+    if(debug){
+      print(paste("IN:", match.call()[[1]]))
+      print("Changed, file_loaded_view_btn")
+      print(val_obj)
+    }
+    
+    if (!is.na(val_obj) && !is.null(val_obj) && length(val_obj) > 0){
+      
+      # Open GUI.
+      editData_gui(env=.strvalidator_env,
+                   data=get(val_obj, envir=.strvalidator_env),
+                   name=val_obj,
+                   edit=FALSE, debug=debug)
+      
+    } 
+  } )
+
   addHandlerChanged(file_loaded_rm_btn, handler = function(h, ...) {
     
     # Get selected dataset name(s).
@@ -357,6 +396,7 @@ strvalidator <- function(debug=FALSE){
     if(debug){
       print(paste("IN:", match.call()[[1]]))
       print("Changed, file_loaded_rm_btn")
+      print("Removed:")
       print(val_obj)
     }
     
@@ -370,7 +410,8 @@ strvalidator <- function(debug=FALSE){
       
     } 
   } )
-
+  
+  
   addHandlerChanged(file_loaded_ws_save_btn, handler = function (h, ...) {
     
     
@@ -404,6 +445,12 @@ strvalidator <- function(debug=FALSE){
              list=ls(envir = .strvalidator_env, all.names = TRUE),
              envir = .strvalidator_env)
         
+        gmessage(message="Project saved!",
+                          text="",
+                          title="STR validator",
+                          icon ="info",
+                          parent=w)
+        
       } else {
         
         gmessage(message="The project directory was not found",
@@ -425,11 +472,6 @@ strvalidator <- function(debug=FALSE){
   
   
   # DATASETS ------------------------------------------------------------------  
-  
-  if(debug){
-    print("DATASETS")
-  }
-
   
   file_ws_f <- gframe(text = "Load dataframe from R workspace",
                       markup = FALSE,
@@ -486,38 +528,93 @@ strvalidator <- function(debug=FALSE){
   
   # STR TYPING KIT ------------------------------------------------------------
   
-  if(debug){
-    print("STR TYPING KIT")
-  }
-  
   # DRY LAB  ##################################################################
   
-  if(debug){
-    print("TAB: DRY LAB")
-  }
+  glabel("", container=drylab_tab) # Adds some space.
   
-  glabel("Here will come functions for:",
-        container=drylab_tab,
-         anchor=c(-1 ,0)) # Adds some space.
-  glabel("Analysis of the panels and bin files.",
-         container=drylab_tab,
-         anchor=c(-1 ,0)) # Adds some space.
-  glabel("Creation of marker ranges plot.",
-        container=drylab_tab,
-         anchor=c(-1 ,0)) # Adds some space.
-  glabel("Creation of kit information objects.",
-         container=drylab_tab,
-         anchor=c(-1 ,0)) # Adds some space.
-  glabel("Allelic ladder analysis.",
-         container=drylab_tab,
-         anchor=c(-1 ,0)) # Adds some space.
   
+  dry_grid <- glayout(container = drylab_tab)
+  
+  # VIEW/EDIT -----------------------------------------------------------------
+  
+  dry_grid[1,1] <- dry_view_btn <- gbutton(text="Edit",
+                                             border=TRUE,
+                                             container = dry_grid) 
+  
+  dry_grid[1,2] <- glabel(text="Edit or view a dataset.",
+                           container=dry_grid,
+                           anchor=c(-1 ,0))
+  
+  addHandlerChanged(dry_view_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    
+  } )
+  
+  # MAKE KIT ------------------------------------------------------------------
+  
+  dry_grid[2,1] <- dry_kit_btn <- gbutton(text="Kits",
+                                             border=TRUE,
+                                             container = dry_grid) 
+  
+  dry_grid[2,2] <- glabel(text="Add new kits or edit kits file.",
+                           container=dry_grid,
+                           anchor=c(-1 ,0))
+  
+  dry_grid[3,1] <- dry_plot_kit_btn <- gbutton(text="Plot Kit",
+                                          border=TRUE,
+                                          container = dry_grid) 
+  
+  dry_grid[3,2] <- glabel(text="Plot marker ranges for kits.",
+                          container=dry_grid,
+                          anchor=c(-1 ,0))
+  
+  dry_grid[4,1] <- dry_bins_btn <- gbutton(text="Analyse Overlap",
+                                               border=TRUE,
+                                               container = dry_grid) 
+  
+  dry_grid[4,2] <- glabel(text="Compare bins overlap for kits.",
+                          container=dry_grid,
+                          anchor=c(-1 ,0))
+  
+  dry_grid[5,1] <- dry_ol_btn <- gbutton(text="Analyse OL",
+                                           border=TRUE,
+                                           container = dry_grid) 
+  
+  dry_grid[5,2] <- glabel(text="Compare risk of getting off-ladder alleles for kits.",
+                          container=dry_grid,
+                          anchor=c(-1 ,0))
+  
+  addHandlerChanged(dry_kit_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    makeKit_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+  
+  addHandlerChanged(dry_plot_kit_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotKit_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+  
+  addHandlerChanged(dry_bins_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateOverlap_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+
+  addHandlerChanged(dry_ol_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateOL_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
   
   # EDIT  #####################################################################
-  
-  if(debug){
-    print("TAB: EDIT")
-  }
   
   glabel("", container=edit_tab) # Adds some space.
   
@@ -526,18 +623,18 @@ strvalidator <- function(debug=FALSE){
   
   # VIEW/EDIT -----------------------------------------------------------------
   
-  edit_grid[1,1] <- edit_view_btn <- gbutton(text="View",
+  edit_grid[1,1] <- edit_view_btn <- gbutton(text="Edit",
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[1,2] <- glabel(text="View or edit a dataset",
+  edit_grid[1,2] <- glabel(text="Edit or view a dataset.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
     
   } )
 
@@ -555,7 +652,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_trim_btn, handler = function(h, ...) {
     
     # Open GUI.
-    trim_gui(env=.strvalidator_env, savegui=.save_gui)
+    trim_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
 
@@ -573,7 +670,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_slim_btn, handler = function(h, ...) {
 
       # Open GUI.
-      slim_gui(env=.strvalidator_env, savegui=.save_gui)
+      slim_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
       
   } )
   
@@ -608,7 +705,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_crop_btn, handler = function(h, ...) {
     
     # Open GUI.
-    cropData_gui(env=.strvalidator_env, savegui=.save_gui)
+    cropData_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
 
@@ -642,92 +739,109 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_addDye_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addDye_gui(env=.strvalidator_env)
+    addDye_gui(env=.strvalidator_env, debug=debug)
+    
+  } )
+  
+  # ADD MARKER ----------------------------------------------------------------
+  
+  edit_grid[8,1] <- edit_addMarker_btn <- gbutton(text="Add Marker",
+                                               border=TRUE,
+                                               container = edit_grid) 
+  
+  edit_grid[8,2] <- glabel(text="Add missing markers to dataset.",
+                           container=edit_grid,
+                           anchor=c(-1 ,0))
+  
+  addHandlerChanged(edit_addMarker_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    addMarker_gui(env=.strvalidator_env, debug=debug)
     
   } )
   
   # ADD DATA -------------------------------------------------------------------
   
-  edit_grid[8,1] <- edit_addData_btn <- gbutton(text="Add Data",
+  edit_grid[9,1] <- edit_addData_btn <- gbutton(text="Add Data",
                                                border=TRUE,
                                                container = edit_grid) 
   
-  edit_grid[8,2] <- glabel(text="Add new information to a dataset.",
+  edit_grid[9,2] <- glabel(text="Add new information to a dataset.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_addData_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addData_gui(env=.strvalidator_env, savegui=.save_gui)
+    addData_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
 
   # CHECK SUBSET --------------------------------------------------------------
   
-  edit_grid[9,1] <- edit_check_btn <- gbutton(text="Check",
+  edit_grid[10,1] <- edit_check_btn <- gbutton(text="Check",
                                                border=TRUE,
                                                container = edit_grid) 
   
-  edit_grid[9,2] <- glabel(text="Check the subsetting of a dataset.",
+  edit_grid[10,2] <- glabel(text="Check the subsetting of a dataset.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_check_btn, handler = function(h, ...) {
     
     # Open GUI.
-    checkSubset_gui(env=.strvalidator_env, savegui=.save_gui)
+    checkSubset_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
 
   # CONCATENATE --------------------------------------------------------------
   
-  edit_grid[10,1] <- edit_conc_btn <- gbutton(text="Concatenate",
+  edit_grid[11,1] <- edit_conc_btn <- gbutton(text="Concatenate",
                                               border=TRUE,
                                               container = edit_grid) 
   
-  edit_grid[10,2] <- glabel(text="Concatenate two datasets.",
+  edit_grid[11,2] <- glabel(text="Concatenate two datasets.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_conc_btn, handler = function(h, ...) {
     
     # Open GUI.
-    concatenate_gui(env=.strvalidator_env)
+    concatenate_gui(env=.strvalidator_env, debug=debug)
     
   } )
   
   # CALCULATE HETEROZYGOUS ----------------------------------------------------
   
-  edit_grid[11,1] <- edit_het_btn <- gbutton(text="Heterozygous",
+  edit_grid[12,1] <- edit_het_btn <- gbutton(text="Heterozygous",
                                            border=TRUE,
                                            container = edit_grid) 
   
-  edit_grid[11,2] <- glabel(text="Indicate heterozygous loci.",
+  edit_grid[12,2] <- glabel(text="Indicate heterozygous loci for a reference dataset.",
                             container=edit_grid,
                             anchor=c(-1 ,0))
   
   addHandlerChanged(edit_het_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateHeterozygous_gui(env=.strvalidator_env)
+    calculateHeterozygous_gui(env=.strvalidator_env, debug=debug)
     
   } )
 
   # CALCULATE H ---------------------------------------------------------------
   
-  edit_grid[12,1] <- edit_h_btn <- gbutton(text="Calculate H",
+  edit_grid[13,1] <- edit_h_btn <- gbutton(text="Calculate H",
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[12,2] <- glabel(text="Calculate the average peak height per sample.",
+  edit_grid[13,2] <- glabel(text="Calculate the average peak height per sample.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_h_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateH_gui(env=.strvalidator_env)
+    calculateH_gui(env=.strvalidator_env, debug=debug)
     
   } )
   
@@ -741,39 +855,21 @@ strvalidator <- function(debug=FALSE){
   
   # VIEW/EDIT -----------------------------------------------------------------
   
-  stutter_grid[1,1] <- stutter_view_btn <- gbutton(text="View",
+  stutter_grid[1,1] <- stutter_view_btn <- gbutton(text="Edit",
                                                    border=TRUE,
                                                    container = stutter_grid) 
   
-  stutter_grid[1,2] <- glabel(text="View or edit a data frame.",
+  stutter_grid[1,2] <- glabel(text="Edit or view a dataset.",
                               container=stutter_grid,
                               anchor=c(-1 ,0))
   
   addHandlerChanged(stutter_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
     
   } )
 
-  # CHECK SUBSET --------------------------------------------------------------
-
-  stutter_grid[2,1] <- stutter_subset_btn <- gbutton(text="Check",
-                                                   border=TRUE,
-                                                   container = stutter_grid) 
-  
-  stutter_grid[2,2] <- glabel(text="Check subbsetting of the dataset.",
-                              container=stutter_grid,
-                              anchor=c(-1 ,0))
-  
-  addHandlerChanged(stutter_subset_btn, handler = function(h, ...) {
-    
-    # Open GUI.
-    checkSubset_gui(env=.strvalidator_env)
-    
-  } )
- 
-  
   # CALCULATE -----------------------------------------------------------------
   
   stutter_grid[3,1] <- stutter_calculate_btn <- gbutton(text="Calculate",
@@ -788,7 +884,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_calculate_btn, handler = function(h, ...) {
 
       # Open GUI.
-      calculateStutter_gui(env=.strvalidator_env, savegui=.save_gui)
+      calculateStutter_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
       
   } )
 
@@ -803,8 +899,8 @@ strvalidator <- function(debug=FALSE){
    
   addHandlerChanged(stutter_plot_btn, handler = function(h, ...) {
     
-      # Call function.
-      plotStutter_gui(env=.strvalidator_env, savegui=.save_gui)
+      # Open GUI.
+      plotStutter_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
       
   } )
   
@@ -822,86 +918,136 @@ strvalidator <- function(debug=FALSE){
     
     val_save <- svalue(file_loaded_savegui_chk)
     
-    # Call function.
-    tableStutter_gui(env=.strvalidator_env, savegui=.save_gui)
+    # Open GUI.
+    tableStutter_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
 
   
   # BALANCE  ##################################################################
 
-#   # TODO ## Regression Analysis and construction of Hb bins...
-#   
-#   #low<-seq(200,19999, by=200)
-#   #high<-seq(299,20000, by=200)
-#   #res <- vector()
-#   #for(i in seq(along=low)){
-#   #  res[i]<-quantile(plotData[plotData$MpH>=low[i] & plotData$MpH<high[i],]$Hb, 0.05, na.rm=TRUE)
-#   #}
-#   #xavg<-low+high/2
-#   #plot(x=log(xavg), y=res)
-#   #summary(lm(res ~ xavg))
-#   #abline(lm(res ~ xavg))
-#   
-
   glabel("", container=balance_tab) # Adds some space.
   
-  balance_grid <- glayout(container = balance_tab)
+  balance_g1 <- glayout(container = balance_tab)
   
   # VIEW/EDIT -----------------------------------------------------------------
   
-  balance_grid[1,1] <- balance_view_btn <- gbutton(text="View",
+  balance_g1[1,1] <- balance_view_btn <- gbutton(text="Edit",
                                                    border=TRUE,
-                                                   container = balance_grid) 
+                                                   container = balance_g1) 
   
-  balance_grid[1,2] <- glabel(text="View or edit a data frame.",
-                              container=balance_grid,
+  balance_g1[1,2] <- glabel(text="Edit or view a dataset.",
+                              container=balance_g1,
                               anchor=c(-1 ,0))
   
   addHandlerChanged(balance_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
     
   } )
 
+  # ALLELE BALANCE ============================================================
+
+#   balance_f2 <- gframe(text = "Intralocus and interlocus balance",
+#                            horizontal=FALSE, container = balance_tab) 
+#   
+#   balance_g2 <- glayout(container = balance_f2)
+  balance_g2 <- glayout(container = balance_tab)
+  
   # CALCULATE -----------------------------------------------------------------
   
-  balance_grid[2,1] <- balance_calculate_btn <- gbutton(text="Calculate",
+  balance_g2[1,1] <- balance_g3_calc_btn <- gbutton(text="Calculate",
                                                         border=TRUE,
-                                                        container = balance_grid) 
+                                                        container = balance_g2) 
   
-  balance_grid[2,2] <- glabel(text="Calculate intra/inter locus balance for a dataset.",
-                              container=balance_grid,
-                              anchor=c(-1 ,0))
+  balance_g2[1,2] <- glabel(text="Calculate intra/inter locus balance for a dataset.",
+                              container=balance_g2)
   
   
-  addHandlerChanged(balance_calculate_btn, handler = function(h, ...) {
+  addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
     
       # Open GUI.
-      calculateBalance_gui(env=.strvalidator_env, savegui=.save_gui)
+      calculateBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
       
   } )
   
-  # PLOT BALANCE --------------------------------------------------------------
+  # PLOT ----------------------------------------------------------------------
   
-  balance_grid[3,1] <- balance_plot_btn <- gbutton(text="Plot",
+  balance_g2[2,1] <- balance_g2_plot_btn <- gbutton(text="Plot",
                                                    border=TRUE,
-                                                   container = balance_grid) 
+                                                   container = balance_g2) 
   
-  balance_grid[3,2] <- glabel(text="Create plots for analysed data",
-                              container=balance_grid)
+  balance_g2[2,2] <- glabel(text="Create plots for analysed data",
+                              container=balance_g2)
   
-  addHandlerChanged(balance_plot_btn, handler = function(h, ...) {
+  addHandlerChanged(balance_g2_plot_btn, handler = function(h, ...) {
     
-    # Call function.
-    plotBalance_gui(env=.strvalidator_env, savegui=.save_gui)
+    # Open GUI.
+    plotBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
   
   
-  # SUMMARY TABLE -------------------------------------------------------------
-
+  # SUMMARY -------------------------------------------------------------------
+  
+# TODO: IMPLEMENT IN NEXT VERSION!  
+#   # CAPILLARY BALANCE =========================================================
+# 
+#   balance_f3 <- gframe(text = "Capillary balance",
+#                            horizontal=FALSE, container = balance_tab) 
+#   
+#   balance_g3 <- glayout(container = balance_f3)
+#   
+#   
+#   # CALCULATE -----------------------------------------------------------------
+#   
+#   balance_g3[1,1] <- balance_g3_calc_btn <- gbutton(text="Calculate",
+#                                                         border=TRUE,
+#                                                         container = balance_g3) 
+#   
+#   balance_g3[1,2] <- glabel(text="Calculate capillary balance for a dataset.",
+#                             container=balance_g3)
+#   
+#   
+#   addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
+#     
+#     # Open GUI.
+#     calculateCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+#     
+#   } )
+#   
+#   # PLOT ----------------------------------------------------------------------
+#   
+#   balance_g3[2,1] <- balance_g3_plot_btn <- gbutton(text="Plot",
+#                                                    border=TRUE,
+#                                                    container = balance_g3) 
+#   
+#   balance_g3[2,2] <- glabel(text="Create plots for analysed data",
+#                             container=balance_g3)
+#   
+#   addHandlerChanged(balance_g3_plot_btn, handler = function(h, ...) {
+#     
+#     # Open GUI.
+#     plotCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+#     
+#   } )
+# 
+#   # SUMMARY -------------------------------------------------------------------
+#   
+#   balance_g3[3,1] <- balance_g3_tab_btn <- gbutton(text="Table",
+#                                                     border=TRUE,
+#                                                     container = balance_g3) 
+#   
+#   balance_g3[3,2] <- glabel(text="Create summary table for analysed data",
+#                             container=balance_g3)
+#   
+#   addHandlerChanged(balance_g3_tab_btn, handler = function(h, ...) {
+#     
+#     # Open GUI.
+#     tableCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+#     
+#   } )
   
   # DROPOUT  ##################################################################
   
@@ -911,18 +1057,18 @@ strvalidator <- function(debug=FALSE){
   
   # VIEW/EDIT -----------------------------------------------------------------
   
-  drop_grid[1,1] <- drop_view_btn <- gbutton(text="View",
+  drop_grid[1,1] <- drop_view_btn <- gbutton(text="Edit",
                                              border=TRUE,
                                              container = drop_grid) 
   
-  drop_grid[1,2] <- glabel(text="View or edit a data frame.",
+  drop_grid[1,2] <- glabel(text="Edit or view a dataset.",
                            container=drop_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(drop_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
     
   } )
 
@@ -940,7 +1086,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_calculate_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateDropout_gui(env=.strvalidator_env, savegui=.save_gui)
+    calculateDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
   
@@ -955,8 +1101,8 @@ strvalidator <- function(debug=FALSE){
   
   addHandlerChanged(drop_model_btn, handler = function(h, ...) {
     
-    # Call function.
-    modelDropout_gui(env=.strvalidator_env, savegui=.save_gui)
+    # Open GUI.
+    modelDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
   
@@ -971,13 +1117,177 @@ strvalidator <- function(debug=FALSE){
   
   addHandlerChanged(drop_plot_btn, handler = function(h, ...) {
     
-    # Call function.
-    plotDropout_gui(env=.strvalidator_env, savegui=.save_gui)
+    # Open GUI.
+    plotDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
   
   
   # SUMMARY TABLE -------------------------------------------------------------
+  
+  # RESULT  ##################################################################
+  
+  glabel("", container=result_tab) # Adds some space.
+  
+  result_grid <- glayout(container = result_tab)
+  
+  # VIEW/EDIT -----------------------------------------------------------------
+  
+  result_grid[1,1] <- result_view_btn <- gbutton(text="Edit",
+                                             border=TRUE,
+                                             container = result_grid) 
+  
+  result_grid[1,2] <- glabel(text="Edit or view a dataset.",
+                           container=result_grid,
+                           anchor=c(-1 ,0))
+  
+  addHandlerChanged(result_view_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    
+  } )
+  
+  # RESULT TYPE ===============================================================
+  
+  result_f1 <- gframe(text = "Result types",
+                       horizontal=FALSE, container = result_tab) 
+  
+  result_g1 <- glayout(container = result_f1)
+  
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  result_g1[1,1] <- result_g1_calc_btn <- gbutton(text="Calculate",
+                                                  border=TRUE,
+                                                  container = result_g1) 
+  
+  result_g1[1,2] <- glabel(text="Calculate result types for a dataset.",
+                           container=result_g1,
+                           anchor=c(-1 ,0))
+  
+  
+  addHandlerChanged(result_g1_calc_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateResultType_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+  
+  # PLOT RESULT TYPE ----------------------------------------------------------
+  
+  result_g1[2,1] <- result_g1_plot_btn <- gbutton(text="Plot",
+                                             border=TRUE,
+                                             container = result_g1) 
+  
+  result_g1[2,2] <- glabel(text="Create plots for analysed data",
+                           container=result_g1)
+  
+  addHandlerChanged(result_g1_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotResultType_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+
+  # PEAKS =====================================================================
+  
+  result_f2 <- gframe(text = "Number of peaks",
+                      horizontal=FALSE, container = result_tab) 
+  
+  result_g2 <- glayout(container = result_f2)
+  
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  result_g2[1,1] <- result_g2_calc_btn <- gbutton(text="Calculate",
+                                                    border=TRUE,
+                                                    container = result_g2) 
+  
+  result_g2[1,2] <- glabel(text="Count the number of peaks in sample.",
+                           container=result_g2,
+                           anchor=c(-1 ,0))
+  
+  
+  addHandlerChanged(result_g2_calc_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculatePeaks_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+  
+  # PLOT PEAKS ----------------------------------------------------------------
+  
+  result_g2[2,1] <- result_g2_plot_btn <- gbutton(text="Plot",
+                                               border=TRUE,
+                                               container = result_g2) 
+  
+  result_g2[2,2] <- glabel(text="Create plots for analysed data",
+                           container=result_g2)
+  
+  addHandlerChanged(result_g2_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotPeaks_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+  
+  # PRECISION  ################################################################
+  
+  glabel("", container=precision_tab) # Adds some space.
+  
+  precision_grid <- glayout(container = precision_tab)
+  
+  # VIEW/EDIT -----------------------------------------------------------------
+  
+  precision_grid[1,1] <- precision_view_btn <- gbutton(text="Edit",
+                                                 border=TRUE,
+                                                 container = precision_grid) 
+  
+  precision_grid[1,2] <- glabel(text="Edit or view a dataset.",
+                             container=precision_grid,
+                             anchor=c(-1 ,0))
+  
+  addHandlerChanged(precision_view_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    
+  } )
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  precision_grid[2,1] <- precision_calculate_btn <- gbutton(text="Calculate",
+                                                      border=TRUE,
+                                                      container = precision_grid) 
+  
+  precision_grid[2,2] <- glabel(text="Calculate precision for a dataset.",
+                             container=precision_grid,
+                             anchor=c(-1 ,0))
+  
+  
+  addHandlerChanged(precision_calculate_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculatePrecision_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+  
+  # PLOT RESULT TYPE ----------------------------------------------------------
+  
+  precision_grid[3,1] <- precision_plot_btn <- gbutton(text="Plot",
+                                                 border=TRUE,
+                                                 container = precision_grid) 
+  
+  precision_grid[3,2] <- glabel(text="Create plots for analysed data",
+                             container=precision_grid)
+  
+  addHandlerChanged(precision_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotPrecision_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
   
   
   
@@ -1096,20 +1406,21 @@ strvalidator <- function(debug=FALSE){
       print(paste("IN:", match.call()[[1]]))
     }
     
-    # Get data frames.
+    # Get list of objects.
     dfs <- listObjects(env=.strvalidator_env, objClass=.object_classes_view)
+
+    # Get size of objects.
+    dfsSize <- sapply(dfs, function(x) object.size(get(x, envir = .strvalidator_env)))
+    dfsSize <- unname(dfsSize)
+    dfsSize <- as.numeric(dfsSize)
     
     if(!is.null(dfs)){
       
-      #blockHandler(file_loaded_tbl)
+      #blockHandler(file_loaded_tbl) # Not working.
       
-	  #delete(file_loaded_f, file_loaded_tbl)
-	  #file_loaded_tbl <<- gtable(items=dfs, 
-    #                        multiple = TRUE,
-    #                        container = file_loaded_f) 
-	  
       # Populate table.
-      file_loaded_tbl[] <- dfs
+      file_loaded_tbl[,] <- data.frame(Object=dfs, Size=dfsSize,
+                                       stringsAsFactors=FALSE)
       
       #unblockHandler(file_loaded_tbl)
       

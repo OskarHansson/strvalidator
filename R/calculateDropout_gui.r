@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG
+# 16.01.2014: Adding 'option' for drop-out scoring method.
+# 13.11.2013: Removed 'allele' argument in call.
+# 07.11.2013: Fixed suggested LDT (as.numeric)
+# 27.10.2013: Fixed option 'ignore case' not passed to 'check subset'.
+# 19.10.2013: Added support for arguments 'allele' and 'threshold'.
 # 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
 # 18.07.2013: Check before overwrite object.
 # 11.07.2013: Added save GUI settings.
@@ -28,11 +33,6 @@
 calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
                                  debug=FALSE){
   
-  # Load dependencies.  
-  require(ggplot2)
-  require(gWidgets)
-  options(guiToolkit="RGtk2")
-  
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
@@ -42,7 +42,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   }
 
   # Main window.
-  w <- gwindow(title="Calculate dropout", visible=FALSE)
+  w <- gwindow(title="Calculate drop-out", visible=FALSE)
   
   # Handler for saving GUI state.
   addHandlerDestroy(w, handler = function (h, ...) {
@@ -102,6 +102,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
         .gData <<- NULL
         svalue(dataset_drp, index=TRUE) <- 1
         svalue(g0_samples_lbl) <- " 0 samples"
+        svalue(f1g1_ldt_edt) <- ""
         svalue(f2_save_edt) <- ""
         
       } else {
@@ -109,6 +110,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
         # Load or change components.
         samples <- length(unique(.gData$Sample.Name))
         svalue(g0_samples_lbl) <- paste("", samples, "samples")
+        svalue(f1g1_ldt_edt) <- min(as.numeric(.gData$Height), na.rm=TRUE)
         svalue(f2_save_edt) <- paste(val_obj, "_dropout", sep="")
         
       }
@@ -195,6 +197,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
+    val_ignore <- svalue(f1_ignore_case_chk)
     
     if (!is.null(.gData) || !is.null(.gRef)){
       
@@ -206,7 +209,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_ref,
                                    console=FALSE,
-                                   ignoreCase=TRUE,
+                                   ignoreCase=val_ignore,
                                    word=FALSE)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
@@ -232,7 +235,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
                horizontal=FALSE,
                spacing = 5,
                container = gv) 
-
+  
   f1_savegui_chk <- gcheckbox(text="Save GUI settings",
                               checked=FALSE,
                               container=f1)
@@ -241,6 +244,28 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
                            checked = TRUE,
                            container = f1)
 
+  f1g1 <- glayout(container = f1)
+  
+  f1g1[1,1] <- glabel(text="Limit of detection threshold (LDT):",
+                      container=f1g1, anchor=c(-1 ,0))
+  
+  f1g1[1,2] <- f1g1_ldt_edt <- gedit(text = "", width = 6, container = f1g1)
+  
+  glabel(text="Drop-out scoring method for modelling of drop-out probabilities:",
+         container=f1, anchor=c(-1 ,0))
+  
+  f1_score1_chk <- gcheckbox(text="Score drop-out relative to the low molecular weight allele",
+                             checked=TRUE, container=f1)
+
+  f1_score2_chk <- gcheckbox(text="Score drop-out relative to the high molecular weight allele",
+                             checked=FALSE, container=f1)
+  
+  f1_scorex_chk <- gcheckbox(text="Score drop-out relative to a random allele",
+                             checked=FALSE, container=f1)
+
+  f1_scorel_chk <- gcheckbox(text="Score drop-out per locus",
+                             checked=FALSE, container=f1)
+  
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as",
@@ -262,7 +287,50 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   addHandlerChanged(dropout_btn, handler = function(h, ...) {
     
     val_ignore_case <- svalue(f1_ignore_case_chk)
+    val_threshold <- as.numeric(svalue(f1g1_ldt_edt))
     val_name <- svalue(f2_save_edt)
+    val_method <- vector()
+    
+    # Get methods:
+    if(svalue(f1_score1_chk)){
+      val_method <- c(val_method, "1")
+    }
+    if(svalue(f1_score2_chk)){
+      val_method <- c(val_method, "2")
+    }
+    if(svalue(f1_scorex_chk)){
+      val_method <- c(val_method, "X")
+    }
+    if(svalue(f1_scorel_chk)){
+      val_method <- c(val_method, "L")
+    }
+
+    if(debug){
+      print("GUI options:")
+      print("val_ignore_case")
+      print(val_ignore_case)
+      print("val_threshold")
+      print(val_threshold)
+      print("val_name")
+      print(val_name)
+      print("val_method")
+      print(val_method)
+    }
+    
+    # No threshold is represented by NULL (not needed).
+    if(length(val_threshold) == 0){
+      val_threshold <- NULL
+    }
+    
+    if(debug){
+      print("Function arguments:")
+      print("val_ignore_case")
+      print(val_ignore_case)
+      print("val_threshold")
+      print(val_threshold)
+      print("val_name")
+      print(val_name)
+    }
     
     if(!is.null(.gData) & !is.null(.gRef)){
       
@@ -272,13 +340,16 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
       datanew <- calculateDropout(data=.gData,
                                   ref=.gRef,
-                                  ignoreCase=val_ignore_case)
+                                  threshold=val_threshold,
+                                  method=val_method,
+                                  ignoreCase=val_ignore_case,
+                                  debug=debug)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       
       if(debug){
-        print(datanew)
+        print(head(datanew))
         print(paste("EXIT:", match.call()[[1]]))
       }
       
@@ -310,8 +381,8 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       }  
     } else {
       # Load save flag.
-      if(exists(".calculateDropout_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".calculateDropout_gui_savegui", envir=env)
+      if(exists(".strvalidator_calculateDropout_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_calculateDropout_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -323,9 +394,22 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists(".calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
-        svalue(f1_ignore_case_chk) <- get(".calculateDropout_gui_ignore", envir=env)
+      if(exists(".strvalidator_calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
+        svalue(f1_ignore_case_chk) <- get(".strvalidator_calculateDropout_gui_ignore", envir=env)
       }
+      if(exists(".strvalidator_calculateDropout_gui_score1", envir=env, inherits = FALSE)){
+        svalue(f1_score1_chk) <- get(".strvalidator_calculateDropout_gui_score1", envir=env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_score2", envir=env, inherits = FALSE)){
+        svalue(f1_score2_chk) <- get(".strvalidator_calculateDropout_gui_score2", envir=env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_scorex", envir=env, inherits = FALSE)){
+        svalue(f1_scorex_chk) <- get(".strvalidator_calculateDropout_gui_scorex", envir=env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_scorel", envir=env, inherits = FALSE)){
+        svalue(f1_scorel_chk) <- get(".strvalidator_calculateDropout_gui_scorel", envir=env)
+      }
+      
       if(debug){
         print("Saved settings loaded!")
       }
@@ -338,16 +422,32 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     # Then save settings if true.
     if(svalue(f1_savegui_chk)){
       
-      assign(x=".calculateDropout_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x=".calculateDropout_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_score1", value=svalue(f1_score1_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_score2", value=svalue(f1_score2_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_scorex", value=svalue(f1_scorex_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_scorel", value=svalue(f1_scorel_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".calculateDropout_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".calculateDropout_gui_savegui", envir = env)
+      if(exists(".strvalidator_calculateDropout_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_savegui", envir = env)
       }
-      if(exists(".calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
-        remove(".calculateDropout_gui_ignore", envir = env)
+      if(exists(".strvalidator_calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_ignore", envir = env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_score1", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_score1", envir = env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_score2", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_score2", envir = env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_scorex", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_scorex", envir = env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_scorel", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_scorel", envir = env)
       }
       
       if(debug){

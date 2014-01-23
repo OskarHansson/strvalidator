@@ -2,10 +2,10 @@
 \alias{export}
 \title{Export}
 \usage{
-  export(object, name = NA, useObjectName = is.na(name),
-    env = parent.frame(), path = NA, ext = "auto",
-    delim = "\t", width = 3000, height = 2000, res = 250,
-    overwrite = FALSE, debug = FALSE)
+export(object, name = NA, useObjectName = is.na(name),
+  env = parent.frame(), path = NA, ext = "auto", delim = "\\t",
+  width = 3000, height = 2000, res = 250, overwrite = FALSE,
+  debug = FALSE)
 }
 \arguments{
   \item{object}{string, list or vector containing object
@@ -46,19 +46,19 @@
   information.}
 }
 \value{
-  NA if all objects were exported OR, data.frame with
-  columns 'Object', 'Name', and 'New.Name' with objects
-  that were not exported.
+NA if all objects were exported OR, data.frame with columns
+'Object', 'Name', and 'New.Name' with objects that were not
+exported.
 }
 \description{
-  \code{export} exports or saves various objects.
+\code{export} exports or saves various objects.
 }
 \details{
-  Export objects to a directory on the file system.
-  Currently only objects of class data.frames or ggplot are
-  supported. data.frame objects will be exported as '.txt'
-  and ggplot objects as '.png'. .RData applies to all
-  supported object types.
+Export objects to a directory on the file system. Currently
+only objects of class data.frames or ggplot are supported.
+data.frame objects will be exported as '.txt' and ggplot
+objects as '.png'. .RData applies to all supported object
+types.
 }
 \keyword{internal}
 

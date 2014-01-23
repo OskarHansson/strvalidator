@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 01.11.2013: Fixed quant parameter always 0.95 (hard-coded instead of variable).
 # 06.08.2013: Fixed data.frame bug giving 'TRUE' instead of 'NA'.
 # 10.06.2013: Changed name parameter 'per' -> 'scope'
 # 30.05.2013: New parameter 'quant'. Changed name on variables with '.'
@@ -48,7 +49,7 @@ tableStutter <- function(data, scope="stutter", quant=0.95){
     sumObs<-length(data$Ratio)
     xbar<-mean(data$Ratio)
     stdv<-sd(data$Ratio)
-    quantVal <- as.numeric(quantile(data$Ratio, 0.95)) 
+    quantVal <- as.numeric(quantile(data$Ratio, quant)) 
     xmax <- max(data$Ratio)
     tmp<-data.frame(Marker=as.character(NA), Type=as.numeric(NA),
                     n.alleles=sumAllele, n.stutters=sumObs, 
@@ -80,7 +81,7 @@ tableStutter <- function(data, scope="stutter", quant=0.95){
           if(is.null(sumObs)){sumObs=NA}
           xbar <- mean(data.subset$Ratio[data.subset$Type==type[t]])
           stdv <- sd(data.subset$Ratio[data.subset$Type==type[t]])
-          quantVal <- as.numeric(quantile(data.subset$Ratio[data.subset$Type==type[t]], 0.95))
+          quantVal <- as.numeric(quantile(data.subset$Ratio[data.subset$Type==type[t]], quant))
           xmax <- max(data.subset$Ratio[data.subset$Type==type[t]])
           tmp <- data.frame(Marker=marker[m], Type=type[t],
                             n.alleles=sumAllele, n.stutters=sumObs, 
@@ -97,7 +98,7 @@ tableStutter <- function(data, scope="stutter", quant=0.95){
         if(is.null(sumObs)){sumObs=NA}
         xbar <- mean(data.subset$Ratio)
         stdv <- sd(data.subset$Ratio)
-        quantVal <- as.numeric(quantile(data.subset$Ratio, 0.95))
+        quantVal <- as.numeric(quantile(data.subset$Ratio, quant))
         xmax <- max(data.subset$Ratio)
         tmp<-data.frame(Marker=marker[m], Type=as.numeric(NA),
                         n.alleles=sumAllele, n.stutters=sumObs, 

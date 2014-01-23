@@ -1,6 +1,7 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Option to return other info e.g. size. Return dataframe instead of vector.
+#       Workaround: unname(sapply(listObjects(), function(x) object.size(get(x, envir = baseenv()))))
 
 ################################################################################
 # CHANGE LOG

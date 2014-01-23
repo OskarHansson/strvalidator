@@ -29,10 +29,6 @@
 calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
   
   
-  # Load dependencies.  
-  require(gWidgets)
-  options(guiToolkit="RGtk2")
-  
   # Global variables.
   .gData <- NULL
   

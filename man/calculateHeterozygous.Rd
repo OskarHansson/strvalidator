@@ -2,7 +2,7 @@
 \alias{calculateHeterozygous}
 \title{Calculate heterozygous loci}
 \usage{
-  calculateHeterozygous(data, debug = FALSE)
+calculateHeterozygous(data, debug = FALSE)
 }
 \arguments{
   \item{data}{Data frame containing at least columns
@@ -12,17 +12,17 @@
   information.}
 }
 \value{
-  data.frame the original data frame containing additional
-  columns.
+data.frame the original data frame containing additional
+columns.
 }
 \description{
-  \code{calculateHeterozygous} Calculates the number of
-  alleles in each marker.
+\code{calculateHeterozygous} Calculates the number of
+alleles in each marker.
 }
 \details{
-  Adds a column 'Heterozygous' to 'data'. Calculates the
-  number of unique values in the 'Allele*' columns for each
-  marker. Indicates heterozygous loci as '1' and homozygous
-  as '0'. Sample names must be unique.
+Adds a column 'Heterozygous' to 'data'. Calculates the
+number of unique values in the 'Allele*' columns for each
+marker. Indicates heterozygous loci as '1' and homozygous
+as '0'. Sample names must be unique.
 }
 

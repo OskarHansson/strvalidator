@@ -2,8 +2,7 @@
 \alias{calculateHeterozygous_gui}
 \title{Calculate Heterozygous GUI}
 \usage{
-  calculateHeterozygous_gui(env = parent.frame(),
-    debug = FALSE)
+calculateHeterozygous_gui(env = parent.frame(), debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data frames
@@ -13,14 +12,14 @@
   information.}
 }
 \value{
-  data.frame in slim format.
+data.frame in slim format.
 }
 \description{
-  \code{calculateHeterozygous_gui} is a GUI wrapper for the
-  \code{calculateHeterozygous} function.
+\code{calculateHeterozygous_gui} is a GUI wrapper for the
+\code{calculateHeterozygous} function.
 }
 \details{
-  Simplifies the use of the \code{calculateHeterozygous}
-  function by providing a graphical user interface to it.
+Simplifies the use of the \code{calculateHeterozygous}
+function by providing a graphical user interface to it.
 }
 

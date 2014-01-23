@@ -2,8 +2,8 @@
 \alias{addData}
 \title{Adds new data columns to a data frame}
 \usage{
-  addData(data, newData, byCol, thenByCol = NULL,
-    exact = TRUE, ignoreCase = TRUE, debug = FALSE)
+addData(data, newData, byCol, thenByCol = NULL, exact = TRUE,
+  ignoreCase = TRUE, debug = FALSE)
 }
 \arguments{
   \item{data}{Data frame containing your main data.}
@@ -23,24 +23,24 @@
   information.}
 }
 \value{
-  data.frame the original data frame containing additional
-  columns.
+data.frame the original data frame containing additional
+columns.
 }
 \description{
-  \code{addData} Adds columns in 'newData' to 'data' by
-  column 'byCol'.
+\code{addData} Adds columns in 'newData' to 'data' by
+column 'byCol'.
 }
 \details{
-  Information in columns in data frame 'newData' is added
-  to data frame 'data' based on value in column 'byCol' and
-  optionally on 'thenByCol'.
+Information in columns in data frame 'newData' is added to
+data frame 'data' based on value in column 'byCol' and
+optionally on 'thenByCol'.
 }
 \examples{
-# Get marker names for Promega PowerPlex ESX 17.
-x <- data.frame(Marker = getKit("ESX17")$locus)
-# Get offsets for Promega PowerPlex ESX 17.
-y <- data.frame(Marker = getKit("ESX17")$locus, Offset = getKit("ESX17")$offset)
-# Get other kit information using string name.
+# Get marker names and alleles for Promega PowerPlex ESX 17.
+x <- getKit("ESX17", what="Allele")
+# Get marker names and colors for Promega PowerPlex ESX 17.
+y <- getKit("ESX17", what="Color")
+# Add color information to allele information.
 z <- addData(data=x, newData=y, byCol="Marker")
 print(x)
 print(y)

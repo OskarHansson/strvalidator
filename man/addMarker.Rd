@@ -1,0 +1,32 @@
+\name{addMarker}
+\alias{addMarker}
+\title{Add missing markers.}
+\usage{
+addMarker(data, marker, ignoreCase = FALSE, debug = FALSE)
+}
+\arguments{
+  \item{data}{data frame or vector with sample names.}
+
+  \item{marker}{vector with marker names.}
+
+  \item{ignoreCase}{logical TRUE ignore case.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\value{
+data.frame.
+}
+\description{
+\code{addMarker} Add missing markers to a dataset given a
+kit.
+}
+\details{
+Given a dataset or a vector with sample names the function
+loops through each sample and add any missing markers.
+Returns a dataframe where each sample have at least one row
+per marker in the specified marker vector. Use
+\code{sortMarker} to sort the markers according to a
+specified kit. Required columns are: 'Sample.Name'.
+}
+

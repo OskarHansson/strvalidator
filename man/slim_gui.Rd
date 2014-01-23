@@ -2,8 +2,7 @@
 \alias{slim_gui}
 \title{Slim data frames}
 \usage{
-  slim_gui(env = parent.frame(), savegui = NULL,
-    debug = FALSE)
+slim_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data frames
@@ -16,14 +15,14 @@
   information.}
 }
 \value{
-  data.frame in slim format.
+data.frame in slim format.
 }
 \description{
-  \code{slim_gui} is a GUI wrapper for the \code{slim}
-  function.
+\code{slim_gui} is a GUI wrapper for the \code{slim}
+function.
 }
 \details{
-  Simplifies the use of the \code{slim} function by
-  providing a graphical user interface to it.
+Simplifies the use of the \code{slim} function by providing
+a graphical user interface to it.
 }
 

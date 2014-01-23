@@ -3,10 +3,13 @@
 \alias{set4}
 \title{ESX17 example data for dropout analysis.}
 \format{A data frame with 1609 rows and 5 variables}
+\usage{
+data(set4)
+}
 \description{
-  A slimmed dataset containing data from dilution
-  experiment for dropout analysis (from set3). One sample
-  replicate has lower case sample name (bc9).
+A slimmed dataset containing data from dilution experiment
+for dropout analysis (from set3). One sample replicate has
+lower case sample name (bc9).
 }
 \keyword{datasets}
 

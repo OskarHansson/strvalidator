@@ -2,8 +2,7 @@
 \alias{guessProfile}
 \title{Guess Profile}
 \usage{
-  guessProfile(data, ratio = 0.6, height = 50,
-    na.rm = FALSE)
+guessProfile(data, ratio = 0.6, height = 50, na.rm = FALSE)
 }
 \arguments{
   \item{data}{a data frame containing at least
@@ -18,18 +17,18 @@
   should be discarded.}
 }
 \value{
-  data.frame 'data' with genotype rows only.
+data.frame 'data' with genotype rows only.
 }
 \description{
-  \code{guessProfile} try to guess the correct profile
-  based on peak height.
+\code{guessProfile} try to guess the correct profile based
+on peak height.
 }
 \details{
-  Takes typing data from single source samples and filters
-  out the presumed profile based on peak height and a
-  ratio. Keeps the two highest peaks if their ratio is
-  above the threshold, or the single highest peak if below
-  the threshold.
+Takes typing data from single source samples and filters
+out the presumed profile based on peak height and a ratio.
+Keeps the two highest peaks if their ratio is above the
+threshold, or the single highest peak if below the
+threshold.
 }
 \examples{
 # Load an example dataset.

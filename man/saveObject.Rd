@@ -2,8 +2,8 @@
 \alias{saveObject}
 \title{Save object}
 \usage{
-  saveObject(name, object, parent = NULL,
-    env = parent.frame())
+saveObject(name, object, parent = NULL, env = parent.frame(),
+  debug = FALSE)
 }
 \arguments{
   \item{name}{character giving the name of the object.}
@@ -15,16 +15,19 @@
 
   \item{env}{environment in wich to save and search for
   existing objects.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
-  logical TRUE if object was saved FALSE if not.
+logical TRUE if object was saved FALSE if not.
 }
 \description{
-  Saves an object in the specified environment.
+Saves an object in the specified environment.
 }
 \details{
-  Saves an object with the given name in the specified
-  environment if it does not exist. If the object exist a
-  message box ask if the object should be overwritten.
+Saves an object with the given name in the specified
+environment if it does not exist. If the object exist a
+message box ask if the object should be overwritten.
 }
 

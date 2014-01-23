@@ -2,8 +2,7 @@
 \alias{tableStutter_gui}
 \title{Guess profile}
 \usage{
-  tableStutter_gui(env = parent.frame(), savegui = NULL,
-    debug = FALSE)
+tableStutter_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data
@@ -16,11 +15,11 @@
   information.}
 }
 \description{
-  \code{tableStutter_gui} is a GUI wrapper for the
-  \code{tableStutter} function.
+\code{tableStutter_gui} is a GUI wrapper for the
+\code{tableStutter} function.
 }
 \details{
-  Simplifies the use of the \code{tableStutter} function by
-  providing a graphical user interface to it.
+Simplifies the use of the \code{tableStutter} function by
+providing a graphical user interface to it.
 }
 

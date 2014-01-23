@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: Make a general function to add any (selected) kit information.
+# TODO: Make a general function to add any (selected) kit information?
 
 ################################################################################
 # CHANGE LOG
+# 27.11.2013: Added parameter 'overwrite=TRUE'.
+# 18.09.2013: Updated to use 'addColor' insted of removed 'addDye'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
@@ -28,10 +30,6 @@
 #' @return data.frame in slim format.
 
 addDye_gui <- function(env=parent.frame(), debug=FALSE){
-  
-  # Load dependencies.  
-  require("gWidgets")
-  options(guiToolkit="RGtk2")
   
   # Global variables.
   .gData <- data.frame(No.Data=NA)
@@ -176,7 +174,7 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     svalue(add_btn) <- "Processing..."
     enabled(add_btn) <- FALSE
     
-    datanew <- addDye(data=.gData, kit=val_kit)
+    datanew <- addColor(data=.gData, kit=val_kit, need="Dye", overwrite=TRUE)
     
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)

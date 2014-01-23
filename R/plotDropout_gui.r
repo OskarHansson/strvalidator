@@ -1,9 +1,19 @@
 ################################################################################
 # TODO LIST
+# TODO: Number of decimals on x axis as an option.
+# TODO: Color as an option.
 # TODO: ...NOT FINISHED!!!
 
 ################################################################################
 # CHANGE LOG
+# 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
+# 05.11.2013: Fixed not possible to limit both y/x axes.
+# 04.11.2013: Added edcf plot.
+# 01.11.2013: Added 'override titles' option.
+# 23.10.2013: Added save as image.
+# 20.10.2013: Added plot by sample name. Fixed x-label font size not changing.
+# 18.09.2013: Updated to support new 'addColor' function, replacing 'addDye'.
+# 17.09.2013: Added missing plot by concentration.
 # 18.07.2013: Check before overwrite object.
 # 15.07.2013: Save as ggplot object to workspace instead of image.
 # 15.07.2013: Added save GUI settings.
@@ -22,17 +32,11 @@
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 
-#' 
-
-
-
 plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
-  # Load dependencies.  
-  require(ggplot2)
-  library(gWidgets)
-  options(guiToolkit="RGtk2")
-
+  # Load gridExtra as a temporary solution to TODO in NAMESPACE.
+  loadPackage(packages=c("gridExtra"))
+  
   # Global variables.
   .gData <- NULL
   .gDataColumns <- NULL
@@ -117,6 +121,14 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       # Select in dropdown.
       svalue(kit_drp, index=TRUE) <- kitIndex
       
+      # Enable plot buttons.
+      enabled(f7_plot_h_btn) <- TRUE
+      enabled(f7_plot_amount_btn) <- TRUE
+      enabled(f7_plot_conc_btn) <- TRUE
+      enabled(f7_plot_sample_btn) <- TRUE
+      enabled(f8_plot_ecdf_btn) <- TRUE
+      enabled(f8_plot_dot_btn) <- TRUE
+      
     }
     
   } )  
@@ -128,19 +140,34 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                spacing = 5,
                container = gv) 
 
+  f1_titles_chk <- gcheckbox(text="Override automatic titles.",
+                             checked=FALSE, container=f1)
+  
+  
+  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
+    val <- svalue(f1_titles_chk)
+    if(val){
+      enabled(grid1) <- TRUE
+    } else {
+      enabled(grid1) <- FALSE
+    }
+  } )
+  
+  grid1 <- glayout(container = f1, spacing = 1)
+  enabled(grid1) <- svalue(f1_titles_chk)
   grid1 <- glayout(container = f1, spacing = 1)
 
   grid1[1,1] <- glabel(text="Plot title:", container=grid1)
-  grid1[1,2] <- title_edt <- gedit(text="Allele and locus dropout",
+  grid1[1,2] <- f1_title_edt <- gedit(text="",
                                    width=40,
                                    container=grid1)
   
   grid1[2,1] <- glabel(text="X title:", container=grid1)
-  grid1[2,2] <- x_title_edt <- gedit(text="",
+  grid1[2,2] <- f1_xtitle_edt <- gedit(text="",
                                      container=grid1)
 
   grid1[3,1] <- glabel(text="Y title:", container=grid1)
-  grid1[3,2] <- y_title_edt <- gedit(text="Marker",
+  grid1[3,2] <- f1_ytitle_edt <- gedit(text="",
                                      container=grid1)
 
   f1_savegui_chk <- gcheckbox(text="Save GUI settings",
@@ -150,24 +177,26 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # FRAME 7 ###################################################################
   
   f7 <- gframe(text = "Plot heatmap by",
-               horizontal=FALSE,
+               horizontal=TRUE,
                container = gv) 
   
-  grid7 <- glayout(container = f7)
+  f7_plot_h_btn <- gbutton(text="Average peak height",
+                        border=TRUE,
+                        container=f7) 
+
+  f7_plot_amount_btn <- gbutton(text="Amount",
+                             border=TRUE,
+                             container=f7) 
+
+  f7_plot_conc_btn <- gbutton(text="Concentration",
+                           border=TRUE,
+                           container=f7) 
+
+  f7_plot_sample_btn <- gbutton(text="Sample",
+                             border=TRUE,
+                             container=f7) 
   
-  grid7[1,1] <- plot_h_btn <- gbutton(text="Average peak height",
-                                           border=TRUE,
-                                           container=grid7) 
-
-  grid7[1,2] <- plot_amount_btn <- gbutton(text="Amount",
-                                           border=TRUE,
-                                           container=grid7) 
-
-  grid7[1,3] <- plot_conc_btn <- gbutton(text="Concentration",
-                                           border=TRUE,
-                                           container=grid7) 
-
-  addHandlerChanged(plot_h_btn, handler = function(h, ...) {
+  addHandlerChanged(f7_plot_h_btn, handler = function(h, ...) {
 
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "H")
@@ -185,19 +214,19 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
     } else {
 
-      enabled(plot_h_btn) <- FALSE
+      enabled(f7_plot_h_btn) <- FALSE
       .plotStutter(what="heat_h")
-      enabled(plot_h_btn) <- TRUE
+      enabled(f7_plot_h_btn) <- TRUE
       
     }
     
     # Change save button.
-    svalue(f5_save_btn) <- "Save"
+    svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
     
   } )
 
-  addHandlerChanged(plot_amount_btn, handler = function(h, ...) {
+  addHandlerChanged(f7_plot_amount_btn, handler = function(h, ...) {
     
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Amount")
@@ -215,19 +244,19 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
     } else {
       
-      enabled(plot_amount_btn) <- FALSE
+      enabled(f7_plot_amount_btn) <- FALSE
       .plotStutter(what="heat_amount")
-      enabled(plot_amount_btn) <- TRUE
+      enabled(f7_plot_amount_btn) <- TRUE
       
     }
     
     # Change save button.
-    svalue(f5_save_btn) <- "Save"
+    svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
     
   } )
   
-  addHandlerChanged(plot_conc_btn, handler = function(h, ...) {
+  addHandlerChanged(f7_plot_conc_btn, handler = function(h, ...) {
     
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Concentration")
@@ -245,14 +274,122 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
     } else {
       
-      enabled(plot_conc_btn) <- FALSE
+      enabled(f7_plot_conc_btn) <- FALSE
       .plotStutter(what="heat_conc")
-      enabled(plot_conc_btn) <- TRUE
+      enabled(f7_plot_conc_btn) <- TRUE
       
     }
     
     # Change save button.
-    svalue(f5_save_btn) <- "Save"
+    svalue(f5_save_btn) <- "Save as object"
+    enabled(f5_save_btn) <- TRUE
+    
+  } )
+  
+  addHandlerChanged(f7_plot_sample_btn, handler = function(h, ...) {
+    
+    # Check if suitable for plot.
+    requiredCol <- c("Sample.Name", "Marker", "Dropout")
+    
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f7_plot_sample_btn) <- FALSE
+      .plotStutter(what="sample")
+      enabled(f7_plot_sample_btn) <- TRUE
+      
+    }
+    
+    # Change save button.
+    svalue(f5_save_btn) <- "Save as object"
+    enabled(f5_save_btn) <- TRUE
+    
+  } )
+
+  # FRAME 8 ###################################################################
+  
+  f8 <- gframe(text = "Other plots",
+               horizontal=TRUE,
+               container = gv) 
+  
+  f8_plot_ecdf_btn <- gbutton(text="ecdp",
+                              border=TRUE,
+                              container=f8)
+  
+  f8_hom_chk <- gcheckbox(text="Plot homozygous peaks.",
+                          checked=FALSE,
+                          container=f8)
+  
+  f8_plot_dot_btn <- gbutton(text="Dotplot",
+                              border=TRUE,
+                              container=f8)
+  
+  addHandlerChanged(f8_plot_ecdf_btn, handler = function(h, ...) {
+    
+    # Check if suitable for plot.
+    requiredCol <- c("Sample.Name", "Marker", "Dropout", "Height", "Heterozygous")
+    
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f8_plot_ecdf_btn) <- FALSE
+      .plotStutter(what="ecdf")
+      enabled(f8_plot_ecdf_btn) <- TRUE
+      
+    }
+    
+    # Change save button.
+    svalue(f5_save_btn) <- "Save as object"
+    enabled(f5_save_btn) <- TRUE
+    
+  } )
+  
+  addHandlerChanged(f8_plot_dot_btn, handler = function(h, ...) {
+    
+    # Check if suitable for plot.
+    requiredCol <- c("Sample.Name", "Marker", "Dropout", "Height", "Heterozygous")
+    
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f8_plot_dot_btn) <- FALSE
+      .plotStutter(what="dot")
+      enabled(f8_plot_dot_btn) <- TRUE
+      
+    }
+    
+    # Change save button.
+    svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
     
   } )
@@ -268,27 +405,58 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   f5_save_edt <- gedit(text="", container=f5)
   
-  f5_save_btn <- gbutton(text = "Save",
+  f5_save_btn <- gbutton(text = "Save as object",
                          border=TRUE,
-                         container = f5) 
+                         container = f5)
+  
+  f5_ggsave_btn <- gbutton(text = "Save as image",
+                               border=TRUE,
+                               container = f5) 
   
   addHandlerChanged(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
-
+    
     # Change button.
     svalue(f5_save_btn) <- "Processing..."
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
-    saveObject(name=val_name, object=.gPlot, parent=w, env=env)
+    saveObject(name=val_name, object=.gPlot,
+               parent=w, env=env, debug=debug)
     
     # Change button.
-    svalue(f5_save_btn) <- "Saved"
+    svalue(f5_save_btn) <- "Object saved"
+    
+  } )
+  
+  addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
+    
+    val_name <- svalue(f5_save_edt)
+    
+    # Save data.
+    ggsave_gui(ggplot=.gPlot, name=val_name,
+               parent=w, env=env, savegui=savegui, debug=debug)
     
   } )
   
   # ADVANCED OPTIONS ##########################################################
+  
+  # FRAME 3 ###################################################################
+  
+  e3 <- gexpandgroup(text="Axes (applies to continous axes)",
+                     horizontal=FALSE,
+                     container = f1)
+  
+  grid3 <- glayout(container = e3, spacing = 1)
+  
+  grid3[1,1:2] <- glabel(text="Limit Y axis (min-max)", container=grid3)
+  grid3[2,1] <- e3_y_min_edt <- gedit(text="", width=5, container=grid3)
+  grid3[2,2] <- e3_y_max_edt <- gedit(text="", width=5, container=grid3)
+  
+  grid3[3,1:2] <- glabel(text="Limit X axis (min-max)", container=grid3)
+  grid3[4,1] <- e3_x_min_edt <- gedit(text="", width=5, container=grid3)
+  grid3[4,2] <- e3_x_max_edt <- gedit(text="", width=5, container=grid3)
   
   # FRAME 4 ###################################################################
   
@@ -299,20 +467,20 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   grid4 <- glayout(container = e4)
   
   grid4[1,1] <- glabel(text="Text size (pts):", container=grid4)
-  grid4[1,2] <- size_txt <- gedit(text="10", width=4, container=grid4)
+  grid4[1,2] <- e4_size_txt <- gedit(text="10", width=4, container=grid4)
 
   grid4[1,3] <- glabel(text="Angle:", container=grid4)
-  grid4[1,4] <- angle_spb <- gspinbutton (from=0, to=360, by=1,
+  grid4[1,4] <- e4_angle_spb <- gspinbutton (from=0, to=360, by=1,
                                          value=270,
                                          container=grid4) 
 
   grid4[2,1] <- glabel(text="Justification (v/h):", container=grid4)
-  grid4[2,2] <- vjust_spb <- gspinbutton (from=0, to=1, by=0.1,
+  grid4[2,2] <- e4_vjust_spb <- gspinbutton (from=0, to=1, by=0.1,
                                           value=0.3,
                                           container=grid4)
 
-  grid4[2,3] <- hjust_spb <- gspinbutton (from=0, to=1, by=0.1,
-                                          value=1,
+  grid4[2,3] <- e4_hjust_spb <- gspinbutton (from=0, to=1, by=0.1,
+                                          value=0,
                                           container=grid4)
 
   # FUNCTIONS #################################################################
@@ -321,14 +489,20 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .plotStutter <- function(what){
     
     # Get values.
-    val_title <- svalue(title_edt)
-    val_xtitle <- svalue(x_title_edt)
-    val_ytitle <- svalue(y_title_edt)
-    val_angle <- as.numeric(svalue(angle_spb))
-    val_vjust <- as.numeric(svalue(vjust_spb))
-    val_hjust <- as.numeric(svalue(hjust_spb))
-    val_size <- as.numeric(svalue(size_txt))
+    val_titles <- svalue(f1_titles_chk)
+    val_title <- svalue(f1_title_edt)
+    val_xtitle <- svalue(f1_xtitle_edt)
+    val_ytitle <- svalue(f1_ytitle_edt)
+    val_angle <- as.numeric(svalue(e4_angle_spb))
+    val_vjust <- as.numeric(svalue(e4_vjust_spb))
+    val_hjust <- as.numeric(svalue(e4_hjust_spb))
+    val_size <- as.numeric(svalue(e4_size_txt))
     val_kit <- svalue(kit_drp)
+    val_hom <- svalue(f8_hom_chk)
+    val_ymin <- as.numeric(svalue(e3_y_min_edt))
+    val_ymax <- as.numeric(svalue(e3_y_max_edt))
+    val_xmin <- as.numeric(svalue(e3_x_min_edt))
+    val_xmax <- as.numeric(svalue(e3_x_max_edt))
     
     if(debug){
       print("val_title")
@@ -345,12 +519,10 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       print(val_hjust)
       print("val_size")
       print(val_size)
+      print("val_hom")
+      print(val_hom)
       print("str(.gData)")
       print(str(.gData))
-      print("levels(.gData$Allele)")
-      print(levels(.gData$Allele))
-      print("levels(.gData$Stutter)")
-      print(levels(.gData$Stutter))
     }
     
     
@@ -361,11 +533,11 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
       # Color information.
       if(is.null(.gData$Dye)){
-        .gData <- addDye(data=.gData, kit=val_kit)
+        .gData <- addColor(data=.gData, kit=val_kit, need="Dye")
       }
 
       # Sort by marker in kit
-      .gData <- sortMarkers(data=.gData,
+      .gData <- sortMarker(data=.gData,
                           kit=val_kit,
                           addMissingLevels = TRUE)
       
@@ -374,16 +546,30 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         print("Before plot: str(.gData)")
         print(str(.gData))
       }
-      
-      # Plotting...
+
+      # Create custom titles.
+      if(val_titles){
+        mainTitle <- val_title
+        xTitle <- val_xtitle
+        yTitle <- val_ytitle
+      } 
+        
+      # Select what to plot and create default titles.
       if(what == "heat_h"){
+
+        # Create default titles.
+        if(!val_titles){
+          mainTitle <- "Allele and locus dropout"
+          xTitle <- "Average peak height 'H' (RFU)"
+          yTitle <- "Marker"
+        }
         
         # Sort according to average peak height 'H'
         .gData <- .gData[order(.gData$H),]
-        .gData$H<-as.integer(.gData$H)
-        .gData$H<-factor(.gData$H)
-        .gData$Dropout<-factor(.gData$Dropout)
-        col<-c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
+        .gData$H <- as.integer(.gData$H)
+        .gData$H <- factor(.gData$H)
+        .gData$Dropout <- factor(.gData$Dropout)
+        col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
         gp <- ggplot(.gData, aes_string(x = "H", y = "Marker", fill = "Dropout"))
         gp <- gp + geom_tile(colour = "white")
         gp <- gp + scale_fill_manual(values=col,
@@ -392,40 +578,38 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                      labels=c("none", "allele", "locus"))
         gp <- gp + guides(fill = guide_legend(reverse=TRUE))
         gp <- gp + theme(axis.text.x=element_text(angle=val_angle,
+                                                  hjust = val_hjust,
                                                   vjust = val_vjust,
                                                   size = val_size))
-        gp <- gp + labs(title=val_title)
-        gp <- gp + xlab(val_xtitle)
-        gp <- gp + ylab(val_ytitle)
-
+        gp <- gp + labs(title=mainTitle)
+        gp <- gp + ylab(yTitle)
+        gp <- gp + xlab(xTitle)
+        
         # Reverse y-axis.
-        gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker)) )
-
+        gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker)) ) +
+          theme(axis.text.x=element_text(family="sans", face="bold", size=val_size))
+        
       } else if (what == "heat_amount") {
+        
+        # Create default titles.
+        if(!val_titles){
+          mainTitle <- "Allele and locus dropout"
+          xTitle <- "Amount amplified DNA (ng)"
+          yTitle <- "Marker"
+        }
+        
+        # Add concentration to sample name.
+        .gData$Sample.Name <- paste(.gData$Amount, " (", .gData$Sample.Name, ")", sep="")
         
         # Sort according to average amount of DNA
         .gData <- .gData[order(.gData$Amount),]
         
-        # Add levels
-        # NB! JUST ONE TIME BEFORE PLOTTING
-        # If string save as numeric.
-        #.gData$Amount<-as.numeric(.gData$Amount)
-        # If factors convert to numeric.
-        #.gData$Amount<-as.numeric(levels(.gData$Amount))[.gData$Amount]
-        #.gData$Amount<-ifelse(is.na(.gData$Amount),0,.gData$Amount)
-        
-        .gData$Sample.Name<-paste(.gData$Amount, " (", .gData$Sample.Name, ")", sep="")
-        
-        .gData <- .gData [order(.gData$Amount),]
-        
-        .gData$Dropout<-factor(.gData$Dropout)
-        
-        #.gData<-sortMarkers(data=.gData,kit=val_kit,addMissingLevels = TRUE)
+        .gData$Dropout <- factor(.gData$Dropout)
         
         xlabels <- .gData[!duplicated(.gData[, c("Sample.Name", "Amount")]), ]$Amount
-        xlabels <- round(as.double(xlabels), digits=2)
+        xlabels <- round(as.double(xlabels), digits=3)
         
-        col<-c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
+        col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
 
         gp <- ggplot(.gData, aes_string(x = "Sample.Name", y = "Marker", fill = "Dropout"))
         gp <- gp + geom_tile(colour = "white") #OK
@@ -436,28 +620,317 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                                   hjust = val_hjust,
                                                   vjust = val_vjust,
                                                   size = val_size))
-        gp <- gp + labs(title=val_title)
-        gp <- gp + ylab(val_ytitle)
-        gp <- gp + xlab(val_xtitle)
+        gp <- gp + labs(title=mainTitle)
+        gp <- gp + ylab(yTitle)
+        gp <- gp + xlab(xTitle)
 
         # Reverse y-axis and relabel x-ticks.
         gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker))) + 
-          scale_x_discrete(labels=formatC(xlabels, 2, format = "f")) +
-          theme(axis.text.x=element_text(family="sans", face="bold", size=6))
+          scale_x_discrete(labels=formatC(xlabels, 3, format = "f")) +
+          theme(axis.text.x=element_text(family="sans", face="bold", size=val_size))
         
         
-      } else if (what == "heat_concentration") {
+      } else if (what == "heat_conc") {
+        # Sort according to concentration of DNA.
+
+        # Create default titles.
+        if(!val_titles){
+          mainTitle <- "Allele and locus dropout"
+          xTitle <- "Concentration (ng/\u00B5L)"  # \u00B5 is unicode for µ.
+          yTitle <- "Marker"
+        }
+        
+        # Add concentration to sample name.
+        .gData$Sample.Name <- paste(.gData$Concentration, " (", .gData$Sample.Name, ")", sep="")
+        
+        .gData <- .gData[order(.gData$Concentration),]
+        
+        .gData$Dropout <- factor(.gData$Dropout)
+        
+        xlabels <- .gData[!duplicated(.gData[, c("Sample.Name", "Concentration")]), ]$Concentration
+        xlabels <- round(as.double(xlabels), digits=4)
+        
+        col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
+        
+        gp <- ggplot(.gData, aes_string(x = "Sample.Name", y = "Marker", fill = "Dropout"))
+        gp <- gp + geom_tile(colour = "white") #OK
+        gp <- gp + scale_fill_manual(values=col, name="Dropout", breaks=c("0", "1", "2"),
+                                     labels=c("none", "allele", "locus"))
+        gp <- gp + guides(fill = guide_legend(reverse=TRUE)) # OK
+        gp <- gp + theme(axis.text.x=element_text(angle=val_angle,
+                                                  hjust = val_hjust,
+                                                  vjust = val_vjust,
+                                                  size = val_size))
+        gp <- gp + labs(title=mainTitle)
+        gp <- gp + ylab(yTitle)
+        gp <- gp + xlab(xTitle)
+        
+        # Reverse y-axis and relabel x-ticks.
+        gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker))) + 
+          scale_x_discrete(labels=formatC(xlabels, 4, format = "f")) +
+          theme(axis.text.x=element_text(family="sans", face="bold", size=val_size))
+
+      } else if (what == "sample") {
+        # Sort according to sample name.
+        
+        # Create default titles.
+        if(!val_titles){
+          mainTitle <- "Allele and locus dropout"
+          xTitle <- "Sample name"
+          yTitle <- "Marker"
+        }
+        
+        .gData <- .gData[order(.gData$Sample.Name),]
+        
+        .gData$Dropout <- factor(.gData$Dropout)
+        
+        xlabels <- .gData[!duplicated(.gData[, "Sample.Name"]), ]$Sample.Name
+        
+        col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
+        
+        gp <- ggplot(.gData, aes_string(x = "Sample.Name", y = "Marker", fill = "Dropout"))
+        gp <- gp + geom_tile(colour = "white") #OK
+        gp <- gp + scale_fill_manual(values=col, name="Dropout", breaks=c("0", "1", "2"),
+                                     labels=c("none", "allele", "locus"))
+        gp <- gp + guides(fill = guide_legend(reverse=TRUE)) # OK
+        gp <- gp + theme(axis.text.x=element_text(angle=val_angle,
+                                                  hjust = val_hjust,
+                                                  vjust = val_vjust,
+                                                  size = val_size))
+        gp <- gp + labs(title=mainTitle)
+        gp <- gp + ylab(yTitle)
+        gp <- gp + xlab(xTitle)
+        
+        # Reverse y-axis and relabel x-ticks.
+        gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker))) + 
+          scale_x_discrete(labels=xlabels) +
+          theme(axis.text.x=element_text(family="sans", face="bold", size=val_size))
+        
+      } else if (what == "ecdf") {
+        # Plot empirical cumulative distribution.
+
+        if(val_hom){
+          
+          # Remove locus dropouts.
+          # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
+          n0 <- nrow(.gData)
+          .gData <- .gData[!is.na(.gData$Height),]
+          n1 <- nrow(.gData)
+          message(paste("Analyse ", n1,
+                        " rows (",n0-n1,
+                        " NA rows i.e. locus dropout, removed from column 'Height').",
+                        sep=""))
+          
+          # Remove NA in dropout col.
+          # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
+          n0 <- nrow(.gData)
+          .gData <- .gData[!is.na(.gData$Dropout),]
+          n1 <- nrow(.gData)
+          message(paste("Analyse ", n1,
+                        " rows (",n0-n1,
+                        " rows with NA in Dropout removed.",
+                        sep=""))
+
+          # Remove locus dropout=2.
+          # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
+          n0 <- nrow(.gData)
+          .gData <- .gData[.gData$Dropout!=2,]
+          n1 <- nrow(.gData)
+          message(paste("Analyse ", n1,
+                        " rows (",n0-n1,
+                        " rows with 2 in Dropout removed.",
+                        sep=""))
+
+          # Remove heterozygous loci without dropout.
+          n0 <- nrow(.gData)
+          .gData <- .gData[!(.gData$Heterozygous==1 & .gData$Dropout==0),]
+          n1 <- nrow(.gData)
+          message(paste("Analyse ", n1,
+                        " rows (",n0-n1,
+                        " heterozygous loci without dropout removed.",
+                        sep=""))
+          
+        } else {
+          
+          # Remove non-dropouts.
+          n0 <- nrow(.gData)
+          .gData <- .gData[.gData$Dropout==1,]
+          n1 <- nrow(.gData)
+          message(paste("Analyse ", n1,
+                        " rows (",n0-n1,
+                        " non-dropouts removed).",
+                        sep=""))
+
+        }
+
+        # Create plot.
+        if(val_hom){
+          
+          # Create default titles.
+          if(!val_titles){
+            mainTitle <- paste("Epirical cumulative distribution for",
+                               sum(.gData$Dropout==1) ,
+                               "heterozygous alleles (with dropout) and",
+                               sum(.gData$Dropout==0) , "homozygous peaks")
+            xTitle <- "Peak height (RFU)"
+            yTitle <- "Cumulative probability"
+          }
+
+          # NB! Convert numeric to character (continous to discrete).
+          # To avoid Error: Continuous value supplied to discrete scale.
+          .gData$Heterozygous <- as.character(.gData$Heterozygous)
+
+          # With homozygous data and heterozygous dropout data.
+          gp <- ggplot(data=.gData, aes_string(x="Height", color="Heterozygous"))
+          gp <- gp + stat_ecdf(data=subset(.gData, .gData$Heterozygous=="0"))
+          gp <- gp + stat_ecdf(data=subset(.gData, .gData$Heterozygous=="1"))
+
+          # Add legend.
+          gp <- gp + scale_colour_discrete(name="Alleles",
+                                           breaks=c("0", "1"),
+                                           labels=c("Homozygous", "Heterozygous"))
+          
+        } else {
+
+          # Create default titles.
+          if(!val_titles){
+            mainTitle <- paste("Empirical cumulative distribution for",
+                               sum(.gData$Dropout==1),
+                               "heterozygous alleles (with dropout of the sister allele)")
+            xTitle <- "Peak height of surviving allele (RFU)"
+            yTitle <- "Cumulative probability"
+          }
+
+          # With heterozygous dropout data.
+          gp <- ggplot(.gData) + stat_ecdf(aes_string(x="Height"))
+          
+        }
+        # TODO: Add optional threshold line.
+        #Fn(t) = #{xi <= t}/n = 1/n sum(i=1,n) Indicator(xi <= t).
+        # x = rfu, Fn(t) = probability
+        # Or bootstrap for "confidence" interval..
+        
+        # Add titles and settings.        
+        gp <- gp + theme(axis.text.x=element_text(angle=val_angle,
+                                                  vjust = val_vjust,
+                                                  size = val_size))
+        gp <- gp + labs(title=mainTitle)
+        gp <- gp + ylab(yTitle)
+        gp <- gp + xlab(xTitle)
+        gp <- gp + scale_x_continuous(breaks = scales::pretty_breaks())
+        gp <- gp + scale_y_continuous(breaks = seq(0, 1, 0.1))
+        
+        # Restrict y axis.
+        if(!is.na(val_ymin) && !is.na(val_ymax)){
+          val_y <- c(val_ymin, val_ymax)
+        } else {
+          val_y <- NULL
+        }
+        # Restrict x axis.
+        if(!is.na(val_xmin) && !is.na(val_xmax)){
+          val_x <- c(val_xmin, val_xmax)
+        } else {
+          val_x <- NULL
+        }
+        # Zoom in without dropping observations.
+        gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
+        
+        
+      } else if (what == "dot") {
+        # Plot dropouts per locus.
+        
+        # NA heights.
+        # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
+        n0 <- nrow(.gData)
+        .gData <- .gData[!is.na(.gData$Height),]
+        n1 <- nrow(.gData)
+        message(paste("Analyse ", n1,
+                      " rows (",n0-n1,
+                      " NA rows removed from column 'Height').",
+                      sep=""))
+        
+        # NA Dropouts.
+        # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
+        n0 <- nrow(.gData)
+        .gData <- .gData[!is.na(.gData$Dropout),]
+        n1 <- nrow(.gData)
+        message(paste("Analyse ", n1,
+                      " rows (",n0-n1,
+                      " NA rows removed from column 'Dropout').",
+                      sep=""))
+
+        # Remove non-dropouts.
+        n0 <- nrow(.gData)
+        .gData <- .gData[.gData$Dropout==1,]
+        n1 <- nrow(.gData)
+        message(paste("Analyse ", n1,
+                      " rows (",n0-n1,
+                      " non-dropouts removed).",
+                      sep=""))
+          
+        # Create default titles.
+        if(!val_titles){
+          mainTitle <- paste(nrow(.gData),
+                             "heterozygous alleles with dropout of the sister allele")
+          xTitle <- "Locus"
+          yTitle <- "Peak height of surviving allele (RFU)"
+        }
+        
+        # Create plot.
+        plotColor <- getKit(kit="ESX17", what="Color")
+        plotColor <- unique(plotColor$Color)
+        plotColor <- addColor(plotColor, need="R.Color", have="Color")
+        #plotColor <- factor(plotColor, levels=plotColor)
+
+        # Color must be sorted factors(?)
+        #.gData$Color <- factor(.gData$Color, levels=plotColor)
+        gp <- ggplot(data=.gData, aes_string(x="Marker", y="Height"))
+        
+        # NB! This colour is only a grouping variable, NOT plot color.
+        gp <- gp + geom_point(data=.gData, mapping = aes_string(colour = "Dye"),
+                              position = position_jitter(width = 0.2)) 
+
+        # Specify colour values must be strings, NOT factors!
+        # NB! The plot colours are specified as here as strings.
+        # NB! Custom colours work on DATA AS SORTED FACTOR + COLOR CHARACTER.
+        gp <- gp + scale_colour_manual(guide=FALSE, values=as.character(plotColor), drop=FALSE)
+
+        # Add titles and settings.        
+        gp <- gp + theme(axis.text.x=element_text(angle=val_angle,
+                                                  vjust = val_vjust,
+                                                  size = val_size))
+        gp <- gp + labs(title=mainTitle)
+        gp <- gp + ylab(yTitle)
+        gp <- gp + xlab(xTitle)
+        #gp <- gp + scale_y_continuous(breaks = seq(0, 1, 0.1))
+
+        # Restrict y axis.
+        if(!is.na(val_ymin) && !is.na(val_ymax)){
+          val_y <- c(val_ymin, val_ymax)
+        } else {
+          val_y <- NULL
+        }
+        # Restrict x axis.
+        if(!is.na(val_xmin) && !is.na(val_xmax)){
+          val_x <- c(val_xmin, val_xmax)
+        } else {
+          val_x <- NULL
+        }
+        # Zoom in without dropping observations.
+        gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
         
       } else if (what == "heat_mx") {
-
-        # Mx Data: Use this to add quant/proportion data if only key samples has been quantified.
-        # newdata<-addData(newdata, quant, byCol="Sample.Name")
-        # newdata<-addData(newdata, prop, byCol="Sample.Name")
         
-        # Mx Data:
-        # newdata<-newdata[,grepl("Sample.Name|Marker|Dropout|Ratio",names(newdata))]
-        # newdata<-newdata[,grepl("Sample.Name|Marker|Dropout|Proportion",names(newdata))]
-        
+#         if(!val_titles){
+#           mainTitle <- "Allele and locus dropout"
+#           xTitle <- "Mixture proportion (Mx)"
+#           yTitle <- "Marker"
+#         }
+#         
+#         .gData <- .gData[order(.gData$Sample.Name),]
+#         
+#         .gData$Dropout <- factor(.gData$Dropout)
+#         
         # Mx Data:
         # .gData <- newdata[order(newdata$Ratio),]
         # .gData <- newdata[order(newdata$Proportion),]
@@ -471,8 +944,8 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         # .gData <- .gData [order(.gData$Proportion),]
       
         # Mx data SGM Plus.
-        # .gData<-addDye(.gData,"SGM Plus")
-        # .gData<-sortMarkers(.gData,"SGM Plus")
+        # .gData<-addColor()
+        # .gData<-sortMarker(.gData,"SGM Plus")
       
         # Mx Data:
         # xlabels<-.gData[!duplicated(.gData[, c("Sample.Name", "Ratio")]), ]$Ratio
@@ -489,7 +962,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
       }
 
-      
+      # Draw plot.    
       print(gp)
       
       # Store in global variable.
@@ -518,8 +991,8 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".plotDropout_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".plotDropout_gui_savegui", envir=env)
+      if(exists(".strvalidator_plotDropout_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_plotDropout_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -531,50 +1004,56 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists(".plotDropout_gui_title", envir=env, inherits = FALSE)){
-        svalue(title_edt) <- get(".plotDropout_gui_title", envir=env)
+      if(exists(".strvalidator_plotDropout_gui_title", envir=env, inherits = FALSE)){
+        svalue(f1_title_edt) <- get(".strvalidator_plotDropout_gui_title", envir=env)
       }
-      if(exists(".plotDropout_gui_x_title", envir=env, inherits = FALSE)){
-        svalue(x_title_edt) <- get(".plotDropout_gui_x_title", envir=env)
+      if(exists(".strvalidator_plotDropout_gui_title_chk", envir=env, inherits = FALSE)){
+        svalue(f1_titles_chk) <- get(".strvalidator_plotDropout_gui_title_chk", envir=env)
       }
-      if(exists(".plotDropout_gui_y_title", envir=env, inherits = FALSE)){
-        svalue(y_title_edt) <- get(".plotDropout_gui_y_title", envir=env)
+      if(exists(".strvalidator_plotDropout_gui_x_title", envir=env, inherits = FALSE)){
+        svalue(f1_xtitle_edt) <- get(".strvalidator_plotDropout_gui_x_title", envir=env)
       }
-#       if(exists(".plotDropout_gui_points_shape", envir=env, inherits = FALSE)){
-#         svalue(shape_txt) <- get(".plotDropout_gui_points_shape", envir=env)
-#       }
-#       if(exists(".plotDropout_gui_points_alpha", envir=env, inherits = FALSE)){
-#         svalue(alpha_txt) <- get(".plotDropout_gui_points_alpha", envir=env)
-#       }
-#       if(exists(".plotDropout_gui_points_jitterh", envir=env, inherits = FALSE)){
-#         svalue(jitterh_txt) <- get(".plotDropout_gui_points_jitterh", envir=env)
-#       }
-#       if(exists(".plotDropout_gui_points_jitterv", envir=env, inherits = FALSE)){
-#         svalue(jitterv_txt) <- get(".plotDropout_gui_points_jitterv", envir=env)
-#       }
-#       if(exists(".plotDropout_gui_axes_y_min", envir=env, inherits = FALSE)){
-#         svalue(y_min_txt) <- get(".plotDropout_gui_axes_y_min", envir=env)
-#       }
-#       if(exists(".plotDropout_gui_axes_y_max", envir=env, inherits = FALSE)){
-#         svalue(y_max_txt) <- get(".plotDropout_gui_axes_y_max", envir=env)
-#       }
-#       if(exists(".plotDropout_gui_axes_x_min", envir=env, inherits = FALSE)){
-#         svalue(x_min_txt) <- get(".plotDropout_gui_axes_x_min", envir=env)
-#       }
-#       if(exists(".plotDropout_gui_axes_x_max", envir=env, inherits = FALSE)){
-#         svalue(x_max_txt) <- get(".plotDropout_gui_axes_x_max", envir=env)
-#       }
-      if(exists(".plotDropout_gui_xlabel_size", envir=env, inherits = FALSE)){
-        svalue(size_txt) <- get(".plotDropout_gui_xlabel_size", envir=env)
+      if(exists(".strvalidator_plotDropout_gui_y_title", envir=env, inherits = FALSE)){
+        svalue(f1_ytitle_edt) <- get(".strvalidator_plotDropout_gui_y_title", envir=env)
       }
-      if(exists(".plotDropout_gui_xlabel_angle", envir=env, inherits = FALSE)){
-        svalue(angle_spb) <- get(".plotDropout_gui_xlabel_angle", envir=env)
+#       if(exists(".strvalidator_plotDropout_gui_points_shape", envir=env, inherits = FALSE)){
+#         svalue(shape_txt) <- get(".strvalidator_plotDropout_gui_points_shape", envir=env)
+#       }
+#       if(exists(".strvalidator_plotDropout_gui_points_alpha", envir=env, inherits = FALSE)){
+#         svalue(alpha_txt) <- get(".strvalidator_plotDropout_gui_points_alpha", envir=env)
+#       }
+#       if(exists(".strvalidator_plotDropout_gui_points_jitterh", envir=env, inherits = FALSE)){
+#         svalue(jitterh_txt) <- get(".strvalidator_plotDropout_gui_points_jitterh", envir=env)
+#       }
+#       if(exists(".strvalidator_plotDropout_gui_points_jitterv", envir=env, inherits = FALSE)){
+#         svalue(jitterv_txt) <- get(".strvalidator_plotDropout_gui_points_jitterv", envir=env)
+#       }
+      if(exists(".strvalidator_plotDropout_gui_axes_y_min", envir=env, inherits = FALSE)){
+        svalue(e3_y_min_edt) <- get(".strvalidator_plotDropout_gui_axes_y_min", envir=env)
       }
-      if(exists(".plotDropout_gui_xlabel_justh", envir=env, inherits = FALSE)){
-        svalue(hjust_spb) <- get(".plotDropout_gui_xlabel_justh", envir=env)
+      if(exists(".strvalidator_plotDropout_gui_axes_y_max", envir=env, inherits = FALSE)){
+        svalue(e3_y_max_edt) <- get(".strvalidator_plotDropout_gui_axes_y_max", envir=env)
       }
-      if(exists(".plotDropout_gui_xlabel_justv", envir=env, inherits = FALSE)){
-        svalue(vjust_spb) <- get(".plotDropout_gui_xlabel_justv", envir=env)
+      if(exists(".strvalidator_plotDropout_gui_axes_x_min", envir=env, inherits = FALSE)){
+        svalue(e3_x_min_edt) <- get(".strvalidator_plotDropout_gui_axes_x_min", envir=env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_axes_x_max", envir=env, inherits = FALSE)){
+        svalue(e3_x_max_edt) <- get(".strvalidator_plotDropout_gui_axes_x_max", envir=env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_size", envir=env, inherits = FALSE)){
+        svalue(e4_size_txt) <- get(".strvalidator_plotDropout_gui_xlabel_size", envir=env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_angle", envir=env, inherits = FALSE)){
+        svalue(e4_angle_spb) <- get(".strvalidator_plotDropout_gui_xlabel_angle", envir=env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_justh", envir=env, inherits = FALSE)){
+        svalue(e4_hjust_spb) <- get(".strvalidator_plotDropout_gui_xlabel_justh", envir=env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_justv", envir=env, inherits = FALSE)){
+        svalue(e4_vjust_spb) <- get(".strvalidator_plotDropout_gui_xlabel_justv", envir=env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_hom", envir=env, inherits = FALSE)){
+        svalue(f8_hom_chk) <- get(".strvalidator_plotDropout_gui_hom", envir=env)
       }
       
       if(debug){
@@ -589,76 +1068,84 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(f1_savegui_chk)){
       
-      assign(x=".plotDropout_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x=".plotDropout_gui_title", value=svalue(title_edt), envir=env)
-      assign(x=".plotDropout_gui_x_title", value=svalue(x_title_edt), envir=env)
-      assign(x=".plotDropout_gui_y_title", value=svalue(y_title_edt), envir=env)
-#       assign(x=".plotDropout_gui_points_plot", value=svalue(e2_plotpoints_chk), envir=env)
-#       assign(x=".plotDropout_gui_points_shape", value=svalue(shape_txt), envir=env)
-#       assign(x=".plotDropout_gui_points_alpha", value=svalue(alpha_txt), envir=env)
-#       assign(x=".plotDropout_gui_points_jitterh", value=svalue(jitterh_txt), envir=env)
-#       assign(x=".plotDropout_gui_points_jitterv", value=svalue(jitterv_txt), envir=env)
-#       assign(x=".plotDropout_gui_axes_y_min", value=svalue(y_min_txt), envir=env)
-#       assign(x=".plotDropout_gui_axes_y_max", value=svalue(y_max_txt), envir=env)
-#       assign(x=".plotDropout_gui_axes_x_min", value=svalue(x_min_txt), envir=env)
-#       assign(x=".plotDropout_gui_axes_x_max", value=svalue(x_max_txt), envir=env)
-      assign(x=".plotDropout_gui_xlabel_size", value=svalue(size_txt), envir=env)
-      assign(x=".plotDropout_gui_xlabel_angle", value=svalue(angle_spb), envir=env)
-      assign(x=".plotDropout_gui_xlabel_justh", value=svalue(hjust_spb), envir=env)
-      assign(x=".plotDropout_gui_xlabel_justv", value=svalue(vjust_spb), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_title", value=svalue(f1_title_edt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_x_title", value=svalue(f1_xtitle_edt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_y_title", value=svalue(f1_ytitle_edt), envir=env)
+#       assign(x=".strvalidator_plotDropout_gui_points_plot", value=svalue(e2_plotpoints_chk), envir=env)
+#       assign(x=".strvalidator_plotDropout_gui_points_shape", value=svalue(shape_txt), envir=env)
+#       assign(x=".strvalidator_plotDropout_gui_points_alpha", value=svalue(alpha_txt), envir=env)
+#       assign(x=".strvalidator_plotDropout_gui_points_jitterh", value=svalue(jitterh_txt), envir=env)
+#       assign(x=".strvalidator_plotDropout_gui_points_jitterv", value=svalue(jitterv_txt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_axes_y_min", value=svalue(e3_y_min_edt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_axes_y_max", value=svalue(e3_y_max_edt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_axes_x_min", value=svalue(e3_x_min_edt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_axes_x_max", value=svalue(e3_x_max_edt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_xlabel_size", value=svalue(e4_size_txt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_xlabel_angle", value=svalue(e4_angle_spb), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_xlabel_justh", value=svalue(e4_hjust_spb), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_xlabel_justv", value=svalue(e4_vjust_spb), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_hom", value=svalue(f8_hom_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".plotDropout_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".plotDropout_gui_savegui", envir = env)
+      if(exists(".strvalidator_plotDropout_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_savegui", envir = env)
       }
-      if(exists(".plotDropout_gui_title", envir=env, inherits = FALSE)){
-        remove(".plotDropout_gui_title", envir = env)
+      if(exists(".strvalidator_plotDropout_gui_title", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_title", envir = env)
       }
-      if(exists(".plotDropout_gui_x_title", envir=env, inherits = FALSE)){
-        remove(".plotDropout_gui_x_title", envir = env)
+      if(exists(".strvalidator_plotDropout_gui_title_chk", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_title_chk", envir = env)
       }
-      if(exists(".plotDropout_gui_y_title", envir=env, inherits = FALSE)){
-        remove(".plotDropout_gui_y_title", envir = env)
+      if(exists(".strvalidator_plotDropout_gui_x_title", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_x_title", envir = env)
       }
-#       if(exists(".plotDropout_gui_points_plot", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_points_plot", envir = env)
-#       }
-#       if(exists(".plotDropout_gui_points_shape", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_points_shape", envir = env)
-#       }
-#       if(exists(".plotDropout_gui_points_alpha", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_points_alpha", envir = env)
-#       }
-#       if(exists(".plotDropout_gui_points_jitterh", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_points_jitterh", envir = env)
-#       }
-#       if(exists(".plotDropout_gui_points_jitterv", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_points_jitterv", envir = env)
-#       }
-#       if(exists(".plotDropout_gui_axes_y_min", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_axes_y_min", envir = env)
-#       }
-#       if(exists(".plotDropout_gui_axes_y_max", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_axes_y_max", envir = env)
-#       }
-#       if(exists(".plotDropout_gui_axes_x_min", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_axes_x_min", envir = env)
-#       }
-#       if(exists(".plotDropout_gui_axes_x_max", envir=env, inherits = FALSE)){
-#         remove(".plotDropout_gui_axes_x_max", envir = env)
-#       }
-      if(exists(".plotDropout_gui_xlabel_size", envir=env, inherits = FALSE)){
-        remove(".plotDropout_gui_xlabel_size", envir = env)
+      if(exists(".strvalidator_plotDropout_gui_y_title", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_y_title", envir = env)
       }
-      if(exists(".plotDropout_gui_xlabel_angle", envir=env, inherits = FALSE)){
-        remove(".plotDropout_gui_xlabel_angle", envir = env)
+#       if(exists(".strvalidator_plotDropout_gui_points_plot", envir=env, inherits = FALSE)){
+#         remove(".strvalidator_plotDropout_gui_points_plot", envir = env)
+#       }
+#       if(exists(".strvalidator_plotDropout_gui_points_shape", envir=env, inherits = FALSE)){
+#         remove(".strvalidator_plotDropout_gui_points_shape", envir = env)
+#       }
+#       if(exists(".strvalidator_plotDropout_gui_points_alpha", envir=env, inherits = FALSE)){
+#         remove(".strvalidator_plotDropout_gui_points_alpha", envir = env)
+#       }
+#       if(exists(".strvalidator_plotDropout_gui_points_jitterh", envir=env, inherits = FALSE)){
+#         remove(".strvalidator_plotDropout_gui_points_jitterh", envir = env)
+#       }
+#       if(exists(".strvalidator_plotDropout_gui_points_jitterv", envir=env, inherits = FALSE)){
+#         remove(".strvalidator_plotDropout_gui_points_jitterv", envir = env)
+#       }
+      if(exists(".strvalidator_plotDropout_gui_axes_y_min", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_axes_y_min", envir = env)
       }
-      if(exists(".plotDropout_gui_xlabel_justh", envir=env, inherits = FALSE)){
-        remove(".plotDropout_gui_xlabel_justh", envir = env)
+      if(exists(".strvalidator_plotDropout_gui_axes_y_max", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_axes_y_max", envir = env)
       }
-      if(exists(".plotDropout_gui_xlabel_justv", envir=env, inherits = FALSE)){
-        remove(".plotDropout_gui_xlabel_justv", envir = env)
+      if(exists(".strvalidator_plotDropout_gui_axes_x_min", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_axes_x_min", envir = env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_axes_x_max", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_axes_x_max", envir = env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_size", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_xlabel_size", envir = env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_angle", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_xlabel_angle", envir = env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_justh", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_xlabel_justh", envir = env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_justv", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_xlabel_justv", envir = env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_hom", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_hom", envir = env)
       }
       
       

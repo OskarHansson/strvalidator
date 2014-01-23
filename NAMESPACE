@@ -1,5 +1,18 @@
 exportPattern("^[[:alpha:]]+")
+import(grid)
+#import(gridExtra)
 import(ggplot2)
 import(gWidgets)
-import(RGtk2)
-
+#importFrom(gtable, gtable) # gtable must be loaded before gWidgets
+#importFrom(gtable, gtable_add_grob) # gtable must be loaded before gWidgets
+#importFrom(gtable, gtable_filter) # gtable must be loaded before gWidgets
+#import(RGtk2)
+#importFrom(plyr, rbind.fill)
+#importFrom(scales, pretty_breaks)
+#importFrom(gridExtra, arrangeGrob)
+# TODO:
+# Something does not work correctly with import(gridExtra). Other packages work (gtable/grid) but,
+# gridExtra::arrangeGrob needs to be loaded manually with library to work.
+# Is it related to this?
+# http://r.789695.n4.nabble.com/How-to-avoid-using-gridextra-via-Depends-instead-of-Imports-in-a-package-td4661934.html
+# Use require in all plot functions as a temporary solution...

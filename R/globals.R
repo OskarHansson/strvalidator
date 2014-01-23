@@ -10,7 +10,7 @@ if (base::getRversion() >= "2.15.1") {
                            "gfilebrowse","gbasicdialog","gexpandgroup",
                            "addHandlerDoubleclick","addDropSource","addDropTarget",
                            "blockHandler","addHandlerFocus","ginput","gfile",
-                           "gnotebook")) ## Needed to avoid notes when using gWidgets
+                           "gnotebook", "gtable_add_grob")) ## Needed to avoid notes when using gWidgets
 }
 
 if (base::getRversion() >= "2.15.1") {

@@ -1,9 +1,16 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Option to show only 'head' for large datasets. >X rows show head?
+# TODO: Option to show data automatically when selected or just show info
+#  and a button to show data?
+
 
 ################################################################################
 # CHANGE LOG
+# 02.12.2013: Added parameter 'name' for selection of 'data' in drop menu.
+# 30.11.2013: Added info also when 'data' is passed.
+# 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
+# 16.11.2013: New parameter 'data' and 'edit' and implementation.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 21.05.2013: Added 'copy to clipboard'
@@ -18,23 +25,28 @@
 #' @details Select a data frame from the dropdown and view/edit. Optionally
 #' save as a new dataframe.
 #' @param env environment in wich to search for data frames.
+#' @param data data.frame for instant viewing.
+#' @param name character string with the name of the provided dataset.
+#' @param edit logical TRUE for enable edit .
 #' @param debug logical indicating printing debug information.
 #' 
 
-editData_gui <- function(env=parent.frame(), debug=FALSE){
+editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE, debug=FALSE){
 
-  # Load dependencies.
-  require(gWidgets)
-  options(guiToolkit="RGtk2")
-  
-  .gData <- NULL
-  .gDataName <- NULL
+  .gData <- data
+  .gDataName <- name
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
   
-  w <- gwindow(title="Edit or view data frames", visible=FALSE)
+  if(edit){
+    guiTitle="Edit or view data frame"
+  } else{
+    guiTitle="View data frame"
+  }
+  
+  w <- gwindow(title=guiTitle, visible=FALSE)
   
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
@@ -59,6 +71,10 @@ editData_gui <- function(env=parent.frame(), debug=FALSE){
                                       selected = 1,
                                       editable = FALSE,
                                       container = g0)
+  
+  if(!is.null(.gDataName)){
+    svalue(dataset_drp) <- .gDataName
+  }
   
   g0[1,3] <- g0_samples_lbl <- glabel(text=" 0 samples,", container=g0)
   g0[1,4] <- g0_columns_lbl <- glabel(text=" 0 columns,", container=g0)
@@ -170,9 +186,29 @@ editData_gui <- function(env=parent.frame(), debug=FALSE){
                spacing = 5,
                expand=TRUE,
                container = gv) 
-  
-  data_tbl <- gtable(items=data.frame(Data="There is no result"),
-                        container=f2, expand=TRUE)
+
+  if(is.null(.gData)){
+      data_tbl <- gWidgets::gtable(items=data.frame(Data="There is no data"),
+                         container=f2, expand=TRUE)
+  } else {
+    
+    # Update info.
+    if("Sample.Name" %in% names(.gData)){
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
+    } else {
+      svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
+    }
+    svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
+    svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
+
+    # Load data.
+    if(edit){
+      data_tbl <- gdf(items=.gData, container=f2, expand=TRUE)
+    } else {
+      data_tbl <- gWidgets::gtable(items=.gData, container=f2, expand=TRUE)
+    }
+  }
   
   # FUNCTIONS #################################################################
 
@@ -190,9 +226,11 @@ editData_gui <- function(env=parent.frame(), debug=FALSE){
     
     visible(f2) <- FALSE
     # ...creating a new table.
-    data_tbl <<- gdf(items=.gData,
-                        container=f2,
-                        expand=TRUE)
+    if(edit){
+      data_tbl <<- gdf(items=.gData, container=f2, expand=TRUE)
+    } else {
+      data_tbl <<- gWidgets::gtable(items=.gData, container=f2, expand=TRUE)
+    }
     
     visible(f2) <- TRUE
     

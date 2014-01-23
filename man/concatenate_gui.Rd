@@ -2,7 +2,7 @@
 \alias{concatenate_gui}
 \title{Concatenate two datasets}
 \usage{
-  concatenate_gui(env = parent.frame(), debug = FALSE)
+concatenate_gui(env = parent.frame(), debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data
@@ -12,11 +12,10 @@
   information.}
 }
 \description{
-  \code{concatenate_gui} is a GUI for combining two
-  datasets.
+\code{concatenate_gui} is a GUI for combining two datasets.
 }
 \details{
-  Simplifies the use of the \code{checkSubset} function by
-  providing a graphical user interface to it.
+Simplifies the use of the \code{checkSubset} function by
+providing a graphical user interface to it.
 }
 

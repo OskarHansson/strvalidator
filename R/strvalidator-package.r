@@ -1,25 +1,30 @@
 ###############################################################################
-#' Internal validation of forensic STR kits made easy with strValidator.
-#'
-#' strValidator provide tools that make it easier to perform an internal
-#' validation of a forensic short tandem repeat (STR) kit for human 
-#' identification. The tools are developed to provide all necessary data
-#' to conform with the ENFSI guidelines in
-#' "Recommended Minimum Criteria for the Validation of Various 
-#' Aspects of the DNA Profiling Process - New Multiplex Kit"
-#' More information about each function can be found in 
-#' its help documentation. The package is still in an early developmental
-#' stage and things will likely change in coming versions. 
-#' Manually check the results thoroughly, the software has not been validated.
-#' Please report bugs to: https://github.com/OskarHansson/strvalidator/issues  
-#'
+# Internal validation of forensic STR kits made easy with strValidator.
+#
+# STR validator is a package intended for validation of
+# forensic short tandem repeat (STR)  DNA typing kit.
+# This graphical user interface make it very easy to
+# analyse data from internal validations.
+# The code has been extensively tested in order to assure correct results.
+# However, some bugs might still persist, so check the result carefully.
+# 
+# Created by:
+# Oskar Hansson, Department of Forensic Biology (NIPH, Norway)
+# 
+# General information and tutorials:
+# "https://sites.google.com/site/forensicapps/strvalidator
+# 
+# Please report bugs to:
+# https://github.com/OskarHansson/strvalidator/issues
+# 
+# The source is hosted at GitHub:
+# https://github.com/OskarHansson/strvalidator
+#
 #' @title Simplifies internal validation of forensic STR typing kits
 #' @docType package
 #' @name strValidator-package
 #' @aliases strValidator
 #' @author Oskar Hansson \email{oskar.hansson@@fhi.no}
-#' @import ggplot2, data.table
-#' @section Warning: This package is experimental and has not been thoroughly validated.
 #' @keywords package
 NULL
 
@@ -91,9 +96,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name set3
-#' @usage set3 <- read.table(file=paste(path.package("strvalidator",
-#'  quiet = FALSE),"/extdata/set3.txt",sep=""), 
-#'  header=TRUE, sep="\t", stringsAsFactors=FALSE)
+#' @method set3 <- import(fileName=system.file("extdata", "set3.txt", package = "strvalidator"))
 #' @format ASCII text file
 NULL
 
@@ -105,9 +108,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name ref3
-#' @usage ref3 <- read.table(file=paste(path.package("strvalidator",
-#'  quiet = FALSE),"/extdata/ref3.txt",sep=""), 
-#'  header=TRUE, sep="\t", stringsAsFactors=FALSE)
+#' @method ref3 <- import(fileName=system.file("extdata", "ref3.txt", package = "strvalidator"))
 #' @format ASCII text file
 NULL
 

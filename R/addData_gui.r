@@ -26,10 +26,6 @@
 
 addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
-  # Load dependencies.  
-  require(gWidgets)
-  options(guiToolkit="RGtk2")
-  
   # Global variables.
   .gDataDest <- NULL
   .gDataDestName <- NULL
