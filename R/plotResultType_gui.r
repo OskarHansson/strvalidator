@@ -78,7 +78,7 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     if(exists(val_obj, envir=env, inherits = FALSE)){
       
       .gData <<- get(val_obj, envir=env)
-      # Check if suitable for plot balance...
+      # Check if suitable for plot...
   
       requiredCol <- c("Sample.Name", "Type", "Subtype")
       
@@ -198,7 +198,7 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(plot_btn, handler = function(h, ...) {
     
       enabled(plot_btn) <- FALSE
-      .plotBalance()
+      .plot()
       enabled(plot_btn) <- TRUE
 
   } )
@@ -252,7 +252,7 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # FUNCTIONS #################################################################
   
-  .plotBalance <- function(){
+  .plot <- function(){
     
     # Get values.
     val_titles <- svalue(f1_titles_chk)
@@ -424,7 +424,7 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotResultType_gui_print", envir=env, inherits = FALSE)){
         svalue(f1_print_chk) <- get(".strvalidator_plotResultType_gui_print", envir=env)
       }
-      if(exists(".strvalidator_plotResultType_gui_print", envir=env, inherits = FALSE)){
+      if(exists(".strvalidator_plotResultType_gui_prop", envir=env, inherits = FALSE)){
         svalue(f1_prop_chk) <- get(".strvalidator_plotResultType_gui_prop", envir=env)
       }
       if(exists(".strvalidator_plotResultType_gui_palette", envir=env, inherits = FALSE)){

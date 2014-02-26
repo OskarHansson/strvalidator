@@ -3,6 +3,7 @@ import(grid)
 #import(gridExtra)
 import(ggplot2)
 import(gWidgets)
+#import(gWidgetsRGtk2)
 #importFrom(gtable, gtable) # gtable must be loaded before gWidgets
 #importFrom(gtable, gtable_add_grob) # gtable must be loaded before gWidgets
 #importFrom(gtable, gtable_filter) # gtable must be loaded before gWidgets

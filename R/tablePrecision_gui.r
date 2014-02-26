@@ -4,13 +4,15 @@
 
 ################################################################################
 # CHANGE LOG
+# 06.02.2014: Fixed button locks when error.
+# 06.02.2014: Changed name calculatePrecision_gui -> tablePrecision_gui
 # 12.01.2014: Replaced 'subset' with native code.
 # 08.12.2013: First version.
 
 #' @title Calculate Precision
 #'
 #' @description
-#' \code{calculatePrecision_gui} is a GUI wrapper for the \code{calculatePrecision}
+#' \code{tablePrecision_gui} is a GUI wrapper for the \code{calculatePrecision}
 #'  function.
 #'
 #' @details
@@ -24,7 +26,7 @@
 #' @return data.frame
 #' 
 
-calculatePrecision_gui <- function(env=parent.frame(), savegui=NULL,
+tablePrecision_gui <- function(env=parent.frame(), savegui=NULL,
                                  debug=FALSE){
   
   # Global variables.
@@ -42,7 +44,7 @@ calculatePrecision_gui <- function(env=parent.frame(), savegui=NULL,
   }  
 
   # Main window.
-  w <- gwindow(title="Calculate precision", visible=FALSE)
+  w <- gwindow(title="Calculate summary statistics for precision", visible=FALSE)
 
   # Handler for saving GUI state.
   addHandlerDestroy(w, handler = function (h, ...) {
@@ -114,12 +116,16 @@ calculatePrecision_gui <- function(env=parent.frame(), savegui=NULL,
 
         svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
                                           "samples.")
-        svalue(f4_save_edt) <- paste(val_obj, "_precision", sep="")
+        svalue(f4_save_edt) <- paste(val_obj, "_precision_table", sep="")
         
         # Detect kit.
         kitIndex <- detectKit(.gData)
         # Select in dropdown.
         svalue(f2g2_kit_drp, index=TRUE) <- kitIndex
+        
+        # Enable buttons.
+        enabled(calculate_btn) <- TRUE
+        
         
       }
       
@@ -493,7 +499,7 @@ calculatePrecision_gui <- function(env=parent.frame(), savegui=NULL,
       }
   
       # Calculate precision.      
-      datanew <- calculatePrecision(data=val_data,
+      datanew <- tablePrecision(data=val_data,
                                     key=val_key,
                                     target=val_target,
                                     debug=debug)
@@ -614,8 +620,8 @@ calculatePrecision_gui <- function(env=parent.frame(), savegui=NULL,
       }  
     } else {
       # Load save flag.
-      if(exists(".strvalidator_calculatePrecision_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_calculatePrecision_gui_savegui", envir=env)
+      if(exists(".strvalidator_tablePrecision_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_tablePrecision_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -627,14 +633,14 @@ calculatePrecision_gui <- function(env=parent.frame(), savegui=NULL,
         
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists(".strvalidator_calculatePrecision_gui_filter", envir=env, inherits = FALSE)){
-        svalue(f2_filter_opt) <- get(".strvalidator_calculatePrecision_gui_filter", envir=env)
+      if(exists(".strvalidator_tablePrecision_gui_filter", envir=env, inherits = FALSE)){
+        svalue(f2_filter_opt) <- get(".strvalidator_tablePrecision_gui_filter", envir=env)
       }
-      if(exists(".strvalidator_calculatePrecision_gui_ignore", envir=env, inherits = FALSE)){
-        svalue(f1_ignore_chk) <- get(".strvalidator_calculatePrecision_gui_ignore", envir=env)
+      if(exists(".strvalidator_tablePrecision_gui_ignore", envir=env, inherits = FALSE)){
+        svalue(f1_ignore_chk) <- get(".strvalidator_tablePrecision_gui_ignore", envir=env)
       }
-      if(exists(".strvalidator_calculatePrecision_gui_exclude", envir=env, inherits = FALSE)){
-        svalue(f2g2_virtual_chk) <- get(".strvalidator_calculatePrecision_gui_exclude", envir=env)
+      if(exists(".strvalidator_tablePrecision_gui_exclude", envir=env, inherits = FALSE)){
+        svalue(f2g2_virtual_chk) <- get(".strvalidator_tablePrecision_gui_exclude", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -648,24 +654,24 @@ calculatePrecision_gui <- function(env=parent.frame(), savegui=NULL,
     # Then save settings if true.
     if(svalue(f1_savegui_chk)){
       
-      assign(x=".strvalidator_calculatePrecision_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x=".strvalidator_calculatePrecision_gui_filter", value=svalue(f2_filter_opt), envir=env)
-      assign(x=".strvalidator_calculatePrecision_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
-      assign(x=".strvalidator_calculatePrecision_gui_exclude", value=svalue(f2g2_virtual_chk), envir=env)
+      assign(x=".strvalidator_tablePrecision_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_tablePrecision_gui_filter", value=svalue(f2_filter_opt), envir=env)
+      assign(x=".strvalidator_tablePrecision_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
+      assign(x=".strvalidator_tablePrecision_gui_exclude", value=svalue(f2g2_virtual_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".strvalidator_calculatePrecision_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculatePrecision_gui_savegui", envir = env)
+      if(exists(".strvalidator_tablePrecision_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tablePrecision_gui_savegui", envir = env)
       }
-      if(exists(".strvalidator_calculatePrecision_gui_filter", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculatePrecision_gui_filter", envir = env)
+      if(exists(".strvalidator_tablePrecision_gui_filter", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tablePrecision_gui_filter", envir = env)
       }
-      if(exists(".strvalidator_calculatePrecision_gui_ignore", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculatePrecision_gui_ignore", envir = env)
+      if(exists(".strvalidator_tablePrecision_gui_ignore", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tablePrecision_gui_ignore", envir = env)
       }
-      if(exists(".strvalidator_calculatePrecision_gui_exclude", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculatePrecision_gui_exclude", envir = env)
+      if(exists(".strvalidator_tablePrecision_gui_exclude", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tablePrecision_gui_exclude", envir = env)
       }
       
       if(debug){

@@ -5,6 +5,9 @@
 
 ################################################################################
 # CHANGE LOG
+# 18.02.2014: Implemented conserative T estimate.
+# 18.02.2014: Removed erroneously implemented prediction interval for T.
+# 27.01.2014: Fixed bug not checking required columns upon selection of dataset.
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
 # 16.01.2014: Changed according to new column names in 'calculateDropout' res.
 # 13.11.2013: Implemented 'Hosmer-Lemeshow test'.
@@ -146,7 +149,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
       .gData <<- get(val_obj, envir=env)
       
-      requiredCol <- c("Marker", "Allele", "Height")
+      requiredCol <- c("Height")
     
       # Check if suitable for modelling dropout...
       if(!all(requiredCol %in% colnames(.gData))){
@@ -187,9 +190,8 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         # Select in dropdown.
         svalue(kit_drp, index=TRUE) <- kitIndex
         
-        # Enable plot button.
-        svalue(f7_plot_drop_btn) <- "Plot predicted drop-out probability"
-        enabled(f7_plot_drop_btn) <- TRUE
+        # Check additional required columns and enable/disable plot button.
+        .checkColumns()
         
       }
     } else {
@@ -286,72 +288,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   addHandlerChanged(f1_column_opt, handler = function(h, ...) {
     
-    val_col <- svalue(f1_column_opt, index=TRUE)
-    requiredCol <- NULL
-    missingCol <- NULL
-    
-    
-    if(!is.null(.gData)){
-      # Enable button.
-      enabled(f7_plot_drop_btn) <- TRUE
-      svalue(f7_plot_drop_btn) <- "Plot predicted drop-out probability"
-      
-      # Check available modelling columns and enable/select.
-      if(val_col == 1){
-        
-        requiredCol <- c("MethodX")
-        if(!all(requiredCol %in% colnames(.gData))){
-          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        }
-        
-      } else if(val_col == 2){
-        
-        requiredCol <- c("Method1")
-        if(!all(requiredCol %in% colnames(.gData))){
-          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        }
-        
-      } else if(val_col == 3){
-
-        requiredCol <- c("Method2")
-        if(!all(requiredCol %in% colnames(.gData))){
-          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        }
-        
-      } else if(val_col == 4){
-        
-        requiredCol <- c("MethodL", "MethodL.Ph")
-        if(!all(requiredCol %in% colnames(.gData))){
-          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        }
-        
-      } else {
-        
-        message <- paste("Selection not supported!")
-        
-        gmessage(message, title="Error",
-                 icon = "error",
-                 parent = w) 
-      
-        # Disable button.
-        enabled(f7_plot_drop_btn) <- FALSE
-      }
-      
-      if(!is.null(missingCol)){
-        
-        message <- paste("Additional columns required for this analysis:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "info",
-                 parent = w)
-
-        # Disable button.
-        enabled(f7_plot_drop_btn) <- FALSE
-        
-      }
-      
-    }
+    .checkColumns()
     
   } )
   
@@ -496,11 +433,11 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   e1f2_conf_spn <- gspinbutton (from=0, to=1, by=0.001,
                                                  value=0.950,
                                                  container = e1f2g1)
-
+  
   # Group 2.
   e1f2g2 <- ggroup(horizontal = TRUE, spacing = 5,  container = e1f2)
   
-  e1f2_print_interval_chk <- gcheckbox(text="Print prediction values",
+  e1f2_print_interval_chk <- gcheckbox(text="Print conservative T value",
                                            checked = TRUE,
                                            container = e1f2g2)
   
@@ -562,8 +499,8 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
   e3g1 <- glayout(container = e3f1, spacing = 1)
   e3g1[1,1:2] <- glabel(text="Limit Y axis (min-max)", container=e3g1)
-  e3g1[2,1] <- e3g1_y_min_edt <- gedit(text="0", width=5, container=e3g1)
-  e3g1[2,2] <- e3g1_y_max_edt <- gedit(text="1", width=5, container=e3g1)
+  e3g1[2,1] <- e3g1_y_min_edt <- gedit(text="", width=5, container=e3g1)
+  e3g1[2,2] <- e3g1_y_max_edt <- gedit(text="", width=5, container=e3g1)
   
   e3g1[3,1:2] <- glabel(text="Limit X axis (min-max)", container=e3g1)
   e3g1[4,1] <- e3g1_x_min_edt <- gedit(text="", width=5, container=e3g1)
@@ -636,6 +573,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     val_interval_col <- svalue(e1f2_interval_drp)
     val_interval_alpha <- svalue(e1f2_interval_spb)
     
+    # Calculate values.
+    val_pi_alpha <- 1 - val_predint
+    
     if(debug){
       print("val_title")
       print(val_title)
@@ -674,128 +614,124 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # MODEL ###################################################################
 
     # Make copy of selected data frame (to allow re-plotting).
-    fData <- .gData
+    obsData <- .gData
 
     # Get data for the selected analysis.
     if(val_column == 1){
 
-      fData$Dep <- .gData$MethodX
-      fData$Exp <- .gData$Height
+      obsData$Dep <- .gData$MethodX
+      obsData$Exp <- .gData$Height
       
     } else if(val_column == 2){
       
-      fData$Dep <- .gData$Method1
-      fData$Exp <- .gData$Height
+      obsData$Dep <- .gData$Method1
+      obsData$Exp <- .gData$Height
       
     } else if(val_column == 3){
       
-      fData$Dep <- .gData$Method2
-      fData$Exp <- .gData$Height
+      obsData$Dep <- .gData$Method2
+      obsData$Exp <- .gData$Height
       
     } else if(val_column == 4){
       
-      fData$Dep <- .gData$MethodL
-      fData$Exp <- .gData$MethodL.Ph
+      obsData$Dep <- .gData$MethodL
+      obsData$Exp <- .gData$MethodL.Ph
       
     }
     
     # Clean -------------------------------------------------------------------
 
     message("Model drop-out for dataset with:")
-    message(paste(nrow(fData), " rows.", sep=""))
+    message(paste(nrow(obsData), " rows.", sep=""))
     
     # Remove homozygous loci
-    if("Heterozygous" %in% names(fData)){
-      n0 <- nrow(fData)
-      fData <- fData[fData$Heterozygous == 1, ]
-      n1 <- nrow(fData)
+    if("Heterozygous" %in% names(obsData)){
+      n0 <- nrow(obsData)
+      obsData <- obsData[obsData$Heterozygous == 1, ]
+      n1 <- nrow(obsData)
       message(paste(n1, " rows after removing ", n0-n1, " homozygous rows.", sep=""))
     }
     
     # Remove locus droput.
-    if("Dep" %in% names(fData)){
-      n0 <- nrow(fData)
-      fData <- fData[fData$Dep != 2, ]
-      n1 <- nrow(fData)
+    if("Dep" %in% names(obsData)){
+      n0 <- nrow(obsData)
+      obsData <- obsData[obsData$Dep != 2, ]
+      n1 <- nrow(obsData)
       message(paste(n1, " rows after removing ", n0-n1, " locus drop-out rows.", sep=""))
     }
 
     # Remove gender marker.
     if(val_gender){
-      n0 <- nrow(fData)
+      n0 <- nrow(obsData)
       genderMarker <- getKit(kit=svalue(kit_drp), what="Gender")
-      fData <- fData[fData$Marker != genderMarker, ]
-      n1 <- nrow(fData)
+      obsData <- obsData[obsData$Marker != genderMarker, ]
+      n1 <- nrow(obsData)
       message(paste(n1, " rows after removing ", n0-n1, " gender marker rows.", sep=""))
     }
 
     # Remove NA Explanatory.
-    if(any(is.na(fData$Exp))){
-      n0 <- nrow(fData)
-      fData <- fData[!is.na(fData$Exp), ]
-      n1 <- nrow(fData)
+    if(any(is.na(obsData$Exp))){
+      n0 <- nrow(obsData)
+      obsData <- obsData[!is.na(obsData$Exp), ]
+      n1 <- nrow(obsData)
       message(paste(n1, " rows after removing ", n0-n1, " NA rows in explanatory column.", sep=""))
     }
   
     # Remove NA Dependent.
-    if(any(is.na(fData$Dep))){
-      n0 <- nrow(fData)
-      fData <- fData[!is.na(fData$Dep), ]
-      n1 <- nrow(fData)
+    if(any(is.na(obsData$Dep))){
+      n0 <- nrow(obsData)
+      obsData <- obsData[!is.na(obsData$Dep), ]
+      n1 <- nrow(obsData)
       message(paste(n1, " rows after removing ", n0-n1, " NA rows in dependent column.", sep=""))
     }
 
-    message(paste(nrow(fData), " rows in total for analysis.", sep=""))
+    message(paste(nrow(obsData), " rows in total for analysis.", sep=""))
     
     if(debug){
       print("After cleaning:")
-      print(str(fData))
+      print(str(obsData))
       print("NA in Exp/Dep:")
-      print(any(is.na(fData$Exp)))
-      print(any(is.na(fData$Dep)))
+      print(any(is.na(obsData$Exp)))
+      print(any(is.na(obsData$Dep)))
     }
     
     # Model -------------------------------------------------------------------
 
-    # Perform logistic regression on the selected column.
+    # Build prediction range for smoother curve.
+    val_pred_xmin <- min(obsData$Exp)
+    val_pred_xmax <- max(obsData$Exp)
+    xplot <- seq(val_pred_xmin, val_pred_xmax)
+    predRange <- data.frame(Exp=xplot)
+    
+    # Create data for modelling.
+    modData <- obsData
+    # Convert to log values.
     if(logModel){
-      dropoutModel <- glm(Dep~log(Exp),
-                          data=fData,
-                          family=binomial ("logit"))
-    } else {
-      dropoutModel <- glm(Dep ~ Exp, family=binomial, data=fData)
+      modData$Exp <- log(obsData$Exp)
+      predRange$Exp <- log(predRange$Exp)
     }
+
+    # Perform logistic regression on the selected column.
+    dropoutModel <- glm(Dep~Exp, family=binomial("logit"), data=modData)
     sumfit <- summary(dropoutModel)
     
     # Calculate model score.
-    loadPackage(packages=c("ResourceSelection"))
-    hos <- hoslem.test(dropoutModel$y, fitted(dropoutModel)) #p-value <0.05 rejects the model
+    hosOk <- FALSE
+    if(require("ResourceSelection")){
+      #p-value <0.05 rejects the model.
+      hos <- hoslem.test(dropoutModel$y, fitted(dropoutModel)) 
+      hosOk <- TRUE
+    }
         
     # Titles.
-    if(logModel){
-
-      if(val_titles){
-        mainTitle <- val_title
-        xTitle <- val_xtitle
-        yTitle <- val_ytitle
-      } else {
-        mainTitle <- "Drop-out probability as a function of present-allele height"
-        xTitle <- "log(Peak height), (RFU)"
-        yTitle <- "Drop-out probability, P(D)"
-      }
-      
+    if(val_titles){
+      mainTitle <- val_title
+      xTitle <- val_xtitle
+      yTitle <- val_ytitle
     } else {
-      
-      if(val_titles){
-        mainTitle <- val_title
-        xTitle <- val_xtitle
-        yTitle <- val_ytitle
-      } else {
-        mainTitle <- "Drop-out probability as a function of present-allele height"
-        xTitle <- "Peak height, (RFU)"
-        yTitle <- "Drop-out probability, P(D)"
-      }
-      
+      mainTitle <- "Drop-out probability as a function of present-allele height"
+      xTitle <- "Peak height, (RFU)"
+      yTitle <- "Drop-out probability, P(D)"
     }
     
     # Extract model parameters.
@@ -807,11 +743,6 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       print(sumfit)
     }
     
-    # Build prediction range for smoother curve.
-    val_pred_xmin <- min(fData$Exp)
-    val_pred_xmax <- max(fData$Exp)
-    predictionRange <- seq(val_pred_xmin, val_pred_xmax)
-    
     
     if(debug){
       print("b0")
@@ -821,74 +752,44 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     }
     
     # Calculate probabilities for the prediction range.
-    if(logModel){
-      model_y = plogis(b0 + b1 * log(predictionRange))
-    } else {
-      model_y <- 1 / (1 + exp(-(b0 + b1 * predictionRange)))
-    }
-    # Save peak heights for the prediction range.
-    model_xy <- data.frame(Exp = predictionRange)
-    
-    if(debug){
-      print("model_xy")
-      print(str(model_xy))
-    }
-    
-    # Calculate probabilities (not transformed) for the prediction range.
-    if(logModel){
-      yhatDf = predict(dropoutModel, model_xy, type = "link", se.fit = TRUE)
-    }else {
-      yhatDf <- predict.glm(object=dropoutModel, 
-                            newdata=model_xy, 
-                            type = "response",
-                            se.fit = TRUE)
-    }
-      
-    # Calculate the number of standard deviations that 'conf*100%'
-    # of the data lies within.
-    qSD <- qnorm(1 - (1 - val_predint) / 2)
-    ucl <- yhatDf$fit + qSD * yhatDf$se.fit  # Upper confidence limit.
-    lcl <- yhatDf$fit - qSD * yhatDf$se.fit  # Lower confidence limit.
-    
+    ypred <-  predict(dropoutModel, predRange, type="link", se.fit=TRUE)
+
+    # Calculate the prediction interval.
+    ylower <- plogis(ypred$fit - qnorm(1-val_pi_alpha/2)*ypred$se)  # Lower confidence limit.
+    yupper <- plogis(ypred$fit + qnorm(1-val_pi_alpha/2)*ypred$se)  # Upper confidence limit.
+
+    # Calculate conservative prediction curve.
+    yconservative <- plogis(ypred$fit + qnorm(1-val_pi_alpha)*ypred$se)
+
+    # Calculate y values for plot.
+    yplot <- plogis(ypred$fit)
+
     # Create legend text.
-    legendModel <- paste("Model parameters: \u03B20=",
-                         round(dropoutModel$coefficients[1],3),
-                         ", \u03B21=",
-                         round(dropoutModel$coefficients[2],3),
-                         "\nHosmer-Lemeshow test: p = ", round(hos$p.value, 4),
-                         sep="")
+    legendModel <- paste("Model parameters: \u03B20=", round(b0,3),
+                         ", \u03B21=", round(b1,3), sep="")
+    
+    if(hosOk){
+      # Add Hosmer-Lemeshow test.
+      legendModel <- paste(legendModel,
+                           "\nHosmer-Lemeshow test: p = ", round(hos$p.value, 4),
+                           sep="")
+    } else {
+      message("Package 'ResourceSelection' is required for Hosmer-Lemeshow test.")
+    }
     
     # Save prediction in a dataframe.
-    if(!logModel){
-      predictionDf <- data.frame(Exp=predictionRange,
-                                 Prob=model_y,
-                                 ucl=ucl,
-                                 lcl=lcl)
-    } else {
-      predictionDf <- data.frame(Exp=predictionRange,
-                                 Prob=model_y,
-                                 ucl=plogis(ucl),
-                                 lcl=plogis(lcl))
-    }
+    predictionDf <- data.frame(Exp=xplot, Prob=yplot, yupper=yupper, ylower=ylower)
 
     if(debug){
       print("predictionDf:")
+      print(head(predictionDf, 100))
       print(str(predictionDf))
     }
     
     # Calculate dropout threshold T.
     if(logModel){
-      # THIS IS FOR P(D)
       drop_py <- log(val_p_dropout) - log(1 - val_p_dropout)
-      
-      # THIS IS FOR P(!D)
-      #drop_py <- log(1 - val_p_dropout) - log(val_p_dropout)
-      #p<-1-conf
-      #px<-log(p)-log(1-p)
-      #rfu<-exp((px-b0)/b1)
-      
-      drop_px <- exp((drop_py - b0) / b1)
-      t_dropout <- drop_px
+      t_dropout <- exp((drop_py - b0) / b1)
     }  else {
       t_dropout <- (log(val_p_dropout / (1 - val_p_dropout)) - b0) / b1
     }
@@ -906,31 +807,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }
     }
 
-    # Estimate prediction interval at P(D).
-    # NB! This could probably be done more elegant and correct...
-    if(logModel){
-      
-      ucl_p <- predictionDf$ucl[predictionDf$Exp==round(drop_px)]
-      ucl_py <- log(ucl_p) - log(1 - ucl_p)
-      ucl_px <- exp((ucl_py - b0) / b1)
-      lcl_p <- predictionDf$lcl[predictionDf$Exp==round(drop_px)]
-      lcl_py <- log(lcl_p) - log(1 - lcl_p)
-      lcl_px <- exp((lcl_py - b0) / b1)
-      
-    } else {
-      
-      if(!is.na(t_dropout)){
-        ucl_p <- predictionDf$ucl[predictionDf$Exp==round(t_dropout)]
-        ucl_px <- (log(ucl_p / (1 - ucl_p)) - b0) / b1
-        lcl_p <- predictionDf$lcl[predictionDf$Exp==round(t_dropout)]
-        lcl_px <- (log(lcl_p / (1 - lcl_p)) - b0) / b1
-      } else {
-        ucl_px <- NA
-        lcl_px <- NA
-      }
-      
-    }
-      
+    # Calculate conservative threshold at P(D).
+    t_dropout_cons <- xplot[min(which(yconservative < val_p_dropout))]
+    # rfu1 <- predrange[min(which( yupper <val_p_dropout))] #too conservative?
     
     # PLOT ####################################################################
     
@@ -943,7 +822,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       # Plot observed data points (heterozygotes).
       if(val_points){
         
-          gp <- gp + geom_point(data=fData, aes_string(x="Exp", y="Dep"),
+          gp <- gp + geom_point(data=obsData, aes_string(x="Exp", y="Dep"),
                                 shape=val_shape, alpha=val_alpha, 
                                 position=position_jitter(width=val_jitterh,
                                                          height=val_jitterv)) 
@@ -953,7 +832,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(val_prediction_interval){
         
         gp <- gp + geom_ribbon(data = predictionDf,
-                               aes_string(y = "Prob", ymin = "lcl", ymax = "ucl"),
+                               aes_string(y = "Prob", ymin = "ylower", ymax = "yupper"),
                                fill = val_interval_col,
                                alpha = val_interval_alpha) 
         
@@ -975,9 +854,10 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         # Add prediction interval.
         if(val_prediction_print){
           thresholdLegend <- paste(thresholdLegend,
-                                   " (", val_predint * 100, "%, ",
-                                   round(ucl_px),"-",
-                                   round(lcl_px), ")", sep="")
+                                   "\n P({P(D) | T=", t_dropout_cons, "} > ",
+                                   val_p_dropout, ") < ", val_pi_alpha * 100, "%",
+                                   sep="")
+          
         }
 
         # Make data frame.
@@ -1134,6 +1014,80 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   }
 
   # INTERNAL FUNCTIONS ########################################################
+  
+  .checkColumns <- function(){
+    
+    val_col <- svalue(f1_column_opt, index=TRUE)
+    requiredCol <- NULL
+    missingCol <- NULL
+    
+    
+    if(!is.null(.gData)){
+      # Enable button.
+      enabled(f7_plot_drop_btn) <- TRUE
+      svalue(f7_plot_drop_btn) <- "Plot predicted drop-out probability"
+      
+      # Check available modelling columns and enable/select.
+      if(val_col == 1){
+        
+        requiredCol <- c("MethodX")
+        if(!all(requiredCol %in% colnames(.gData))){
+          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+        }
+        
+      } else if(val_col == 2){
+        
+        requiredCol <- c("Method1")
+        if(!all(requiredCol %in% colnames(.gData))){
+          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+        }
+        
+      } else if(val_col == 3){
+        
+        requiredCol <- c("Method2")
+        if(!all(requiredCol %in% colnames(.gData))){
+          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+        }
+        
+      } else if(val_col == 4){
+        
+        requiredCol <- c("MethodL", "MethodL.Ph")
+        if(!all(requiredCol %in% colnames(.gData))){
+          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+        }
+        
+      } else {
+        
+        message <- paste("Selection not supported!")
+        
+        gmessage(message, title="Error",
+                 icon = "error",
+                 parent = w) 
+        
+        # Disable button.
+        enabled(f7_plot_drop_btn) <- FALSE
+      }
+      
+      if(!is.null(missingCol)){
+        
+        message <- paste("Dataset is ok for drop-out analysis.\n",
+                        "However, additional columns are required for this analysis:\n",
+                         paste(missingCol, collapse="\n"),
+                         "\n\nPlease try modelling using another scoring method.",
+                         sep="")
+        
+        gmessage(message, title="message",
+                 icon = "info",
+                 parent = w)
+        
+        # Disable button.
+        enabled(f7_plot_drop_btn) <- FALSE
+        
+      }
+      
+    }
+    
+  }
   
   .loadSavedSettings <- function(){
     

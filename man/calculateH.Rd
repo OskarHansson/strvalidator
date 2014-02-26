@@ -2,18 +2,24 @@
 \alias{calculateH}
 \title{Calculate average peak height.}
 \usage{
-calculateH(data, debug = FALSE)
+calculateH(data, na = NULL, add = TRUE, debug = FALSE)
 }
 \arguments{
-  \item{data}{a data frame in 'slim' format with at least
+  \item{data}{data.frame in 'slim' format with at least
   columns 'Sample.Name', 'Heterozygous', and 'Height'.}
+
+  \item{na}{replaces NA values.}
+
+  \item{add}{logical default is TRUE which will
+  add/overwrite column 'H' for average peak height, and
+  'Peaks' for the total number of peaks in the profile.}
 
   \item{debug}{logical indicating printing debug
   information.}
 }
 \value{
-data.frame with with columns: 'Sample.Name', 'H', and
-'Peaks'.
+data.frame with with at least columns 'Sample.Name', 'H',
+and 'Peaks'.
 }
 \description{
 \code{calculateH} calculates the average peak height for a

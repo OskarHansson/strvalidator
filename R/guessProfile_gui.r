@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 23.02.2014: Implemented new option 'ol.rm'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 10.06.2013: New parameter 'savegui'.
@@ -150,6 +151,10 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                    checked=FALSE,
                                    container=f1g1)
 
+  f1g1[5,1] <- f1g1_ol_chk <- gcheckbox(text="Ignore off-ladder (OL) alleles",
+                                        checked=FALSE,
+                                        container=f1g1)
+  
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as",
@@ -178,6 +183,7 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     val_ratio <- as.numeric(svalue(f1g1_ratio_spb))
     val_height <- as.numeric(svalue(f1g1_height_edt))
     val_NA <- svalue(f1g1_na_chk)
+    val_OL <- svalue(f1g1_ol_chk)
     val_name <- svalue(f2_save_edt)
     
     if(is.na(val_height)){
@@ -191,9 +197,11 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       enabled(check_btn) <- FALSE
       
       datanew <- guessProfile(data=val_data,
-                   ratio=val_ratio,
-                   height=val_height,
-                   na.rm=val_NA)
+                              ratio=val_ratio,
+                              height=val_height,
+                              na.rm=val_NA,
+                              ol.rm=val_OL,
+                              debug=debug)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -252,6 +260,9 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_guessProfile_gui_na", envir=env, inherits = FALSE)){
         svalue(f1g1_na_chk) <- get(".strvalidator_guessProfile_gui_na", envir=env)
       }
+      if(exists(".strvalidator_guessProfile_gui_ol", envir=env, inherits = FALSE)){
+        svalue(f1g1_ol_chk) <- get(".strvalidator_guessProfile_gui_ol", envir=env)
+      }
       if(debug){
         print("Saved settings loaded!")
       }
@@ -268,6 +279,7 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       assign(x=".strvalidator_guessProfile_gui_ratio", value=svalue(f1g1_ratio_spb), envir=env)
       assign(x=".strvalidator_guessProfile_gui_height", value=svalue(f1g1_height_edt), envir=env)
       assign(x=".strvalidator_guessProfile_gui_na", value=svalue(f1g1_na_chk), envir=env)
+      assign(x=".strvalidator_guessProfile_gui_ol", value=svalue(f1g1_ol_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -283,7 +295,10 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_guessProfile_gui_na", envir=env, inherits = FALSE)){
         remove(".strvalidator_guessProfile_gui_na", envir = env)
       }
-
+      if(exists(".strvalidator_guessProfile_gui_ol", envir=env, inherits = FALSE)){
+        remove(".strvalidator_guessProfile_gui_ol", envir = env)
+      }
+      
       if(debug){
         print("Settings cleared!")
       }

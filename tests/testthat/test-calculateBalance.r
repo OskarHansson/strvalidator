@@ -7,6 +7,7 @@ context("calculateBalance")
 
 ################################################################################
 #' CHANGE LOG
+#' 23.02.2014: Updated in response to removing the 'perSample' option. 
 #' 20.01.2014: Added test (12) for multiple matches (two 'max' peaks)
 #' 
 #' 
@@ -23,7 +24,7 @@ test_that("calculateBalance", {
   # TEST 01 -------------------------------------------------------------------
   
   # Analyse dataframe.
-  res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="prop",
+  res <- calculateBalance(data=set2, ref=ref2, lb="prop",
                          perDye=TRUE, hb=2,
                          ignoreCase=TRUE)
 
@@ -143,7 +144,7 @@ test_that("calculateBalance", {
   
   # TEST 02 -------------------------------------------------------------------
   
-  res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="prop",
+  res <- calculateBalance(data=set2, ref=ref2, lb="prop",
                           perDye=FALSE, hb=2,
                           ignoreCase=TRUE)
   
@@ -263,7 +264,7 @@ test_that("calculateBalance", {
   
   # TEST 03 -------------------------------------------------------------------
 
-  res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="norm",
+  res <- calculateBalance(data=set2, ref=ref2, lb="norm",
                           perDye=TRUE, hb=2,
                           ignoreCase=TRUE)
 
@@ -384,7 +385,7 @@ test_that("calculateBalance", {
   
   # TEST 04 -------------------------------------------------------------------
   
-  res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="norm",
+  res <- calculateBalance(data=set2, ref=ref2, lb="norm",
                           perDye=FALSE, hb=2,
                           ignoreCase=TRUE)
   
@@ -502,531 +503,531 @@ test_that("calculateBalance", {
   expect_that(res$Lb[21], equals(as.numeric(NA)))
   expect_that(res$Lb[22], equals(as.numeric(NA)))
   
-  # TEST 05 -------------------------------------------------------------------
-  
-  res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="prop",
-                          perDye=TRUE, hb=2,
-                          ignoreCase=TRUE)
-  
-  # Check return class.  
-  expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
-  expect_false(is.null(res$Sample.Name))
-  expect_false(is.null(res$Marker))
-  expect_false(is.null(res$Hb.n))
-  expect_false(is.null(res$Hb.Mean))
-  expect_false(is.null(res$Hb.Sd))
-  expect_false(is.null(res$Hb.95))
-  expect_false(is.null(res$Lb.n))
-  expect_false(is.null(res$Lb.Mean))
-  expect_false(is.null(res$Lb.Sd))
-  
-  # Check for NA's.
-  expect_false(any(is.na(res$Sample.Name)))
-  expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Hb.n)))
-  expect_false(any(is.na(res$Lb.n)))
-
-  # Check result: Repeat unit difference.
-  expect_that(res$Delta[1], equals(3))
-  expect_that(res$Delta[2], equals(as.numeric(NA)))
-  expect_that(res$Delta[3], equals(2))
-  expect_that(res$Delta[4], equals(as.numeric(NA)))
-  expect_that(res$Delta[5], equals(1))
-  expect_that(res$Delta[6], equals(as.numeric(NA)))
-  expect_that(res$Delta[7], equals(as.numeric(NA)))
-  expect_that(res$Delta[8], equals(15.2))
-  expect_that(res$Delta[9], equals(as.numeric(NA)))
-  expect_that(res$Delta[10], equals(4))
-  expect_that(res$Delta[11], equals(as.numeric(NA)))
-  
-  # Check result: number of values for heterozygous balance.
-  expect_that(res$Hb.n[1], equals(2))
-  expect_that(res$Hb.n[2], equals(0))
-  expect_that(res$Hb.n[3], equals(2))
-  expect_that(res$Hb.n[4], equals(0))
-  expect_that(res$Hb.n[5], equals(2))
-  expect_that(res$Hb.n[6], equals(0))
-  expect_that(res$Hb.n[7], equals(0))
-  expect_that(res$Hb.n[8], equals(2))
-  expect_that(res$Hb.n[9], equals(0))
-  expect_that(res$Hb.n[10], equals(2))
-  expect_that(res$Hb.n[11], equals(0))
-
-  # Check result: Mean heterozygous balance.
-  expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
-  expect_that(res$Hb.Mean[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[3], equals(mean(c(423/491,198/241))))
-  expect_that(res$Hb.Mean[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[5], equals(mean(c(587/632,312/326))))
-  expect_that(res$Hb.Mean[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[8], equals(mean(c(361/398,195/206))))
-  expect_that(res$Hb.Mean[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[10], equals(mean(c(359/384,179/183))))
-  expect_that(res$Hb.Mean[11], equals(as.numeric(NA)))
-
-  # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
-  expect_that(res$Hb.Sd[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[3], equals(sd(c(423/491,198/241))))
-  expect_that(res$Hb.Sd[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[5], equals(sd(c(587/632,312/326))))
-  expect_that(res$Hb.Sd[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[8], equals(sd(c(361/398,195/206))))
-  expect_that(res$Hb.Sd[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[10], equals(sd(c(359/384,179/183))))
-  expect_that(res$Hb.Sd[11], equals(as.numeric(NA)))
-  
-  # Check result: 95% CI for heterozygous balance.
-  expect_that(res$Hb.95[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
-  expect_that(res$Hb.95[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[3], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
-  expect_that(res$Hb.95[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[5], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
-  expect_that(res$Hb.95[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[8], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
-  expect_that(res$Hb.95[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[10], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
-  expect_that(res$Hb.95[11], equals(as.numeric(NA)))
-  
-  # Check result: number of values for locus balance.
-  expect_that(res$Lb.n[1], equals(2))
-  expect_that(res$Lb.n[2], equals(2))
-  expect_that(res$Lb.n[3], equals(2))
-  expect_that(res$Lb.n[4], equals(2))
-  expect_that(res$Lb.n[5], equals(2))
-  expect_that(res$Lb.n[6], equals(2))
-  expect_that(res$Lb.n[7], equals(2))
-  expect_that(res$Lb.n[8], equals(2))
-  expect_that(res$Lb.n[9], equals(1))
-  expect_that(res$Lb.n[10], equals(1))
-  expect_that(res$Lb.n[11], equals(1))
-  
-  # Check result: Mean locus balance.
-  expect_that(res$Lb.Mean[1], equals(mean(c(862/3005,440/1530))))
-  expect_that(res$Lb.Mean[2], equals(mean(c(506/3005,304/1530))))
-  expect_that(res$Lb.Mean[3], equals(mean(c(914/3005,439/1530))))
-  expect_that(res$Lb.Mean[4], equals(mean(c(723/3005,347/1530))))
-  expect_that(res$Lb.Mean[5], equals(mean(c(1219/3363,638/1750))))
-  expect_that(res$Lb.Mean[6], equals(mean(c(619/3363,309/1750))))
-  expect_that(res$Lb.Mean[7], equals(mean(c(766/3363,402/1750))))
-  expect_that(res$Lb.Mean[8], equals(mean(c(759/3363,401/1750))))
-  expect_that(res$Lb.Mean[9], equals(592/1760))
-  expect_that(res$Lb.Mean[10], equals(743/1760))
-  expect_that(res$Lb.Mean[11], equals(425/1760))
-
-  
-  # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Lb.Sd[1], equals(sd(c(862/3005,440/1530))))
-  expect_that(res$Lb.Sd[2], equals(sd(c(506/3005,304/1530))))
-  expect_that(res$Lb.Sd[3], equals(sd(c(914/3005,439/1530))))
-  expect_that(res$Lb.Sd[4], equals(sd(c(723/3005,347/1530))))
-  expect_that(res$Lb.Sd[5], equals(sd(c(1219/3363,638/1750))))
-  expect_that(res$Lb.Sd[6], equals(sd(c(619/3363,309/1750))))
-  expect_that(res$Lb.Sd[7], equals(sd(c(766/3363,402/1750))))
-  expect_that(res$Lb.Sd[8], equals(sd(c(759/3363,401/1750))))
-  expect_that(res$Lb.Sd[9], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[10], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
-  
-  
-  # TEST 06 -------------------------------------------------------------------
-  
-  res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="prop",
-                          perDye=FALSE, hb=2,
-                          ignoreCase=TRUE)
-  
-  # Check return class.  
-  expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
-  expect_false(is.null(res$Sample.Name))
-  expect_false(is.null(res$Marker))
-  expect_false(is.null(res$Hb.n))
-  expect_false(is.null(res$Hb.Mean))
-  expect_false(is.null(res$Hb.Sd))
-  expect_false(is.null(res$Hb.95))
-  expect_false(is.null(res$Lb.n))
-  expect_false(is.null(res$Lb.Mean))
-  expect_false(is.null(res$Lb.Sd))
-  
-  # Check for NA's.
-  expect_false(any(is.na(res$Sample.Name)))
-  expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Hb.n)))
-  expect_false(any(is.na(res$Lb.n)))
-  
-  # Check result: Repeat unit difference.
-  expect_that(res$Delta[1], equals(3))
-  expect_that(res$Delta[2], equals(as.numeric(NA)))
-  expect_that(res$Delta[3], equals(2))
-  expect_that(res$Delta[4], equals(as.numeric(NA)))
-  expect_that(res$Delta[5], equals(1))
-  expect_that(res$Delta[6], equals(as.numeric(NA)))
-  expect_that(res$Delta[7], equals(as.numeric(NA)))
-  expect_that(res$Delta[8], equals(15.2))
-  expect_that(res$Delta[9], equals(as.numeric(NA)))
-  expect_that(res$Delta[10], equals(4))
-  expect_that(res$Delta[11], equals(as.numeric(NA)))
-  
-  # Check result: number of values for heterozygous balance.
-  expect_that(res$Hb.n[1], equals(2))
-  expect_that(res$Hb.n[2], equals(0))
-  expect_that(res$Hb.n[3], equals(2))
-  expect_that(res$Hb.n[4], equals(0))
-  expect_that(res$Hb.n[5], equals(2))
-  expect_that(res$Hb.n[6], equals(0))
-  expect_that(res$Hb.n[7], equals(0))
-  expect_that(res$Hb.n[8], equals(2))
-  expect_that(res$Hb.n[9], equals(0))
-  expect_that(res$Hb.n[10], equals(2))
-  expect_that(res$Hb.n[11], equals(0))
-  
-  # Check result: Mean heterozygous balance.
-  expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
-  expect_that(res$Hb.Mean[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[3], equals(mean(c(423/491,198/241))))
-  expect_that(res$Hb.Mean[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[5], equals(mean(c(587/632,312/326))))
-  expect_that(res$Hb.Mean[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[8], equals(mean(c(361/398,195/206))))
-  expect_that(res$Hb.Mean[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[10], equals(mean(c(359/384,179/183))))
-  expect_that(res$Hb.Mean[11], equals(as.numeric(NA)))
-  
-  # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
-  expect_that(res$Hb.Sd[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[3], equals(sd(c(423/491,198/241))))
-  expect_that(res$Hb.Sd[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[5], equals(sd(c(587/632,312/326))))
-  expect_that(res$Hb.Sd[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[8], equals(sd(c(361/398,195/206))))
-  expect_that(res$Hb.Sd[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[10], equals(sd(c(359/384,179/183))))
-  expect_that(res$Hb.Sd[11], equals(as.numeric(NA)))
-  
-  # Check result: 95% CI for heterozygous balance.
-  expect_that(res$Hb.95[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
-  expect_that(res$Hb.95[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[3], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
-  expect_that(res$Hb.95[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[5], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
-  expect_that(res$Hb.95[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[8], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
-  expect_that(res$Hb.95[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[10], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
-  expect_that(res$Hb.95[11], equals(as.numeric(NA)))
-  
-  # Check result: number of values for locus balance.
-  expect_that(res$Lb.n[1], equals(1))
-  expect_that(res$Lb.n[2], equals(1))
-  expect_that(res$Lb.n[3], equals(1))
-  expect_that(res$Lb.n[4], equals(1))
-  expect_that(res$Lb.n[5], equals(1))
-  expect_that(res$Lb.n[6], equals(1))
-  expect_that(res$Lb.n[7], equals(1))
-  expect_that(res$Lb.n[8], equals(1))
-  expect_that(res$Lb.n[9], equals(1))
-  expect_that(res$Lb.n[10], equals(1))
-  expect_that(res$Lb.n[11], equals(1))
-  
-  # Check result: Mean locus balance.
-  expect_that(res$Lb.Mean[1], equals(862/8128))
-  expect_that(res$Lb.Mean[2], equals(506/8128))
-  expect_that(res$Lb.Mean[3], equals(914/8128))
-  expect_that(res$Lb.Mean[4], equals(723/8128))
-  expect_that(res$Lb.Mean[5], equals(1219/8128))
-  expect_that(res$Lb.Mean[6], equals(619/8128))
-  expect_that(res$Lb.Mean[7], equals(766/8128))
-  expect_that(res$Lb.Mean[8], equals(759/8128))
-  expect_that(res$Lb.Mean[9], equals(592/8128))
-  expect_that(res$Lb.Mean[10], equals(743/8128))
-  expect_that(res$Lb.Mean[11], equals(425/8128))
-  
-  
-  # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Lb.Sd[1], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[2], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[3], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[4], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[5], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[6], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[7], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[8], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[9], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[10], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
-  
-  # TEST 07 -------------------------------------------------------------------
-  
-  res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="norm",
-                          perDye=TRUE, hb=2,
-                          ignoreCase=TRUE)
-  
-  # Check return class.  
-  expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
-  expect_false(is.null(res$Sample.Name))
-  expect_false(is.null(res$Marker))
-  expect_false(is.null(res$Hb.n))
-  expect_false(is.null(res$Hb.Mean))
-  expect_false(is.null(res$Hb.Sd))
-  expect_false(is.null(res$Hb.95))
-  expect_false(is.null(res$Lb.n))
-  expect_false(is.null(res$Lb.Mean))
-  expect_false(is.null(res$Lb.Sd))
-  
-  # Check for NA's.
-  expect_false(any(is.na(res$Sample.Name)))
-  expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Hb.n)))
-  expect_false(any(is.na(res$Lb.n)))
-  
-  # Check result: Repeat unit difference.
-  expect_that(res$Delta[1], equals(3))
-  expect_that(res$Delta[2], equals(as.numeric(NA)))
-  expect_that(res$Delta[3], equals(2))
-  expect_that(res$Delta[4], equals(as.numeric(NA)))
-  expect_that(res$Delta[5], equals(1))
-  expect_that(res$Delta[6], equals(as.numeric(NA)))
-  expect_that(res$Delta[7], equals(as.numeric(NA)))
-  expect_that(res$Delta[8], equals(15.2))
-  expect_that(res$Delta[9], equals(as.numeric(NA)))
-  expect_that(res$Delta[10], equals(4))
-  expect_that(res$Delta[11], equals(as.numeric(NA)))
-  
-  # Check result: number of values for heterozygous balance.
-  expect_that(res$Hb.n[1], equals(2))
-  expect_that(res$Hb.n[2], equals(0))
-  expect_that(res$Hb.n[3], equals(2))
-  expect_that(res$Hb.n[4], equals(0))
-  expect_that(res$Hb.n[5], equals(2))
-  expect_that(res$Hb.n[6], equals(0))
-  expect_that(res$Hb.n[7], equals(0))
-  expect_that(res$Hb.n[8], equals(2))
-  expect_that(res$Hb.n[9], equals(0))
-  expect_that(res$Hb.n[10], equals(2))
-  expect_that(res$Hb.n[11], equals(0))
-  
-  # Check result: Mean heterozygous balance.
-  expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
-  expect_that(res$Hb.Mean[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[3], equals(mean(c(423/491,198/241))))
-  expect_that(res$Hb.Mean[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[5], equals(mean(c(587/632,312/326))))
-  expect_that(res$Hb.Mean[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[8], equals(mean(c(361/398,195/206))))
-  expect_that(res$Hb.Mean[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[10], equals(mean(c(359/384,179/183))))
-  expect_that(res$Hb.Mean[11], equals(as.numeric(NA)))
-  
-  # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
-  expect_that(res$Hb.Sd[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[3], equals(sd(c(423/491,198/241))))
-  expect_that(res$Hb.Sd[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[5], equals(sd(c(587/632,312/326))))
-  expect_that(res$Hb.Sd[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[8], equals(sd(c(361/398,195/206))))
-  expect_that(res$Hb.Sd[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[10], equals(sd(c(359/384,179/183))))
-  expect_that(res$Hb.Sd[11], equals(as.numeric(NA)))
-  
-  # Check result: 95% CI for heterozygous balance.
-  expect_that(res$Hb.95[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
-  expect_that(res$Hb.95[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[3], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
-  expect_that(res$Hb.95[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[5], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
-  expect_that(res$Hb.95[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[8], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
-  expect_that(res$Hb.95[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[10], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
-  expect_that(res$Hb.95[11], equals(as.numeric(NA)))
-  
-  # Check result: number of values for locus balance.
-  expect_that(res$Lb.n[1], equals(2))
-  expect_that(res$Lb.n[2], equals(2))
-  expect_that(res$Lb.n[3], equals(2))
-  expect_that(res$Lb.n[4], equals(2))
-  expect_that(res$Lb.n[5], equals(2))
-  expect_that(res$Lb.n[6], equals(2))
-  expect_that(res$Lb.n[7], equals(2))
-  expect_that(res$Lb.n[8], equals(2))
-  expect_that(res$Lb.n[9], equals(1))
-  expect_that(res$Lb.n[10], equals(1))
-  expect_that(res$Lb.n[11], equals(1))
-  
-  # Check result: Mean locus balance.
-  expect_that(res$Lb.Mean[1], equals(mean(c(862/914,440/440))))
-  expect_that(res$Lb.Mean[2], equals(mean(c(506/914,304/440))))
-  expect_that(res$Lb.Mean[3], equals(mean(c(914/914,439/440))))
-  expect_that(res$Lb.Mean[4], equals(mean(c(723/914,347/440))))
-  expect_that(res$Lb.Mean[5], equals(mean(c(1219/1219,638/638))))
-  expect_that(res$Lb.Mean[6], equals(mean(c(619/1219,309/638))))
-  expect_that(res$Lb.Mean[7], equals(mean(c(766/1219,402/638))))
-  expect_that(res$Lb.Mean[8], equals(mean(c(759/1219,401/638))))
-  expect_that(res$Lb.Mean[9], equals(592/743))
-  expect_that(res$Lb.Mean[10], equals(743/743))
-  expect_that(res$Lb.Mean[11], equals(425/743))
-  
-  
-  # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Lb.Sd[1], equals(sd(c(862/914,440/440))))
-  expect_that(res$Lb.Sd[2], equals(sd(c(506/914,304/440))))
-  expect_that(res$Lb.Sd[3], equals(sd(c(914/914,439/440))))
-  expect_that(res$Lb.Sd[4], equals(sd(c(723/914,347/440))))
-  expect_that(res$Lb.Sd[5], equals(sd(c(1219/1219,638/638))))
-  expect_that(res$Lb.Sd[6], equals(sd(c(619/1219,309/638))))
-  expect_that(res$Lb.Sd[7], equals(sd(c(766/1219,402/638))))
-  expect_that(res$Lb.Sd[8], equals(sd(c(759/1219,401/638))))
-  expect_that(res$Lb.Sd[9], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[10], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
-  
-  
-  # TEST 08 -------------------------------------------------------------------
-  
-  res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="norm",
-                          perDye=FALSE, hb=2,
-                          ignoreCase=TRUE)
-  
-  # Check return class.  
-  expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
-  expect_false(is.null(res$Sample.Name))
-  expect_false(is.null(res$Marker))
-  expect_false(is.null(res$Hb.n))
-  expect_false(is.null(res$Hb.Mean))
-  expect_false(is.null(res$Hb.Sd))
-  expect_false(is.null(res$Hb.95))
-  expect_false(is.null(res$Lb.n))
-  expect_false(is.null(res$Lb.Mean))
-  expect_false(is.null(res$Lb.Sd))
-  
-  # Check for NA's.
-  expect_false(any(is.na(res$Sample.Name)))
-  expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Hb.n)))
-  expect_false(any(is.na(res$Lb.n)))
-  
-  # Check result: Repeat unit difference.
-  expect_that(res$Delta[1], equals(3))
-  expect_that(res$Delta[2], equals(as.numeric(NA)))
-  expect_that(res$Delta[3], equals(2))
-  expect_that(res$Delta[4], equals(as.numeric(NA)))
-  expect_that(res$Delta[5], equals(1))
-  expect_that(res$Delta[6], equals(as.numeric(NA)))
-  expect_that(res$Delta[7], equals(as.numeric(NA)))
-  expect_that(res$Delta[8], equals(15.2))
-  expect_that(res$Delta[9], equals(as.numeric(NA)))
-  expect_that(res$Delta[10], equals(4))
-  expect_that(res$Delta[11], equals(as.numeric(NA)))
-  
-  # Check result: number of values for heterozygous balance.
-  expect_that(res$Hb.n[1], equals(2))
-  expect_that(res$Hb.n[2], equals(0))
-  expect_that(res$Hb.n[3], equals(2))
-  expect_that(res$Hb.n[4], equals(0))
-  expect_that(res$Hb.n[5], equals(2))
-  expect_that(res$Hb.n[6], equals(0))
-  expect_that(res$Hb.n[7], equals(0))
-  expect_that(res$Hb.n[8], equals(2))
-  expect_that(res$Hb.n[9], equals(0))
-  expect_that(res$Hb.n[10], equals(2))
-  expect_that(res$Hb.n[11], equals(0))
-  
-  # Check result: Mean heterozygous balance.
-  expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
-  expect_that(res$Hb.Mean[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[3], equals(mean(c(423/491,198/241))))
-  expect_that(res$Hb.Mean[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[5], equals(mean(c(587/632,312/326))))
-  expect_that(res$Hb.Mean[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[8], equals(mean(c(361/398,195/206))))
-  expect_that(res$Hb.Mean[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.Mean[10], equals(mean(c(359/384,179/183))))
-  expect_that(res$Hb.Mean[11], equals(as.numeric(NA)))
-  
-  # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
-  expect_that(res$Hb.Sd[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[3], equals(sd(c(423/491,198/241))))
-  expect_that(res$Hb.Sd[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[5], equals(sd(c(587/632,312/326))))
-  expect_that(res$Hb.Sd[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[8], equals(sd(c(361/398,195/206))))
-  expect_that(res$Hb.Sd[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.Sd[10], equals(sd(c(359/384,179/183))))
-  expect_that(res$Hb.Sd[11], equals(as.numeric(NA)))
-  
-  # Check result: 95% CI for heterozygous balance.
-  expect_that(res$Hb.95[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
-  expect_that(res$Hb.95[2], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[3], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
-  expect_that(res$Hb.95[4], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[5], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
-  expect_that(res$Hb.95[6], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[7], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[8], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
-  expect_that(res$Hb.95[9], equals(as.numeric(NA)))
-  expect_that(res$Hb.95[10], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
-  expect_that(res$Hb.95[11], equals(as.numeric(NA)))
-  
-  # Check result: number of values for locus balance.
-  expect_that(res$Lb.n[1], equals(1))
-  expect_that(res$Lb.n[2], equals(1))
-  expect_that(res$Lb.n[3], equals(1))
-  expect_that(res$Lb.n[4], equals(1))
-  expect_that(res$Lb.n[5], equals(1))
-  expect_that(res$Lb.n[6], equals(1))
-  expect_that(res$Lb.n[7], equals(1))
-  expect_that(res$Lb.n[8], equals(1))
-  expect_that(res$Lb.n[9], equals(1))
-  expect_that(res$Lb.n[10], equals(1))
-  expect_that(res$Lb.n[11], equals(1))
-  
-  # Check result: Mean locus balance.
-  expect_that(res$Lb.Mean[1], equals(862/1219))
-  expect_that(res$Lb.Mean[2], equals(506/1219))
-  expect_that(res$Lb.Mean[3], equals(914/1219))
-  expect_that(res$Lb.Mean[4], equals(723/1219))
-  expect_that(res$Lb.Mean[5], equals(1219/1219))
-  expect_that(res$Lb.Mean[6], equals(619/1219))
-  expect_that(res$Lb.Mean[7], equals(766/1219))
-  expect_that(res$Lb.Mean[8], equals(759/1219))
-  expect_that(res$Lb.Mean[9], equals(592/1219))
-  expect_that(res$Lb.Mean[10], equals(743/1219))
-  expect_that(res$Lb.Mean[11], equals(425/1219))
-  
-  
-  # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Lb.Sd[1], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[2], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[3], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[4], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[5], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[6], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[7], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[8], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[9], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[10], equals(as.numeric(NA)))
-  expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
+#   # TEST 05 -------------------------------------------------------------------
+#   
+#   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="prop",
+#                           perDye=TRUE, hb=2,
+#                           ignoreCase=TRUE)
+#   
+#   # Check return class.  
+#   expect_that(class(res), matches(class(data.frame())))
+#   
+#   # Check that expected columns exist.  
+#   expect_false(is.null(res$Sample.Name))
+#   expect_false(is.null(res$Marker))
+#   expect_false(is.null(res$Hb.n))
+#   expect_false(is.null(res$Hb.Mean))
+#   expect_false(is.null(res$Hb.Sd))
+#   expect_false(is.null(res$Hb.95))
+#   expect_false(is.null(res$Lb.n))
+#   expect_false(is.null(res$Lb.Mean))
+#   expect_false(is.null(res$Lb.Sd))
+#   
+#   # Check for NA's.
+#   expect_false(any(is.na(res$Sample.Name)))
+#   expect_false(any(is.na(res$Marker)))
+#   expect_false(any(is.na(res$Hb.n)))
+#   expect_false(any(is.na(res$Lb.n)))
+# 
+#   # Check result: Repeat unit difference.
+#   expect_that(res$Delta[1], equals(3))
+#   expect_that(res$Delta[2], equals(as.numeric(NA)))
+#   expect_that(res$Delta[3], equals(2))
+#   expect_that(res$Delta[4], equals(as.numeric(NA)))
+#   expect_that(res$Delta[5], equals(1))
+#   expect_that(res$Delta[6], equals(as.numeric(NA)))
+#   expect_that(res$Delta[7], equals(as.numeric(NA)))
+#   expect_that(res$Delta[8], equals(15.2))
+#   expect_that(res$Delta[9], equals(as.numeric(NA)))
+#   expect_that(res$Delta[10], equals(4))
+#   expect_that(res$Delta[11], equals(as.numeric(NA)))
+#   
+#   # Check result: number of values for heterozygous balance.
+#   expect_that(res$Hb.n[1], equals(2))
+#   expect_that(res$Hb.n[2], equals(0))
+#   expect_that(res$Hb.n[3], equals(2))
+#   expect_that(res$Hb.n[4], equals(0))
+#   expect_that(res$Hb.n[5], equals(2))
+#   expect_that(res$Hb.n[6], equals(0))
+#   expect_that(res$Hb.n[7], equals(0))
+#   expect_that(res$Hb.n[8], equals(2))
+#   expect_that(res$Hb.n[9], equals(0))
+#   expect_that(res$Hb.n[10], equals(2))
+#   expect_that(res$Hb.n[11], equals(0))
+# 
+#   # Check result: Mean heterozygous balance.
+#   expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
+#   expect_that(res$Hb.Mean[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[3], equals(mean(c(423/491,198/241))))
+#   expect_that(res$Hb.Mean[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[5], equals(mean(c(587/632,312/326))))
+#   expect_that(res$Hb.Mean[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[8], equals(mean(c(361/398,195/206))))
+#   expect_that(res$Hb.Mean[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[10], equals(mean(c(359/384,179/183))))
+#   expect_that(res$Hb.Mean[11], equals(as.numeric(NA)))
+# 
+#   # Check result: Heterozygous balance standard deviation.
+#   expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
+#   expect_that(res$Hb.Sd[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[3], equals(sd(c(423/491,198/241))))
+#   expect_that(res$Hb.Sd[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[5], equals(sd(c(587/632,312/326))))
+#   expect_that(res$Hb.Sd[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[8], equals(sd(c(361/398,195/206))))
+#   expect_that(res$Hb.Sd[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[10], equals(sd(c(359/384,179/183))))
+#   expect_that(res$Hb.Sd[11], equals(as.numeric(NA)))
+#   
+#   # Check result: 95% CI for heterozygous balance.
+#   expect_that(res$Hb.95[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
+#   expect_that(res$Hb.95[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[3], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
+#   expect_that(res$Hb.95[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[5], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
+#   expect_that(res$Hb.95[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[8], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
+#   expect_that(res$Hb.95[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[10], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
+#   expect_that(res$Hb.95[11], equals(as.numeric(NA)))
+#   
+#   # Check result: number of values for locus balance.
+#   expect_that(res$Lb.n[1], equals(2))
+#   expect_that(res$Lb.n[2], equals(2))
+#   expect_that(res$Lb.n[3], equals(2))
+#   expect_that(res$Lb.n[4], equals(2))
+#   expect_that(res$Lb.n[5], equals(2))
+#   expect_that(res$Lb.n[6], equals(2))
+#   expect_that(res$Lb.n[7], equals(2))
+#   expect_that(res$Lb.n[8], equals(2))
+#   expect_that(res$Lb.n[9], equals(1))
+#   expect_that(res$Lb.n[10], equals(1))
+#   expect_that(res$Lb.n[11], equals(1))
+#   
+#   # Check result: Mean locus balance.
+#   expect_that(res$Lb.Mean[1], equals(mean(c(862/3005,440/1530))))
+#   expect_that(res$Lb.Mean[2], equals(mean(c(506/3005,304/1530))))
+#   expect_that(res$Lb.Mean[3], equals(mean(c(914/3005,439/1530))))
+#   expect_that(res$Lb.Mean[4], equals(mean(c(723/3005,347/1530))))
+#   expect_that(res$Lb.Mean[5], equals(mean(c(1219/3363,638/1750))))
+#   expect_that(res$Lb.Mean[6], equals(mean(c(619/3363,309/1750))))
+#   expect_that(res$Lb.Mean[7], equals(mean(c(766/3363,402/1750))))
+#   expect_that(res$Lb.Mean[8], equals(mean(c(759/3363,401/1750))))
+#   expect_that(res$Lb.Mean[9], equals(592/1760))
+#   expect_that(res$Lb.Mean[10], equals(743/1760))
+#   expect_that(res$Lb.Mean[11], equals(425/1760))
+# 
+#   
+#   # Check result: Heterozygous balance standard deviation.
+#   expect_that(res$Lb.Sd[1], equals(sd(c(862/3005,440/1530))))
+#   expect_that(res$Lb.Sd[2], equals(sd(c(506/3005,304/1530))))
+#   expect_that(res$Lb.Sd[3], equals(sd(c(914/3005,439/1530))))
+#   expect_that(res$Lb.Sd[4], equals(sd(c(723/3005,347/1530))))
+#   expect_that(res$Lb.Sd[5], equals(sd(c(1219/3363,638/1750))))
+#   expect_that(res$Lb.Sd[6], equals(sd(c(619/3363,309/1750))))
+#   expect_that(res$Lb.Sd[7], equals(sd(c(766/3363,402/1750))))
+#   expect_that(res$Lb.Sd[8], equals(sd(c(759/3363,401/1750))))
+#   expect_that(res$Lb.Sd[9], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[10], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
+#   
+#   
+#   # TEST 06 -------------------------------------------------------------------
+#   
+#   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="prop",
+#                           perDye=FALSE, hb=2,
+#                           ignoreCase=TRUE)
+#   
+#   # Check return class.  
+#   expect_that(class(res), matches(class(data.frame())))
+#   
+#   # Check that expected columns exist.  
+#   expect_false(is.null(res$Sample.Name))
+#   expect_false(is.null(res$Marker))
+#   expect_false(is.null(res$Hb.n))
+#   expect_false(is.null(res$Hb.Mean))
+#   expect_false(is.null(res$Hb.Sd))
+#   expect_false(is.null(res$Hb.95))
+#   expect_false(is.null(res$Lb.n))
+#   expect_false(is.null(res$Lb.Mean))
+#   expect_false(is.null(res$Lb.Sd))
+#   
+#   # Check for NA's.
+#   expect_false(any(is.na(res$Sample.Name)))
+#   expect_false(any(is.na(res$Marker)))
+#   expect_false(any(is.na(res$Hb.n)))
+#   expect_false(any(is.na(res$Lb.n)))
+#   
+#   # Check result: Repeat unit difference.
+#   expect_that(res$Delta[1], equals(3))
+#   expect_that(res$Delta[2], equals(as.numeric(NA)))
+#   expect_that(res$Delta[3], equals(2))
+#   expect_that(res$Delta[4], equals(as.numeric(NA)))
+#   expect_that(res$Delta[5], equals(1))
+#   expect_that(res$Delta[6], equals(as.numeric(NA)))
+#   expect_that(res$Delta[7], equals(as.numeric(NA)))
+#   expect_that(res$Delta[8], equals(15.2))
+#   expect_that(res$Delta[9], equals(as.numeric(NA)))
+#   expect_that(res$Delta[10], equals(4))
+#   expect_that(res$Delta[11], equals(as.numeric(NA)))
+#   
+#   # Check result: number of values for heterozygous balance.
+#   expect_that(res$Hb.n[1], equals(2))
+#   expect_that(res$Hb.n[2], equals(0))
+#   expect_that(res$Hb.n[3], equals(2))
+#   expect_that(res$Hb.n[4], equals(0))
+#   expect_that(res$Hb.n[5], equals(2))
+#   expect_that(res$Hb.n[6], equals(0))
+#   expect_that(res$Hb.n[7], equals(0))
+#   expect_that(res$Hb.n[8], equals(2))
+#   expect_that(res$Hb.n[9], equals(0))
+#   expect_that(res$Hb.n[10], equals(2))
+#   expect_that(res$Hb.n[11], equals(0))
+#   
+#   # Check result: Mean heterozygous balance.
+#   expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
+#   expect_that(res$Hb.Mean[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[3], equals(mean(c(423/491,198/241))))
+#   expect_that(res$Hb.Mean[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[5], equals(mean(c(587/632,312/326))))
+#   expect_that(res$Hb.Mean[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[8], equals(mean(c(361/398,195/206))))
+#   expect_that(res$Hb.Mean[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[10], equals(mean(c(359/384,179/183))))
+#   expect_that(res$Hb.Mean[11], equals(as.numeric(NA)))
+#   
+#   # Check result: Heterozygous balance standard deviation.
+#   expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
+#   expect_that(res$Hb.Sd[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[3], equals(sd(c(423/491,198/241))))
+#   expect_that(res$Hb.Sd[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[5], equals(sd(c(587/632,312/326))))
+#   expect_that(res$Hb.Sd[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[8], equals(sd(c(361/398,195/206))))
+#   expect_that(res$Hb.Sd[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[10], equals(sd(c(359/384,179/183))))
+#   expect_that(res$Hb.Sd[11], equals(as.numeric(NA)))
+#   
+#   # Check result: 95% CI for heterozygous balance.
+#   expect_that(res$Hb.95[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
+#   expect_that(res$Hb.95[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[3], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
+#   expect_that(res$Hb.95[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[5], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
+#   expect_that(res$Hb.95[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[8], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
+#   expect_that(res$Hb.95[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[10], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
+#   expect_that(res$Hb.95[11], equals(as.numeric(NA)))
+#   
+#   # Check result: number of values for locus balance.
+#   expect_that(res$Lb.n[1], equals(1))
+#   expect_that(res$Lb.n[2], equals(1))
+#   expect_that(res$Lb.n[3], equals(1))
+#   expect_that(res$Lb.n[4], equals(1))
+#   expect_that(res$Lb.n[5], equals(1))
+#   expect_that(res$Lb.n[6], equals(1))
+#   expect_that(res$Lb.n[7], equals(1))
+#   expect_that(res$Lb.n[8], equals(1))
+#   expect_that(res$Lb.n[9], equals(1))
+#   expect_that(res$Lb.n[10], equals(1))
+#   expect_that(res$Lb.n[11], equals(1))
+#   
+#   # Check result: Mean locus balance.
+#   expect_that(res$Lb.Mean[1], equals(862/8128))
+#   expect_that(res$Lb.Mean[2], equals(506/8128))
+#   expect_that(res$Lb.Mean[3], equals(914/8128))
+#   expect_that(res$Lb.Mean[4], equals(723/8128))
+#   expect_that(res$Lb.Mean[5], equals(1219/8128))
+#   expect_that(res$Lb.Mean[6], equals(619/8128))
+#   expect_that(res$Lb.Mean[7], equals(766/8128))
+#   expect_that(res$Lb.Mean[8], equals(759/8128))
+#   expect_that(res$Lb.Mean[9], equals(592/8128))
+#   expect_that(res$Lb.Mean[10], equals(743/8128))
+#   expect_that(res$Lb.Mean[11], equals(425/8128))
+#   
+#   
+#   # Check result: Heterozygous balance standard deviation.
+#   expect_that(res$Lb.Sd[1], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[2], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[3], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[4], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[5], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[6], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[7], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[8], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[9], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[10], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
+#   
+#   # TEST 07 -------------------------------------------------------------------
+#   
+#   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="norm",
+#                           perDye=TRUE, hb=2,
+#                           ignoreCase=TRUE)
+#   
+#   # Check return class.  
+#   expect_that(class(res), matches(class(data.frame())))
+#   
+#   # Check that expected columns exist.  
+#   expect_false(is.null(res$Sample.Name))
+#   expect_false(is.null(res$Marker))
+#   expect_false(is.null(res$Hb.n))
+#   expect_false(is.null(res$Hb.Mean))
+#   expect_false(is.null(res$Hb.Sd))
+#   expect_false(is.null(res$Hb.95))
+#   expect_false(is.null(res$Lb.n))
+#   expect_false(is.null(res$Lb.Mean))
+#   expect_false(is.null(res$Lb.Sd))
+#   
+#   # Check for NA's.
+#   expect_false(any(is.na(res$Sample.Name)))
+#   expect_false(any(is.na(res$Marker)))
+#   expect_false(any(is.na(res$Hb.n)))
+#   expect_false(any(is.na(res$Lb.n)))
+#   
+#   # Check result: Repeat unit difference.
+#   expect_that(res$Delta[1], equals(3))
+#   expect_that(res$Delta[2], equals(as.numeric(NA)))
+#   expect_that(res$Delta[3], equals(2))
+#   expect_that(res$Delta[4], equals(as.numeric(NA)))
+#   expect_that(res$Delta[5], equals(1))
+#   expect_that(res$Delta[6], equals(as.numeric(NA)))
+#   expect_that(res$Delta[7], equals(as.numeric(NA)))
+#   expect_that(res$Delta[8], equals(15.2))
+#   expect_that(res$Delta[9], equals(as.numeric(NA)))
+#   expect_that(res$Delta[10], equals(4))
+#   expect_that(res$Delta[11], equals(as.numeric(NA)))
+#   
+#   # Check result: number of values for heterozygous balance.
+#   expect_that(res$Hb.n[1], equals(2))
+#   expect_that(res$Hb.n[2], equals(0))
+#   expect_that(res$Hb.n[3], equals(2))
+#   expect_that(res$Hb.n[4], equals(0))
+#   expect_that(res$Hb.n[5], equals(2))
+#   expect_that(res$Hb.n[6], equals(0))
+#   expect_that(res$Hb.n[7], equals(0))
+#   expect_that(res$Hb.n[8], equals(2))
+#   expect_that(res$Hb.n[9], equals(0))
+#   expect_that(res$Hb.n[10], equals(2))
+#   expect_that(res$Hb.n[11], equals(0))
+#   
+#   # Check result: Mean heterozygous balance.
+#   expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
+#   expect_that(res$Hb.Mean[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[3], equals(mean(c(423/491,198/241))))
+#   expect_that(res$Hb.Mean[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[5], equals(mean(c(587/632,312/326))))
+#   expect_that(res$Hb.Mean[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[8], equals(mean(c(361/398,195/206))))
+#   expect_that(res$Hb.Mean[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[10], equals(mean(c(359/384,179/183))))
+#   expect_that(res$Hb.Mean[11], equals(as.numeric(NA)))
+#   
+#   # Check result: Heterozygous balance standard deviation.
+#   expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
+#   expect_that(res$Hb.Sd[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[3], equals(sd(c(423/491,198/241))))
+#   expect_that(res$Hb.Sd[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[5], equals(sd(c(587/632,312/326))))
+#   expect_that(res$Hb.Sd[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[8], equals(sd(c(361/398,195/206))))
+#   expect_that(res$Hb.Sd[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[10], equals(sd(c(359/384,179/183))))
+#   expect_that(res$Hb.Sd[11], equals(as.numeric(NA)))
+#   
+#   # Check result: 95% CI for heterozygous balance.
+#   expect_that(res$Hb.95[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
+#   expect_that(res$Hb.95[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[3], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
+#   expect_that(res$Hb.95[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[5], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
+#   expect_that(res$Hb.95[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[8], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
+#   expect_that(res$Hb.95[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[10], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
+#   expect_that(res$Hb.95[11], equals(as.numeric(NA)))
+#   
+#   # Check result: number of values for locus balance.
+#   expect_that(res$Lb.n[1], equals(2))
+#   expect_that(res$Lb.n[2], equals(2))
+#   expect_that(res$Lb.n[3], equals(2))
+#   expect_that(res$Lb.n[4], equals(2))
+#   expect_that(res$Lb.n[5], equals(2))
+#   expect_that(res$Lb.n[6], equals(2))
+#   expect_that(res$Lb.n[7], equals(2))
+#   expect_that(res$Lb.n[8], equals(2))
+#   expect_that(res$Lb.n[9], equals(1))
+#   expect_that(res$Lb.n[10], equals(1))
+#   expect_that(res$Lb.n[11], equals(1))
+#   
+#   # Check result: Mean locus balance.
+#   expect_that(res$Lb.Mean[1], equals(mean(c(862/914,440/440))))
+#   expect_that(res$Lb.Mean[2], equals(mean(c(506/914,304/440))))
+#   expect_that(res$Lb.Mean[3], equals(mean(c(914/914,439/440))))
+#   expect_that(res$Lb.Mean[4], equals(mean(c(723/914,347/440))))
+#   expect_that(res$Lb.Mean[5], equals(mean(c(1219/1219,638/638))))
+#   expect_that(res$Lb.Mean[6], equals(mean(c(619/1219,309/638))))
+#   expect_that(res$Lb.Mean[7], equals(mean(c(766/1219,402/638))))
+#   expect_that(res$Lb.Mean[8], equals(mean(c(759/1219,401/638))))
+#   expect_that(res$Lb.Mean[9], equals(592/743))
+#   expect_that(res$Lb.Mean[10], equals(743/743))
+#   expect_that(res$Lb.Mean[11], equals(425/743))
+#   
+#   
+#   # Check result: Heterozygous balance standard deviation.
+#   expect_that(res$Lb.Sd[1], equals(sd(c(862/914,440/440))))
+#   expect_that(res$Lb.Sd[2], equals(sd(c(506/914,304/440))))
+#   expect_that(res$Lb.Sd[3], equals(sd(c(914/914,439/440))))
+#   expect_that(res$Lb.Sd[4], equals(sd(c(723/914,347/440))))
+#   expect_that(res$Lb.Sd[5], equals(sd(c(1219/1219,638/638))))
+#   expect_that(res$Lb.Sd[6], equals(sd(c(619/1219,309/638))))
+#   expect_that(res$Lb.Sd[7], equals(sd(c(766/1219,402/638))))
+#   expect_that(res$Lb.Sd[8], equals(sd(c(759/1219,401/638))))
+#   expect_that(res$Lb.Sd[9], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[10], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
+#   
+#   
+#   # TEST 08 -------------------------------------------------------------------
+#   
+#   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="norm",
+#                           perDye=FALSE, hb=2,
+#                           ignoreCase=TRUE)
+#   
+#   # Check return class.  
+#   expect_that(class(res), matches(class(data.frame())))
+#   
+#   # Check that expected columns exist.  
+#   expect_false(is.null(res$Sample.Name))
+#   expect_false(is.null(res$Marker))
+#   expect_false(is.null(res$Hb.n))
+#   expect_false(is.null(res$Hb.Mean))
+#   expect_false(is.null(res$Hb.Sd))
+#   expect_false(is.null(res$Hb.95))
+#   expect_false(is.null(res$Lb.n))
+#   expect_false(is.null(res$Lb.Mean))
+#   expect_false(is.null(res$Lb.Sd))
+#   
+#   # Check for NA's.
+#   expect_false(any(is.na(res$Sample.Name)))
+#   expect_false(any(is.na(res$Marker)))
+#   expect_false(any(is.na(res$Hb.n)))
+#   expect_false(any(is.na(res$Lb.n)))
+#   
+#   # Check result: Repeat unit difference.
+#   expect_that(res$Delta[1], equals(3))
+#   expect_that(res$Delta[2], equals(as.numeric(NA)))
+#   expect_that(res$Delta[3], equals(2))
+#   expect_that(res$Delta[4], equals(as.numeric(NA)))
+#   expect_that(res$Delta[5], equals(1))
+#   expect_that(res$Delta[6], equals(as.numeric(NA)))
+#   expect_that(res$Delta[7], equals(as.numeric(NA)))
+#   expect_that(res$Delta[8], equals(15.2))
+#   expect_that(res$Delta[9], equals(as.numeric(NA)))
+#   expect_that(res$Delta[10], equals(4))
+#   expect_that(res$Delta[11], equals(as.numeric(NA)))
+#   
+#   # Check result: number of values for heterozygous balance.
+#   expect_that(res$Hb.n[1], equals(2))
+#   expect_that(res$Hb.n[2], equals(0))
+#   expect_that(res$Hb.n[3], equals(2))
+#   expect_that(res$Hb.n[4], equals(0))
+#   expect_that(res$Hb.n[5], equals(2))
+#   expect_that(res$Hb.n[6], equals(0))
+#   expect_that(res$Hb.n[7], equals(0))
+#   expect_that(res$Hb.n[8], equals(2))
+#   expect_that(res$Hb.n[9], equals(0))
+#   expect_that(res$Hb.n[10], equals(2))
+#   expect_that(res$Hb.n[11], equals(0))
+#   
+#   # Check result: Mean heterozygous balance.
+#   expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
+#   expect_that(res$Hb.Mean[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[3], equals(mean(c(423/491,198/241))))
+#   expect_that(res$Hb.Mean[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[5], equals(mean(c(587/632,312/326))))
+#   expect_that(res$Hb.Mean[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[8], equals(mean(c(361/398,195/206))))
+#   expect_that(res$Hb.Mean[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Mean[10], equals(mean(c(359/384,179/183))))
+#   expect_that(res$Hb.Mean[11], equals(as.numeric(NA)))
+#   
+#   # Check result: Heterozygous balance standard deviation.
+#   expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
+#   expect_that(res$Hb.Sd[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[3], equals(sd(c(423/491,198/241))))
+#   expect_that(res$Hb.Sd[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[5], equals(sd(c(587/632,312/326))))
+#   expect_that(res$Hb.Sd[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[8], equals(sd(c(361/398,195/206))))
+#   expect_that(res$Hb.Sd[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.Sd[10], equals(sd(c(359/384,179/183))))
+#   expect_that(res$Hb.Sd[11], equals(as.numeric(NA)))
+#   
+#   # Check result: 95% CI for heterozygous balance.
+#   expect_that(res$Hb.95[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
+#   expect_that(res$Hb.95[2], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[3], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
+#   expect_that(res$Hb.95[4], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[5], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
+#   expect_that(res$Hb.95[6], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[7], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[8], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
+#   expect_that(res$Hb.95[9], equals(as.numeric(NA)))
+#   expect_that(res$Hb.95[10], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
+#   expect_that(res$Hb.95[11], equals(as.numeric(NA)))
+#   
+#   # Check result: number of values for locus balance.
+#   expect_that(res$Lb.n[1], equals(1))
+#   expect_that(res$Lb.n[2], equals(1))
+#   expect_that(res$Lb.n[3], equals(1))
+#   expect_that(res$Lb.n[4], equals(1))
+#   expect_that(res$Lb.n[5], equals(1))
+#   expect_that(res$Lb.n[6], equals(1))
+#   expect_that(res$Lb.n[7], equals(1))
+#   expect_that(res$Lb.n[8], equals(1))
+#   expect_that(res$Lb.n[9], equals(1))
+#   expect_that(res$Lb.n[10], equals(1))
+#   expect_that(res$Lb.n[11], equals(1))
+#   
+#   # Check result: Mean locus balance.
+#   expect_that(res$Lb.Mean[1], equals(862/1219))
+#   expect_that(res$Lb.Mean[2], equals(506/1219))
+#   expect_that(res$Lb.Mean[3], equals(914/1219))
+#   expect_that(res$Lb.Mean[4], equals(723/1219))
+#   expect_that(res$Lb.Mean[5], equals(1219/1219))
+#   expect_that(res$Lb.Mean[6], equals(619/1219))
+#   expect_that(res$Lb.Mean[7], equals(766/1219))
+#   expect_that(res$Lb.Mean[8], equals(759/1219))
+#   expect_that(res$Lb.Mean[9], equals(592/1219))
+#   expect_that(res$Lb.Mean[10], equals(743/1219))
+#   expect_that(res$Lb.Mean[11], equals(425/1219))
+#   
+#   
+#   # Check result: Heterozygous balance standard deviation.
+#   expect_that(res$Lb.Sd[1], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[2], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[3], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[4], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[5], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[6], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[7], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[8], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[9], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[10], equals(as.numeric(NA)))
+#   expect_that(res$Lb.Sd[11], equals(as.numeric(NA)))
   
   # TEST 09 -------------------------------------------------------------------
   # Test when a marker is missing from dataset.
@@ -1036,7 +1037,7 @@ test_that("calculateBalance", {
   setMissing <- set2[set2$Dye!="Y",]
   
   # Analyse dataframe.
-  expect_that(calculateBalance(data=setMissing, ref=ref2, perSample=TRUE, lb="prop",
+  expect_that(calculateBalance(data=setMissing, ref=ref2, lb="prop",
                                perDye=TRUE, hb=2,
                                ignoreCase=TRUE),
               throws_error()) 
@@ -1049,7 +1050,7 @@ test_that("calculateBalance", {
   setMissing <- set2[set2$Dye!="Y",]
   
   # Analyse dataframe.
-  expect_that(calculateBalance(data=setMissing, ref=ref2, perSample=TRUE, lb="prop",
+  expect_that(calculateBalance(data=setMissing, ref=ref2, lb="prop",
                                perDye=TRUE, hb=2,
                                ignoreCase=TRUE),
               throws_error()) 
@@ -1057,7 +1058,7 @@ test_that("calculateBalance", {
   # TEST 11 -------------------------------------------------------------------
   
   # Analyse dataframe.
-  res <- calculateBalance(data=set2, ref=ref2, perSample=TRUE, lb="prop",
+  res <- calculateBalance(data=set2, ref=ref2, lb="prop",
                           perDye=TRUE, hb=1,
                           ignoreCase=TRUE)
   
@@ -1183,7 +1184,7 @@ test_that("calculateBalance", {
   setEqual[setEqual$Marker == "D18S51",]$Height <- 550
   
   # Analyse dataframe.
-  res <- calculateBalance(data=setEqual, ref=ref2, perSample=TRUE, lb="prop",
+  res <- calculateBalance(data=setEqual, ref=ref2, lb="prop",
                           perDye=TRUE, hb=2,
                           ignoreCase=TRUE)
   

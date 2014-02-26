@@ -49,6 +49,26 @@ trim <- function(data, samples=NULL, columns=NULL,
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
+    print("data:")
+    print(head(data))
+    print("samples:")
+    print(samples)
+    print("columns:")
+    print(columns)
+    print("word:")
+    print(word)
+    print("ignoreCase:")
+    print(ignoreCase)
+    print("invertS:")
+    print(invertS)
+    print("invertC:")
+    print(invertC)
+    print("rmNACol:")
+    print(rmNaCol)
+    print("rmEmptyCol:")
+    print(rmEmptyCol)
+    print("missing:")
+    print(missing)
   }
   
 	# Add word anchor.
@@ -57,6 +77,15 @@ trim <- function(data, samples=NULL, columns=NULL,
 		samples <- paste("\\b", samples, "\\b", sep="")
 		columns <- gsub("|", "\\b|\\b", columns, fixed=TRUE)
 		columns <- paste("\\b", columns, "\\b", sep="")
+    
+		if(debug){
+      print("After adding word anchor.")
+		  print("samples:")
+		  print(samples)
+		  print("columns:")
+		  print(columns)
+		}
+		
 	}
 
   # Check if column 'Sample.Name' exist.
@@ -107,6 +136,10 @@ trim <- function(data, samples=NULL, columns=NULL,
 		
 	}
 
+  if(debug){
+    print(paste("Grab columns:", paste(names(data)[columns], collapse=",")))
+  }
+  
 	# Trim data.
 	data <- data[rows,columns]
 

@@ -1,11 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: optional percentile.
 # TODO: calculate the distributions...
 # TODO: Regression Analysis and construction of Hb bins...
 
 ################################################################################
 # CHANGE LOG
+# 23.02.2014: Removed 'perSample' parameter. Use 'tableBalance' for summary statistics.
 # 08.01.2014: Filter data and only consider peaks matching reference.
 # 08.01.2014: Fixed bug when two highest peaks are equal.
 # 27.11.2013: Added stop for NA's in 'Dye'.
@@ -29,6 +29,8 @@
 #' Calculates the inter and intra locus balance for a dataset.
 #' Only peaks corresponding to reference alleles will be included in analysis
 #' (does not require filtered data).
+#' Be careful not having actual alleles marked as 'OL' in dataset.
+#' It will lead to underestimation of the total peak height per locus/sample.
 #' Also calculates the allele size difference between heterozygous alleles.
 #' Takes 'slimmed' data for samples and references as input.
 #' NB! Requires at least one row for each marker per sample, even if no data.
@@ -36,30 +38,26 @@
 #' 
 #' @param data a data frame containing at least
 #'  'Sample.Name', 'Marker', 'Height', 'Allele', and Dye'.
-#' @param perSample logical, default TRUE calculates balance for each sample, 
-#'  FALSE calculates the average across all samples.
+#' @param ref a data frame containing at least
+#'  'Sample.Name', 'Marker', 'Allele'.
 #' @param lb string. 'prop' is defualt and locus balance is calculated proportionally
 #' 'norm' locus balance is normalised in relation to the locus with the highest total peakheight.
 #' @param perDye logical, default is TRUE and locus balance is calculated within each dye.
 #'  FALSE locus balance is calculated globally across all dyes.
 #' @param hb numerical, definition of heterozygous balance. hb=1; HMW/LMW, hb=2; Max1(Ph)/Max2(Ph).
 #' @param ignoreCase logical indicating if sample matching should ignore case.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Delta', 'Hb', 'Lb', 'MPH'. 
-#' Or 'Sample.Name', 'Marker', 'Delta.Mean',
-#' 'Hb.n', 'Hb.Min', 'Hb.Mean', 'Hb.Sd', 'Hb.95',
-#' 'Lb.n', 'Lb.Min', 'Lb.Mean', 'Lb.Sd'.
-#' 
-#' @keywords internal
 #' 
 #' @export true
 #' @examples 
 #' data(ref2)
 #' data(set2)
 #' # Calculate average balances.
-#' calculateBalance(data=set2, ref=ref2, perSample=FALSE)
+#' calculateBalance(data=set2, ref=ref2)
 
-calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
+calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
                              hb=1, ignoreCase=TRUE, debug=FALSE){
   
   if(debug){
@@ -69,8 +67,6 @@ calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
     print(str(data))
     print("ref")
     print(str(ref))
-    print("perSample")
-    print(perSample)
     print("lb")
     print(lb)
     print("perDye")
@@ -149,6 +145,14 @@ calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
     }
   }
 
+  if("OL" %in% data$Allele){
+    warning("'OL' in data!")
+  }
+  
+  if("OL" %in% ref$Allele){
+    warning("'OL' in ref!")
+  }
+  
   # Prepare -------------------------------------------------------------------
 
   # Check data type of Height.
@@ -463,76 +467,6 @@ calculateBalance <- function(data, ref, perSample=TRUE, lb="prop", perDye=TRUE,
     
   }
   
-  if(perSample==FALSE) {
-    
-    lbN <- vector()
-    lbMin <- vector()
-    lbMean <- vector()
-    lbSd <- vector()
-    hbN <- vector()
-    deltaMean <- vector()
-    hbMin <- vector()
-    hbMean <- vector()
-    hbSd <- vector()
-    hb95 <- vector()
-    
-    # Get the marker names.
-    markerNames <- unique(res$Marker)
-    
-    # Loop through all markers.
-    for (m in seq(along = markerNames)) {
-      
-      # Get marker name.
-      cMarkerName <- markerNames[m]
-      
-      # Calculate means, n, and standard deviations.
-      lbMin[m] <- suppressWarnings(min(res$Lb[res$Marker==cMarkerName], na.rm=TRUE))
-      lbMean[m] <- mean(res$Lb[res$Marker==cMarkerName], na.rm=TRUE)
-      lbSd[m] <- sd(res$Lb[res$Marker==cMarkerName], na.rm=TRUE)
-      lbN[m] <- sum(!is.na(res$Lb[res$Marker==cMarkerName]))
-      
-      deltaMean[m] <- mean(res$Delta[res$Marker==cMarkerName], na.rm=TRUE)
-      
-      hbMin[m] <- suppressWarnings(min(res$Hb[res$Marker==cMarkerName], na.rm=TRUE))
-      hbMean[m] <- mean(res$Hb[res$Marker==cMarkerName], na.rm=TRUE)
-      hbSd[m] <- sd(res$Hb[res$Marker==cMarkerName], na.rm=TRUE)
-      hbN[m] <- sum(!is.na(res$Hb[res$Marker==cMarkerName]))
-      hb95[m] <- quantile(res$Hb[res$Marker==cMarkerName], 0.05, na.rm = TRUE)
-      
-    }
-    
-    # Create empty result data frame with NAs.
-    resPerSample <- data.frame(t(rep(NA,13)))
-    # Add column names.
-    names(resPerSample) <- c("Sample.Name","Marker",
-                             "Hb.n", "Delta.Min", "Hb.Min", "Hb.Mean", "Hb.Sd", "Hb.95",
-                             "Lb.n", "Lb.Min", "Lb.Mean", "Lb.Sd")
-    # Remove all NAs
-    res <- res[-1,]
-    
-    # Save result in data frame.
-    resPerSample <- data.frame(Sample.Name = "Total",
-                               Marker = markerNames,
-                               Hb.n = hbN,
-                               Delta.Mean = deltaMean,
-                               Hb.Min = hbMin,
-                               Hb.Mean = hbMean,
-                               Hb.Sd = hbSd,
-                               Hb.95 = hb95,
-                               Lb.n = lbN,
-                               Lb.Min = lbMin,
-                               Lb.Mean = lbMean,
-                               Lb.Sd = lbSd,
-                               stringsAsFactors = FALSE)
-    
-    if(debug){
-      print(paste("EXIT:", match.call()[[1]]))
-    }
-
-    # Return result.
-    return(resPerSample )
-  }
-
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

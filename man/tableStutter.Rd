@@ -22,6 +22,12 @@ format.
 }
 \details{
 Summarize the stutter analysis in table format with
-different scope.
+different scope (stutter, locus, or global). Returns a
+dataframe with columns for marker name 'Marker', stutter
+type 'Type', number of alleles 'n.alleles', number of
+stutters 'n.stutters', mean ratio 'Mean', standard
+deviation 'Stdv', the XXth percentile 'Perc.XX', and the
+maximum observed ratio 'Max'. For more details see
+\code{mean}, \code{sd}, \code{quantile}, \code{max}.
 }
 

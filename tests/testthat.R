@@ -4,12 +4,17 @@
 
 ################################################################################
 # CHANGE LOG
+# 24.12.2014: Second try, update to thestthat 0.8
 # 05.12.2013: Updated to thestthat 0.8
 
 
+# Load testthat package.
 library(testthat)
-library(strvalidator)
 
-# test_check(package="strvalidator") # Does not work yet?
-# test_package=("strvalidator") # No error message, but does not run (although R CDM says OK)
-  test_dir("tests/testthat")
+# Run all tests.
+test_check(package="strvalidator")
+
+#  # Run manually:
+# library(strvalidator)
+# library(testthat)
+# test_dir("tests/testthat")

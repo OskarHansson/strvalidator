@@ -1,11 +1,13 @@
 ################################################################################
 # TODO LIST
 # TODO: Number of decimals on x axis as an option.
-# TODO: Color as an option.
+# TODO: Custom colors.
 # TODO: ...NOT FINISHED!!!
 
 ################################################################################
 # CHANGE LOG
+# 17.02.2014: Fixed NA in title for ecdp.
+# 17.02.2014: Fixed heatmap by 'H' loosing samples with equal 'H'.
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
 # 05.11.2013: Fixed not possible to limit both y/x axes.
 # 04.11.2013: Added edcf plot.
@@ -563,30 +565,47 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           xTitle <- "Average peak height 'H' (RFU)"
           yTitle <- "Marker"
         }
-        
-        # Sort according to average peak height 'H'
+
+        # Sort according to H.
+        if(!is.numeric(.gData$H)){
+          .gData$H <- as.numeric(.gData$H)
+          message("'H' converted to numeric.")
+        }
         .gData <- .gData[order(.gData$H),]
-        .gData$H <- as.integer(.gData$H)
-        .gData$H <- factor(.gData$H)
-        .gData$Dropout <- factor(.gData$Dropout)
+        
+        # Add H to sample name.
+        .gData$Sample.Name <- paste(.gData$H, " (", .gData$Sample.Name, ")", sep="")
+        
+        # Create factors.
+        .gData$Dropout <- factor(.gData$Dropout, levels=c(0,1,2))
+        .gData$Sample.Name <- factor(.gData$Sample.Name,
+                                     levels=unique(.gData$Sample.Name))
+        
+        # Create x labels.
+        xlabels <- .gData[!duplicated(.gData[, c("Sample.Name", "H")]), ]$H
+        xlabels <- round(as.double(xlabels), digits=3)
+        
+        # Define colours.
         col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
-        gp <- ggplot(.gData, aes_string(x = "H", y = "Marker", fill = "Dropout"))
-        gp <- gp + geom_tile(colour = "white")
-        gp <- gp + scale_fill_manual(values=col,
-                                     name="Dropout",
-                                     breaks=c("0", "1", "2"),
+        
+        # Create plot.
+        gp <- ggplot(.gData, aes_string(x = "Sample.Name", y = "Marker", fill = "Dropout"))
+        gp <- gp + geom_tile(colour = "white") #OK
+        gp <- gp + scale_fill_manual(values=col, name="Dropout", breaks=c("0", "1", "2"),
                                      labels=c("none", "allele", "locus"))
-        gp <- gp + guides(fill = guide_legend(reverse=TRUE))
+        gp <- gp + guides(fill = guide_legend(reverse=TRUE)) # OK
         gp <- gp + theme(axis.text.x=element_text(angle=val_angle,
                                                   hjust = val_hjust,
                                                   vjust = val_vjust,
                                                   size = val_size))
+        
         gp <- gp + labs(title=mainTitle)
         gp <- gp + ylab(yTitle)
         gp <- gp + xlab(xTitle)
         
-        # Reverse y-axis.
-        gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker)) ) +
+        # Reverse y-axis and relabel x-ticks.
+        gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker))) + 
+          scale_x_discrete(labels=formatC(xlabels, 0, format = "f")) +
           theme(axis.text.x=element_text(family="sans", face="bold", size=val_size))
         
       } else if (what == "heat_amount") {
@@ -598,19 +617,29 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           yTitle <- "Marker"
         }
         
-        # Add concentration to sample name.
-        .gData$Sample.Name <- paste(.gData$Amount, " (", .gData$Sample.Name, ")", sep="")
-        
         # Sort according to average amount of DNA
+        if(!is.numeric(.gData$Amount)){
+          .gData$Amount <- as.numeric(.gData$Amount)
+          message("'Amount' converted to numeric.")
+        }
         .gData <- .gData[order(.gData$Amount),]
         
-        .gData$Dropout <- factor(.gData$Dropout)
+        # Add amount to sample name.
+        .gData$Sample.Name <- paste(.gData$Amount, " (", .gData$Sample.Name, ")", sep="")
         
+        # Create factors.
+        .gData$Dropout <- factor(.gData$Dropout, levels=c(0,1,2))
+        .gData$Sample.Name <- factor(.gData$Sample.Name,
+                                     levels=unique(.gData$Sample.Name))
+        
+        # Create x labels.
         xlabels <- .gData[!duplicated(.gData[, c("Sample.Name", "Amount")]), ]$Amount
         xlabels <- round(as.double(xlabels), digits=3)
         
+        # Define colours.
         col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
 
+        # Create plot.
         gp <- ggplot(.gData, aes_string(x = "Sample.Name", y = "Marker", fill = "Dropout"))
         gp <- gp + geom_tile(colour = "white") #OK
         gp <- gp + scale_fill_manual(values=col, name="Dropout", breaks=c("0", "1", "2"),
@@ -640,18 +669,29 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           yTitle <- "Marker"
         }
         
+        # Sort according to concentration.
+        if(!is.numeric(.gData$Concentration)){
+          .gData$Concentration <- as.numeric(.gData$Concentration)
+          message("'Concentration' converted to numeric.")
+        }
+        .gData <- .gData[order(.gData$Concentration),]
+        
         # Add concentration to sample name.
         .gData$Sample.Name <- paste(.gData$Concentration, " (", .gData$Sample.Name, ")", sep="")
         
-        .gData <- .gData[order(.gData$Concentration),]
+        # Create factors.
+        .gData$Dropout <- factor(.gData$Dropout, levels=c(0,1,2))
+        .gData$Sample.Name <- factor(.gData$Sample.Name,
+                                     levels=unique(.gData$Sample.Name))
         
-        .gData$Dropout <- factor(.gData$Dropout)
-        
+        # Create x labels.
         xlabels <- .gData[!duplicated(.gData[, c("Sample.Name", "Concentration")]), ]$Concentration
         xlabels <- round(as.double(xlabels), digits=4)
         
+        # Define colours.
         col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
         
+        # Create plot.
         gp <- ggplot(.gData, aes_string(x = "Sample.Name", y = "Marker", fill = "Dropout"))
         gp <- gp + geom_tile(colour = "white") #OK
         gp <- gp + scale_fill_manual(values=col, name="Dropout", breaks=c("0", "1", "2"),
@@ -680,14 +720,19 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           yTitle <- "Marker"
         }
         
+        # Sort according to sample name.
         .gData <- .gData[order(.gData$Sample.Name),]
         
+        # Create factors.
         .gData$Dropout <- factor(.gData$Dropout)
         
+        # Create x labels.
         xlabels <- .gData[!duplicated(.gData[, "Sample.Name"]), ]$Sample.Name
         
+        # Define colours.
         col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
         
+        # Create plot.
         gp <- ggplot(.gData, aes_string(x = "Sample.Name", y = "Marker", fill = "Dropout"))
         gp <- gp + geom_tile(colour = "white") #OK
         gp <- gp + scale_fill_manual(values=col, name="Dropout", breaks=c("0", "1", "2"),
@@ -709,6 +754,16 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       } else if (what == "ecdf") {
         # Plot empirical cumulative distribution.
 
+        # Remove NA in dropout col.
+        # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
+        n0 <- nrow(.gData)
+        .gData <- .gData[!is.na(.gData$Dropout),]
+        n1 <- nrow(.gData)
+        message(paste("Analyse ", n1,
+                      " rows (",n0-n1,
+                      " rows with NA in Dropout removed.",
+                      sep=""))
+        
         if(val_hom){
           
           # Remove locus dropouts.
@@ -721,16 +776,6 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                         " NA rows i.e. locus dropout, removed from column 'Height').",
                         sep=""))
           
-          # Remove NA in dropout col.
-          # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
-          n0 <- nrow(.gData)
-          .gData <- .gData[!is.na(.gData$Dropout),]
-          n1 <- nrow(.gData)
-          message(paste("Analyse ", n1,
-                        " rows (",n0-n1,
-                        " rows with NA in Dropout removed.",
-                        sep=""))
-
           # Remove locus dropout=2.
           # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
           n0 <- nrow(.gData)
@@ -768,7 +813,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           
           # Create default titles.
           if(!val_titles){
-            mainTitle <- paste("Epirical cumulative distribution for",
+            mainTitle <- paste("Empirical cumulative distribution for",
                                sum(.gData$Dropout==1) ,
                                "heterozygous alleles (with dropout) and",
                                sum(.gData$Dropout==0) , "homozygous peaks")

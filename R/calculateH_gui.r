@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 25.02.2014: Implemented new options 'replace NA' and 'add to dataset'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
@@ -21,6 +22,7 @@
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
+#' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame in slim format.
@@ -32,7 +34,7 @@
 #'  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
 #' \url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
 
-calculateH_gui <- function(env=parent.frame(), debug=FALSE){
+calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Global variables.
   .gData <- NULL
@@ -43,6 +45,11 @@ calculateH_gui <- function(env=parent.frame(), debug=FALSE){
   
   # Main window.
   w <- gwindow(title="Calculate average peak height", visible=FALSE)
+
+  # Handler for saving GUI state.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    .saveSettings()
+  })
   
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
@@ -119,6 +126,25 @@ calculateH_gui <- function(env=parent.frame(), debug=FALSE){
     }
   } )  
   
+  # FRAME 1 ###################################################################
+  
+  f1 <- gframe(text = "Options",
+               horizontal=FALSE,
+               spacing = 10,
+               container = gv) 
+  
+  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
+                              checked=FALSE,
+                              container=f1)
+  
+  f1_replace_chk <- gcheckbox(text="Replace NA with 0",
+                              checked=TRUE,
+                              container=f1)
+  
+  f1_add_chk <- gcheckbox(text="Add result to dataset",
+                              checked=TRUE,
+                              container=f1)
+  
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as",
@@ -140,6 +166,14 @@ calculateH_gui <- function(env=parent.frame(), debug=FALSE){
   addHandlerChanged(calculate_btn, handler = function(h, ...) {
     
     val_name <- svalue(f2_save_edt)
+    val_add <- svalue(f1_add_chk)
+    val_replace <- svalue(f1_replace_chk)
+    
+    if(val_replace){
+      val_na <- 0
+    } else {
+      val_na <- NULL
+    }
     
     if(!is.null(.gData)){
       
@@ -147,7 +181,7 @@ calculateH_gui <- function(env=parent.frame(), debug=FALSE){
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
-      datanew <- calculateH(data=.gData)
+      datanew <- calculateH(data=.gData, na=val_na, add=val_add, debug=debug)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -172,6 +206,79 @@ calculateH_gui <- function(env=parent.frame(), debug=FALSE){
     
   } )
   
+  .loadSavedSettings <- function(){
+    
+    # First check status of save flag.
+    if(!is.null(savegui)){
+      svalue(f1_savegui_chk) <- savegui
+      enabled(f1_savegui_chk) <- FALSE
+      if(debug){
+        print("Save GUI status set!")
+      }  
+    } else {
+      # Load save flag.
+      if(exists(".strvalidator_calculateH_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_calculateH_gui_savegui", envir=env)
+      }
+      if(debug){
+        print("Save GUI status loaded!")
+      }  
+    }
+    if(debug){
+      print(svalue(f1_savegui_chk))
+    }  
+    
+    # Then load settings if true.
+    if(svalue(f1_savegui_chk)){
+      if(exists(".strvalidator_calculateH_gui_replace", envir=env, inherits = FALSE)){
+        svalue(f1_replace_chk) <- get(".strvalidator_calculateH_gui_replace", envir=env)
+      }
+      if(exists(".strvalidator_calculateH_gui_add", envir=env, inherits = FALSE)){
+        svalue(f1_add_chk) <- get(".strvalidator_calculateH_gui_add", envir=env)
+      }
+      if(debug){
+        print("Saved settings loaded!")
+      }
+    }
+    
+  }
+  
+  .saveSettings <- function(){
+    
+    # Then save settings if true.
+    if(svalue(f1_savegui_chk)){
+      
+      assign(x=".strvalidator_calculateH_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateH_gui_replace", value=svalue(f1_replace_chk), envir=env)
+      assign(x=".strvalidator_calculateH_gui_add", value=svalue(f1_add_chk), envir=env)
+      
+    } else { # or remove all saved values if false.
+      
+      if(exists(".strvalidator_calculateH_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateH_gui_savegui", envir = env)
+      }
+      if(exists(".strvalidator_calculateH_gui_replace", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateH_gui_replace", envir = env)
+      }
+      if(exists(".strvalidator_calculateH_gui_add", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateH_gui_add", envir = env)
+      }
+      
+      if(debug){
+        print("Settings cleared!")
+      }
+    }
+    
+    if(debug){
+      print("Settings saved!")
+    }
+    
+  }
+  
+  # END GUI ###################################################################
+  
+  # Load GUI settings.
+  .loadSavedSettings()
   
   # Show GUI.
   visible(w) <- TRUE

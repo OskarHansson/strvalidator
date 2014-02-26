@@ -391,8 +391,8 @@ calculateOverlap_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE){
     
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists("strvalidator_calculateOverlap_gui_db", envir=env, inherits = FALSE)){
-        svalue(f1_db_chk) <- get("strvalidator_calculateOverlap_gui_db", envir=env)
+      if(exists(".strvalidator_calculateOverlap_gui_db", envir=env, inherits = FALSE)){
+        svalue(f1_db_chk) <- get(".strvalidator_calculateOverlap_gui_db", envir=env)
       }
       if(exists(".strvalidator_calculateOverlap_gui_db_name", envir=env, inherits = FALSE)){
         svalue(f1_db_drp) <- get(".strvalidator_calculateOverlap_gui_db_name", envir=env)

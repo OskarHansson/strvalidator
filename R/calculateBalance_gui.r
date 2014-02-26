@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 23.02.2014: Removed 'perSample' parameter. Added 'OL' check.
 # 18.12.2013: Fixed dropdown state not saved (wrong object saved)...
 # 27.11.2013: Passed debug to calculateBalance.
 # 21.10.2013: Fixed dropdown state not loaded.
@@ -308,26 +309,18 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                              expand = FALSE,
                              container = f1g1)
   
-  f1_options1 <- c("Calculate balance for each sample",
-                "Calculate average balance across all samples")
-  
-  f1_perSample_opt <- gradio(items=f1_options1,
-                             selected=1,
-                             horizontal=FALSE,
-                             container=f1)
-  
-  f1_options2 <- c("Calculate proportional locus balance",
+  f1_options_lb <- c("Calculate proportional locus balance",
                 "Calculate normalised locus balance")
   
-  f1_lb_opt <- gradio(items=f1_options2,
+  f1_lb_opt <- gradio(items=f1_options_lb,
                       selected=1,
                       horizontal=FALSE,
                       container=f1)
 
-  f1_options3 <- c("Calculate locus balance within each dye",
+  f1_options_perDye <- c("Calculate locus balance within each dye",
                 "Calculate locus balance globally across all dyes")
   
-  f1_perDye_opt <- gradio(items=f1_options3,
+  f1_perDye_opt <- gradio(items=f1_options_perDye,
                           selected=1,
                           horizontal=FALSE,
                           container=f1)
@@ -361,7 +354,6 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     
     # Get values.
     val_method <- svalue(f1_method_drp, index=TRUE)
-    val_perSample <- svalue(f1_perSample_opt, index=TRUE) == 1 # TRUE / FALSE
     val_lb <- svalue(f1_lb_opt, index=TRUE)
     val_perDye <- svalue(f1_perDye_opt, index=TRUE) == 1 # TRUE / FALSE
     val_ignore <- svalue(f1_ignore_chk)
@@ -371,8 +363,6 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     
     if(debug){
       print("Read Values:")
-      print("val_perSample")
-      print(val_perSample)
       print("val_lb")
       print(val_lb)
       print("val_perDye")
@@ -387,6 +377,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       print(head(val_ref))
     }
     
+    # Check if data.
     if(!is.null(.gData) & !is.null(.gRef)){
       
       if(val_lb == 1){
@@ -397,14 +388,22 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
 
       if(debug){
         print("Sent Values:")
-        print("val_perSample")
-        print(val_perSample)
         print("val_lb")
         print(val_lb)
         print("val_perDye")
         print(val_perDye)
         print("val_ignore")
         print(val_ignore)
+      }
+      
+      if("OL" %in% .gData$Allele){
+        
+        message <- "'OL' alleles might lead to erroneous results!"
+        
+        gmessage(message, title="'OL' detected in dataset",
+                 icon = "warning",
+                 parent = w)
+        
       }
   
       # Change button.
@@ -413,7 +412,6 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       
       datanew <- calculateBalance(data=val_data,
                                   ref=val_ref,
-                                  perSample=val_perSample,
                                   lb=val_lb,
                                   perDye=val_perDye,
                                   hb=val_method,
@@ -473,9 +471,6 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculateBalance_gui_method", envir=env, inherits = FALSE)){
         svalue(f1_method_drp) <- get(".strvalidator_calculateBalance_gui_method", envir=env)
       }
-      if(exists(".strvalidator_calculateBalance_gui_perSample", envir=env, inherits = FALSE)){
-        svalue(f1_perSample_opt) <- get(".strvalidator_calculateBalance_gui_perSample", envir=env)
-      }
       if(exists(".strvalidator_calculateBalance_gui_lb", envir=env, inherits = FALSE)){
         svalue(f1_lb_opt) <- get(".strvalidator_calculateBalance_gui_lb", envir=env)
       }
@@ -499,7 +494,6 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       
       assign(x=".strvalidator_calculateBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_method", value=svalue(f1_method_drp), envir=env)
-      assign(x=".strvalidator_calculateBalance_gui_perSample", value=svalue(f1_perSample_opt), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_lb", value=svalue(f1_lb_opt), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_perDye", value=svalue(f1_perDye_opt), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
@@ -511,9 +505,6 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       }
       if(exists(".strvalidator_calculateBalance_gui_method", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateBalance_gui_method", envir = env)
-      }
-      if(exists(".strvalidator_calculateBalance_gui_perSample", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculateBalance_gui_perSample", envir = env)
       }
       if(exists(".strvalidator_calculateBalance_gui_lb", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateBalance_gui_lb", envir = env)

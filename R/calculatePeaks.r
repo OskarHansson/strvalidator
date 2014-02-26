@@ -15,7 +15,7 @@
 #' \code{calculatePeaks} calculates the number of peaks in a sample.
 #'
 #' @details
-#' Counts the number of peaks in a sample profile based on values in the 
+#' Count the number of peaks in a sample profile based on values in the 
 #' 'Height' column. Each sample can be labelled according to custom labels
 #' defined by the number of peaks. Peaks can be counted per sample or per
 #' marker per sample.

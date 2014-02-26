@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 23.02.2014: Added option 'ol.rm'.
 # 20.04.2013: first version.
 
 #' @title Guess Profile
@@ -21,6 +22,8 @@
 #' @param ratio numeric giving the peak height ratio threshold.
 #' @param height numeric giving the minumum peak height.
 #' @param na.rm logical indicating if rows with no peak should be discarded.
+#' @param ol.rm logical indicating if off-ladder alleles should be discarded.
+#' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame 'data' with genotype rows only.
 #' 
@@ -31,10 +34,9 @@
 #' # Filter out probable profile with criteria at least 70% Hb.
 #' guessProfile(data=set2, ratio=0.7)
 
-guessProfile <- function(data, ratio=0.6, height=50, na.rm=FALSE){
+guessProfile <- function(data, ratio=0.6, height=50,
+                         na.rm=FALSE, ol.rm=TRUE, debug=FALSE){
 
-  debug <- FALSE
-  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
@@ -86,6 +88,14 @@ guessProfile <- function(data, ratio=0.6, height=50, na.rm=FALSE){
       print("Replaced Alleles and Heights where Height < 'height' with NA")
     }
   }
+
+  # Discard off-ladder alleles.
+  if(ol.rm){
+    data$Height[data$Allele == "OL"] <- NA
+    if(debug){
+      print("Replaced Heights where Alleles is 'OL' with NA")
+    }
+  }
   
   # Loop through and filter out the presumed correct profile.
   for(s in seq(along=samples)){
@@ -105,7 +115,7 @@ guessProfile <- function(data, ratio=0.6, height=50, na.rm=FALSE){
       # Remove low peaks.
       peaks <- peaks[peaks >= height]
       
-      # Remove NAs.
+      # Remove NA peaks.
       peaks <- peaks[!is.na(peaks)]
 
       if(debug){

@@ -4,7 +4,10 @@
 
 ################################################################################
 # CHANGE LOG
-# 20.01.2014: Implemented ggsave with workaround for complex plots.
+# 23.02.2014: Fixed different y max for complex plot, when supposed to be fixed.
+# 23.02.2014: Implemented theme.
+# 23.02.2014: Fixed shape for 'complex' plots.
+# 20.01.2014: Implemented ggsave with workaround for 'complex' plots.
 # 18.12.2013: New plot option 'Hb by Delta' + better handling of titles.
 # 02.12.2013: Fixed 'val_palette' to get 'R.Color'.
 # 30.11.2013: Fixed 'complex' plot.
@@ -176,31 +179,37 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
     val <- svalue(f1_titles_chk)
     if(val){
-      enabled(grid1) <- TRUE
+      enabled(f1g1) <- TRUE
     } else {
-      enabled(grid1) <- FALSE
+      enabled(f1g1) <- FALSE
     }
   } )
   
-  grid1 <- glayout(container = f1, spacing = 1)
-  enabled(grid1) <- svalue(f1_titles_chk)
+  f1g1 <- glayout(container = f1, spacing = 1)
+  enabled(f1g1) <- svalue(f1_titles_chk)
 
-  grid1[1,1] <- glabel(text="Plot title:", container=grid1)
-  grid1[1,2] <- title_edt <- gedit(text="",
+  f1g1[1,1] <- glabel(text="Plot title:", container=f1g1)
+  f1g1[1,2] <- title_edt <- gedit(text="",
                                    width=40,
-                                   container=grid1)
+                                   container=f1g1)
   
-  grid1[2,1] <- glabel(text="X title:", container=grid1)
-  grid1[2,2] <- x_title_edt <- gedit(text="",
-                                     container=grid1)
+  f1g1[2,1] <- glabel(text="X title:", container=f1g1)
+  f1g1[2,2] <- x_title_edt <- gedit(text="",
+                                     container=f1g1)
 
-  grid1[3,1] <- glabel(text="Y title:", container=grid1)
-  grid1[3,2] <- y_title_edt <- gedit(text="",
-                                     container=grid1)
+  f1g1[3,1] <- glabel(text="Y title:", container=f1g1)
+  f1g1[3,2] <- y_title_edt <- gedit(text="",
+                                     container=f1g1)
 
   f1_savegui_chk <- gcheckbox(text="Save GUI settings",
                               checked=FALSE,
                                 container=f1)
+  
+  f1g2 <- glayout(container = f1)
+  f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
+  f1g2[1,2] <- f1_theme_drp <- gdroplist(items=c("theme_grey()","theme_bw()"),
+                                         selected=1,
+                                         container = f1g2)
 
   f1_drop_chk <- gcheckbox(text="Drop gender marker",
                               checked=TRUE,
@@ -511,6 +520,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     val_scales <- svalue(e3_scales_opt)
     val_kit <- svalue(kit_drp)
     val_drop <- svalue(f1_drop_chk)
+    val_theme <- svalue(f1_theme_drp)
     
     if(debug){
       print("val_title")
@@ -545,6 +555,8 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       print(val_drop)
       print("val_kit")
       print(val_kit)
+      print("val_theme")
+      print(val_theme)
     }
     
     
@@ -724,6 +736,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           print("Plot created.")
         }
         
+        # Apply theme.
+        gp <- gp + eval(parse(text=val_theme))
+        
         # Plot settings.
         gp <- gp + geom_point(shape=val_shape, alpha=val_alpha,
                               position=position_jitter(width=val_jitter))
@@ -749,6 +764,10 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         # Zoom in without dropping observations.
         gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
         
+        if(debug){
+          print(paste("Plot zoomed to xlim:", val_x, "ylim:", val_y))
+        }
+        
         # Add titles etc.
         gp <- gp + guides(fill = guide_legend(reverse=TRUE))
         gp <- gp + theme(axis.text.x=element_text(angle=val_angle,
@@ -771,6 +790,18 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
         if(debug){
           print("Complex plot.")
+        }
+        
+        if(val_scales %in% c("fixed","free_x")){
+          # Keep Y max fixed.
+          if("Hb" %in% what){
+            ymax <- max(.gData$Hb, na.rm=TRUE) * 1.05
+            ymin <- min(.gData$Hb, na.rm=TRUE) * 0.95
+          }
+          if("Lb" %in% what){
+            ymax <- max(.gData$Lb, na.rm=TRUE) * 1.05
+            ymin <- min(.gData$Lb, na.rm=TRUE) * 0.95
+          }
         }
         
         # Get kit colors and convert to dyes.
@@ -824,8 +855,11 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
             
           }
 
+          # Apply theme.
+          gp <- gp + eval(parse(text=val_theme))
+          
           # Plot settings.
-          gp <- gp + geom_point(aes_string(colour = "Dye"), alpha = val_alpha,
+          gp <- gp + geom_point(shape=val_shape, alpha = val_alpha,
                                 position = position_jitter(width = val_jitter))
           gp <- gp + scale_colour_manual(guide=FALSE, values=val_palette, drop=FALSE)
           gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales)
@@ -837,16 +871,28 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           if(!is.na(val_ymin) && !is.na(val_ymax)){
             val_y <- c(val_ymin, val_ymax)
           } else {
+            if(val_scales %in% c("fixed","free_x")){
+              # Keep Y fixed.
+              val_y <- c(ymin, ymax)
+            }
             val_y <- NULL
           }
           # Restrict x axis.
           if(!is.na(val_xmin) && !is.na(val_xmax)){
             val_x <- c(val_xmin, val_xmax)
           } else {
+            if(val_scales %in% c("fixed","free_x")){
+              # Keep Y fixed.
+              val_y <- c(ymin, ymax)
+            }
             val_x <- NULL
           }
           # Zoom in without dropping observations.
           gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
+          
+          if(debug){
+            print(paste("Plot zoomed to xlim:", val_x, "ylim:", val_y))
+          }
           
           # Remove titles, axis labels and legend.
           gp <- gp + labs(title = element_blank())
@@ -969,6 +1015,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotBalance_gui_xlabel_justv", envir=env, inherits = FALSE)){
         svalue(e4_vjust_spb) <- get(".strvalidator_plotBalance_gui_xlabel_justv", envir=env)
       }
+      if(exists(".strvalidator_plotBalance_gui_theme", envir=env, inherits = FALSE)){
+        svalue(f1_theme_drp) <- get(".strvalidator_plotBalance_gui_theme", envir=env)
+      }
       
       if(debug){
         print("Saved settings loaded!")
@@ -999,6 +1048,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       assign(x=".strvalidator_plotBalance_gui_xlabel_angle", value=svalue(e4_angle_spb), envir=env)
       assign(x=".strvalidator_plotBalance_gui_xlabel_justh", value=svalue(e4_hjust_spb), envir=env)
       assign(x=".strvalidator_plotBalance_gui_xlabel_justv", value=svalue(e4_vjust_spb), envir=env)
+      assign(x=".strvalidator_plotBalance_gui_theme", value=svalue(f1_theme_drp), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -1053,7 +1103,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotBalance_gui_xlabel_justv", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotBalance_gui_xlabel_justv", envir = env)
       }
-      
+      if(exists(".strvalidator_plotBalance_gui_theme", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotBalance_gui_theme", envir = env)
+      }
       
       if(debug){
         print("Settings cleared!")

@@ -1,8 +1,8 @@
-\name{calculatePrecision}
-\alias{calculatePrecision}
+\name{tablePrecision}
+\alias{tablePrecision}
 \title{Calculate precision}
 \usage{
-calculatePrecision(data, key = c("Marker", "Allele"), target = c("Size"),
+tablePrecision(data, key = c("Marker", "Allele"), target = c("Size"),
   debug = FALSE)
 }
 \arguments{
@@ -22,12 +22,14 @@ calculatePrecision(data, key = c("Marker", "Allele"), target = c("Size"),
 data.frame with results.
 }
 \description{
-\code{calculatePrecision} Calculates the precision.
+\code{tablePrecision} Calculates the precision.
 }
 \details{
 Calculates summary statistics for 'target' columns for each
 unique 'key' combination. For example the precision of
 determined size for alleles in multiple allelic ladders.
-Requires a 'slimmed' and 'filtered' data frame.
+Requires a 'slimmed' and 'filtered' data frame. For more
+details see \code{min}, \code{max}, \code{mean}, \code{sd},
+\code{quantile}.
 }
 

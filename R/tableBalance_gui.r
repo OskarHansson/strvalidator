@@ -4,26 +4,16 @@
 
 ################################################################################
 # CHANGE LOG
-# 18.07.2013: Check before overwrite object.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 10.06.2013: Fixed save GUI settings. New name sufix.
-# 06.06.2013: Added save GUI settings.
-# 04.06.2013: Fixed bug in 'missingCol'.
-# 29.05.2013: Disabled button and adding "processing..." after press.
-# 24.05.2013: Improved error message for missing columns.
-# 21.05.2013: Fixed name on save as.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: .result removed, added save as group.
-# 04.05.2013: First version.
+# 15.02.2014: First version.
 
 
-#' @title Table stutter
+#' @title Table balance
 #'
 #' @description
-#' \code{tableStutter_gui} is a GUI wrapper for the \code{tableStutter} function.
+#' \code{tableBalance_gui} is a GUI wrapper for the \code{tableBalance} function.
 #'
 #' @details
-#' Simplifies the use of the \code{tableStutter} function by providing a graphical 
+#' Simplifies the use of the \code{tableBalance} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames.
@@ -31,7 +21,7 @@
 #' @param debug logical indicating printing debug information.
 #' 
 
-tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Global variables.
   .gData <- NULL
@@ -42,7 +32,7 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   }
   
   # Main window.
-  w <- gwindow(title="Make stutter table", visible=FALSE)
+  w <- gwindow(title="Make balance table", visible=FALSE)
 
   # Handler for saving GUI state.
   addHandlerDestroy(w, handler = function (h, ...) {
@@ -84,7 +74,7 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     if(exists(val_obj, envir=env, inherits = FALSE)){
       
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Ratio", "Marker","Allele","Type")
+      requiredCol <- c("Marker","Hb", "Lb")
       
       if(!all(requiredCol %in% colnames(.gData))){
         
@@ -145,8 +135,8 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
   f1g1[2,1] <- glabel(text="Summarize by", container=f1g1)
   
-  f1g1[3,1] <- f1g1_scope_opt <- gradio(items=c("global","locus","stutter"),
-                              selected = 3,
+  f1g1[3,1] <- f1g1_scope_opt <- gradio(items=c("global","locus"),
+                              selected = 2,
                               horizontal = FALSE,
                               container = f1g1)
 
@@ -198,7 +188,7 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(run_btn) <- "Processing..."
       enabled(run_btn) <- FALSE
       
-      datanew <- tableStutter(data=val_data,
+      datanew <- tableBalance(data=val_data,
                    quant=val_ratio,
                    scope=val_scope)
       
@@ -237,8 +227,8 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".strvalidator_tableStutter_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_tableStutter_gui_savegui", envir=env)
+      if(exists(".strvalidator_tableBalance_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_tableBalance_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -250,11 +240,11 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists(".strvalidator_tableStutter_gui_quant", envir=env, inherits = FALSE)){
-        svalue(f1g1_quant_spb) <- get(".strvalidator_tableStutter_gui_quant", envir=env)
+      if(exists(".strvalidator_tableBalance_gui_quant", envir=env, inherits = FALSE)){
+        svalue(f1g1_quant_spb) <- get(".strvalidator_tableBalance_gui_quant", envir=env)
       }
-      if(exists(".strvalidator_tableStutter_gui_scope", envir=env, inherits = FALSE)){
-        svalue(f1g1_scope_opt) <- get(".strvalidator_tableStutter_gui_scope", envir=env)
+      if(exists(".strvalidator_tableBalance_gui_scope", envir=env, inherits = FALSE)){
+        svalue(f1g1_scope_opt) <- get(".strvalidator_tableBalance_gui_scope", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -268,20 +258,20 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(f1_savegui_chk)){
       
-      assign(x=".strvalidator_tableStutter_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x=".strvalidator_tableStutter_gui_quant", value=svalue(f1g1_quant_spb), envir=env)
-      assign(x=".strvalidator_tableStutter_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
+      assign(x=".strvalidator_tableBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_tableBalance_gui_quant", value=svalue(f1g1_quant_spb), envir=env)
+      assign(x=".strvalidator_tableBalance_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".strvalidator_tableStutter_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".strvalidator_tableStutter_gui_savegui", envir = env)
+      if(exists(".strvalidator_tableBalance_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableBalance_gui_savegui", envir = env)
       }
-      if(exists(".strvalidator_tableStutter_gui_quant", envir=env, inherits = FALSE)){
-        remove(".strvalidator_tableStutter_gui_quant", envir = env)
+      if(exists(".strvalidator_tableBalance_gui_quant", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableBalance_gui_quant", envir = env)
       }
-      if(exists(".strvalidator_tableStutter_gui_scope", envir=env, inherits = FALSE)){
-        remove(".strvalidator_tableStutter_gui_scope", envir = env)
+      if(exists(".strvalidator_tableBalance_gui_scope", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableBalance_gui_scope", envir = env)
       }
 
       if(debug){

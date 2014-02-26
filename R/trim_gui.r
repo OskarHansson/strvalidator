@@ -372,7 +372,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
       datanew <- trim(data=.gData, samples=sample_val, columns=column_val, 
                    word=word_val, ignoreCase=case_val, invertS=sample_opt_val, invertC=column_opt_val,
-                   rmNaCol=na_val, rmEmptyCol=empty_val, missing=na_txt_val)
+                   rmNaCol=na_val, rmEmptyCol=empty_val, missing=na_txt_val, debug=debug)
   
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

@@ -5,6 +5,9 @@
 
 ################################################################################
 # CHANGE LOG
+# 25.02.2014: Pixel info now update when textbox is changed.
+# 09.02.2014: Added info for size in pixel.
+# 09.02.2014: Removed unsupported unit 'px'.
 # 20.01.2014: First version.
 
 #' @title Save image
@@ -95,7 +98,7 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
                                              container = f1g1)
   
   f1g1[5,1] <- f1g1_load_chk <- gcheckbox(text="Load size from plot device",
-                                            checked=FALSE,
+                                            checked=TRUE,
                                             container=f1g1)
 
   f1g1[6,1] <- f1g1_get_btn <- gbutton(text="Get size", container=f1g1)
@@ -134,13 +137,10 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
                       container=f1g2,
                       anchor=c(-1 ,0))
   
-  f1g2[2,2] <- f1g2_unit_drp <- gdroplist(items=c("in", "cm", "px"),
+  f1g2[2,2] <- f1g2_unit_drp <- gdroplist(items=c("in", "cm"),
                                        selected=2,
                                        container=f1g2)
-  
-  # Get size of plot device.
-  f1g2size <- round(dev.size(svalue(f1g2_unit_drp)),2)
-  
+
   addHandlerChanged(f1g2_unit_drp, handler = function(h, ...) {
     
     # Read size from device.
@@ -150,18 +150,24 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
                     
   f1g2[3,1] <- glabel(text="Width:", container=f1g2, anchor=c(-1 ,0))
   
-  f1g2[3,2] <- f1g2_width_edt <- gedit(text=f1g2size[1],
+  f1g2[3,2] <- f1g2_width_edt <- gedit(text="",
                                        width=6,
                                        initial.msg="",
                                        container=f1g2)
   
+  f1g2[3,3] <- f1g2_width_lbl <- glabel(text=" NA pixels",
+                                        container=f1g2, anchor=c(-1 ,0))
+  
   f1g2[4,1] <- glabel(text="Height:", container=f1g2, anchor=c(-1 ,0))
   
-  f1g2[4,2] <- f1g2_height_edt <- gedit(text=f1g2size[2],
+  f1g2[4,2] <- f1g2_height_edt <- gedit(text="",
                                         width=6,
                                         initial.msg="",
                                         container=f1g2)
   
+  f1g2[4,3] <- f1g2_height_lbl <- glabel(text=" NA pixels",
+                                         container=f1g2, anchor=c(-1 ,0))
+
   f1g2[5,1] <- glabel(text="Resolution:", container=f1g2, anchor=c(-1 ,0))
   
   f1g2[5,2] <- f1g2_res_edt <- gedit(text="300",
@@ -176,6 +182,57 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
                                      initial.msg="",
                                      container=f1g2)
   
+  addHandlerKeystroke(f1g2_width_edt, handler = function(h, ...) {
+      
+    # Get values.    
+    val_unit <- svalue(f1g2_unit_drp)
+    val <- as.numeric(svalue(f1g2_width_edt))
+    
+    # Convert to pixel.
+    pixels <- .toPixel(unit=val_unit, val=val)
+
+    # Update label.
+    svalue(f1g2_width_lbl) <- paste(" ", pixels,"pixels")
+    
+  })
+
+  addHandlerKeystroke(f1g2_height_edt, handler = function(h, ...) {
+    
+    val_unit <- svalue(f1g2_unit_drp)
+    val <- as.numeric(svalue(f1g2_height_edt))
+    
+    # Convert to pixel.
+    pixels <- .toPixel(unit=val_unit, val=val)
+    
+    svalue(f1g2_height_lbl) <- paste(" ", pixels,"pixels")
+    
+  })
+
+  addHandlerChanged(f1g2_width_edt, handler = function(h, ...) {
+    
+    # Get values.    
+    val_unit <- svalue(f1g2_unit_drp)
+    val <- as.numeric(svalue(f1g2_width_edt))
+    
+    # Convert to pixel.
+    pixels <- .toPixel(unit=val_unit, val=val)
+    
+    # Update label.
+    svalue(f1g2_width_lbl) <- paste(" ", pixels,"pixels")
+    
+  })
+  
+  addHandlerChanged(f1g2_height_edt, handler = function(h, ...) {
+    
+    val_unit <- svalue(f1g2_unit_drp)
+    val <- as.numeric(svalue(f1g2_height_edt))
+    
+    # Convert to pixel.
+    pixels <- .toPixel(unit=val_unit, val=val)
+    
+    svalue(f1g2_height_lbl) <- paste(" ", pixels,"pixels")
+    
+  })
   
   # GRID 3 --------------------------------------------------------------------
   
@@ -374,15 +431,34 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   
   # INTERNAL FUNCTIONS ########################################################
   
+  .toPixel <- function(unit, val, dpi=72){
+    
+    # Convert to pixel.
+    if(unit == "cm"){
+      pixels <- val / (2.54 / dpi)
+    } else if(unit == "in"){
+      pixels <- val * dpi
+    } else {
+      pixels <- NA
+    }
+    
+    return(round(pixels,0))
+    
+  }
+  
   .readSize <- function() {
     
     # Get values.
     val_unit <- svalue(f1g2_unit_drp)
     val_size <- round(dev.size(val_unit),2)
+    val_px <- dev.size("px")
     
     # Update.
     svalue(f1g2_width_edt) <- val_size[1]
     svalue(f1g2_height_edt) <- val_size[2]
+    
+    svalue(f1g2_width_lbl) <- paste(" ", val_px[1],"pixels")
+    svalue(f1g2_height_lbl) <- paste(" ", val_px[2],"pixels")
     
   }
   

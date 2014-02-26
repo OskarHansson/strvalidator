@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 07.02.2014: Removed redundant handler for 'f1_column_drp'.
 # 30.11.2013: Fixed info when factors.
 # 27.09.2013: Added option to specify data type and warning for dropout dataset.
 # 26.09.2013: Fixed NA rows in resulting data frame.
@@ -148,13 +149,6 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   f1_min_lbl <- glabel(text=" Min:", container=f1)
   f1_max_lbl <- glabel(text=" Max:", container=f1)
   f1_na_chk <- gcheckbox(text="Exclude NA", checked=FALSE, container=f1)
-  
-  addHandlerChanged(f1_column_drp, handler = function (h, ...) {
-    
-    .refresh_info()
-    .refresh_options()
-    
-  } )
   
   addHandlerChanged(f1_na_chk, handler = function (h, ...) {
 

@@ -1,8 +1,8 @@
-\name{tableStutter_gui}
-\alias{tableStutter_gui}
-\title{Table stutter}
+\name{tableBalance_gui}
+\alias{tableBalance_gui}
+\title{Table balance}
 \usage{
-tableStutter_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
+tableBalance_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data
@@ -15,11 +15,11 @@ tableStutter_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
   information.}
 }
 \description{
-\code{tableStutter_gui} is a GUI wrapper for the
-\code{tableStutter} function.
+\code{tableBalance_gui} is a GUI wrapper for the
+\code{tableBalance} function.
 }
 \details{
-Simplifies the use of the \code{tableStutter} function by
+Simplifies the use of the \code{tableBalance} function by
 providing a graphical user interface to it.
 }
 

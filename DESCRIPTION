@@ -1,8 +1,8 @@
 Package: strvalidator
 Type: Package
 Title: Internal validation of forensic STR kits made easy with strvalidator.
-Version: 1.0.0
-Date: 2014-01-23
+Version: 1.1.0
+Date: 2014-02-26
 Author: Oskar Hansson
 Maintainer: Oskar Hansson <oskar.hansson@fhi.no>
 URL: https://github.com/OskarHansson/strvalidator
@@ -15,8 +15,9 @@ Imports:
   scales,
   gridExtra,
   grid
-Suggests: 
+Suggests:
   ResourceSelection,
+  gWidgetsRGtk2,
   testthat
 Description: strvalidator provide tools that make it easier to perform an internal
  validation of a forensic short tandem repeat (STR) kit for human 

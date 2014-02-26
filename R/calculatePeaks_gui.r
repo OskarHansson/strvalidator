@@ -252,8 +252,8 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(f1_savegui_chk)){
-      if(exists("strvalidator_calculatePeaks_gui_nool", envir=env, inherits = FALSE)){
-        svalue(f1_no_ol_chk) <- get("strvalidator_calculatePeaks_gui_nool", envir=env)
+      if(exists(".strvalidator_calculatePeaks_gui_nool", envir=env, inherits = FALSE)){
+        svalue(f1_no_ol_chk) <- get(".strvalidator_calculatePeaks_gui_nool", envir=env)
       }
       if(exists(".strvalidator_calculatePeaks_gui_labels", envir=env, inherits = FALSE)){
         svalue(f1_labels_edt) <- get(".strvalidator_calculatePeaks_gui_labels", envir=env)
@@ -277,7 +277,7 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     if(svalue(f1_savegui_chk)){
       
       assign(x=".strvalidator_calculatePeaks_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
-      assign(x="strvalidator_calculatePeaks_gui_nool", value=svalue(f1_no_ol_chk), envir=env)
+      assign(x=".strvalidator_calculatePeaks_gui_nool", value=svalue(f1_no_ol_chk), envir=env)
       assign(x=".strvalidator_calculatePeaks_gui_labels", value=svalue(f1_labels_edt), envir=env)
       assign(x=".strvalidator_calculatePeaks_gui_bins", value=svalue(f1_bins_edt), envir=env)
       assign(x=".strvalidator_calculatePeaks_gui_permarker", value=svalue(f1_per_marker_chk), envir=env)
@@ -287,8 +287,8 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_calculatePeaks_gui_savegui", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculatePeaks_gui_savegui", envir = env)
       }
-      if(exists("strvalidator_calculatePeaks_gui_nool", envir=env, inherits = FALSE)){
-        remove("strvalidator_calculatePeaks_gui_nool", envir = env)
+      if(exists(".strvalidator_calculatePeaks_gui_nool", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculatePeaks_gui_nool", envir = env)
       }
       if(exists(".strvalidator_calculatePeaks_gui_labels", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculatePeaks_gui_labels", envir = env)

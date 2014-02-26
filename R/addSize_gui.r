@@ -4,26 +4,16 @@
 
 ################################################################################
 # CHANGE LOG
-# 23.02.2014: Removed requirement for 'Sample.Name'.
-# 11.02.2014: Pass debug to 'addColor'.
-# 27.11.2013: Added parameter 'overwrite=TRUE'.
-# 18.09.2013: Updated to use 'addColor' insted of removed 'addDye'.
-# 18.07.2013: Check before overwrite object.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Improved error message for missing columns.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: .result removed, added save as group.
-# 27.04.2013: First version.
+# 11.02.2014: First version.
 
 
-#' @title Adds dye information
+#' @title Adds size information
 #'
 #' @description
-#' \code{addDye_gui} is a GUI wrapper for the \code{addDye} function.
+#' \code{addSize_gui} is a GUI wrapper for the \code{addSize} function.
 #'
 #' @details
-#' Simplifies the use of the \code{addDye} function by providing a graphical 
+#' Simplifies the use of the \code{addSize} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
@@ -31,20 +21,19 @@
 #' 
 #' @return data.frame in slim format.
 
-addDye_gui <- function(env=parent.frame(), debug=FALSE){
+addSize_gui <- function(env=parent.frame(), debug=FALSE){
   
   # Global variables.
-  .gData <- data.frame(No.Data=NA)
+  .gData <- NULL
   .gDataName <- NULL
   .gKit <- 1
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
-    print(head(.gData))
   }
   
   
-  w <- gwindow(title="Add dye to dataset", visible=FALSE)
+  w <- gwindow(title="Add size to dataset", visible=FALSE)
   
   gv <- ggroup(horizontal=FALSE,
                spacing=15,
@@ -79,7 +68,7 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     if(exists(val_obj, envir=env, inherits = FALSE)){
       
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Marker")
+      requiredCol <- c("Marker", "Allele")
       
       if(!all(requiredCol %in% colnames(.gData))){
         
@@ -106,7 +95,7 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
         svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
         .gKit <<- detectKit(.gData, index=TRUE)
         svalue(kit_drp, index=TRUE) <- .gKit
-        svalue(f2_save_edt) <- paste(.gDataName, "_dye", sep="")
+        svalue(f2_save_edt) <- paste(.gDataName, "_size", sep="")
         
         if(debug){
           print("Detected kit index")
@@ -154,7 +143,7 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     print("BUTTON")
   }  
   
-  add_btn <- gbutton(text="Add dye",
+  add_btn <- gbutton(text="Add size",
                       border=TRUE,
                       container=gv)
   
@@ -164,20 +153,24 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     val_kit <- svalue(kit_drp)
     val_data <- .gData
     val_name <- svalue(f2_save_edt)
+    val_data <- .gData
     
     if(debug){
-      print(".gData")
-      print(names(.gData))
+      print("val_data:")
+      print(str(val_data))
+      print(head(val_data))
       print("val_kit")
       print(val_kit)
     }
+    
+    # Get kit with size information.
+    val_size <- getKit(kit=val_kit, what="Size")
 
     # Change button.
     svalue(add_btn) <- "Processing..."
     enabled(add_btn) <- FALSE
     
-    datanew <- addColor(data=.gData, kit=val_kit, need="Dye",
-                        overwrite=TRUE, debug=debug)
+    datanew <- addSize(data=val_data, kit=val_size, debug=debug)
     
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)

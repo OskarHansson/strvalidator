@@ -1,10 +1,12 @@
 ################################################################################
 # TODO LIST
-# TODO: is it possible to fix the y-axis?
-# TODO: some "tablePrecision" function.
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG
+# 23.02.2014: Fixed column check for plots.
+# 06.02.2014: Implemented theme and colour.
+# 06.02.2014: Implemented new dot/box plot and plot all data (not only min/max)
 # 22.01.2014: Fixed bug, different y-axis max value for complex plots.
 # 20.01.2014: Implemented ggsave with workaround for complex plots.
 # 07.12.2013: First version.
@@ -82,7 +84,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       .gData <<- get(val_obj, envir=env)
       # Check if suitable for plot stutter...
       
-      requiredCol <- c("Marker")
+      requiredCol <- c("Marker", "Allele")
       
       if(!all(requiredCol %in% colnames(.gData))){
         
@@ -102,18 +104,43 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
       } else {
         
-        # Load or change components.
-        
-        # Suggest name.
-        svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
-        
-        # Detect kit.
-        kitIndex <- detectKit(.gData)
-        # Select in dropdown.
-        svalue(kit_drp, index=TRUE) <- kitIndex
-        
-        # Enable buttons.
-        enabled(plot_size_btn) <- TRUE
+        # Check for 'OL'
+        if(!"OL" %in% .gData$Allele){
+          
+          # Load or change components.
+          
+          # Suggest name.
+          svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
+          
+          # Detect kit.
+          kitIndex <- detectKit(.gData)
+          # Select in dropdown.
+          svalue(kit_drp, index=TRUE) <- kitIndex
+          
+          # Enable buttons.
+          enabled(f7_size_btn) <- TRUE
+          enabled(f7_height_btn) <- TRUE
+          enabled(f7_data_btn) <- TRUE
+          enabled(f8_size_btn) <- TRUE
+          enabled(f8_height_btn) <- TRUE
+          enabled(f8_data_btn) <- TRUE
+          
+        } else {
+          
+          message <- paste("'OL' allele detected!\n",
+                           "Please make sure that data is filtered.\n",
+                           sep="")
+          
+          gmessage(message, title="message",
+                   icon = "error",
+                   parent = w) 
+
+          # Reset components.
+          .gData <<- NULL
+          svalue(f5_save_edt) <- ""
+          svalue(dataset_drp, index=TRUE) <- 1
+          
+        }
         
       }
       
@@ -167,58 +194,239 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                               checked=FALSE,
                               container=f1)
   
+  f1_facet_chk <- gcheckbox(text="Plot per marker",
+                              checked=TRUE,
+                              container=f1)
+  
+  f1g2 <- glayout(container = f1)
+  f1g2[1,1] <- glabel(text="X axis:", anchor=c(-1 ,0), container=f1g2)
+  f1g2[1,2] <- f1_axis_opt <- gradio(items=c("Mean","Allele"),
+                                     selected = 2,
+                                     horizontal = TRUE,
+                                     container = f1g2)
+
+  f1g2[2,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
+  f1g2[2,2] <- f1_theme_drp <- gdroplist(items=c("theme_grey()","theme_bw()"),
+                                         selected=1,
+                                         container = f1g2)
+  
+  
   # FRAME 7 ###################################################################
   
-  f7 <- gframe(text = "Plot precision data",
+  f7 <- gframe(text = "Plot precision data as dotplot",
                horizontal=FALSE,
                container = gv) 
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_size_btn <- gbutton(text="Size",
+  grid7[1,1] <- f7_size_btn <- gbutton(text="Size",
                                            border=TRUE,
                                            container=grid7) 
   
-  grid7[1,2] <- plot_height_btn <- gbutton(text="Height",
+  grid7[1,2] <- f7_height_btn <- gbutton(text="Height",
                                          border=TRUE,
                                          container=grid7) 
 
-  grid7[1,3] <- plot_data_btn <- gbutton(text="Data point",
+  grid7[1,3] <- f7_data_btn <- gbutton(text="Data point",
                                          border=TRUE,
                                          container=grid7) 
 
-  addHandlerChanged(plot_size_btn, handler = function(h, ...) {
-    
-    enabled(plot_size_btn) <- FALSE
-    .plotPrecision(what="size")
-    enabled(plot_size_btn) <- TRUE
+  addHandlerChanged(f7_size_btn, handler = function(h, ...) {
+
+    # Check if suitable for plot.
+    requiredCol <- c("Marker", "Allele", "Size")
+  
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f7_size_btn) <- FALSE
+      .plot(what="Size", how="dotplot")
+      enabled(f7_size_btn) <- TRUE
+      
+    }
     
     # Change save button.
-    svalue(f5_save_btn) <- "Save"
+    svalue(f5_save_btn) <- "Save as object"
+    enabled(f5_save_btn) <- TRUE
+      
+  } )
+  
+  addHandlerChanged(f7_height_btn, handler = function(h, ...) {
+    
+    # Check if suitable for plot.
+    requiredCol <- c("Marker", "Allele", "Height")
+    
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f7_height_btn) <- FALSE
+      .plot(what="Height", how="dotplot")
+      enabled(f7_height_btn) <- TRUE
+      
+    }
+
+    # Change save button.
+    svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
     
   } )
   
-  addHandlerChanged(plot_height_btn, handler = function(h, ...) {
+  addHandlerChanged(f7_data_btn, handler = function(h, ...) {
     
-    enabled(plot_height_btn) <- FALSE
-    .plotPrecision(what="height")
-    enabled(plot_height_btn) <- TRUE
+    # Check if suitable for plot.
+    requiredCol <- c("Marker", "Allele", "Data.Point")
+    
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f7_data_btn) <- FALSE
+      .plot(what="Data.Point", how="dotplot")
+      enabled(f7_data_btn) <- TRUE
+      
+    }
     
     # Change save button.
-    svalue(f5_save_btn) <- "Save"
+    svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
     
   } )
   
-  addHandlerChanged(plot_data_btn, handler = function(h, ...) {
+  # FRAME 8 ###################################################################
+  
+  f8 <- gframe(text = "Plot precision data as boxplot",
+               horizontal=FALSE,
+               container = gv) 
+  
+  grid8 <- glayout(container = f8)
+  
+  grid8[1,1] <- f8_size_btn <- gbutton(text="Size",
+                                         border=TRUE,
+                                         container=grid8) 
+  
+  grid8[1,2] <- f8_height_btn <- gbutton(text="Height",
+                                           border=TRUE,
+                                           container=grid8) 
+  
+  grid8[1,3] <- f8_data_btn <- gbutton(text="Data point",
+                                         border=TRUE,
+                                         container=grid8) 
+  
+  addHandlerChanged(f8_size_btn, handler = function(h, ...) {
+
+    # Check if suitable for plot.
+    requiredCol <- c("Marker", "Allele", "Size")
     
-    enabled(plot_data_btn) <- FALSE
-    .plotPrecision(what="data")
-    enabled(plot_data_btn) <- TRUE
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f8_size_btn) <- FALSE
+      .plot(what="Size", how="boxplot")
+      enabled(f8_size_btn) <- TRUE
+      
+    }
+
+    # Change save button.
+    svalue(f5_save_btn) <- "Save as object"
+    enabled(f5_save_btn) <- TRUE
+    
+  } )
+  
+  addHandlerChanged(f8_height_btn, handler = function(h, ...) {
+
+    # Check if suitable for plot.
+    requiredCol <- c("Marker", "Allele", "Height")
+    
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f8_height_btn) <- FALSE
+      .plot(what="Height", how="boxplot")
+      enabled(f8_height_btn) <- TRUE
+    
+    }
     
     # Change save button.
-    svalue(f5_save_btn) <- "Save"
+    svalue(f5_save_btn) <- "Save as object"
+    enabled(f5_save_btn) <- TRUE
+    
+  } )
+  
+  addHandlerChanged(f8_data_btn, handler = function(h, ...) {
+    
+    # Check if suitable for plot.
+    requiredCol <- c("Marker", "Allele", "Data.Point")
+    
+    if(!all(requiredCol %in% colnames(.gData))){
+      
+      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      
+      message <- paste("Additional columns required:\n",
+                       paste(missingCol, collapse="\n"), sep="")
+      
+      gmessage(message, title="message",
+               icon = "error",
+               parent = w) 
+      
+    } else {
+      
+      enabled(f8_data_btn) <- FALSE
+      .plot(what="Data.Point", how="boxplot")
+      enabled(f8_data_btn) <- TRUE
+    
+    }
+    
+    # Change save button.
+    svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
     
   } )
@@ -287,6 +495,11 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                          by=0.01, value=0.60,
                                          container=grid2)
   
+  grid2[1,5] <- glabel(text="Colour:", container=grid2)
+  grid2[1,6] <- colour_drp <- gdroplist(items=c("white",palette()),
+                                    selected=2,
+                                    container = grid2)
+  
   # FRAME 3 ###################################################################
   
   e3 <- gexpandgroup(text="Axes",
@@ -341,7 +554,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # FUNCTIONS #################################################################
   
   
-  .plotPrecision <- function(what){
+  .plot <- function(what, how){
     
     # Get values.
     val_titles <- svalue(f1_titles_chk)
@@ -361,9 +574,17 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     val_scales <- svalue(scales_opt)
     val_kit <- svalue(kit_drp)
     val_data <- .gData
+    val_facet <- svalue(f1_facet_chk)
+    val_colour <- svalue(colour_drp)
+    val_axis <- svalue(f1_axis_opt)
+    val_theme <- svalue(f1_theme_drp)
     
     if(debug){
       print("ARGUMENTS:")
+      print("what")
+      print(what)
+      print("how")
+      print(how)
       print("val_title")
       print(val_title)
       print("val_xtitle")
@@ -388,19 +609,19 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       print(val_size)
       print("val_scales")
       print(val_scales)
-      print("str(val_data)")
-      print(str(val_data))
-      print("levels(val_data$Allele)")
-      print(levels(val_data$Allele))
-      print("levels(val_data$Marker)")
-      print(levels(val_data$Marker))
+      print("colour")
+      print(val_colour)
+      print("val_axis")
+      print(val_axis)
+      print("val_theme")
+      print(val_theme)
     }
     
     if(is.factor(val_data$Marker)){
       
     }
     
-    if (!is.na(val_data) && !is.null(val_data)){
+    if (!is.null(val_data) && !is.na(val_data)){
       
       if(debug){
         print("BEFORE PLOTTING:")
@@ -412,78 +633,74 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         print(levels(val_data$Marker))
       }
       
-      # Plotting alleles for observed stutters per marker.
-      if(what == "size"){
+      # Calculate mean and deviation ------------------------------------------
+      
+      what.mean <- paste(what, "Mean", sep=".")
+      
+      # Add new column.
+      val_data[[what.mean]] <- NA
+      val_data[[what]] <- as.numeric(val_data[[what]])
+      
+      # Get all markers.
+      marker <- unique(val_data$Marker)
+      
+      # Loop over all markers.
+      for(m in seq(along=marker)){
         
-        if(val_titles){
-          mainTitle <- val_title
-          xTitle <- val_xtitle
-          yTitle <- val_ytitle
-        } else {
-          mainTitle <- "Allele size range for allelic ladders"
-          xTitle <- "Average allele size in basepair (bp)"
-          yTitle <- "Deviation from mean (bp)"
+        # Select current marker.
+        selMarker <- val_data$Marker == marker[m]
+        
+        # Get unique alleles.
+        allele <- unique(val_data[selMarker, ]$Allele)
+        
+        # Loop over all alleles.        
+        for(a in seq(along=allele)){
+          
+          # Select current allele.
+          selAllele <- val_data$Allele == allele[a]
+          
+          # Combine selection.
+          selection <- selMarker & selAllele
+          
+          # Calculate mean and save in dataframe.
+          val_data[selection, ][[what.mean]] <- mean(val_data[selection, ][[what]], na.rm=TRUE) 
+          
         }
-
-        # Calculate deviation
-        #precision$Range<-precision$Size.Max-precision$Size.Min
-        neg <- val_data$Size.Min - val_data$Size.Mean
-        pos <- val_data$Size.Max - val_data$Size.Mean
-        val_data <- data.frame(Marker=rep(val_data$Marker, 2),
-                               Mean=val_data$Size.Mean,
-                               Value=c(neg, pos),
-                               Deviation=rep(c("Min","Max"), each=nrow(val_data)),
-                               stringsAsFactors=FALSE)
-        
-      } else if(what == "height"){
-        
-        if(val_titles){
-          mainTitle <- val_title
-          xTitle <- val_xtitle
-          yTitle <- val_ytitle
-        } else {
-          mainTitle <- "Allele height range for allelic ladders"
-          xTitle <- "Average allele height in relative fluorescent units (RFU)"
-          yTitle <- "Deviation from mean (RFU)"
-        }
-        
-        # Calculate deviation
-        neg <- val_data$Height.Min - val_data$Height.Mean
-        pos <- val_data$Height.Max - val_data$Height.Mean
-        val_data <- data.frame(Marker=rep(val_data$Marker, 2),
-                               Mean=val_data$Height.Mean,
-                               Value=c(neg, pos),
-                               Deviation=rep(c("Min","Max"), each=nrow(val_data)),
-                               stringsAsFactors=FALSE)
-        
-      } else if(what == "data"){
-        
-        if(val_titles){
-          mainTitle <- val_title
-          xTitle <- val_xtitle
-          yTitle <- val_ytitle
-        } else {
-          mainTitle <- "Allele data point range for allelic ladders"
-          xTitle <- "Average allele scan number in data points"
-          yTitle <- "Deviation from mean"
-        }
-        
-        # Calculate deviation
-        neg <- val_data$Data.Point.Min - val_data$Data.Point.Mean
-        pos <- val_data$Data.Point.Max - val_data$Data.Point.Mean
-        val_data <- data.frame(Marker=rep(val_data$Marker, 2),
-                               Mean=val_data$Data.Point.Mean,
-                               Value=c(neg, pos),
-                               Deviation=rep(c("Min","Max"), each=nrow(val_data)),
-                               stringsAsFactors=FALSE)
-        
       }
       
-      # Create plot.
-      gp <- ggplot(val_data, aes_string(x="Mean", y="Value", color="Deviation"),
-                   shape=val_shape, alpha=val_alpha)
-      gp <- gp + geom_point()
-      gp <- gp + facet_wrap(~Marker)
+      # Calculate deviation.
+      dev <- val_data[[what]] - val_data[[what.mean]]
+      val_data <- data.frame(Marker=val_data$Marker,
+                             Allele=val_data$Allele,
+                             Mean=val_data[[what.mean]],
+                             Deviation=dev,
+                             stringsAsFactors=FALSE)
+      
+      # Make sorted allele factors (use low values for X/Y).
+      numericAlleles <- unique(val_data$Allele)
+      numericAlleles <- gsub("X", "0.0001", numericAlleles, ignore.case = TRUE)
+      numericAlleles <- gsub("Y", "0.0002", numericAlleles, ignore.case = TRUE)
+      orderedAlleles <- order(as.numeric(numericAlleles))
+      val_data$Allele <- factor(val_data$Allele,levels=unique(val_data$Allele)[orderedAlleles])
+      
+      # TODO: NB! although plotting min/max values are very tidy,
+      #       it may not be very informative. Include as an option?
+      #         # Calculate deviation
+      #         neg <- val_data$Size.Min - val_data$Size.Mean
+      #         pos <- val_data$Size.Max - val_data$Size.Mean
+      #         val_data <- data.frame(Marker=rep(val_data$Marker, 2),
+      #                                Mean=val_data$Size.Mean,
+      #                                Value=c(neg, pos),
+      #                                Deviation=rep(c("Min","Max"), each=nrow(val_data)),
+      #                                stringsAsFactors=FALSE)
+      
+      if(debug){
+        print("val_data after calculating deviation:")
+        print(str(val_data))
+        print(head(val_data))
+      }
+      
+      # End calculate mean and deviation --------------------------------------
       
       # Call functions.
       # Add color information.
@@ -498,21 +715,128 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                              kit=val_kit,
                              addMissingLevels = TRUE)
       
-      # Check if 'simple' or 'complex' plotting:
-      # Get Marker and Dye column.
-      markerDye <- val_data[c("Marker","Dye")]
-      # Extract unique elements.
-      uniqueMarkerDye <- markerDye[!duplicated(markerDye),]
-      # Calculate number of unique columns per dye.
-      val_ncol <- unique(table(uniqueMarkerDye$Dye))
       
-      # Plot settings.
-      # gp <- gp + geom_point(shape=val_shape, alpha=val_alpha) 
-      gp <- gp + facet_grid("Dye ~ Marker")
-      # NB! 'facet_wrap' does not seem to support strings.
-      #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-      gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol=val_ncol,
-                            drop=FALSE, scales=val_scales)
+      if(debug){
+        print("AFTER SORT MARKERS:")
+        print("str(val_data)")
+        print(str(val_data))
+        print("levels(val_data$Allele)")
+        print(levels(val_data$Allele))
+        print("levels(val_data$Marker)")
+        print(levels(val_data$Marker))
+      }
+      
+      # Create titles..
+      if(val_titles){
+        mainTitle <- val_title
+        xTitle <- val_xtitle
+        yTitle <- val_ytitle
+      } else {
+        
+        if(what == "Size"){
+          
+          mainTitle <- "Allele size range for allelic ladders"
+
+          yTitle <- "Deviation from mean (bp)"
+          
+          if(val_axis == "Mean"){
+            xTitle <- "Mean size in basepair (bp)"
+          } else if(val_axis == "Allele"){
+            xTitle <- "Allele"
+          } else {
+            warning(paste("val_axis=", val_axis, "not implemented!"))
+          }
+          
+        } else if(what == "Height"){
+          
+          mainTitle <- "Allele height range for allelic ladders"
+          
+          yTitle <- "Deviation from mean (RFU)"
+          
+          if(val_axis == "Mean"){
+            xTitle <- "Mean height in relative fluorescent units (RFU)"
+          } else if(val_axis == "Allele"){
+            xTitle <- "Allele"
+          } else {
+            warning(paste("val_axis=", val_axis, "not implemented!"))
+          }
+          
+        } else if(what == "Data.Point"){
+          
+          mainTitle <- "Allele data point range for allelic ladders"
+          
+          yTitle <- "Deviation from mean"
+          
+          if(val_axis == "Mean"){
+            xTitle <- "Mean scan number in data points"
+          } else if(val_axis == "Allele"){
+            xTitle <- "Allele"
+          } else {
+            warning(paste("val_axis=", val_axis, "not implemented!"))
+          }
+          
+        } else {
+          
+          warning(paste("what=", what, "not implemented!")) 
+          
+        }
+        
+      }
+
+      # TODO: NB! although plotting min/max values are very tidy,
+      #       it may not be very informative. Include as an option?
+#       # Create plot.
+#       gp <- ggplot(val_data, aes_string(x="Mean", y="Value", color="Deviation"),
+#                    shape=val_shape, alpha=val_alpha)
+#       gp <- gp + geom_point()
+      
+      # Create plot.
+      if(how == "dotplot"){
+        
+        # Create dotplot.
+        gp <- ggplot(val_data)
+        gp <- gp + geom_point(aes_string(x=val_axis, y="Deviation"),
+                              alpha=val_alpha, shape=val_shape, colour=val_colour)
+        # gp <- gp + facet_wrap(~Marker) # TODO: is this needed?
+        
+      } else if(how == "boxplot"){
+        
+        # Create boxplot (per allele).
+        gp <- ggplot(val_data)
+        gp <- gp + geom_boxplot( aes_string(x=val_axis, y="Deviation"),
+                                 alpha=val_alpha, shape=val_shape, fill=val_colour)
+        
+      } else {
+        
+        warning(paste("how=", how, "not implemented!")) 
+        
+      }
+      
+      # Apply theme.
+      gp <- gp + eval(parse(text=val_theme))
+      
+      # Default is simple plot (length(val_ncol)==1).
+      val_ncol <- 0
+      
+      # Facet plot.
+      if(val_facet){
+
+        # Check if 'simple' or 'complex' plotting:
+        # Get Marker and Dye column.
+        markerDye <- val_data[c("Marker","Dye")]
+        # Extract unique elements.
+        uniqueMarkerDye <- markerDye[!duplicated(markerDye),]
+        # Calculate number of unique columns per dye.
+        val_ncol <- unique(table(uniqueMarkerDye$Dye))
+        
+        # Facet plot.        
+        gp <- gp + facet_grid("Dye ~ Marker")
+        # NB! 'facet_wrap' does not seem to support strings.
+        #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
+        gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol=val_ncol,
+                              drop=FALSE, scales=val_scales)
+        
+      }
       
       # Restrict y axis.
       if(!is.na(val_ymin) && !is.na(val_ymax)){
@@ -562,13 +886,20 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                       paste(val_ncol, collapse=", ")))
         }
         
+        # With guide:
         # Extract the legend from the 'simple' plot.
-        guide <- gtable::gtable_filter(ggplotGrob(gp), pattern="guide")
+        #guide <- gtable::gtable_filter(ggplotGrob(gp), pattern="guide")
         
         # Get y max/min to be able to use same scale across plots.
-        yMax <- max(val_data$Value, na.rm=TRUE)
-        yMin <- min(val_data$Value, na.rm=TRUE)
+        yMax <- max(val_data$Deviation, na.rm=TRUE)
+        yMin <- min(val_data$Deviation, na.rm=TRUE)
         
+        if(debug){
+          print("yMax/yMin:")
+          print(yMax)
+          print(yMin)
+        }
+      
         # Get kit colors and convert to dyes.
         dyes <- unique(getKit(val_kit, what="Color")$Color)
         dyes <- addColor(dyes, have="Color", need="Dye")
@@ -578,35 +909,68 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         noRows <- length(dyes) + 2
         
         # Create table object.
+        # With guide:
         # Note: width(1.5 for y-title, and the rest for plots + guides)
         #       height(1.5 for plot title, equal for each plot, and 1.5 for x-title)
+#         g <- gtable::gtable(widths=grid::unit.c(grid::unit(1.5, "lines"),
+#                                                 grid::unit(1, "null"),
+#                                                 sum(guide$widths)),
+#                             heights = grid::unit(c(1.5,rep(1,noDyes),1.5),
+#                                                  c("line", rep("null", noDyes), "line")))
+        
+        # Without guide:
+        # Note: width(1.5 for y-title, and the rest for plots + margin)
+        #       height(1.5 for plot title, equal for each plot, and 1.5 for x-title)
         g <- gtable::gtable(widths=grid::unit.c(grid::unit(1.5, "lines"),
-                                                grid::unit(1, "null"),
-                                                sum(guide$widths)),
+                                                grid::unit(1, "null"),unit(1.5, "lines")),
                             heights = grid::unit(c(1.5,rep(1,noDyes),1.5),
                                                  c("line", rep("null", noDyes), "line")))
-        
         # Add titles.
         g <- gtable::gtable_add_grob(g, grid::textGrob(mainTitle), t=1,b=1,l=2,r=2)
         g <- gtable::gtable_add_grob(g, grid::textGrob(xTitle), t=noRows ,b=noRows ,l=2,r=2)
         g <- gtable::gtable_add_grob(g, grid::textGrob(yTitle, rot=90), t=1,b=noRows ,l=1,r=1)
         
+        # With guide:
         # Add the legend to the table object.
-        g <- gtable::gtable_add_grob(g,guide , t=1,b=noRows,l=3,r=3)
+        #g <- gtable::gtable_add_grob(g,guide , t=1,b=noRows,l=3,r=3)
       
+        if(debug){
+          print("Complex plot area created. Looping over dyes.")
+        }
+        
         # Loop over all dyes.
         for(d in seq(along=dyes)){
           
           # Create a plot for the current subset.
+          if(how == "dotplot"){
 
-          # Create a plot for the current subset.
-          gp <- ggplot(subset(val_data, val_data$Dye == dyes[d]), 
-                       aes_string(x = "Mean", y="Value", color="Deviation"),
-                       alpha = val_alpha) 
-          gp <- gp + geom_point()
+            # Create a plot for the current subset.
+            gp <- ggplot(subset(val_data, val_data$Dye == dyes[d]))
+            gp <- gp + geom_point(aes_string(x = val_axis, y = "Deviation"),
+                                  alpha = val_alpha, shape=val_shape, colour=val_colour)
             
+          } else if(how == "boxplot"){
+            
+            # Create a plot for the current subset.
+            gp <- ggplot(subset(val_data, val_data$Dye == dyes[d])) 
+            gp <- gp + geom_boxplot(aes_string(x = val_axis, y = "Deviation"),
+                                    alpha = val_alpha, shape=val_shape, fill=val_colour)
+            
+          } else {
+            
+            warning(paste("how=", how, "not implemented!")) 
+            
+          }
+          
+          if(debug){
+            print(paste("Complex plot base pane", d, "created."))
+          }
+          
           # Plot settings.
           gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales)
+          
+          # Apply theme.
+          gp <- gp + eval(parse(text=val_theme))
           
           # Set margin around each plot. Note: top, right, bottom, left.
           gp <- gp + theme(plot.margin = grid::unit(c(0.25, 0, 0, 0), "lines"))
@@ -630,7 +994,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           }
           # Zoom in without dropping observations.
           gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
-          
+
           # Remove titles, axis labels and legend.
           gp <- gp + labs(title = element_blank())
           gp <- gp + theme(axis.title.x = element_blank())
@@ -725,6 +1089,9 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotPrecision_gui_points_alpha", envir=env, inherits = FALSE)){
         svalue(alpha_spb) <- get(".strvalidator_plotPrecision_gui_points_alpha", envir=env)
       }
+      if(exists(".strvalidator_plotPrecision_gui_points_colour", envir=env, inherits = FALSE)){
+        svalue(colour_drp) <- get(".strvalidator_plotPrecision_gui_points_colour", envir=env)
+      }
       if(exists(".strvalidator_plotPrecision_gui_axes_y_min", envir=env, inherits = FALSE)){
         svalue(y_min_txt) <- get(".strvalidator_plotPrecision_gui_axes_y_min", envir=env)
       }
@@ -752,6 +1119,12 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotPrecision_gui_xlabel_justv", envir=env, inherits = FALSE)){
         svalue(vjust_spb) <- get(".strvalidator_plotPrecision_gui_xlabel_justv", envir=env)
       }
+      if(exists(".strvalidator_plotPrecision_gui_facet", envir=env, inherits = FALSE)){
+        svalue(f1_facet_chk) <- get(".strvalidator_plotPrecision_gui_facet", envir=env)
+      }
+      if(exists(".strvalidator_plotPrecision_gui_theme", envir=env, inherits = FALSE)){
+        svalue(f1_theme_drp) <- get(".strvalidator_plotPrecision_gui_theme", envir=env)
+      }
       
       if(debug){
         print("Saved settings loaded!")
@@ -772,6 +1145,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       assign(x=".strvalidator_plotPrecision_gui_y_title", value=svalue(y_title_edt), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_points_shape", value=svalue(shape_spb), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_points_alpha", value=svalue(alpha_spb), envir=env)
+      assign(x=".strvalidator_plotPrecision_gui_points_colour", value=svalue(colour_drp), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_axes_y_min", value=svalue(y_min_txt), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_axes_y_max", value=svalue(y_max_txt), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_axes_x_min", value=svalue(x_min_txt), envir=env)
@@ -781,6 +1155,8 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       assign(x=".strvalidator_plotPrecision_gui_xlabel_angle", value=svalue(angle_spb), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_xlabel_justh", value=svalue(hjust_spb), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_xlabel_justv", value=svalue(vjust_spb), envir=env)
+      assign(x=".strvalidator_plotPrecision_gui_facet", value=svalue(f1_facet_chk), envir=env)
+      assign(x=".strvalidator_plotPrecision_gui_theme", value=svalue(f1_theme_drp), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -804,6 +1180,9 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }
       if(exists(".strvalidator_plotPrecision_gui_points_alpha", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotPrecision_gui_points_alpha", envir = env)
+      }
+      if(exists(".strvalidator_plotPrecision_gui_points_colour", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotPrecision_gui_points_colour", envir = env)
       }
       if(exists(".strvalidator_plotPrecision_gui_axes_y_min", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotPrecision_gui_axes_y_min", envir = env)
@@ -832,7 +1211,12 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotPrecision_gui_xlabel_justv", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotPrecision_gui_xlabel_justv", envir = env)
       }
-      
+      if(exists(".strvalidator_plotPrecision_gui_facet", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotPrecision_gui_facet", envir = env)
+      }
+      if(exists(".strvalidator_plotPrecision_gui_theme", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotPrecision_gui_theme", envir = env)
+      }
       
       if(debug){
         print("Settings cleared!")

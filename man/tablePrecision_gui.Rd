@@ -1,9 +1,8 @@
-\name{calculatePrecision_gui}
-\alias{calculatePrecision_gui}
+\name{tablePrecision_gui}
+\alias{tablePrecision_gui}
 \title{Calculate Precision}
 \usage{
-calculatePrecision_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE)
+tablePrecision_gui(env = parent.frame(), savegui = NULL, debug = FALSE)
 }
 \arguments{
   \item{env}{environment in wich to search for data frames
@@ -19,7 +18,7 @@ calculatePrecision_gui(env = parent.frame(), savegui = NULL,
 data.frame
 }
 \description{
-\code{calculatePrecision_gui} is a GUI wrapper for the
+\code{tablePrecision_gui} is a GUI wrapper for the
 \code{calculatePrecision} function.
 }
 \details{

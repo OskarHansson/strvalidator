@@ -4,18 +4,21 @@
 
 ################################################################################
 # CHANGE LOG
+# 06.02.2014: Fixed bug when only one column in 'key'.
+# 06.02.2014: Changed name calculatePrecision -> tablePrecision
 # 15.12.2013: Fixed multiple targets.
 # 07.12.2013: First version.
 
 #' @title Calculate precision
 #'
 #' @description
-#' \code{calculatePrecision} Calculates the precision.
+#' \code{tablePrecision} Calculates the precision.
 #'
 #' @details Calculates summary statistics for 'target' columns for each unique
 #' 'key' combination. For example the precision of determined size for alleles
 #' in multiple allelic ladders.
 #' Requires a 'slimmed' and 'filtered' data frame.
+#' For more details see \code{min}, \code{max}, \code{mean}, \code{sd}, \code{quantile}.
 #'   
 #' @param data Data frame containing at least columns defined in 'key' and 'target'.
 #' @param key vector containing column names to create keys from.
@@ -25,10 +28,8 @@
 #' @return data.frame with results.
 #' 
 
-calculatePrecision <- function(data, 
-                               key=c("Marker","Allele"),
-                               target=c("Size"),
-                               debug=FALSE){
+tablePrecision <- function(data, key=c("Marker","Allele"), target=c("Size"),
+                           debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -81,7 +82,7 @@ calculatePrecision <- function(data,
   # PREPARE -------------------------------------------------------------------
   
   # Find all key combinations.
-  keyComb <- data[!duplicated(data[,key]), key]
+  keyComb <- as.data.frame(data[!duplicated(data[,key]), key])
   
   # Create new data frame.
   statistics <- c("Min", "Max", "Mean", "n", "Sd")

@@ -2,7 +2,8 @@
 \alias{guessProfile}
 \title{Guess Profile}
 \usage{
-guessProfile(data, ratio = 0.6, height = 50, na.rm = FALSE)
+guessProfile(data, ratio = 0.6, height = 50, na.rm = FALSE,
+  ol.rm = TRUE, debug = FALSE)
 }
 \arguments{
   \item{data}{a data frame containing at least
@@ -15,6 +16,12 @@ guessProfile(data, ratio = 0.6, height = 50, na.rm = FALSE)
 
   \item{na.rm}{logical indicating if rows with no peak
   should be discarded.}
+
+  \item{ol.rm}{logical indicating if off-ladder alleles
+  should be discarded.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
 }
 \value{
 data.frame 'data' with genotype rows only.

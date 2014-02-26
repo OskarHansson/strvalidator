@@ -14,6 +14,10 @@
 
 ################################################################################
 # CHANGE LOG
+# 15.02.2014: Added 'Summarize' balance data button in 'Balance' tab.
+# 11.02.2014: Added 'Add Size' button in edit tab.
+# 09.02.2014: Added buttons for plotting distributions in 'Result' tab.
+# 06.02.2014: Added 'Summarize' precision data button in 'Precision' tab.
 # 13.01.2014: Fixed bug not updating ws when empty, last df shows after removed.
 # 11.01.2014: Added buttons for analysis of peaks in 'Result' tab.
 # 07.12.2013: Added buttons for analysis of precision in new 'Precision' tab.
@@ -722,7 +726,7 @@ strvalidator <- function(debug=FALSE){
   
   addHandlerChanged(edit_guess_btn, handler = function(h, ...) {
     
-    guessProfile_gui(env=.strvalidator_env, savegui=.save_gui)
+    guessProfile_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
 
@@ -756,17 +760,34 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_addMarker_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addMarker_gui(env=.strvalidator_env, debug=debug)
+    addMarker_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+  
+  # ADD SIZE ------------------------------------------------------------------
+  
+  edit_grid[9,1] <- edit_addSize_btn <- gbutton(text="Add Size",
+                                                  border=TRUE,
+                                                  container = edit_grid) 
+  
+  edit_grid[9,2] <- glabel(text="Add approximate size to alleles in a dataset.",
+                           container=edit_grid,
+                           anchor=c(-1 ,0))
+  
+  addHandlerChanged(edit_addSize_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    addSize_gui(env=.strvalidator_env, debug=debug)
     
   } )
   
   # ADD DATA -------------------------------------------------------------------
   
-  edit_grid[9,1] <- edit_addData_btn <- gbutton(text="Add Data",
+  edit_grid[10,1] <- edit_addData_btn <- gbutton(text="Add Data",
                                                border=TRUE,
                                                container = edit_grid) 
   
-  edit_grid[9,2] <- glabel(text="Add new information to a dataset.",
+  edit_grid[10,2] <- glabel(text="Add new information to a dataset.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
@@ -779,11 +800,11 @@ strvalidator <- function(debug=FALSE){
 
   # CHECK SUBSET --------------------------------------------------------------
   
-  edit_grid[10,1] <- edit_check_btn <- gbutton(text="Check",
+  edit_grid[11,1] <- edit_check_btn <- gbutton(text="Check",
                                                border=TRUE,
                                                container = edit_grid) 
   
-  edit_grid[10,2] <- glabel(text="Check the subsetting of a dataset.",
+  edit_grid[11,2] <- glabel(text="Check the subsetting of a dataset.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
@@ -796,11 +817,11 @@ strvalidator <- function(debug=FALSE){
 
   # CONCATENATE --------------------------------------------------------------
   
-  edit_grid[11,1] <- edit_conc_btn <- gbutton(text="Concatenate",
+  edit_grid[12,1] <- edit_conc_btn <- gbutton(text="Concatenate",
                                               border=TRUE,
                                               container = edit_grid) 
   
-  edit_grid[11,2] <- glabel(text="Concatenate two datasets.",
+  edit_grid[12,2] <- glabel(text="Concatenate two datasets.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
@@ -813,11 +834,11 @@ strvalidator <- function(debug=FALSE){
   
   # CALCULATE HETEROZYGOUS ----------------------------------------------------
   
-  edit_grid[12,1] <- edit_het_btn <- gbutton(text="Heterozygous",
+  edit_grid[13,1] <- edit_het_btn <- gbutton(text="Heterozygous",
                                            border=TRUE,
                                            container = edit_grid) 
   
-  edit_grid[12,2] <- glabel(text="Indicate heterozygous loci for a reference dataset.",
+  edit_grid[13,2] <- glabel(text="Indicate heterozygous loci for a reference dataset.",
                             container=edit_grid,
                             anchor=c(-1 ,0))
   
@@ -830,18 +851,18 @@ strvalidator <- function(debug=FALSE){
 
   # CALCULATE H ---------------------------------------------------------------
   
-  edit_grid[13,1] <- edit_h_btn <- gbutton(text="Calculate H",
+  edit_grid[14,1] <- edit_h_btn <- gbutton(text="Calculate H",
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[13,2] <- glabel(text="Calculate the average peak height per sample.",
+  edit_grid[14,2] <- glabel(text="Calculate the average peak height per sample.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
   addHandlerChanged(edit_h_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateH_gui(env=.strvalidator_env, debug=debug)
+    calculateH_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
   
@@ -911,7 +932,7 @@ strvalidator <- function(debug=FALSE){
                                                         border=TRUE,
                                                         container = stutter_grid) 
   
-  stutter_grid[5,2] <- glabel(text="Summarize stutterdata in a table.",
+  stutter_grid[5,2] <- glabel(text="Summarize stutter data in a table.",
                               container=stutter_grid)
 
   addHandlerChanged(stutter_table_btn, handler = function(h, ...) {
@@ -988,9 +1009,24 @@ strvalidator <- function(debug=FALSE){
     
   } )
   
+  # SUMMARY TABLE -------------------------------------------------------------
   
-  # SUMMARY -------------------------------------------------------------------
+  balance_g2[3,1] <- balance_table_btn <- gbutton(text="Summarize",
+                                                    border=TRUE,
+                                                    container = balance_g2) 
   
+  balance_g2[3,2] <- glabel(text="Summarize balance data in a table.",
+                              container=balance_g2)
+  
+  addHandlerChanged(balance_table_btn, handler = function(h, ...) {
+    
+    val_save <- svalue(file_loaded_savegui_chk)
+    
+    # Open GUI.
+    tableBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+
 # TODO: IMPLEMENT IN NEXT VERSION!  
 #   # CAPILLARY BALANCE =========================================================
 # 
@@ -1231,6 +1267,30 @@ strvalidator <- function(debug=FALSE){
     plotPeaks_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
+
+  
+  # PEAKS =====================================================================
+  
+  result_f3 <- gframe(text = "Distributions",
+                      horizontal=FALSE, container = result_tab) 
+  
+  result_g3 <- glayout(container = result_f3)
+  
+  # PLOT PEAKS ----------------------------------------------------------------
+  
+  result_g3[1,1] <- result_g3_plot_btn <- gbutton(text="Plot",
+                                                  border=TRUE,
+                                                  container = result_g3) 
+  
+  result_g3[1,2] <- glabel(text="Plot distributions for analysed data",
+                           container=result_g3)
+  
+  addHandlerChanged(result_g3_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotDistribution_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
   
   # PRECISION  ################################################################
   
@@ -1255,31 +1315,13 @@ strvalidator <- function(debug=FALSE){
     
   } )
   
-  # CALCULATE -----------------------------------------------------------------
-  
-  precision_grid[2,1] <- precision_calculate_btn <- gbutton(text="Calculate",
-                                                      border=TRUE,
-                                                      container = precision_grid) 
-  
-  precision_grid[2,2] <- glabel(text="Calculate precision for a dataset.",
-                             container=precision_grid,
-                             anchor=c(-1 ,0))
-  
-  
-  addHandlerChanged(precision_calculate_btn, handler = function(h, ...) {
-    
-    # Open GUI.
-    calculatePrecision_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
-    
-  } )
-  
   # PLOT RESULT TYPE ----------------------------------------------------------
   
-  precision_grid[3,1] <- precision_plot_btn <- gbutton(text="Plot",
+  precision_grid[2,1] <- precision_plot_btn <- gbutton(text="Plot",
                                                  border=TRUE,
                                                  container = precision_grid) 
   
-  precision_grid[3,2] <- glabel(text="Create plots for analysed data",
+  precision_grid[2,2] <- glabel(text="Create plots for analysed data",
                              container=precision_grid)
   
   addHandlerChanged(precision_plot_btn, handler = function(h, ...) {
@@ -1289,7 +1331,24 @@ strvalidator <- function(debug=FALSE){
     
   } )
   
+  # SUMMARY TABLE -------------------------------------------------------------
   
+  precision_grid[3,1] <- precision_table_btn <- gbutton(text="Summarize",
+                                                        border=TRUE,
+                                                        container = precision_grid) 
+  
+  precision_grid[3,2] <- glabel(text="Summarize precision data in a table.",
+                                container=precision_grid,
+                                anchor=c(-1 ,0))
+  
+  
+  addHandlerChanged(precision_table_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    tablePrecision_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+
   
 # MAIN EVENT HANDLERS #########################################################
   addHandlerChanged(nb, handler = function (h, ...) {

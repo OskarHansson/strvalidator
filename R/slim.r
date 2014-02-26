@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 23.01.2014: Fixed bug when only one column in 'fix'.
 # 13.01.2014: Completely re-written for improved performance.
 # <13.01.2014: Renamed parameters (slim.col -> stack / fix.col -> fix (as earlier)
 # <13.01.2014: Fixed returned factor levels. Added as.matrix to return value.
@@ -75,7 +76,8 @@ slim <- function(data, fix=NULL, stack=NULL,
   }
   
   # Get fixed data.
-  fixedData <- data[,fixedIndex]
+  fixedData <- as.data.frame(data[,fixedIndex])
+  names(fixedData) <- fix
   
   # Make a list of matrixes for columns to stack.
   listStack <- list()
@@ -127,7 +129,7 @@ slim <- function(data, fix=NULL, stack=NULL,
     # Compare lists.
     if(!identical(listRep[i], listRep[1])){
 
-      # Concert mismatch to vectors.
+      # Convert mismatch to vectors.
       testA <- unlist(listRep[1])
       testB <- unlist(listRep[i])
       
@@ -139,7 +141,7 @@ slim <- function(data, fix=NULL, stack=NULL,
           
           stop(paste("Different repeat patterns detected for stacked columns!\n",
                      "Caused by: ",
-                     paste(paste(names(fixedData),":",fixedData[e,], sep=""),
+                     paste(paste(names(fixedData), ":", fixedData[e,], sep=""),
                            collapse=", ") ,"\n",
                      "Please fix and try again!"), sep="")
 
@@ -153,7 +155,7 @@ slim <- function(data, fix=NULL, stack=NULL,
   # Loop over columns in fixed data.
   fixedDataExt <- list()
   for(k in seq(along=fix)){
-    
+
     # Repeat each 'row' to fit the stacked data.
     fixedDataExt[k] <- list(rep(fixedData[,k], times=unlist(listRep[1])))
     

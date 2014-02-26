@@ -1,3 +1,57 @@
+Version 1.1.0
+------------------------------------------------------------------------------
+* NB! Version 1.1.0 include an important bug fix for estimating a prediction
+range for the stochastic threshold (see bug fixes in 'modelDropout').
+* Updated for compatibility with 'testthat' version 8.
+* Kit definition file 'kit.txt'.
+    - Added support for 'PowerPlex ESX 16'.
+    - Added support for 'Investigator ESSplex Plus'.
+    - Fixed errors in 'virtual alleles' for 'Investigator ESSplex SE Plus Kit'
+      D2S1338 14 (1->0), D2S441 11.3 (0->1), FGA 30.2 (1->0), FGA 46.2 (0->1).
+* New functions for process control (plotting distributions).
+* Added package 'gWidgetsRGtk2' in suggestests.
+* Numerous bug fixes and improvements made to the following functions.
+  The most significant changes are listed below:
+  addDye_gui
+    - 'Sample.Name' column not required in dataset (only 'Marker' is required).
+  calculateBalance/calculateBalance_gui
+    - Removed 'perSample' parameter. Use 'tableBalance' for summary statistics.
+  calculateH/calculateH_gui
+    - New option to add directly to dataframe.
+    - New option to replace NA's.
+  ggsave_gui
+    - Removed unsupported unit 'px', but added info for size in pixels.
+  guessProfile/guessProfile_gui
+    - Option to remove off-ladder ('OL') alleles.
+  modelDropout_gui
+    - Removed erroneously implemented prediction interval for T.
+    - Implemented conserative T estimate.
+  plotBalance_gui
+    - Fixed plot bugs.
+    - Implemented theme.
+  plotDropout_gui
+    - Fixed NA in title for ecdp.
+    - Fixed heatmap by 'H' loosing samples with equal 'H'.
+  plotPrecision_gui
+    - Implemented new dot/box plot and plot all data (insted of min/max)
+    - Implemented theme and colour.
+  plotStutter_gui
+    - Fixed plot bugs.
+    - Implemented theme.
+  slim/slim_gui
+    - Fixed minor bug when only one column in 'fix' (issue#3 @ GitHub)
+  strvalidator (Main GUI)
+    - Added 'Summarize' balance data button in 'Balance' tab.
+    - Added 'Add Size' button in 'Edit' tab.
+    - Added 'Plot' button for plotting distributions in 'Result' tab.
+    - Added 'Summarize' precision data button in 'Precision' tab.
+* Example dataset 'Set2' and 'Ref2', changed 'Amelogenin' to 'AMEL'.
+* New functions: addSize, addSize_gui, plotDistribution_gui, tableBalance,
+    tableBalance_gui, tablePrecision, tablePrecision_gui, 
+* Removed functions: calculatePrecision, calculatePrecision_gui.
+* Renamed or replaced functions: test-All.R -> testthat.R.
+
+
 Version 1.0.0
 ------------------------------------------------------------------------------
 * NB! Version 1.0.0 includes many fixes and it is recommended to re-import

@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG
+# 23.02.2014: Fixed different y max for complex plot, when supposed to be fixed.
+# 23.02.2014: Fixed shape for 'complex' plots.
+# 13.02.2014: Implemented theme.
 # 20.01.2014: Implemented ggsave with workaround for complex plots.
 # 30.11.2013: Added info on number of samples.
 # 30.11.2013: Fixed 'complex' plot.
@@ -168,31 +171,38 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
     val <- svalue(f1_titles_chk)
     if(val){
-      enabled(grid1) <- TRUE
+      enabled(f1g1) <- TRUE
     } else {
-      enabled(grid1) <- FALSE
+      enabled(f1g1) <- FALSE
     }
   } )
   
-  grid1 <- glayout(container = f1, spacing = 1)
-  enabled(grid1) <- svalue(f1_titles_chk)
+  f1g1 <- glayout(container = f1, spacing = 1)
+  enabled(f1g1) <- svalue(f1_titles_chk)
   
-  grid1[1,1] <- glabel(text="Plot title:", container=grid1)
-  grid1[1,2] <- title_edt <- gedit(text="",
+  f1g1[1,1] <- glabel(text="Plot title:", container=f1g1)
+  f1g1[1,2] <- title_edt <- gedit(text="",
                                    width=40,
-                                   container=grid1)
+                                   container=f1g1)
   
-  grid1[2,1] <- glabel(text="X title:", container=grid1)
-  grid1[2,2] <- x_title_edt <- gedit(text="",
-                                     container=grid1)
+  f1g1[2,1] <- glabel(text="X title:", container=f1g1)
+  f1g1[2,2] <- x_title_edt <- gedit(text="",
+                                     container=f1g1)
 
-  grid1[3,1] <- glabel(text="Y title:", container=grid1)
-  grid1[3,2] <- y_title_edt <- gedit(text="",
-                                     container=grid1)
+  f1g1[3,1] <- glabel(text="Y title:", container=f1g1)
+  f1g1[3,2] <- y_title_edt <- gedit(text="",
+                                     container=f1g1)
 
   f1_savegui_chk <- gcheckbox(text="Save GUI settings",
                               checked=FALSE,
                               container=f1)
+  
+  f1g2 <- glayout(container = f1)
+  f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
+  f1g2[1,2] <- f1_theme_drp <- gdroplist(items=c("theme_grey()","theme_bw()"),
+                                         selected=1,
+                                         container = f1g2)
+  
 
   # FRAME 7 ###################################################################
   
@@ -375,6 +385,11 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     val_size <- as.numeric(svalue(size_txt))
     val_scales <- svalue(scales_opt)
     val_kit <- svalue(kit_drp)
+    val_theme <- svalue(f1_theme_drp)
+    
+    # Declare variables.
+    ymax <- NULL  # For complex plots.
+    ymin <- NULL  # For complex plots.
     
     if(debug){
       print("ARGUMENTS:")
@@ -412,10 +427,8 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       print(levels(.gData$Stutter))
       print("levels(.gData$Marker)")
       print(levels(.gData$Marker))
-    }
-    
-    if(is.factor(.gData$Marker)){
-      
+      print("val_theme")
+      print(val_theme)
     }
     
     if (!is.na(.gData) && !is.null(.gData)){
@@ -505,7 +518,10 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         gp <- gp + scale_x_continuous(breaks = scales::pretty_breaks())
         
       }
-
+      
+      # Apply theme.
+      gp <- gp + eval(parse(text=val_theme))
+      
       # Plot settings.
       gp <- gp + geom_point(shape=val_shape, alpha=val_alpha, 
                             position=position_jitter(width=val_jitter)) 
@@ -530,6 +546,10 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       # Zoom in without dropping observations.
       gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
 
+      if(debug){
+        print(paste("Plot zoomed to xlim:", val_x, "ylim:", val_y))
+      }
+      
       # Titles and legends.
       gp <- gp + guides(fill = guide_legend(reverse=TRUE))
       gp <- gp + theme(axis.text.x=element_text(angle=val_angle,
@@ -563,13 +583,14 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           print(paste("Complex plot, val_ncol:",
                       paste(val_ncol, collapse=", ")))
         }
-
+        
         # Extract the legend from the 'simple' plot.
         guide <- gtable::gtable_filter(ggplotGrob(gp), pattern="guide")
 
         # Get y max to be able to use same scale across plots.
-        yMax <- max(.gData$Ratio, na.rm=TRUE)
-
+        yMax <- max(.gData$Ratio, na.rm=TRUE) * 1.05
+        yMin <- min(.gData$Ratio, na.rm=TRUE) * 0.95
+        
         # Get kit colors and convert to dyes.
         dyes <- unique(getKit(val_kit, what="Color")$Color)
         dyes <- addColor(dyes, have="Color", need="Dye")
@@ -617,18 +638,16 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
             gp <- gp + scale_x_continuous(breaks = scales::pretty_breaks())
             
           }
-
+          
+          # Apply theme.
+          gp <- gp + eval(parse(text=val_theme))
+          
           # Plot settings.
-          gp <- gp + geom_point(aes_string(colour = "Type"), alpha = val_alpha,
+          gp <- gp + geom_point(shape=val_shape, alpha = val_alpha,
                                 position = position_jitter(width = val_jitter))
 
           gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales)
 
-          # Make scales work on multiple plots.
-          if(val_scales != "free" && val_scales != "free_y"){
-            gp <- gp + coord_cartesian(ylim=c(0, yMax))
-          }
-          
           # Set margin around each plot. Note: top, right, bottom, left.
           gp <- gp + theme(plot.margin = grid::unit(c(0.25, 0, 0, 0), "lines"))
           
@@ -636,17 +655,29 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           if(!is.na(val_ymin) && !is.na(val_ymax)){
             val_y <- c(val_ymin, val_ymax)
           } else {
+            if(val_scales %in% c("fixed","free_x")){
+              # Keep Y fixed.
+              val_y <- c(ymin, ymax)
+            }
             val_y <- NULL
           }
           # Restrict x axis.
           if(!is.na(val_xmin) && !is.na(val_xmax)){
             val_x <- c(val_xmin, val_xmax)
           } else {
+            if(val_scales %in% c("fixed","free_x")){
+              # Keep Y fixed.
+              val_y <- c(ymin, ymax)
+            }
             val_x <- NULL
           }
           # Zoom in without dropping observations.
           gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
-
+          
+          if(debug){
+            print(paste("Plot zoomed to xlim:", val_x, "ylim:", val_y))
+          }
+          
           # Remove titles, axis labels and legend.
           gp <- gp + labs(title = element_blank())
           gp <- gp + theme(axis.title.x = element_blank())
@@ -771,6 +802,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotStutter_gui_xlabel_justv", envir=env, inherits = FALSE)){
         svalue(vjust_spb) <- get(".strvalidator_plotStutter_gui_xlabel_justv", envir=env)
       }
+      if(exists(".strvalidator_plotStutter_gui_theme", envir=env, inherits = FALSE)){
+        svalue(f1_theme_drp) <- get(".strvalidator_plotStutter_gui_theme", envir=env)
+      }
       
       if(debug){
         print("Saved settings loaded!")
@@ -801,6 +835,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       assign(x=".strvalidator_plotStutter_gui_xlabel_angle", value=svalue(angle_spb), envir=env)
       assign(x=".strvalidator_plotStutter_gui_xlabel_justh", value=svalue(hjust_spb), envir=env)
       assign(x=".strvalidator_plotStutter_gui_xlabel_justv", value=svalue(vjust_spb), envir=env)
+      assign(x=".strvalidator_plotStutter_gui_theme", value=svalue(f1_theme_drp), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -855,7 +890,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotStutter_gui_xlabel_justv", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotStutter_gui_xlabel_justv", envir = env)
       }
-      
+      if(exists(".strvalidator_plotStutter_gui_theme", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotStutter_gui_theme", envir = env)
+      }
       
       if(debug){
         print("Settings cleared!")
