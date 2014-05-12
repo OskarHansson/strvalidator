@@ -1,19 +1,20 @@
 context("calculateBalance")
 
 ################################################################################
-#' TODO LIST
-#' TODO: Test ignoreCase.
-#' TODO: ...
+# TODO LIST
+# TODO: Test ignoreCase.
+# TODO: ...
 
 ################################################################################
-#' CHANGE LOG
-#' 23.02.2014: Updated in response to removing the 'perSample' option. 
-#' 20.01.2014: Added test (12) for multiple matches (two 'max' peaks)
-#' 
-#' 
-#' test_dir("inst/tests/")
-#' test_file("tests/testthat/test-calculateBalance.r")
-#' test_dir("tests/testthat")
+# CHANGE LOG
+# 07.05.2014: Updated in response to new column 'TPH' and NA in 'MPH' if homozygot. 
+# 23.02.2014: Updated in response to removing the 'perSample' option. 
+# 20.01.2014: Added test (12) for multiple matches (two 'max' peaks)
+# 
+# 
+# test_dir("inst/tests/")
+# test_file("tests/testthat/test-calculateBalance.r")
+# test_dir("tests/testthat")
 
 test_that("calculateBalance", {
 
@@ -37,11 +38,17 @@ test_that("calculateBalance", {
   expect_false(is.null(res$Hb))
   expect_false(is.null(res$Lb))
   expect_false(is.null(res$MPH))
+  expect_false(is.null(res$TPH))
   
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-
+  expect_true(any(is.na(res$Delta)))
+  expect_true(any(is.na(res$Hb)))
+  expect_true(any(is.na(res$Lb)))
+  expect_true(any(is.na(res$MPH)))
+  expect_true(any(is.na(res$TPH)))
+  
   # Check result: Repeat unit difference.
   expect_that(res$Delta[1], equals(3))
   expect_that(res$Delta[2], equals(as.numeric(NA)))
@@ -94,26 +101,26 @@ test_that("calculateBalance", {
   
   # Check result: Mean peak height.
   expect_that(res$MPH[1], equals(431))
-  expect_that(res$MPH[2], equals(253))
+  expect_that(res$MPH[2], equals(as.numeric(NA)))
   expect_that(res$MPH[3], equals(457))
-  expect_that(res$MPH[4], equals(361.5))
+  expect_that(res$MPH[4], equals(as.numeric(NA)))
   expect_that(res$MPH[5], equals(609.5))
-  expect_that(res$MPH[6], equals(309.5))
-  expect_that(res$MPH[7], equals(383))
+  expect_that(res$MPH[6], equals(as.numeric(NA)))
+  expect_that(res$MPH[7], equals(as.numeric(NA)))
   expect_that(res$MPH[8], equals(379.5))
-  expect_that(res$MPH[9], equals(296))
+  expect_that(res$MPH[9], equals(as.numeric(NA)))
   expect_that(res$MPH[10], equals(371.5))
-  expect_that(res$MPH[11], equals(212.5))
+  expect_that(res$MPH[11], equals(as.numeric(NA)))
   
   expect_that(res$MPH[12], equals(220))
-  expect_that(res$MPH[13], equals(152))
+  expect_that(res$MPH[13], equals(as.numeric(NA)))
   expect_that(res$MPH[14], equals(219.5))
-  expect_that(res$MPH[15], equals(173.5))
+  expect_that(res$MPH[15], equals(as.numeric(NA)))
   expect_that(res$MPH[16], equals(319))
-  expect_that(res$MPH[17], equals(154.5))
-  expect_that(res$MPH[18], equals(201))
+  expect_that(res$MPH[17], equals(as.numeric(NA)))
+  expect_that(res$MPH[18], equals(as.numeric(NA)))
   expect_that(res$MPH[19], equals(200.5))
-  expect_that(res$MPH[20], equals(142))
+  expect_that(res$MPH[20], equals(as.numeric(NA)))
   expect_that(res$MPH[21], equals(181))
   expect_that(res$MPH[22], equals(as.numeric(NA)))
   
@@ -142,6 +149,31 @@ test_that("calculateBalance", {
   expect_that(res$Lb[21], equals(as.numeric(NA)))
   expect_that(res$Lb[22], equals(as.numeric(NA)))
   
+  # Check result: Total peak height.
+  expect_that(res$TPH[1], equals(862))
+  expect_that(res$TPH[2], equals(506))
+  expect_that(res$TPH[3], equals(914))
+  expect_that(res$TPH[4], equals(723))
+  expect_that(res$TPH[5], equals(1219))
+  expect_that(res$TPH[6], equals(619))
+  expect_that(res$TPH[7], equals(766))
+  expect_that(res$TPH[8], equals(759))
+  expect_that(res$TPH[9], equals(592))
+  expect_that(res$TPH[10], equals(743))
+  expect_that(res$TPH[11], equals(425))
+  
+  expect_that(res$TPH[12], equals(440))
+  expect_that(res$TPH[13], equals(304))
+  expect_that(res$TPH[14], equals(439))
+  expect_that(res$TPH[15], equals(347))
+  expect_that(res$TPH[16], equals(638))
+  expect_that(res$TPH[17], equals(309))
+  expect_that(res$TPH[18], equals(402))
+  expect_that(res$TPH[19], equals(401))
+  expect_that(res$TPH[20], equals(284))
+  expect_that(res$TPH[21], equals(362))
+  expect_that(res$TPH[22], equals(as.numeric(NA)))
+  
   # TEST 02 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, lb="prop",
@@ -157,10 +189,16 @@ test_that("calculateBalance", {
   expect_false(is.null(res$Hb))
   expect_false(is.null(res$Lb))
   expect_false(is.null(res$MPH))
+  expect_false(is.null(res$TPH))
   
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
+  expect_true(any(is.na(res$Delta)))
+  expect_true(any(is.na(res$Hb)))
+  expect_true(any(is.na(res$Lb)))
+  expect_true(any(is.na(res$MPH)))
+  expect_true(any(is.na(res$TPH)))
   
   # Check result: Repeat unit difference.
   expect_that(res$Delta[1], equals(3))
@@ -214,26 +252,26 @@ test_that("calculateBalance", {
   
   # Check result: Mean peak height.
   expect_that(res$MPH[1], equals(431))
-  expect_that(res$MPH[2], equals(253))
+  expect_that(res$MPH[2], equals(as.numeric(NA)))
   expect_that(res$MPH[3], equals(457))
-  expect_that(res$MPH[4], equals(361.5))
+  expect_that(res$MPH[4], equals(as.numeric(NA)))
   expect_that(res$MPH[5], equals(609.5))
-  expect_that(res$MPH[6], equals(309.5))
-  expect_that(res$MPH[7], equals(383))
+  expect_that(res$MPH[6], equals(as.numeric(NA)))
+  expect_that(res$MPH[7], equals(as.numeric(NA)))
   expect_that(res$MPH[8], equals(379.5))
-  expect_that(res$MPH[9], equals(296))
+  expect_that(res$MPH[9], equals(as.numeric(NA)))
   expect_that(res$MPH[10], equals(371.5))
-  expect_that(res$MPH[11], equals(212.5))
+  expect_that(res$MPH[11], equals(as.numeric(NA)))
   
   expect_that(res$MPH[12], equals(220))
-  expect_that(res$MPH[13], equals(152))
+  expect_that(res$MPH[13], equals(as.numeric(NA)))
   expect_that(res$MPH[14], equals(219.5))
-  expect_that(res$MPH[15], equals(173.5))
+  expect_that(res$MPH[15], equals(as.numeric(NA)))
   expect_that(res$MPH[16], equals(319))
-  expect_that(res$MPH[17], equals(154.5))
-  expect_that(res$MPH[18], equals(201))
+  expect_that(res$MPH[17], equals(as.numeric(NA)))
+  expect_that(res$MPH[18], equals(as.numeric(NA)))
   expect_that(res$MPH[19], equals(200.5))
-  expect_that(res$MPH[20], equals(142))
+  expect_that(res$MPH[20], equals(as.numeric(NA)))
   expect_that(res$MPH[21], equals(181))
   expect_that(res$MPH[22], equals(as.numeric(NA)))
   
@@ -261,6 +299,31 @@ test_that("calculateBalance", {
   expect_that(res$Lb[20], equals(as.numeric(NA)))
   expect_that(res$Lb[21], equals(as.numeric(NA)))
   expect_that(res$Lb[22], equals(as.numeric(NA)))
+
+  # Check result: Total peak height.
+  expect_that(res$TPH[1], equals(862))
+  expect_that(res$TPH[2], equals(506))
+  expect_that(res$TPH[3], equals(914))
+  expect_that(res$TPH[4], equals(723))
+  expect_that(res$TPH[5], equals(1219))
+  expect_that(res$TPH[6], equals(619))
+  expect_that(res$TPH[7], equals(766))
+  expect_that(res$TPH[8], equals(759))
+  expect_that(res$TPH[9], equals(592))
+  expect_that(res$TPH[10], equals(743))
+  expect_that(res$TPH[11], equals(425))
+  
+  expect_that(res$TPH[12], equals(440))
+  expect_that(res$TPH[13], equals(304))
+  expect_that(res$TPH[14], equals(439))
+  expect_that(res$TPH[15], equals(347))
+  expect_that(res$TPH[16], equals(638))
+  expect_that(res$TPH[17], equals(309))
+  expect_that(res$TPH[18], equals(402))
+  expect_that(res$TPH[19], equals(401))
+  expect_that(res$TPH[20], equals(284))
+  expect_that(res$TPH[21], equals(362))
+  expect_that(res$TPH[22], equals(as.numeric(NA)))
   
   # TEST 03 -------------------------------------------------------------------
 
@@ -277,11 +340,17 @@ test_that("calculateBalance", {
   expect_false(is.null(res$Hb))
   expect_false(is.null(res$Lb))
   expect_false(is.null(res$MPH))
+  expect_false(is.null(res$TPH))
   
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-
+  expect_true(any(is.na(res$Delta)))
+  expect_true(any(is.na(res$Hb)))
+  expect_true(any(is.na(res$Lb)))
+  expect_true(any(is.na(res$MPH)))
+  expect_true(any(is.na(res$TPH)))
+  
   # Check result: Repeat unit difference.
   expect_that(res$Delta[1], equals(3))
   expect_that(res$Delta[2], equals(as.numeric(NA)))
@@ -334,26 +403,26 @@ test_that("calculateBalance", {
   
   # Check result: Mean peak height.
   expect_that(res$MPH[1], equals(431))
-  expect_that(res$MPH[2], equals(253))
+  expect_that(res$MPH[2], equals(as.numeric(NA)))
   expect_that(res$MPH[3], equals(457))
-  expect_that(res$MPH[4], equals(361.5))
+  expect_that(res$MPH[4], equals(as.numeric(NA)))
   expect_that(res$MPH[5], equals(609.5))
-  expect_that(res$MPH[6], equals(309.5))
-  expect_that(res$MPH[7], equals(383))
+  expect_that(res$MPH[6], equals(as.numeric(NA)))
+  expect_that(res$MPH[7], equals(as.numeric(NA)))
   expect_that(res$MPH[8], equals(379.5))
-  expect_that(res$MPH[9], equals(296))
+  expect_that(res$MPH[9], equals(as.numeric(NA)))
   expect_that(res$MPH[10], equals(371.5))
-  expect_that(res$MPH[11], equals(212.5))
+  expect_that(res$MPH[11], equals(as.numeric(NA)))
   
   expect_that(res$MPH[12], equals(220))
-  expect_that(res$MPH[13], equals(152))
+  expect_that(res$MPH[13], equals(as.numeric(NA)))
   expect_that(res$MPH[14], equals(219.5))
-  expect_that(res$MPH[15], equals(173.5))
+  expect_that(res$MPH[15], equals(as.numeric(NA)))
   expect_that(res$MPH[16], equals(319))
-  expect_that(res$MPH[17], equals(154.5))
-  expect_that(res$MPH[18], equals(201))
+  expect_that(res$MPH[17], equals(as.numeric(NA)))
+  expect_that(res$MPH[18], equals(as.numeric(NA)))
   expect_that(res$MPH[19], equals(200.5))
-  expect_that(res$MPH[20], equals(142))
+  expect_that(res$MPH[20], equals(as.numeric(NA)))
   expect_that(res$MPH[21], equals(181))
   expect_that(res$MPH[22], equals(as.numeric(NA)))
   
@@ -381,6 +450,31 @@ test_that("calculateBalance", {
   expect_that(res$Lb[20], equals(as.numeric(NA)))
   expect_that(res$Lb[21], equals(as.numeric(NA)))
   expect_that(res$Lb[22], equals(as.numeric(NA)))
+
+  # Check result: Total peak height.
+  expect_that(res$TPH[1], equals(862))
+  expect_that(res$TPH[2], equals(506))
+  expect_that(res$TPH[3], equals(914))
+  expect_that(res$TPH[4], equals(723))
+  expect_that(res$TPH[5], equals(1219))
+  expect_that(res$TPH[6], equals(619))
+  expect_that(res$TPH[7], equals(766))
+  expect_that(res$TPH[8], equals(759))
+  expect_that(res$TPH[9], equals(592))
+  expect_that(res$TPH[10], equals(743))
+  expect_that(res$TPH[11], equals(425))
+  
+  expect_that(res$TPH[12], equals(440))
+  expect_that(res$TPH[13], equals(304))
+  expect_that(res$TPH[14], equals(439))
+  expect_that(res$TPH[15], equals(347))
+  expect_that(res$TPH[16], equals(638))
+  expect_that(res$TPH[17], equals(309))
+  expect_that(res$TPH[18], equals(402))
+  expect_that(res$TPH[19], equals(401))
+  expect_that(res$TPH[20], equals(284))
+  expect_that(res$TPH[21], equals(362))
+  expect_that(res$TPH[22], equals(as.numeric(NA)))
   
   
   # TEST 04 -------------------------------------------------------------------
@@ -398,10 +492,16 @@ test_that("calculateBalance", {
   expect_false(is.null(res$Hb))
   expect_false(is.null(res$Lb))
   expect_false(is.null(res$MPH))
+  expect_false(is.null(res$TPH))
   
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
+  expect_true(any(is.na(res$Delta)))
+  expect_true(any(is.na(res$Hb)))
+  expect_true(any(is.na(res$Lb)))
+  expect_true(any(is.na(res$MPH)))
+  expect_true(any(is.na(res$TPH)))
   
   # Check result: Repeat unit difference.
   expect_that(res$Delta[1], equals(3))
@@ -455,26 +555,26 @@ test_that("calculateBalance", {
   
   # Check result: Mean peak height.
   expect_that(res$MPH[1], equals(431))
-  expect_that(res$MPH[2], equals(253))
+  expect_that(res$MPH[2], equals(as.numeric(NA)))
   expect_that(res$MPH[3], equals(457))
-  expect_that(res$MPH[4], equals(361.5))
+  expect_that(res$MPH[4], equals(as.numeric(NA)))
   expect_that(res$MPH[5], equals(609.5))
-  expect_that(res$MPH[6], equals(309.5))
-  expect_that(res$MPH[7], equals(383))
+  expect_that(res$MPH[6], equals(as.numeric(NA)))
+  expect_that(res$MPH[7], equals(as.numeric(NA)))
   expect_that(res$MPH[8], equals(379.5))
-  expect_that(res$MPH[9], equals(296))
+  expect_that(res$MPH[9], equals(as.numeric(NA)))
   expect_that(res$MPH[10], equals(371.5))
-  expect_that(res$MPH[11], equals(212.5))
+  expect_that(res$MPH[11], equals(as.numeric(NA)))
   
   expect_that(res$MPH[12], equals(220))
-  expect_that(res$MPH[13], equals(152))
+  expect_that(res$MPH[13], equals(as.numeric(NA)))
   expect_that(res$MPH[14], equals(219.5))
-  expect_that(res$MPH[15], equals(173.5))
+  expect_that(res$MPH[15], equals(as.numeric(NA)))
   expect_that(res$MPH[16], equals(319))
-  expect_that(res$MPH[17], equals(154.5))
-  expect_that(res$MPH[18], equals(201))
+  expect_that(res$MPH[17], equals(as.numeric(NA)))
+  expect_that(res$MPH[18], equals(as.numeric(NA)))
   expect_that(res$MPH[19], equals(200.5))
-  expect_that(res$MPH[20], equals(142))
+  expect_that(res$MPH[20], equals(as.numeric(NA)))
   expect_that(res$MPH[21], equals(181))
   expect_that(res$MPH[22], equals(as.numeric(NA)))
   
@@ -502,6 +602,32 @@ test_that("calculateBalance", {
   expect_that(res$Lb[20], equals(as.numeric(NA)))
   expect_that(res$Lb[21], equals(as.numeric(NA)))
   expect_that(res$Lb[22], equals(as.numeric(NA)))
+  
+  # Check result: Total peak height.
+  expect_that(res$TPH[1], equals(862))
+  expect_that(res$TPH[2], equals(506))
+  expect_that(res$TPH[3], equals(914))
+  expect_that(res$TPH[4], equals(723))
+  expect_that(res$TPH[5], equals(1219))
+  expect_that(res$TPH[6], equals(619))
+  expect_that(res$TPH[7], equals(766))
+  expect_that(res$TPH[8], equals(759))
+  expect_that(res$TPH[9], equals(592))
+  expect_that(res$TPH[10], equals(743))
+  expect_that(res$TPH[11], equals(425))
+  
+  expect_that(res$TPH[12], equals(440))
+  expect_that(res$TPH[13], equals(304))
+  expect_that(res$TPH[14], equals(439))
+  expect_that(res$TPH[15], equals(347))
+  expect_that(res$TPH[16], equals(638))
+  expect_that(res$TPH[17], equals(309))
+  expect_that(res$TPH[18], equals(402))
+  expect_that(res$TPH[19], equals(401))
+  expect_that(res$TPH[20], equals(284))
+  expect_that(res$TPH[21], equals(362))
+  expect_that(res$TPH[22], equals(as.numeric(NA)))
+  
   
 #   # TEST 05 -------------------------------------------------------------------
 #   
@@ -1071,11 +1197,17 @@ test_that("calculateBalance", {
   expect_false(is.null(res$Hb))
   expect_false(is.null(res$Lb))
   expect_false(is.null(res$MPH))
-  
+  expect_false(is.null(res$TPH))
+
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-  
+  expect_true(any(is.na(res$Delta)))
+  expect_true(any(is.na(res$Hb)))
+  expect_true(any(is.na(res$Lb)))
+  expect_true(any(is.na(res$MPH)))
+  expect_true(any(is.na(res$TPH)))
+
   # Check result: Repeat unit difference.
   expect_that(res$Delta[1], equals(3))
   expect_that(res$Delta[2], equals(as.numeric(NA)))
@@ -1128,29 +1260,29 @@ test_that("calculateBalance", {
   
   # Check result: Mean peak height.
   expect_that(res$MPH[1], equals(431))
-  expect_that(res$MPH[2], equals(253))
+  expect_that(res$MPH[2], equals(as.numeric(NA)))
   expect_that(res$MPH[3], equals(457))
-  expect_that(res$MPH[4], equals(361.5))
+  expect_that(res$MPH[4], equals(as.numeric(NA)))
   expect_that(res$MPH[5], equals(609.5))
-  expect_that(res$MPH[6], equals(309.5))
-  expect_that(res$MPH[7], equals(383))
+  expect_that(res$MPH[6], equals(as.numeric(NA)))
+  expect_that(res$MPH[7], equals(as.numeric(NA)))
   expect_that(res$MPH[8], equals(379.5))
-  expect_that(res$MPH[9], equals(296))
+  expect_that(res$MPH[9], equals(as.numeric(NA)))
   expect_that(res$MPH[10], equals(371.5))
-  expect_that(res$MPH[11], equals(212.5))
+  expect_that(res$MPH[11], equals(as.numeric(NA)))
   
   expect_that(res$MPH[12], equals(220))
-  expect_that(res$MPH[13], equals(152))
+  expect_that(res$MPH[13], equals(as.numeric(NA)))
   expect_that(res$MPH[14], equals(219.5))
-  expect_that(res$MPH[15], equals(173.5))
+  expect_that(res$MPH[15], equals(as.numeric(NA)))
   expect_that(res$MPH[16], equals(319))
-  expect_that(res$MPH[17], equals(154.5))
-  expect_that(res$MPH[18], equals(201))
+  expect_that(res$MPH[17], equals(as.numeric(NA)))
+  expect_that(res$MPH[18], equals(as.numeric(NA)))
   expect_that(res$MPH[19], equals(200.5))
-  expect_that(res$MPH[20], equals(142))
+  expect_that(res$MPH[20], equals(as.numeric(NA)))
   expect_that(res$MPH[21], equals(181))
   expect_that(res$MPH[22], equals(as.numeric(NA)))
-  
+
   # Check result: Locus balance.
   expect_that(res$Lb[1], equals(862/3005))
   expect_that(res$Lb[2], equals(506/3005))
@@ -1175,6 +1307,32 @@ test_that("calculateBalance", {
   expect_that(res$Lb[20], equals(as.numeric(NA)))
   expect_that(res$Lb[21], equals(as.numeric(NA)))
   expect_that(res$Lb[22], equals(as.numeric(NA)))
+
+  # Check result: Total peak height.
+  expect_that(res$TPH[1], equals(862))
+  expect_that(res$TPH[2], equals(506))
+  expect_that(res$TPH[3], equals(914))
+  expect_that(res$TPH[4], equals(723))
+  expect_that(res$TPH[5], equals(1219))
+  expect_that(res$TPH[6], equals(619))
+  expect_that(res$TPH[7], equals(766))
+  expect_that(res$TPH[8], equals(759))
+  expect_that(res$TPH[9], equals(592))
+  expect_that(res$TPH[10], equals(743))
+  expect_that(res$TPH[11], equals(425))
+  
+  expect_that(res$TPH[12], equals(440))
+  expect_that(res$TPH[13], equals(304))
+  expect_that(res$TPH[14], equals(439))
+  expect_that(res$TPH[15], equals(347))
+  expect_that(res$TPH[16], equals(638))
+  expect_that(res$TPH[17], equals(309))
+  expect_that(res$TPH[18], equals(402))
+  expect_that(res$TPH[19], equals(401))
+  expect_that(res$TPH[20], equals(284))
+  expect_that(res$TPH[21], equals(362))
+  expect_that(res$TPH[22], equals(as.numeric(NA)))
+
   
   # TEST 12 -------------------------------------------------------------------
 
@@ -1197,11 +1355,17 @@ test_that("calculateBalance", {
   expect_false(is.null(res$Hb))
   expect_false(is.null(res$Lb))
   expect_false(is.null(res$MPH))
-  
+  expect_false(is.null(res$TPH))
+
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-  
+  expect_true(any(is.na(res$Delta)))
+  expect_true(any(is.na(res$Hb)))
+  expect_true(any(is.na(res$Lb)))
+  expect_true(any(is.na(res$MPH)))
+  expect_true(any(is.na(res$TPH)))
+
   # Check result: Repeat unit difference.
   expect_that(res$Delta[1], equals(3))
   expect_that(res$Delta[2], equals(as.numeric(NA)))
@@ -1254,29 +1418,29 @@ test_that("calculateBalance", {
   
   # Check result: Mean peak height.
   expect_that(res$MPH[1], equals(400))
-  expect_that(res$MPH[2], equals(253))
+  expect_that(res$MPH[2], equals(as.numeric(NA)))
   expect_that(res$MPH[3], equals(457))
-  expect_that(res$MPH[4], equals(361.5))
+  expect_that(res$MPH[4], equals(as.numeric(NA)))
   expect_that(res$MPH[5], equals(609.5))
-  expect_that(res$MPH[6], equals(309.5))
-  expect_that(res$MPH[7], equals(383))
+  expect_that(res$MPH[6], equals(as.numeric(NA)))
+  expect_that(res$MPH[7], equals(as.numeric(NA)))
   expect_that(res$MPH[8], equals(550))
-  expect_that(res$MPH[9], equals(296))
+  expect_that(res$MPH[9], equals(as.numeric(NA)))
   expect_that(res$MPH[10], equals(371.5))
-  expect_that(res$MPH[11], equals(212.5))
+  expect_that(res$MPH[11], equals(as.numeric(NA)))
   
   expect_that(res$MPH[12], equals(400))
-  expect_that(res$MPH[13], equals(152))
+  expect_that(res$MPH[13], equals(as.numeric(NA)))
   expect_that(res$MPH[14], equals(219.5))
-  expect_that(res$MPH[15], equals(173.5))
+  expect_that(res$MPH[15], equals(as.numeric(NA)))
   expect_that(res$MPH[16], equals(319))
-  expect_that(res$MPH[17], equals(154.5))
-  expect_that(res$MPH[18], equals(201))
+  expect_that(res$MPH[17], equals(as.numeric(NA)))
+  expect_that(res$MPH[18], equals(as.numeric(NA)))
   expect_that(res$MPH[19], equals(550))
-  expect_that(res$MPH[20], equals(142))
+  expect_that(res$MPH[20], equals(as.numeric(NA)))
   expect_that(res$MPH[21], equals(181))
   expect_that(res$MPH[22], equals(as.numeric(NA)))
-  
+
   # Check result: Locus balance.
   expect_that(res$Lb[1], equals(800/2943))
   expect_that(res$Lb[2], equals(506/2943))
@@ -1302,5 +1466,29 @@ test_that("calculateBalance", {
   expect_that(res$Lb[21], equals(as.numeric(NA)))
   expect_that(res$Lb[22], equals(as.numeric(NA)))
   
+  # Check result: Total peak height.
+  expect_that(res$TPH[1], equals(800))
+  expect_that(res$TPH[2], equals(506))
+  expect_that(res$TPH[3], equals(914))
+  expect_that(res$TPH[4], equals(723))
+  expect_that(res$TPH[5], equals(1219))
+  expect_that(res$TPH[6], equals(619))
+  expect_that(res$TPH[7], equals(766))
+  expect_that(res$TPH[8], equals(1100))
+  expect_that(res$TPH[9], equals(592))
+  expect_that(res$TPH[10], equals(743))
+  expect_that(res$TPH[11], equals(425))
   
+  expect_that(res$TPH[12], equals(800))
+  expect_that(res$TPH[13], equals(304))
+  expect_that(res$TPH[14], equals(439))
+  expect_that(res$TPH[15], equals(347))
+  expect_that(res$TPH[16], equals(638))
+  expect_that(res$TPH[17], equals(309))
+  expect_that(res$TPH[18], equals(402))
+  expect_that(res$TPH[19], equals(1100))
+  expect_that(res$TPH[20], equals(284))
+  expect_that(res$TPH[21], equals(362))
+  expect_that(res$TPH[22], equals(as.numeric(NA)))
+
 })

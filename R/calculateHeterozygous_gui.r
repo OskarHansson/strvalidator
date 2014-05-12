@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
@@ -72,39 +73,22 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-      
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker", "Allele")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(f2_save_edt) <- paste(val_obj, "_het", sep="")
         
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-      
-        # Reset components.
-        .gData <<- NULL
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(f0g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
-
-        # Load or change components.
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(val_obj, "_het", sep="")
-        
-      }
       
     } else {
-      
+
       # Reset components.
       .gData <<- NULL
       svalue(dataset_drp, index=TRUE) <- 1
@@ -112,6 +96,7 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
       svalue(f2_save_edt) <- ""
       
     }
+    
   } )  
   
   # FRAME 2 ###################################################################

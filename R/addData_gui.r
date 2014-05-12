@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 06.05.2014: Implemented 'checkDataset'.
 # 31.07.2013: Added parameter 'ignoreCase'.
 # 18.07.2013: Check before overwrite object.
 # 11.07.2013: Added save GUI settings.
@@ -78,7 +79,12 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    ok <- checkDataset(name=val_obj, reqcol=NULL,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){ 
+      # Load or change components.
 
       .gDataDest <<- get(val_obj, envir=env)
       .gDataDestName <<- val_obj
@@ -101,6 +107,7 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       f1_key_drp[] <- .gDefaultDrp
       f1_key2_drp[] <- .gDefaultDrp
     }
+    
   } )  
   
   g0[2,1] <- glabel(text="Select source dataset:", container=g0)
@@ -118,7 +125,12 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(refset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    ok <- checkDataset(name=val_obj, reqcol=NULL,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      # Load or change components.
       
       .gDataSource <<- get(val_obj, envir=env)
       .gDataSourceColumns <<- names(.gDataSource)

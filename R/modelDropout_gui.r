@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 18.02.2014: Implemented conserative T estimate.
 # 18.02.2014: Removed erroneously implemented prediction interval for T.
 # 27.01.2014: Fixed bug not checking required columns upon selection of dataset.
@@ -145,67 +146,47 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-
+    # Check if suitable.
+    requiredCol <- c("Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
       
-      requiredCol <- c("Height")
-    
-      # Check if suitable for modelling dropout...
-      if(!all(requiredCol %in% colnames(.gData))){
-      
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "info",
-                 parent = w) 
-      
-        # Reset components.
-        .gData <<- NULL
-        svalue(f5_save_edt) <- ""
-        
+      ph_range <- NA
+      if("Heterozygous" %in% names(.gData)){
+        # Make sure numeric, then find range for heterozygotes.
+        ph_range <- range(as.numeric(.gData$Height[.gData$Heterozygous==1 & .gData$Dropout!=2]),
+                          na.rm=TRUE)
       } else {
-
-        # Load or change components.
-        ph_range <- NA
-        if("Heterozygous" %in% names(.gData)){
-          # Make sure numeric, then find range for heterozygotes.
-          ph_range <- range(as.numeric(.gData$Height[.gData$Heterozygous==1 & .gData$Dropout!=2]),
-                            na.rm=TRUE)
-        } else {
-          # Make sure numeric, then find min and max.
-          ph_range <- range(as.numeric(.gData$Height), na.rm=TRUE)
-        }
-        svalue(f1g2_low_lbl) <- ph_range[1]
-        svalue(f1g2_high_lbl) <- ph_range[2]
-        
-        # Suggest name.
-        svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
-        
-        # Detect kit.
-        kitIndex <- detectKit(.gData)
-        # Select in dropdown.
-        svalue(kit_drp, index=TRUE) <- kitIndex
-        
-        # Check additional required columns and enable/disable plot button.
-        .checkColumns()
-        
+        # Make sure numeric, then find min and max.
+        ph_range <- range(as.numeric(.gData$Height), na.rm=TRUE)
       }
+      svalue(f1g2_low_lbl) <- ph_range[1]
+      svalue(f1g2_high_lbl) <- ph_range[2]
+      
+      # Suggest name.
+      svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
+      
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(kit_drp, index=TRUE) <- kitIndex
+      
+      # Check additional required columns and enable/disable plot button.
+      .checkColumns()
+        
     } else {
 
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       
-      message <- paste("Select a drop-out dataset")
-      
-      gmessage(message, title="Could not find dataset",
-               icon = "error",
-               parent = w) 
     } 
+  
   } )  
   
   # FRAME 1 ###################################################################

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 06.05.2014: Implemented 'checkDataset'.
 # 16.01.2014: Adding 'option' for drop-out scoring method.
 # 13.11.2013: Removed 'allele' argument in call.
 # 07.11.2013: Fixed suggested LDT (as.numeric)
@@ -82,48 +83,31 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      # Load or change components.
+      
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
-  
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(f1g1_ldt_edt) <- min(as.numeric(.gData$Height), na.rm=TRUE)
+      svalue(f2_save_edt) <- paste(val_obj, "_dropout", sep="")
         
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(g0_samples_lbl) <- " 0 samples"
-        svalue(f1g1_ldt_edt) <- ""
-        svalue(f2_save_edt) <- ""
-        
-      } else {
-
-        # Load or change components.
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f1g1_ldt_edt) <- min(as.numeric(.gData$Height), na.rm=TRUE)
-        svalue(f2_save_edt) <- paste(val_obj, "_dropout", sep="")
-        
-      }
-      
     } else {
       
       # Reset components.
       .gData <<- NULL
       svalue(dataset_drp, index=TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
+      svalue(f1g1_ldt_edt) <- ""
       svalue(f2_save_edt) <- ""
       
     }
+    
   } )  
   
   g0[2,1] <- glabel(text="Select reference dataset:", container=g0)
@@ -140,37 +124,19 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   addHandlerChanged(refset_drp, handler = function (h, ...) {
     
     val_obj <- svalue(refset_drp)
+
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    if(ok){
+      # Load or change components.
       
       .gRef <<- get(val_obj, envir=env)
-
-      requiredCol <- c("Sample.Name", "Marker", "Allele")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
+      ref <- length(unique(.gRef$Sample.Name))
+      svalue(g0_ref_lbl) <- paste("", ref, "references")
         
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gRef)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-      
-        # Reset components.
-        .gRef <<- NULL
-        svalue(refset_drp, index=TRUE) <- 1
-        svalue(g0_ref_lbl) <- " 0 references"
-        
-      } else {
-
-        # Load or change components.
-        ref <- length(unique(.gRef$Sample.Name))
-        svalue(g0_ref_lbl) <- paste("", ref, "references")
-        
-      }
-      
     } else {
       
       # Reset components.

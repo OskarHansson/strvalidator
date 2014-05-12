@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
 # 12.01.2014: Updated with more options.
 # 28.10.2013: First version.
@@ -75,52 +76,33 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Type", "Subtype")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      # Check if suitable for plot...
-  
-      requiredCol <- c("Sample.Name", "Type", "Subtype")
+      .gDataName <<- val_obj
+
+      # Suggest name.
+      svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
       
-      if(!all(requiredCol %in% colnames(.gData))){
-  
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(f5_save_edt) <- ""
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(f0_samples_lbl) <- " (0 samples)"
-        
-      } else {
+      svalue(f0_samples_lbl) <- paste(" (",
+                                      nrow(.gData),
+                                      " samples)", sep="")
 
-        # Load or change components.
-        .gDataName <<- val_obj
-
-        # Suggest name.
-        svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
+      # Enable buttons.
+      enabled(plot_btn) <- TRUE
         
-        svalue(f0_samples_lbl) <- paste(" (",
-                                        nrow(.gData),
-                                        " samples)", sep="")
-
-        # Enable buttons.
-        enabled(plot_btn) <- TRUE
-        
-      }
-
     } else {
-      
+
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
+      svalue(dataset_drp, index=TRUE) <- 1
       svalue(f0_samples_lbl) <- " (0 samples)"
       
     }    

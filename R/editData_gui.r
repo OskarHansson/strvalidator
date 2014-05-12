@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 02.12.2013: Added parameter 'name' for selection of 'data' in drop menu.
 # 30.11.2013: Added info also when 'data' is passed.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
@@ -84,10 +85,14 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE, de
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    ok <- checkDataset(name=val_obj, reqcol=NULL,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      
       .gDataName <<- val_obj
       
       if("Sample.Name" %in% names(.gData)){
@@ -106,6 +111,7 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE, de
       svalue(g0_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(g0_rows_lbl) <- paste(" ", "<NA>", "rows")
     }
+    
   } )  
   
   # FRAME 1 ###################################################################

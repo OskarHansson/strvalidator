@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Fix TODO's in code (nb observations etc.)
 
 ################################################################################
 # CHANGE LOG
+# 11.05.2014: Fixed boxplot bug, box not drawn.
+# 08.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: No column required.
 # 23.02.2014: Conversion of 'Height', 'Size', and 'Data.Point' to numeric.
 # 23.02.2014: Fixed boxplot width bug.
@@ -88,12 +90,15 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- NULL
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
-      .gData <<- get(val_obj, envir=env)
-      # Check if suitable for plot...
-  
       # Load or change components.
+      .gData <<- get(val_obj, envir=env)
       .gDataName <<- val_obj
       
       # Refresh column in drop lists.
@@ -533,9 +538,29 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
         # Manually overlay a boxplot:
         # Add box.
-        gp <- gp + geom_polygon(data=val_box, aes_string(x = c("left","left","right","right"),
-                                                         y = c("ymin","ymax","ymax","ymin")),
-                                color=1, alpha=0)
+# Should work...
+#        gp <- gp + geom_polygon(data=val_box, aes_string(x = c("left","left","right","right"),
+#                                                         y = c("ymin","ymax","ymax","ymin")),
+#                                color=1, alpha=0)
+#        gp <- gp + geom_rect(data=val_box, aes_string(xmin = "left", xmax="right",
+#                                                      ymin = "ymin", ymax="ymax"),
+#                             color=1, alpha=0)
+        # Add top.
+        gp <- gp + geom_segment(data=val_box, aes_string(x="left", y="ymax",
+                                                 xend="right", yend="ymax"))
+
+        # Add bottom.
+        gp <- gp + geom_segment(data=val_box, aes_string(x="left", y="ymin",
+                                                         xend="right", yend="ymin"))
+
+        # Add left.
+        gp <- gp + geom_segment(data=val_box, aes_string(x="left", y="ymin",
+                                                         xend="left", yend="ymax"))
+
+        # Add right.
+        gp <- gp + geom_segment(data=val_box, aes_string(x="right", y="ymin",
+                                                         xend="right", yend="ymax"))
+
         # Add median.
         gp <- gp + geom_segment(data=val_box, aes_string(x="middle", y="ymin",
                                                          xend="middle", yend="ymax"))

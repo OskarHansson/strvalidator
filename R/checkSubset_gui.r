@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 25.07.2013: Parameter 'fixed' changed to 'word'.
 # 15.07.2013: Added save GUI settings.
 # 15.07.2013: Added 'options' group.
@@ -77,34 +78,18 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(dataset_samples_lbl) <- paste("", samples, "samples")
         
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-      
-        # Reset components.
-        .gData <<- data.frame(No.Data=NA)
-        svalue(dataset_samples_lbl) <- "0 samples"
-        
-      } else {
-
-        # Load or change components.
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(dataset_samples_lbl) <- paste("", samples, "samples")
-        
-      }
-      
     } else {
       
       # Reset components.
@@ -112,6 +97,7 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(dataset_samples_lbl) <- " 0 samples"
       
     }
+    
   } )
 
   grid0[2,1] <- glabel(text="Select reference set:", container=grid0)
@@ -130,39 +116,26 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_ref_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gRef <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker")
-      
-      if(!all(requiredCol %in% colnames(.gRef))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gRef)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-
-        # Reset components.
-        .gRef <<- data.frame(No.Data=NA)
-        svalue(dataset_ref_lbl) <- "0 reference samples"
-        
-      } else {
-        
-        refs <- length(unique(.gRef$Sample.Name))
-        svalue(dataset_ref_lbl) <- paste("", refs, "reference samples")
-        
-      }
+      refs <- length(unique(.gRef$Sample.Name))
+      svalue(dataset_ref_lbl) <- paste("", refs, "reference samples")
       
     } else {
       
+      # Reset components.
       .gRef <<- data.frame(No.Data=NA)
-      svalue(dataset_ref_lbl) <- " 0 samples"
+      svalue(dataset_ref_lbl) <- " 0 reference samples"
       
     }
+    
   } )
   
   # FRAME 1 ###################################################################

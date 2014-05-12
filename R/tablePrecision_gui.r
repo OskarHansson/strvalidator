@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 06.02.2014: Fixed button locks when error.
 # 06.02.2014: Changed name calculatePrecision_gui -> tablePrecision_gui
 # 12.01.2014: Replaced 'subset' with native code.
@@ -82,63 +83,43 @@ tablePrecision_gui <- function(env=parent.frame(), savegui=NULL,
     
     val_obj <- svalue(g0_data_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      
-      # Check if required columns...
-      requiredCol <- c("Sample.Name", "Marker")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-      
-        # Reset components.
-        .gData <<- data.frame(Columns="NA")
-        svalue(g0_data_drp, index=TRUE) <- 1
-        svalue(g0_data_samples_lbl) <- " 0 samples"
-        svalue(f4_save_edt) <- ""
-        .refresh_key_tbl()
-        .refresh_target_tbl()
-        
-      }else {
+      .refresh_key_tbl()
+      .refresh_target_tbl()
 
-        # Load or change components.
-        .refresh_key_tbl()
-        .refresh_target_tbl()
-
-        svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
-                                          "samples.")
-        svalue(f4_save_edt) <- paste(val_obj, "_precision_table", sep="")
-        
-        # Detect kit.
-        kitIndex <- detectKit(.gData)
-        # Select in dropdown.
-        svalue(f2g2_kit_drp, index=TRUE) <- kitIndex
-        
-        # Enable buttons.
-        enabled(calculate_btn) <- TRUE
-        
-        
-      }
+      svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
+                                        "samples.")
+      svalue(f4_save_edt) <- paste(val_obj, "_precision_table", sep="")
       
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(f2g2_kit_drp, index=TRUE) <- kitIndex
+      
+      # Enable buttons.
+      enabled(calculate_btn) <- TRUE
+        
     } else {
-      
+
       # Reset components.
+      .gData <<- data.frame(Columns="NA")
+      svalue(g0_data_drp, index=TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
-      .gData <<- data.frame(Sample.Name="NA")
       svalue(f4_save_edt) <- ""
       .refresh_key_tbl()
       .refresh_target_tbl()
       
-    }    
+    }
+    
   } )  
 
   # FRAME 2 ###################################################################

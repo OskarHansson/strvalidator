@@ -1,8 +1,54 @@
+Version 1.2.0
+------------------------------------------------------------------------------
+* Kit definition file 'kit.txt'.
+    - Added support for 'Fusion'.
+    - Added support for 'GlobalFiler'.
+* Allele frequency database file 'database.txt'.
+    - Removed column 'AM'.
+* Numerous bug fixes and improvements with the most significant listed below:
+  addColor/addDye_gui
+    - Option to ignore case in marker names.
+  - Added 'orange' and 'purple'.
+  addSize/addSize_gui
+	- Option to ignore case in marker names.
+	- Option 'bins' and option to calculate an estimate of size.
+	- Fixed bug, kit always "ESX17" (issue#4 @ GitHub).
+  calculateBalance/calculateBalance_gui
+    - New column 'TPH' (Total locus Peak Height) in result table.
+  plotBalance_gui
+	- 'position_jitter height' now fixed to zero, previously 'default'.
+	- Implemented new column 'TPH' for X-axis when plot Lb.
+	- Fixed bug when no observation in an entire dye channel.
+  plotDistribution_gui
+  - Fixed boxplot bug.
+  plotDropout_gui
+	- 'position_jitter height' now fixed to zero, previously 'default'.
+  plotStutter_gui
+	- 'position_jitter height' now fixed to zero, previously 'default'.
+	- Fixed same color scale for all sub plots in complex plots.
+	- Fixed different y max for complex plot, when supposed to be fixed.
+	- Fixed bug when no observation in an entire dye channel.
+  trim
+	- Made more robust and handles '+' and '-' in sample names.
+* New experimental functions for capillary balance analysis:
+	- Functions: calculateCapillary, calculateCapillary_gui, plotCapillary_gui, tableCapillary, and tableCapillary_gui.
+	- Internal lane standard definition file (ils.txt).
+* New function:
+	- checkDataset.
+* Updated test:
+  test-calculateBalance
+    - Updated in response to new column 'TPH' and NA in 'MPH' if homozygous.
+* New tests:
+	- test-addSize, test-tableBalance, test-trim.
+* New file:
+	- database_readme.
+
+
 Version 1.1.0
 ------------------------------------------------------------------------------
 * NB! Version 1.1.0 include an important bug fix for estimating a prediction
 range for the stochastic threshold (see bug fixes in 'modelDropout').
-* Updated for compatibility with 'testthat' version 8.
+* Updated for compatibility with 'testthat' version 0.8.
 * Kit definition file 'kit.txt'.
     - Added support for 'PowerPlex ESX 16'.
     - Added support for 'Investigator ESSplex Plus'.
@@ -33,13 +79,13 @@ range for the stochastic threshold (see bug fixes in 'modelDropout').
     - Fixed NA in title for ecdp.
     - Fixed heatmap by 'H' loosing samples with equal 'H'.
   plotPrecision_gui
-    - Implemented new dot/box plot and plot all data (insted of min/max)
+    - Implemented new dot/box plot and plot all data (insted of min/max).
     - Implemented theme and colour.
   plotStutter_gui
     - Fixed plot bugs.
     - Implemented theme.
   slim/slim_gui
-    - Fixed minor bug when only one column in 'fix' (issue#3 @ GitHub)
+    - Fixed minor bug when only one column in 'fix' (issue#3 @ GitHub).
   strvalidator (Main GUI)
     - Added 'Summarize' balance data button in 'Balance' tab.
     - Added 'Add Size' button in 'Edit' tab.

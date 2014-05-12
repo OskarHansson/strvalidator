@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Implemented new option 'ol.rm'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
@@ -83,45 +84,29 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(f0g0_dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker","Allele","Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker","Allele","Height")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
+      svalue(f2_save_edt) <- paste(val_obj, "_profile", sep="")
         
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-
-        # Reset components.
-        .gData <<- data.frame(No.Data=NA)
-        svalue(f0g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        svalue(f0g0_dataset_drp, index=TRUE) <- 1
-        
-      } else {
-
-        # Load or change components.
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
-        svalue(f2_save_edt) <- paste(val_obj, "_profile", sep="")
-        
-      }
-      
     } else {
-      
+
       # Reset components.
       .gData <<- data.frame(No.Data=NA)
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
+      svalue(f0g0_dataset_drp, index=TRUE) <- 1
       
     }
+    
   } )
   
   # FRAME 1 ###################################################################

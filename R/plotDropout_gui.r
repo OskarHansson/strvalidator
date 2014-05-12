@@ -6,6 +6,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
+# 15.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
 # 17.02.2014: Fixed NA in title for ecdp.
 # 17.02.2014: Fixed heatmap by 'H' loosing samples with equal 'H'.
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
@@ -89,31 +91,17 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
     val_obj <- svalue(dataset_drp)
-    .gData <<- get(val_obj, envir=env)
-
-    # Check if suitable for plot dropout...
+    
+    # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height",
                      "Dropout", "Rfu", "Heterozygous")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
     
-    if(!all(requiredCol %in% colnames(.gData))){
-
-      missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+    if(ok){
       
-      message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse="\n"), sep="")
-      
-      gmessage(message, title="message",
-               icon = "error",
-               parent = w) 
-      
-      # Reset components.
-      .gData <<- NULL
-      .gDataColumns <<- NULL
-      svalue(f5_save_edt) <- ""
-      
-    } else {
-
       # Load or change components.
+      .gData <<- get(val_obj, envir=env)
       .gDataColumns <<- names(.gData)
       
       # Suggest name.
@@ -130,6 +118,13 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       enabled(f7_plot_sample_btn) <- TRUE
       enabled(f8_plot_ecdf_btn) <- TRUE
       enabled(f8_plot_dot_btn) <- TRUE
+      
+    } else {
+      
+      # Reset components.
+      .gData <<- NULL
+      .gDataColumns <<- NULL
+      svalue(f5_save_edt) <- ""
       
     }
     
@@ -933,7 +928,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
         # NB! This colour is only a grouping variable, NOT plot color.
         gp <- gp + geom_point(data=.gData, mapping = aes_string(colour = "Dye"),
-                              position = position_jitter(width = 0.2)) 
+                              position = position_jitter(height = 0, width = 0.2)) 
 
         # Specify colour values must be strings, NOT factors!
         # NB! The plot colours are specified as here as strings.

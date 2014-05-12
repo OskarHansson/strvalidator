@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 06.05.2014: Implemented 'checkDataset'.
 # 27.11.2013: First version.
 
 
@@ -73,46 +74,31 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
     val_obj <- svalue(dataset_drp)
+
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-      
+    if(ok){
+      # Load or change components.
+
+      # Get data.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker")
       
-      if(!all(requiredCol %in% colnames(.gData))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
+      # Load or change components.
+      .gDataName <<- val_obj
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
+      .gKit <<- detectKit(.gData, index=TRUE)
+      svalue(kit_drp, index=TRUE) <- .gKit
+      svalue(f2_save_edt) <- paste(.gDataName, "_marker", sep="")
       
-        # Reset components.
-        .gData <<- data.frame(No.Data=NA)
-        .gDataName <<- NULL
-        svalue(dataset_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
-
-        # Load or change components.
-        .gDataName <<- val_obj
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
-        .gKit <<- detectKit(.gData, index=TRUE)
-        svalue(kit_drp, index=TRUE) <- .gKit
-        svalue(f2_save_edt) <- paste(.gDataName, "_marker", sep="")
-        
-        if(debug){
-          print("Detected kit index")
-          print(.gKit)
-        }
-        
+      if(debug){
+        print("Detected kit index")
+        print(.gKit)
       }
-      
+        
     } else {
       
       # Reset components.
@@ -122,6 +108,7 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(f2_save_edt) <- ""
       
     }
+    
   } )
   
   # KIT -----------------------------------------------------------------------

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 17.05.2013: First version.
@@ -68,8 +69,13 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(f1g1_data1_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    ok <- checkDataset(name=val_obj, reqcol=NULL,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData1 <<- get(val_obj, envir=env)
       .gData1Name <<- val_obj
       
@@ -84,6 +90,7 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
       svalue(f2_name) <- ""
       
     }
+    
   } )
 
   f1g1[2,1] <- glabel(text="Select dataset 2:", container=f1g1)

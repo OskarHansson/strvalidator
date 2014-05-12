@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 04.03.2014: Fixed bug when no NA and NA!=NULL.
 # 25.02.2014: Option to add directly to dataset.
 # 25.02.2014: Option to replace NAs.
 # 13.04.2013: Rewrote the function to work with 'slim' data.
@@ -112,13 +113,6 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
     resH <- NULL
     resPeaks <- NULL
     
-#     # Create empty result data frame with NAs.
-#     res <- data.frame(t(rep(NA,3)))
-#     # Add column names.
-#     names(res) <- c("Sample.Name","H","Peaks")
-#     # Remove all NAs
-#     res <- res[-1,]
-    
   }
 
   # Create a vector 'Z', where 1 is heterozygous and 2 is homozygous.
@@ -142,7 +136,7 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
 		
 		# Sum all peak heights.
 		totalPeakHeight <- sum(cSampleData$Height, na.rm=TRUE)
-		
+    
 		# Sum number of peaks.
 		totalObservedPeaks <- sum(!is.na(cSampleData$Height))
 
@@ -159,14 +153,6 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
       data[cSampleRows, ]$Peaks <- totalObservedPeaks
       
     } else {
-      
-#       # Save result in temporary data frame.
-#       tmp <- data.frame(Sample.Name = cSampleName,
-#                         H = avgPeakHeight,
-#                         Peaks = totalObservedPeaks)
-#       
-#       # Add result to data frame.
-#       res <- rbind(res, tmp)
       
       # Add to result.
       resSample <- c(resSample, cSampleName)
@@ -186,9 +172,14 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
   
   # Replace NA:s
   if(!is.null(na)){
-    n <- sum(is.na(res$H))
-    res[is.na(res$H), ]$H <- na
-    message(paste(n, " NA's replaced with '", na, "'.", sep=""))
+    
+    # Check if NA:s and change to 'na'.
+    if(any(is.na(res$H))){
+      n <- sum(is.na(res$H))
+      res[is.na(res$H), ]$H <- na
+      message(paste(n, " NA's replaced with '", na, "'.", sep=""))
+    }
+    
   }
 
 	# Return result.

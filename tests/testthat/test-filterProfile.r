@@ -1,17 +1,17 @@
 context("filterProfile")
 
 ################################################################################
-#' TODO LIST
-#' TODO: ...
+# TODO LIST
+# TODO: ...
 
 ################################################################################
-#' CHANGE LOG
-#' 22.01.2014: Fixed test 2 in accordance with change in 'filterProfile'.
-#' 20.01.2014: All tests working.
-#' 
-#' test_dir("inst/tests/")
-#' test_file("tests/testthat/test-filterProfile.r")
-#' test_dir("tests/testthat")
+# CHANGE LOG
+# 22.01.2014: Fixed test 2 in accordance with change in 'filterProfile'.
+# 20.01.2014: All tests working.
+# 
+# test_dir("inst/tests/")
+# test_file("tests/testthat/test-filterProfile.r")
+# test_dir("tests/testthat")
 
 test_that("filterProfile", {
 

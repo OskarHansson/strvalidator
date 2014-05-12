@@ -1,9 +1,16 @@
 ################################################################################
 # TODO LIST
-# TODO: Option to drop any marker?
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG
+# 07.05.2014: Implemented new column 'TPH' for X-axis when plot Lb.
+# 06.05.2014: Implemented 'checkDataset'.
+# 05.05.2014: Fixed 'drop gender' and 'plot log' settings not saved.
+# 02.05.2014: Fixed bug when 'drop gender marker=TRUE' and no defined marker.
+# 25.05.2014: Fixed scale_colour_manual use first color for all in complex plot.
+# 15.04.2014: Fixed now handle no observation in an entire dye channel.
+# 14.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
 # 23.02.2014: Fixed different y max for complex plot, when supposed to be fixed.
 # 23.02.2014: Implemented theme.
 # 23.02.2014: Fixed shape for 'complex' plots.
@@ -103,65 +110,47 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
     val_obj <- svalue(dataset_drp)
+
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    if(ok){
+      # Load or change components.
       
+      # Get data.
       .gData <<- get(val_obj, envir=env)
-      # Check if suitable for plot balance...
-  
-      requiredCol <- c("Sample.Name", "Marker")
+      .gDataName <<- val_obj
+
+      # Suggest name.
+      svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
       
-      if(!all(requiredCol %in% colnames(.gData))){
-  
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(f5_save_edt) <- ""
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(f0_samples_lbl) <- " (0 samples)"
-        
-      } else {
+      svalue(f0_samples_lbl) <- paste(" (",
+                                      length(unique(.gData$Sample.Name)),
+                                      " samples)", sep="")
 
-        # Load or change components.
-        .gDataName <<- val_obj
-
-        # Suggest name.
-        svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(kit_drp, index=TRUE) <- kitIndex
+      
+      # Enable buttons.
+      enabled(plot_hb_btn) <- TRUE
+      enabled(plot_hb_d_btn) <- TRUE
+      enabled(plot_hb_h_btn) <- TRUE
+      enabled(plot_lb_btn) <- TRUE
+      enabled(plot_lb_h_btn) <- TRUE
         
-        svalue(f0_samples_lbl) <- paste(" (",
-                                        length(unique(.gData$Sample.Name)),
-                                        " samples)", sep="")
-
-        # Detect kit.
-        kitIndex <- detectKit(.gData)
-        # Select in dropdown.
-        svalue(kit_drp, index=TRUE) <- kitIndex
-        
-        # Enable buttons.
-        enabled(plot_hb_btn) <- TRUE
-        enabled(plot_hb_d_btn) <- TRUE
-        enabled(plot_hb_h_btn) <- TRUE
-        enabled(plot_lb_btn) <- TRUE
-        enabled(plot_lb_h_btn) <- TRUE
-        
-      }
-
     } else {
       
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
+      svalue(dataset_drp, index=TRUE) <- 1
       svalue(f0_samples_lbl) <- " (0 samples)"
       
-    }    
+    }
     
   } )  
   
@@ -328,7 +317,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(plot_lb_btn, handler = function(h, ...) {
     
     # Check if suitable for plot.
-    requiredCol <- c("Sample.Name", "Marker", "Lb", "MPH")
+    requiredCol <- c("Sample.Name", "Marker", "Lb", "TPH")
     
     if(!all(requiredCol %in% colnames(.gData))){
       
@@ -441,8 +430,8 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                          by=0.01, value=0.60,
                                          container=grid2)
 
-  grid2[1,5] <- glabel(text="Jitter:", container=grid2)
-  grid2[1,6] <- e2_jitter_edt <- gedit(text="0.1", width=4, container=grid2)
+  grid2[1,5] <- glabel(text="Jitter (width):", container=grid2)
+  grid2[1,6] <- e2_jitter_edt <- gedit(text="0", width=4, container=grid2)
 
   # FRAME 3 ###################################################################
 
@@ -559,6 +548,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       print(val_theme)
     }
     
+    # Declare variables.
+    ymax <- NULL  # For complex plots.
+    ymin <- NULL  # For complex plots.
     
     if (!is.na(.gData) && !is.null(.gData)){
       
@@ -579,14 +571,19 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
         # Get gender marker.
         genderMarker <- getKit(val_kit, what="Gender")
-
-        # Drop gender marker.
-        .gData <- .gData[.gData$Marker != genderMarker, ]
-
-        # Refactor and keep order of levels.
-        .gData$Marker <- factor(.gData$Marker, 
-                                levels=levels(.gData$Marker)[levels(.gData$Marker) != genderMarker])
         
+        # Check if genderMarker was found.
+        if(length(genderMarker) > 0){
+
+          # Drop gender marker.
+          .gData <- .gData[.gData$Marker != genderMarker, ]
+          
+          # Refactor and keep order of levels.
+          .gData$Marker <- factor(.gData$Marker, 
+                                  levels=levels(.gData$Marker)[levels(.gData$Marker) != genderMarker])
+          
+        }
+
       }
       
       # Height must be numeric (not string).
@@ -596,14 +593,25 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
       }
       
+      # Height must be numeric (not string).
+      if(!is.numeric(.gData$TPH)){
+        .gData$TPH <- as.numeric(as.character(.gData$TPH))
+        message("'TPH' not numeric, converting to numeric.")
+        
+      }
+      
       # Check if 'simple' or 'complex' plotting:
+      # Make data frame from dataset marker levels.
+      markerDye <- data.frame(Marker=levels(.gData$Marker))
+      # Add colors.
+      markerDye <- addColor(data=markerDye, kit=val_kit)
       # Get Marker and Dye column.
-      markerDye <- .gData[c("Marker","Dye")]
+      markerDye <- markerDye[c("Marker","Dye")]
       # Extract unique elements.
       uniqueMarkerDye <- markerDye[!duplicated(markerDye),]
       # Calculate number of unique columns per dye.
       val_ncol <- unique(table(uniqueMarkerDye$Dye))
-
+      
       # Make palette.
       val_palette <- unique(getKit(val_kit, what="Color")$Color)
       val_palette <- addColor(val_palette, have="Color", need="R.Color")
@@ -674,7 +682,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         } else if (what == "Lb") {
           
           mainTitle <- "Locus balance"
-          xTitle <- "Mean peak height (RFU)"
+          xTitle <- "Locus peak height (RFU)"
           if(val_log){
             yTitle <- "Log(Ratio)"
           } else {
@@ -724,7 +732,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           
         } else if (what == "Lb") {
           
-          gp <- ggplot(.gData, aes_string(x="MPH", y="Lb", colour="Dye"))
+          gp <- ggplot(.gData, aes_string(x="TPH", y="Lb", colour="Dye"))
           
         } else if (what == "Lb_H") {
           
@@ -741,11 +749,11 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
         # Plot settings.
         gp <- gp + geom_point(shape=val_shape, alpha=val_alpha,
-                              position=position_jitter(width=val_jitter))
+                              position=position_jitter(height = 0, width=val_jitter))
         gp <- gp + facet_grid("Dye ~ Marker")
         # NB! 'facet_wrap' does not seem to support strings.
         #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-        gp <- gp + facet_wrap(as.formula(paste("~", "Marker")), ncol=val_ncol,
+        gp <- gp + facet_wrap(as.formula(paste("~", "Marker")), ncol=val_ncol, # No dye labels.
                               drop=FALSE, scales=val_scales)
         gp <- gp + scale_colour_manual(guide=FALSE, values=val_palette)
         
@@ -823,35 +831,52 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         g <- gtable::gtable_add_grob(g, grid::textGrob(xTitle), t=noRows ,b=noRows ,l=2,r=2)
         g <- gtable::gtable_add_grob(g, grid::textGrob(yTitle, rot=90), t=1,b=noRows ,l=1,r=1)
         
+        # Get all markers to be plotted and add dye for subsetting.
+        gLevel <- data.frame(Marker=levels(.gData$Marker))
+        gLevel <- addColor(gLevel, kit=val_kit)
+        
         # Loop over all dyes.
         for(d in seq(along=dyes)){
+          
+          # Get data for current dye.
+          gDataSub <- .gData[.gData$Dye == dyes[d],]
+
+          # Get current markers/levels.
+          gDyeLevel <- as.character(gLevel$Marker[gLevel$Dye==dyes[d]])
+          
+          # Can't handle zero rows.
+          if(nrow(gDataSub)==0){
+            tmp <- data.frame(Marker=gDyeLevel, Allele=NA, MPH=0, Hb=0,
+                              Lb=0, H=0, Delta=0, Dye=dyes[d])
+            gDataSub <- plyr::rbind.fill(gDataSub, tmp)
+
+          }
+          
+          # Refactor to levels of current dye (and maintain order).
+          gDataSub$Marker <- factor(gDataSub$Marker, levels=gDyeLevel)
+          gDataSub$Dye <- factor(dyes[d])
           
           # Create a plot for the current subset.
           # Select what to plot.
           if(what == "Hb"){
             
-            gp <- ggplot(subset(.gData, .gData$Dye==dyes[d]),
-                         aes_string(x = "MPH", y = "Hb", colour="Dye"))
+            gp <- ggplot(gDataSub, aes_string(x = "MPH", y = "Hb", colour="Dye"))
             
           } else if (what == "Hb_D") {
             
-            gp <- ggplot(subset(.gData, .gData$Dye==dyes[d]),
-                         aes_string(x="Delta", y="Hb", colour="Dye"))
+            gp <- ggplot(gDataSub, aes_string(x="Delta", y="Hb", colour="Dye"))
             
           } else if (what == "Hb_H") {
             
-            gp <- ggplot(subset(.gData, .gData$Dye==dyes[d]),
-                         aes_string(x = "H", y = "Hb", colour="Dye"))
+            gp <- ggplot(gDataSub, aes_string(x = "H", y = "Hb", colour="Dye"))
             
           } else if (what == "Lb") {
             
-            gp <- ggplot(subset(.gData, .gData$Dye==dyes[d]),
-                         aes_string(x = "MPH", y = "Lb", colour="Dye"))
+            gp <- ggplot(gDataSub, aes_string(x = "TPH", y = "Lb", colour="Dye"))
             
           } else if (what == "Lb_H") {
             
-            gp <- ggplot(subset(.gData, .gData$Dye==dyes[d]),
-                         aes_string(x = "H", y = "Lb", colour="Dye"))
+            gp <- ggplot(gDataSub, aes_string(x = "H", y = "Lb", colour="Dye"))
             
           }
 
@@ -860,9 +885,10 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           
           # Plot settings.
           gp <- gp + geom_point(shape=val_shape, alpha = val_alpha,
-                                position = position_jitter(width = val_jitter))
-          gp <- gp + scale_colour_manual(guide=FALSE, values=val_palette, drop=FALSE)
-          gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales)
+                                position = position_jitter(height = 0, width = val_jitter))
+          gp <- gp + scale_colour_manual(guide=FALSE, values=val_palette[d], drop=FALSE)
+          gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales, drop = FALSE) # Keep dye labels.
+          #gp <- gp + facet_grid("~ Marker", scales=val_scales)  # No dye labels.
 
           # Set margin around each plot. Note: top, right, bottom, left.
           gp <- gp + theme(plot.margin = grid::unit(c(0.25, 1.25, 0, 0), "lines"))
@@ -979,6 +1005,12 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       if(exists(".strvalidator_plotBalance_gui_y_title", envir=env, inherits = FALSE)){
         svalue(y_title_edt) <- get(".strvalidator_plotBalance_gui_y_title", envir=env)
       }
+      if(exists(".strvalidator_plotBalance_gui_gender", envir=env, inherits = FALSE)){
+        svalue(f1_drop_chk) <- get(".strvalidator_plotBalance_gui_gender", envir=env)
+      }
+      if(exists(".strvalidator_plotBalance_gui_log", envir=env, inherits = FALSE)){
+        svalue(f1_logHb_chk) <- get(".strvalidator_plotBalance_gui_log", envir=env)
+      }
       if(exists(".strvalidator_plotBalance_gui_points_shape", envir=env, inherits = FALSE)){
         svalue(e2_shape_spb) <- get(".strvalidator_plotBalance_gui_points_shape", envir=env)
       }
@@ -1032,6 +1064,8 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     if(svalue(f1_savegui_chk)){
       
       assign(x=".strvalidator_plotBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotBalance_gui_gender", value=svalue(f1_drop_chk), envir=env)
+      assign(x=".strvalidator_plotBalance_gui_log", value=svalue(f1_logHb_chk), envir=env)
       assign(x=".strvalidator_plotBalance_gui_title", value=svalue(title_edt), envir=env)
       assign(x=".strvalidator_plotBalance_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_plotBalance_gui_x_title", value=svalue(x_title_edt), envir=env)
@@ -1066,6 +1100,12 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }
       if(exists(".strvalidator_plotBalance_gui_y_title", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotBalance_gui_y_title", envir = env)
+      }
+      if(exists(".strvalidator_plotBalance_gui_gender", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotBalance_gui_gender", envir = env)
+      }
+      if(exists(".strvalidator_plotBalance_gui_log", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotBalance_gui_log", envir = env)
       }
       if(exists(".strvalidator_plotBalance_gui_points_shape", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotBalance_gui_points_shape", envir = env)

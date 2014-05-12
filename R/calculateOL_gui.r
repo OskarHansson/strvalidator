@@ -16,7 +16,7 @@
 #' \code{calculateOL_gui} is a GUI wrapper for the \code{calculateOL}
 #'  function.
 #'
-#' @details By analysing the allelic ladders the risk for getting off-ladder
+#' @details By analysis of the allelic ladder the risk for getting off-ladder
 #' (OL) alleles are calculated. The frequencies from a provided population
 #' database is used to calculate the risk per marker and in total for the given
 #' kit(s). Virtual alleles can be excluded from the calculation.

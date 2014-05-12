@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG
+# 06.05.2014: Implemented 'checkDataset'.
+# 05.05.2014: Fixed same color scale for all sub plots in complex plots.
+# 14.04.2014: Fixed different y max for complex plot, when supposed to be fixed.
+# 14.04.2014: Fixed now handle no observation in an entire dye channel.
+# 14.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
 # 23.02.2014: Fixed different y max for complex plot, when supposed to be fixed.
 # 23.02.2014: Fixed shape for 'complex' plots.
 # 13.02.2014: Implemented theme.
@@ -99,58 +104,40 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
     val_obj <- svalue(dataset_drp)
+
+    # Check if suitable.
+    requiredCol <- c("Marker", "Allele", "HeightA", "Stutter", "Type")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-    
+    if(ok){
+      # Load or change components.
+
+      # Get data.
       .gData <<- get(val_obj, envir=env)
-      # Check if suitable for plot stutter...
-  
-      requiredCol <- c("Marker", "Allele", "HeightA", "Stutter", "Type")
       
-      if(!all(requiredCol %in% colnames(.gData))){
-  
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
+      # Suggest name.
+      svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
       
-        # Reset components.
-        .gData <<- NULL
-        svalue(f5_save_edt) <- ""
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(f0_samples_lbl) <- " (0 samples)"
-        
-      } else {
-  
-        # Load or change components.
-  
-        # Suggest name.
-        svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
-        
-        svalue(f0_samples_lbl) <- paste(" (",
-                                        length(unique(.gData$Sample.Name)),
-                                        " samples)", sep="")
-        
-        # Detect kit.
-        kitIndex <- detectKit(.gData)
-        # Select in dropdown.
-        svalue(kit_drp, index=TRUE) <- kitIndex
-        
-        # Enable buttons.
-        enabled(plot_allele_btn) <- TRUE
-        enabled(plot_height_btn) <- TRUE
-        
-      }
+      svalue(f0_samples_lbl) <- paste(" (",
+                                      length(unique(.gData$Sample.Name)),
+                                      " samples)", sep="")
+      
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(kit_drp, index=TRUE) <- kitIndex
+      
+      # Enable buttons.
+      enabled(plot_allele_btn) <- TRUE
+      enabled(plot_height_btn) <- TRUE
       
     } else {
-      
+    
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
+      svalue(dataset_drp, index=TRUE) <- 1
       svalue(f0_samples_lbl) <- " (0 samples)"
       
     }
@@ -308,7 +295,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                          by=0.01, value=0.60,
                                          container=grid2)
 
-  grid2[1,5] <- glabel(text="Jitter:", container=grid2)
+  grid2[1,5] <- glabel(text="Jitter (width):", container=grid2)
   grid2[1,6] <- jitter_txt <- gedit(text="0.1", width=4, container=grid2)
 
   # FRAME 3 ###################################################################
@@ -479,13 +466,18 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }
 
       # Check if 'simple' or 'complex' plotting:
+      # Make data frame from dataset marker levels.
+      markerDye <- data.frame(Marker=levels(.gData$Marker))
+      # Add colors.
+      markerDye <- addColor(data=markerDye, kit=val_kit)
       # Get Marker and Dye column.
-      markerDye <- .gData[c("Marker","Dye")]
+      markerDye <- markerDye[c("Marker","Dye")]
       # Extract unique elements.
       uniqueMarkerDye <- markerDye[!duplicated(markerDye),]
       # Calculate number of unique columns per dye.
       val_ncol <- unique(table(uniqueMarkerDye$Dye))
-
+      
+      
       # Plotting alleles for observed stutters per marker.
       if(what == "allele"){
         
@@ -524,12 +516,16 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
       # Plot settings.
       gp <- gp + geom_point(shape=val_shape, alpha=val_alpha, 
-                            position=position_jitter(width=val_jitter)) 
-      gp <- gp + facet_grid("Dye ~ Marker")
+                            position=position_jitter(height = 0, width=val_jitter)) 
+
+      # Facet and keep all levels.
+      gp <- gp + facet_grid("Dye ~ Marker", drop = FALSE)
       # NB! 'facet_wrap' does not seem to support strings.
       #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-      gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol=val_ncol,
+      gp <- gp + facet_wrap(as.formula(paste("Dye ~ Marker")), ncol=val_ncol, # Keep dye labels
                             drop=FALSE, scales=val_scales)
+      #gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol=val_ncol, # No dye labels
+      #                      drop=FALSE, scales=val_scales)
       
       # Restrict y axis.
       if(!is.na(val_ymin) && !is.na(val_ymax)){
@@ -568,6 +564,29 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           print(paste("Simple plot, val_ncol:",
                       paste(val_ncol, collapse=", ")))
         }
+        # NB! 'facet_wrap' does not seem to support strings.
+        #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
+        gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol=val_ncol,
+                              drop=FALSE, scales=val_scales)
+        
+        # Restrict y axis.
+        if(!is.na(val_ymin) && !is.na(val_ymax)){
+          val_y <- c(val_ymin, val_ymax)
+        } else {
+          val_y <- NULL
+        }
+        # Restrict x axis.
+        if(!is.na(val_xmin) && !is.na(val_xmax)){
+          val_x <- c(val_xmin, val_xmax)
+        } else {
+          val_x <- NULL
+        }
+        # Zoom in without dropping observations.
+        gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
+        
+        if(debug){
+          print(paste("Plot zoomed to xlim:", val_x, "ylim:", val_y))
+        }
         
         # Show plot.        
         print(gp)
@@ -586,10 +605,17 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
         # Extract the legend from the 'simple' plot.
         guide <- gtable::gtable_filter(ggplotGrob(gp), pattern="guide")
-
+        
         # Get y max to be able to use same scale across plots.
-        yMax <- max(.gData$Ratio, na.rm=TRUE) * 1.05
-        yMin <- min(.gData$Ratio, na.rm=TRUE) * 0.95
+        ymax <- max(.gData$Ratio, na.rm=TRUE) * 1.05
+        ymin <- min(.gData$Ratio, na.rm=TRUE) * 0.95
+        
+        if(debug){
+          print("ymax:")
+          print(ymax)
+          print("ymin:")
+          print(ymin)
+        }
         
         # Get kit colors and convert to dyes.
         dyes <- unique(getKit(val_kit, what="Color")$Color)
@@ -616,8 +642,34 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         # Add the legend to the table object.
         g <- gtable::gtable_add_grob(g,guide , t=1,b=noRows,l=3,r=3)
 
+        # Get all markers to be plotted and add dye for subsetting.
+        gLevel <- data.frame(Marker=levels(.gData$Marker))
+        gLevel <- addColor(gLevel, kit=val_kit)
+        
+        # Make palette.
+        gTypeLevel <- levels(.gData$Type)
+        val_palette <- .gg_color_hue(length(gTypeLevel))
+        names(val_palette)  <- gTypeLevel
+        
         # Loop over all dyes.
         for(d in seq(along=dyes)){
+          
+          # Get data for current dye.
+          gDataSub <- .gData[.gData$Dye == dyes[d],]
+          
+          # Get current markers/levels.
+          gDyeLevel <- as.character(gLevel$Marker[gLevel$Dye==dyes[d]])
+          
+          # Can't handle zero rows.
+          if(nrow(gDataSub)==0){
+            tmp <- data.frame(Marker=gDyeLevel, Allele=NA, HeightA=0, Ratio=0, Type=-1)
+            gDataSub <- plyr::rbind.fill(gDataSub, tmp)
+            
+          }
+
+          # Refactor to levels of current dye (and maintain order).
+          gDataSub$Marker <- factor(gDataSub$Marker, levels=gDyeLevel)
+          gDataSub$Dye <- factor(dyes[d])
           
           # Create a plot for the current subset.
           # Select what to plot.
@@ -625,16 +677,13 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
             # Plotting alleles for observed stutters per marker.
 
             # Create a plot for the current subset.
-            gp <- ggplot(subset(.gData, .gData$Dye == dyes[d]), 
-                         aes_string(x = "Allele", y = "Ratio", colour="Type")) 
-            
+            gp <- ggplot(gDataSub, aes_string(x = "Allele", y = "Ratio", color="Type"))
             
           } else if (what == "height") {
             # Plotting true allele height for observed stutters per marker.
             
             # Create a plot for the current subset.
-            gp <- ggplot(subset(.gData, .gData$Dye == dyes[d]), 
-                         aes_string(x = "HeightA", y = "Ratio", colour="Type")) 
+            gp <- ggplot(gDataSub, aes_string(x = "HeightA", y = "Ratio", color="Type"))
             gp <- gp + scale_x_continuous(breaks = scales::pretty_breaks())
             
           }
@@ -644,10 +693,15 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           
           # Plot settings.
           gp <- gp + geom_point(shape=val_shape, alpha = val_alpha,
-                                position = position_jitter(width = val_jitter))
+                                position = position_jitter(height = 0, width = val_jitter))
 
-          gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales)
-
+          # Add custom color palette (use same for all sub plots).
+          gp <- gp + scale_colour_manual(values = val_palette)
+          
+          # Facet plot and keep all levels (in current dye). 
+          gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales, drop = FALSE) # Keep dye labels.
+          #gp <- gp + facet_grid("~ Marker", scales=val_scales, drop = FALSE) # No dye labels.
+          
           # Set margin around each plot. Note: top, right, bottom, left.
           gp <- gp + theme(plot.margin = grid::unit(c(0.25, 0, 0, 0), "lines"))
           
@@ -673,7 +727,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           }
           # Zoom in without dropping observations.
           gp <- gp + coord_cartesian(xlim=val_x, ylim=val_y)
-          
+
           if(debug){
             print(paste("Plot zoomed to xlim:", val_x, "ylim:", val_y))
           }
@@ -729,7 +783,13 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   }
 
   # INTERNAL FUNCTIONS ########################################################
-  
+
+  # Return a number of ggplot default colors.
+  .gg_color_hue <- function(n) {
+    hues = seq(15, 375, length=n+1)
+    hcl(h=hues, l=65, c=100)[1:n]
+  }
+
   .loadSavedSettings <- function(){
     
     # First check status of save flag.

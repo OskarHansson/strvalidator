@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 15.04.2014: Revert to previous match if no match in a method.
 # 24.10.2013: Improved matching.
 # 18.09.2013: Fixed error when compairing unequal length.
 # 17.09.2013: Updated to support new 'getKit' structure.
@@ -66,7 +67,7 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
   }
 
   # Get kit index.
-  bestFit <- max(score)
+  bestFit <- max(score, na.rm=TRUE)
   detectedKit <- which(score %in% bestFit)
 
   # Get number of candidate kit.
@@ -79,7 +80,11 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
     print(detectedKit)
   }
   
+  # Store last match.
+  prevDetected <- detectedKit
+  
   # Use 'detectedKit' in the following trials to resolve the kit further.
+  #######################################################################
 
   # Check if more than one.
   if(candidates > 1){
@@ -140,8 +145,6 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
         # Remember last matching position.
         prevPos <- matchEnd
         
-        
-        
       }
       
       # Sum match score of current kit.
@@ -150,7 +153,7 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
     }
     
     # Get kit index.
-    bestFit <- max(kitScore, na.rm=TRUE)
+    bestFit <- suppressWarnings(max(kitScore, na.rm=TRUE))
     kitIndex <- which(kitScore %in% bestFit)
     
     # Get detected kits.
@@ -163,10 +166,28 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
         print(detectedKit)
       }
 
-  }
+  } #--------------------------------------------------------------------------
 
   # Get number of candidate kit.
   candidates <- length(detectedKit)
+  
+  if(candidates == 0){
+
+    # Revert to previous matches.
+    detectedKit <- prevDetected
+    
+    if(debug){
+      print("No match with this method!")
+      print("Revert to previous match:")
+      print(detectedKit)
+    }
+    
+  } else {
+    
+    # Store last match.
+    prevDetected <- detectedKit
+    
+  } ###########################################################################
     
 # THIS STRATEGY DOES NOT PERFORM WELL IF MARKERS ARE NOT IN ORDER (e.g. no gender marker).  
 #  
@@ -218,11 +239,29 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
 #       print(detectedKit)
 #     }
 #     
-#   }  
+#   } #--------------------------------------------------------------------------
 # 
-#   # Get number of candidate kit.
-#   candidates <- length(detectedKit)
-#   
+#     # Get number of candidate kit.
+#     candidates <- length(detectedKit)
+#     
+#     if(candidates == 0){
+#       
+#       # Revert to previous matches.
+#       detectedKit <- prevDetected
+#       
+#       if(debug){
+#         print("No match with this method!")
+#         print("Revert to previous match:")
+#         print(detectedKit)
+#       }
+#       
+#     } else {
+#       
+#       # Store last match.
+#       prevDetected <- detectedKit
+#       
+#     } ###########################################################################
+
   
   
 # THIS STRATEGY DOES NOT PERFORM WELL IF MARKERS ARE NOT IN ORDER.
@@ -269,14 +308,32 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
 #       print(detectedKit)
 #     }
 #       
+#   } #--------------------------------------------------------------------------
+# 
 #     # Get number of candidate kit.
 #     candidates <- length(detectedKit)
-#
-#   }
+#     
+#     if(candidates == 0){
+#       
+#       # Revert to previous matches.
+#       detectedKit <- prevDetected
+#       
+#       if(debug){
+#         print("No match with this method!")
+#         print("Revert to previous match:")
+#         print(detectedKit)
+#       }
+#       
+#     } else {
+#       
+#       # Store last match.
+#       prevDetected <- detectedKit
+#       
+#     } ###########################################################################
 
   if(candidates > 1){
     
-    warning("Could not resolve kit. Multiple candidates returned.")
+    message("Could not resolve kit. Multiple candidates returned.")
     
   }
   

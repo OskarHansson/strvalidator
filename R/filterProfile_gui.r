@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 12.01.2014: Replaced 'subset' with native code.
 # 15.12.2013: Fixed filter by kit bins.
 # 09.12.2013: Added 'filter by' option.
@@ -79,62 +80,28 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(g0_dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       slim=TRUE, slimcol="Allele",
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-      slimmed <- sum(grepl("Allele",names(.gData), fixed=TRUE)) == 1
+      .gDataName <<- val_obj
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(f2_save_edt) <- paste(.gDataName, "_filter", sep="")
       
-      if(!all(requiredCol %in% colnames(.gData))){
-  
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(g0_kit_drp, index=TRUE) <- kitIndex
         
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(g0_dataset_drp, index=TRUE) <- 1
-        svalue(g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else if (!slimmed) {
-        
-        message <- paste("The dataset is too fat!\n\n",
-                         "There can only be 1 'Allele' column\n",
-                         "Slim the dataset in the 'EDIT' tab", sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(g0_dataset_drp, index=TRUE) <- 1
-        svalue(g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
-
-        # Load or change components.
-        .gDataName <<- val_obj
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(.gDataName, "_filter", sep="")
-        
-        # Detect kit.
-        kitIndex <- detectKit(.gData)
-        # Select in dropdown.
-        svalue(g0_kit_drp, index=TRUE) <- kitIndex
-        
-      }
-      
     } else {
-      
+
       # Reset components.
       .gData <<- NULL
       svalue(g0_dataset_drp, index=TRUE) <- 1
@@ -142,6 +109,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(f2_save_edt) <- ""
       
     }
+    
   } )  
   
   g0[2,1] <- g0_refset_lbl <- glabel(text="Select reference:", container=g0)
@@ -159,52 +127,19 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(g0_refset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       slim=TRUE, slimcol="Allele",
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gRef <<- get(val_obj, envir=env)
-
-      requiredCol <- c("Sample.Name", "Marker", "Allele")
-      slimmed <- sum(grepl("Allele",names(.gRef), fixed=TRUE)) == 1
-      
-      if(!all(requiredCol %in% colnames(.gData))){
+      ref <- length(unique(.gRef$Sample.Name))
+      svalue(g0_ref_lbl) <- paste("", ref, "references")
         
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gRef)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-
-        # Reset components.
-        .gRef <<- NULL
-        svalue(g0_refset_drp, index=TRUE) <- 1
-        svalue(g0_ref_lbl) <- " 0 references"
-        
-      } else if (!slimmed) {
-        
-        message <- paste("The dataset is too fat!\n\n",
-                         "There can only be 1 'Allele' column\n",
-                         "Slim the dataset in the 'EDIT' tab", sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gRef <<- NULL
-        svalue(g0_refset_drp, index=TRUE) <- 1
-        svalue(g0_ref_lbl) <- " 0 references"
-        
-      } else {
-      
-        # Load or change components.
-        ref <- length(unique(.gRef$Sample.Name))
-        svalue(g0_ref_lbl) <- paste("", ref, "references")
-        
-      }
-      
     } else {
 
       # Reset components.

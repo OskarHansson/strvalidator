@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 07.05.2014: New column 'TPH' for the total locus peak height.
 # 23.02.2014: Removed 'perSample' parameter. Use 'tableBalance' for summary statistics.
 # 08.01.2014: Filter data and only consider peaks matching reference.
 # 08.01.2014: Fixed bug when two highest peaks are equal.
@@ -29,7 +30,7 @@
 #' Calculates the inter and intra locus balance for a dataset.
 #' Only peaks corresponding to reference alleles will be included in analysis
 #' (does not require filtered data).
-#' Be careful not having actual alleles marked as 'OL' in dataset.
+#' Be careful to not have actual alleles marked as 'OL' in dataset.
 #' It will lead to underestimation of the total peak height per locus/sample.
 #' Also calculates the allele size difference between heterozygous alleles.
 #' Takes 'slimmed' data for samples and references as input.
@@ -48,7 +49,7 @@
 #' @param ignoreCase logical indicating if sample matching should ignore case.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame with with columns 'Sample.Name', 'Marker', 'Delta', 'Hb', 'Lb', 'MPH'. 
+#' @return data.frame with with columns 'Sample.Name', 'Marker', 'Delta', 'Hb', 'Lb', 'MPH', 'TPH'.
 #' 
 #' @export true
 #' @examples 
@@ -163,9 +164,9 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
   }
   
   # Create empty result data frame with NAs.
-  res <- data.frame(t(rep(NA,5)))
+  res <- data.frame(t(rep(NA,6)))
   # Add column names.
-  names(res) <- c("Sample.Name","Marker","Hb","Lb","MPH")
+  names(res) <- c("Sample.Name","Marker","Hb","Lb","MPH", "TPH")
   # Remove all NAs
   res <- res[-1,]
   
@@ -202,6 +203,7 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
       delta <- vector()
       hetBalance <- vector()
       mph <- vector()
+      tph <- vector()
       locusBalance <- vector()
       
       # Current sample name.
@@ -349,6 +351,9 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
           # Mean peak height.
           mph[m] <-  sum(nominator, denominator) / 2
           
+          # Total locus peak height.
+          tph[m] <-  sum(nominator, denominator)
+          
           # Difference in size between the alleles.
           delta[m] <- abs(as.numeric(allele1) - as.numeric(allele2))
           
@@ -358,7 +363,10 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
           hetBalance[m] <- NA
           
           # Mean peak height.
-          mph[m] <-  max1 / 2
+          mph[m] <-  NA
+          
+          # Total locus peak height.
+          tph[m] <-  max1
           
           # Difference in size between the alleles.
           delta[m] <- NA
@@ -366,6 +374,7 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
         } else {
           hetBalance[m] <- NA
           mph[m] <-  NA
+          tph[m] <-  NA
           delta[m] <- NA
         }
 
@@ -450,6 +459,8 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
         print(locusBalance)
         print("mph")
         print(mph)
+        print("tph")
+        print(tph)
       }
       
       # Save result in temporary data frame.
@@ -458,7 +469,8 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
                         Delta = delta,
                         Hb = hetBalance,
                         Lb = locusBalance,
-                        MPH = mph)
+                        MPH = mph,
+                        TPH = tph)
       
       # Add result to data frame.
       res <- rbind(res, tmp)

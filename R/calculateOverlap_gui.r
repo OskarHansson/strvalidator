@@ -15,7 +15,7 @@
 #' \code{calculateOverlap_gui} is a GUI wrapper for the \code{calculateOverlap}
 #'  function.
 #'
-#' @details By analysing the bins overlap between dye channels a measure of
+#' @details By analysis of the bins overlap between dye channels a measure of
 #' the risk for spectral pull-up artefacts can be obtain. The default result
 #' is a matrix with the total bins overlap in number of base pairs. If an allele
 #' frequency database is provided the overlap at each bin is multiplied with the

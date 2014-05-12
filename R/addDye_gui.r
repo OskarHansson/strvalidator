@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 11.05.2014: Implemented new option 'Ignore case' and save user settings functions.
+# 06.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Removed requirement for 'Sample.Name'.
 # 11.02.2014: Pass debug to 'addColor'.
 # 27.11.2013: Added parameter 'overwrite=TRUE'.
@@ -27,11 +29,12 @@
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
+#' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame in slim format.
 
-addDye_gui <- function(env=parent.frame(), debug=FALSE){
+addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Global variables.
   .gData <- data.frame(No.Data=NA)
@@ -45,6 +48,11 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
   
   
   w <- gwindow(title="Add dye to dataset", visible=FALSE)
+  
+  # Handler for saving GUI state.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    .saveSettings()
+  })
   
   gv <- ggroup(horizontal=FALSE,
                spacing=15,
@@ -76,43 +84,25 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Marker")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      # Load or change components.
       
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Marker")
+      .gDataName <<- val_obj
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
+      .gKit <<- detectKit(.gData, index=TRUE)
+      svalue(kit_drp, index=TRUE) <- .gKit
+      svalue(f2_save_edt) <- paste(.gDataName, "_dye", sep="")
       
-      if(!all(requiredCol %in% colnames(.gData))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-      
-        # Reset components.
-        .gData <<- data.frame(No.Data=NA)
-        .gDataName <<- NULL
-        svalue(dataset_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
-
-        # Load or change components.
-        .gDataName <<- val_obj
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
-        .gKit <<- detectKit(.gData, index=TRUE)
-        svalue(kit_drp, index=TRUE) <- .gKit
-        svalue(f2_save_edt) <- paste(.gDataName, "_dye", sep="")
-        
-        if(debug){
-          print("Detected kit index")
-          print(.gKit)
-        }
-        
+      if(debug){
+        print("Detected kit index")
+        print(.gKit)
       }
       
     } else {
@@ -122,8 +112,9 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-      
+
     }
+    
   } )
   
   # KIT -----------------------------------------------------------------------
@@ -136,6 +127,20 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
                            container = grid0)
   
   grid0[2,2] <- kit_drp
+  
+  # FRAME 1 ###################################################################
+  
+  f1 <- gframe(text = "Options",
+               horizontal=FALSE,
+               spacing = 5,
+               container = gv) 
+
+  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
+                              checked=FALSE,
+                              container=f1)
+  
+  f1_ignore_chk <- gcheckbox(text="Ignore case in marker name.",
+                             checked=FALSE, container=f1)
   
   # FRAME 2 ###################################################################
   
@@ -164,12 +169,15 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     val_kit <- svalue(kit_drp)
     val_data <- .gData
     val_name <- svalue(f2_save_edt)
+    val_ignore <- svalue(f1_ignore_chk)
     
     if(debug){
       print(".gData")
       print(names(.gData))
       print("val_kit")
       print(val_kit)
+      print("val_ignore")
+      print(val_ignore)
     }
 
     # Change button.
@@ -177,7 +185,7 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     enabled(add_btn) <- FALSE
     
     datanew <- addColor(data=.gData, kit=val_kit, need="Dye",
-                        overwrite=TRUE, debug=debug)
+                        overwrite=TRUE, ignore.case=val_ignore, debug=debug)
     
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -186,6 +194,76 @@ addDye_gui <- function(env=parent.frame(), debug=FALSE){
     dispose(w)
     
   } )
+
+  # INTERNAL FUNCTIONS ########################################################
+  
+  .loadSavedSettings <- function(){
+    
+    # First check status of save flag.
+    if(!is.null(savegui)){
+      svalue(f1_savegui_chk) <- savegui
+      enabled(f1_savegui_chk) <- FALSE
+      if(debug){
+        print("Save GUI status set!")
+      }  
+    } else {
+      # Load save flag.
+      if(exists(".strvalidator_addDye_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(f1_savegui_chk) <- get(".strvalidator_addDye_gui_savegui", envir=env)
+      }
+      if(debug){
+        print("Save GUI status loaded!")
+      }  
+    }
+    if(debug){
+      print(svalue(f1_savegui_chk))
+    }  
+    
+    # Then load settings if true.
+    if(svalue(f1_savegui_chk)){
+      if(exists(".strvalidator_addDye_gui_ignore", envir=env, inherits = FALSE)){
+        svalue(f1_ignore_chk) <- get(".strvalidator_addDye_gui_ignore", envir=env)
+      }
+      
+      if(debug){
+        print("Saved settings loaded!")
+      }
+    }
+    
+  }
+  
+  .saveSettings <- function(){
+    
+    # Then save settings if true.
+    if(svalue(f1_savegui_chk)){
+      
+      assign(x=".strvalidator_addDye_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_addDye_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
+      
+    } else { # or remove all saved values if false.
+      
+      if(exists(".strvalidator_addDye_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_addDye_gui_savegui", envir = env)
+      }
+      if(exists(".strvalidator_addDye_gui_ignore", envir=env, inherits = FALSE)){
+        remove(".strvalidator_addDye_gui_ignore", envir = env)
+      }
+      
+      if(debug){
+        print("Settings cleared!")
+      }
+    }
+    
+    if(debug){
+      print("Settings saved!")
+    }
+    
+  }
+  
+  # END GUI ###################################################################
+  
+  # Load GUI settings.
+  .loadSavedSettings()
   
   # Show GUI.
   visible(w) <- TRUE

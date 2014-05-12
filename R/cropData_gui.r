@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 07.05.2014: Implemented 'checkDataset'.
+# 07.05.2014: Fixed 'Target Value' drop not updated.
 # 07.02.2014: Removed redundant handler for 'f1_column_drp'.
 # 30.11.2013: Fixed info when factors.
 # 27.09.2013: Added option to specify data type and warning for dropout dataset.
@@ -77,10 +79,14 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    ok <- checkDataset(name=val_obj, reqcol=NULL,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      # Load or change components.
       
       .gData <<- get(val_obj, envir=env)
-      
       .gDataName <<- val_obj
       
       # Check for dropout dataset and warn.
@@ -93,7 +99,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                  icon = "warning", parent = w) 
       }
       
-      
+      # Update info.
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
       svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
@@ -129,6 +135,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(f3_rows_lbl) <- paste(" ", "<NA>", "rows")
       
     }
+    
   } )  
   
   # FRAME 1 ###################################################################
@@ -173,6 +180,8 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
             print("Selected column is not 'numeric' and not 'character'")
           }
         }
+        # Update target value etc.
+        .refresh_options()
       }
     }
   
@@ -193,7 +202,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   f2g1 <- glayout(container = f2, spacing = 5)
   
-  f2g1[1,1] <- f2g1_task_opt <- gradio(items=c("Crop/Discard values", "Replace values"), 
+  f2g1[1,1] <- f2g1_task_opt <- gradio(items=c("Discard values", "Replace values"), 
                                             selected = 1,
                                             container = f2g1)
 
@@ -269,14 +278,14 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       val_new <- as.numeric(val_new)
       if(!is.numeric(.gData[ , val_column])){
         .gData[ , val_column] <<- as.numeric(.gData[ , val_column])
-        warning("Target column not numeric. Data converted!")
+        message("Target column not numeric. Data converted!")
       }
     } else if(val_type == 2){  # Character.
       val_target <- as.character(val_target) # Not needed, edit box always character.
       val_new <- as.character(val_new) # Not needed, edit box always character.
       if(!is.character(.gData[ , val_column])){
         .gData[ , val_column] <<- as.character(.gData[ , val_column])
-        warning("Target column not character. Data converted!")
+        message("Target column not character. Data converted!")
       }
     } else {
       warning(paste("Unsupported data type selected!", val_type))
@@ -305,7 +314,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     if(!is.null(.gData) && !is.null(.gData)){
 
       if(debug){
-        print(".gData dim, str, head, tail:")
+        print("Before action: .gData dim, str, head, tail:")
         print(dim(.gData))
         print(str(.gData))
         print(head(.gData))
@@ -405,7 +414,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }
       
       if(debug){
-        print(".gData dim, str, head, tail:")
+        print("After action: .gData dim, str, head, tail:")
         print(dim(.gData))
         print(str(.gData))
         print(head(.gData))
@@ -462,11 +471,11 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     if(debug){
       print("Save pressed!")
       print(val_name)
-      print(".gData dim, str, head, tail:")
-      print(dim(.gData))
-      print(str(.gData))
-      print(head(.gData))
-      print(tail(.gData))
+      print("datanew dim, str, head, tail:")
+      print(dim(datanew))
+      print(str(datanew))
+      print(head(datanew))
+      print(tail(datanew))
     }
     
     # Save data.

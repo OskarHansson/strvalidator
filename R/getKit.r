@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
+# TODO: what=Offset/Repeat - return both?
 # TODO: Return multiple kits by specifying a vector? Not priority since easy to loop.
 
 ################################################################################
 # CHANGE LOG
+# 02.03.2014: Removed factor levels from 'Marker' before returning 'OFFSET'/'REPEAT'.
 # 09.12.2013: Removed factor levels from 'Marker' before returning 'VIRTUAL'.
 # 20.11.2013: Change parameter name 'kitNameOrIndex' to 'kit'.
 # 10.11.2013: 'Marker' returns vector instead of factor.
@@ -230,7 +232,8 @@ getKit<-function(kit=NULL, what=NA, showMessages=FALSE, .kitInfo=NULL, debug=FAL
       repeatUnit[m] <- unique(res$Repeat[res$Marker == marker[m]])
     }
     
-    res <- data.frame(Marker=marker, Repeat=repeatUnit)
+    res <- data.frame(Marker=marker, Repeat=repeatUnit,
+                      stringsAsFactors=FALSE)
     
     return(res)
     
@@ -251,7 +254,8 @@ getKit<-function(kit=NULL, what=NA, showMessages=FALSE, .kitInfo=NULL, debug=FAL
     res <- data.frame(Marker=marker,
                       Color=color,
                       Marker.Min=markerMin,
-                      Marker.Max=markerMax, stringsAsFactors=FALSE)
+                      Marker.Max=markerMax,
+                      stringsAsFactors=FALSE)
     
     # Create useful factors.
     res$Color <- factor(res$Color, levels=unique(res$Color))
@@ -269,7 +273,8 @@ getKit<-function(kit=NULL, what=NA, showMessages=FALSE, .kitInfo=NULL, debug=FAL
       offset[m] <- unique(res$Offset[res$Marker == marker[m]])
     }
     
-    res <- data.frame(Marker=marker, Offset=offset)
+    res <- data.frame(Marker=marker, Offset=offset,
+                      stringsAsFactors=FALSE)
     
     return(res)
     

@@ -1,9 +1,12 @@
 ################################################################################
 # TODO LIST
-# TODO: Option to calculate size (of any allele) instead of matching to allele in bins.
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG
+# 27.04.2014: Added option to ignore case in marker names.
+# 01.03.2014: Added options 'bins' and calculation of size.
+# 01.03.2014: Fixed bug kit always "ESX17".
 # 11.09.2014: First version.
 
 #' @title Add color information.
@@ -12,18 +15,23 @@
 #' \code{addSize} add size information to alleles.
 #'
 #' @details
-#' Adds a column 'Size' with estimated size in base pair (bp)
-#' for alleles from kit. 
+#' Adds a column 'Size' with the fragment size in base pair (bp) for each allele as
+#' estimated from kit bins OR calculated from offset and repeat. The bins
+#' option return NA for alleles not in bin. The calculate option handles
+#' all named alleles including micro variants (e.g. '9.3').
+#' Handles 'X' and 'Y' by replacing them with '1' and '2'.
 #' 
 #' @param data data.frame with at least columns 'Marker' and 'Allele'.
 #' @param kit data.frame with columns 'Marker', 'Allele', and 'Size'.
+#' @param bins logical TRUE alleles get size from corresponding bin.
+#'  If FALSE the size is calculated from the locus offset and repeat unit.
+#' @param ignore.case logical TRUE case in marker names are ignored.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame with additional columns for added colors, 
-#' or vector with converted values.
+#' @return data.frame with additional columns for added size.
 #' 
 
-addSize <- function(data, kit=NA, debug=FALSE){
+addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -49,19 +57,36 @@ addSize <- function(data, kit=NA, debug=FALSE){
          call. = TRUE)
   }
   
+  # Check kit depending on 'bins'.
+  if(bins){
+    
+    if(!"Size" %in% names(kit)){
+      stop("'kit' must contain a column 'Size'",
+           call. = TRUE)
+    }
+    
+    if(!"Allele" %in% names(kit)){
+      stop("'kit' must contain a column 'Allele'",
+           call. = TRUE)
+    }
+    
+  } else {
+    
+    if(!"Offset" %in% names(kit)){
+      stop("'kit' must contain a column 'Offset'",
+           call. = TRUE)
+    }
+    
+    if(!"Repeat" %in% names(kit)){
+      stop("'kit' must contain a column 'Repeat'",
+           call. = TRUE)
+    }
+    
+  }
+  
   # Check kit.
   if(!"Marker" %in% names(kit)){
     stop("'kit' must contain a column 'Marker'",
-         call. = TRUE)
-  }
-  
-  if(!"Allele" %in% names(kit)){
-    stop("'kit' must contain a column 'Allele'",
-         call. = TRUE)
-  }
-  
-  if(!"Size" %in% names(kit)){
-    stop("'kit' must contain a column 'Size'",
          call. = TRUE)
   }
   
@@ -73,13 +98,10 @@ addSize <- function(data, kit=NA, debug=FALSE){
   
   # PREPARE -----------------------------------------------------------------
   
-  # Get size of kit alleles.
-  kit <- getKit("ESX17", what="Size")
-  
   # Check for column 'Size'
   if("Size" %in% names(data)){
     
-    warning(paste("'data' already contain a column 'Size'\n",
+    message(paste("'data' already contain a column 'Size'\n",
                   "Size will be overwritten!"),
          call. = TRUE)
     
@@ -87,12 +109,26 @@ addSize <- function(data, kit=NA, debug=FALSE){
   
   # Add a column 'Size'
   data$Size <- NA
-  
-  # ADD SIZE ------------------------------------------------------------------
+
+  # Get offset and repeat.
+  offset <- NULL
+  repeatUnit <- NULL
+  if(!bins){
+    offset <- kit$Offset
+    repeatUnit <- kit$Repeat
+  }
 
   # Get markers in dataset.
   marker <- unique(data$Marker)
   
+  # Check if case in marker names should be ignored.
+  if(ignore.case){
+    kit$Marker <- toupper(kit$Marker)
+    marker <- toupper(marker)
+  }
+  
+  # ADD SIZE ------------------------------------------------------------------
+
   if(debug){
     print("Markers:")
     print(marker)
@@ -106,8 +142,17 @@ addSize <- function(data, kit=NA, debug=FALSE){
       print(marker[m])
     }
     
-    # Select rows for current marker.
-    cMarker <- data$Marker == marker[m]
+    if(ignore.case){
+
+      # Select rows for current marker and ignore case in marker names.
+      cMarker <- toupper(data$Marker) == toupper(marker[m])
+      
+    } else {
+      
+      # Select rows for current marker.
+      cMarker <- data$Marker == marker[m]
+      
+    }
 
     # Get alleles for current marker.
     allele <- unique(data$Allele[cMarker])
@@ -128,8 +173,32 @@ addSize <- function(data, kit=NA, debug=FALSE){
       # Combine selections.
       selection <- cMarker & cAllele
       
-      # Get size.
-      size <- kit$Size[kit$Marker== marker[m] & kit$Allele == allele[a]]
+      if(bins){
+        
+        # Get size from matching bins.
+        size <- kit$Size[kit$Marker== marker[m] & kit$Allele == allele[a]]
+        
+      } else {
+        # Calculate size from 'offset' and 'repeat'.
+        
+        # Copy to temporary working variable.
+        alleleTmp <- toupper(allele[a])
+        
+        # Check presence of X/Y.
+        if ("X" %in% alleleTmp || "Y" %in% alleleTmp) {
+          
+          # Use 1 and 2 for X and Y.
+          alleleTmp <- sub(pattern="X", replacement=1, x=alleleTmp)
+          alleleTmp <- sub(pattern="Y", replacement=2, x=alleleTmp)
+        }
+        
+        # Convert to numeric.
+        alleleTmp <- as.numeric(alleleTmp)
+        
+        # Calculate estimated size.
+        size <- offset[m] + floor(alleleTmp) * repeatUnit[m] + (alleleTmp %% 1) * 10
+        
+      }
       
       # Store size for current allele in current marker.
       if(length(size) != 0){
@@ -138,7 +207,7 @@ addSize <- function(data, kit=NA, debug=FALSE){
         
       } else {
         
-        warning(paste("Allele", allele[a],
+        message(paste("Allele", allele[a],
                       "for marker", marker[m], "not in kit definition file."))
         
       }

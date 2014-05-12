@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
+# 05.05.2014: Changed default value for percentile 0.95 -> 0.05.
 # 15.02.2014: First version.
 
 
@@ -71,42 +73,23 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(f0g0_dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Marker","Hb", "Lb")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Marker","Hb", "Lb")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
+      .gDataName <<- val_obj
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
+      svalue(f2_save_edt) <- paste(.gDataName,
+                                   "_table_",
+                                   svalue(f1g1_scope_opt),
+                                   sep="")
         
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-
-        # Reset components.
-        .gData <<- data.frame(No.Data=NA)
-        .gDataName <<- NULL
-        svalue(f0g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        svalue(f0g0_dataset_drp, index=TRUE) <- 1
-        
-      } else {
-
-        # Load or change components.
-        .gDataName <<- val_obj
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
-        svalue(f2_save_edt) <- paste(.gDataName,
-                                     "_table_",
-                                     svalue(f1g1_scope_opt),
-                                     sep="")
-        
-      }
-      
     } else {
       
       # Reset components.
@@ -114,8 +97,10 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       .gDataName <<- NULL
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-      
+      svalue(f0g0_dataset_drp, index=TRUE) <- 1
+
     }
+    
   } )
   
   # FRAME 1 ###################################################################
@@ -130,7 +115,7 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   f1g1[1,1] <- glabel(text="Calculate quantile", container=f1g1)
 
   f1g1[1,2] <- f1g1_quant_spb <- gspinbutton(from = 0, to = 1,
-                                            by = 0.01, value = 0.95,
+                                            by = 0.01, value = 0.05,
                                             container = f1g1)
 
   f1g1[2,1] <- glabel(text="Summarize by", container=f1g1)

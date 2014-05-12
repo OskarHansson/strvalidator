@@ -1,16 +1,16 @@
 context("calculateOL")
 
 ################################################################################
-#' TODO LIST
-#' TODO: ...
+# TODO LIST
+# TODO: ...
 
 ################################################################################
-#' CHANGE LOG
-#' 20.01.2014: All tests working.
-#' 
-#' test_dir("inst/tests/")
-#' test_file("tests/testthat/test-calculateOL.r")
-#' test_dir("tests/testthat")
+# CHANGE LOG
+# 20.01.2014: All tests working.
+# 
+# test_dir("inst/tests/")
+# test_file("tests/testthat/test-calculateOL.r")
+# test_dir("tests/testthat")
 
 test_that("calculateOL", {
 

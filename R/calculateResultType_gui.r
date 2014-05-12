@@ -4,6 +4,7 @@
 
 ###############################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 15.01.2014: Added option for parameter to add missing markers.
 # 10.11.2013: Added kit dropbox.
 # 03.11.2013: First version.
@@ -81,42 +82,24 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
     
     val_obj <- svalue(g0_dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
-  
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(f2_save_edt) <- paste(val_obj, "_type", sep="")
 
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(f0_kit_drp, index=TRUE) <- kitIndex
         
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(g0_dataset_drp, index=TRUE) <- 1
-        svalue(g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
-
-        # Load or change components.
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(val_obj, "_type", sep="")
-
-        # Detect kit.
-        kitIndex <- detectKit(.gData)
-        # Select in dropdown.
-        svalue(f0_kit_drp, index=TRUE) <- kitIndex
-        
-      }
-      
     } else {
       
       # Reset components.
@@ -124,8 +107,9 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
       svalue(g0_dataset_drp, index=TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-      
+
     }
+    
   } )  
   
   # FRAME 1 ###################################################################

@@ -1,6 +1,6 @@
 ################################################################################
 # TODO LIST
-# TODO: Object size not sorting correctly (seem to sort as character)
+# TODO: Object size not sorted correct (seem to sort as character)
 # TODO: Require gWidgetsRGtk2 ??
 # TODO: Save .importPath in ws for last used path (only in coming gWidgets2 ??)
 # TODO: Multiple selection not working.
@@ -701,7 +701,7 @@ strvalidator <- function(debug=FALSE){
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[5,2] <- glabel(text="Crop/discard, or replace data.",
+  edit_grid[5,2] <- glabel(text="Discard, or replace data.",
                            container=edit_grid,
                            anchor=c(-1 ,0))
   
@@ -743,7 +743,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_addDye_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addDye_gui(env=.strvalidator_env, debug=debug)
+    addDye_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
   
@@ -777,7 +777,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_addSize_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addSize_gui(env=.strvalidator_env, debug=debug)
+    addSize_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
     
   } )
   
@@ -970,11 +970,10 @@ strvalidator <- function(debug=FALSE){
 
   # ALLELE BALANCE ============================================================
 
-#   balance_f2 <- gframe(text = "Intralocus and interlocus balance",
-#                            horizontal=FALSE, container = balance_tab) 
-#   
-#   balance_g2 <- glayout(container = balance_f2)
-  balance_g2 <- glayout(container = balance_tab)
+  balance_f2 <- gframe(text = "Intralocus and interlocus balance",
+                           horizontal=FALSE, container = balance_tab) 
+  
+  balance_g2 <- glayout(container = balance_f2)
   
   # CALCULATE -----------------------------------------------------------------
   
@@ -1027,63 +1026,62 @@ strvalidator <- function(debug=FALSE){
     
   } )
 
-# TODO: IMPLEMENT IN NEXT VERSION!  
-#   # CAPILLARY BALANCE =========================================================
-# 
-#   balance_f3 <- gframe(text = "Capillary balance",
-#                            horizontal=FALSE, container = balance_tab) 
-#   
-#   balance_g3 <- glayout(container = balance_f3)
-#   
-#   
-#   # CALCULATE -----------------------------------------------------------------
-#   
-#   balance_g3[1,1] <- balance_g3_calc_btn <- gbutton(text="Calculate",
-#                                                         border=TRUE,
-#                                                         container = balance_g3) 
-#   
-#   balance_g3[1,2] <- glabel(text="Calculate capillary balance for a dataset.",
-#                             container=balance_g3)
-#   
-#   
-#   addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
-#     
-#     # Open GUI.
-#     calculateCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
-#     
-#   } )
-#   
-#   # PLOT ----------------------------------------------------------------------
-#   
-#   balance_g3[2,1] <- balance_g3_plot_btn <- gbutton(text="Plot",
-#                                                    border=TRUE,
-#                                                    container = balance_g3) 
-#   
-#   balance_g3[2,2] <- glabel(text="Create plots for analysed data",
-#                             container=balance_g3)
-#   
-#   addHandlerChanged(balance_g3_plot_btn, handler = function(h, ...) {
-#     
-#     # Open GUI.
-#     plotCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
-#     
-#   } )
-# 
-#   # SUMMARY -------------------------------------------------------------------
-#   
-#   balance_g3[3,1] <- balance_g3_tab_btn <- gbutton(text="Table",
-#                                                     border=TRUE,
-#                                                     container = balance_g3) 
-#   
-#   balance_g3[3,2] <- glabel(text="Create summary table for analysed data",
-#                             container=balance_g3)
-#   
-#   addHandlerChanged(balance_g3_tab_btn, handler = function(h, ...) {
-#     
-#     # Open GUI.
-#     tableCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
-#     
-#   } )
+  # CAPILLARY BALANCE =========================================================
+
+  balance_f3 <- gframe(text = "Capillary balance",
+                           horizontal=FALSE, container = balance_tab) 
+  
+  balance_g3 <- glayout(container = balance_f3)
+  
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  balance_g3[1,1] <- balance_g3_calc_btn <- gbutton(text="Calculate",
+                                                        border=TRUE,
+                                                        container = balance_g3) 
+  
+  balance_g3[1,2] <- glabel(text="Calculate capillary balance for a dataset.",
+                            container=balance_g3)
+  
+  
+  addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+  
+  # PLOT ----------------------------------------------------------------------
+  
+  balance_g3[2,1] <- balance_g3_plot_btn <- gbutton(text="Plot",
+                                                   border=TRUE,
+                                                   container = balance_g3) 
+  
+  balance_g3[2,2] <- glabel(text="Create plots for analysed data",
+                            container=balance_g3)
+  
+  addHandlerChanged(balance_g3_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
+
+  # SUMMARY -------------------------------------------------------------------
+  
+  balance_g3[3,1] <- balance_g3_tab_btn <- gbutton(text="Summarize",
+                                                    border=TRUE,
+                                                    container = balance_g3) 
+  
+  balance_g3[3,2] <- glabel(text="Create summary table for analysed data",
+                            container=balance_g3)
+  
+  addHandlerChanged(balance_g3_tab_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    tableCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    
+  } )
   
   # DROPOUT  ##################################################################
   

@@ -1,16 +1,16 @@
 context("calculateStutter")
 
 ################################################################################
-#' TODO LIST
-#' TODO: ...
+# TODO LIST
+# TODO: ...
 
 ################################################################################
-#' CHANGE LOG
-#' dd.mm.yyyy: ...
-#' 
-#' test_dir("inst/tests/")
-#' test_file("tests/testthat/test-calculateStutter.r")
-#' test_dir("tests/testthat")
+# CHANGE LOG
+# dd.mm.yyyy: ...
+# 
+# test_dir("inst/tests/")
+# test_file("tests/testthat/test-calculateStutter.r")
+# test_dir("tests/testthat")
 
 test_that("calculateStutter", {
 

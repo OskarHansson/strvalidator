@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 02.12.2013: Fixed 'Option' frame not visible.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 # 06.08.2013: Added rows and columns to info.
@@ -109,64 +110,42 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- data.frame(No.Data=NA)
-        svalue(fix_txt) <- ""
-        svalue(stack_txt) <- ""
-        .refresh_fix_tbl()
-        .refresh_stack_tbl()
-        svalue(f0_samples_lbl) <- " 0 samples,"
-        svalue(f0_columns_lbl) <- " 0 columns,"
-        svalue(f0_rows_lbl) <- " 0 rows"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
 
-        # Load or change components.
-        .refresh_fix_tbl()
-        .refresh_stack_tbl()
+      .refresh_fix_tbl()
+      .refresh_stack_tbl()
         
+      samples <- length(unique(.gData$Sample.Name))
+      # Info.
+      if("Sample.Name" %in% names(.gData)){
         samples <- length(unique(.gData$Sample.Name))
-        # Info.
-        if("Sample.Name" %in% names(.gData)){
-          samples <- length(unique(.gData$Sample.Name))
-          svalue(f0_samples_lbl) <- paste(" ", samples, "samples,")
-        } else {
-          svalue(f0_samples_lbl) <- paste(" ", "<NA>", "samples,")
-        }
-        svalue(f0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
-        svalue(f0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
-        # Result name.
-        svalue(f2_save_edt) <- paste(val_obj, "_slim", sep="")
-
-        # Guess column names to keep fixed.
-        svalue(fix_txt) <- colNames(.gData, slim=TRUE, concatenate="|")
-        
-        # Guess column names to stack.
-        svalue(stack_txt) <- colNames(.gData, slim=FALSE, concatenate="|")
-        
-        # Reset button.
-        svalue(slim_btn) <- "Slim dataset"
-        enabled(slim_btn) <- TRUE
-        
+        svalue(f0_samples_lbl) <- paste(" ", samples, "samples,")
+      } else {
+        svalue(f0_samples_lbl) <- paste(" ", "<NA>", "samples,")
       }
+      svalue(f0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
+      svalue(f0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
+      # Result name.
+      svalue(f2_save_edt) <- paste(val_obj, "_slim", sep="")
+
+      # Guess column names to keep fixed.
+      svalue(fix_txt) <- colNames(.gData, slim=TRUE, concatenate="|")
       
+      # Guess column names to stack.
+      svalue(stack_txt) <- colNames(.gData, slim=FALSE, concatenate="|")
+      
+      # Reset button.
+      svalue(slim_btn) <- "Slim dataset"
+      enabled(slim_btn) <- TRUE
+        
     } else {
       
       # Reset components.
@@ -178,9 +157,8 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(f0_samples_lbl) <- paste(" ", "<NA>", "samples,")
       svalue(f0_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(f0_rows_lbl) <- paste(" ", "<NA>", "rows")
-      
       svalue(f2_save_edt) <- ""
-      
+
     }
   } )
   

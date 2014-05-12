@@ -40,9 +40,9 @@ NULL
 #' @format A data frame with 17 rows and 4 variables
 NULL
 
-#' ESX17 example data
+#' SGMPlus example data
 #' 
-#' A slimmed reference dataset containing an arbitrary ESX17 DNA profile.
+#' A slimmed reference dataset containing an arbitrary SGMPlus DNA profile.
 #' 
 #' @docType data
 #' @keywords datasets
@@ -76,9 +76,9 @@ NULL
 #' @format A data frame with 170 rows and 13 variables
 NULL
 
-#' ESX17 example data
+#' SGMPlus example data
 #' 
-#' A slimmed dataset containing ESX17 genotyping result for 2 replicates
+#' A slimmed dataset containing SGM Plus genotyping result for 2 replicates
 #' of 'sampleA'.
 #' 
 #' @docType data

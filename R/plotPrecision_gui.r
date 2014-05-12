@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Fixed column check for plots.
 # 06.02.2014: Implemented theme and colour.
 # 06.02.2014: Implemented new dot/box plot and plot all data (not only min/max)
@@ -79,76 +80,39 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Marker", "Allele")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       string="OL", stringcol="Allele",
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      # Check if suitable for plot stutter...
-      
-      requiredCol <- c("Marker", "Allele")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-        
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(f5_save_edt) <- ""
-        svalue(dataset_drp, index=TRUE) <- 1
-        
-      } else {
-        
-        # Check for 'OL'
-        if(!"OL" %in% .gData$Allele){
-          
-          # Load or change components.
-          
-          # Suggest name.
-          svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
-          
-          # Detect kit.
-          kitIndex <- detectKit(.gData)
-          # Select in dropdown.
-          svalue(kit_drp, index=TRUE) <- kitIndex
-          
-          # Enable buttons.
-          enabled(f7_size_btn) <- TRUE
-          enabled(f7_height_btn) <- TRUE
-          enabled(f7_data_btn) <- TRUE
-          enabled(f8_size_btn) <- TRUE
-          enabled(f8_height_btn) <- TRUE
-          enabled(f8_data_btn) <- TRUE
-          
-        } else {
-          
-          message <- paste("'OL' allele detected!\n",
-                           "Please make sure that data is filtered.\n",
-                           sep="")
-          
-          gmessage(message, title="message",
-                   icon = "error",
-                   parent = w) 
 
-          # Reset components.
-          .gData <<- NULL
-          svalue(f5_save_edt) <- ""
-          svalue(dataset_drp, index=TRUE) <- 1
+      # Suggest name.
+      svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
+      
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(kit_drp, index=TRUE) <- kitIndex
+      
+      # Enable buttons.
+      enabled(f7_size_btn) <- TRUE
+      enabled(f7_height_btn) <- TRUE
+      enabled(f7_data_btn) <- TRUE
+      enabled(f8_size_btn) <- TRUE
+      enabled(f8_height_btn) <- TRUE
+      enabled(f8_data_btn) <- TRUE
           
-        }
-        
-      }
-      
     } else {
-      
+
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
+      svalue(dataset_drp, index=TRUE) <- 1
       
     }
     

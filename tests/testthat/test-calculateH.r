@@ -1,16 +1,17 @@
 context("calculateH")
 
 ################################################################################
-#' TODO LIST
-#' TODO: ...
+# TODO LIST
+# TODO: ...
 
 ################################################################################
-#' CHANGE LOG
-#' 25.02.2014: Updated test to change in 'calculateH'. Added more tests.
-#' 
-#' test_dir("inst/tests/")
-#' test_file("tests/testthat/test-calculateH.r")
-#' test_dir("tests/testthat")
+# CHANGE LOG
+# 04.03.2014: Added test for no NA and na!=NULL.
+# 25.02.2014: Updated test to change in 'calculateH'. Added more tests.
+# 
+# test_dir("inst/tests/")
+# test_file("tests/testthat/test-calculateH.r")
+# test_dir("tests/testthat")
 
 test_that("calculateH", {
 
@@ -296,5 +297,29 @@ test_that("calculateH", {
   expect_that(unique(res$H)[2], equals(0))
   expect_that(unique(res$Peaks)[1], equals(19))  
   expect_that(unique(res$Peaks)[2], equals(0)) 
+
+  # TEST 09 -------------------------------------------------------------------
+  # Test that analysis work when no NA and na!=NULL.
+  
+  # Analyse dataframe.
+  res <- calculateH(data=df1, na=0, add=FALSE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true(any(grepl("Sample.Name", names(res))))
+  expect_true(any(grepl("H", names(res))))
+  expect_true(any(grepl("Peaks", names(res))))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$H)))
+  expect_false(any(is.na(res$Peaks)))
+  
+  # Check result.
+  expect_that(res$H, equals(1528))
+  expect_that(res$Peaks, equals(19))
+  
   
 })

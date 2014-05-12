@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 11.05.2014: Added 'orange' and 'purple'.
+# 27.04.2014: Added option to ignore case in marker names.
 # 15.12.2013: Fixed check for 'have' and 'need' when converting vector.
 # 27.11.2013: Added option 'overwrite'.
 # 04.10.2013: Added some debug information.
@@ -34,6 +36,7 @@
 #' Default is NA, in which case all columns will be added.
 #' If 'data' is a vector 'need' must be a single string.
 #' @param overwrite logical if TRUE and column exist it will be overwritten.
+#' @param ignore.case logical if TRUE case in marker names will be ignored.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with additional columns for added colors, 
@@ -50,7 +53,8 @@
 #' addColor(data=c("R","G","Y","B"), have="dye", need="r.color")
 
 
-addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE, debug=FALSE){
+addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
+                     ignore.case=FALSE, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -60,9 +64,9 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE, debug=FALS
   colorSchemes <- toupper(c("Color", "Dye", "R.Color"))
 
   # Definitions:
-  schemeColor <- c("black", "blue", "green", "yellow", "red")
-  schemeDye <- c("X", "B", "G", "Y", "R")
-  schemeRColor <- c("black", "blue", "green3", "black", "red")
+  schemeColor <- c("black", "blue", "green", "yellow", "red", "orange", "purple")
+  schemeDye <- c("X", "B", "G", "Y", "R", "O", "P")
+  schemeRColor <- c("black", "blue", "green3", "black", "red", "orange", "purple")
   # Numeric values corresponding to color abreviations:
   # NB! There are 8 colors that can be represented by a single number character, palette():
   # 1="black", 2="red", 3="green3", 4="blue", 5="cyan", 6="magenta", 7="yellow", 8="gray" 
@@ -76,6 +80,10 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE, debug=FALS
     print(have)
     print("need")
     print(need)
+    print("overwrite")
+    print(overwrite)
+    print("ignore.case")
+    print(ignore.case)
   }
   
   # Check if overwrite.
@@ -167,14 +175,29 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE, debug=FALS
           print("mColor")
           print(str(mColor))
         }
-        
-        # Loop over all markers.
-        for(m in seq(along=marker)){
+
+        if(ignore.case){
           
-          # Add new column and colors per marker.
-          data$Color[data$Marker == marker[m]] <- mColor[m]
+          # Loop over all markers.
+          for(m in seq(along=marker)){
+            
+            # Add new column and colors per marker.
+            data$Color[toupper(data$Marker) == toupper(marker[m])] <- mColor[m]
+            
+          }
+
+        } else {
+          
+          # Loop over all markers.
+          for(m in seq(along=marker)){
+            
+            # Add new column and colors per marker.
+            data$Color[data$Marker == marker[m]] <- mColor[m]
+            
+          }
           
         }
+        
       }
       
       # Add to have.
@@ -209,7 +232,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE, debug=FALS
         # Check if exist.
         if("COLOR" %in% toupper(names(data))){
           
-          warning("A column 'Color' already exist in data frame!")
+          message("A column 'Color' already exist in data frame!")
           
         } else {
           
@@ -248,7 +271,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE, debug=FALS
         # Check if exist.
         if("DYE" %in% toupper(names(data))){
           
-          warning("A column 'Dye' already exist in data frame!")
+          message("A column 'Dye' already exist in data frame!")
           
         } else {
           
@@ -287,7 +310,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE, debug=FALS
         # Check if exist.
         if("R.COLOR" %in% toupper(names(data))){
           
-          warning("A column 'R.Color' already exist in data frame!")
+          message("A column 'R.Color' already exist in data frame!")
           
         } else {
           

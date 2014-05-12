@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 11.01.2014: First version.
 
 #' @title Calculate peaks GUI
@@ -67,55 +68,21 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(g0_dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       slim=TRUE, slimcol="Height",
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Height")
-      slimmed <- sum(grepl("Height",names(.gData), fixed=TRUE)) == 1
-      
-      if(!all(requiredCol %in% colnames(.gData))){
-  
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+      .gDataName <<- val_obj
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(f2_save_edt) <- paste(.gDataName, "_peaks", sep="")
         
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(g0_dataset_drp, index=TRUE) <- 1
-        svalue(g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else if (!slimmed) {
-        
-        message <- paste("The dataset is too fat!\n\n",
-                         "There can only be 1 'Height' column\n",
-                         "Slim the dataset in the 'EDIT' tab", sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(g0_dataset_drp, index=TRUE) <- 1
-        svalue(g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
-
-        # Load or change components.
-        .gDataName <<- val_obj
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(.gDataName, "_peaks", sep="")
-        
-      }
-      
     } else {
       
       # Reset components.
@@ -123,9 +90,10 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(g0_dataset_drp, index=TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-      
+
     }
-  } )  
+    
+  } )
 
   # FRAME 1 ###################################################################
   

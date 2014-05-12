@@ -112,7 +112,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   
   import_folder <- gfilebrowse(text=defaultDir, 
-                               initial.dir = defaultFile, # Not implemented in current version?
+                               initial.dir = defaultDir, # Not implemented in current version?
                                type="selectdir",
                                quote = FALSE,
                                container=g)

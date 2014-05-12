@@ -1,17 +1,17 @@
 context("calculateDropout")
 
 ################################################################################
-#' TODO LIST
-#' TODO: Update when dropout method is fixed.
-#' TODO: ...
+# TODO LIST
+# TODO: Update when dropout method is fixed.
+# TODO: ...
 
 ################################################################################
-#' CHANGE LOG
-#' dd.mm.yyyy: ...
-#' 
-#' test_dir("inst/tests/")
-#' test_file("tests/testthat/test-calculateDropout.r")
-#' test_dir("tests/testthat")
+# CHANGE LOG
+# dd.mm.yyyy: ...
+# 
+# test_dir("inst/tests/")
+# test_file("tests/testthat/test-calculateDropout.r")
+# test_dir("tests/testthat")
 
 test_that("calculateDropout", {
 

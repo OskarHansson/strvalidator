@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 06.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Removed 'perSample' parameter. Added 'OL' check.
 # 18.12.2013: Fixed dropdown state not saved (wrong object saved)...
 # 27.11.2013: Passed debug to calculateBalance.
@@ -102,65 +103,31 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     
     val_obj <- svalue(g0_data_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Dye", "Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       slim=TRUE, slimcol="Height",
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      # Load or change components.
       
+      # get dataset.
       .gData <<- get(val_obj, envir=env)
-      
-      # Check if required columns...
-      requiredCol <- c("Sample.Name", "Marker", "Dye", "Height")
-      slimmed <- sum(grepl("Height",names(.gData), fixed=TRUE)) == 1
-      
-      if(!all(requiredCol %in% colnames(.gData))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-      
-        # Reset components.
-        .gData <<- NULL
-        svalue(g0_data_drp, index=TRUE) <- 1
-        svalue(g0_data_samples_lbl) <- " 0 samples"
-        svalue(f4_save_edt) <- ""
-        
-      } else if (!slimmed) {
-  
-        message <- paste("The dataset is too fat!\n\n",
-                         "There can only be 1 'Height' column\n",
-                         "Slim the dataset in the 'EDIT' tab", sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gData <<- NULL
-        svalue(g0_data_drp, index=TRUE) <- 1
-        svalue(g0_data_samples_lbl) <- " 0 samples"
-        svalue(f4_save_edt) <- ""
-        
-      }else {
-
-        # Load or change components.
-
-        svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
-                                          "samples.")
-        svalue(f4_save_edt) <- paste(val_obj, "_balance", sep="")
-        
-      }
+      svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
+                                        "samples.")
+      svalue(f4_save_edt) <- paste(val_obj, "_balance", sep="")
       
     } else {
       
       # Reset components.
-      svalue(g0_data_samples_lbl) <- " 0 samples"
       .gData <<- NULL
+      svalue(g0_data_drp, index=TRUE) <- 1
+      svalue(g0_data_samples_lbl) <- " 0 samples"
       svalue(f4_save_edt) <- ""
       
-    }    
+    }
+    
   } )  
 
   # Reference -----------------------------------------------------------------
@@ -179,58 +146,25 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     
     val_obj <- svalue(g0_ref_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       slim=TRUE, slimcol="Allele",
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      # Load or change components.
       
       .gRef <<- get(val_obj, envir=env)
-      
-      # Check if required columns...
-      requiredCol <- c("Sample.Name", "Marker", "Allele")
-      slimmed <- sum(grepl("Allele",names(.gRef), fixed=TRUE)) == 1
-      
-      if(!all(requiredCol %in% colnames(.gRef))){
-        
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gRef)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-      
-        # Reset components.
-        .gRef <<- NULL
-        svalue(g0_ref_drp, index=TRUE) <- 1
-        svalue(g0_ref_samples_lbl) <- " 0 references"
-        
-      } else if (!slimmed) {
-        
-        message <- paste("The dataset is too fat!\n\n",
-                         "There can only be 1 'Allele' column\n",
-                         "Slim the dataset in the 'EDIT' tab", sep="")
-        
-        gmessage(message, title="message",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gRef <<- NULL
-        svalue(g0_ref_drp, index=TRUE) <- 1
-        svalue(g0_ref_samples_lbl) <- " 0 references"
-        
-      }else {
-        
-        # Load or change components.
-        svalue(g0_ref_samples_lbl) <- paste(length(unique(.gRef$Sample.Name)),
+      svalue(g0_ref_samples_lbl) <- paste(length(unique(.gRef$Sample.Name)),
                                           "samples.")
         
-      }
-      
     } else {
       
       # Reset components.
-      svalue(g0_ref_samples_lbl) <- ""
       .gRef <<- NULL
+      svalue(g0_ref_drp, index=TRUE) <- 1
+      svalue(g0_ref_samples_lbl) <- " 0 references"
       
     }    
   } )  

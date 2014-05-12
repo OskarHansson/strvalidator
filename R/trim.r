@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.04.2014: More robust and handles '+' and '-' in sample names.
 # 14.01.2014: Support dataframes without a 'Sample.Name' column.
 # 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
 # 27.04.2013: Fixed error when result is only 1 column.
@@ -45,6 +46,7 @@ trim <- function(data, samples=NULL, columns=NULL,
 	word=FALSE, ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
 	rmNaCol=TRUE, rmEmptyCol=TRUE, missing=NA, debug=FALSE){
 
+  # Variables.
   colNames <- columns
   
   if(debug){
@@ -70,29 +72,83 @@ trim <- function(data, samples=NULL, columns=NULL,
     print("missing:")
     print(missing)
   }
-  
-	# Add word anchor.
-	if(word){
-		samples <- gsub("|", "\\b|\\b", samples, fixed=TRUE)
-		samples <- paste("\\b", samples, "\\b", sep="")
-		columns <- gsub("|", "\\b|\\b", columns, fixed=TRUE)
-		columns <- paste("\\b", columns, "\\b", sep="")
-    
-		if(debug){
-      print("After adding word anchor.")
-		  print("samples:")
-		  print(samples)
-		  print("columns:")
-		  print(columns)
-		}
-		
-	}
 
+  # Ignore case. NB! Must be before add word boundary.
+  if(ignoreCase){
+
+    # Convert to upper case.
+    samples <- toupper(samples)
+    columns <- toupper(columns)
+    
+    if(length(samples) == 0){
+      samples <- NULL
+    }
+    
+    if(length(columns) == 0){
+      columns <- NULL
+    }
+    
+    if(debug){
+      print("After ignoreCase.")
+      print("samples:")
+      print(samples)
+      print("columns:")
+      print(columns)
+    }
+    
+  }
+
+  # Add word boundary. NB! Must be after ignore case.
+  if(word){
+    
+    if(!is.null(samples)){
+      samples <- gsub("|", "\\b|\\b", samples, fixed=TRUE)
+      samples <- paste("\\b", samples, "\\b", sep="")
+    }
+    if(!is.null(columns)){
+      columns <- gsub("|", "\\b|\\b", columns, fixed=TRUE)
+      columns <- paste("\\b", columns, "\\b", sep="")
+    }
+
+    if(debug){
+      print("After adding word boundary.")
+      print("samples:")
+      print(samples)
+      print("columns:")
+      print(columns)
+    }
+    
+  }
+  
+  # Check for and escape '+' and '-' in sample names.
+  if(any(grepl("+", samples, fixed=TRUE))){
+    samples <- gsub("+", "\\+", samples, fixed=TRUE)
+    message("'+' in sample names escaped")
+  }
+  if(any(grepl("-", samples, fixed=TRUE))){
+    samples <- gsub("-", "\\-", samples, fixed=TRUE)
+    message("'-' in sample names escaped")
+  }
+  
+  # Grab samples --------------------------------------------------------------
+  
   # Check if column 'Sample.Name' exist.
   if("Sample.Name" %in% names(data)){
     
     # Grab rows.
-    sampleNames <- data$Sample.Name
+    if(ignoreCase){
+      sampleNames <- toupper(as.character(data$Sample.Name))
+    } else {
+      sampleNames <- as.character(data$Sample.Name)
+    }
+
+    if(debug){
+      print("Pattern for samples")
+      print(head(samples))
+      print("String")
+      print(head(sampleNames))
+    }
+    
     if(is.null(samples)){
       
       # Default is to keep all samples.
@@ -101,7 +157,7 @@ trim <- function(data, samples=NULL, columns=NULL,
     } else {
       
       # Get matching rows.
-      rows <- grepl(samples, sampleNames, ignore.case=ignoreCase)
+      rows <- grepl(samples, sampleNames, fixed=FALSE)
       
       # Invert selection of samples.
       if(invertS){
@@ -116,9 +172,27 @@ trim <- function(data, samples=NULL, columns=NULL,
     rows <- rep(TRUE, nrow(data))
     
   }
+  
+  if(debug){
+    print(paste("Grab samples:", paste(sampleNames[rows], collapse=",")))
+  }
+  
+  # Grab columns --------------------------------------------------------------
+  
+  if(ignoreCase){
+    columnNames <- toupper(names(data))
+  } else {
+    columnNames <- names(data)
+  }
 
-	# Grab columns.
-	columnNames <- names(data)
+  if(debug){
+    print("Pattern for columns")
+    print(head(columns))
+    print("String")
+    print(head(columnNames))
+  }
+  
+  
 	if(is.null(columns)){
     
 		# Default is to keep all columns.
@@ -127,7 +201,7 @@ trim <- function(data, samples=NULL, columns=NULL,
 	} else {
     
     # Get matching columns.
-		columns <- grepl(columns, columnNames, ignore.case=ignoreCase)
+		columns <- grepl(columns, columnNames, fixed=FALSE)
     
 		# Invert selection of columns.
 		if(invertC){
@@ -137,11 +211,12 @@ trim <- function(data, samples=NULL, columns=NULL,
 	}
 
   if(debug){
+    print(columns)
     print(paste("Grab columns:", paste(names(data)[columns], collapse=",")))
   }
   
 	# Trim data.
-	data <- data[rows,columns]
+	data <- data[rows, columns]
 
 	if(!is.null(missing)){
 		data[data==""] <- missing

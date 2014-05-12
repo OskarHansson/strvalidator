@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 07.05.2014: Replace 'Inf' with 'NA' (min return Inf if no value).
+# 07.05.2014: Added 'suppressWarnings' around 'min' to prevent warning if no values.
 # 15.02.2014: First version.
 
 #' @title Table stutter
@@ -29,7 +31,7 @@
 #' 
 
 
-tableBalance <- function(data, scope="locus", quant=0.50){
+tableBalance <- function(data, scope="locus", quant=0.05){
   
   # Column name for quantile.
   quantNameHb <- paste("Hb.Perc",quant*100, sep=".")
@@ -52,14 +54,14 @@ tableBalance <- function(data, scope="locus", quant=0.50){
     xbarHb <- mean(data$Hb, na.rm = TRUE)
     stdvHb <- sd(data$Hb, na.rm = TRUE)
     quantValHb <- as.numeric(quantile(data$Hb, quant, na.rm = TRUE)) 
-    xminHb <- min(data$Hb, na.rm = TRUE)
+    xminHb <- suppressWarnings(min(data$Hb, na.rm = TRUE))
     
     sumLb <- sum(!is.na(data$Lb))
     xbarLb <- mean(data$Lb, na.rm = TRUE)
     stdvLb <- sd(data$Lb, na.rm = TRUE)
     quantValLb <- as.numeric(quantile(data$Lb, quant, na.rm = TRUE)) 
-    xminLb <- min(data$Lb, na.rm = TRUE)
-    
+    xminLb <- suppressWarnings(min(data$Lb, na.rm = TRUE))
+
     tmp <- data.frame(Marker = as.character(NA),
                       Hb.n = sumHb,
                       Hb.Min = xminHb,
@@ -93,14 +95,14 @@ tableBalance <- function(data, scope="locus", quant=0.50){
         xbarHb <- mean(data.subset$Hb, na.rm = TRUE)
         stdvHb <- sd(data.subset$Hb, na.rm = TRUE)
         quantValHb <- as.numeric(quantile(data.subset$Hb, quant, na.rm = TRUE)) 
-        xminHb <- min(data.subset$Hb, na.rm = TRUE)
+        xminHb <- suppressWarnings(min(data.subset$Hb, na.rm = TRUE))
         
         sumLb <- sum(!is.na(data.subset$Lb))
         if(is.null(sumLb)){sumLb=NA}
         xbarLb <- mean(data.subset$Lb, na.rm = TRUE)
         stdvLb <- sd(data.subset$Lb, na.rm = TRUE)
         quantValLb <- as.numeric(quantile(data.subset$Lb, quant, na.rm = TRUE)) 
-        xminLb <- min(data.subset$Lb, na.rm = TRUE)
+        xminLb <- suppressWarnings(min(data.subset$Lb, na.rm = TRUE))
         
         tmp <- data.frame(Marker=marker[m],
                         Hb.n = sumHb,
@@ -122,6 +124,16 @@ tableBalance <- function(data, scope="locus", quant=0.50){
         
       }
     }
+  }
+
+  # Check if 'inf'.
+  if(any(is.infinite(res$Hb.Min))){
+    # Replace Inf with NA.
+    res$Hb.Min[is.infinite(res$Hb.Min)] <- as.numeric(NA)
+  }
+  if(any(is.infinite(res$Lb.Min))){
+    # Replace Inf with NA.
+    res$Lb.Min[is.infinite(res$Lb.Min)] <- as.numeric(NA)
   }
   
   return(res)

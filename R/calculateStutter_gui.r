@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 08.05.2014: Implemented 'checkDataset'.
 # 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
 # 18.07.2013: Check before overwrite object.
 # 17.07.2013: Added save GUI settings.
@@ -90,38 +91,21 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(f0_dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(f0_samples_lbl) <- paste("", samples, "samples")
+      svalue(f2_save_edt) <- paste(val_obj, "_stutter", sep="")
         
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-      
-        # Reset components.
-        .gData <<- NULL
-        svalue(f0_dataset_drp, index=TRUE) <- 1
-        svalue(f0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
-        
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(f0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(val_obj, "_stutter", sep="")
-        
-      }
-      
     } else {
-      
+
       # Reset components.
       .gData <<- NULL
       svalue(f0_dataset_drp, index=TRUE) <- 1
@@ -129,6 +113,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(f2_save_edt) <- ""
       
     }
+    
   } )  
   
   f0g0[2,1] <- glabel(text="Select reference dataset:", container=f0g0)
@@ -146,35 +131,18 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     val_obj <- svalue(f0_refset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
+      # Load or change components.
       .gRef <<- get(val_obj, envir=env)
-      
-      requiredCol <- c("Sample.Name", "Marker", "Allele")
-      
-      if(!all(requiredCol %in% colnames(.gData))){
+      refs <- length(unique(.gRef$Sample.Name))
+      svalue(f0_ref_lbl) <- paste("", refs, "references")
         
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gRef)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
-        
-        # Reset components.
-        .gRef <<- NULL
-        svalue(f0_refset_drp, index=TRUE) <- 1
-        svalue(f0_ref_lbl) <- " 0 references"
-        
-      } else {
-        
-        refs <- length(unique(.gRef$Sample.Name))
-        svalue(f0_ref_lbl) <- paste("", refs, "references")
-        
-      }
-      
     } else {
       
       # Reset components.
