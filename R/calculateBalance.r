@@ -51,7 +51,8 @@
 #' 
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Delta', 'Hb', 'Lb', 'MPH', 'TPH'.
 #' 
-#' @export true
+#' @export
+#' 
 #' @examples 
 #' data(ref2)
 #' data(set2)

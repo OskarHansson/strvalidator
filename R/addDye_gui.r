@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: Make a general function to add any (selected) kit information?
+# TODO: Make a full addColor_gui (not only for Dye)?
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 11.05.2014: Implemented new option 'Ignore case' and save user settings functions.
 # 06.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Removed requirement for 'Sample.Name'.
@@ -18,21 +19,26 @@
 # 09.05.2013: .result removed, added save as group.
 # 27.04.2013: First version.
 
-
-#' @title Adds dye information
+#' @title Add dye information
 #'
 #' @description
-#' \code{addDye_gui} is a GUI wrapper for the \code{addDye} function.
+#' \code{addDye_gui} is a GUI to the \code{\link{addColor}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{addDye} function by providing a graphical 
-#' user interface to it.
+#' Convenience GUI for the use of \code{\link{addColor}} to add 'Dye' to a dataset.
+#' 'Dye' is the one letter abbreviations for the fluorophores commonly used
+#' to label primers in forensic STR typing kits (e.g. R=Red, B=Blue).
+#' NB! If column 'Color' and 'Dye' is present they will be overwritten.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame in slim format.
+#' @return TRUE
+#' 
+#' @export
+#' 
+#' @seealso \code{\link{addColor}}
 
 addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -59,26 +65,43 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("addDye_gui", help_type="html"))
+    
+  })
   
   # DATASET ###################################################################
   
-  group0 <- ggroup(horizontal=FALSE,
+  f0 <- gframe(text = "Dataset and kit",
+               horizontal=FALSE,
                spacing = 5,
                container = gv) 
+
+  f0g0 <- glayout(container = f0, spacing = 1)
   
-  grid0 <- glayout(container = group0, spacing = 1)
+  f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
   
-  grid0[1,1] <- glabel(text="Select dataset:", container=grid0)
-  
-  grid0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              objClass="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = grid0)
+                                         container = f0g0)
   
-  grid0[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
-                                              container=grid0)
+  f0g0[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
+                                              container=f0g0)
   
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -119,35 +142,25 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # KIT -----------------------------------------------------------------------
   
-  grid0[2,1] <- glabel(text="Kit:", container=grid0)
+  f0g0[2,1] <- glabel(text="Kit:", container=f0g0)
   
   kit_drp <- gdroplist(items=getKit(),
                            selected = 1,
                            editable = FALSE,
-                           container = grid0)
+                           container = f0g0)
   
-  grid0[2,2] <- kit_drp
+  f0g0[2,2] <- kit_drp
   
   # FRAME 1 ###################################################################
   
-  f1 <- gframe(text = "Options",
-               horizontal=FALSE,
-               spacing = 5,
-               container = gv) 
+  f1 <- gframe(text = "Options", horizontal=FALSE, spacing = 5, container = gv) 
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1_ignore_chk <- gcheckbox(text="Ignore case in marker name.",
                              checked=FALSE, container=f1)
   
   # FRAME 2 ###################################################################
   
-  f2 <- gframe(text = "Save as",
-               horizontal=TRUE,
-               spacing = 5,
-               container = gv) 
+  f2 <- gframe(text = "Save as", horizontal=TRUE, spacing = 5, container = gv) 
   
   glabel(text="Name for result:", container=f2)
   
@@ -201,26 +214,26 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_addDye_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_addDye_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_addDye_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_addDye_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_chk) <- get(".strvalidator_addDye_gui_ignore", envir=env)
       }
@@ -235,9 +248,9 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_addDye_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_addDye_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_addDye_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
       
     } else { # or remove all saved values if false.

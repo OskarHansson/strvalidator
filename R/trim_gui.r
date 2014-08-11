@@ -5,6 +5,7 @@
 # NB! Can't handle Sample.Names as factors?
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 14.01.2014: Removed requirement for column 'Sample.Name'.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 # 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
@@ -24,20 +25,22 @@
 # <27.04.2013: Changed data=NA to data=NULL
 # <27.04.2013: First version.
 
-#' @title Trim data GUI
+#' @title Trim data
 #'
 #' @description
-#' \code{trim_gui} is a GUI wrapper for the \code{trim} function.
+#' \code{trim_gui} is a GUI wrapper for the \code{\link{trim}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{trim} function by providing a graphical 
+#' Simplifies the use of the \code{\link{trim}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame with extracted result.
+#' @return TRUE
+#' 
+#' @seealso \code{\link{trim}}
 
 
 trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
@@ -64,6 +67,22 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
               container = w,
               expand=TRUE) 
 
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("trim_gui", help_type="html"))
+    
+  })
+  
   # Vertical sub group.
   g0 <- ggroup(horizontal=FALSE,
                spacing=5,
@@ -165,7 +184,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                        horizontal=FALSE,
                        container=sample_f)
 
-  sample_lbl <- glabel(text="Selected samples:",
+  sample_lbl <- glabel(text="Selected samples (separate by pipe |):",
                        container=sample_f,
                        anchor=c(-1 ,0))
 
@@ -216,7 +235,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                        horizontal=FALSE, 
                        container=column_f)
   
-  column_lbl <- glabel(text="Selected columns:",
+  column_lbl <- glabel(text="Selected columns (separate by pipe |):",
                        container=column_f,
                        anchor=c(-1 ,0))
   
@@ -260,10 +279,6 @@ trim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                      container=g1, 
                      expand=TRUE)
   
-  savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=option_f)
-
   empty_chk <- gcheckbox(text="Remove empty columns",
                          checked=TRUE,
                          container=option_f)

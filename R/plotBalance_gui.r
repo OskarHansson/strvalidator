@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 07.05.2014: Implemented new column 'TPH' for X-axis when plot Lb.
 # 06.05.2014: Implemented 'checkDataset'.
 # 05.05.2014: Fixed 'drop gender' and 'plot log' settings not saved.
@@ -44,15 +45,26 @@
 # 29.04.2013: New parameter debug (no longer defined in function).
 # 21.04.2013: First version.
 
-#' @title Plot Balance GUI
+#' @title Plot Balance
 #'
 #' @description
 #' \code{plotBalance_gui} is a GUI simplifying the creation of plots from balance data.
 #'
-#' @details Plot balance data.
+#' @details Select a dataset to plot and the typing kit used (if not autodetected).
+#' Plot heterozygote peak balance versus the average locus peak height,
+#' the average profile peak height 'H', or by the difference in repeat units
+#' (delta). Plot inter-locus balance versus the average locus peak height, or
+#' the average profile peak height 'H'. Automatic plot titles can be replaced by
+#' custom titles. The gender marker can be excluded. It is possible to plot
+#' logarithmic ratios. A name for the result is automatiaclly suggested.
+#' The resulting plot can be saved as either a plot object or as an image.
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
+#' 
+#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
 plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
@@ -76,11 +88,28 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     .saveSettings()
   })
 
+  # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+  
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("plotBalance_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -190,10 +219,6 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   f1g1[3,2] <- y_title_edt <- gedit(text="",
                                      container=f1g1)
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                                container=f1)
-  
   f1g2 <- glayout(container = f1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
   f1g2[1,2] <- f1_theme_drp <- gdroplist(items=c("theme_grey()","theme_bw()"),
@@ -973,26 +998,26 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_plotBalance_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_plotBalance_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_plotBalance_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_plotBalance_gui_title", envir=env, inherits = FALSE)){
         svalue(title_edt) <- get(".strvalidator_plotBalance_gui_title", envir=env)
       }
@@ -1061,9 +1086,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_plotBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotBalance_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_plotBalance_gui_gender", value=svalue(f1_drop_chk), envir=env)
       assign(x=".strvalidator_plotBalance_gui_log", value=svalue(f1_logHb_chk), envir=env)
       assign(x=".strvalidator_plotBalance_gui_title", value=svalue(title_edt), envir=env)

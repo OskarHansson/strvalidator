@@ -4,31 +4,32 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 28.10.2013: First version.
 
 #' @title Capillary balance
 #'
 #' @description
-#' \code{capillaryBalance_gui} is a GUI wrapper for the \code{capillaryBalance}
-#'  function.
+#' \code{calculateCapillary_gui} is a GUI wrapper for the
+#' \code{\link{calculateCapillary}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{capillaryBalance} function by providing 
+#' Simplifies the use of the \code{\link{calculateCapillary}} function by providing 
 #' a graphical user interface.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame in slim format.
+#' @return TRUE
 #' 
+#' @export
+#' 
+#' @seealso \code{\link{calculateCapillary}}
 
 calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
                                  debug=FALSE){
-  
-  # Load required packages.
-  #loadPackage(packages=c("gWidgets"))
   
   # Global variables.
   .gSamples <- NULL
@@ -53,6 +54,22 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("calculateCapillary_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -151,10 +168,6 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
                spacing = 10,
                container = gv) 
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1g1 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
   glabel(text="Run name:", initial.msg="Optional run name",
          anchor=c(-1 ,0), container=f1g1)
@@ -166,7 +179,6 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
   f1_sq_spb <- gspinbutton(from=0, to=1, by=0.01, value=0, digits=4,
                            container=f1g2)
   
-
   # FRAME 4 ###################################################################
   
   f4 <- gframe(text = "Save as",
@@ -248,26 +260,26 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_capillaryBalance_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_capillaryBalance_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_capillaryBalance_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
         
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_capillaryBalance_gui_sq", envir=env, inherits = FALSE)){
         svalue(f1_sq_spb) <- get(".strvalidator_capillaryBalance_gui_sq", envir=env)
       }
@@ -284,9 +296,9 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_capillaryBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_capillaryBalance_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_capillaryBalance_gui_sq", value=svalue(f1_sq_spb), envir=env)
       assign(x=".strvalidator_capillaryBalance_gui_run", value=svalue(f1_run_edt), envir=env)
       

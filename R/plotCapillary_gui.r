@@ -4,22 +4,33 @@
 
 ################################################################################
 # CHANGE LOG
+# 07.08.2014: Fixed boxplot error 
+#  Error: stat_boxplot requires the following missing aesthetics: x, y
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 28.02.2014: Fixed plot object not saved in '.gPlot'.
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
 # 19.11.2013: Added distribution plot.
 # 28.10.2013: First version.
 
-#' @title Plot Capillary Balance GUI
+#' @title Plot Capillary Balance
 #'
 #' @description
 #' \code{plotCapillary_gui} is a GUI simplifying the creation of plots from
 #' capillary balance data.
 #'
-#' @details Plot capillary balance data.
+#' @details Select a dataset to plot from the drop-down meny.
+#' Plot capillary balance as a dotplot, boxplot or as a distribution.
+#' Automatic plot titles can be replaced by custom titles.
+#' A name for the result is automatiaclly suggested.
+#' The resulting plot can be saved as either a plot object or as an image.
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
+#' 
+#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
 plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
@@ -48,6 +59,22 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+  
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("plotCapillary_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -147,10 +174,6 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   grid1[4,2] <- y_title_edt <- gedit(text="",
                                      container=grid1)
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                                container=f1)
-  
   # FRAME 7 ###################################################################
   
   f7 <- gframe(text = "Plot capillary balance data",
@@ -464,9 +487,12 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
           }
           
           # BOXPLOT (best suited for many replicates (injections))
-          gp <- ggplot(.gData, aes_string("Capillary", "Mean.Height", fill=interaction("Capillary")))
-          gp <- gp + stat_boxplot(geom ='errorbar')
+          # Note: aes allows the first two arguments to be unnamed and are assumed to be x and y (respectively)
+          # Note: aes_string does not have this shortcut, and so all arguments must be named. 
+          .gData$Capillary <- factor(.gData$Capillary) 
+          gp <- ggplot(.gData, aes_string(x="Capillary", y="Mean.Height"))
           gp <- gp + geom_boxplot()
+          gp <- gp + stat_boxplot(geom ="errorbar")
           gp <- gp + labs(title=paste(mainTitle, "\n", subTitle),
                           x=xTitle, y=yTitle)
           gp <- gp + theme(legend.position="none")
@@ -532,26 +558,26 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_plotCapillary_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_plotCapillary_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_plotCapillary_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_plotCapillary_gui_title", envir=env, inherits = FALSE)){
         svalue(title_edt) <- get(".strvalidator_plotCapillary_gui_title", envir=env)
       }
@@ -593,9 +619,9 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_plotCapillary_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotCapillary_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_plotCapillary_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_plotCapillary_gui_title", value=svalue(title_edt), envir=env)
       assign(x=".strvalidator_plotCapillary_gui_sub_title", value=svalue(sub_title_edt), envir=env)

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
@@ -18,19 +19,22 @@
 # 04.05.2013: First version.
 
 
-#' @title Table stutter
+#' @title Table Stutter
 #'
 #' @description
-#' \code{tableStutter_gui} is a GUI wrapper for the \code{tableStutter} function.
+#' \code{tableStutter_gui} is a GUI wrapper for the \code{\link{tableStutter}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{tableStutter} function by providing a graphical 
+#' Simplifies the use of the \code{\link{tableStutter}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{tableStutter}}
 
 tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -56,6 +60,22 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("tableStutter_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -134,10 +154,6 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                               horizontal = FALSE,
                               container = f1g1)
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                                            checked=FALSE,
-                                            container=f1)
-  
   addHandlerChanged(f1g1_scope_opt, handler = function (h, ...) {
 
     svalue(f2_save_edt) <- paste(.gDataName,
@@ -214,26 +230,26 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
     # Set check state if provided.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_tableStutter_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_tableStutter_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_tableStutter_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_tableStutter_gui_quant", envir=env, inherits = FALSE)){
         svalue(f1g1_quant_spb) <- get(".strvalidator_tableStutter_gui_quant", envir=env)
       }
@@ -250,9 +266,9 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
 
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_tableStutter_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_tableStutter_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_tableStutter_gui_quant", value=svalue(f1g1_quant_spb), envir=env)
       assign(x=".strvalidator_tableStutter_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
       

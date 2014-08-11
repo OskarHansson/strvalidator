@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 02.12.2013: Added parameter 'name' for selection of 'data' in drop menu.
 # 30.11.2013: Added info also when 'data' is passed.
@@ -18,7 +19,7 @@
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: First version.
 
-#' @title Edit or view data frames GUI
+#' @title Edit or view data frames
 #'
 #' @description
 #' \code{editData_gui} is a GUI simplifying editing and viewing of data frames.
@@ -31,6 +32,9 @@
 #' @param edit logical TRUE for enable edit .
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{trim_gui}}, \code{\link{cropData_gui}}, \code{\link{combine_gui}}
 
 editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE, debug=FALSE){
 
@@ -54,6 +58,23 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE, de
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  # NO options yet.
+  #savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("editData_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   

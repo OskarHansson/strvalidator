@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 07.05.2014: Implemented 'checkDataset'.
 # 07.05.2014: Fixed 'Target Value' drop not updated.
 # 07.02.2014: Removed redundant handler for 'f1_column_drp'.
@@ -16,17 +17,27 @@
 # 18.07.2013: Check before overwrite object.
 # 17.07.2013: First version.
 
-#' @title Crop or replace GUI
+#' @title Crop or replace
 #'
 #' @description
-#' \code{cropData_gui} is a GUI simplifying cropping and replacing values in data frames.
+#' \code{cropData_gui} is a GUI simplifying cropping and replacing values in
+#' data frames.
 #'
-#' @details Select a data frame from the dropdown and crop/replace. Optionally
-#' save as a new dataframe.
+#' @details Select a data frame from the dropdown and a target column.
+#' Select to discard or replace values and additional options.
+#' Click button to 'Apply' changes.
+#' Multiple actions can be performed on one dataset before saving as
+#' a new dataframe.
+#' NB! Check that datatype is correct before click apply to avoid strange behaviour.
+#' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{trim_gui}}, \code{\link{editData_gui}}, \code{\link{combine_gui}}
+
 
 cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -52,6 +63,22 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("cropData_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -194,10 +221,6 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                spacing = 5,
                container = gv) 
   
-  f2_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f2)
-  
   glabel(text="Action:", visible=FALSE, anchor=c(-1, -1), container=f2)
   
   f2g1 <- glayout(container = f2, spacing = 5)
@@ -230,6 +253,16 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                      width=15,
                                      container=f2g1)
   
+  glabel(text="Target column contain data of type:",
+         visible=FALSE, anchor=c(-1 , -1), container=f2)
+  
+  f2_type_opt <- gradio(items=c("Numeric", "Character"),
+                        horizontal = FALSE,
+                        selected = 1,
+                        container = f2)
+  
+  # HANDLERS ------------------------------------------------------------------
+  
   addHandlerChanged(f2g1_task_opt, handler = function (h, ...) {
     
     .refresh_options()
@@ -241,15 +274,6 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     .refresh_options()
     
   } )  
-  
-  glabel(text="Target column contain data of type:",
-         visible=FALSE, anchor=c(-1 , -1), container=f2)
-  
-  f2_type_opt <- gradio(items=c("Numeric", "Character"),
-                        horizontal = FALSE,
-                        selected = 1,
-                        container = f2)
-  
   
   # BUTTON ####################################################################
   
@@ -621,26 +645,26 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f2_savegui_chk) <- savegui
-      enabled(f2_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_cropData_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f2_savegui_chk) <- get(".strvalidator_cropData_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_cropData_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f2_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f2_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_cropData_gui_na", envir=env, inherits = FALSE)){
         svalue(f1_na_chk) <- get(".strvalidator_cropData_gui_na", envir=env)
       }
@@ -663,9 +687,9 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f2_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_cropData_gui_savegui", value=svalue(f2_savegui_chk), envir=env)
+      assign(x=".strvalidator_cropData_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_cropData_gui_na", value=svalue(f1_na_chk), envir=env)
       assign(x=".strvalidator_cropData_gui_task", value=svalue(f2g1_task_opt), envir=env)
       assign(x=".strvalidator_cropData_gui_operator", value=svalue(f2g1_operator_drp), envir=env)

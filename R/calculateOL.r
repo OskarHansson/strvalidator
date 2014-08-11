@@ -23,6 +23,11 @@
 #' @param virtual logical default is TRUE, calculation includes virtual alleles.
 #' @param limit logical default is TRUE, limit small frequencies to 5/2N.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return data.frame with columns 'Kit', 'Marker', 'Database', 'Risk', and 'Total'.
+#' 
+#' @export
+#' 
 
 calculateOL <- function (kit, db, virtual=TRUE, limit=TRUE, debug=FALSE){
 

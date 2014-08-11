@@ -3,7 +3,7 @@
 # TODO: make ignore.case as parameter.
 # TODO: Use choose.files instead of file.choose to avoid error if no file?
 # TODO: re-make function to read line and specify type for each column.
-# TODO: Fix sample name "F" is converted to "FALSE".
+# TODO: Expand to handle other separators (e.g. comma).
 
 ################################################################################
 # CHANGE LOG

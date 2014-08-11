@@ -4,13 +4,15 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 11.01.2014: First version.
 
-#' @title Calculate peaks GUI
+#' @title Calculate peaks
 #'
 #' @description
-#' \code{calculatePeaks_gui} is a GUI simplifying counting of peaks.
+#' \code{calculatePeaks_gui} is a GUI wrapper for the
+#' \code{\link{calculatePeaks}} function.
 #'
 #' @details Counts the number of peaks in samples and markers with option to
 #'  discard off-ladder peaks and to label groups according to maximum number
@@ -19,6 +21,11 @@
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @export
+#' 
+#' @seealso \code{\link{calculatePeaks}}
 
 calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -41,6 +48,22 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("calculatePeaks_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -102,10 +125,6 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                spacing = 5,
                container = gv) 
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1_no_ol_chk <- gcheckbox(text="Exclude off-ladder peaks (OL alleles).",
                            checked = FALSE,
                            container = f1)
@@ -200,26 +219,26 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_calculatePeaks_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_calculatePeaks_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_calculatePeaks_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_calculatePeaks_gui_nool", envir=env, inherits = FALSE)){
         svalue(f1_no_ol_chk) <- get(".strvalidator_calculatePeaks_gui_nool", envir=env)
       }
@@ -242,9 +261,9 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_calculatePeaks_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculatePeaks_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculatePeaks_gui_nool", value=svalue(f1_no_ol_chk), envir=env)
       assign(x=".strvalidator_calculatePeaks_gui_labels", value=svalue(f1_labels_edt), envir=env)
       assign(x=".strvalidator_calculatePeaks_gui_bins", value=svalue(f1_bins_edt), envir=env)

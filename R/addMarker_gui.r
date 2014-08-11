@@ -5,24 +5,29 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 27.11.2013: First version.
 
 
-#' @title Adds dye information
+#' @title Add missing markers
 #'
 #' @description
-#' \code{addMarker_gui} is a GUI wrapper for the \code{addMarker} function.
+#' \code{addMarker_gui} is a GUI wrapper for the \code{\link{addMarker}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{addMarker} function by providing a graphical 
+#' Simplifies the use of the \code{\link{addMarker}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame in slim format.
+#' @return TRUE
+#' 
+#' @export
+#' 
+#' @seealso \code{\link{addMarker}}
 
 addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -50,26 +55,43 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("addMarker_gui", help_type="html"))
+    
+  })
   
   # DATASET ###################################################################
   
-  group0 <- ggroup(horizontal=FALSE,
+  f0 <- gframe(text = "Dataset and kit",
+               horizontal=FALSE,
                spacing = 5,
                container = gv) 
   
-  grid0 <- glayout(container = group0, spacing = 1)
+  f0g1 <- glayout(container = f0, spacing = 1)
   
-  grid0[1,1] <- glabel(text="Select dataset:", container=grid0)
+  f0g1[1,1] <- glabel(text="Select dataset:", container=f0g1)
   
-  grid0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g1[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              objClass="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = grid0)
+                                         container = f0g1)
   
-  grid0[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
-                                              container=grid0)
+  f0g1[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
+                                              container=f0g1)
   
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -113,31 +135,26 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # KIT -----------------------------------------------------------------------
   
-  grid0[2,1] <- glabel(text="Kit:", container=grid0)
+  f0g1[2,1] <- glabel(text="Kit:", container=f0g1)
   
   kit_drp <- gdroplist(items=getKit(),
                            selected = 1,
                            editable = FALSE,
-                           container = grid0)
+                           container = f0g1)
   
-  grid0[2,2] <- kit_drp
+  f0g1[2,2] <- kit_drp
   
   # FRAME 1 ###################################################################
 
   # OPTIONS -----------------------------------------------------------------------
   
   f1 <- gframe(text = "Options",
-               horizontal=TRUE,
+               horizontal=FALSE,
                spacing = 5,
                container = gv) 
   
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1_ignore_chk <- gcheckbox(text="Ignore case (marker name)",
-                             checked=FALSE,
-                             container=f1)
+                             checked=FALSE, container=f1)
 
   # FRAME 2 ###################################################################
   
@@ -197,26 +214,26 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_addMarker_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_addMarker_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_addMarker_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_addMarker_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_chk) <- get(".strvalidator_addMarker_gui_ignore", envir=env)
       }
@@ -231,9 +248,9 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_addMarker_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_addMarker_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_addMarker_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
       
     } else { # or remove all saved values if false.

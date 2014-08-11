@@ -31,9 +31,8 @@
 #' 
 #' @return data.frame the original data frame containing additional columns.
 #' 
-#' @keywords internal
+#' @export
 #' 
-#' @export true
 #' @examples
 #' # Get marker names and alleles for Promega PowerPlex ESX 17.
 #' x <- getKit("ESX17", what="Allele")

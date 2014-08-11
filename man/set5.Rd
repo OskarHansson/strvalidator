@@ -1,0 +1,14 @@
+\docType{data}
+\name{set5}
+\alias{set5}
+\title{ESX17 example data for mixture analysis.}
+\format{A data frame with 1663 rows and 7 variables}
+\usage{
+data(set5)
+}
+\description{
+A slimmed dataset containing data from
+mixture experiment for Mx analysis.
+}
+\keyword{datasets}
+

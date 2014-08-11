@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
@@ -12,20 +13,24 @@
 # 20.05.2013: First version.
 
 
-#' @title Calculate Heterozygous GUI
+#' @title Calculate Heterozygous
 #'
 #' @description
 #' \code{calculateHeterozygous_gui} is a GUI wrapper for the
-#'  \code{calculateHeterozygous} function.
+#' \code{link{calculateHeterozygous}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{calculateHeterozygous} function by
+#' Simplifies the use of the \code{\link{calculateHeterozygous}} function by
 #' providing a graphical user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame in slim format.
+#' @return TRUE
+#' 
+#' @export
+#' 
+#' @seealso \code{\link{calculateHeterozygous}}
 
 calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
   
@@ -46,6 +51,22 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("calculateHeterozygous_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 05.05.2014: Fixed same color scale for all sub plots in complex plots.
 # 14.04.2014: Fixed different y max for complex plot, when supposed to be fixed.
@@ -36,16 +37,23 @@
 # <28.04.2013: Added dropdown with data frames in passed environment.
 # <28.04.2013: First version.
 
-#' @title Plot Stutter GUI
+#' @title Plot Stutter
 #'
 #' @description
 #' \code{plotStutter_gui} is a GUI simplifying the creation of plots from stutter data.
 #'
-#' @details Plot stutter data by parent allele or by peak height.
+#' @details Select data to plot in the drop-down menu. Check that the correct
+#' kit has been detected. Plot stutter data by parent allele or by peak height. 
+#' Automatic plot titles can be replaced by custom titles.
+#' A name for the result is automatiaclly suggested.
+#' The resulting plot can be saved as either a plot object or as an image.
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
 plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -75,6 +83,22 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("plotStutter_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -180,10 +204,6 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   f1g1[3,2] <- y_title_edt <- gedit(text="",
                                      container=f1g1)
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1g2 <- glayout(container = f1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
   f1g2[1,2] <- f1_theme_drp <- gdroplist(items=c("theme_grey()","theme_bw()"),
@@ -794,26 +814,26 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_plotStutter_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_plotStutter_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_plotStutter_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_plotStutter_gui_title", envir=env, inherits = FALSE)){
         svalue(title_edt) <- get(".strvalidator_plotStutter_gui_title", envir=env)
       }
@@ -876,9 +896,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_plotStutter_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotStutter_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_plotStutter_gui_title", value=svalue(title_edt), envir=env)
       assign(x=".strvalidator_plotStutter_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_plotStutter_gui_x_title", value=svalue(x_title_edt), envir=env)

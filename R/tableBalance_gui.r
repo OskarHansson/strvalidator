@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 05.05.2014: Changed default value for percentile 0.95 -> 0.05.
 # 15.02.2014: First version.
@@ -12,16 +13,19 @@
 #' @title Table balance
 #'
 #' @description
-#' \code{tableBalance_gui} is a GUI wrapper for the \code{tableBalance} function.
+#' \code{tableBalance_gui} is a GUI wrapper for the \code{\link{tableBalance}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{tableBalance} function by providing a graphical 
+#' Simplifies the use of the \code{\link{tableBalance}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{tableBalance}}
 
 tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -47,6 +51,22 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("tableBalance_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -125,10 +145,6 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                               horizontal = FALSE,
                               container = f1g1)
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                                            checked=FALSE,
-                                            container=f1)
-  
   addHandlerChanged(f1g1_scope_opt, handler = function (h, ...) {
 
     svalue(f2_save_edt) <- paste(.gDataName,
@@ -205,26 +221,26 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
     # Set check state if provided.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_tableBalance_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_tableBalance_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_tableBalance_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_tableBalance_gui_quant", envir=env, inherits = FALSE)){
         svalue(f1g1_quant_spb) <- get(".strvalidator_tableBalance_gui_quant", envir=env)
       }
@@ -241,9 +257,9 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
 
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_tableBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_tableBalance_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_tableBalance_gui_quant", value=svalue(f1g1_quant_spb), envir=env)
       assign(x=".strvalidator_tableBalance_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
       

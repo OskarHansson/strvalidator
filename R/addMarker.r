@@ -18,16 +18,18 @@
 #' Given a dataset or a vector with sample names the function loops through
 #' each sample and add any missing markers.
 #' Returns a dataframe where each sample have at least one row per marker in
-#' the specified marker vector. Use \code{sortMarker} to sort the markers
+#' the specified marker vector. Use \code{\link{sortMarker}} to sort the markers
 #' according to a specified kit.
 #' Required columns are: 'Sample.Name'.
 #' 
-#' @param data data frame or vector with sample names.
+#' @param data data.frame or vector with sample names.
 #' @param marker vector with marker names.
-#' @param ignoreCase logical TRUE ignore case.
+#' @param ignoreCase logical. TRUE ignores case in marker names.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame.
+#' 
+#' @export
 #' 
 
 addMarker <- function(data, marker, ignoreCase=FALSE, debug=FALSE){

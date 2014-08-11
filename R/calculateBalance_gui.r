@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 07.08.2014: Added check and error message for 'NA' in 'Dye'.
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Removed 'perSample' parameter. Added 'OL' check.
 # 18.12.2013: Fixed dropdown state not saved (wrong object saved)...
@@ -29,19 +31,22 @@
 #' @title Calculate Balance
 #'
 #' @description
-#' \code{calculateBalance_gui} is a GUI wrapper for the \code{calculateBalance}
-#'  function.
+#' \code{calculateBalance_gui} is a GUI wrapper for the 
+#' \code{\link{calculateBalance}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{calculateBalance} function by providing 
-#' a graphical user interface.
+#' Simplifies the use of the \code{\link{calculateBalance}} function
+#' by providing a graphical user interface.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame in slim format.
+#' @return TRUE
 #' 
+#' @export
+#' 
+#' @seealso \code{link{calculateBalance}}, \code{link{checkSubset}}
 
 calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                                  debug=FALSE){
@@ -73,6 +78,22 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+  
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("calculateBalance_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -227,10 +248,6 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                spacing = 10,
                container = gv) 
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1_ignore_chk <- gcheckbox(text="Ignore case",
                          checked=TRUE,
                          container=f1)
@@ -313,56 +330,69 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     
     # Check if data.
     if(!is.null(.gData) & !is.null(.gRef)){
-      
-      if(val_lb == 1){
-        val_lb <- "prop"
-      } else {
-        val_lb <- "norm"
-      }
 
-      if(debug){
-        print("Sent Values:")
-        print("val_lb")
-        print(val_lb)
-        print("val_perDye")
-        print(val_perDye)
-        print("val_ignore")
-        print(val_ignore)
-      }
-      
-      if("OL" %in% .gData$Allele){
+      # Check for NA's in dye column.
+      if(!any(is.na(.gData$Dye))){
         
-        message <- "'OL' alleles might lead to erroneous results!"
+        if(val_lb == 1){
+          val_lb <- "prop"
+        } else {
+          val_lb <- "norm"
+        }
+  
+        if(debug){
+          print("Sent Values:")
+          print("val_lb")
+          print(val_lb)
+          print("val_perDye")
+          print(val_perDye)
+          print("val_ignore")
+          print(val_ignore)
+        }
         
-        gmessage(message, title="'OL' detected in dataset",
-                 icon = "warning",
+        if("OL" %in% .gData$Allele){
+          
+          message <- "'OL' alleles might lead to erroneous results!"
+          
+          gmessage(message, title="'OL' detected in dataset",
+                   icon = "warning",
+                   parent = w)
+          
+        }
+    
+        # Change button.
+        svalue(calculate_btn) <- "Processing..."
+        enabled(calculate_btn) <- FALSE
+        
+        datanew <- calculateBalance(data=val_data,
+                                    ref=val_ref,
+                                    lb=val_lb,
+                                    perDye=val_perDye,
+                                    hb=val_method,
+                                    ignoreCase=val_ignore,
+                                    debug=debug)
+        
+        # Save data.
+        saveObject(name=val_name, object=datanew, parent=w, env=env)
+        
+        if(debug){
+          print(str(datanew))
+          print(head(datanew))
+          print(paste("EXIT:", match.call()[[1]]))
+        }
+        
+        # Close GUI.
+        dispose(w)
+
+      } else {
+        
+        message <- "'NA' in 'Dye' column. \nUse add dye function to fix."
+        
+        gmessage(message, title="NA detected!",
+                 icon = "error",
                  parent = w)
         
       }
-  
-      # Change button.
-      svalue(calculate_btn) <- "Processing..."
-      enabled(calculate_btn) <- FALSE
-      
-      datanew <- calculateBalance(data=val_data,
-                                  ref=val_ref,
-                                  lb=val_lb,
-                                  perDye=val_perDye,
-                                  hb=val_method,
-                                  ignoreCase=val_ignore,
-                                  debug=debug)
-      
-      # Save data.
-      saveObject(name=val_name, object=datanew, parent=w, env=env)
-      
-      if(debug){
-        print(str(datanew))
-        print(head(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
-      }
-      
-      # Close GUI.
-      dispose(w)
       
     } else {
 
@@ -382,26 +412,26 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_calculateBalance_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_calculateBalance_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_calculateBalance_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
         
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_calculateBalance_gui_method", envir=env, inherits = FALSE)){
         svalue(f1_method_drp) <- get(".strvalidator_calculateBalance_gui_method", envir=env)
       }
@@ -424,9 +454,9 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_calculateBalance_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_method", value=svalue(f1_method_drp), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_lb", value=svalue(f1_lb_opt), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_perDye", value=svalue(f1_perDye_opt), envir=env)

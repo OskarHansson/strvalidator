@@ -4,21 +4,30 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
 # 12.01.2014: Updated with more options.
 # 28.10.2013: First version.
 
-#' @title Plot Result Type GUI
+#' @title Plot Result Type
 #'
 #' @description
 #' \code{plotResultType_gui} is a GUI simplifying the creation of plots from
 #' result type data.
 #'
-#' @details Plot result type data.
+#' @details Plot result type data. It is possible to customise titles and font
+#' size. Data can be plotted as as frequency or proportion. The values can be
+#' printed on the plot with custom number of decimals. There are several 
+#' colour palettes to chose from. 
+#' Automatic plot titles can be replaced by custom titles.
+#' A name for the result is automatiaclly suggested.
+#' The resulting plot can be saved as either a plot object or as an image.
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
 
 plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
@@ -53,6 +62,22 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("plotResultType_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -145,10 +170,6 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   grid1[3,2] <- f1_ytitle_edt <- gedit(text="",
                                      container=grid1)
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                                container=f1)
-  
   f1_prop_chk <- gcheckbox(text="Plot proportion",
                            checked=TRUE,
                            container=f1)
@@ -365,26 +386,26 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_plotResultType_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_plotResultType_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_plotResultType_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_plotResultType_gui_title", envir=env, inherits = FALSE)){
         svalue(f1_title_edt) <- get(".strvalidator_plotResultType_gui_title", envir=env)
       }
@@ -426,9 +447,9 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_plotResultType_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotResultType_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_plotResultType_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_plotResultType_gui_title", value=svalue(f1_title_edt), envir=env)
       assign(x=".strvalidator_plotResultType_gui_x_title", value=svalue(f1_xtitle_edt), envir=env)

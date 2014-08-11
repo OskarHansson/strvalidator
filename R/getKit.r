@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 03.08.2014: Added option to return kit index.
 # 02.03.2014: Removed factor levels from 'Marker' before returning 'OFFSET'/'REPEAT'.
 # 09.12.2013: Removed factor levels from 'Marker' before returning 'VIRTUAL'.
 # 20.11.2013: Change parameter name 'kitNameOrIndex' to 'kit'.
@@ -32,8 +33,8 @@
 #' If no matching kit or kit index is found NA is returned.
 #' If 'NULL' or '0' a vector of available kits is printed and NA returned.
 #' 
-#' @param kit string or integer specifying the kit.
-#' @param what string specifying information to return. Default is 'NA' which return all info.
+#' @param kit string or integer to specify the kit.
+#' @param what string to specify which information to return. Default is 'NA' which return all info.
 #' Not case sensitive.
 #' @param showMessages logical, default TRUE for printing messages to the R promt.
 #' @param .kitInfo data frame, run function on a data frame instead of the kits.txt file.
@@ -42,9 +43,8 @@
 #' 
 #' @return data.frame with kit information.
 #' 
-#' @keywords internal
+#' @export
 #' 
-#' @export 
 #' @examples
 #' # Show all information stored for kit with short name 'ESX17'.
 #' getKit("ESX17")
@@ -140,7 +140,8 @@ getKit<-function(kit=NULL, what=NA, showMessages=FALSE, .kitInfo=NULL, debug=FAL
 	}
   
   # Used in error message in 'else'.
-  options <- paste("Panel",
+  options <- paste("Index",
+                   "Panel",
                    "Short.Name",
                    "Full.Name",
                    "Marker",
@@ -156,6 +157,10 @@ getKit<-function(kit=NULL, what=NA, showMessages=FALSE, .kitInfo=NULL, debug=FAL
   if(is.na(what)){
     # Return all kit information.
     return(res)
+    
+  } else if (toupper(what) == "INDEX"){
+    # Return kit index.
+    return(index)
     
   } else if (toupper(what) == "PANEL"){
     # Return panel name.

@@ -28,11 +28,11 @@
 #' @param data data frame or vector.
 #' @param kit string representing the forensic STR kit used.
 #' Default is NA, in which case 'have' must contain a valid column.
-#' @param have string specifying color column to be matched.
+#' @param have character string to specify color column to be matched.
 #' Default is NA, in which case color information is derived from 'kit' and added
 #' to a column named 'Color'.
 #' If 'data' is a vector 'have' must be a single string.
-#' @param need string or string vector specifying color columns to be added.
+#' @param need character string or string vector to specify color columns to be added.
 #' Default is NA, in which case all columns will be added.
 #' If 'data' is a vector 'need' must be a single string.
 #' @param overwrite logical if TRUE and column exist it will be overwritten.
@@ -41,6 +41,8 @@
 #' 
 #' @return data.frame with additional columns for added colors, 
 #' or vector with converted values.
+#' 
+#' @export
 #' 
 #' @examples
 #' # Get marker and colors for ESX17.

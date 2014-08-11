@@ -40,7 +40,9 @@
 #' @param markerSubset string with marker names defining the subset of 'Complete'.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame with columns 'Sample.Name','Type','Subtype'
+#' @return data.frame with columns 'Sample.Name','Type', and 'Subtype'.
+#' 
+#' @export
 #' 
 
 calculateResultType <- function(data, kit=NULL, addMissingMarker=TRUE,

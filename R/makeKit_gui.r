@@ -4,16 +4,18 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.07.2014: Changed some gui text.
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 10.11.2013: Fixed check that short name is provided.
 # 22.09.2013: Fixed duplicate check.
 # 21.09.2013: Fixed correct gender marker when reading from file.
 # 21.09.2013: Fixed no gender marker by putting 'NA' as option.
 # 22.06.2013: First version.
 
-#' @title Make kit GUI
+#' @title Make kit
 #'
 #' @description
-#' \code{makeKit_gui} add new kits or edit the kits file.
+#' \code{makeKit_gui} add new kits or edit the kit file.
 #'
 #' @details A graphical user interface for reading information from 'bins' and 
 #' 'panels' file for the creation of additional kits. It is also possible to
@@ -25,6 +27,9 @@
 #' [Not currently used]
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{readBinsFile}}, \code{\link{readPanelsFile}}, \code{\link{combineBinsAndPanels}}
 
 makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -36,7 +41,6 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .noGenderMarkerString <- "<none>"
   .f3g1 <- NULL
   .separator <- .Platform$file.sep # Platform dependent path separator.
-  # Get package path.
   .packagePath <- path.package("strvalidator", quiet = FALSE)
   .subFolder <- "extdata"
   .fileName <- "kit.txt"
@@ -51,7 +55,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     print(.filePath)
   }
   
-  # Load existing kits file.  
+  # Load existing kit file.  
   if(!is.na(.filePath)){
     if(file.exists(.filePath)){
       # Read kit info file.
@@ -60,7 +64,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                  dec = ".", fill = TRUE,
                                  stringsAsFactors=FALSE)
     } else {
-      gmessage(message="The kits file was not found",
+      gmessage(message="The kit file was not found",
                title="File not found",
                icon = "error",
                parent = w) 
@@ -69,7 +73,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   
   # Main window.  
-  w <- gwindow(title="Make kit", visible=FALSE)
+  w <- gwindow(title="Manage kits", visible=FALSE)
   
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
@@ -77,6 +81,23 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  # No saved options yet!
+  # savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("makeKit_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -85,7 +106,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                spacing = 5,
                container = gv) 
   
-  f0_opt <- gradio(items=c("Edit kits file", "Add new kits"), 
+  f0_opt <- gradio(items=c("Edit kit file", "Add new kits"), 
                                   selected = 2, container=f0)
   
   addHandlerChanged(f0_opt, handler = function (h, ...) {
@@ -132,7 +153,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # FRAME 1 ###################################################################
   
-  f1 <- gframe(text = "Kits file",
+  f1 <- gframe(text = "Kit file",
                horizontal=FALSE,
                spacing = 5,
                container = gv) 
@@ -150,7 +171,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     val_obj <- svalue(f1g1_file_edt)
     
     if(debug){
-      print("Kits file:")
+      print("Kit file:")
       print(val_obj)
     }
 
@@ -168,7 +189,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         
       } else {
         
-        gmessage(message="The kits file was not found",
+        gmessage(message="The kit file was not found",
                  title="File not found",
                  icon = "error",
                  parent = w) 
@@ -362,8 +383,8 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # SAVE ----------------------------------------------------------------------
   
-  f4_opt <- gradio(items=c("Append to kits file",
-                           "Overwrite kits file",
+  f4_opt <- gradio(items=c("Append to kit file",
+                           "Overwrite kit file",
                            "Save as data frame"), 
                    selected = 1, 
                    horizontal = FALSE,
@@ -536,7 +557,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                       quote = FALSE, sep = "\t")
         } else if(val_opt == 2){
           if(debug){
-            print("Save as kits file")
+            print("Save as kit file")
           }
           write.table(x=.newKitInfo, file=.filePath,
                       row.names = FALSE,

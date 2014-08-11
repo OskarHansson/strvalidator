@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Fixed column check for plots.
 # 06.02.2014: Implemented theme and colour.
@@ -12,16 +13,24 @@
 # 20.01.2014: Implemented ggsave with workaround for complex plots.
 # 07.12.2013: First version.
 
-#' @title Plot Precision GUI
+#' @title Plot Precision
 #'
 #' @description
 #' \code{plotPrecision_gui} is a GUI simplifying the creation of plots from precision data.
 #'
-#' @details Plot precision data.
-#'   
+#' @details Plot precision data for size, height, or data point as dotplot or
+#' boxplot. Plot per marker or all in one. Use the mean value or the allele
+#' designation as x-axis labels.
+#' Automatic plot titles can be replaced by custom titles.
+#' A name for the result is automatiaclly suggested.
+#' The resulting plot can be saved as either a plot object or as an image.
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
+#' 
+#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 #' 
 
 plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
@@ -52,6 +61,22 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("plotPrecision_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -153,10 +178,6 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   grid1[3,1] <- glabel(text="Y title:", container=grid1)
   grid1[3,2] <- y_title_edt <- gedit(text="",
                                      container=grid1)
-  
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
   
   f1_facet_chk <- gcheckbox(text="Plot per marker",
                               checked=TRUE,
@@ -1015,26 +1036,26 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_plotPrecision_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_plotPrecision_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_plotPrecision_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_plotPrecision_gui_title", envir=env, inherits = FALSE)){
         svalue(title_edt) <- get(".strvalidator_plotPrecision_gui_title", envir=env)
       }
@@ -1100,9 +1121,9 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_plotPrecision_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotPrecision_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_title", value=svalue(title_edt), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_plotPrecision_gui_x_title", value=svalue(x_title_edt), envir=env)

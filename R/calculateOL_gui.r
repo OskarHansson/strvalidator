@@ -4,16 +4,17 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 21.01.2014: Added parameter 'limit'.
 # 06.01.2014: Fixed button name used as 'save as' name.
 # 20.11.2013: Fixed result now stored in variable 'datanew' insted of 'val_name'.
 # 29.09.2013: First version.
 
 
-#' @title Bins Overlap
+#' @title Analyse off-ladder alleles
 #'
 #' @description
-#' \code{calculateOL_gui} is a GUI wrapper for the \code{calculateOL}
+#' \code{calculateOL_gui} is a GUI wrapper for the \code{\link{calculateOL}}
 #'  function.
 #'
 #' @details By analysis of the allelic ladder the risk for getting off-ladder
@@ -25,6 +26,12 @@
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
+#' 
+#' @export
+#' 
+#' @seealso \code{\link{calculateOL}}
 
 calculateOL_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE){
   
@@ -45,6 +52,22 @@ calculateOL_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("calculateOL_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -95,10 +118,6 @@ calculateOL_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE){
                horizontal=FALSE,
                spacing = 5,
                container = gv) 
-  
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
   
   glabel(text="Select allele frequency database:",
          anchor=c(-1 ,0), container=f1)
@@ -211,26 +230,26 @@ calculateOL_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_calculateOL_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_calculateOL_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_calculateOL_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_calculateOL_gui_db_name", envir=env, inherits = FALSE)){
         svalue(f1_db_drp) <- get(".strvalidator_calculateOL_gui_db_name", envir=env)
       }
@@ -251,9 +270,9 @@ calculateOL_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_calculateOL_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateOL_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculateOL_gui_db_name", value=svalue(f1_db_drp), envir=env)
       assign(x=".strvalidator_calculateOL_gui_virtual", value=svalue(f1_virtual_chk), envir=env)
       assign(x=".strvalidator_calculateOL_gui_limit", value=svalue(f1_limit_chk), envir=env)

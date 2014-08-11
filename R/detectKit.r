@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 03.08.2014: Added support for kit attribute.
 # 15.04.2014: Revert to previous match if no match in a method.
 # 24.10.2013: Improved matching.
 # 18.09.2013: Fixed error when compairing unequal length.
@@ -19,8 +20,11 @@
 #' \code{detectKit} finds the most likely STR kit for a dataset.
 #'
 #' @details
-#' The function looks at the markers in the dataset and returns the 
-#' most likely kit(s).
+#' The function first check if there is a 'kit' attribute for the dataset.
+#' If there was a 'kit' attribute, and a match is found in \code{getKit}
+#' the corresponding kit or index is returned.
+#' If an attribute does not exist the function looks at the markers
+#' in the dataset and returns the most likely kit(s).
 #' 
 #' @param data data frame.
 #' @param index logical, returns kit index if TRUE or short name if FALSE.
@@ -35,6 +39,41 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
     stop("Data frame must contain a column 'Marker'")
   }
   
+  # Get kit attribute.
+  attribute <- attr(x=data, which="kit", exact = TRUE)
+
+  # Check if the attribute was found.
+  if(!is.null(attribute)){
+    
+    if(!index){
+      # Get kit name.
+      detectedKit <- getKit(attribute, what="Short.Name")
+    } else {
+      # Get kit index.
+      detectedKit <- getKit(attribute, what="Index")
+    }
+    
+    # Check if a match was returned.
+    if(!is.na(detectedKit)){
+
+      # Write message.
+      message(paste("Found matching attribute 'kit':",
+                    detectedKit, "(attr =", attribute, ")"))
+      
+      if(debug){
+        print("Attribute:")
+        print(attribute)
+        print("Detected kit:")
+        print(detectedKit)
+      }
+      
+      return(detectedKit)
+      
+    }
+    
+  }
+  
+  # Get unique markers.
   markers <- unique(data$Marker)
   
   # Get available kits.

@@ -1,0 +1,46 @@
+\name{calculateConcordance}
+\alias{calculateConcordance}
+\title{Calculate concordance.}
+\usage{
+calculateConcordance(data, kit.name = NA, no.marker = "NO MARKER",
+  no.sample = "NO SAMPLE", delimeter = ",", debug = FALSE)
+}
+\arguments{
+  \item{data}{list of data frames in 'slim' format with at
+  least columns 'Sample.Name', 'Marker', and 'Allele'.}
+
+  \item{kit.name}{character vector for DNA typing kit names
+  in same order and of same lengths as data sets in 'data'
+  list. Default is NA in which case they will be numbered.}
+
+  \item{no.marker}{character vector for string when marker
+  is missing.}
+
+  \item{no.sample}{character vector for string when sample
+  is missing.}
+
+  \item{delimeter}{character to separate the alleles in a
+  genotype. Default is comma e.g '12,16'.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\value{
+list of data.frames (discordance table, and pair-wise comparison).
+}
+\description{
+\code{calculateConcordance} Compares profiles in multiple datasets.
+}
+\details{
+Takes a list of datasets as input. It is assumed that each unique
+sample name represent a result originating from the same source DNA and
+thus is expected to give identical DNA profiles. The function first compare
+the profiles for each sample across datasets and lists discordant results.
+Then it performs a pair-wise comparison and compiles a concordance table.
+The tables are returned as two data frames in a list.
+NB! Typing and PCR artefacts (spikes, off-ladder peaks, stutters etc.)
+must be removed before analysis.
+NB! It is expected that the unique set of marker names across a dataset is
+present in each sample for that dataset (a missing marker is a discordance).
+}
+

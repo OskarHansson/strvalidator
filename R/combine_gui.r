@@ -4,26 +4,30 @@
 
 ################################################################################
 # CHANGE LOG
+# 29.07.2014: Changed name concatenate_gui -> combine_gui.
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 17.05.2013: First version.
 
 
-#' @title Concatenate two datasets
+#' @title Combine two datasets
 #'
 #' @description
-#' \code{concatenate_gui} is a GUI for combining two datasets.
+#' \code{combine_gui} is a GUI for combining two datasets.
 #'
 #' @details
-#' Simplifies the use of the \code{checkSubset} function by providing a graphical 
-#' user interface to it.
+#' Simple GUI to combine two datasets using the \code{\link{rbind}} function.
+#' NB! Datasets must have identical column names.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
 
-concatenate_gui <- function(env=parent.frame(), debug=FALSE){
+
+combine_gui <- function(env=parent.frame(), debug=FALSE){
   
   # Global variables.
   .gData1 <- NULL
@@ -36,38 +40,56 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
   }
   
   # Main window.
-  w <- gwindow(title="Concatenate", visible=FALSE)
+  w <- gwindow(title="Combine", visible=FALSE)
   
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
-               spacing=15,
-               use.scrollwindow=FALSE,
-               container = w,
-               expand=TRUE) 
+              spacing=15,
+              use.scrollwindow=FALSE,
+              container = w,
+              expand=FALSE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("combine_gui", help_type="html"))
+    
+  })
   
   # DATASET ###################################################################
   
-  f1 <- ggroup(horizontal=FALSE,
+  f0 <- gframe(text = "Datasets",
+               horizontal=FALSE,
                spacing = 10,
                container = gv) 
+
+
+  f0g0 <- glayout(container = f0, spacing = 1)
   
-  f1g1 <- glayout(container = f1, spacing = 1)
+  f0g0[1,1] <- glabel(text="Select dataset 1:", container=f0g0)
   
-  f1g1[1,1] <- glabel(text="Select dataset 1:", container=f1g1)
-  
-  f1g1[1,2] <- f1g1_data1_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- f0g0_data1_drp <- gdroplist(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              objClass="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f1g1)
+                                         container = f0g0)
   
-  f1g1[1,3] <- f1g1_data1_col_lbl <- glabel(text=" 0 columns",
-                                              container=f1g1)
+  f0g0[1,3] <- f0g0_data1_col_lbl <- glabel(text=" 0 columns",
+                                              container=f0g0)
   
-  addHandlerChanged(f1g1_data1_drp, handler = function (h, ...) {
+  addHandlerChanged(f0g0_data1_drp, handler = function (h, ...) {
     
-    val_obj <- svalue(f1g1_data1_drp)
+    val_obj <- svalue(f0g0_data1_drp)
     
     # Check if suitable.
     ok <- checkDataset(name=val_obj, reqcol=NULL,
@@ -79,59 +101,66 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
       .gData1 <<- get(val_obj, envir=env)
       .gData1Name <<- val_obj
       
-      svalue(f1g1_data1_col_lbl) <- paste(" ", ncol(.gData1), " columns")
+      svalue(f0g0_data1_col_lbl) <- paste(" ", ncol(.gData1), " columns")
       svalue(f2_name) <- paste(.gData1Name, .gData2Name, sep="_")
         
     } else {
       
       .gData1 <<- NULL
       .gData1Name <<- NULL
-      svalue(f1g1_data1_col_lbl) <- " 0 columns"
+      svalue(f0g0_data1_col_lbl) <- " 0 columns"
       svalue(f2_name) <- ""
       
     }
     
   } )
 
-  f1g1[2,1] <- glabel(text="Select dataset 2:", container=f1g1)
+  f0g0[2,1] <- glabel(text="Select dataset 2:", container=f0g0)
   
-  f1g1[2,2] <- f1g1_data2_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[2,2] <- f0g0_data2_drp <- gdroplist(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              objClass="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f1g1)
+                                         container = f0g0)
   
-  f1g1[2,3] <- f1g1_data2_col_lbl <- glabel(text=" 0 columns",
-                                              container=f1g1)
+  f0g0[2,3] <- f0g0_data2_col_lbl <- glabel(text=" 0 columns",
+                                              container=f0g0)
   
-  addHandlerChanged(f1g1_data2_drp, handler = function (h, ...) {
+  addHandlerChanged(f0g0_data2_drp, handler = function (h, ...) {
     
-    val_obj <- svalue(f1g1_data2_drp)
+    val_obj <- svalue(f0g0_data2_drp)
     
     if(exists(val_obj, envir=env, inherits = FALSE)){
       
       .gData2 <<- get(val_obj, envir=env)
       .gData2Name <<- val_obj
       
-      svalue(f1g1_data2_col_lbl) <- paste(" ", ncol(.gData2), " columns")
+      svalue(f0g0_data2_col_lbl) <- paste(" ", ncol(.gData2), " columns")
       svalue(f2_name) <- paste(.gData1Name, .gData2Name, sep="_")
       
     } else {
       
       .gData2 <<- NULL
       .gData1Name <<- NULL
-      svalue(f1g1_data2_col_lbl) <- " 0 samples"
+      svalue(f0g0_data2_col_lbl) <- " 0 samples"
       svalue(f2_name) <- ""
       
     }
   } )
   
+  # FRAME 1 ###################################################################
+# # No options yet.  
+#   f1 <- gframe("Options", horizontal=FALSE, container=gv)
+#   
+#   f1g0 <- glayout(container = f1, expand=TRUE, fill="both")
+  
   # NAME ######################################################################
   
-  f2 <- ggroup(horizontal=TRUE,
-                   spacing = 10,
-                   container = gv) 
+  f2 <- gframe(text = "Save as",
+               horizontal=TRUE,
+               spacing = 5,
+               container = gv) 
   
   glabel(text="Save as:", container=f2)
   f2_name <- gedit(text="", width=40, container=f2)
@@ -142,11 +171,11 @@ concatenate_gui <- function(env=parent.frame(), debug=FALSE){
     print("BUTTON")
   }  
   
-  concatenate_btn <- gbutton(text="Concatenate",
+  combine_btn <- gbutton(text="Combine",
                       border=TRUE,
                       container=gv)
   
-  addHandlerChanged(concatenate_btn, handler = function(h, ...) {
+  addHandlerChanged(combine_btn, handler = function(h, ...) {
     
     colOk <- all(names(.gData1) == names(.gData2))
     

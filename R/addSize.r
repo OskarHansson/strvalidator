@@ -30,6 +30,8 @@
 #' 
 #' @return data.frame with additional columns for added size.
 #' 
+#' @export
+#' 
 
 addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){
   

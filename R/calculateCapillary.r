@@ -27,9 +27,8 @@
 #' @return data.frame with with columns 'Instrument', 'Instrument.ID', 'Run',
 #' 'Mean.Height', 'SQ', 'Injection', 'Capillary', 'Well', 'Comment'.
 #' 
-#' @keywords internal
+#' @export
 #' 
-#' @export true
 
 calculateCapillary <- function(samplesTable, plotTable, sq=0, run="", debug=FALSE){
   

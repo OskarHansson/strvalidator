@@ -33,7 +33,7 @@
 #'
 #' @details
 #' Calculates stutter ratios based on the 'reference' data set
-#' and a defined analysis range aroung the true allele.
+#' and a defined analysis range around the true allele.
 #' 
 #' NB! Off-ladder alleles ('OL') is NOT included in the analysis.
 #' NB! Labelled pull-ups or artefacts within stutter range IS included

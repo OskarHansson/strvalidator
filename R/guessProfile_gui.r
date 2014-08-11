@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Implemented new option 'ol.rm'.
 # 18.07.2013: Check before overwrite object.
@@ -22,22 +23,21 @@
 #' @title Guess profile
 #'
 #' @description
-#' \code{guessProfile_gui} is a GUI wrapper for the \code{guessProfile} function.
+#' \code{guessProfile_gui} is a GUI wrapper for the \code{\link{guessProfile}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{guessProfile} function by providing a graphical 
-#' user interface to it.
+#' Simplifies the use of the \code{\link{guessProfile}} function by providing
+#' a graphical user interface to it.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{guessProfile}}, \code{\link{checkSubset}}
 
 guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
-  
-  # Load dependencies.  
-  #require(gWidgets)
-  #options(guiToolkit="RGtk2")
   
   # Global variables.
   .gData <- NULL
@@ -58,6 +58,22 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("guessProfile_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -118,25 +134,21 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   f1g1 <- glayout(container = f1, spacing = 5)
   
-  f1g1[1,1] <- f1g1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                                             checked=FALSE,
-                                             container=f1g1)
-  
-  f1g1[2,1] <- glabel(text="Accepted ratio >=", container=f1g1)
+  f1g1[1,1] <- glabel(text="Accepted ratio >=", container=f1g1)
 
-  f1g1[2,2] <- f1g1_ratio_spb <- gspinbutton(from = 0, to = 1,
+  f1g1[1,2] <- f1g1_ratio_spb <- gspinbutton(from = 0, to = 1,
                                             by = 0.01, value = 0.6,
                                             container = f1g1)
 
-  f1g1[3,1] <- glabel(text="Accepted peak height >=", container=f1g1)
+  f1g1[2,1] <- glabel(text="Accepted peak height >=", container=f1g1)
   
-  f1g1[3,2] <- f1g1_height_edt <- gedit(text="100", width=6, container=f1g1)
+  f1g1[2,2] <- f1g1_height_edt <- gedit(text="100", width=6, container=f1g1)
   
-  f1g1[4,1] <- f1g1_na_chk <- gcheckbox(text="Discard NA rows",
+  f1g1[3,1] <- f1g1_na_chk <- gcheckbox(text="Discard NA rows",
                                    checked=FALSE,
                                    container=f1g1)
 
-  f1g1[5,1] <- f1g1_ol_chk <- gcheckbox(text="Ignore off-ladder (OL) alleles",
+  f1g1[4,1] <- f1g1_ol_chk <- gcheckbox(text="Ignore off-ladder (OL) alleles",
                                         checked=FALSE,
                                         container=f1g1)
   
@@ -216,26 +228,26 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1g1_savegui_chk) <- savegui
-      enabled(f1g1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_guessProfile_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1g1_savegui_chk) <- get(".strvalidator_guessProfile_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_guessProfile_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1g1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
 
     # Then load settings if true.
-    if(svalue(f1g1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_guessProfile_gui_ratio", envir=env, inherits = FALSE)){
         svalue(f1g1_ratio_spb) <- get(".strvalidator_guessProfile_gui_ratio", envir=env)
       }
@@ -258,9 +270,9 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1g1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_guessProfile_gui_savegui", value=svalue(f1g1_savegui_chk), envir=env)
+      assign(x=".strvalidator_guessProfile_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_guessProfile_gui_ratio", value=svalue(f1g1_ratio_spb), envir=env)
       assign(x=".strvalidator_guessProfile_gui_height", value=svalue(f1g1_height_edt), envir=env)
       assign(x=".strvalidator_guessProfile_gui_na", value=svalue(f1g1_na_chk), envir=env)

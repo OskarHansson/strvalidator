@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 12.01.2014: Replaced 'subset' with native code.
 # 15.12.2013: Fixed filter by kit bins.
@@ -18,17 +19,24 @@
 # 09.05.2013: .result removed, added save as group.
 # 25.04.2013: First version.
 
-#' @title Filter Profile GUI
+#' @title Filter Profile
 #'
 #' @description
-#' \code{filterProfile_gui} is a GUI simplifying the filtering of typing data.
+#' \code{filterProfile_gui} is a GUI wrapper for the
+#' \code{\link{filterProfile}} function.
 #'
-#' @details All data not matching the reference will be discarded. Useful for
+#' @details Simplifies the use of the \code{\link{filterProfile}} function
+#' by providing a graphical user interface to it.
+#' All data not matching the reference will be discarded. Useful for
 #' filtering stutters and artifacts from raw typing data.
+#' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{filterProfile}}, \code{\link{checkSubset}}
 
 filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -53,6 +61,22 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+  
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("filterProfile_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -214,10 +238,6 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                spacing = 5,
                container = gv) 
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1_add_missing_loci_chk <- gcheckbox(text="Add missing loci",
                                     checked = TRUE,
                                     container = f1)
@@ -237,6 +257,8 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                           selected=1,
                           horizontal=FALSE,
                           container=f1)
+  
+  # HANDLERS ------------------------------------------------------------------
   
   addHandlerChanged(f1_filter_opt, handler = function (h, ...) {
     
@@ -357,26 +379,26 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_filterProfile_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_filterProfile_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_filterProfile_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_filterProfile_gui_add_loci", envir=env, inherits = FALSE)){
         svalue(f1_add_missing_loci_chk) <- get(".strvalidator_filterProfile_gui_add_loci", envir=env)
       }
@@ -399,9 +421,9 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_filterProfile_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_filterProfile_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_add_loci", value=svalue(f1_add_missing_loci_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_keep_na", value=svalue(f1_keep_na_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_ignore_case", value=svalue(f1_ignore_case_chk), envir=env)

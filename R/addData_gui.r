@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 31.07.2013: Added parameter 'ignoreCase'.
 # 18.07.2013: Check before overwrite object.
@@ -13,10 +14,10 @@
 # 09.05.2013: .result removed, added save as group.
 # 25.04.2013: First version.
 
-#' @title Add data GUI
+#' @title Add data
 #'
 #' @description
-#' \code{addData_gui} is a GUI wrapper for \code{addData}.
+#' \code{addData_gui} is a GUI wrapper for \code{\link{addData}}.
 #'
 #' @details Add new information to a dataset from a second dataset by
 #' a key column.
@@ -24,6 +25,11 @@
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @export
+#' 
+#' @seealso  \code{\link{addData}}
 
 addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -52,6 +58,22 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("addData_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -161,17 +183,11 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                spacing = 5,
                container = gv) 
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1_exact_chk <- gcheckbox(text="Exact key matching",
-                                    checked = TRUE,
-                                    container = f1)
+                            checked = TRUE, container = f1)
   
   f1_ignore_chk <- gcheckbox(text="Ignore case",
-                            checked = TRUE,
-                            container = f1)
+                             checked = TRUE, container = f1)
   
   enabled(f1_ignore_chk) <- !svalue(f1_exact_chk)
   
@@ -187,6 +203,8 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                           editable = FALSE,
                           container = f1)
 
+  # HANDLERS ------------------------------------------------------------------
+  
   addHandlerChanged(f1_exact_chk, handler = function (h, ...) {
     
     val_obj <- svalue(f1_exact_chk)
@@ -288,26 +306,26 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".addData_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".addData_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".addData_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".addData_gui_exact", envir=env, inherits = FALSE)){
         svalue(f1_exact_chk) <- get(".addData_gui_exact", envir=env)
       }
@@ -321,9 +339,9 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".addData_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".addData_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".addData_gui_exact", value=svalue(f1_exact_chk), envir=env)
       
     } else { # or remove all saved values if false.

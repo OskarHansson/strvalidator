@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 20.01.2014: Remove redundant "overwrite?" message dialog.
 # 13.01.2014: Handle empty dataframe by stay in gui and show message.
 # 10.12.2013: Updated with new parameter names in function 'import'.
@@ -16,16 +17,20 @@
 #' @title Import from text file
 #'
 #' @description
-#' \code{import_gui} is a GUI wrapper for the \code{import} function.
+#' \code{import_gui} is a GUI wrapper for the \code{\link{import}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{import} function by providing a graphical 
+#' Simplifies the use of the \code{\link{import}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment into which the object will be saved.
 #' Default is the current environment.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{import}}
 
 
 import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
@@ -54,8 +59,8 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 #     
 #   }
   
-  
-  w <- gwindow(title="Import data from exported GeneMapper result files", 
+  # Main window.  
+  w <- gwindow(title="Import from files", 
                visible=FALSE)
 
   # Handler for saving GUI state.
@@ -63,25 +68,38 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     .saveSettings()
   })
 
-  g <- ggroup(horizontal=FALSE,
+  # Vertical main group.
+  gv <- ggroup(horizontal=FALSE,
                spacing=5,
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
   
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("import_gui", help_type="html"))
+    
+  })
+
   # GUI #######################################################################
 
-  savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=g)
-  
   options <- c("Import multiple files from a directory into one dataset", 
                "Import a single file")
 
   import_opt <- gradio(items=options,
                        selected=2,
                        horizontal=FALSE,
-                       container=g)
+                       container=gv)
 
   addHandlerChanged(import_opt, handler = function (h, ...) {
     
@@ -108,14 +126,14 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                              initial.filename = defaultFile, # Not implemented in current version?
                              type="open",
                              quote = FALSE,
-                             container=g)
+                             container=gv)
   
   
   import_folder <- gfilebrowse(text=defaultDir, 
                                initial.dir = defaultDir, # Not implemented in current version?
                                type="selectdir",
                                quote = FALSE,
-                               container=g)
+                               container=gv)
   
   enabled(import_folder) <- FALSE
   
@@ -125,7 +143,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   opt_frm <- gframe(text="Options",
                        pos=0,
                        horizontal=FALSE,
-                       container=g)
+                       container=gv)
 
   enabled(opt_frm) <- FALSE
   
@@ -157,19 +175,19 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                        expand=TRUE)
 
   import_lbl <- glabel(text="Name:",
-                       container=g,
+                       container=gv,
                        anchor=c(-1 ,0))
   
   import_txt <- gedit(initial.msg="Name for new dataset",
                       width = 25,
-                      container=g,
+                      container=gv,
                       expand=TRUE)
   
   # IMPORT --------------------------------------------------------------------
 
   import_btn <- gbutton(text="Import",
                         border=TRUE,
-                        container=g)
+                        container=gv)
 
   
   addHandlerChanged(import_btn, handler = function(h, ...) {

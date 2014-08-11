@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 03.08.2014: Added detection of kit and add attribute to result.
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
 # 18.07.2013: Check before overwrite object.
@@ -25,19 +27,20 @@
 #' @title Calculate Stutters
 #'
 #' @description
-#' \code{calculateStutter_gui} is a GUI wrapper for the \code{calculateStutter}
-#'  function.
+#' \code{calculateStutter_gui} is a GUI wrapper for the
+#' \code{\link{calculateStutter}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{calculateStutter} function by providing 
+#' Simplifies the use of the \code{\link{calculateStutter}} function by providing 
 #' a graphical user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame in slim format.
+#' @return TRUE
 #' 
+#' @seealso \code{\link{calculateStutter}}, \code{\link{checkSubset}}
 
 calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -50,7 +53,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   }
   
   # Main window.
-  w <- gwindow(title="Calculate stutter proportions", visible=FALSE)
+  w <- gwindow(title="Calculate stutter ratio", visible=FALSE)
   
   # Handler for saving GUI state.
   addHandlerDestroy(w, handler = function (h, ...) {
@@ -58,19 +61,34 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   })
 
   # Vertical main group.
-  g <- ggroup(horizontal=FALSE,
+  gv <- ggroup(horizontal=FALSE,
               spacing=5,
               use.scrollwindow=FALSE,
               container = w,
               expand=FALSE) 
   
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("calculateStutter_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
   f0 <- gframe(text = "Datasets",
                horizontal=FALSE,
                spacing = 5,
-               container = g) 
+               container = gv) 
   
   f0g0 <- glayout(container = f0, spacing = 1)
   
@@ -201,13 +219,9 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # FRAME 1 ###################################################################
   
-  f1 <- gframe("Options", horizontal=FALSE, container=g)
+  f1 <- gframe("Options", horizontal=FALSE, container=gv)
   
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
-  glabel(text="Calculate stutter proportions within the the following analysis range:",
+  glabel(text="Calculate stutter ratio within the the following analysis range:",
                       container=f1, anchor=c(-1 ,0))
 
   f1g1 <- ggroup(horizontal=TRUE,
@@ -234,7 +248,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
          container=f1, anchor=c(-1 ,0))
   
   interference_f <- gframe("Level of interference within the given range",
-                           horizontal=FALSE, container=g)
+                           horizontal=FALSE, container=gv)
   
   options <- c("no overlap between stutters and alleles",
                "stutter-stutter interference allowed",
@@ -247,7 +261,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # FRAME 3 ###################################################################
   
-  f3 <- gframe("Replace 'false' stutters", horizontal=FALSE, expand=TRUE, container=g)
+  f3 <- gframe("Replace 'false' stutters", horizontal=FALSE, expand=TRUE, container=gv)
   
   f3g1 <- ggroup(horizontal=FALSE,
                  spacing=5,
@@ -273,7 +287,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   f2 <- gframe(text = "Save as",
                horizontal=TRUE,
                spacing = 5,
-               container = g) 
+               container = gv) 
   
   glabel(text="Name for result:", container=f2)
   
@@ -287,7 +301,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   calculate_btn <- gbutton(text="Calculate",
                       border=TRUE,
-                      container=g)
+                      container=gv)
   
   addHandlerChanged(calculate_btn, handler = function(h, ...) {
     
@@ -336,12 +350,21 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
+      # Detect kit.
+      kit <- detectKit(data=val_data, index=FALSE, debug=debug)
+      
+      # Calculate stutter.
       datanew <- calculateStutter(data=val_data, ref=val_ref, 
                                   back=val_back, forward=val_forward,
                                   interference=val_interference,
                                   replaceVal=val_replace,
                                   byVal=val_by,
                                   debug=debug)
+      
+      # Add attribute if one match was found for detected kit.
+      if(length(kit) == 1){
+        attr(datanew, which="kit") <- kit
+      }
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -373,26 +396,26 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_calculateStutter_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_calculateStutter_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_calculateStutter_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_calculateStutter_gui_back", envir=env, inherits = FALSE)){
         svalue(f1g1_range_b_spb) <- get(".strvalidator_calculateStutter_gui_back", envir=env)
       }
@@ -415,9 +438,9 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_calculateStutter_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateStutter_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculateStutter_gui_back", value=svalue(f1g1_range_b_spb), envir=env)
       assign(x=".strvalidator_calculateStutter_gui_forward", value=svalue(f1g1_range_f_spb), envir=env)
       assign(x=".strvalidator_calculateStutter_gui_interference", value=svalue(interference_opt), envir=env)

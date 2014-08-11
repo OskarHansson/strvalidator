@@ -5,7 +5,7 @@
 ################################################################################
 # CHANGE LOG
 # 15.12.2013: Fixed cropping column names with multiple periods.
-# 25.05.2013: Fixed returning original column names for single occuring names.
+# 25.05.2013: Fixed returning original column names for single occurring names.
 # 24.05.2013: First version.
 
 #' @title colNames
@@ -15,14 +15,14 @@
 #'
 #' @details
 #' \code{colNames} takes a data frame as input and return either column names
-#' occuring once or multiple times. Matching is done by the 'base name'
+#' occurring once or multiple times. Matching is done by the 'base name'
 #' (the substring to the left of the last period, if any). The return type
-#' is a string vector by default, or a single string of colum names separated
+#' is a string vector by default, or a single string of column names separated
 #' by a string 'concatenate' (see 'collapse' in \code{paste} for details).
 #' 
 #' @param df data.frame.
-#' @param slim logical, TRUE returns column names occuring once,
-#' FALSE returns column names occuring multiple times.
+#' @param slim logical, TRUE returns column names occurring once,
+#' FALSE returns column names occurring multiple times.
 #' @param concatenate string, if not NULL returns a single string with column
 #' names concatenated by the provided string instead of a vector.
 #' @param debug logical indicating printing debug information.

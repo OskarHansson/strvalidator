@@ -1,0 +1,69 @@
+\name{calculateMixture}
+\alias{calculateMixture}
+\title{Calculate mixture.}
+\usage{
+calculateMixture(data, ref1, ref2, ol.rm = TRUE, ignore.dropout = TRUE,
+  debug = FALSE)
+}
+\arguments{
+  \item{data}{list of data frames in 'slim' format with at
+  least columns 'Sample.Name', 'Marker', and 'Allele'.}
+
+  \item{ref1}{data.frame with known genotypes for the major
+  contributor.}
+
+  \item{ref2}{data.frame with known genotypes for the minor
+  contributor.}
+
+  \item{ol.rm}{logical TRUE removes off-ladder alleles
+  (OL), FALSE count OL as drop-in.}
+
+  \item{ignore.dropout}{logical TRUE calculate Mx also if
+  there are missing alleles.}
+
+  \item{debug}{logical indicating printing debug
+  information.}
+}
+\value{
+data.frame with columns 'Sample.Name', 'Marker', 'Style', 'Mx',
+ 'Average', 'Difference', 'Observed', 'Expected', 'Profile', and 'Dropin'.
+}
+\description{
+\code{calculateMixture} Calculate Mx, drop-in, and % profile for mixtures.
+}
+\details{
+Given a set of mixture results, reference profiles for the
+major component, and reference profile for the minor component the
+function calculates the mixture proportion (Mx), the average Mx, the
+absolute difference D=|Mx-AvgMx| for each marker, the percentage
+profile for the minor component, number of drop-ins.
+The observed and expected number of free alleles for the minor component
+(used to calculate the profile percentage) is also given.
+
+NB! Samples in ref1 and ref2 must be in 'sync'. The first sample in
+ref1 is combined with the first sample in ref2 to make a mixture sample.
+For example: ref1 "A" and ref2 "B" match mixture samples "A_B_1", "A_B_2"
+and so on.
+NB! If reference datasets have unequal number of unique samples the smaller
+dataset will limit the calculation.
+
+Mixture proportion is calculated in accordance with:
+\cr Locus style (minor:MAJOR) | Mx
+\cr AA:AB | (A-B)/(A+B)
+\cr AB:AA | (2*B)/(A+B)
+\cr AB:AC | B/(B+C)
+\cr AA:BB | A/(A+B)
+\cr AB:CC | (A+B)/(A+B+C)
+\cr AB:CD | (A+B)/(A+B+C+D)
+\cr AB:AB | NA - cannot be calculated
+\cr AA:AA | NA - cannot be calculated
+}
+\references{
+Bright, Jo-Anne, Jnana Turkington, and John Buckleton.
+"Examination of the Variability in Mixed DNA Profile Parameters for the
+ IdentifilerTM Multiplex."
+ Forensic Science International: Genetics 4, no. 2 (February 2010): 111-14.
+ doi:10.1016/j.fsigen.2009.07.002.
+\url{http://dx.doi.org/10.1016/j.fsigen.2009.07.002}
+}
+

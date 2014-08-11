@@ -29,6 +29,12 @@
 #' NB! Length must equal number of dyes in kit minus one.
 #' @param virtual logical default is TRUE meaning that overlap calculation includes virtual bins.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return data.frame with columns 'Kit', 'Color', [dyes], 'Sum', and 'Score'. 
+#' 
+#' @export
+#' 
+
 
 calculateOverlap <- function (data, db=NULL, penalty=NULL, virtual=TRUE, debug=FALSE){
   

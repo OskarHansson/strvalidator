@@ -4,24 +4,28 @@
 
 ###############################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 15.01.2014: Added option for parameter to add missing markers.
 # 10.11.2013: Added kit dropbox.
 # 03.11.2013: First version.
 
-#' @title Calculate Result Type GUI
+#' @title Calculate Result Type
 #'
 #' @description
-#' \code{calculateResultType_gui} is a GUI wrapper for the \code{calculateResultType}
-#'  function.
+#' \code{calculateResultType_gui} is a GUI wrapper for the
+#' \code{\link{calculateResultType}} function.
 #'
-#' @details Simplifies the use of \code{calculateResultType} by providing a 
+#' @details Simplifies the use of \code{\link{calculateResultType}} by providing a 
 #' graphical user interface.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{calculateResultType}}
 
 calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
                                  debug=FALSE){
@@ -47,6 +51,22 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("calculateResultType_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -119,9 +139,6 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
                spacing = 5,
                container = gv) 
   
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE, container=f1)
-  
   f1_add_chk <- gcheckbox(text="Add missing markers (can be slow on large datasets)",
                           checked=TRUE, container=f1)
   
@@ -150,7 +167,6 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
                           editable = FALSE,
                           container = f1)
   
-
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as",
@@ -298,26 +314,26 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_calculateResultType_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_calculateResultType_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_calculateResultType_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_calculateResultType_gui_rfu", envir=env, inherits = FALSE)){
         svalue(f1_rfu_edt) <- get(".strvalidator_calculateResultType_gui_rfu", envir=env)
       }
@@ -344,9 +360,9 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_calculateResultType_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateResultType_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculateResultType_gui_rfu", value=svalue(f1_rfu_edt), envir=env)
       assign(x=".strvalidator_calculateResultType_gui_mix", value=svalue(f1_mix_edt), envir=env)
       assign(x=".strvalidator_calculateResultType_gui_par", value=svalue(f1_par_edt), envir=env)

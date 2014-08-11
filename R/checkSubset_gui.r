@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 25.07.2013: Parameter 'fixed' changed to 'word'.
 # 15.07.2013: Added save GUI settings.
@@ -18,16 +19,20 @@
 #' @title Check subsetting of a dataset
 #'
 #' @description
-#' \code{checkSubset_gui} is a GUI wrapper for the \code{checkSubset} function.
+#' \code{checkSubset_gui} is a GUI wrapper for the \code{\link{checkSubset}}
+#' function.
 #'
 #' @details
-#' Simplifies the use of the \code{checkSubset} function by providing a graphical 
-#' user interface to it.
+#' Simplifies the use of the \code{\link{checkSubset}} function by providing
+#' a graphical user interface to it.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{checkSubset}}
 
 checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -54,25 +59,42 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                container = w,
                expand=TRUE) 
   
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("checkSubset_gui", help_type="html"))
+    
+  })
+  
   # DATASET ###################################################################
   
-  group0 <- ggroup(horizontal=FALSE,
-               spacing = 10,
+  f0 <- gframe(text = "Datasets",
+               horizontal=FALSE,
+               spacing = 5,
                container = gv) 
+
+  f0g1 <- glayout(container = f0, spacing = 1)
   
-  grid0 <- glayout(container = group0, spacing = 1)
+  f0g1[1,1] <- glabel(text="Select dataset:", container=f0g1)
   
-  grid0[1,1] <- glabel(text="Select dataset:", container=grid0)
-  
-  grid0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g1[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              objClass="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = grid0)
+                                         container = f0g1)
   
-  grid0[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
-                                              container=grid0)
+  f0g1[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
+                                              container=f0g1)
   
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -100,17 +122,17 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
   } )
 
-  grid0[2,1] <- glabel(text="Select reference set:", container=grid0)
+  f0g1[2,1] <- glabel(text="Select reference set:", container=f0g1)
   
-  grid0[2,2] <- dataset_ref_drp <- gdroplist(items=c("<Select dataset>",
+  f0g1[2,2] <- dataset_ref_drp <- gdroplist(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              objClass="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = grid0)
+                                         container = f0g1)
   
-  grid0[2,3] <- dataset_ref_lbl <- glabel(text=" 0 reference samples",
-                                              container=grid0)
+  f0g1[2,3] <- dataset_ref_lbl <- glabel(text=" 0 reference samples",
+                                              container=f0g1)
   
   addHandlerChanged(dataset_ref_drp, handler = function (h, ...) {
     
@@ -145,10 +167,6 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                spacing = 5,
                container = gv) 
   
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1_ignore_case_chk <- gcheckbox(text="Ignore case ('A' will match 'A', 'B-a.2', and 'A2')",
                                   checked = TRUE,
                                   container = f1)
@@ -157,7 +175,7 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                   checked = FALSE,
                                   container = f1)
 
-  # BUTTON --------------------------------------------------------------------
+  # BUTTON ####################################################################
 
   if(debug){
     print("BUTTON")
@@ -211,26 +229,26 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_checkSubset_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_checkSubset_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_checkSubset_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_checkSubset_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_case_chk) <- get(".strvalidator_checkSubset_gui_ignore", envir=env)
       }
@@ -247,9 +265,9 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_checkSubset_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_checkSubset_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_checkSubset_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
       assign(x=".strvalidator_checkSubset_gui_fixed", value=svalue(f1_word_chk), envir=env)
       

@@ -138,3 +138,39 @@ NULL
 #' @usage data(ref4)
 #' @format A data frame with 98 rows and 3 variables
 NULL
+
+#' ESX17 example data for mixture analysis.
+#' 
+#' A slimmed dataset containing data from
+#' mixture experiment for Mx analysis.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name set5
+#' @usage data(set5)
+#' @format A data frame with 1663 rows and 7 variables
+NULL
+
+#' ESX17 example data for mixture analysis.
+#' 
+#' A slimmed dataset containing the reference profile for the major
+#' component  in set5.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref51
+#' @usage data(ref51)
+#' @format A data frame with 34 rows and 3 variables
+NULL
+
+#' ESX17 example data for mixture analysis.
+#' 
+#' A slimmed dataset containing the reference profile for the minor
+#' component  in set5.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref52
+#' @usage data(ref52)
+#' @format A data frame with 34 rows and 3 variables
+NULL

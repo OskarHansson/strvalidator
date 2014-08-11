@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 02.12.2013: Fixed 'Option' frame not visible.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
@@ -24,17 +25,19 @@
 #' @title Slim data frames
 #'
 #' @description
-#' \code{slim_gui} is a GUI wrapper for the \code{slim} function.
+#' \code{slim_gui} is a GUI wrapper for the \code{\link{slim}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{slim} function by providing a graphical 
+#' Simplifies the use of the \code{\link{slim}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame in slim format.
+#' @return TRUE
+#' 
+#' @seealso \code{\link{slim}}
 
 slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -60,6 +63,23 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                container = w,
                expand=TRUE) 
 
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("slim_gui", help_type="html"))
+    
+  })
+  
+  
   # Vertical sub group.
   g0 <- ggroup(horizontal=FALSE,
               spacing=5,
@@ -80,7 +100,6 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = gv,
                expand=FALSE) 
-  
   
   
   # DATASET ###################################################################
@@ -171,7 +190,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   fix_f <- gframe("Fix", horizontal=FALSE, container=g1, expand=TRUE)
   
-  fix_lbl <- glabel(text="Columns to keep fixed:",
+  fix_lbl <- glabel(text="Columns to keep fixed (separate by pipe |):",
                     container=fix_f,
                     anchor=c(-1 ,0))
   
@@ -220,7 +239,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   stack_f <- gframe("Stack", horizontal=FALSE, container=g1, expand=TRUE)
   
-  stack_lbl <- glabel(text="Columns to stack:",
+  stack_lbl <- glabel(text="Columns to stack (separate by pipe |):",
                       container=stack_f,
                       anchor=c(-1 ,0))
   
@@ -261,10 +280,6 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   f1 <- gframe("Options", horizontal=FALSE, container=g0)
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1_keep_chk <- gcheckbox(text="Keep rows in fixed columns even if no data in stacked columns",
                         checked=TRUE,
                         container=f1)
@@ -439,26 +454,26 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_slim_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_slim_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_slim_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_slim_gui_title", envir=env, inherits = FALSE)){
         svalue(f1_keep_chk) <- get(".strvalidator_slim_gui_title", envir=env)
       }
@@ -473,9 +488,9 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_slim_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_slim_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_slim_gui_title", value=svalue(f1_keep_chk), envir=env)
       
     } else { # or remove all saved values if false.

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 10.08.2014: Added scope=RUN.
 # 29.10.2013: First version.
 
 #' @title Table capillary
@@ -19,10 +20,10 @@
 #' 
 #' @param data data frame from a capillary analysis by \code{calculateCapillary}.
 #' @param scope character string. Make table by capillary, injection, plate row, 
-#' or instrument. Values {"cap", "inj", "row", "instr"}.
+#' run, or instrument. Values {"cap", "inj", "row", "run", "instr"}.
 #' @param debug logical indicating printing debug information.
 #'  
-#' @return data.frame with columns 'Instrument', 'Capillary/Injection/Row',
+#' @return data.frame with columns 'Instrument', 'Capillary/Injection/Row/Run/Instrument',
 #' 'N', 'Min', 'Q1', 'Median', 'Mean', 'Q3', 'Max', 'Std.Dev'.
 #' 
 
@@ -75,6 +76,7 @@ tableCapillary <- function(data, scope="cap", debug=FALSE){
     # Define values for subsetting.
     capillary <- unique(datasub$Capillary)
     injection <- unique(datasub$Injection)
+    run <- unique(datasub$Run)
     
     # Initiate temporary variables.
     tmpS <- NULL
@@ -153,7 +155,7 @@ tableCapillary <- function(data, scope="cap", debug=FALSE){
       
     } else if(scope == "ROW"){
       
-      # Loop over all capillaries.
+      # Loop over all plate rows.
       for(r in seq(along=row)){
         
         # Summarise data.
@@ -170,6 +172,38 @@ tableCapillary <- function(data, scope="cap", debug=FALSE){
       # Create temporary dataframe.
       tmpres <- data.frame(Instrument=instrument[i], 
                            Row=row,
+                           N=tmpN,
+                           Min=tmpMin,
+                           Q1=tmp1Q,
+                           Median=tmpMedian,  
+                           Mean=tmpMean,
+                           Q3=tmp3Q,
+                           Max=tmpMax,
+                           Std.Dev=tmpSd,
+                           stringsAsFactors=FALSE)
+      
+      # Combine with result dataframe.
+      res <- rbind(res, tmpres)
+      
+    } else if(scope == "RUN"){
+      
+      # Loop over all runs.
+      for(r in seq(along=run)){
+        
+        # Summarise data.
+        tmpMin[r] <- round(min(datasub[grep(run[r], datasub$Run, fixed=TRUE),]$Mean.Height, na.rm=TRUE))
+        tmp1Q[r] <- round(quantile(datasub[grep(run[r], datasub$Run, fixed=TRUE),]$Mean.Height, probs=0.25, na.rm=TRUE))
+        tmpMedian[r] <- round(median(datasub[grep(run[r], datasub$Run, fixed=TRUE),]$Mean.Height, na.rm=TRUE))
+        tmpMean[r] <- round(mean(datasub[grep(run[r], datasub$Run, fixed=TRUE),]$Mean.Height, na.rm=TRUE))
+        tmp3Q[r] <- round(quantile(datasub[grep(run[r], datasub$Run, fixed=TRUE),]$Mean.Height, probs=0.75, na.rm=TRUE))
+        tmpMax[r] <- round(max(datasub[grep(run[r], datasub$Run, fixed=TRUE),]$Mean.Height, na.rm=TRUE))
+        tmpSd[r] <- round(sd(datasub[grep(run[r], datasub$Run, fixed=TRUE),]$Mean.Height, na.rm=TRUE))
+        tmpN[r] <- sum(!is.na(datasub[grep(run[r], datasub$Run, fixed=TRUE),]$Mean.Height))
+      }
+      
+      # Create temporary dataframe.
+      tmpres <- data.frame(Instrument=instrument[i], 
+                           Run=run,
                            N=tmpN,
                            Min=tmpMin,
                            Q1=tmp1Q,
@@ -223,6 +257,8 @@ tableCapillary <- function(data, scope="cap", debug=FALSE){
     res <- res[with(res, order(Instrument, Injection)), ]
   } else if(scope == "ROW"){
     res <- res[with(res, order(Instrument, Row)), ]
+  } else if(scope == "RUN"){
+    res <- res[with(res, order(Instrument, Run)), ]
   } else if(scope == "INSTR"){
     res <- res[with(res, order(Instrument)), ]
   } else {

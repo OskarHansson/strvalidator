@@ -35,6 +35,8 @@
 #' 
 #' @return data.frame with with at least columns 'Sample.Name', 'H', and 'Peaks'.
 #' 
+#' @export
+#' 
 #' @references
 #' Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
 #'  Evaluating the weight of evidence by using quantitative short tandem repeat data in DNA mixtures

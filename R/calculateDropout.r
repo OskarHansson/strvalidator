@@ -80,6 +80,8 @@
 #' for modelling by logistic regression in function \code{modelDropout}:
 #' 'MethodX', 'Method1', 'Method2', 'MethodL' and 'MethodL.Ph'.
 #' 
+#' @export
+#' 
 #' @references
 #' Peter Gill et.al.,
 #'  DNA commission of the International Society of Forensic Genetics:
@@ -96,7 +98,6 @@
 #'  Pages 104-111, ISSN 1872-4973, 10.1016/j.fsigen.2008.11.009.
 #' \url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
 #' 
-#' @export true
 #' @examples
 #' data(set4)
 #' data(ref4)

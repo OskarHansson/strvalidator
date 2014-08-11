@@ -2,10 +2,13 @@
 # TODO LIST
 # TODO: Number of decimals on x axis as an option.
 # TODO: Custom colors.
+# TODO: Just one plot button, and a dropdown to select column to sort by.
 # TODO: ...NOT FINISHED!!!
+#      (need to change if/when a preferred dropout method has beed decided)
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 15.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
 # 17.02.2014: Fixed NA in title for ecdp.
@@ -26,15 +29,26 @@
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: First version.
 
-#' @title Plot Dropout GUI
+#' @title Plot Dropout
 #'
 #' @description
 #' \code{plotDropout_gui} is a GUI simplifying the creation of plots from dropout data.
 #'
-#' @details Plot dropout data.
+#' @details Plot dropout data as heatmap arranged by, average peak height, 
+#' amount, concentration, or sample name. It is also possible to plot the
+#' empirical cumulative distribution (ecdp) of the peak heights of surviving heterozygote
+#' alleles (with dropout of the parter allele), or a dotplot of all dropout events.
+#' The peak height of homozygote alleles can be included in the ecdp.
+#' Automatic plot titles can be replaced by custom titles.
+#' A name for the result is automatiaclly suggested.
+#' The resulting plot can be saved as either a plot object or as an image.
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
+#' 
+#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
 plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -59,11 +73,28 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     .saveSettings()
   })
 
+  # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("plotDropout_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -152,7 +183,6 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   grid1 <- glayout(container = f1, spacing = 1)
   enabled(grid1) <- svalue(f1_titles_chk)
-  grid1 <- glayout(container = f1, spacing = 1)
 
   grid1[1,1] <- glabel(text="Plot title:", container=grid1)
   grid1[1,2] <- f1_title_edt <- gedit(text="",
@@ -167,10 +197,6 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   grid1[3,2] <- f1_ytitle_edt <- gedit(text="",
                                      container=grid1)
 
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   # FRAME 7 ###################################################################
   
   f7 <- gframe(text = "Plot heatmap by",
@@ -1024,26 +1050,26 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_plotDropout_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_plotDropout_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_plotDropout_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_plotDropout_gui_title", envir=env, inherits = FALSE)){
         svalue(f1_title_edt) <- get(".strvalidator_plotDropout_gui_title", envir=env)
       }
@@ -1106,9 +1132,9 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_plotDropout_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_plotDropout_gui_title", value=svalue(f1_title_edt), envir=env)
       assign(x=".strvalidator_plotDropout_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_plotDropout_gui_x_title", value=svalue(f1_xtitle_edt), envir=env)

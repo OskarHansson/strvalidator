@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 24.07.2014: Fixed 'NA' bug when recycling names.
 # 26.07.2013: Added 'any' to class if-case.
 # 11.07.2013: Fixed scope bug.
 # 10.07.2013: First version.
@@ -183,14 +184,28 @@ export <- function(object, name=NA, useObjectName=is.na(name),
   # Create file names.
   nbObj <- length(object)
   if(useObjectName){
+    # Copy object names to name variable.
     name <- object
-  } else if (length(name) == 1 && grepl("|", name, fixed=TRUE)) {  # Not vector and contain pipes.
+    
+    # Check if not vector.
+  } else if (length(name) == 1){
+    
+    # Split using pipe separator, if present.
     name <-  unlist(strsplit(name, "\\|"))
-    if(length(name) == nbObj){ # If not equal length, use first and make names.
+    
+    if(length(name) == nbObj){
+      # If equal length, make names.
       name <- make.names(name, unique=TRUE)
     } else {
+      # If not equal length, use first and make names.
       name <- make.names(rep(name[1], nbObj), unique=TRUE)
     }
+  }
+
+  if(debug){
+    print(paste("Number of objects:", nbObj))
+    print("name:")
+    print(name)
   }
   
   # Add trailing path separator if not present.
@@ -309,7 +324,7 @@ export <- function(object, name=NA, useObjectName=is.na(name),
     print("failed")
     print(failed)
   }
-  # If no rows all objects were sucessfully exported.
+  # If 0 rows all objects were sucessfully exported.
   if(nrow(failed) == 0){
     failed <- NA
   }

@@ -4,28 +4,30 @@
 
 ################################################################################
 # CHANGE LOG
+# 10.08.2014: Added scope=RUN.
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 29.10.2013: First version.
 
 
-#' @title Guess profile
+#' @title Table Capillary
 #'
 #' @description
-#' \code{tableCapillary_gui} is a GUI wrapper for the \code{tableCapillary} function.
+#' \code{tableCapillary_gui} is a GUI wrapper for the \code{\link{tableCapillary}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{tableCapillary} function by providing a graphical 
+#' Simplifies the use of the \code{\link{tableCapillary}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{tableCapillary}}
 
 tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
-  
-  # Load required packages.
-  #loadPackage(packages=c("gWidgets"))
   
   # Global variables.
   .gData <- NULL
@@ -49,6 +51,22 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("tableCapillary_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -111,15 +129,13 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                    spacing = 20,
                    container = gv) 
   
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   f1g1 <- glayout(container = f1, spacing = 5)
   
   f1g1[1,1] <- glabel(text="Make table by:", container=f1g1)
   
-  f1g1[2,1] <- f1g1_scope_opt <- gradio(items=c("capillary","injection","plate row", "instrument"),
+  f1g1[2,1] <- f1g1_scope_opt <- gradio(items=c("capillary","injection",
+                                                "plate row", "run",
+                                                "instrument"),
                               selected = 1,
                               horizontal = FALSE,
                               container = f1g1)
@@ -168,6 +184,8 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       val_scope <- "inj"
     } else if(val_scope == "plate row"){
       val_scope <- "row"
+    } else if(val_scope == "run"){
+      val_scope <- "run"
     } else if(val_scope == "instrument"){
       val_scope <- "instr"
     } 
@@ -210,26 +228,26 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
     # Set check state if provided.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_tableCapillary_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_tableCapillary_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_tableCapillary_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_tableCapillary_gui_scope", envir=env, inherits = FALSE)){
         svalue(f1g1_scope_opt) <- get(".strvalidator_tableCapillary_gui_scope", envir=env)
       }
@@ -243,9 +261,9 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
 
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_tableCapillary_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_tableCapillary_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_tableCapillary_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
       
     } else { # or remove all saved values if false.

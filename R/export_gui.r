@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 # 27.10.2013: Added warning when no object selected.
 # 15.07.2013: Added save GUI settings.
@@ -13,16 +14,20 @@
 #' @title Export objects
 #'
 #' @description
-#' \code{export_gui} is a GUI wrapper for the \code{export} function.
+#' \code{export_gui} is a GUI wrapper for the \code{\link{export}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{export} function by providing a graphical 
+#' Simplifies the use of the \code{\link{export}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment where the objects exist.
 #' Default is the current environment.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{export}}
 
 
 export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
@@ -41,11 +46,27 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   })
 
   # Vertical main group.
-  g <- ggroup(horizontal=FALSE,
+  gv <- ggroup(horizontal=FALSE,
               spacing=5,
               use.scrollwindow=FALSE,
               container = w,
               expand=TRUE) 
+  
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("export_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -53,7 +74,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                horizontal=TRUE,
                spacing = 5,
                expand=TRUE,
-               container = g) 
+               container = gv) 
   
   # Create list of objects.
   itemList <- listObjects(env=env, objClass="data.frame")
@@ -71,7 +92,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   f1 <- gframe(text = "File name",
                horizontal=TRUE,
                spacing = 5,
-               container = g) 
+               container = gv) 
   
   # GRID 1 --------------------------------------------------------------------
   
@@ -99,11 +120,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   f2 <- gframe(text = "Options",
                horizontal=FALSE,
                spacing = 15,
-               container = g) 
-  
-  f2_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f2)
+               container = gv) 
   
   # GRID 1 --------------------------------------------------------------------
 
@@ -127,12 +144,10 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                          editable = FALSE,
                                          container = f2g1)
 
-
-  
   # FRAME 3 ###################################################################
 
   f3 <- gframe(text="Image settings",
-               horizontal=FALSE, spacing = 10, container = g)
+               horizontal=FALSE, spacing = 10, container = gv)
   
   # GRID 1 --------------------------------------------------------------------
   
@@ -163,7 +178,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # FRAME 4 ###################################################################
   
   f4 <- gframe(text="Location",
-               horizontal=FALSE, spacing = 10, container = g)
+               horizontal=FALSE, spacing = 10, container = gv)
   
   # GRID 1 --------------------------------------------------------------------
   
@@ -183,7 +198,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   g_export_btn <- gbutton(text="Export",
                            border=TRUE,
-                           container=g) 
+                           container=gv) 
   
   # HANDLERS ##################################################################
   
@@ -297,7 +312,6 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
             print(fail)
           }
           
-          #gbasicdialog(title = "Dialog", widget, parent=NULL, do.buttons=TRUE, handler = NULL, action=NULL,  ..., toolkit=guiToolkit())
           dialog <- gbasicdialog(title="Export failed!", parent=w, do.buttons=FALSE, 
                                  width=200, height=200, horizontal=FALSE)
           
@@ -368,26 +382,26 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f2_savegui_chk) <- savegui
-      enabled(f2_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_export_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f2_savegui_chk) <- get(".strvalidator_export_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_export_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f2_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f2_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_export_gui_objName", envir=env, inherits = FALSE)){
         svalue(f1g1_name_chk) <- get(".strvalidator_export_gui_objName", envir=env)
       }
@@ -419,9 +433,9 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f2_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_export_gui_savegui", value=svalue(f2_savegui_chk), envir=env)
+      assign(x=".strvalidator_export_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_export_gui_objName", value=svalue(f1g1_name_chk), envir=env)
       assign(x=".strvalidator_export_gui_replace", value=svalue(f1g1_replace_chk), envir=env)
       assign(x=".strvalidator_export_gui_ext", value=svalue(f2g1_ext_drp), envir=env)

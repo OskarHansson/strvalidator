@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 20.01.2014: Implemented ggsave with workaround for complex plots.
 # 23.10.2013: Added save as image.
 # 21.09.2013: First gui version.
@@ -14,9 +15,13 @@
 #' \code{plotKit_gui} is a GUI for plotting marker ranges for kits.
 #'
 #' @details Create an overview of the size range for markers in different kits.
+#' It is possible to select multiple kits, specify titles, font size, distance
+#' between two kits, distance between dye channels, and the transparency of dyes.
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
 
 plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
@@ -38,11 +43,28 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     .saveSettings()
   })
   
+  # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("plotKit_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -63,10 +85,6 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                horizontal=FALSE,
                spacing = 5,
                container = gv) 
-  
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
   
   f1g1 <- glayout(container = f1, spacing = 1)
   
@@ -336,26 +354,26 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_plotKit_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_plotKit_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_plotKit_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_plotKit_gui_title", envir=env, inherits = FALSE)){
         svalue(title_edt) <- get(".strvalidator_plotKit_gui_title", envir=env)
       }
@@ -388,9 +406,9 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_plotKit_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_plotKit_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_plotKit_gui_title", value=svalue(title_edt), envir=env)
       assign(x=".strvalidator_plotKit_gui_title_size", value=svalue(title_size_edt), envir=env)
       assign(x=".strvalidator_plotKit_gui_kit_size", value=svalue(kit_size_edt), envir=env)

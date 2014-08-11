@@ -26,6 +26,8 @@
 #' 
 #' @return data.frame the original data frame containing additional columns.
 #' 
+#' @export
+#' 
 
 calculateHeterozygous <- function(data, debug=FALSE){
 

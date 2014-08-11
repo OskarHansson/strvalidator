@@ -47,7 +47,8 @@
 #'  
 #' @return data.frame with with additional columns 'Peaks', 'Group', and 'Id'.
 #' 
-#' @export true
+#' @export
+#' 
 
 calculatePeaks <- function(data, bins=c(0,2,3), labels=c("No contamination",
                                                          "Drop-in contamination",

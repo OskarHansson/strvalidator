@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
 # 25.02.2014: Pixel info now update when textbox is changed.
 # 09.02.2014: Added info for size in pixel.
 # 09.02.2014: Removed unsupported unit 'px'.
@@ -13,7 +14,7 @@
 #' @title Save image
 #'
 #' @description
-#' \code{ggsave_gui} is a simple GUI wrapper for \code{ggsave}.
+#' \code{ggsave_gui} is a simple GUI wrapper for \code{\link{ggsave}}.
 #'
 #' @details
 #' Simple GUI wrapper for ggsave.
@@ -30,6 +31,10 @@
 #' Default is the current environment.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{ggsave}}
 
 ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
                           savegui=NULL, debug=FALSE){
@@ -60,22 +65,34 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   })
   
   # Vertical main group.
-  g <- ggroup(horizontal=FALSE,
+  gv <- ggroup(horizontal=FALSE,
               spacing=5,
               use.scrollwindow=FALSE,
               container = w,
               expand=TRUE) 
+  
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("ggsave_gui", help_type="html"))
+    
+  })
   
   # FRAME 1 ###################################################################
   
   f1 <- gframe(text = "Options",
                horizontal=FALSE,
                spacing = 10,
-               container = g) 
-  
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
+               container = gv) 
   
   # GRID 1 --------------------------------------------------------------------
   
@@ -251,7 +268,7 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   
   g_save_btn <- gbutton(text="Save",
                           border=TRUE,
-                          container=g) 
+                          container=gv) 
   
   # HANDLERS ##################################################################
   
@@ -466,26 +483,26 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_ggsave_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_ggsave_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_ggsave_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_ggsave_gui_ext", envir=env, inherits = FALSE)){
         svalue(f1g1_ext_drp) <- get(".strvalidator_ggsave_gui_ext", envir=env)
       }
@@ -523,9 +540,9 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_ggsave_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_ggsave_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_ggsave_gui_ext", value=svalue(f1g1_ext_drp), envir=env)
       assign(x=".strvalidator_ggsave_gui_replace", value=svalue(f1g1_replace_chk), envir=env)
       assign(x=".strvalidator_ggsave_gui_load", value=svalue(f1g1_load_chk), envir=env)

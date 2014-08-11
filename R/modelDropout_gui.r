@@ -5,6 +5,8 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.06.2014: Added help button and moved save gui checkbox.
+# 28.06.2014: Changed notation on plot to be more correct.
 # 08.05.2014: Implemented 'checkDataset'.
 # 18.02.2014: Implemented conserative T estimate.
 # 18.02.2014: Removed erroneously implemented prediction interval for T.
@@ -49,13 +51,13 @@
 #' \code{modelDropout_gui} model probability of drop-out and plots a graph.
 #'
 #' @details
-#' Models the probability of drop-out P(D) using logistic regression
-#' P(D|H) = B0 + B1*H, where 'H' is the peak height or log(peak height).
+#' Models the probability of drop-out P(dropout) using logistic regression
+#' P(dropout|H) = B0 + B1*H, where 'H' is the peak height or log(peak height).
 #' Produce a plot showing the model prediction.
 #' 
 #' NB! There are several methods of scoring drop-out events for regression.
 #' Currently the 'MethodX', 'Method1', and 'Method2' are endorsed by the DNA
-#' commission (see Appendix B in ref 1). However, an alternative method is to
+#' commission (see Appendix B in ref 1). However, an alternative 'MethodL' is to
 #' consider the whole locus and score drop-out if any allele is missing.
 #' 
 #' Explanation of the methods:
@@ -94,6 +96,10 @@
 #'  Forensic Science International: Genetics, Volume 3, Issue 2, March 2009,
 #'  Pages 104-111, ISSN 1872-4973, 10.1016/j.fsigen.2008.11.009.
 #' \url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
+#' 
+#' @return TRUE
+#' 
+#' @seealso \code{\link{calculateDropout}}
 
 modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
@@ -118,6 +124,22 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                use.scrollwindow=FALSE,
                container = w,
                expand=TRUE) 
+  
+  # Help button group.
+  gh <- ggroup(container = gv, expand=FALSE, fill="both")
+  
+  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  
+  addSpring(gh)
+  
+  help_btn <- gbutton(text="Help", container=gh)
+  
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    
+    # Open help page for function.
+    print(help("modelDropout_gui", help_type="html"))
+    
+  })
   
   # FRAME 0 ###################################################################
   
@@ -239,10 +261,6 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
 
   # Other options.
-  f1_savegui_chk <- gcheckbox(text="Save GUI settings",
-                              checked=FALSE,
-                              container=f1)
-  
   log_model <- gcheckbox(text="Log (Height)", checked=FALSE, container=f1)
   
   f1_gender_chk <- gcheckbox(text="Exclude gender marker",
@@ -826,17 +844,18 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         thresholdLegend <- ""
         
         # Create threshold label.
-        thresholdLegend <- paste("P(D) =",
-                                 val_p_dropout,
-                                 "@ T =",
+        thresholdLegend <- paste("P(dropout|T=",
                                  round(t_dropout,0),
-                                 "RFU")
-        
+                                 ")=",
+                                 val_p_dropout,
+                                 sep="")
+
         # Add prediction interval.
         if(val_prediction_print){
           thresholdLegend <- paste(thresholdLegend,
-                                   "\n P({P(D) | T=", t_dropout_cons, "} > ",
-                                   val_p_dropout, ") < ", val_pi_alpha * 100, "%",
+                                   "\n P(dropout>", val_p_dropout,
+                                   "|T=", t_dropout_cons, ")<",
+                                   val_pi_alpha * 100, "%",
                                    sep="")
           
         }
@@ -1074,26 +1093,26 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # First check status of save flag.
     if(!is.null(savegui)){
-      svalue(f1_savegui_chk) <- savegui
-      enabled(f1_savegui_chk) <- FALSE
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
       if(debug){
         print("Save GUI status set!")
       }  
     } else {
       # Load save flag.
       if(exists(".strvalidator_modelDropout_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(f1_savegui_chk) <- get(".strvalidator_modelDropout_gui_savegui", envir=env)
+        svalue(savegui_chk) <- get(".strvalidator_modelDropout_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
       }  
     }
     if(debug){
-      print(svalue(f1_savegui_chk))
+      print(svalue(savegui_chk))
     }  
     
     # Then load settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       if(exists(".strvalidator_modelDropout_gui_title", envir=env, inherits = FALSE)){
         svalue(f1_title_edt) <- get(".strvalidator_modelDropout_gui_title", envir=env)
       }
@@ -1192,9 +1211,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   .saveSettings <- function(){
     
     # Then save settings if true.
-    if(svalue(f1_savegui_chk)){
+    if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_modelDropout_gui_savegui", value=svalue(f1_savegui_chk), envir=env)
+      assign(x=".strvalidator_modelDropout_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_modelDropout_gui_title", value=svalue(f1_title_edt), envir=env)
       assign(x=".strvalidator_modelDropout_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_modelDropout_gui_x_title", value=svalue(f1_x_title_edt), envir=env)
