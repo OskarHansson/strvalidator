@@ -4,12 +4,13 @@
 
 ################################################################################
 # CHANGE LOG
+# 26.08.2014: Fixed bug when scrambled markers (issue#5)
 # 27.04.2014: Added option to ignore case in marker names.
 # 01.03.2014: Added options 'bins' and calculation of size.
 # 01.03.2014: Fixed bug kit always "ESX17".
 # 11.09.2014: First version.
 
-#' @title Add color information.
+#' @title Add size information.
 #'
 #' @description
 #' \code{addSize} add size information to alleles.
@@ -22,7 +23,8 @@
 #' Handles 'X' and 'Y' by replacing them with '1' and '2'.
 #' 
 #' @param data data.frame with at least columns 'Marker' and 'Allele'.
-#' @param kit data.frame with columns 'Marker', 'Allele', and 'Size'.
+#' @param kit data.frame with columns 'Marker', 'Allele', and 'Size' (for bins=TRUE) or
+#'  'Marker', 'Allele', 'Offset' and 'Repeat' (for bins=FALSE).
 #' @param bins logical TRUE alleles get size from corresponding bin.
 #'  If FALSE the size is calculated from the locus offset and repeat unit.
 #' @param ignore.case logical TRUE case in marker names are ignored.
@@ -112,14 +114,6 @@ addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){
   # Add a column 'Size'
   data$Size <- NA
 
-  # Get offset and repeat.
-  offset <- NULL
-  repeatUnit <- NULL
-  if(!bins){
-    offset <- kit$Offset
-    repeatUnit <- kit$Repeat
-  }
-
   # Get markers in dataset.
   marker <- unique(data$Marker)
   
@@ -178,7 +172,7 @@ addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){
       if(bins){
         
         # Get size from matching bins.
-        size <- kit$Size[kit$Marker== marker[m] & kit$Allele == allele[a]]
+        size <- kit$Size[kit$Marker == marker[m] & kit$Allele == allele[a]]
         
       } else {
         # Calculate size from 'offset' and 'repeat'.
@@ -198,7 +192,9 @@ addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){
         alleleTmp <- as.numeric(alleleTmp)
         
         # Calculate estimated size.
-        size <- offset[m] + floor(alleleTmp) * repeatUnit[m] + (alleleTmp %% 1) * 10
+        tmpOffset <- kit$Offset[kit$Marker == marker[m]]
+        tmpRepeat <- kit$Repeat[kit$Marker == marker[m]]
+        size <- tmpOffset + floor(alleleTmp) * tmpRepeat + (alleleTmp %% 1) * 10
         
       }
       

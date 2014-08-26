@@ -6,6 +6,7 @@ context("addSize")
 
 ################################################################################
 # CHANGE LOG
+# 26.08.2014: Added test for scrampled markers (test 05 and test 06) [Issue#5].
 # 07.05.2014: Added test for 'ESX17' (test 03 and test 04).
 # 02.03.2014: First tests for 'addSize'.
 # 
@@ -17,15 +18,15 @@ test_that("addSize", {
 
   # Get test data.
   data(set2)
+
+  # Correct marker order.
+  scrampled <- rbind(set2[7:8,],set2[1:6,], set2[9:16,])
   
   # Get kit information for 'bins=TRUE'.
   kitBins <- getKit("SGMPlus", what="Size")
   
   # Get kit information for 'bins=FALSE'.
-  offset <- getKit("SGMPlus", what="Offset")
-  repUnit <- getKit("SGMPlus", what="Repeat")
-  # Merge information.
-  kitCalc <- merge(offset, repUnit, by="Marker", sort=FALSE) 
+  kitCalc <- getKit("SGMPlus", what="Offset")
   
   # Get test data.
   data(ref4)
@@ -36,10 +37,7 @@ test_that("addSize", {
   kitBins2 <- getKit("ESX17", what="Size")
   
   # Get kit information for 'bins=FALSE'.
-  offset2 <- getKit("ESX17", what="Offset")
-  repUnit2 <- getKit("ESX17", what="Repeat")
-  # Merge information.
-  kitCalc2 <- merge(offset2, repUnit2, by="Marker", sort=FALSE) 
+  kitCalc2 <- getKit("ESX17", what="Offset")
   
   
   # TEST 01 -------------------------------------------------------------------
@@ -273,5 +271,93 @@ test_that("addSize", {
   expect_that(res$Size[32], equals(227))
   expect_that(res$Size[33], equals(321))
   expect_that(res$Size[34], equals(367))
+  
+  # TEST 05 -------------------------------------------------------------------
+  # Test adding size when marker order is not correct and bins=TRUE.
+
+  # Analyse dataframe.
+  res <- addSize(data=scrampled, kit=kitBins, bins=TRUE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("Marker" %in% names(res))
+  expect_true("Allele" %in% names(res))
+  expect_true("Height" %in% names(res))
+  expect_true("Dye" %in% names(res))
+  expect_true("Size" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Height)))
+  expect_false(any(is.na(res$Dye)))
+  expect_true(any(is.na(res$Size)))
+  
+  # Check result.
+  expect_that(res$Size[1], equals(107))
+  expect_that(res$Size[2], equals(113))
+  expect_that(res$Size[3], equals(126))
+  expect_that(res$Size[4], equals(138))
+  expect_that(res$Size[5], equals(169))
+  expect_that(res$Size[6], equals(258))
+  expect_that(res$Size[7], equals(266))
+  expect_that(res$Size[8], equals(305))
+  expect_that(res$Size[9], equals(144))
+  expect_that(res$Size[10], equals(211))
+  expect_that(res$Size[11], equals(as.numeric(NA)))
+  expect_that(res$Size[12], equals(301))
+  expect_that(res$Size[13], equals(130))
+  expect_that(res$Size[14], equals(173))
+  expect_that(res$Size[15], equals(189))
+  expect_that(res$Size[16], equals(247))
+  
+  # TEST 06 -------------------------------------------------------------------
+  # Test adding size when marker order is not correct and bins=FALSE.
+  
+  # Analyse dataframe.
+  res <- addSize(data=scrampled, kit=kitCalc, bins=FALSE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("Marker" %in% names(res))
+  expect_true("Allele" %in% names(res))
+  expect_true("Height" %in% names(res))
+  expect_true("Dye" %in% names(res))
+  expect_true("Size" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Height)))
+  expect_false(any(is.na(res$Dye)))
+  expect_false(any(is.na(res$Size)))
+  
+  # Check result.
+  expect_that(res$Size[1], equals(107))
+  expect_that(res$Size[2], equals(116))
+  expect_that(res$Size[3], equals(126))
+  expect_that(res$Size[4], equals(138))
+  expect_that(res$Size[5], equals(169))
+  expect_that(res$Size[6], equals(258))
+  expect_that(res$Size[7], equals(266))
+  expect_that(res$Size[8], equals(305))
+  expect_that(res$Size[9], equals(144))
+  expect_that(res$Size[10], equals(211))
+  expect_that(res$Size[11], equals(363))
+  expect_that(res$Size[12], equals(301))
+  expect_that(res$Size[13], equals(130))
+  expect_that(res$Size[14], equals(173))
+  expect_that(res$Size[15], equals(189))
+  expect_that(res$Size[16], equals(247))
+  
+  
   
 })
