@@ -3,7 +3,8 @@
 # TODO: Option to remove old datasets
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 29.07.2014: Changed name concatenate_gui -> combine_gui.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -23,11 +24,14 @@
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @export
 #' 
 #' @return TRUE
 
 
-combine_gui <- function(env=parent.frame(), debug=FALSE){
+combine_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData1 <- NULL
@@ -41,6 +45,19 @@ combine_gui <- function(env=parent.frame(), debug=FALSE){
   
   # Main window.
   w <- gwindow(title="Combine", visible=FALSE)
+  
+  # Runs when window is closed.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
+    #.saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
+  })
   
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
@@ -207,5 +224,6 @@ combine_gui <- function(env=parent.frame(), debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 } # End of GUI

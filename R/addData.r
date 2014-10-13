@@ -4,7 +4,7 @@
 # TODO: make 'exact' a vector.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 30.09.2013: Fixed bug when exact=FALSE
 # 17.09.2013: Updated example to support new 'getKit' structure.
 # 31.07.2013: Added parameter 'ignoreCase'.

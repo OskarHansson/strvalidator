@@ -3,7 +3,8 @@
 # TODO: Check folder DOES NOT WORK BECAUSE \ IS ESCAPE CHARACTER.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 20.01.2014: Remove redundant "overwrite?" message dialog.
 # 13.01.2014: Handle empty dataframe by stay in gui and show message.
@@ -27,13 +28,16 @@
 #' Default is the current environment.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @export
 #' 
 #' @return TRUE
 #' 
 #' @seealso \code{\link{import}}
 
 
-import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
   # Global variables.
   # separator <- .Platform$file.sep # Platform dependent path separator.
@@ -63,11 +67,19 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   w <- gwindow(title="Import from files", 
                visible=FALSE)
 
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
-
+  
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=5,
@@ -389,5 +401,6 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

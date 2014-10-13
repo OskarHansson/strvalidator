@@ -4,7 +4,7 @@
 #       Workaround: unname(sapply(listObjects(), function(x) object.size(get(x, envir = baseenv()))))
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 26.07.2013: 'objClass' can now be a vector.
 # 17.05.2013: New parameters 'objClass', 'debug'.
 # 17.05.2013: Made general. Changed name from listDataFrames -> listObjects.
@@ -16,7 +16,7 @@
 #' \code{listObjects} returns a list of objects.
 #'
 #' @details
-#' Helper function to retrieve a list of objects from a workspace.
+#' Internal helper function to retrieve a list of objects from a workspace.
 #' Take an environment as argument and optionally an object class.
 #' Returns a list of objects of the specified class in the environment.
 #' 
@@ -26,12 +26,13 @@
 #' 
 #' @return character vector with the object names.
 #' 
-#' @export true
 #' @examples
+#' \dontrun{
 #' # List data frames in the workspace.
 #' listObjects(objClass="data.frame")
 #' # List functions in the workspace.
 #' listObjects(objClass="function")
+#' }
 
 listObjects <- function(env=parent.frame(), objClass=NULL, debug=FALSE){
   

@@ -1,9 +1,9 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Add option for exact match.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 25.07.2013: Added 'debug' option.
 # 25.07.2013: Fixed bug option 'word' was not correctly implemented.
 # 15.07.2013: Added parameter 'ingoreCase' and 'fixed'.
@@ -28,6 +28,8 @@
 #' @param ignoreCase logical, if TRUE case insesitive matching is used.
 #' @param word logical, if TRUE only exact match.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @export
 #' 
 
 checkSubset <- function(data, ref, console=TRUE, ignoreCase=TRUE, word=FALSE, debug=FALSE){

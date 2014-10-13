@@ -12,7 +12,9 @@
 # NOTE: Some button names will change due to locale.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 06.10.2014: Added ggplot support for 'View' button in 'Workspace' tab.
+# 28.08.2014: Fixed error message when no projects in projects folder.
 # 08.07.2014: Added 'Mixture' tab.
 # 04.07.2014: Ask to overwrite project file if exist.
 # 04.07.2014: Added new button 'Add' and 'Save As' to 'Workspace' tab.
@@ -31,23 +33,6 @@
 # 27.11.2013: Added 'Add Marker' button in edit tab.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 # 15.11.2013: Added 'view' button in workspace tab.
-# 13.11.2013: Pass 'debug' parameter to called functions.
-# 03.11.2013: Added buttons for analysis of result type in new 'Result' tab.
-# 29.10.2013: Added buttons for analysis of capillary balance in 'Balance' tab.
-# 01.10.2013: Added button 'Analyse bins' in 'DryLab' tab.
-# 21.09.2013: Added button 'Plot Kit' in 'DryLab' tab.
-# 19.09.2013: List objects with name and size.
-# 15.09.2013: Added button 'Kit' in 'DryLab' tab.
-# 11.07.2013: Removed section 'export', new function export_gui().
-# 11.07.2013: Removed section 'load .RData', renamed button load ws -> load.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 10.06.2013: Added a 'save gui' option.
-# 20.05.2013: New functions 'AddData', 'calculateH'.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 13.05.2013: Save/Load workspace added.
-# 09.05.2013: Removed tables and 'save as' from tabs, new function editData_gui()
-# 27.04.2013: Trim updated with dataset selection.
-# 25.04.2013: Slim updated with dataset selection.
 
 #' @title Graphical user interface for the STR-validator package
 #'
@@ -89,7 +74,13 @@
 #' Validation Guidelines for Forensic DNA Analysis Methods (2012)
 #' \url{http://swgdam.org/SWGDAM_Validation_Guidelines_APPROVED_Dec_2012.pdf}
 #' 
+#' @import gWidgets
+#' @import ggplot2
+#' @import gWidgetsRGtk2
+#' @import RGtk2
+#'
 #' @export
+#' 
 #' @examples
 #' # To start the graphical user interface.
 #' \dontrun{
@@ -401,6 +392,9 @@ strvalidator <- function(debug=FALSE){
         
         # Load project to workspace.
         load(file=val_prj, envir=val_env, verbose=FALSE)
+        
+        # Move to workspace tab.
+        svalue(nb)<- match(.file_tab_name, names(nb))
         
       }
       
@@ -736,7 +730,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(ws_import_btn, handler = function (h, ...) {
     
     # Open GUI.
-    import_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    import_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     .refreshLoaded()
     
   } )  
@@ -744,7 +738,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(ws_export_btn, handler = function (h, ...) {
     
     # Open GUI.
-    export_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    export_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )  
   
@@ -758,6 +752,8 @@ strvalidator <- function(debug=FALSE){
     
     # Get selected dataset name(s).
     val_obj <- svalue(ws_loaded_tbl)
+    val_data <- get(val_obj, envir=.strvalidator_env)
+    val_class <- class(val_data)
     
     if(debug){
       print(paste("IN:", match.call()[[1]]))
@@ -767,13 +763,25 @@ strvalidator <- function(debug=FALSE){
     
     if (!is.na(val_obj) && !is.null(val_obj) && length(val_obj) > 0){
       
-      # Open GUI.
-      editData_gui(env=.strvalidator_env,
-                   data=get(val_obj, envir=.strvalidator_env),
-                   name=val_obj,
-                   edit=FALSE, debug=debug)
+      if("data.frame" %in% val_class){
+        
+        # Open GUI.
+        editData_gui(env=.strvalidator_env,
+                     data=get(val_obj, envir=.strvalidator_env),
+                     name=val_obj,
+                     edit=FALSE, debug=debug, parent=w)
+        
+      } else if("ggplot" %in% val_class){
+        
+        # Plot object.
+        print(val_data)
+        
+      } else {
+        message(paste("Object of type", val_class, "not supported!"))
+      }
       
-    } 
+    }
+    
   } )
   
   addHandlerChanged(ws_remove_btn, handler = function(h, ...) {
@@ -1037,7 +1045,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(dry_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1078,28 +1086,28 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(dry_kit_btn, handler = function(h, ...) {
     
     # Open GUI.
-    makeKit_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    makeKit_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
   addHandlerChanged(dry_plot_kit_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotKit_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotKit_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
   addHandlerChanged(dry_bins_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateOverlap_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateOverlap_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
   addHandlerChanged(dry_ol_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateOL_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateOL_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1123,7 +1131,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1141,7 +1149,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_trim_btn, handler = function(h, ...) {
     
     # Open GUI.
-    trim_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    trim_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1159,7 +1167,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_slim_btn, handler = function(h, ...) {
     
     # Open GUI.
-    slim_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    slim_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1176,7 +1184,7 @@ strvalidator <- function(debug=FALSE){
   
   addHandlerChanged(edit_filter_btn, handler = function(h, ...) {
     
-    filterProfile_gui(env=.strvalidator_env, savegui=.save_gui)
+    filterProfile_gui(env=.strvalidator_env, savegui=.save_gui, parent=w)
     
   } )
   
@@ -1194,7 +1202,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_crop_btn, handler = function(h, ...) {
     
     # Open GUI.
-    cropData_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    cropData_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1211,7 +1219,7 @@ strvalidator <- function(debug=FALSE){
   
   addHandlerChanged(edit_guess_btn, handler = function(h, ...) {
     
-    guessProfile_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    guessProfile_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1228,7 +1236,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_addDye_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addDye_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    addDye_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1245,7 +1253,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_addMarker_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addMarker_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    addMarker_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1262,7 +1270,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_addSize_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addSize_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    addSize_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1279,7 +1287,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_addData_btn, handler = function(h, ...) {
     
     # Open GUI.
-    addData_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    addData_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1296,7 +1304,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_check_btn, handler = function(h, ...) {
     
     # Open GUI.
-    checkSubset_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    checkSubset_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1313,7 +1321,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_combine_btn, handler = function(h, ...) {
     
     # Open GUI.
-    combine_gui(env=.strvalidator_env, debug=debug)
+    combine_gui(env=.strvalidator_env, debug=debug, parent=w)
     
   } )
   
@@ -1330,7 +1338,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_het_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateHeterozygous_gui(env=.strvalidator_env, debug=debug)
+    calculateHeterozygous_gui(env=.strvalidator_env, debug=debug, parent=w)
     
   } )
   
@@ -1347,7 +1355,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_h_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateH_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateHeight_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1372,7 +1380,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1390,7 +1398,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_calculate_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateStutter_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateStutter_gui(env=.strvalidator_env, savegui=.save_gui,
+                         debug=debug, parent=w)
     
   } )
   
@@ -1406,7 +1415,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotStutter_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotStutter_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1423,7 +1432,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_table_btn, handler = function(h, ...) {
     
     # Open GUI.
-    tableStutter_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    tableStutter_gui(env=.strvalidator_env, savegui=.save_gui,
+                     debug=debug, parent=w)
     
   } )
   
@@ -1447,7 +1457,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1471,7 +1481,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1487,7 +1497,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_g2_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1503,7 +1513,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_table_btn, handler = function(h, ...) {
     
     # Open GUI.
-    tableBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    tableBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1528,7 +1538,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1544,7 +1554,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_g3_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1560,7 +1570,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_g3_tab_btn, handler = function(h, ...) {
     
     # Open GUI.
-    tableCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    tableCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1583,7 +1593,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(conc_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1601,7 +1611,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(conc_calculate_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateConcordance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateConcordance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1624,7 +1634,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1642,7 +1652,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_calculate_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1658,7 +1668,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_model_btn, handler = function(h, ...) {
     
     # Open GUI.
-    modelDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    modelDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1674,7 +1684,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotDropout_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1700,7 +1710,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(mix_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1718,7 +1728,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(mix_calculate_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateMixture_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateMixture_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1745,7 +1755,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(result_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1771,7 +1781,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(result_g1_calc_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateResultType_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculateResultType_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1787,7 +1797,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(result_g1_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotResultType_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotResultType_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1813,7 +1823,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(result_g2_calc_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculatePeaks_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    calculatePeaks_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1829,7 +1839,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(result_g2_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotPeaks_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotPeaks_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1853,7 +1863,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(result_g3_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotDistribution_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotDistribution_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1876,7 +1886,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(precision_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug)
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1892,7 +1902,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(precision_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
-    plotPrecision_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    plotPrecision_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1910,7 +1920,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(precision_table_btn, handler = function(h, ...) {
     
     # Open GUI.
-    tablePrecision_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug)
+    tablePrecision_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -2078,13 +2088,18 @@ strvalidator <- function(debug=FALSE){
                                       ignore.case = TRUE, include.dirs = FALSE)
     
     df <- file.info(.project_path_list)
-    
-    # Update projects list.    
-    project_tbl[,] <<- data.frame(Project=.project_name_list, 
-                                  Date=paste(df$mtime),
-                                  Size=df$size,
-                                  Id=seq(length(.project_name_list)),
-                                  stringsAsFactors=FALSE)
+
+    # Check if any project in list.
+    if(length(.project_name_list) > 0){
+
+      # Update projects list.    
+      project_tbl[,] <<- data.frame(Project=.project_name_list, 
+                                    Date=paste(df$mtime),
+                                    Size=df$size,
+                                    Id=seq(length(.project_name_list)),
+                                    stringsAsFactors=FALSE)
+      
+    }
     
     if(debug){
       print("Project list updated!")
@@ -2097,5 +2112,6 @@ strvalidator <- function(debug=FALSE){
   # Show GUI and first tab.
   svalue(nb)<-1
   visible(w)<-TRUE
+  focus(w)
   
 } # END OF GUI

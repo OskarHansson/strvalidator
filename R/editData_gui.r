@@ -6,7 +6,8 @@
 
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 02.12.2013: Added parameter 'name' for selection of 'data' in drop menu.
@@ -31,12 +32,16 @@
 #' @param name character string with the name of the provided dataset.
 #' @param edit logical TRUE for enable edit .
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @export
 #' 
 #' @return TRUE
 #' 
 #' @seealso \code{\link{trim_gui}}, \code{\link{cropData_gui}}, \code{\link{combine_gui}}
 
-editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE, debug=FALSE){
+editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE,
+                         debug=FALSE, parent=NULL){
 
   .gData <- data
   .gDataName <- name
@@ -52,6 +57,19 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE, de
   }
   
   w <- gwindow(title=guiTitle, visible=FALSE)
+  
+  # Runs when window is closed.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
+    #.saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
+  })
   
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
@@ -264,6 +282,7 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE, de
   }
   
   # Show GUI.
-  visible(w) <- TRUE  
+  visible(w) <- TRUE
+  focus(w)
   
 }

@@ -3,7 +3,11 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 12.10.2014: Fixed bug when NA in Allele column.
+# 26.09.2014: Accept vector for 'exclude'.
+# 12.09.2014: Included 'exclude' parameter.
+# 10.09.2014: Included total peak height in result.
 # 04.03.2014: Fixed bug when no NA and NA!=NULL.
 # 25.02.2014: Option to add directly to dataset.
 # 25.02.2014: Option to replace NAs.
@@ -11,29 +15,30 @@
 # 11.04.2013: Changed 'Z' to 'Heterozygous' (het/hom now indicated by 1/0,
 #             but changed to 2 in function)
 
-#' @title Calculate average peak height.
+#' @title Calculate peak height.
 #'
 #' @description
-#' \code{calculateH} calculates the average peak height for a sample.
+#' \code{calculateHeight} calculate peak height metrics for a sample.
 #'
 #' @details
-#' Calculates the average peak height (H) for each sample.
-#' Sample data must contain a column "Heterozygous", where 1 = heterozygous loci,
-#' and 0 = homozygous loci as known from the reference sample.
+#' Calculates the average peak height (H) and/or the total peak height (TPH) for each sample.
+#' To enable calculation of H the sample data must contain a column "Heterozygous",
+#' where 1 = heterozygous loci, and 0 = homozygous loci as known from the reference sample.
 #' Calculates H according to the formula:
 #' \eqn{H = sum(peak heights)/(n[het] + 2n[hom]}
 #' Where:
 #' n[het] = number of observed heterozygous alleles
 #' n[hom] = number of observed homozygous alleles
 #' 
-#' @param data data.frame in 'slim' format with at least columns
-#'  'Sample.Name', 'Heterozygous', and 'Height'.
+#' @param data data.frame with at least columns 'Sample.Name' and 'Height'.
 #' @param na replaces NA values.
-#' @param add logical default is TRUE which will add/overwrite column 'H' for
-#' average peak height, and 'Peaks' for the total number of peaks in the profile.
+#' @param exclude character vector (case sensitive) e.g. "OL" excludes rows with
+#'  "OL" in the 'Allele' column.
+#' @param add logical default is TRUE which will add/overwrite columns
+#' 'H', 'TPH', and 'Peaks' in the provided 'data'.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame with with at least columns 'Sample.Name', 'H', and 'Peaks'.
+#' @return data.frame with with at least columns 'Sample.Name', 'TPH', and 'Peaks'.
 #' 
 #' @export
 #' 
@@ -45,11 +50,14 @@
 #'  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
 #' \url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
 
-calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
+calculateHeight <- function(data, na=NULL, add=TRUE, exclude=NULL, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
+
+  # Flag to calculate average peak height.
+  flagH <- TRUE
   
   # CHECK DATA ----------------------------------------------------------------
   
@@ -60,8 +68,9 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
   }
 
   if(!any(grepl("Heterozygous", names(data), fixed = TRUE))){
-    stop("'data' must contain a column 'Heterozygous.'",
-         call. = TRUE)
+    message("'data' does not contain a column 'Heterozygous'.
+            Average peak height 'H' will not be calculated.")
+    flagH <- FALSE
   }
   
   if(!any(grepl("Height", names(data)))){
@@ -86,7 +95,7 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
     stop("'na' must be of length 1.",
          call. = TRUE)
   }
-  
+
   # Check na.
   if(!is.logical(add)){
     stop("'add' must be TRUE or FALSE.",
@@ -95,32 +104,63 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
   
   # PREPARE -----------------------------------------------------------------
   
+  if(!is.null(exclude)){
+    
+    if("Allele" %in% names(data)){
+
+      # Loop over all elements in exclude and remove matching rows.
+      for(i in seq(along=exclude)){
+        
+        tmp1 <- nrow(data)
+        data <- data[data$Allele != exclude[i] | is.na(data$Allele), ]
+        tmp2 <- nrow(data)
+        
+        message(paste(tmp1-tmp2, "Allele rows =", exclude[i],
+                      "removed from dataset."))
+        
+      }
+      
+    }
+    
+  }
+  
   if(add){
 
-    # Check if columns exist.
-    if("H" %in% names(data)){
-      message("Column 'H' will be overwritten.")
+    if(flagH){
+      # Check if columns exist.
+      if("H" %in% names(data)){
+        message("Column 'H' will be overwritten.")
+      }
+      # Add columns for result.
+      data$H <- NA
+    }
+    
+    if("TPH" %in% names(data)){
+      message("Column 'TPH' will be overwritten.")
     }
     if("Peaks" %in% names(data)){
       message("Column 'Peaks' will be overwritten.")
     }
     
     # Add columns for result.
-    data$H <- NA
+    data$TPH <- NA
     data$Peaks <- NA
     
   } else {
 
     resSample <- NULL
     resH <- NULL
+    resTPH <- NULL
     resPeaks <- NULL
     
   }
 
   # Create a vector 'Z', where 1 is heterozygous and 2 is homozygous.
-  Z <- data$Heterozygous
-  Z <- as.numeric(Z)
-  Z[Z == 0] <- 2
+  if(flagH){
+    Z <- data$Heterozygous
+    Z <- as.numeric(Z)
+    Z[Z == 0] <- 2
+  }
 
 	# Get the sample names.
 	sampleNames <- unique(data$Sample.Name)
@@ -134,7 +174,9 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
 		# Subset sample data.
 		cSampleRows <- data$Sample.Name == cSampleName
 		cSampleData <- data[cSampleRows, ]
-    cZ <- Z[cSampleRows]
+		if(flagH){
+		  cZ <- Z[cSampleRows]
+		}
 		
 		# Sum all peak heights.
 		totalPeakHeight <- sum(cSampleData$Height, na.rm=TRUE)
@@ -142,44 +184,75 @@ calculateH <- function(data, na=NULL, add=TRUE, debug=FALSE){
 		# Sum number of peaks.
 		totalObservedPeaks <- sum(!is.na(cSampleData$Height))
 
-    # Number of peaks adjusted for 'invisible' homozygotes.
-		totalAdjustedPeaks <- sum(cZ[!is.na(cSampleData$Height)])
-
-    # Calculate the average peak height.
-		avgPeakHeight <- totalPeakHeight / totalAdjustedPeaks 
+		if(flagH){
+		  
+      # Number of peaks adjusted for 'invisible' homozygotes.
+  		totalAdjustedPeaks <- sum(cZ[!is.na(cSampleData$Height)])
+  
+      # Calculate the average peak height.
+  		avgPeakHeight <- totalPeakHeight / totalAdjustedPeaks 
+      
+		}
 
     if(add){
       
+      if(flagH){
+        # Add result to dataframe.
+        data[cSampleRows, ]$H <- avgPeakHeight
+      }        
+      
       # Add result to dataframe.
-      data[cSampleRows, ]$H <- avgPeakHeight
+      data[cSampleRows, ]$TPH <- totalPeakHeight
       data[cSampleRows, ]$Peaks <- totalObservedPeaks
       
     } else {
+
+      if(flagH){
+        # Add to result.
+        resH <- c(resH, avgPeakHeight)
+      }
       
       # Add to result.
       resSample <- c(resSample, cSampleName)
-      resH <- c(resH, avgPeakHeight)
+      resTPH <- c(resTPH, totalPeakHeight)
       resPeaks <- c(resPeaks, totalObservedPeaks)
       
     }
     
 	}
 
-  # Copy to return variable or create dataframe.
+  # Copy to return data or create a new dataframe.
   if(add){
+    # Add result to data.
     res <- data
+    
   } else {
-    res <- data.frame(Sample.Name=resSample, H=resH, Peaks=resPeaks)
+    # Create new data frame.
+    
+    if(flagH){
+      res <- data.frame(Sample.Name=resSample, H=resH, TPH=resTPH, Peaks=resPeaks)
+    } else {
+      res <- data.frame(Sample.Name=resSample, TPH=resTPH, Peaks=resPeaks)
+    }
+    
   }
   
   # Replace NA:s
   if(!is.null(na)){
-    
     # Check if NA:s and change to 'na'.
-    if(any(is.na(res$H))){
-      n <- sum(is.na(res$H))
-      res[is.na(res$H), ]$H <- na
-      message(paste(n, " NA's replaced with '", na, "'.", sep=""))
+    
+    if(flagH){
+      if(any(is.na(res$H))){
+        n <- sum(is.na(res$H))
+        res[is.na(res$H), ]$H <- na
+        message(paste(n, " NA's in 'H' replaced with '", na, "'.", sep=""))
+      }
+    }
+    
+    if(any(is.na(res$TPH))){
+      n <- sum(is.na(res$TPH))
+      res[is.na(res$TPH), ]$TPH <- na
+      message(paste(n, " NA's in 'TPH' replaced with '", na, "'.", sep=""))
     }
     
   }

@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 07.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 02.12.2013: Fixed 'Option' frame not visible.
@@ -34,12 +35,16 @@
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @export
 #' 
 #' @return TRUE
 #' 
 #' @seealso \code{\link{slim}}
 
-slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+slim_gui <- function(env=parent.frame(), savegui=NULL, 
+                     debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData <- data.frame(No.Data=NA)
@@ -51,11 +56,19 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # Main window.  
   w <- gwindow(title="Slim dataset", visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
-
+  
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=5,
@@ -367,9 +380,8 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
   } )
   
-  # Show GUI.
-  visible(w) <- TRUE
-  
+  # INTERNAL FUNCTIONS ########################################################
+
   .refresh_fix_tbl <- function(){
     
     if(debug){
@@ -381,11 +393,11 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # ...creating a new table.
     fix_tbl <<- gWidgets::gtable(items=names(.gData), 
-                           container=fix_f,
-                           expand=TRUE)
-  
+                                 container=fix_f,
+                                 expand=TRUE)
+    
     addDropSource(fix_tbl, handler=function(h,...) svalue(h$obj))
-  
+    
     addHandlerDoubleclick(fix_tbl, handler = function(h, ...) {
       
       # Get values.
@@ -406,9 +418,9 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       fix_tbl[,] <- tmp_tbl  # Update table.
       
     } )
-  
+    
   }
-
+  
   .refresh_stack_tbl <- function(){
     
     if(debug){
@@ -420,8 +432,8 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # ...creating a new table.
     stack_tbl <<- gWidgets::gtable(items=names(.gData), 
-                       container=stack_f,
-                       expand=TRUE)
+                                   container=stack_f,
+                                   expand=TRUE)
     
     addDropSource(stack_tbl, handler=function(h,...) svalue(h$obj))
     
@@ -447,8 +459,6 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     } )
     
   }
-  
-  # INTERNAL FUNCTIONS ########################################################
   
   .loadSavedSettings <- function(){
     
@@ -517,5 +527,9 @@ slim_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Load GUI settings.
   .loadSavedSettings()
+
+  # Show GUI.
+  visible(w) <- TRUE
+  focus(w)
   
 } # End of GUI

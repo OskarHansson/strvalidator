@@ -4,7 +4,9 @@
 # TODO: Quite complicated code, rewrite using matrix calculations?
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 29.08.2014: Added check for uniqueness between reference datasets.
+# 28.08.2014: Fixed bug in drop-out of minor in If 3: AA:AB | (A-B)/(A+B). 
 # 06.07.2014: First version.
 
 #' @title Calculate mixture.
@@ -20,6 +22,7 @@
 #' The observed and expected number of free alleles for the minor component
 #' (used to calculate the profile percentage) is also given.
 #' 
+#' NB! All sample names must be unique within and between each reference dataset.
 #' NB! Samples in ref1 and ref2 must be in 'sync'. The first sample in
 #' ref1 is combined with the first sample in ref2 to make a mixture sample.
 #' For example: ref1 "A" and ref2 "B" match mixture samples "A_B_1", "A_B_2"
@@ -162,6 +165,12 @@ calculateMixture <- function(data, ref1, ref2, ol.rm=TRUE,
   # Get all unique sample names and marker names.
   sampleNamesRef1 <- unique(ref1$Sample.Name)
   sampleNamesRef2 <- unique(ref2$Sample.Name)
+  
+  # Check uniqueness between reference datasets.
+  if(length(intersect(sampleNamesRef1, sampleNamesRef2)) != 0){
+    stop("Reference sample names must be unique both within and between reference datasets",
+         call. = TRUE)
+  }
   
   # Get number of samples.
   if(length(sampleNamesRef1)!=length(sampleNamesRef2)){
@@ -336,11 +345,11 @@ calculateMixture <- function(data, ref1, ref2, ol.rm=TRUE,
                 denominator <- sum(observedHeights, na.rm=TRUE)
                 
                 # Replace negative values with 0.
-                if(nominator < 0){
+                if(length(nominator) == 0 || nominator < 0){
                   nominator <- 0
                 
                   if(debug){
-                    print("Replaced negative nominator with 0!")
+                    print("Replaced negative or missing nominator with 0!")
                   }
                   
                 }

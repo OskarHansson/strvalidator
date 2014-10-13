@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 06.01.2014: Fixed factor/character bug when using frequency database.
 # 30.11.2013: Specified package for function in 'plyr' -> 'plyr::rbind.fill'
 # 25.09.2013: First version.
@@ -30,10 +30,12 @@
 #' @param virtual logical default is TRUE meaning that overlap calculation includes virtual bins.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @return data.frame with columns 'Kit', 'Color', [dyes], 'Sum', and 'Score'. 
+#' @importFrom plyr rbind.fill
 #' 
 #' @export
 #' 
+#' @return data.frame with columns 'Kit', 'Color', [dyes], 'Sum', and 'Score'. 
+
 
 
 calculateOverlap <- function (data, db=NULL, penalty=NULL, virtual=TRUE, debug=FALSE){

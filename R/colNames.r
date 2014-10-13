@@ -3,7 +3,7 @@
 # TODO: Make base name defining string optional instead of always "."
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 15.12.2013: Fixed cropping column names with multiple periods.
 # 25.05.2013: Fixed returning original column names for single occurring names.
 # 24.05.2013: First version.

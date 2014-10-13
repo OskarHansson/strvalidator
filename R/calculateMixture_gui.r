@@ -3,7 +3,9 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
+# 28.08.2014: Fixed bug in 'Check subsetting' showing extra combinations in many cases.
 # 08.07.2014: First version.
 
 #' @title Calculate Mixture
@@ -19,6 +21,7 @@
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
 #' 
 #' @return TRUE
 #' 
@@ -27,7 +30,7 @@
 #' @seealso \code{\link{calculateMixture}}
 
 calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
-                                 debug=FALSE){
+                                 debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData <- NULL
@@ -47,9 +50,17 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
   # Main window.
   w <- gwindow(title="Calculate Mixture", visible=FALSE)
 
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
   
   gv <- ggroup(horizontal=FALSE,
@@ -236,17 +247,23 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
                              handler = NULL, action = NULL)
 
       # Create pattern.
-      tmp <- paste(".*", .gRef1$Sample.Name, ".*",
-                   .gRef2$Sample.Name, ".*", sep="")
+      tmp <- paste(".*", unique(.gRef1$Sample.Name), ".*",
+                   unique(.gRef2$Sample.Name), ".*", sep="")
       
       # Save as dataframe.
       val_pattern <- data.frame(Sample.Name=tmp, stringsAsFactors=FALSE) 
+      
+      if(debug){
+        print("Pattern")
+        print(val_pattern)
+      }
       
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_pattern,
                                    console=FALSE,
                                    ignoreCase=val_ignore,
-                                   word=val_word)
+                                   word=val_word,
+                                   debug=debug)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
              wrap = FALSE, container = chksubset_w)
@@ -444,5 +461,6 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

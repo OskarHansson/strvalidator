@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 21.01.2014: Added parameter 'limit'.
 # 17.01.2014: First version.
 

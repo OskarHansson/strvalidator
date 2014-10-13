@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Add nice breaks (se tutorial vWA by height), can be fixed using 'fixed_x' scale.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 05.05.2014: Fixed same color scale for all sub plots in complex plots.
@@ -24,18 +25,6 @@
 # 29.10.2013: Fixed limit y/x axis drop observations.
 # 23.10.2013: Fixed plot unequal facets and save as image.
 # 18.09.2013: Updated to support new 'addColor' function, replacing 'addDye'.
-# 19.07.2013: Changed edit widget to spinbutton for 'shape' and 'alpha'.
-# 18.07.2013: Check before overwrite object.
-# 17.07.2013: Removed 'trim', new function 'cropData_gui' takes over.
-# 16.07.2013: Save as ggplot object to workspace instead of image.
-# 16.07.2013: Added save GUI settings.
-# 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Improved error message for missing columns.
-# 17.05.2013: save plot moved to external function.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 28.04.2013: GUI layout changes.
-# <28.04.2013: Added dropdown with data frames in passed environment.
-# <28.04.2013: First version.
 
 #' @title Plot Stutter
 #'
@@ -50,16 +39,21 @@
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @importFrom gridExtra arrangeGrob
+#' @importFrom gtable gtable_add_grob gtable gtable_filter
+#' @importFrom plyr rbind.fill
+#' @importFrom scales pretty_breaks
+#' 
+#' @export
 #' 
 #' @return TRUE
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
-plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
-  # Load gridExtra as a temporary solution to TODO in NAMESPACE.
-  loadPackage(packages=c("gridExtra"))
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -72,11 +66,19 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # Main window.
   w <- gwindow(title="Plot stutter proportions", visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
-
+  
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
@@ -992,5 +994,6 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 28.04.2014: More robust and handles '+' and '-' in sample names.
 # 14.01.2014: Support dataframes without a 'Sample.Name' column.
 # 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
@@ -37,6 +37,8 @@
 #' while FALSE will preserve the columns.
 #' @param missing value to replace missing values with.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @export
 #' 
 #' @return data.frame with extracted result.
 #' 

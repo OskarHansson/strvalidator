@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 10.08.2014: Added scope=RUN.
 # 29.10.2013: First version.
 
@@ -22,6 +22,8 @@
 #' @param scope character string. Make table by capillary, injection, plate row, 
 #' run, or instrument. Values {"cap", "inj", "row", "run", "instr"}.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @export
 #'  
 #' @return data.frame with columns 'Instrument', 'Capillary/Injection/Row/Run/Instrument',
 #' 'N', 'Min', 'Q1', 'Median', 'Mean', 'Q3', 'Max', 'Std.Dev'.

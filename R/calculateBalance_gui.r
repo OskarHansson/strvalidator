@@ -3,7 +3,9 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
+# 03.10.2014: Added 'word' parameter (word boundary).
 # 07.08.2014: Added check and error message for 'NA' in 'Dye'.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
@@ -22,11 +24,6 @@
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 29.05.2013: Added subset check.
 # 24.05.2013: Improved error message for missing columns.
-# 24.05.2013: Fixed save with correct name.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: .result removed, added save as group.
-# 18.04.2013: Added reference drop down and ref in call to calculateBalance.
-# 14.04.2013: First version.
 
 #' @title Calculate Balance
 #'
@@ -41,6 +38,7 @@
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
 #' 
 #' @return TRUE
 #' 
@@ -49,7 +47,7 @@
 #' @seealso \code{link{calculateBalance}}, \code{link{checkSubset}}
 
 calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
-                                 debug=FALSE){
+                                 debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData <- NULL
@@ -68,9 +66,17 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   # Main window.
   w <- gwindow(title="Calculate balance", visible=FALSE)
 
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
   
   gv <- ggroup(horizontal=FALSE,
@@ -206,7 +212,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     val_data <- .gData
     val_ref <- .gRef
     val_ignore <- svalue(f1_ignore_chk)
-    val_word <- FALSE
+    val_word <- svalue(f1_word_chk)
     
     if (!is.null(.gData) || !is.null(.gRef)){
       
@@ -251,6 +257,11 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   f1_ignore_chk <- gcheckbox(text="Ignore case",
                          checked=TRUE,
                          container=f1)
+  
+  f1_word_chk <- gcheckbox(text="Add word boundaries",
+                           checked = FALSE,
+                           container = f1)
+  
   
   f1g1 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
   glabel(text="Calculate balance using:", anchor=c(-1 ,0), container=f1g1)
@@ -308,6 +319,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     val_lb <- svalue(f1_lb_opt, index=TRUE)
     val_perDye <- svalue(f1_perDye_opt, index=TRUE) == 1 # TRUE / FALSE
     val_ignore <- svalue(f1_ignore_chk)
+    val_word <- svalue(f1_word_chk)
     val_data <- .gData
     val_ref <- .gRef
     val_name <- svalue(f4_save_edt)
@@ -320,6 +332,8 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_perDye)
       print("val_ignore")
       print(val_ignore)
+      print("val_word")
+      print(val_word)
       print("val_name")
       print(val_name)
       print("val_data")
@@ -370,6 +384,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                                     perDye=val_perDye,
                                     hb=val_method,
                                     ignoreCase=val_ignore,
+                                    word=val_word,
                                     debug=debug)
         
         # Save data.
@@ -383,7 +398,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         
         # Close GUI.
         dispose(w)
-
+        
       } else {
         
         message <- "'NA' in 'Dye' column. \nUse add dye function to fix."
@@ -498,5 +513,6 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

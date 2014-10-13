@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 07.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 18.07.2013: Check before overwrite object.
@@ -31,12 +32,16 @@
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
 #' 
+#' @export
+#'  
 #' @return TRUE
 #' 
 #' @seealso \code{\link{tableStutter}}
 
-tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+tableStutter_gui <- function(env=parent.frame(), savegui=NULL,
+                             debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData <- NULL
@@ -49,9 +54,17 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # Main window.
   w <- gwindow(title="Make stutter table", visible=FALSE)
 
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
   
   # Vertical main group.
@@ -302,5 +315,6 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 } # End of GUI

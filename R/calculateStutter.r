@@ -14,7 +14,7 @@
 # TODO: Detect pull-ups and other noise within stutter range?
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 30.11.2013: 'warning' changed to 'message' when data is converted.
 # 01.07.2013: Added "Sample.Name" in result.
 # 01.07.2013: Fixed "NAs introduced by coercion".
@@ -61,6 +61,8 @@
 #' @param replaceVal numeric vector with 'false' stutters to replace.
 #' @param byVal numeric vector with correct stutters.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @export
 #' 
 #' @return data.frame with extracted result.
 #' 

@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 18.07.2013: Check before overwrite object.
@@ -25,6 +26,7 @@
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
 #' 
 #' @return TRUE
 #' 
@@ -32,7 +34,7 @@
 #' 
 #' @seealso \code{\link{calculateHeterozygous}}
 
-calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
+calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
   
   
   # Global variables.
@@ -45,6 +47,19 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
   # Main window.
   w <- gwindow(title="Calculate heterozygous", visible=FALSE)
   
+  # Runs when window is closed.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
+    #.saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
+  })
+  
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
@@ -56,6 +71,7 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
   gh <- ggroup(container = gv, expand=FALSE, fill="both")
   
   savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
+  enabled(savegui_chk) <- FALSE
   
   addSpring(gh)
   
@@ -176,5 +192,6 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

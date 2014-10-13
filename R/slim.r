@@ -4,7 +4,7 @@
 # TODO: option to drop/keep 'OL'.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 23.01.2014: Fixed bug when only one column in 'fix'.
 # 13.01.2014: Completely re-written for improved performance.
 # <13.01.2014: Renamed parameters (slim.col -> stack / fix.col -> fix (as earlier)
@@ -34,6 +34,8 @@
 #' @param stack vector of strings with colum names to slim.
 #' @param keepAllFixed logical, keep a rows even if no data.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @export
 #' 
 #' @return list with simulation results.
 #' 

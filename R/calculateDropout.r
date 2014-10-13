@@ -7,7 +7,7 @@
 
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
 # 16.01.2014: Adde option for selection of one or more scoring methods.
 # 16.01.2014: Changed names 'Model[]'/'Method[]'.

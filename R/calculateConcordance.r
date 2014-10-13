@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 18.06.2014: First version.
 
 #' @title Calculate concordance.

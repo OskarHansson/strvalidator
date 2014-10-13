@@ -4,7 +4,8 @@
 # TODO: parameter perLocus? Not priority since easy to make subset of dataframe.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 28.06.2014: Changed notation on plot to be more correct.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -26,24 +27,6 @@
 # 27.09.2013: Removed subset modelling because peaks get removed but dropout
 #             status is un-changed! A subset must be taken from 'raw' data
 #             and a new calculateDropout muste be performed before modelling.
-# 27.09.2013: Remove rows where Height=NA. Unclear if any effect.
-# 26.09.2103: Remove locus dropout from dataset. Unclear if any effect.
-# 17.09.2013: Updated to support new 'getKit' structure.
-# 14.09.2013: Excluded homozygous data from plot.
-# 14.09.2013: More control over prediction and threshold legends.
-# 14.09.2013: Estimation of prediction interval at T.
-# 19.07.2013: Changed edit widget to spinbutton for 'shape' and 'alpha'.
-# 18.07.2013: Check before overwrite object.
-# 15.07.2013: Save as ggplot object to workspace instead of image.
-# 15.07.2013: Added save GUI settings.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 05.06.2013: Added option to exclude gender marker and dropdown for kit.
-# 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Improved error message for missing columns.
-# 17.05.2013: save plot moved to external function.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 15.05.2013: Heights as character, added as.numeric.
-# 12.05.2013: First version.
 
 #' @title model and plot drop-out events
 #'
@@ -81,6 +64,8 @@
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
 #' @references
 #' Peter Gill et.al.,
 #'  DNA commission of the International Society of Forensic Genetics:
@@ -97,11 +82,13 @@
 #'  Pages 104-111, ISSN 1872-4973, 10.1016/j.fsigen.2008.11.009.
 #' \url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
 #' 
+#' @export
+#' 
 #' @return TRUE
 #' 
 #' @seealso \code{\link{calculateDropout}}
 
-modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
 
   # Global variables.
   .gData <- NULL
@@ -114,11 +101,19 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # Main window.
   w <- gwindow(title="Plot dropout prediction", visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
-
+  
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
@@ -1356,5 +1351,6 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

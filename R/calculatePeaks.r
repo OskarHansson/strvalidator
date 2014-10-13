@@ -4,7 +4,7 @@
 #  For example to calculate the number of markers in a sample/marker.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 15.01.2014: Added message to show progress .
 # 12.01.2014: Replaced 'subset' with native code.
 # 11.01.2014: First version.

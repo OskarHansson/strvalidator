@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 20.01.2014: Implemented ggsave with workaround for complex plots.
 # 23.10.2013: Added save as image.
@@ -20,13 +21,13 @@
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @export
 #' 
 #' @return TRUE
 
-plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
-  
-  # Load gridExtra as a temporary solution to TODO in NAMESPACE.
-  loadPackage(packages=c("gridExtra"))
+plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
   # Global variables.
   .gPlot <- NULL
@@ -38,9 +39,17 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # Main window.
   w <- gwindow(title="Plot kit", visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
   
   # Vertical main group.
@@ -463,5 +472,6 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

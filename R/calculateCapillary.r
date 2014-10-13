@@ -3,7 +3,7 @@
 # TODO: Hard-coded plate/injection information, should be put in a text file instead.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 28.10.2013: First version.
 
 #' @title Calculate capillary balance

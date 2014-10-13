@@ -2,9 +2,9 @@
 # TODO LIST
 # TODO: ...
 
-
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 # 27.10.2013: Added warning when no object selected.
@@ -24,13 +24,14 @@
 #' Default is the current environment.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
 #' 
 #' @return TRUE
 #' 
 #' @seealso \code{\link{export}}
 
 
-export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -40,11 +41,19 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   w <- gwindow(title="Export objects as files or images",
                visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
-
+  
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
               spacing=5,
@@ -135,7 +144,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                                          editable = FALSE,
                                          container = f2g1)
   
-  f2g1[2,1] <- glabel(text="Delimeter:",
+  f2g1[2,1] <- glabel(text="Delimiter:",
                       container=f2g1,
                       anchor=c(-1 ,0))
   
@@ -244,13 +253,13 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     val_r <- as.numeric(svalue(f3g1_res_edt))
     val_path <- svalue(f4g1_save_brw)
     
-    # Assign a delimeter character.
+    # Assign a delimiter character.
     if(val_del == 1){
-      val_delimeter <- "\t"   
+      val_delimiter <- "\t"   
     } else if(val_del == 2){
-      val_delimeter <- " "
+      val_delimiter <- " "
     } else if(val_del == 3){
-      val_delimeter <- ","
+      val_delimiter <- ","
     } 
 
     # Check file name.
@@ -301,7 +310,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
         fail <- export(object=val_object, name=val_name, useObjectName=val_use_obj,
                         env=env, path=val_path, 
-                        ext=val_ext, delim=val_delimeter, 
+                        ext=val_ext, delim=val_delimiter, 
                         width=val_w, height=val_h, res=val_r,
                         overwrite=val_replace, debug=debug)
         
@@ -489,5 +498,6 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

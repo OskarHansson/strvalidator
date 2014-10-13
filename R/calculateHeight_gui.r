@@ -1,10 +1,12 @@
 ################################################################################
 # TODO LIST
-# TODO: Implemented 'checkDataset'.
-# TODO: Option to calculate sum of peak heights.
+# TODO: Implement 'checkDataset'.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
+# 26.09.2014: Implemented text field for 'exclude'.
+# 12.09.2014: Implemented new options 'exclude OL'.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 25.02.2014: Implemented new options 'replace NA' and 'add to dataset'.
 # 18.07.2013: Check before overwrite object.
@@ -14,19 +16,20 @@
 # 20.05.2013: First version.
 
 
-#' @title Calculate average peak height
+#' @title Calculate peak height
 #'
 #' @description
-#' \code{calculateH_gui} is a GUI wrapper for the \code{\link{calculateH}} 
+#' \code{calculateHeight_gui} is a GUI wrapper for the \code{\link{calculateHeight}} 
 #' function.
 #'
 #' @details
-#' Simplifies the use of the \code{\link{calculateH}} function by providing a graphical 
+#' Simplifies the use of the \code{\link{calculateHeight}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
 #' 
 #' @return TRUE
 #' 
@@ -40,9 +43,9 @@
 #'  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
 #' \url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
 #' 
-#' @seealso \code{\link{calculateH}}
+#' @seealso \code{\link{calculateHeight}}
 
-calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData <- NULL
@@ -52,11 +55,19 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   }
   
   # Main window.
-  w <- gwindow(title="Calculate average peak height", visible=FALSE)
+  w <- gwindow(title="Calculate peak height", visible=FALSE)
 
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
   
   # Vertical main group.
@@ -78,7 +89,7 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   addHandlerChanged(help_btn, handler = function(h, ...) {
     
     # Open help page for function.
-    print(help("calculateH_gui", help_type="html"))
+    print(help("calculateHeight_gui", help_type="html"))
     
   })
   
@@ -111,7 +122,7 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     if(exists(val_obj, envir=env, inherits = FALSE)){
       
       .gData <<- get(val_obj, envir=env)
-      requiredCol <- c("Sample.Name", "Heterozygous", "Height")
+      requiredCol <- c("Sample.Name", "Height")
       
       if(!all(requiredCol %in% colnames(.gData))){
 
@@ -135,7 +146,7 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
         # Load or change components.
         samples <- length(unique(.gData$Sample.Name))
         svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(val_obj, "_H", sep="")
+        svalue(f2_save_edt) <- paste(val_obj, "_height", sep="")
         
       }
       
@@ -162,8 +173,33 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
                               container=f1)
   
   f1_add_chk <- gcheckbox(text="Add result to dataset",
+                          checked=TRUE,
+                          container=f1)
+  
+  f1_exclude_chk <- gcheckbox(text="Exclude values in 'Allele' column",
                               checked=TRUE,
                               container=f1)
+  
+  f1_exclude_lbl <- glabel(text="Case sensitive values separated by comma:",
+                           anchor=c(-1 ,0), container=f1)
+  
+  f1_exclude_edt <- gedit(text="OL", container=f1)
+
+  addHandlerChanged(f1_exclude_chk, handler = function(h, ...) {
+    
+    if(svalue(f1_exclude_chk)){
+      
+      enabled(f1_exclude_lbl) <- TRUE
+      enabled(f1_exclude_edt) <- TRUE
+      
+    } else {
+
+      enabled(f1_exclude_lbl) <- FALSE
+      enabled(f1_exclude_edt) <- FALSE
+      
+    }
+    
+  } )  
   
   # FRAME 2 ###################################################################
   
@@ -188,11 +224,19 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     val_name <- svalue(f2_save_edt)
     val_add <- svalue(f1_add_chk)
     val_replace <- svalue(f1_replace_chk)
+    val_exclude <- svalue(f1_exclude_chk)
+    val_ex_values <- svalue(f1_exclude_edt)
     
     if(val_replace){
       val_na <- 0
     } else {
       val_na <- NULL
+    }
+
+    if(val_exclude){
+      val_ex <- unlist(strsplit(val_ex_values, ",", fixed = TRUE))
+    } else {
+      val_ex <- NULL
     }
     
     if(!is.null(.gData)){
@@ -201,7 +245,8 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
-      datanew <- calculateH(data=.gData, na=val_na, add=val_add, debug=debug)
+      datanew <- calculateHeight(data=.gData, na=val_na, add=val_add,
+                                 exclude=val_ex, debug=debug)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -237,8 +282,8 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       }  
     } else {
       # Load save flag.
-      if(exists(".strvalidator_calculateH_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(savegui_chk) <- get(".strvalidator_calculateH_gui_savegui", envir=env)
+      if(exists(".strvalidator_calculateHeight_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(savegui_chk) <- get(".strvalidator_calculateHeight_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -250,11 +295,17 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     
     # Then load settings if true.
     if(svalue(savegui_chk)){
-      if(exists(".strvalidator_calculateH_gui_replace", envir=env, inherits = FALSE)){
-        svalue(f1_replace_chk) <- get(".strvalidator_calculateH_gui_replace", envir=env)
+      if(exists(".strvalidator_calculateHeight_gui_replace", envir=env, inherits = FALSE)){
+        svalue(f1_replace_chk) <- get(".strvalidator_calculateHeight_gui_replace", envir=env)
       }
-      if(exists(".strvalidator_calculateH_gui_add", envir=env, inherits = FALSE)){
-        svalue(f1_add_chk) <- get(".strvalidator_calculateH_gui_add", envir=env)
+      if(exists(".strvalidator_calculateHeight_gui_add", envir=env, inherits = FALSE)){
+        svalue(f1_add_chk) <- get(".strvalidator_calculateHeight_gui_add", envir=env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_exclude", envir=env, inherits = FALSE)){
+        svalue(f1_exclude_chk) <- get(".strvalidator_calculateHeight_gui_exclude", envir=env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_exclude_edt", envir=env, inherits = FALSE)){
+        svalue(f1_exclude_edt) <- get(".strvalidator_calculateHeight_gui_exclude_edt", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -268,20 +319,28 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
     # Then save settings if true.
     if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_calculateH_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".strvalidator_calculateH_gui_replace", value=svalue(f1_replace_chk), envir=env)
-      assign(x=".strvalidator_calculateH_gui_add", value=svalue(f1_add_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_savegui", value=svalue(savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_replace", value=svalue(f1_replace_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_add", value=svalue(f1_add_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_exclude", value=svalue(f1_exclude_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_exclude_edt", value=svalue(f1_exclude_edt), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".strvalidator_calculateH_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculateH_gui_savegui", envir = env)
+      if(exists(".strvalidator_calculateHeight_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_savegui", envir = env)
       }
-      if(exists(".strvalidator_calculateH_gui_replace", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculateH_gui_replace", envir = env)
+      if(exists(".strvalidator_calculateHeight_gui_replace", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_replace", envir = env)
       }
-      if(exists(".strvalidator_calculateH_gui_add", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculateH_gui_add", envir = env)
+      if(exists(".strvalidator_calculateHeight_gui_add", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_add", envir = env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_exclude", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_exclude", envir = env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_exclude_edt", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_exclude_edt", envir = env)
       }
       
       if(debug){
@@ -302,5 +361,6 @@ calculateH_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

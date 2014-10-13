@@ -3,7 +3,7 @@
 # TODO: Add support for several files in one go.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 22.09.2013: Fixed bug when reading LifeTech bins with comment.
 # 22.09.2013: Added 'debug' parameter.
 # 22.06.2013: First version.
@@ -14,8 +14,12 @@
 #' \code{readPanelsFile} reads GeneMapper Panels files.
 #'
 #' @details Reads useful information from Panels files and save it as a data.frame.
+#' 
 #' @param panelFiles string, complete path to Panels file.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @keywords internal
+#' 
 #' @return data.frame containing the columns 'Panel', 'Marker', 'Color',
 #' 'Marker.Min', 'Marker.Max', 'Repeat'.
 #' 

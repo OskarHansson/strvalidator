@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 16.01.2014: Adding 'option' for drop-out scoring method.
@@ -30,6 +31,7 @@
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
 #' 
 #' @return TRUE
 #' 
@@ -38,7 +40,7 @@
 #' @seealso \code{\link{calculateDropout}}, \code{\link{checkSubset}}
 
 calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
-                                 debug=FALSE){
+                                 debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData <- NULL
@@ -51,11 +53,19 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   # Main window.
   w <- gwindow(title="Calculate drop-out", visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
-
+  
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
@@ -338,7 +348,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Close GUI.
       dispose(w)
-    
+      
     } else {
       
       message <- "A dataset and a reference dataset have to be selected."
@@ -451,5 +461,6 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

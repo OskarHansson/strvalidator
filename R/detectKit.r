@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 03.08.2014: Added support for kit attribute.
 # 15.04.2014: Revert to previous match if no match in a method.
 # 24.10.2013: Improved matching.

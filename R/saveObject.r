@@ -4,7 +4,7 @@
 #       e.g. 't' when using 'import_gui' from R command.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 18.07.2014: Added syntactically valid name check.
 # 18.07.2014: Added 'remove' and 'suggested' parameter.
 # 20.01.2014: Added 'debug' parameter.
@@ -29,6 +29,8 @@
 #' @param env environment in wich to save and search for existing objects.
 #' @param remove character string for a named object to remove (e.g. the original object if re-naming).
 #' @param debug logical indicating printing debug information.
+#' 
+#' @keywords internal
 #' 
 #' @return logical TRUE if object was saved FALSE if not.
 #' 

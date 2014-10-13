@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 26.08.2014: Fixed bug when scrambled markers (issue#5)
 # 27.04.2014: Added option to ignore case in marker names.
 # 01.03.2014: Added options 'bins' and calculation of size.

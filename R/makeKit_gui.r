@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.07.2014: Changed some gui text.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 10.11.2013: Fixed check that short name is provided.
@@ -26,12 +27,15 @@
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' [Not currently used]
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @export
 #' 
 #' @return TRUE
 #' 
 #' @seealso \code{\link{readBinsFile}}, \code{\link{readPanelsFile}}, \code{\link{combineBinsAndPanels}}
 
-makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -74,6 +78,19 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Main window.  
   w <- gwindow(title="Manage kits", visible=FALSE)
+  
+  # Runs when window is closed.
+  addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
+    #.saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
+  })
   
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
@@ -605,5 +622,6 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
 
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

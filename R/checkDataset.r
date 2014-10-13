@@ -3,13 +3,13 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 06.05.2014: First version.
 
 #' @title Plot Stutter GUI
 #'
 #' @description
-#' \code{checkDataset} is a function to check a data.frame before analysis.
+#' \code{checkDataset} is an internal function to check a data.frame before analysis.
 #'
 #' @details Check that the object exist, there are rows, the required columns exist,
 #' if data.frame is 'fat', and if invalid strings exist. Show error message if not.

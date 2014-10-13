@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 07.05.2014: Replace 'Inf' with 'NA' (min return Inf if no value).
 # 07.05.2014: Added 'suppressWarnings' around 'min' to prevent warning if no values.
 # 15.02.2014: First version.
@@ -26,6 +26,8 @@
 #' @param data data frame from a balance analysis by \code{calculateBalance}.
 #' @param scope string, summarize 'global' or 'locus'.
 #' @param quant numeric, quantile to calculate.
+#' 
+#' @export
 #' 
 #' @return data.frame with summarized result.
 #' 

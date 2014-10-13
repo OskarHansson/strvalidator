@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 07.05.2014: Implemented new column 'TPH' for X-axis when plot Lb.
 # 06.05.2014: Implemented 'checkDataset'.
@@ -23,27 +24,6 @@
 # 27.11.2013: Fixed 'facet_wrap' with strings. But still problem in 'complex'.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 # 05.11.2013: Fixed not possible to limit both y/x axes.
-# 01.11.2013: Added 'override titles' option.
-# 29.10.2013: Fixed limit y/x axis drop observations.
-# 23.10.2013: Fixed plot unequal facets.
-# 20.10.2013: Added 'Save as image'.
-# 18.09.2013: Updated to support new 'addColor' function, replacing 'addDye'.
-# 17.09.2013: Updated to support new 'getKit' structure.
-# 14.09.2013: Added option to drop gender marker and plot log(Hb).
-# 19.07.2013: Added plot balance vs. 'H'.
-# 19.07.2013: Changed edit widget to spinbutton for 'shape' and 'alpha'.
-# 18.07.2013: Check before overwrite object.
-# 15.07.2013: Removed section 'discard data'.
-# 15.07.2013: Save as ggplot object to workspace instead of image.
-# 15.07.2013: Added save GUI settings.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Improved error message for missing columns.
-# 17.05.2013: save plot moved to external function.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 29.04.2013: Various UI fixes. Remove NA rows before trim.
-# 29.04.2013: New parameter debug (no longer defined in function).
-# 21.04.2013: First version.
 
 #' @title Plot Balance
 #'
@@ -61,15 +41,20 @@
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @importFrom gridExtra arrangeGrob
+#' @importFrom grid unit textGrob grid.newpage grid.draw
+#' @importFrom gtable gtable_add_grob gtable
+#' @importFrom plyr rbind.fill
+#' 
+#' @export
 #' 
 #' @return TRUE
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
-plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
-
-  # Load gridExtra as a temporary solution to TODO in NAMESPACE.
-  loadPackage(packages=c("gridExtra"))
+plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
 
   # Global variables.
   .gData <- NULL
@@ -83,11 +68,19 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # Main window.
   w <- gwindow(title="Plot balance", visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
-
+  
   # Vertical main group.
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
@@ -1190,5 +1183,6 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

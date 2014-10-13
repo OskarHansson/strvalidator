@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 21.05.2013: Removed support for 'fat' data. Added check for 'false' NA.
 # 20.05.2013: Changed name calculateZygosity -> calculateHeterozygous
 # <20.05.2013: Support slimmed data.

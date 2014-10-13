@@ -4,7 +4,9 @@
 
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus'.
+# 06.10.2014: Correct pixel dimensions are now shown.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 25.02.2014: Pixel info now update when textbox is changed.
 # 09.02.2014: Added info for size in pixel.
@@ -26,18 +28,21 @@
 #' 
 #' @param ggplot plot object.
 #' @param name optional string providing a file name.
-#' @param parent object specifying the parent GUI object to center the message box.
 #' @param env environment where the objects exist.
 #' Default is the current environment.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent object specifying the parent widget to center the message box,
+#' and to get focus when finished.
+#' 
+#' @export
 #' 
 #' @return TRUE
 #' 
 #' @seealso \code{\link{ggsave}}
 
-ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
-                          savegui=NULL, debug=FALSE){
+ggsave_gui <- function(ggplot=NULL, name="", env=parent.frame(),
+                          savegui=NULL, debug=FALSE, parent=NULL){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -59,9 +64,17 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   w <- gwindow(title="Save as image",
                visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
   
   # Vertical main group.
@@ -202,11 +215,13 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   addHandlerKeystroke(f1g2_width_edt, handler = function(h, ...) {
       
     # Get values.    
-    val_unit <- svalue(f1g2_unit_drp)
-    val <- as.numeric(svalue(f1g2_width_edt))
+    val_w <- as.numeric(svalue(f1g2_width_edt))
+    val_u <- svalue(f1g2_unit_drp)
+    val_d <- as.numeric(svalue(f1g2_res_edt))
+    val_s <- as.numeric(svalue(f1g2_scale_edt))
     
     # Convert to pixel.
-    pixels <- .toPixel(unit=val_unit, val=val)
+    pixels <- .toPixel(unit=val_u, val=val_w, dpi=val_d, scale=val_s)
 
     # Update label.
     svalue(f1g2_width_lbl) <- paste(" ", pixels,"pixels")
@@ -215,11 +230,14 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
 
   addHandlerKeystroke(f1g2_height_edt, handler = function(h, ...) {
     
-    val_unit <- svalue(f1g2_unit_drp)
-    val <- as.numeric(svalue(f1g2_height_edt))
+    # Get values.    
+    val_h <- as.numeric(svalue(f1g2_height_edt))
+    val_u <- svalue(f1g2_unit_drp)
+    val_d <- as.numeric(svalue(f1g2_res_edt))
+    val_s <- as.numeric(svalue(f1g2_scale_edt))
     
     # Convert to pixel.
-    pixels <- .toPixel(unit=val_unit, val=val)
+    pixels <- .toPixel(unit=val_u, val=val_h, dpi=val_d, scale=val_s)
     
     svalue(f1g2_height_lbl) <- paste(" ", pixels,"pixels")
     
@@ -228,11 +246,13 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   addHandlerChanged(f1g2_width_edt, handler = function(h, ...) {
     
     # Get values.    
-    val_unit <- svalue(f1g2_unit_drp)
-    val <- as.numeric(svalue(f1g2_width_edt))
+    val_w <- as.numeric(svalue(f1g2_width_edt))
+    val_u <- svalue(f1g2_unit_drp)
+    val_d <- as.numeric(svalue(f1g2_res_edt))
+    val_s <- as.numeric(svalue(f1g2_scale_edt))
     
     # Convert to pixel.
-    pixels <- .toPixel(unit=val_unit, val=val)
+    pixels <- .toPixel(unit=val_u, val=val_w, dpi=val_d, scale=val_s)
     
     # Update label.
     svalue(f1g2_width_lbl) <- paste(" ", pixels,"pixels")
@@ -241,13 +261,91 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   
   addHandlerChanged(f1g2_height_edt, handler = function(h, ...) {
     
-    val_unit <- svalue(f1g2_unit_drp)
-    val <- as.numeric(svalue(f1g2_height_edt))
+    val_h <- as.numeric(svalue(f1g2_height_edt))
+    val_u <- svalue(f1g2_unit_drp)
+    val_d <- as.numeric(svalue(f1g2_res_edt))
+    val_s <- as.numeric(svalue(f1g2_scale_edt))
     
     # Convert to pixel.
-    pixels <- .toPixel(unit=val_unit, val=val)
+    pixels <- .toPixel(unit=val_u, val=val_h, dpi=val_d, scale=val_s)
     
     svalue(f1g2_height_lbl) <- paste(" ", pixels,"pixels")
+    
+  })
+  
+  addHandlerKeystroke(f1g2_res_edt, handler = function(h, ...) {
+    
+    # Get values.    
+    val_w <- as.numeric(svalue(f1g2_width_edt))
+    val_h <- as.numeric(svalue(f1g2_height_edt))
+    val_u <- svalue(f1g2_unit_drp)
+    val_d <- as.numeric(svalue(f1g2_res_edt))
+    val_s <- as.numeric(svalue(f1g2_scale_edt))
+    
+    # Convert to pixel.
+    pixels_w <- .toPixel(unit=val_u, val=val_w, dpi=val_d, scale=val_s)
+    pixels_h <- .toPixel(unit=val_u, val=val_h, dpi=val_d, scale=val_s)
+    
+    # Update label.
+    svalue(f1g2_width_lbl) <- paste(" ", pixels_w,"pixels")
+    svalue(f1g2_height_lbl) <- paste(" ", pixels_h,"pixels")
+    
+  })
+  
+  addHandlerChanged(f1g2_res_edt, handler = function(h, ...) {
+    
+    # Get values.    
+    val_w <- as.numeric(svalue(f1g2_width_edt))
+    val_h <- as.numeric(svalue(f1g2_height_edt))
+    val_u <- svalue(f1g2_unit_drp)
+    val_d <- as.numeric(svalue(f1g2_res_edt))
+    val_s <- as.numeric(svalue(f1g2_scale_edt))
+    
+    # Convert to pixel.
+    pixels_w <- .toPixel(unit=val_u, val=val_w, dpi=val_d, scale=val_s)
+    pixels_h <- .toPixel(unit=val_u, val=val_h, dpi=val_d, scale=val_s)
+    
+    # Update label.
+    svalue(f1g2_width_lbl) <- paste(" ", pixels_w,"pixels")
+    svalue(f1g2_height_lbl) <- paste(" ", pixels_h,"pixels")
+    
+  })
+
+  addHandlerKeystroke(f1g2_scale_edt, handler = function(h, ...) {
+    
+    # Get values.    
+    val_w <- as.numeric(svalue(f1g2_width_edt))
+    val_h <- as.numeric(svalue(f1g2_height_edt))
+    val_u <- svalue(f1g2_unit_drp)
+    val_d <- as.numeric(svalue(f1g2_res_edt))
+    val_s <- as.numeric(svalue(f1g2_scale_edt))
+    
+    # Convert to pixel.
+    pixels_w <- .toPixel(unit=val_u, val=val_w, dpi=val_d, scale=val_s)
+    pixels_h <- .toPixel(unit=val_u, val=val_h, dpi=val_d, scale=val_s)
+    
+    # Update label.
+    svalue(f1g2_width_lbl) <- paste(" ", pixels_w,"pixels")
+    svalue(f1g2_height_lbl) <- paste(" ", pixels_h,"pixels")
+    
+  })
+  
+  addHandlerChanged(f1g2_scale_edt, handler = function(h, ...) {
+    
+    # Get values.    
+    val_w <- as.numeric(svalue(f1g2_width_edt))
+    val_h <- as.numeric(svalue(f1g2_height_edt))
+    val_u <- svalue(f1g2_unit_drp)
+    val_d <- as.numeric(svalue(f1g2_res_edt))
+    val_s <- as.numeric(svalue(f1g2_scale_edt))
+    
+    # Convert to pixel.
+    pixels_w <- .toPixel(unit=val_u, val=val_w, dpi=val_d, scale=val_s)
+    pixels_h <- .toPixel(unit=val_u, val=val_h, dpi=val_d, scale=val_s)
+    
+    # Update label.
+    svalue(f1g2_width_lbl) <- paste(" ", pixels_w,"pixels")
+    svalue(f1g2_height_lbl) <- paste(" ", pixels_h,"pixels")
     
   })
   
@@ -448,13 +546,13 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   
   # INTERNAL FUNCTIONS ########################################################
   
-  .toPixel <- function(unit, val, dpi=72){
+  .toPixel <- function(unit, val, dpi=72, scale=1){
     
     # Convert to pixel.
     if(unit == "cm"){
-      pixels <- val / (2.54 / dpi)
+      pixels <- (val / (2.54 / dpi)) * scale
     } else if(unit == "in"){
-      pixels <- val * dpi
+      pixels <- val * dpi * scale
     } else {
       pixels <- NA
     }
@@ -474,8 +572,8 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
     svalue(f1g2_width_edt) <- val_size[1]
     svalue(f1g2_height_edt) <- val_size[2]
     
-    svalue(f1g2_width_lbl) <- paste(" ", val_px[1],"pixels")
-    svalue(f1g2_height_lbl) <- paste(" ", val_px[2],"pixels")
+#     svalue(f1g2_width_lbl) <- paste(" ", val_px[1],"pixels")
+#     svalue(f1g2_height_lbl) <- paste(" ", val_px[2],"pixels")
     
   }
   
@@ -609,5 +707,6 @@ ggsave_gui <- function(ggplot=NULL, name="", parent=NULL, env=parent.frame(),
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

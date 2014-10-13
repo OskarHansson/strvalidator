@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 24.07.2014: Fixed 'NA' bug when recycling names.
 # 26.07.2013: Added 'any' to class if-case.
 # 11.07.2013: Fixed scope bug.
@@ -31,7 +31,7 @@
 #' @param ext string specifying file extension.
 #' Default is 'auto' for automatic .txt or .png based on object class.
 #' If .RData all objects will be exported as .RData files.
-#' @param delim string specifying the delimeter used as separator.
+#' @param delim string specifying the delimiter used as separator.
 #' @param width integer specifying the width of the image.
 #' @param height integer specifying the height of the image.
 #' @param res integer specifying the resolution of the image.

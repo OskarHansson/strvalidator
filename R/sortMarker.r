@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 02.12.2013: Fixed not sorting 'Dye' levels, and add missing dye levels.
 # 27.11.2013: Fixed check of kit now case insensitive.
 # 10.11.2013: Extended error handling and 'debug' flag.
@@ -27,6 +27,8 @@
 #' @param addMissingLevels logical, TRUE missing markers are added, 
 #' FALSE missing markers are not added.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @export
 #' 
 #' @return data.frame with factor levels sorted according to 'kit'.
 #' 

@@ -4,7 +4,8 @@
 # TODO: Regression Analysis and construction of Hb bins...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 03.10.2014: Added 'word' parameter (word boundary), and progress.
 # 07.05.2014: New column 'TPH' for the total locus peak height.
 # 23.02.2014: Removed 'perSample' parameter. Use 'tableBalance' for summary statistics.
 # 08.01.2014: Filter data and only consider peaks matching reference.
@@ -47,6 +48,7 @@
 #'  FALSE locus balance is calculated globally across all dyes.
 #' @param hb numerical, definition of heterozygous balance. hb=1; HMW/LMW, hb=2; Max1(Ph)/Max2(Ph).
 #' @param ignoreCase logical indicating if sample matching should ignore case.
+#' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Delta', 'Hb', 'Lb', 'MPH', 'TPH'.
@@ -60,7 +62,7 @@
 #' calculateBalance(data=set2, ref=ref2)
 
 calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
-                             hb=1, ignoreCase=TRUE, debug=FALSE){
+                             hb=1, ignoreCase=TRUE, word=FALSE, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -77,6 +79,8 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
     print(hb)
     print("ignoreCase")
     print(ignoreCase)
+    print("word")
+    print(word)
   }
   
   # Check data ----------------------------------------------------------------
@@ -171,33 +175,44 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
   # Remove all NAs
   res <- res[-1,]
   
-  # Get the sample names.
-  sampleNames <- unique(ref$Sample.Name)
+  # Get the reference sample names.
+  refNames <- unique(ref$Sample.Name)
+  sampleNames <- unique(data$Sample.Name)
+  
+  # Create match vector.
+  if(word){
+    # Add word anchor.
+    grepNames <- paste("\\b", refNames, "\\b", sep="")
+  } else {
+    # Use reference sample names.
+    grepNames <- refNames
+  }
 
   # Analyse -------------------------------------------------------------------
   
   # Loop through all samples.
-  for (r in seq(along = sampleNames)) {
+  for (r in seq(along = refNames)) {
 
-    # get current sample name.
-    subsetBy <- sampleNames[r]
+    # Progress.
+    message(paste("Calculate balance for samples matching reference ", refNames[r],
+                  " (", r, " of ", length(refNames),").", sep=""))
     
     # Subset sample data.
-    cSampleRows <- grepl(subsetBy, data$Sample.Name, ignore.case=ignoreCase)
+    cSampleRows <- grepl(grepNames[r], data$Sample.Name, ignore.case=ignoreCase)
     cSubsetData <- data[cSampleRows,]
     
     # Subset reference data.
-    cReferenceRows <- grepl(subsetBy, ref$Sample.Name, ignore.case=ignoreCase)
+    cReferenceRows <- grepl(grepNames[r], ref$Sample.Name, ignore.case=ignoreCase)
     cSubsetRef <- ref[cReferenceRows,]
       
     # Get data for current subset.
-    cRef <- cSubsetRef[cSubsetRef$Sample.Name == subsetBy, ]
+    cRef <- cSubsetRef[cSubsetRef$Sample.Name == refNames[r], ]
     markerNames <- unique(cSubsetRef$Marker)
     cSampleNames <- unique(cSubsetData$Sample.Name)
 
     # Loop through all samples in subset.
     for(s in seq(along=cSampleNames)){
-
+      
       # Initialise variables.
       markerPeakHeightSum <- vector()
       markerDye <- vector()
@@ -232,7 +247,7 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
         if(expPeaks != 1 && expPeaks != 2){
         
           msg <- paste("Expected peaks is not 1 or 2 in reference",
-                        subsetBy,
+                        refNames[r],
                         "marker",
                         markerNames[m],
                         ". \nThis case is not handled and will result in 'NA'.",

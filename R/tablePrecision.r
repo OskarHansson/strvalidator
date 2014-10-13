@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 06.02.2014: Fixed bug when only one column in 'key'.
 # 06.02.2014: Changed name calculatePrecision -> tablePrecision
 # 15.12.2013: Fixed multiple targets.
@@ -24,6 +24,8 @@
 #' @param key vector containing column names to create keys from.
 #' @param target vector containing column <base> names to calculate precision for.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @export
 #' 
 #' @return data.frame with results.
 #' 

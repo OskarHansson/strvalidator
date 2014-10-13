@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 30.09.2014: Check if package is loaded to avoid error in path.package.
 # 01.10.2013: First version.
 
 #' @title Get allele frequency database
@@ -15,17 +16,19 @@
 #' The function provides access to allele frequency databases stored in
 #' the file database.txt in the package directory.
 #' It returns the specified allele frequency database.
-#' If no matching database or database index is found NA is returned.
-#' If NULL a vector of available databases is returned.
 #' 
 #' @param dbNameOrIndex string or integer specifying the database.
+#' If NULL a vector of available databases is returned.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with allele frequency database information.
+#' If no matching database or database index is found NA is returned.
+#' If the database was not found NULL is returned.
 #' 
 #' @keywords internal
 #' 
-#' @export 
+#' @export
+#'  
 #' @examples
 #' # Show available allele frequency databases.
 #' getDb()
@@ -41,15 +44,21 @@ getDb <- function(dbNameOrIndex=NULL, debug=FALSE) {
   # LOAD DATABASE INFO  #######################################################
 
   # Get package path.
-  packagePath <- path.package("strvalidator", quiet = FALSE)
+  if(require(strvalidator)){
+    packagePath <- path.package("strvalidator", quiet = FALSE)
+  } else {
+    warning("Package path for strvalidator not found!")
+    return(NULL)
+  }
   subFolder <- "extdata"
   fileName <- "database.txt"
-  
+
+  # Create complete file path.
   filePath <- paste(packagePath, subFolder, fileName, sep=.separator)
   
   .db <- read.delim(file=filePath, header = TRUE, sep = "\t", quote = "\"",
                          dec = ".", fill = TRUE, stringsAsFactors=FALSE)
-    
+  
   # Available databases. Must match else if construct.
   databases<-unique(.db$Database)
   

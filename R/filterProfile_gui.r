@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 12.01.2014: Replaced 'subset' with native code.
@@ -33,12 +34,15 @@
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
+#' 
+#' @export
 #' 
 #' @return TRUE
 #' 
 #' @seealso \code{\link{filterProfile}}, \code{\link{checkSubset}}
 
-filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
   .gData <- NULL
   .gDataName <- NULL
@@ -51,11 +55,19 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   w <- gwindow(title="Filter profile", visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
-
+  
   gv <- ggroup(horizontal=FALSE,
                spacing=8,
                use.scrollwindow=FALSE,
@@ -332,7 +344,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
       
       # Close GUI.
       dispose(w)
-    
+      
     } else {
       
       message <- "A dataset and a reference dataset have to be selected."
@@ -466,5 +478,6 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

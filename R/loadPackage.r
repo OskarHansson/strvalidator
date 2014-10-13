@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 28.10.2013: First version.
 
 #' @title Load packages
@@ -22,8 +22,6 @@
 #' @param silent logical if TRUE messages are printed.
 #' 
 #' @keywords internal
-#' 
-#' @export false
 
 loadPackage <- function(packages, halt=TRUE, silent=FALSE){
   

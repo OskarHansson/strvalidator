@@ -3,7 +3,7 @@
 # TODO: Add support for several files in one go.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 22.09.2013: Fixed bug when reading LifeTech bins with comment.
 # 22.09.2013: Added 'debug' parameter.
 # 22.06.2013: First version.
@@ -14,8 +14,12 @@
 #' \code{readBinsFile} reads GeneMapper 'Bins' files.
 #'
 #' @details Reads useful information from 'Bins' files and save it as a data.frame.
+#' 
 #' @param binFiles string, complete path to Bins file.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @keywords internal
+#' 
 #' @return data.frame containing the columns 'Panel', 'Marker', 'Allele', 'Size',
 #' 'Size.Min', 'Size.Max', 'Virtual'.
 #' 

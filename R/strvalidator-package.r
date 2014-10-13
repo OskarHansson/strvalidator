@@ -1,25 +1,3 @@
-###############################################################################
-# Internal validation of forensic STR kits made easy with strValidator.
-#
-# STR validator is a package intended for validation of
-# forensic short tandem repeat (STR)  DNA typing kit.
-# This graphical user interface make it very easy to
-# analyse data from internal validations.
-# The code has been extensively tested in order to assure correct results.
-# However, some bugs might still persist, so check the result carefully.
-# 
-# Created by:
-# Oskar Hansson, Department of Forensic Biology (NIPH, Norway)
-# 
-# General information and tutorials:
-# "https://sites.google.com/site/forensicapps/strvalidator
-# 
-# Please report bugs to:
-# https://github.com/OskarHansson/strvalidator/issues
-# 
-# The source is hosted at GitHub:
-# https://github.com/OskarHansson/strvalidator
-#
 #' @title Simplifies internal validation of forensic STR typing kits
 #' @docType package
 #' @name strValidator-package

@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 22.01.2014: Fixed bug. AddMissingLoci=TRUE now overrides keepNA=FALSE.
 # 10.12.2013: Fixed bug returning all NAs when addMissingLoci=TRUE.
 # 08.12.2013: Does not discard columns anymore.
@@ -40,6 +40,10 @@
 #' Overrides keepNA=FALSE.   
 #' @param ignoreCase logical TRUE ignore case.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @importFrom plyr rbind.fill
+#' 
+#' @export
 #' 
 #' @return data.frame with extracted result.
 #' 

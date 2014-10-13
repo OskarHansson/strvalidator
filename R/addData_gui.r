@@ -3,7 +3,8 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
+# 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 31.07.2013: Added parameter 'ignoreCase'.
@@ -24,6 +25,7 @@
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
+#' @param parent widget to get focus when finished.
 #' 
 #' @return TRUE
 #' 
@@ -31,7 +33,7 @@
 #' 
 #' @seealso  \code{\link{addData}}
 
-addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
+addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
   # Global variables.
   .gDataDest <- NULL
@@ -48,9 +50,17 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   # Main window.  
   w <- gwindow(title="Add data", visible=FALSE)
   
-  # Handler for saving GUI state.
+  # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {
+    
+    # Save GUI state.
     .saveSettings()
+    
+    # Focus on parent window.
+    if(!is.null(parent)){
+      focus(parent)
+    }
+    
   })
   
   gv <- ggroup(horizontal=FALSE,
@@ -371,5 +381,6 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE){
   
   # Show GUI.
   visible(w) <- TRUE
+  focus(w)
   
 }

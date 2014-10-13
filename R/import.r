@@ -6,7 +6,7 @@
 # TODO: Expand to handle other separators (e.g. comma).
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 20.01.2014: Added parameter 'colClasses = "character"' to 'read.table'.
 # 15.01.2014: Added message to show progress.
 # 13.01.2014: Added parameter 'na.strings = c("NA","")' to 'read.table'.
@@ -41,6 +41,10 @@
 #' will be imported without showing the select folder dialogue. 
 #' @param extension string providing the file extension.
 #' @param debug logical indicating printing debug information.
+#' 
+#' @importFrom plyr rbind.fill
+#' 
+#' @export
 #' 
 #' @return data.frame with imported result.
 

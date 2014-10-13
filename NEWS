@@ -1,3 +1,39 @@
+Version 1.3.1
+------------------------------------------------------------------------------
+* Now handles window focus correctly.
+* Explicit export and import of functions and packages in NAMESPACE.
+* Minor bug fixes and improvements with the most significant listed below:
+  calculateBalance_gui
+  - Added 'word' option (word boundary) for subsetting of samples.
+  calculateHeight / calculateHeight_gui
+  - New parameter 'exclude' for allele designations to exclude from dataset.
+  - Now also calculate the total peak height.
+  calculateMixture
+  - Check for uniqueness between reference datasets.
+  - Fixed bug in drop-out of minor in if: AA:AB | (A-B)/(A+B). 
+  calculateMixture_gui
+  - Fixed bug in 'Check subsetting' showing extra combinations in many cases.
+  getDb
+  - Fixed error when package is not loaded.
+  getKit
+  - Fixed error if kit=NULL and what!=NA.
+  - what="Offset" and what="Repeat" now returns identical data frames.
+  ggsave_gui
+  - Fixed wrong size to pixel conversion.
+  plotPrecision_gui
+  - Filter rows with Allele=NA (Fixes issue #6).
+  strvalidator
+  - 'View' button in 'Workspace' tab can now be used on plot objects.
+  - Fixed error message when no projects in projects folder.
+* Renamed or replaced functions:
+  - calculateH -> calculateHeight
+  - calculateH_gui -> calculateHeight_gui
+  - test-calculateH -> test-calculateHeight
+* Updated tests:
+  test-calculateHeight
+    - Tests for parameter 'exclude'.
+    - Tests for TPH - total peak height.
+
 Version 1.3.0
 ------------------------------------------------------------------------------
 * This version includes a new project manager tab and improved workspace functions.

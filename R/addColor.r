@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 11.05.2014: Added 'orange' and 'purple'.
 # 27.04.2014: Added option to ignore case in marker names.
 # 15.12.2013: Fixed check for 'have' and 'need' when converting vector.

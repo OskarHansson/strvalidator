@@ -1,10 +1,9 @@
 ################################################################################
 # TODO LIST
-# TODO: use string constants instead of hard coding.
-# TODO: Add missing markers to samples IMPORTANT!.
+# TODO: use string constants instead of hard coded.
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 22.01.2014: Fixed bug by adding check that 'Height' is numeric and convert.
 # 15.01.2014: Fixed NA's when 'mixtureLimits' and 'partialLimits' is NULL.
 # 15.01.2014: Added message to show progress.

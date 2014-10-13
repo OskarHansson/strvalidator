@@ -1,4 +1,4 @@
-context("calculateBalance")
+context("calculateMixture")
 
 ################################################################################
 # TODO LIST
@@ -8,7 +8,7 @@ context("calculateBalance")
 # CHANGE LOG
 # 31.07.2014: First version.
 # 
-# 
+# library(testthat)
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-calculateMixture.r")
 # test_dir("tests/testthat")

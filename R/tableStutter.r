@@ -3,7 +3,7 @@
 # TODO: ...
 
 ################################################################################
-# CHANGE LOG
+# CHANGE LOG (last 20 changes)
 # 01.11.2013: Fixed quant parameter always 0.95 (hard-coded instead of variable).
 # 06.08.2013: Fixed data.frame bug giving 'TRUE' instead of 'NA'.
 # 10.06.2013: Changed name parameter 'per' -> 'scope'
@@ -28,6 +28,8 @@
 #' @param data data frame from a stutter analysis by \code{calculateStutter}.
 #' @param scope string, summarize 'global', by 'locus', or by 'stutter'.
 #' @param quant numeric, quantile to calculate.
+#' 
+#' @export
 #' 
 #' @return data.frame with summarized result.
 #' 
