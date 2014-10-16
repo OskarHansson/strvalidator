@@ -41,7 +41,7 @@
 #' @param ignoreCase logical TRUE ignore case.
 #' @param debug logical indicating printing debug information.
 #' 
-# @importFrom plyr rbind.fill
+#' @importFrom plyr rbind.fill
 #' 
 #' @export
 #' 

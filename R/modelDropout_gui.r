@@ -713,7 +713,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     hosOk <- FALSE
     if(require("ResourceSelection")){
       #p-value <0.05 rejects the model.
-      hos <- ResourceSelection::hoslem.test(dropoutModel$y, fitted(dropoutModel)) 
+      hos <- hoslem.test(dropoutModel$y, fitted(dropoutModel)) 
       hosOk <- TRUE
     }
         

@@ -29,7 +29,7 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
-# @importFrom plyr count
+#' @importFrom plyr count
 #' 
 #' @export
 #' 

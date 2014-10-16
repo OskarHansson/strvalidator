@@ -41,10 +41,10 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
-# @importFrom gridExtra arrangeGrob
-# @importFrom gtable gtable_add_grob gtable gtable_filter
-# @importFrom plyr rbind.fill
-# @importFrom scales pretty_breaks
+#' @importFrom gridExtra arrangeGrob
+#' @importFrom gtable gtable_add_grob gtable gtable_filter
+#' @importFrom plyr rbind.fill
+#' @importFrom scales pretty_breaks
 #' 
 #' @export
 #' 
