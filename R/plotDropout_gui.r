@@ -47,7 +47,7 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
-#' @importFrom scales pretty_breaks
+# @importFrom scales pretty_breaks
 #' 
 #' @export
 #' 
