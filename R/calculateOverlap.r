@@ -30,7 +30,7 @@
 #' @param virtual logical default is TRUE meaning that overlap calculation includes virtual bins.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @importFrom plyr rbind.fill
+# @importFrom plyr rbind.fill
 #' 
 #' @export
 #' 

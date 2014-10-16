@@ -4,6 +4,13 @@
 # TODO: Save .importPath in ws for last used path (only in coming gWidgets2 ??)
 # TODO: Multiple selection not working.
 
+# IMPORTANT: To manually run R CMD check in RStudio all packages must be installed in
+# both the 32 and 64 bit version. Make sure it is possible to start manually
+# (GTK+ must be installed by clicking 'OK' on the message box).
+
+# IMPORTANT: Use build_win() to test on current R and R-dev.
+# IMPORTANT: Use devtools::release() to submitt to CRAN.
+
 # NOTE:
 # \u00B5 is the unicode for µ
 # Access a file: system.file('doc', 'example', package = 'mypackage')
@@ -74,11 +81,11 @@
 #' Validation Guidelines for Forensic DNA Analysis Methods (2012)
 #' \url{http://swgdam.org/SWGDAM_Validation_Guidelines_APPROVED_Dec_2012.pdf}
 #' 
-#' @import gWidgets
 #' @import ggplot2
+#' @import gWidgets
 #' @import gWidgetsRGtk2
 #' @import RGtk2
-#'
+#' 
 #' @export
 #' 
 #' @examples

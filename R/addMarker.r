@@ -27,7 +27,7 @@
 #' @param ignoreCase logical. TRUE ignores case in marker names.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @importFrom plyr rbind.fill
+# @importFrom plyr rbind.fill
 #' 
 #' @export
 #' 

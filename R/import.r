@@ -42,7 +42,7 @@
 #' @param extension string providing the file extension.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @importFrom plyr rbind.fill
+# @importFrom plyr rbind.fill
 #' 
 #' @export
 #' 

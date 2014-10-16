@@ -31,9 +31,9 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
-#' @importFrom gridExtra arrangeGrob
-#' @importFrom grid unit textGrob grid.newpage grid.draw
-#' @importFrom gtable gtable_add_grob gtable
+# @importFrom gridExtra arrangeGrob
+# @importFrom grid unit textGrob grid.newpage grid.draw
+# @importFrom gtable gtable_add_grob gtable
 #' 
 #' @export
 #' 
@@ -929,7 +929,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
         # Note: width(1.5 for y-title, and the rest for plots + margin)
         #       height(1.5 for plot title, equal for each plot, and 1.5 for x-title)
         g <- gtable::gtable(widths=grid::unit.c(grid::unit(1.5, "lines"),
-                                                grid::unit(1, "null"),unit(1.5, "lines")),
+                                                grid::unit(1, "null"),grid::unit(1.5, "lines")),
                             heights = grid::unit(c(1.5,rep(1,noDyes),1.5),
                                                  c("line", rep("null", noDyes), "line")))
         # Add titles.
