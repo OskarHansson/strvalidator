@@ -2,7 +2,7 @@ context("calculateBalance")
 
 ################################################################################
 # TODO LIST
-# TODO: Test ignoreCase.
+# TODO: Test ignore.case.
 # TODO: ...
 
 ################################################################################
@@ -11,7 +11,7 @@ context("calculateBalance")
 # 23.02.2014: Updated in response to removing the 'perSample' option. 
 # 20.01.2014: Added test (12) for multiple matches (two 'max' peaks)
 # 
-# 
+# require(testthat)
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-calculateBalance.r")
 # test_dir("tests/testthat")
@@ -26,8 +26,8 @@ test_that("calculateBalance", {
   
   # Analyse dataframe.
   res <- calculateBalance(data=set2, ref=ref2, lb="prop",
-                         perDye=TRUE, hb=2,
-                         ignoreCase=TRUE)
+                         per.dye=TRUE, hb=2,
+                         ignore.case=TRUE)
 
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -177,8 +177,8 @@ test_that("calculateBalance", {
   # TEST 02 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, lb="prop",
-                          perDye=FALSE, hb=2,
-                          ignoreCase=TRUE)
+                          per.dye=FALSE, hb=2,
+                          ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -328,8 +328,8 @@ test_that("calculateBalance", {
   # TEST 03 -------------------------------------------------------------------
 
   res <- calculateBalance(data=set2, ref=ref2, lb="norm",
-                          perDye=TRUE, hb=2,
-                          ignoreCase=TRUE)
+                          per.dye=TRUE, hb=2,
+                          ignore.case=TRUE)
 
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -480,8 +480,8 @@ test_that("calculateBalance", {
   # TEST 04 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, lb="norm",
-                          perDye=FALSE, hb=2,
-                          ignoreCase=TRUE)
+                          per.dye=FALSE, hb=2,
+                          ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -632,8 +632,8 @@ test_that("calculateBalance", {
 #   # TEST 05 -------------------------------------------------------------------
 #   
 #   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="prop",
-#                           perDye=TRUE, hb=2,
-#                           ignoreCase=TRUE)
+#                           per.dye=TRUE, hb=2,
+#                           ignore.case=TRUE)
 #   
 #   # Check return class.  
 #   expect_that(class(res), matches(class(data.frame())))
@@ -764,8 +764,8 @@ test_that("calculateBalance", {
 #   # TEST 06 -------------------------------------------------------------------
 #   
 #   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="prop",
-#                           perDye=FALSE, hb=2,
-#                           ignoreCase=TRUE)
+#                           per.dye=FALSE, hb=2,
+#                           ignore.case=TRUE)
 #   
 #   # Check return class.  
 #   expect_that(class(res), matches(class(data.frame())))
@@ -895,8 +895,8 @@ test_that("calculateBalance", {
 #   # TEST 07 -------------------------------------------------------------------
 #   
 #   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="norm",
-#                           perDye=TRUE, hb=2,
-#                           ignoreCase=TRUE)
+#                           per.dye=TRUE, hb=2,
+#                           ignore.case=TRUE)
 #   
 #   # Check return class.  
 #   expect_that(class(res), matches(class(data.frame())))
@@ -1027,8 +1027,8 @@ test_that("calculateBalance", {
 #   # TEST 08 -------------------------------------------------------------------
 #   
 #   res <- calculateBalance(data=set2, ref=ref2, perSample=FALSE, lb="norm",
-#                           perDye=FALSE, hb=2,
-#                           ignoreCase=TRUE)
+#                           per.dye=FALSE, hb=2,
+#                           ignore.case=TRUE)
 #   
 #   # Check return class.  
 #   expect_that(class(res), matches(class(data.frame())))
@@ -1164,8 +1164,8 @@ test_that("calculateBalance", {
   
   # Analyse dataframe.
   expect_that(calculateBalance(data=setMissing, ref=ref2, lb="prop",
-                               perDye=TRUE, hb=2,
-                               ignoreCase=TRUE),
+                               per.dye=TRUE, hb=2,
+                               ignore.case=TRUE),
               throws_error()) 
   
 
@@ -1177,16 +1177,16 @@ test_that("calculateBalance", {
   
   # Analyse dataframe.
   expect_that(calculateBalance(data=setMissing, ref=ref2, lb="prop",
-                               perDye=TRUE, hb=2,
-                               ignoreCase=TRUE),
+                               per.dye=TRUE, hb=2,
+                               ignore.case=TRUE),
               throws_error()) 
   
   # TEST 11 -------------------------------------------------------------------
   
   # Analyse dataframe.
   res <- calculateBalance(data=set2, ref=ref2, lb="prop",
-                          perDye=TRUE, hb=1,
-                          ignoreCase=TRUE)
+                          per.dye=TRUE, hb=1,
+                          ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1343,8 +1343,8 @@ test_that("calculateBalance", {
   
   # Analyse dataframe.
   res <- calculateBalance(data=setEqual, ref=ref2, lb="prop",
-                          perDye=TRUE, hb=2,
-                          ignoreCase=TRUE)
+                          per.dye=TRUE, hb=2,
+                          ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))

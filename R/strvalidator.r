@@ -1,15 +1,24 @@
 ################################################################################
 # TODO LIST
 # TODO: Object size not sorted correct (seem to sort as character)
+# TODO: Migrate to gWidgets2.
 # TODO: Save .importPath in ws for last used path (only in coming gWidgets2 ??)
 # TODO: Multiple selection not working.
+# TODO: USe viwweports instead of grid.arrange in complex plots?
+# http://www.imachordata.com/extra-extra-get-your-gridextra/#comment-146
 
 # IMPORTANT: To manually run R CMD check in RStudio all packages must be installed in
 # both the 32 and 64 bit version. Make sure it is possible to start manually
 # (GTK+ must be installed by clicking 'OK' on the message box).
 
+# See http://r-pkgs.had.co.nz/release.html for advice on release.
 # IMPORTANT: Use build_win() to test on current R and R-dev.
 # IMPORTANT: Use devtools::release() to submitt to CRAN.
+
+# Versioning convention (x.yy.z):
+# Increment x on major change.
+# Increment yy on new features.
+# Increment z on minor changes and bug fixes.
 
 # NOTE:
 # \u00B5 is the unicode for µ
@@ -20,6 +29,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.01.2015: Fixed error in 'Workspace' tab when no selection and 'Delete' is pressed.
+# 19.12.2014: Added 'EPG' button in 'Tools' tab.
+# 12.12.2014: Re-named 'Edit' tab to 'Tools' and change name on some buttons.
+# 04.12.2014: Added 'Pull-up' tab.
+# 28.10.2014: Fixed "Error in if (tabName == .file_tab_name) { : argument is of length zero"
 # 06.10.2014: Added ggplot support for 'View' button in 'Workspace' tab.
 # 28.08.2014: Fixed error message when no projects in projects folder.
 # 08.07.2014: Added 'Mixture' tab.
@@ -39,7 +53,6 @@
 # 07.12.2013: Added buttons for analysis of precision in new 'Precision' tab.
 # 27.11.2013: Added 'Add Marker' button in edit tab.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
-# 15.11.2013: Added 'view' button in workspace tab.
 
 #' @title Graphical user interface for the STR-validator package
 #'
@@ -85,6 +98,8 @@
 #' @import gWidgets
 #' @import gWidgetsRGtk2
 #' @import RGtk2
+#' @import data.table
+#' @import gridExtra
 #' 
 #' @export
 #' 
@@ -113,7 +128,7 @@ strvalidator <- function(debug=FALSE){
   .file_tab_name <- "Workspace"
   .project_tab_name <- "Projects"
   .drylab_tab_name <- "DryLab"
-  .edit_tab_name <- "Edit"
+  .edit_tab_name <- "Tools"
   .stutter_tab_name <- "Stutter"
   .balance_tab_name <- "Balance"
   .concordance_tab_name <- "Concordance"
@@ -121,6 +136,7 @@ strvalidator <- function(debug=FALSE){
   .mixture_tab_name <- "Mixture"
   .result_tab_name <- "Result"
   .precision_tab_name <- "Precision"
+  .pullup_tab_name <- "Pull-up"
   .object_classes_view <- c("data.frame", "ggplot")
   .object_classes_import <- c("data.frame", "ggplot")
   .project_description_variable <- ".strvalidator_project_description"
@@ -259,6 +275,13 @@ strvalidator <- function(debug=FALSE){
                           use.scrollwindow=FALSE,
                           container = nb,
                           label=.precision_tab_name,
+                          expand=TRUE)
+
+  pullup_tab <- ggroup(horizontal = FALSE,
+                          spacing=10,
+                          use.scrollwindow=FALSE,
+                          container = nb,
+                          label=.pullup_tab_name,
                           expand=TRUE)
   
   # START #####################################################################
@@ -768,7 +791,7 @@ strvalidator <- function(debug=FALSE){
       print(val_obj)
     }
     
-    if (!is.na(val_obj) && !is.null(val_obj) && length(val_obj) > 0){
+    if (!is.null(val_obj) && !is.na(val_obj) && length(val_obj) > 0){
       
       if("data.frame" %in% val_class){
         
@@ -802,16 +825,32 @@ strvalidator <- function(debug=FALSE){
       print("Removed:")
       print(val_obj)
     }
+
+    if(length(val_obj) == 1){
+      
+      if (!is.null(val_obj) && !is.na(val_obj)){
+        
+        # Get active reference data frame.
+        remove(list=val_obj, envir=.strvalidator_env)
+        
+        .refreshLoaded()
+        
+        
+      }
+      
+    } else if(length(val_obj) == 0) {
+      gmessage(message="No object selected!",
+               title="Error",
+               icon = "error",
+               parent = w)
+      
+    } else {
+      gmessage(message="Currently you can only remove one object at a time!",
+               title="Error",
+               icon = "error",
+               parent = w) 
+    }
     
-    if (!is.na(val_obj) && !is.null(val_obj)){
-      
-      # Get active reference data frame.
-      remove(list=val_obj, envir=.strvalidator_env)
-      
-      .refreshLoaded()
-      
-      
-    } 
   } )
   
   
@@ -1230,9 +1269,9 @@ strvalidator <- function(debug=FALSE){
     
   } )
   
-  # ADD DYE -------------------------------------------------------------------
+  # DYE -----------------------------------------------------------------------
   
-  edit_grid[7,1] <- edit_addDye_btn <- gbutton(text="Add Dye",
+  edit_grid[7,1] <- edit_addDye_btn <- gbutton(text="Dye",
                                                border=TRUE,
                                                container = edit_grid) 
   
@@ -1249,7 +1288,7 @@ strvalidator <- function(debug=FALSE){
   
   # ADD MARKER ----------------------------------------------------------------
   
-  edit_grid[8,1] <- edit_addMarker_btn <- gbutton(text="Add Marker",
+  edit_grid[8,1] <- edit_addMarker_btn <- gbutton(text="Marker",
                                                   border=TRUE,
                                                   container = edit_grid) 
   
@@ -1266,7 +1305,7 @@ strvalidator <- function(debug=FALSE){
   
   # ADD SIZE ------------------------------------------------------------------
   
-  edit_grid[9,1] <- edit_addSize_btn <- gbutton(text="Add Size",
+  edit_grid[9,1] <- edit_addSize_btn <- gbutton(text="Size",
                                                 border=TRUE,
                                                 container = edit_grid) 
   
@@ -1283,7 +1322,7 @@ strvalidator <- function(debug=FALSE){
   
   # ADD DATA -------------------------------------------------------------------
   
-  edit_grid[10,1] <- edit_addData_btn <- gbutton(text="Add Data",
+  edit_grid[10,1] <- edit_addData_btn <- gbutton(text="Data",
                                                  border=TRUE,
                                                  container = edit_grid) 
   
@@ -1351,11 +1390,11 @@ strvalidator <- function(debug=FALSE){
   
   # CALCULATE H ---------------------------------------------------------------
   
-  edit_grid[14,1] <- edit_h_btn <- gbutton(text="Calculate H",
+  edit_grid[14,1] <- edit_h_btn <- gbutton(text="Height",
                                            border=TRUE,
                                            container = edit_grid) 
   
-  edit_grid[14,2] <- glabel(text="Calculate the average peak height per sample.",
+  edit_grid[14,2] <- glabel(text="Calculate peak height metrics.",
                             container=edit_grid,
                             anchor=c(-1 ,0))
   
@@ -1363,6 +1402,23 @@ strvalidator <- function(debug=FALSE){
     
     # Open GUI.
     calculateHeight_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+
+  # GENERATE EPG --------------------------------------------------------------
+  
+  edit_grid[15,1] <- edit_epg_btn <- gbutton(text="EPG",
+                                           border=TRUE,
+                                           container = edit_grid) 
+  
+  edit_grid[15,2] <- glabel(text="Generate EPG like plot.",
+                            container=edit_grid,
+                            anchor=c(-1 ,0))
+  
+  addHandlerChanged(edit_epg_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    generateEPG_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1700,7 +1756,7 @@ strvalidator <- function(debug=FALSE){
   
   # MIXTURE  ##################################################################
   
-  glabel("", container=drop_tab) # Adds some space.
+  glabel("", container=mixture_tab) # Adds some space.
   
   mix_grid <- glayout(container = mixture_tab)
   
@@ -1850,24 +1906,48 @@ strvalidator <- function(debug=FALSE){
     
   } )
   
+
+  # PEAK HEIGHT ===============================================================
   
-  # PEAKS =====================================================================
-  
-  result_f3 <- gframe(text = "Distributions",
+  result_f3 <- gframe(text = "Peak height metrics",
                       horizontal=FALSE, container = result_tab) 
   
   result_g3 <- glayout(container = result_f3)
   
   # PLOT PEAKS ----------------------------------------------------------------
   
-  result_g3[1,1] <- result_g3_plot_btn <- gbutton(text="Plot",
+  result_g3[1,1] <- result_g3_calc_btn <- gbutton(text="Calculate",
                                                   border=TRUE,
                                                   container = result_g3) 
   
-  result_g3[1,2] <- glabel(text="Plot distributions for analysed data",
+  result_g3[1,2] <- glabel(text="Calculate average and total peak height",
                            container=result_g3)
   
-  addHandlerChanged(result_g3_plot_btn, handler = function(h, ...) {
+  addHandlerChanged(result_g3_calc_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateHeight_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+  
+  
+  # DISTRIBUTIONS =============================================================
+  
+  result_f4 <- gframe(text = "Distributions",
+                      horizontal=FALSE, container = result_tab) 
+  
+  result_g4 <- glayout(container = result_f4)
+  
+  # PLOT PEAKS ----------------------------------------------------------------
+  
+  result_g4[1,1] <- result_g4_plot_btn <- gbutton(text="Plot",
+                                                  border=TRUE,
+                                                  container = result_g4) 
+  
+  result_g4[1,2] <- glabel(text="Plot distributions for analysed data",
+                           container=result_g4)
+  
+  addHandlerChanged(result_g4_plot_btn, handler = function(h, ...) {
     
     # Open GUI.
     plotDistribution_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
@@ -1931,6 +2011,61 @@ strvalidator <- function(debug=FALSE){
     
   } )
   
+  # PULLUP  ###################################################################
+  
+  glabel("", container=pullup_tab) # Adds some space.
+  
+  pull_grid <- glayout(container = pullup_tab)
+  
+  # VIEW/EDIT -----------------------------------------------------------------
+  
+  pull_grid[1,1] <- pull_view_btn <- gbutton(text="Edit",
+                                             border=TRUE,
+                                             container = pull_grid) 
+  
+  pull_grid[1,2] <- glabel(text="Edit or view a dataset.",
+                           container=pull_grid,
+                           anchor=c(-1 ,0))
+  
+  addHandlerChanged(pull_view_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    
+  } )
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  pull_grid[2,1] <- pull_calculate_btn <- gbutton(text="Calculate",
+                                                  border=TRUE,
+                                                  container = pull_grid) 
+  
+  pull_grid[2,2] <- glabel(text="Calculate spectral pull-up (aka. bleed-through).",
+                           container=pull_grid,
+                           anchor=c(-1 ,0))
+  
+  addHandlerChanged(pull_calculate_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculatePullup_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+  
+  # PLOT PULLUP ---------------------------------------------------------------
+  
+  pull_grid[3,1] <- pull_plot_btn <- gbutton(text="Plot",
+                                                       border=TRUE,
+                                                       container = pull_grid) 
+  
+  pull_grid[3,2] <- glabel(text="Create plots for analysed data",
+                                container=pull_grid)
+  
+  addHandlerChanged(pull_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotPullup_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
   
   # MAIN EVENT HANDLERS #########################################################
   addHandlerChanged(nb, handler = function (h, ...) {
@@ -1945,18 +2080,23 @@ strvalidator <- function(debug=FALSE){
     tab <- if(is.null(h$pageno)) svalue(h$obj) else h$pageno
     tabName <- names(nb)[tab]
     
-    if(tabName == .file_tab_name){
+    # Check if a tab name exist and then perform tasks.
+    if(length(tabName) != 0){
+
+      if(tabName == .file_tab_name){
+        
+        .refreshLoaded()
+        .refreshWs()
+        
+      }
       
-      .refreshLoaded()
-      .refreshWs()
+      if(tabName == .project_tab_name){
+        
+        .updateProjectList()
+        
+      }
       
-    }
-    
-    if(tabName == .project_tab_name){
-      
-      .updateProjectList()
-      
-    }
+    } # End check.
     
   })
   
@@ -1970,13 +2110,18 @@ strvalidator <- function(debug=FALSE){
     # Refresh depending on active tab.
     tab <- svalue(nb)
     tabName <- names(nb)[tab]
+
+    # Check if a tab name exist and then perform tasks.
+    if(length(tabName) != 0){
+      
+      if(tabName == .file_tab_name){
+        
+        .refreshLoaded()
+        .refreshWs()
+        
+      }
     
-    if(tabName == .file_tab_name){
-      
-      .refreshLoaded()
-      .refreshWs()
-      
-    }
+    } # End check.
     
   })
   

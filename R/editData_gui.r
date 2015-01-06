@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.01.2015: Copy attribute list to new object upon 'Save As'.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -202,6 +203,9 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE,
     datanew <- data_tbl[]
     
     if (!is.na(val_name) && !is.null(val_name)){
+
+      # Copy and add attributes.
+      attributes(datanew) <- attributes(.gData)
       
       # Change button.
       svalue(save_btn) <- "Saving..."

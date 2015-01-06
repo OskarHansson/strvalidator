@@ -308,7 +308,7 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       
       repeat{
       
-        fail <- export(object=val_object, name=val_name, useObjectName=val_use_obj,
+        fail <- export(object=val_object, name=val_name, use.object.name=val_use_obj,
                         env=env, path=val_path, 
                         ext=val_ext, delim=val_delimiter, 
                         width=val_w, height=val_h, res=val_r,

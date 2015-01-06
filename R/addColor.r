@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.12.2014: Fixed error NA Dye for e.g. Yfiler Plus (added 'toupper' in 'match' calls).
 # 11.05.2014: Added 'orange' and 'purple'.
 # 27.04.2014: Added option to ignore case in marker names.
 # 15.12.2013: Fixed check for 'have' and 'need' when converting vector.
@@ -45,8 +46,8 @@
 #' @export
 #' 
 #' @examples
-#' # Get marker and colors for ESX17.
-#' df <- getKit("ESX17", what="Color")
+#' # Get marker and colors for SGM Plus.
+#' df <- getKit("SGMPlus", what="Color")
 #' # Add dye color.
 #' dfDye <- addColor(data=df, need="Dye")
 #' # Add all color alternatives.
@@ -121,10 +122,10 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
       if(toupper(have) == "COLOR"){
         
         if(toupper(need) == "DYE"){
-          data <- schemeDye[match(data, schemeColor)]
+          data <- schemeDye[match(toupper(data), toupper(schemeColor))]
         }
         if(toupper(need) == "R.COLOR"){
-          data <- schemeRColor[match(data, schemeColor)]
+          data <- schemeRColor[match(toupper(data), toupper(schemeColor))]
         }
         
       }
@@ -132,10 +133,10 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
       if(toupper(have) == "DYE"){
         
         if(toupper(need) == "COLOR"){
-          data <- schemeColor[match(data, schemeDye)]
+          data <- schemeColor[match(toupper(data), toupper(schemeDye))]
         }
         if(toupper(need) == "R.COLOR"){
-          data <- schemeRColor[match(data, schemeDye)]
+          data <- schemeRColor[match(toupper(data), toupper(schemeDye))]
         }
         
       }
@@ -143,11 +144,11 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
       if(toupper(have) == "R.COLOR"){
         
         if(toupper(need) == "COLOR"){
-          data <- schemeColor[match(data, schemeRColor)]
+          data <- schemeColor[match(toupper(data), toupper(schemeRColor))]
         }
         
         if(toupper(need) == "DYE"){
-          data <- schemeDye[match(data, schemeRColor)]
+          data <- schemeDye[match(toupper(data), toupper(schemeRColor))]
         }
         
       }
@@ -169,7 +170,8 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
         # Get markers and their color.
         kitInfo <- getKit(kit, what="Color")
         marker <- kitInfo$Marker
-        mColor <- kitInfo$Color
+        # NB! Color case is not consistent between kits, so use lower case.
+        mColor <- tolower(kitInfo$Color)
         
         if(debug){
           print("marker")
@@ -243,7 +245,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
             if("DYE" %in% toupper(names(data))){
       
               # Convert dye to color.
-              data$Color <- schemeColor[match(data$Dye, schemeDye)]
+              data$Color <- schemeColor[match(toupper(data$Dye), toupper(schemeDye))]
               
             } else {
               warning("Can't find column 'Dye'!\n'Color' was not added!")
@@ -255,7 +257,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
             if("R.COLOR" %in% toupper(names(data))){
               
               # Convert dye to color.
-              data$Color <- schemeColor[match(data$R.Color, schemeRColor)]
+              data$Color <- schemeColor[match(toupper(data$R.Color), toupper(schemeRColor))]
               
             } else {
               warning("Can't find column 'R.Color'!\n'Color' was not added!")
@@ -282,7 +284,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
             if("COLOR" %in% toupper(names(data))){
               
               # Convert color to dye.
-              data$Dye <- schemeDye[match(data$Color, schemeColor)]
+              data$Dye <- schemeDye[match(toupper(data$Color), toupper(schemeColor))]
               
             } else {
               warning("Can't find column 'Color'!\n'Dye' was not added!")
@@ -294,7 +296,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
             if("R.COLOR" %in% toupper(names(data))){
               
               # Convert R color to dye.
-              data$Dye <- schemeDye[match(data$R.Color, schemeRColor)]
+              data$Dye <- schemeDye[match(toupper(data$R.Color), toupper(schemeRColor))]
               
             } else {
               warning("Can't find column 'R.Color'!\n'Dye' was not added!")
@@ -321,7 +323,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
             if("COLOR" %in% toupper(names(data))){
               
               # Convert color to R color.
-              data$R.Color <- schemeRColor[match(data$Color, schemeColor)]
+              data$R.Color <- schemeRColor[match(toupper(data$Color), toupper(schemeColor))]
               
             } else {
               warning("Can't find column 'Color'!\n'R.Color' was not added!")
@@ -333,7 +335,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
             if("DYE" %in% toupper(names(data))){
               
               # Convert dye to R color.
-              data$R.Color <- schemeRColor[match(data$Dye, schemeDye)]
+              data$R.Color <- schemeRColor[match(toupper(data$Dye), toupper(schemeDye))]
               
             } else {
               warning("Can't find column 'Dye'! \n'R.Color' was not added!")

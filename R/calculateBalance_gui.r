@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.12.2014: Added kit dropdown and kit attribute to result.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 03.10.2014: Added 'word' parameter (word boundary).
 # 07.08.2014: Added check and error message for 'NA' in 'Dye'.
@@ -23,7 +24,6 @@
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 29.05.2013: Added subset check.
-# 24.05.2013: Improved error message for missing columns.
 
 #' @title Calculate Balance
 #'
@@ -143,7 +143,14 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       .gData <<- get(val_obj, envir=env)
       svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
                                         "samples.")
+      
+      # Suggest a name for the result.
       svalue(f4_save_edt) <- paste(val_obj, "_balance", sep="")
+      
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(f4_kit_drp, index=TRUE) <- kitIndex
       
     } else {
       
@@ -301,6 +308,12 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   glabel(text="Name for result:", container=f4)
   
   f4_save_edt <- gedit(text="", container=f4)
+  
+  glabel(text=" Kit attribute:", container=f4)
+  
+  f4_kit_drp <- gdroplist(items=getKit(), selected = 1,
+                       editable = FALSE, container = f4) 
+  
 
   # BUTTON ####################################################################
 
@@ -323,6 +336,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     val_data <- .gData
     val_ref <- .gRef
     val_name <- svalue(f4_save_edt)
+    val_kit <- svalue(f4_kit_drp)
     
     if(debug){
       print("Read Values:")
@@ -381,11 +395,14 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         datanew <- calculateBalance(data=val_data,
                                     ref=val_ref,
                                     lb=val_lb,
-                                    perDye=val_perDye,
+                                    per.dye=val_perDye,
                                     hb=val_method,
-                                    ignoreCase=val_ignore,
+                                    ignore.case=val_ignore,
                                     word=val_word,
                                     debug=debug)
+        
+        # Add attribute for detected kit.
+        attr(datanew, which="kit") <- val_kit
         
         # Save data.
         saveObject(name=val_name, object=datanew, parent=w, env=env)

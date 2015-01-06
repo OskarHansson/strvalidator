@@ -4,13 +4,14 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 02.12.2013: Fixed not sorting 'Dye' levels, and add missing dye levels.
 # 27.11.2013: Fixed check of kit now case insensitive.
 # 10.11.2013: Extended error handling and 'debug' flag.
 # 10.11.2013: Changed name to 'sortMarker' for consistency.
 # 18.09.2013: Updated to support new 'getKit' structure.
 # <18.09.2013: Roxygenized.
-# <18.09.2013: New parameter 'addMissingLevels'
+# <18.09.2013: New parameter 'add.missing.levels'
 # <18.09.2013: First working version.
 
 #' @title Sort markers
@@ -24,7 +25,7 @@
 #' 
 #' @param data data.frame containing a column 'Marker' and optionally 'Dye'.
 #' @param kit string or integer indicating kit.
-#' @param addMissingLevels logical, TRUE missing markers are added, 
+#' @param add.missing.levels logical, TRUE missing markers are added, 
 #' FALSE missing markers are not added.
 #' @param debug logical indicating printing debug information.
 #' 
@@ -33,7 +34,7 @@
 #' @return data.frame with factor levels sorted according to 'kit'.
 #' 
 
-sortMarker <- function(data, kit, addMissingLevels = FALSE, debug=FALSE){
+sortMarker <- function(data, kit, add.missing.levels = FALSE, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -90,7 +91,7 @@ sortMarker <- function(data, kit, addMissingLevels = FALSE, debug=FALSE){
 	if(all(currentMarkerLevels %in% newMarkerLevels)){
 
 		# Add any missing factor levels.
-		if(addMissingLevels){
+		if(add.missing.levels){
 
 			for(m in seq(along=newMarkerLevels)){
 
@@ -126,7 +127,7 @@ sortMarker <- function(data, kit, addMissingLevels = FALSE, debug=FALSE){
     if(all(currentDyeLevels %in% newDyeLevels)){
       
       # Add any missing factor levels.
-      if(addMissingLevels){
+      if(add.missing.levels){
         
         for(d in seq(along=newDyeLevels)){
           

@@ -4,16 +4,17 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
-# 22.01.2014: Fixed bug. AddMissingLoci=TRUE now overrides keepNA=FALSE.
-# 10.12.2013: Fixed bug returning all NAs when addMissingLoci=TRUE.
+# 15.12.2014: Changed parameter names to format: lower.case
+# 22.01.2014: Fixed bug. add.missing.loci=TRUE now overrides keep.na=FALSE.
+# 10.12.2013: Fixed bug returning all NAs when add.missing.loci=TRUE.
 # 08.12.2013: Does not discard columns anymore.
 # 08.12.2013: Possible to use a 'ref' without 'Sample.Name' i.e. one profile
 #             for all samples in 'data'.
 # 06.06.2013: Fixed bug in checking for 'fat' data.
-# 03.06.2013: Fixed bug discarding NA loci when addMissingLoci=TRUE.
+# 03.06.2013: Fixed bug discarding NA loci when add.missing.loci=TRUE.
 # 28.04.2013: Fixed "NA" bug (NA worked but not "NA").
-# 15.04.2013: Option 'ignoreCase'.
-# 12.04.2013: Options 'keepNA' and 'addMissingLoci' implemented as 'slow' method. 
+# 15.04.2013: Option 'ignore.case'.
+# 12.04.2013: Options 'keep.na' and 'add.missing.loci' implemented as 'slow' method. 
 # 11.04.2013: Fixed bug when more than one reference sample.
 # 11.04.2013: Added debug, datachecks and remove NA alleles.
 # <11.04.2013: Roxygenized.
@@ -26,7 +27,7 @@
 #' known profiles from typing data containing 'noise' such as stutters.
 #' If 'ref' does not contain a 'Sample.Name' column it will be used
 #' as reference for all samples in 'data'.
-#' NB! addMissingLoci overrides keepNA.
+#' NB! add.missing.loci overrides keep.na.
 #'
 #' @details
 #' Returns data where allele names match 'ref' allele names.
@@ -34,11 +35,11 @@
 #' 
 #' @param data data frame with genotype data in 'slim' format.
 #' @param ref data frame with reference profile in 'slim' format.
-#' @param keepNA logical. FALSE discards NA alleles.
+#' @param keep.na logical. FALSE discards NA alleles.
 #'  TRUE keep loci/sample even if no matching allele.
-#' @param addMissingLoci logical. TRUE add loci present in ref but not in data.
-#' Overrides keepNA=FALSE.   
-#' @param ignoreCase logical TRUE ignore case.
+#' @param add.missing.loci logical. TRUE add loci present in ref but not in data.
+#' Overrides keep.na=FALSE.   
+#' @param ignore.case logical TRUE ignore case.
 #' @param debug logical indicating printing debug information.
 #' 
 # @importFrom plyr rbind.fill
@@ -48,8 +49,8 @@
 #' @return data.frame with extracted result.
 #' 
 
-filterProfile <- function(data, ref, addMissingLoci=FALSE,
-                          keepNA=FALSE, ignoreCase=TRUE, debug=FALSE){
+filterProfile <- function(data, ref, add.missing.loci=FALSE,
+                          keep.na=FALSE, ignore.case=TRUE, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -57,12 +58,12 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
     print(str(data))
     print("ref:")
     print(str(ref))
-    print("addMissingLoci:")
-    print(addMissingLoci)
-    print("keepNA:")
-    print(keepNA)
-    print("ignoreCase:")
-    print(ignoreCase)
+    print("add.missing.loci:")
+    print(add.missing.loci)
+    print("keep.na:")
+    print(keep.na)
+    print("ignore.case:")
+    print(ignore.case)
   }
 
   # CHECK DATA ----------------------------------------------------------------
@@ -119,14 +120,14 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
     data$Allele <- as.character(data$Allele)
   }
 
-  if(addMissingLoci & !keepNA){
-    warning("addMissingLoci overrides 'keepNA'. Setting keepNA=TRUE")
-    keepNA=TRUE
+  if(add.missing.loci & !keep.na){
+    warning("add.missing.loci overrides 'keep.na'. Setting keep.na=TRUE")
+    keep.na=TRUE
   }
   
   # SELECT METHOD -------------------------------------------------------------
   
-  if(!addMissingLoci & !keepNA){
+  if(!add.missing.loci & !keep.na){
   
     # 'FAST' METHOD -----------------------------------------------------------
     # NB! Discards all NA alleles/loci/samples.
@@ -180,7 +181,7 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
       }
       
       # Select current subset.
-      if(ignoreCase){
+      if(ignore.case){
         selectedSamples <- grepl(toupper(refSampleNames[s]),
                                  toupper(data$Sample.Name))
       } else {
@@ -257,7 +258,7 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
       }
       
       # Get current data subset.
-      if(ignoreCase){
+      if(ignore.case){
         selectedSamples <- grepl(toupper(refSampleNames[r]),
                                  toupper(data$Sample.Name))
       } else {
@@ -287,7 +288,7 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
           tmpDf <- currentData[selection, ]
 
           # dataAlleles is of length 0 if no matching marker.
-          if(nrow(tmpDf) == 0 & addMissingLoci){
+          if(nrow(tmpDf) == 0 & add.missing.loci){
             
             # Add missing marker, allele will become NA in rbind.fill.
             tmpDf <- data.frame(Sample.Name=dataSampleNames[s],
@@ -305,7 +306,7 @@ filterProfile <- function(data, ref, addMissingLoci=FALSE,
             tmpDf <- currentData[selection, ]
             
             # matching is of length 0 if no matching allele.
-            if(nrow(tmpDf) == 0 & keepNA){
+            if(nrow(tmpDf) == 0 & keep.na){
               
               # Add missing marker, allele will become NA in rbind.fill.
               tmpDf <- data.frame(Sample.Name=dataSampleNames[s],

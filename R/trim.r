@@ -4,9 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 28.04.2014: More robust and handles '+' and '-' in sample names.
 # 14.01.2014: Support dataframes without a 'Sample.Name' column.
-# 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
+# 27.10.2013: Fixed bug when 'samples'=NULL and 'invert.s'=TRUE.
 # 27.04.2013: Fixed error when result is only 1 column.
 # <27.04.2013: Roxygenized.
 # <27.04.2013: new name 'trimData' -> 'trim'
@@ -26,14 +27,14 @@
 #' @param columns string giving column names separated by pipe.
 #' @param word logical indicating if a word boundary should be added to 
 #'  \code{samples} and \code{columns}.
-#' @param ignoreCase logical, TRUE ignore case in sample names.
-#' @param invertS logical, FALSE samples given will be removed from 'data'
+#' @param ignore.case logical, TRUE ignore case in sample names.
+#' @param invert.s logical, FALSE samples given will be removed from 'data'
 #' while TRUE will remove samples NOT given.
-#' @param invertC logical, FALSE columns given will be removed from 'data'
+#' @param invert.c logical, FALSE columns given will be removed from 'data'
 #' while TRUE will remove columns NOT given.
-#' @param rmNaCol logical, TRUE columns with only NA are removed from 'data'
+#' @param rm.na.col logical, TRUE columns with only NA are removed from 'data'
 #' while FALSE will preserve the columns.
-#' @param rmEmptyCol logical, TRUE columns with no values are removed from 'data'
+#' @param rm.empty.col logical, TRUE columns with no values are removed from 'data'
 #' while FALSE will preserve the columns.
 #' @param missing value to replace missing values with.
 #' @param debug logical indicating printing debug information.
@@ -45,8 +46,8 @@
 
 
 trim <- function(data, samples=NULL, columns=NULL, 
-	word=FALSE, ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
-	rmNaCol=TRUE, rmEmptyCol=TRUE, missing=NA, debug=FALSE){
+	word=FALSE, ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
+	rm.na.col=TRUE, rm.empty.col=TRUE, missing=NA, debug=FALSE){
 
   # Variables.
   colNames <- columns
@@ -61,22 +62,22 @@ trim <- function(data, samples=NULL, columns=NULL,
     print(columns)
     print("word:")
     print(word)
-    print("ignoreCase:")
-    print(ignoreCase)
-    print("invertS:")
-    print(invertS)
-    print("invertC:")
-    print(invertC)
-    print("rmNACol:")
-    print(rmNaCol)
-    print("rmEmptyCol:")
-    print(rmEmptyCol)
+    print("ignore.case:")
+    print(ignore.case)
+    print("invert.s:")
+    print(invert.s)
+    print("invert.c:")
+    print(invert.c)
+    print("rm.na.col:")
+    print(rm.na.col)
+    print("rm.empty.col:")
+    print(rm.empty.col)
     print("missing:")
     print(missing)
   }
 
   # Ignore case. NB! Must be before add word boundary.
-  if(ignoreCase){
+  if(ignore.case){
 
     # Convert to upper case.
     samples <- toupper(samples)
@@ -91,7 +92,7 @@ trim <- function(data, samples=NULL, columns=NULL,
     }
     
     if(debug){
-      print("After ignoreCase.")
+      print("After ignore.case.")
       print("samples:")
       print(samples)
       print("columns:")
@@ -138,7 +139,7 @@ trim <- function(data, samples=NULL, columns=NULL,
   if("Sample.Name" %in% names(data)){
     
     # Grab rows.
-    if(ignoreCase){
+    if(ignore.case){
       sampleNames <- toupper(as.character(data$Sample.Name))
     } else {
       sampleNames <- as.character(data$Sample.Name)
@@ -162,7 +163,7 @@ trim <- function(data, samples=NULL, columns=NULL,
       rows <- grepl(samples, sampleNames, fixed=FALSE)
       
       # Invert selection of samples.
-      if(invertS){
+      if(invert.s){
         rows <- !rows
       }
       
@@ -181,7 +182,7 @@ trim <- function(data, samples=NULL, columns=NULL,
   
   # Grab columns --------------------------------------------------------------
   
-  if(ignoreCase){
+  if(ignore.case){
     columnNames <- toupper(names(data))
   } else {
     columnNames <- names(data)
@@ -206,7 +207,7 @@ trim <- function(data, samples=NULL, columns=NULL,
 		columns <- grepl(columns, columnNames, fixed=FALSE)
     
 		# Invert selection of columns.
-		if(invertC){
+		if(invert.c){
 		  columns <- !columns
 		}
 		
@@ -224,13 +225,13 @@ trim <- function(data, samples=NULL, columns=NULL,
 		data[data==""] <- missing
 	}
 
-  if(rmEmptyCol){
+  if(rm.empty.col){
     if(!is.null(ncol(data))){
 		  data <- data[ , colSums(data=="") != nrow(data) | colSums(is.na(data))>0]
     }
 	}
 
-	if(rmNaCol){
+	if(rm.na.col){
 	  if(!is.null(ncol(data))){
 	    data <- data[,colSums(is.na(data))<nrow(data)]
 	  }

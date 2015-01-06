@@ -25,7 +25,7 @@ test_that("calculateDropout", {
   # Get sample.
   testSample <- set4[set4$Sample.Name == "18-A2.14",]
 
-  res <- calculateDropout(data=testSample, ref=ref4, ignoreCase=TRUE)
+  res <- calculateDropout(data=testSample, ref=ref4, ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -70,7 +70,7 @@ test_that("calculateDropout", {
   # Get sample.
   testSample <- set4[set4$Sample.Name == "37-F2.8",]
   
-  res <- calculateDropout(data=testSample, ref=ref4, ignoreCase=TRUE)
+  res <- calculateDropout(data=testSample, ref=ref4, ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -116,7 +116,7 @@ test_that("calculateDropout", {
   # Get sample.
   testSample <- set4[set4$Sample.Name == "09-BC8",]
   
-  res <- calculateDropout(data=testSample, ref=ref4, ignoreCase=TRUE)
+  res <- calculateDropout(data=testSample, ref=ref4, ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -163,7 +163,7 @@ test_that("calculateDropout", {
   # Get sample.
   testSample <- set4[set4$Sample.Name == "09-BC8",]
   
-  res <- calculateDropout(data=testSample, ref=ref4, ignoreCase=FALSE)
+  res <- calculateDropout(data=testSample, ref=ref4, ignore.case=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -186,7 +186,7 @@ test_that("calculateDropout", {
   # Get samples.
   testSample <- set4[set4$Sample.Name == "09-BC8" | set4$Sample.Name == "10-bc9",]
   
-  res <- calculateDropout(data=testSample, ref=ref4, ignoreCase=TRUE)
+  res <- calculateDropout(data=testSample, ref=ref4, ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -233,7 +233,7 @@ test_that("calculateDropout", {
   # Get samples.
   testSample <- set4[set4$Sample.Name == "09-BC8" | set4$Sample.Name == "10-bc9",]
   
-  res <- calculateDropout(data=testSample, ref=ref4, ignoreCase=FALSE)
+  res <- calculateDropout(data=testSample, ref=ref4, ignore.case=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -281,7 +281,7 @@ test_that("calculateDropout", {
   # Remove all rows without an allele.
   testSample <- testSample[!is.na(testSample$Allele),]
   
-  res <- calculateDropout(data=testSample, ref=ref4, ignoreCase=TRUE)
+  res <- calculateDropout(data=testSample, ref=ref4, ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -326,7 +326,7 @@ test_that("calculateDropout", {
   # Get samples.
   testSample <- set4[set4$Sample.Name == "03-A2.1",]
   
-  res <- calculateDropout(data=testSample, ref=ref4, ignoreCase=TRUE)
+  res <- calculateDropout(data=testSample, ref=ref4, ignore.case=TRUE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))

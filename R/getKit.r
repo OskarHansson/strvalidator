@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
 # TODO: Return multiple kits by specifying a vector? Not priority since easy to loop.
+# TODO: Change parameter names to format: lower.case
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.12.2014: what='Gender' changed to 'Sex.Marker' now return vector.
 # 26.09.2014: Fixed error if kit=NULL and what!=NA.
 # 26.08.2014: what=Offset/Repeat, now returns identical data frames.
 # 03.08.2014: Added option to return kit index.
@@ -29,7 +31,7 @@
 #' marker names, allele names, allele sizes (bp), 
 #' minimum allele size, maximum allele size (bp), flag for virtual alleles,
 #' marker color, marker repeat unit size (bp), minimum marker size, 
-#' maximum marker, marker offset (bp), flag for gender marker (TRUE/FALSE).
+#' maximum marker, marker offset (bp), flag for sex markers (TRUE/FALSE).
 #' 
 #' If no matching kit or kit index is found NA is returned.
 #' If 'NULL' or '0' a vector of available kits is printed and NA returned.
@@ -129,7 +131,7 @@ getKit<-function(kit=NULL, what=NA, showMessages=FALSE, .kitInfo=NULL, debug=FAL
                         Marker.Min = currentKit$Marker.Min,
                         Marker.Max = currentKit$Marker.Max,
                         Offset = currentKit$Offset,
-                        Gender.Marker = currentKit$Gender.Marker,
+                        Sex.Marker = currentKit$Sex.Marker,
                         stringsAsFactors = FALSE)
       
       # Create useful factors.
@@ -152,7 +154,7 @@ getKit<-function(kit=NULL, what=NA, showMessages=FALSE, .kitInfo=NULL, debug=FAL
                    "Repeat",
                    "Range",
                    "Offset",
-                   "Gender", sep=", ")
+                   "Sex.Marker", sep=", ")
   
   # WHAT ----------------------------------------------------------------------
   
@@ -292,16 +294,12 @@ getKit<-function(kit=NULL, what=NA, showMessages=FALSE, .kitInfo=NULL, debug=FAL
       
       return(res)
       
-    } else if (toupper(what) == "GENDER"){
-      # Return gender marker as string.
+    } else if (toupper(what) == "SEX.MARKER"){
+      # Return sex markers as vector.
       
-      genderMarker <- as.character(unique(res$Marker[res$Gender.Marker == TRUE]))
+      sexMarkers <- as.character(unique(res$Marker[res$Sex.Marker == TRUE]))
       
-      if(length(genderMarker) > 1){
-        warning(paste("More than one gender marker returned for kit", kit))
-      }
-      
-      return(genderMarker)
+      return(sexMarkers)
       
     } else {
       

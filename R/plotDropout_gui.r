@@ -572,7 +572,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       # Sort by marker in kit
       .gData <- sortMarker(data=.gData,
                           kit=val_kit,
-                          addMissingLevels = TRUE)
+                          add.missing.levels = TRUE)
       
       
       if(debug){

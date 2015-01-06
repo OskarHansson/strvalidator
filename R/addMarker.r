@@ -4,9 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 15.01.2014: Added message to show progress.
 # 30.11.2013: Specified package for function in 'plyr' -> 'plyr::rbind.fill'
-# 27.11.2013: Fixed uppercase marker names when ignoreCase=TRUE.
+# 27.11.2013: Fixed uppercase marker names when ignore.case=TRUE.
 # 10.11.2013: First version.
 
 #' @title Add missing markers.
@@ -24,7 +25,7 @@
 #' 
 #' @param data data.frame or vector with sample names.
 #' @param marker vector with marker names.
-#' @param ignoreCase logical. TRUE ignores case in marker names.
+#' @param ignore.case logical. TRUE ignores case in marker names.
 #' @param debug logical indicating printing debug information.
 #' 
 # @importFrom plyr rbind.fill
@@ -34,7 +35,7 @@
 #' @return data.frame.
 #' 
 
-addMarker <- function(data, marker, ignoreCase=FALSE, debug=FALSE){
+addMarker <- function(data, marker, ignore.case=FALSE, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -43,8 +44,8 @@ addMarker <- function(data, marker, ignoreCase=FALSE, debug=FALSE){
     print(head(data))
     print("marker")
     print(marker)
-    print("ignoreCase")
-    print(ignoreCase)
+    print("ignore.case")
+    print(ignore.case)
   }
   
   # Initiate variables.
@@ -78,7 +79,7 @@ addMarker <- function(data, marker, ignoreCase=FALSE, debug=FALSE){
     data <- data.frame(Sample.Name=data)
   }
   
-  if(ignoreCase){
+  if(ignore.case){
     marker <- toupper(marker)
   }
   
@@ -103,7 +104,7 @@ addMarker <- function(data, marker, ignoreCase=FALSE, debug=FALSE){
     
     # Get current sample marker names.
     cMarker <- unique(cSample$Marker)
-    if(ignoreCase){
+    if(ignore.case){
       cMarker <- toupper(cMarker)
     }
 

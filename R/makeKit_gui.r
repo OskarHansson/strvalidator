@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.12.2014: Fixed "Error in read.table..." when 'Save' is pressed without data.
+# 14.12.2014: Fixed "Error in basename(x) : a character vector argument expected"
+# 14.12.2014: Changed single gender marker to general sex markers (multiple).
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.07.2014: Changed some gui text.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -42,7 +45,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   }
   
   # Global variables.
-  .noGenderMarkerString <- "<none>"
+  .noSexMarkerString <- "<none>"
   .f3g1 <- NULL
   .separator <- .Platform$file.sep # Platform dependent path separator.
   .packagePath <- path.package("strvalidator", quiet = FALSE)
@@ -238,7 +241,9 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                         filter = list("text files" = list(mime.types = c("text/plain")),
                                       "All files" = list(patterns = c("*"))),
                         multi=FALSE)
-    svalue(f2g1_bins_lbl) <- basename(.binsFiles)
+    if(!is.na(.binsFiles)){
+      svalue(f2g1_bins_lbl) <- basename(.binsFiles)
+    }
     
   } )  
   
@@ -256,7 +261,10 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                         filter = list("text files" = list(mime.types = c("text/plain")),
                                       "All files" = list(patterns = c("*"))),
                         multi=FALSE)
-    svalue(f2g1_panels_lbl) <- basename(.panelsFiles)
+    
+    if(!is.na(.panelsFiles)){
+      svalue(f2g1_panels_lbl) <- basename(.panelsFiles)
+    }
     
   } )  
   
@@ -309,7 +317,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   # Function for updating GUI with kits.  
   .update <- function(kitInfo, newKit){
     # kitInfo - data.frame with kit information.
-    # newKit - logical, if TRUE autodetect gender marker.
+    # newKit - logical, if TRUE autodetect sex marker.
     #                   if FALSE read from file.
     
     # Get panels.
@@ -330,61 +338,49 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     .f3g1[1,2] <<- glabel(text="Panel", container=.f3g1)
     .f3g1[1,3] <<- glabel(text="Short.Name", container=.f3g1)
     .f3g1[1,4] <<- glabel(text="Full.Name", container=.f3g1)
-    .f3g1[1,5] <<- glabel(text="Select gender marker", container=.f3g1)
+    .f3g1[1,5] <<- glabel(text="List sex markers (separate by comma)",
+                          container=.f3g1)
     
     # Loop over panels and add objects.
     for(p in seq(along=panel)){
-      .f3g1[p + 1, 1] <<- gcheckbox(text="", checked=FALSE, container=.f3g1)
-      .f3g1[p + 1, 2] <<- glabel(text=panel[p], container=.f3g1)
-      .f3g1[p + 1, 3] <<- gedit(text=shortName[p], width = 20, container=.f3g1)
-      .f3g1[p + 1, 4] <<- gedit(text=fullName[p], width = 40, container=.f3g1)
-
+      
       # Get all markers.
       markers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p]])
-      # Add option no gender marker to selection.
-      markers <- c(.noGenderMarkerString, markers)
       
-      # Gender marker.
-      bestGuess <- NA
+      # sex marker.
+      sexMarkers <- NULL
       if(newKit){
-        # Try to autodetect gender marker.
-        bestGuess <- grep("AM", markers, ignore.case=TRUE)
-        if(length(bestGuess) == 0){
-          bestGuess <- 1
-        } else if(length(bestGuess) > 1){
-          bestGuess <- bestGuess[1]
+        # Try to autodetect sex marker.
+        sexMarkers <- grep("AM|Y", markers, ignore.case=TRUE, value=TRUE)
+        if(length(sexMarkers) == 0){
+          sexMarkers <- .noSexMarkerString
         }
       } else {
-        # Get current gender marker.
-        currentGender <- unique(kitInfo$Marker[kitInfo$Panel == panel[p] & kitInfo$Gender.Marker])
-        if(length(currentGender) == 0){
-          # If no matching marker, set to no gender marker string.
-          currentGender <- .noGenderMarkerString
-        }
-        if(debug){
-          print("currentGender:")
-          print(currentGender)
-        }
-        bestGuess <- grep(currentGender, markers, ignore.case=TRUE)
-        if(length(bestGuess) > 1){
-          bestGuess <- bestGuess[1]
+        # Get current sex marker.
+        sexMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p] & kitInfo$Sex.Marker])
+        if(length(sexMarkers) == 0){
+          # If no matching marker, set to no sex marker string.
+          sexMarkers <- .noSexMarkerString
         }
       }
+      # Collapse to string.
+      sexMarkers <- paste(sexMarkers, collapse=",")
       
       if(debug){
         print("newKit:")
         print(newKit)
         print("markers:")
         print(markers)
-        print("bestGuess:")
-        print(bestGuess)
+        print("sexMarkers:")
+        print(sexMarkers)
       }
-      
-      .f3g1[p + 1, 5] <<- gdroplist(items=markers,
-                                selected = bestGuess,
-                                horizontal = TRUE,
-                                container=.f3g1)
-      
+
+      # Add widgets, and populate.
+      .f3g1[p + 1, 1] <<- gcheckbox(text="", checked=FALSE, container=.f3g1)
+      .f3g1[p + 1, 2] <<- glabel(text=panel[p], container=.f3g1)
+      .f3g1[p + 1, 3] <<- gedit(text=shortName[p], width = 20, container=.f3g1)
+      .f3g1[p + 1, 4] <<- gedit(text=fullName[p], width = 40, container=.f3g1)
+      .f3g1[p + 1, 5] <<- gedit(text=sexMarkers, width = 30, container=.f3g1)
       
     }
   
@@ -449,172 +445,187 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     val_name <- svalue(f4_name_edt)
     val_opt <- svalue(f4_opt, index=TRUE)
     
-    # Initiate vectors.
-    removeKit <- logical()
-    shortName <- character()
-    fullName <- character()
-    genderMarker <- 0
+    # Check if kit info exist.
+    if(!is.null(.newKitInfo)){
 
-    # Get panels.
-    panel <- unique(.newKitInfo$Panel)
-    
-    # Get data.
-    for(p in seq(along=panel)){
-      removeKit[p] <- svalue(.f3g1[1 + p, 1])
-      shortName[p] <- svalue(.f3g1[1 + p, 3])
-      fullName[p] <- svalue(.f3g1[1 + p, 4])
-      genderMarker[p] <- svalue(.f3g1[1 + p, 5], index=TRUE)  
-    }
+      # Initiate vectors.
+      removeKit <- logical()
+      shortName <- character()
+      fullName <- character()
+      sexMarkers <- 0
+      
+      # Get panels.
+      panel <- unique(.newKitInfo$Panel)
+      
+      # Get data.
+      for(p in seq(along=panel)){
+        removeKit[p] <- svalue(.f3g1[1 + p, 1])
+        shortName[p] <- svalue(.f3g1[1 + p, 3])
+        fullName[p] <- svalue(.f3g1[1 + p, 4])
         
-    if(debug){
-      print("Short.Name:")
-      print(shortName)
-      print("Full.Name:")
-      print(fullName)
-      print("Gender.Marker:")
-      print(genderMarker)
-    }
-
-    # Check that short name is provided for all kits not removed.
-    missing <- shortName[!removeKit] %in% ""
-    
-    # Check if short name is missing.
-    if(!any(missing)){
-  
-      if(val_opt == 1){ # Add new.
-        # Check if short name exist in kit file.
-        exist <- shortName[!removeKit] %in% getKit()
-      } else { # Overwrite or save as data frame.
-        # Check if short name exist in new kits.
-        exist <- duplicated(toupper(shortName[!removeKit]))
+        # Read sex marker value and replace any spaces.
+        sexTmp <- svalue(.f3g1[1 + p, 5])
+        sexTmp <- gsub(" ", "", sexTmp, fixed=TRUE)
+        sexMarkers[p] <- sexTmp
       }
       
-      # Check if short name exist.
-      if(!any(exist)){
-  
-        # Change button.
-        svalue(f4_save_btn) <- "Saving..."
-        enabled(f4_save_btn) <- FALSE
+      if(debug){
+        print("Short.Name:")
+        print(shortName)
+        print("Full.Name:")
+        print(fullName)
+        print("sexMarkers:")
+        print(sexMarkers)
+      }
+      
+      # Check that short name is provided for all kits not removed.
+      missing <- shortName[!removeKit] %in% ""
+      
+      # Check if short name is missing.
+      if(!any(missing)){
         
-        for(p in seq(along=panel)){
-          
-          if(debug){
-            print("Panel:")
-            print(panel[p])
-          }
-          
-          # Add data to kits.
-          if(is.null(.newKitInfo$Short.Name)){
-            .newKitInfo$Short.Name <<- NA
-          }
-          .newKitInfo$Short.Name[.newKitInfo$Panel == panel[p]] <<- shortName[p]
-          
-          if(is.null(.newKitInfo$Full.Name)){
-            .newKitInfo$Full.Name <<- NA
-          }
-          .newKitInfo$Full.Name[.newKitInfo$Panel == panel[p]] <<- fullName[p]
-  
-          if(is.null(.newKitInfo$Gender.Marker)){
-            .newKitInfo$Gender.Marker <<- NA
-          }
-          # Get all markers.
-          markers <- unique(.newKitInfo$Marker[.newKitInfo$Panel == panel[p]])
-          # Add option no gender marker to selection.
-          markers <- c(.noGenderMarkerString, markers)
-          
-          # Set gender marker flag.
-          .newKitInfo$Gender.Marker[.newKitInfo$Panel == panel[p] &
-            .newKitInfo$Marker == markers[genderMarker[p]]] <<- TRUE
-          .newKitInfo$Gender.Marker[.newKitInfo$Panel == panel[p] &
-            .newKitInfo$Marker != markers[genderMarker[p]]] <<- FALSE
-  
+        if(val_opt == 1){ # Add new.
+          # Check if short name exist in kit file.
+          exist <- shortName[!removeKit] %in% getKit()
+        } else { # Overwrite or save as data frame.
+          # Check if short name exist in new kits.
+          exist <- duplicated(toupper(shortName[!removeKit]))
         }
         
-        # Remove kits if any.
-        if(any(removeKit)){
+        # Check if short name exist.
+        if(!any(exist)){
           
-          if(debug){
-            print("panel:")
-            print(panel)
-            print("removeKit:")
-            print(removeKit)
+          # Change button.
+          svalue(f4_save_btn) <- "Saving..."
+          enabled(f4_save_btn) <- FALSE
+          
+          for(p in seq(along=panel)){
+            
+            if(debug){
+              print("Panel:")
+              print(panel[p])
+            }
+            
+            # Crete columns and add data to kits:
+            # Set short name.
+            if(is.null(.newKitInfo$Short.Name)){
+              .newKitInfo$Short.Name <<- NA
+            }
+            .newKitInfo$Short.Name[.newKitInfo$Panel == panel[p]] <<- shortName[p]
+            
+            # Set full name.
+            if(is.null(.newKitInfo$Full.Name)){
+              .newKitInfo$Full.Name <<- NA
+            }
+            .newKitInfo$Full.Name[.newKitInfo$Panel == panel[p]] <<- fullName[p]
+            
+            # Set sex marker flag.
+            if(is.null(.newKitInfo$Sex.Marker)){
+              .newKitInfo$Sex.Marker <<- NA
+            }
+            currentSexMarkers <- unlist(strsplit(sexMarkers[p], split=",", fixed=TRUE))
+            selPanel <- .newKitInfo$Panel == panel[p]
+            selMarker <- .newKitInfo$Marker %in% currentSexMarkers
+            selection <- selPanel & selMarker
+            .newKitInfo$Sex.Marker[selPanel] <<- FALSE # Reset current panel.
+            .newKitInfo$Sex.Marker[selection] <<- TRUE # Flag sex markers.
+            # Check for misspelled markers.
+            ok <- currentSexMarkers %in% .newKitInfo$Marker[selPanel]
+            if(!all(ok)){
+              warning(paste("Given sex marker:",
+                            paste(currentSexMarkers[!ok], collapse=","),
+                            "not found in", panel[p]))
+            }
+            
           }
           
-          removePanel <- panel[removeKit]
-  
-          if(debug){
-            print("removePanel:")
-            print(removePanel)
-          }
+          # Remove kits if any.
+          if(any(removeKit)){
+            
+            if(debug){
+              print("panel:")
+              print(panel)
+              print("removeKit:")
+              print(removeKit)
+            }
+            
+            removePanel <- panel[removeKit]
+            
+            if(debug){
+              print("removePanel:")
+              print(removePanel)
+            }
+            
+            for(p in seq(along=removePanel)){
+              .newKitInfo <<- .newKitInfo[.newKitInfo$Panel != removePanel[p], ]
+            }
+            
+          }  
           
-          for(p in seq(along=removePanel)){
-            .newKitInfo <<- .newKitInfo[.newKitInfo$Panel != removePanel[p], ]
-          }
-          
-        }  
-  
-        if(debug){
-          print("newKitInfo:")
-          print(head(.newKitInfo))
-          print(tail(.newKitInfo))
-        }
-  
-        # If append.
-        if(val_opt == 1){
           if(debug){
-            print("Append:")
-            print(head(.kitInfo))
+            print("newKitInfo:")
             print(head(.newKitInfo))
+            print(tail(.newKitInfo))
           }
-          #.newKitInfo <<- rbind(.kitInfo, .newKitInfo)
-          write.table(x=.newKitInfo, file=.filePath,
-                      row.names = FALSE, 
-                      append = TRUE,
-                      col.names = FALSE,
-                      quote = FALSE, sep = "\t")
-        } else if(val_opt == 2){
+          
+          # If append.
+          if(val_opt == 1){
+            if(debug){
+              print("Append:")
+              print(head(.kitInfo))
+              print(head(.newKitInfo))
+            }
+            #.newKitInfo <<- rbind(.kitInfo, .newKitInfo)
+            write.table(x=.newKitInfo, file=.filePath,
+                        row.names = FALSE, 
+                        append = TRUE,
+                        col.names = FALSE,
+                        quote = FALSE, sep = "\t")
+          } else if(val_opt == 2){
+            if(debug){
+              print("Save as kit file")
+            }
+            write.table(x=.newKitInfo, file=.filePath,
+                        row.names = FALSE,
+                        append = FALSE,
+                        col.names = TRUE,
+                        quote = FALSE, sep = "\t")
+          } else if(val_opt == 3){
+            if(debug){
+              print("Save as data frame")
+            }
+            assign(val_name, .newKitInfo, envir=env)
+          }
+          
           if(debug){
-            print("Save as kit file")
+            print(paste("EXIT:", match.call()[[1]]))
           }
-          write.table(x=.newKitInfo, file=.filePath,
-                      row.names = FALSE,
-                      append = FALSE,
-                      col.names = TRUE,
-                      quote = FALSE, sep = "\t")
-        } else if(val_opt == 3){
-          if(debug){
-            print("Save as data frame")
-          }
-          assign(val_name, .newKitInfo, envir=env)
+          
+          # Close GUI.
+          dispose(w)
+          
+        } else {
+          
+          message <- paste("A kit with short name",
+                           shortName[exist][1], 
+                           "already exist!\n\n",
+                           "Short name must be unique!")
+          
+          gmessage(message, title="Duplicate short name",
+                   icon = "error",
+                   parent = w) 
+          
         }
-        
-        if(debug){
-          print(paste("EXIT:", match.call()[[1]]))
-        }
-        
-        # Close GUI.
-        dispose(w)
         
       } else {
         
-        message <- paste("A kit with short name",
-                         shortName[exist][1], 
-                         "already exist!\n\n",
-                         "Short name must be unique!")
+        message <- "A short name must be provided for all new kits"
         
-        gmessage(message, title="Duplicate short name",
+        gmessage(message, title="Missing short name",
                  icon = "error",
                  parent = w) 
         
       }
-      
-    } else {
-      
-      message <- "A short name must be provided for all new kits"
-      
-      gmessage(message, title="Missing short name",
-               icon = "error",
-               parent = w) 
       
     }
     

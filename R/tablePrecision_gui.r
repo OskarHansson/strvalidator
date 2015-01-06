@@ -481,8 +481,8 @@ tablePrecision_gui <- function(env=parent.frame(), savegui=NULL,
       # Filter dataset.
       if(val_filter != 3){
         val_data <- filterProfile(data=val_data, ref=val_ref,
-                                addMissingLoci=FALSE, keepNA=FALSE,
-                                ignoreCase=val_ignore, debug=debug)
+                                add.missing.loci=FALSE, keep.na=FALSE,
+                                ignore.case=val_ignore, debug=debug)
       }
       
       # Replace whitespace and split by comma.

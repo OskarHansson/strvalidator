@@ -7,16 +7,17 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 20.01.2014: Added parameter 'colClasses = "character"' to 'read.table'.
 # 15.01.2014: Added message to show progress.
 # 13.01.2014: Added parameter 'na.strings = c("NA","")' to 'read.table'.
 # 13.01.2014: Fixed bug when no matching files in folder.
-# 10.12.2013: Changed names on parameters 'resultFiles' -> 'fileName'
-#              and 'resultFolder' -> 'folderName'.
+# 10.12.2013: Changed names on parameters 'resultFiles' -> 'file.name'
+#              and 'resultFolder' -> 'folder.name'.
 # 12.11.2013: Changed 'rbind' to 'rbind.fill' from package 'plyr'.
 # 13.06.2013: Added parameter 'debug'. Fixed regexbug when importing from folder.
 # <13.06.2013: Renamed from importGM to import.
-# <13.06.2013: Added parameter 'fileName' and 'folderName' for direct import.
+# <13.06.2013: Added parameter 'file.name' and 'folder.name' for direct import.
 # <13.06.2013: Changed regex from (".",".",extension, sep="") to (".*","\\.",extension, sep="")
 # <13.06.2013: Roxygenized.
 # <13.06.2013: add column 'File' when importing from a folder.
@@ -35,9 +36,9 @@
 #' FALSE only selected file will be imported.
 #' @param suffix string, only files with specified suffix will be imported.
 #' @param prefix string, only files with specified prefix will be imported.
-#' @param fileName string if file name is provided file will be imported
+#' @param file.name string if file name is provided file will be imported
 #' without showing the file open dialogue. 
-#' @param folderName string if folder name is provided files in folder
+#' @param folder.name string if folder name is provided files in folder
 #' will be imported without showing the select folder dialogue. 
 #' @param extension string providing the file extension.
 #' @param debug logical indicating printing debug information.
@@ -51,7 +52,7 @@
 
 import <- function (folder = TRUE, extension="txt", 
                     suffix = NA, prefix = NA, 
-                    fileName=NA, folderName=NA,
+                    file.name=NA, folder.name=NA,
                     debug=FALSE){
   
   if(debug){
@@ -67,14 +68,14 @@ import <- function (folder = TRUE, extension="txt",
     print(suffix)
     print("prefix")
     print(prefix)
-    print("fileName")
-    print(fileName)
-    print("folderName")
-    print(folderName)
+    print("file.name")
+    print(file.name)
+    print("folder.name")
+    print(folder.name)
   }
   
   
-  manualPick <- is.na(fileName) && is.na(folderName)
+  manualPick <- is.na(file.name) && is.na(folder.name)
   
   if(debug){
     print("manualPick")
@@ -92,7 +93,7 @@ import <- function (folder = TRUE, extension="txt",
       resFolder <- choose.dir()
     } else {
       
-      resFolder <- folderName
+      resFolder <- folder.name
     }
     
     # Check if folder is specified.
@@ -123,7 +124,7 @@ import <- function (folder = TRUE, extension="txt",
       }  
       
       # Get list of result files.
-      fileName <- list.files(path = resFolder, pattern = fileFilter,
+      file.name <- list.files(path = resFolder, pattern = fileFilter,
                                 full.names = TRUE, recursive = FALSE,
                                 ignore.case = TRUE, include.dirs = FALSE)
     }
@@ -131,20 +132,20 @@ import <- function (folder = TRUE, extension="txt",
   } else if (manualPick) {
     
     # Ask user to select a file.
-    fileName <- file.choose()
+    file.name <- file.choose()
     
   }
   
   if(debug){
-    print("fileName")
-    print(fileName)
+    print("file.name")
+    print(file.name)
   }  
   
   # Check if files are specified.
-  if (any(length(fileName) > 0, !is.na(fileName))) {
+  if (any(length(file.name) > 0, !is.na(file.name))) {
     
     # Read first file to create data frame.		
-    res <- read.table(fileName[1], header = TRUE,
+    res <- read.table(file.name[1], header = TRUE,
                       sep = "\t", fill = TRUE,
                       na.strings = c("NA",""),
                       colClasses = "character",
@@ -158,32 +159,32 @@ import <- function (folder = TRUE, extension="txt",
     }
     
     # Add column and save file name.
-    res[colName] <- basename(fileName[1])
+    res[colName] <- basename(file.name[1])
 
     # Get number of files.
-    files <- length(fileName)
+    files <- length(file.name)
 
     # Show progress.
     message(paste("Importing (", 1, " of ", files,"): ",
-                  fileName[1], sep=""))
+                  file.name[1], sep=""))
     
     # Read additional files.
     if (files > 1) {
       for (f in 2:files) {
         
         # Read a file.	
-        tmp <- read.table(fileName[f], header = TRUE,
+        tmp <- read.table(file.name[f], header = TRUE,
                           sep = "\t", fill = TRUE,
                           na.strings = c("NA",""),
                           colClasses = "character",
                           stringsAsFactors=FALSE)
         
         # Add column and save file name.
-        tmp[colName] <- basename(fileName[f])
+        tmp[colName] <- basename(file.name[f])
         
         # Show progress.
         message(paste("Importing (", f, " of ", files,"): ",
-                      fileName[f], sep=""))
+                      file.name[f], sep=""))
         
         # Add to data frame.
         res <- plyr::rbind.fill(res, tmp)

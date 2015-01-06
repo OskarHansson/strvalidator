@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 22.09.2013: Fixed bug when reading LifeTech bins with comment.
 # 22.09.2013: Added 'debug' parameter.
 # 22.06.2013: First version.
@@ -15,7 +16,7 @@
 #'
 #' @details Reads useful information from 'Bins' files and save it as a data.frame.
 #' 
-#' @param binFiles string, complete path to Bins file.
+#' @param bin.files string, complete path to Bins file.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @keywords internal
@@ -24,7 +25,7 @@
 #' 'Size.Min', 'Size.Max', 'Virtual'.
 #' 
 
-readBinsFile <- function (binFiles, debug=FALSE){
+readBinsFile <- function (bin.files, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -36,10 +37,10 @@ readBinsFile <- function (binFiles, debug=FALSE){
   cDelimeter <- "\t"
   
   # Check if files are specified.
-  if (!is.na(binFiles)) {
+  if (!is.na(bin.files)) {
     
     # Open file for reading.  	
-    f1 = file(binFiles[1], open = "r")
+    f1 = file(bin.files[1], open = "r")
     
     # Read raw text.
     allTextRaw <- readLines(f1)

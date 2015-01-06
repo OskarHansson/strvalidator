@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 07.05.2014: Implemented new column 'TPH' for X-axis when plot Lb.
@@ -23,7 +24,6 @@
 # 30.11.2013: Specified package for functions in 'grid' -> 'grid::xxxxx'
 # 27.11.2013: Fixed 'facet_wrap' with strings. But still problem in 'complex'.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
-# 05.11.2013: Fixed not possible to limit both y/x axes.
 
 #' @title Plot Balance
 #'
@@ -35,7 +35,7 @@
 #' the average profile peak height 'H', or by the difference in repeat units
 #' (delta). Plot inter-locus balance versus the average locus peak height, or
 #' the average profile peak height 'H'. Automatic plot titles can be replaced by
-#' custom titles. The gender marker can be excluded. It is possible to plot
+#' custom titles. Sex markers can be excluded. It is possible to plot
 #' logarithmic ratios. A name for the result is automatiaclly suggested.
 #' The resulting plot can be saved as either a plot object or as an image.
 #' @param env environment in wich to search for data frames and save result.
@@ -218,7 +218,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                                          selected=1,
                                          container = f1g2)
 
-  f1_drop_chk <- gcheckbox(text="Drop gender marker",
+  f1_drop_chk <- gcheckbox(text="Drop sex markers",
                               checked=TRUE,
                               container=f1)
 
@@ -582,23 +582,28 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       # Sort by marker in kit
       .gData <- sortMarker(data=.gData,
                           kit=val_kit,
-                          addMissingLevels = TRUE)
+                          add.missing.levels = TRUE)
 
       # Drop Amelogenin.
       if(val_drop){
 
-        # Get gender marker.
-        genderMarker <- getKit(val_kit, what="Gender")
+        # Get sex marker.
+        sexMarkers <- getKit(val_kit, what="Sex.Marker")
         
-        # Check if genderMarker was found.
-        if(length(genderMarker) > 0){
+        # Check if sexMarkers was found.
+        if(length(sexMarkers) > 0){
 
-          # Drop gender marker.
-          .gData <- .gData[.gData$Marker != genderMarker, ]
+          # Drop sex markers.
+          n0 <- nrow(.gData)
+          for(m in seq(along=sexMarkers)){
+            .gData <- .gData[.gData$Marker != sexMarkers[m], ]
+          }
+          n1 <- nrow(.gData)
+          message(paste(n1, " rows after removing ", n0-n1, " sex marker rows.", sep=""))
           
           # Refactor and keep order of levels.
           .gData$Marker <- factor(.gData$Marker, 
-                                  levels=levels(.gData$Marker)[levels(.gData$Marker) != genderMarker])
+                                  levels=levels(.gData$Marker)[!levels(.gData$Marker) %in% sexMarkers])
           
         }
 
@@ -1023,8 +1028,8 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_plotBalance_gui_y_title", envir=env, inherits = FALSE)){
         svalue(y_title_edt) <- get(".strvalidator_plotBalance_gui_y_title", envir=env)
       }
-      if(exists(".strvalidator_plotBalance_gui_gender", envir=env, inherits = FALSE)){
-        svalue(f1_drop_chk) <- get(".strvalidator_plotBalance_gui_gender", envir=env)
+      if(exists(".strvalidator_plotBalance_gui_sex", envir=env, inherits = FALSE)){
+        svalue(f1_drop_chk) <- get(".strvalidator_plotBalance_gui_sex", envir=env)
       }
       if(exists(".strvalidator_plotBalance_gui_log", envir=env, inherits = FALSE)){
         svalue(f1_logHb_chk) <- get(".strvalidator_plotBalance_gui_log", envir=env)
@@ -1082,7 +1087,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     if(svalue(savegui_chk)){
       
       assign(x=".strvalidator_plotBalance_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".strvalidator_plotBalance_gui_gender", value=svalue(f1_drop_chk), envir=env)
+      assign(x=".strvalidator_plotBalance_gui_sex", value=svalue(f1_drop_chk), envir=env)
       assign(x=".strvalidator_plotBalance_gui_log", value=svalue(f1_logHb_chk), envir=env)
       assign(x=".strvalidator_plotBalance_gui_title", value=svalue(title_edt), envir=env)
       assign(x=".strvalidator_plotBalance_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
@@ -1119,8 +1124,8 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_plotBalance_gui_y_title", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotBalance_gui_y_title", envir = env)
       }
-      if(exists(".strvalidator_plotBalance_gui_gender", envir=env, inherits = FALSE)){
-        remove(".strvalidator_plotBalance_gui_gender", envir = env)
+      if(exists(".strvalidator_plotBalance_gui_sex", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotBalance_gui_sex", envir = env)
       }
       if(exists(".strvalidator_plotBalance_gui_log", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotBalance_gui_log", envir = env)

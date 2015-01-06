@@ -15,6 +15,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 30.11.2013: 'warning' changed to 'message' when data is converted.
 # 01.07.2013: Added "Sample.Name" in result.
 # 01.07.2013: Fixed "NAs introduced by coercion".
@@ -22,7 +23,7 @@
 # 25.06.2013: Fixed bug for 'interference = 2'.
 # 25.06.2013: Fixed bug excluding homozygotes when using 'double notation' (16/16).
 # 25.06.2013: Fixed bug excluding homozygotes when using 'single notation' (16).
-# 30.05.2013: New parameters 'replaceVal' and 'byVal' to fix 'false' stutters.
+# 30.05.2013: New parameters 'replace.val' and 'by.val' to fix 'false' stutters.
 # 30.05.2013: 'Type' rounded to 1 digit (avoid floating point 'bug' when ==)
 # 11.04.2013: Added some more data controls.
 
@@ -58,8 +59,8 @@
 #' @param forward integer for the maximal number of forward stutters
 #'  (max size difference 1 = n+1 repeats).
 #' @param interference integer specifying accepted level of allowed overlap.
-#' @param replaceVal numeric vector with 'false' stutters to replace.
-#' @param byVal numeric vector with correct stutters.
+#' @param replace.val numeric vector with 'false' stutters to replace.
+#' @param by.val numeric vector with correct stutters.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @export
@@ -69,7 +70,7 @@
 
 
 calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
-                             replaceVal=NULL, byVal=NULL, debug=FALSE){
+                             replace.val=NULL, by.val=NULL, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -630,9 +631,9 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
     print(unique(stutterRatio$Type))
   }
   
-  if(!is.null(replaceVal) & !is.null(byVal)){
-    for(i in seq(along=replaceVal)){
-      stutterRatio$Type[stutterRatio$Type == replaceVal[i]] <- byVal[i]
+  if(!is.null(replace.val) & !is.null(by.val)){
+    for(i in seq(along=replace.val)){
+      stutterRatio$Type[stutterRatio$Type == replace.val[i]] <- by.val[i]
     }
     if(debug){
       print(unique(stutterRatio$Type))

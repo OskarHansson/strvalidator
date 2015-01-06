@@ -23,8 +23,8 @@ test_that("tableBalance", {
   
   # Analyse dataframe.
   tmp <- calculateBalance(data=set2, ref=ref2, lb="prop",
-                          perDye=TRUE, hb=2,
-                          ignoreCase=TRUE)
+                          per.dye=TRUE, hb=2,
+                          ignore.case=TRUE)
   
   res <- tableBalance(data=tmp, scope="locus", quant=0.05)
   
@@ -166,8 +166,8 @@ test_that("tableBalance", {
   
   # Analyse dataframe.
   tmp <- calculateBalance(data=set2, ref=ref2, lb="prop",
-                          perDye=TRUE, hb=2,
-                          ignoreCase=TRUE)
+                          per.dye=TRUE, hb=2,
+                          ignore.case=TRUE)
   
   res <- tableBalance(data=tmp, scope="global", quant=0.10)
   

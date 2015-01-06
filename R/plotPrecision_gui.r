@@ -720,7 +720,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       # Sort by marker in kit
       val_data <- sortMarker(data=val_data,
                              kit=val_kit,
-                             addMissingLevels = TRUE)
+                             add.missing.levels = TRUE)
       
       
       if(debug){

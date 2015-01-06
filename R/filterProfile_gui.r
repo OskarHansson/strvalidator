@@ -330,9 +330,9 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
       datanew <- filterProfile(data=val_data,
                                ref=val_ref,
-                               addMissingLoci=val_add_missing_loci,
-                               keepNA=val_keep_na,
-                               ignoreCase=val_ignore_case)
+                               add.missing.loci=val_add_missing_loci,
+                               keep.na=val_keep_na,
+                               ignore.case=val_ignore_case)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

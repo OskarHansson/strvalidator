@@ -32,7 +32,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=1, forward=0, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
 
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -106,7 +106,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=1, forward=1, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -206,7 +206,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=1, forward=2, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -300,7 +300,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=1, forward=3, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -386,7 +386,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=2, forward=0, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -484,7 +484,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=2, forward=1, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -592,7 +592,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=2, forward=2, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -687,7 +687,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=2, forward=3, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -765,7 +765,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=3, forward=0, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -859,7 +859,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=3, forward=1, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -955,7 +955,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=3, forward=2, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1038,7 +1038,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=3, forward=3, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1105,7 +1105,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=0, forward=1, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1164,7 +1164,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=0, forward=2, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1237,7 +1237,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=0, forward=3, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1310,7 +1310,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=2, forward=1, interference=1,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1469,7 +1469,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=2, forward=1, interference=2,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1637,7 +1637,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=ref4,
                           back=2, forward=1, interference=0,
-                          replaceVal=c(-1.8, -0.8), byVal=c(-1.2, -0.2), debug=FALSE)
+                          replace.val=c(-1.8, -0.8), by.val=c(-1.2, -0.2), debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1749,7 +1749,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=setA1, ref=refSingle,
                           back=2, forward=1, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -1861,7 +1861,7 @@ test_that("calculateStutter", {
   # Analyse dataframe.
   res <- calculateStutter(data=set4Missing, ref=ref4,
                           back=2, forward=1, interference=0,
-                          replaceVal=NULL, byVal=NULL, debug=FALSE)
+                          replace.val=NULL, by.val=NULL, debug=FALSE)
   
   # write.table(x=res,"clipboard",sep="\t",row.names=FALSE,col.names=TRUE)
   

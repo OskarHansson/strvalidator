@@ -235,8 +235,8 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
-      datanew <- calculateCapillary(samplesTable=val_samples,
-                                    plotTable=val_plot,
+      datanew <- calculateCapillary(samples.table=val_samples,
+                                    plot.table=val_plot,
                                     sq=val_sq,
                                     run=val_run,
                                     debug=debug)

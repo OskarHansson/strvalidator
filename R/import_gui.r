@@ -279,8 +279,8 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
                         extension=extension_val,
                         suffix=suffix_val,
                         prefix=prefix_val,
-                        fileName=file_val,
-                        folderName=folder_val,
+                        file.name=file_val,
+                        folder.name=folder_val,
                         debug=debug)
       
       if(length(datanew) == 0){

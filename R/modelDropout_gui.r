@@ -5,6 +5,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.01.2015: Changed check of suggested package ResourceSelection in accordance
+#             with Writing R extensions v 3.2.1 section 1.1.3.1.
+# 14.12.2014: Added option to use average peak height 'H'.
+# 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 28.06.2014: Changed notation on plot to be more correct.
@@ -22,11 +26,6 @@
 # 01.11.2013: Added 'Save as image'.
 # 29.10.2013: Fixed limit y axis drop observations.
 # 24.10.2013: Implemented the 'Hybrid' method and log for testing purposes.
-# 21.10.2013: Fixed error when negative T and plot points 'Model'.
-# 19.10.2013: Changed logistic regression in accordance to ref. 2012.
-# 27.09.2013: Removed subset modelling because peaks get removed but dropout
-#             status is un-changed! A subset must be taken from 'raw' data
-#             and a new calculateDropout muste be performed before modelling.
 
 #' @title model and plot drop-out events
 #'
@@ -258,7 +257,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   # Other options.
   log_model <- gcheckbox(text="Log (Height)", checked=FALSE, container=f1)
   
-  f1_gender_chk <- gcheckbox(text="Exclude gender marker",
+  f1_sex_chk <- gcheckbox(text="Exclude sex markers",
                                checked = TRUE,
                                container = f1)
   
@@ -276,11 +275,21 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                           horizontal = FALSE,
                           container = f1)
 
+  f1_h_chk <- gcheckbox(text="Use average peak height 'H' instead of allele/locus peak hight",
+                                 checked = FALSE,
+                                 container = f1)
+  
   f1_printmodel_chk <- gcheckbox(text="Print model",
                                  checked = FALSE,
                                  container = f1)
   
   addHandlerChanged(f1_column_opt, handler = function(h, ...) {
+    
+    .checkColumns()
+    
+  } )
+  
+  addHandlerChanged(f1_h_chk, handler = function(h, ...) {
     
     .checkColumns()
     
@@ -545,7 +554,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     val_xtitle <- svalue(f1_x_title_edt)
     val_ytitle <- svalue(f1_y_title_edt)
     val_column <- svalue(f1_column_opt, index=TRUE)
-    val_gender <- svalue(f1_gender_chk)
+    val_sex <- svalue(f1_sex_chk)
     val_shape <- as.numeric(svalue(e2g1_shape_spb))
     val_alpha <- as.numeric(svalue(e2g1_alpha_spb))
     val_jitterh <- as.numeric(svalue(e2g1_jitterh_edt))
@@ -566,6 +575,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     val_prediction_print <- svalue(e1f2_print_interval_chk)
     val_interval_col <- svalue(e1f2_interval_drp)
     val_interval_alpha <- svalue(e1f2_interval_spb)
+    val_h <- svalue(f1_h_chk)
     
     # Calculate values.
     val_pi_alpha <- 1 - val_predint
@@ -579,8 +589,8 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       print(val_ytitle)
       print("val_column")
       print(val_column)
-      print("val_gender")
-      print(val_gender)
+      print("val_sex")
+      print(val_sex)
       print("val_shape")
       print(val_shape)
       print("val_alpha")
@@ -633,6 +643,11 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       
     }
     
+    if(val_h){
+      # Use average peak height.
+      obsData$Exp <- .gData$H
+    }
+    
     # Clean -------------------------------------------------------------------
 
     message("Model drop-out for dataset with:")
@@ -654,13 +669,15 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       message(paste(n1, " rows after removing ", n0-n1, " locus drop-out rows.", sep=""))
     }
 
-    # Remove gender marker.
-    if(val_gender){
+    # Remove sex markers.
+    if(val_sex){
       n0 <- nrow(obsData)
-      genderMarker <- getKit(kit=svalue(kit_drp), what="Gender")
-      obsData <- obsData[obsData$Marker != genderMarker, ]
+      sexMarkers <- getKit(kit=svalue(kit_drp), what="Sex.Marker")
+      for(m in seq(along=sexMarkers)){
+        obsData <- obsData[obsData$Marker != sexMarkers[m], ]
+      }
       n1 <- nrow(obsData)
-      message(paste(n1, " rows after removing ", n0-n1, " gender marker rows.", sep=""))
+      message(paste(n1, " rows after removing ", n0-n1, " sex marker rows.", sep=""))
     }
 
     # Remove NA Explanatory.
@@ -711,7 +728,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     
     # Calculate model score.
     hosOk <- FALSE
-    if(require("ResourceSelection")){
+    if(requireNamespace("ResourceSelection", quietly = TRUE)){
       #p-value <0.05 rejects the model.
       hos <- ResourceSelection::hoslem.test(dropoutModel$y, fitted(dropoutModel)) 
       hosOk <- TRUE
@@ -723,8 +740,13 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       xTitle <- val_xtitle
       yTitle <- val_ytitle
     } else {
-      mainTitle <- "Drop-out probability as a function of present-allele height"
-      xTitle <- "Peak height, (RFU)"
+      if(val_h){
+        mainTitle <- "Drop-out probability as a function of average peak height"
+        xTitle <- "Average peak height 'H', (RFU)"
+      } else {
+        mainTitle <- "Drop-out probability as a function of present-allele height"
+        xTitle <- "Peak height, (RFU)"
+      }
       yTitle <- "Drop-out probability, P(D)"
     }
     
@@ -1013,6 +1035,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   .checkColumns <- function(){
     
     val_col <- svalue(f1_column_opt, index=TRUE)
+    val_h <- svalue(f1_h_chk)
     requiredCol <- NULL
     missingCol <- NULL
     
@@ -1021,7 +1044,15 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       # Enable button.
       enabled(f7_plot_drop_btn) <- TRUE
       svalue(f7_plot_drop_btn) <- "Plot predicted drop-out probability"
-      
+
+      # Check available modelling columns.
+      if(val_h){
+        requiredCol <- c("H")
+        if(!all(requiredCol %in% colnames(.gData))){
+          missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
+        }
+      }
+        
       # Check available modelling columns and enable/select.
       if(val_col == 1){
         
@@ -1120,8 +1151,8 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       if(exists(".strvalidator_modelDropout_gui_y_title", envir=env, inherits = FALSE)){
         svalue(f1_y_title_edt) <- get(".strvalidator_modelDropout_gui_y_title", envir=env)
       }
-      if(exists(".strvalidator_modelDropout_gui_gender", envir=env, inherits = FALSE)){
-        svalue(f1_gender_chk) <- get(".strvalidator_modelDropout_gui_gender", envir=env)
+      if(exists(".strvalidator_modelDropout_gui_sex", envir=env, inherits = FALSE)){
+        svalue(f1_sex_chk) <- get(".strvalidator_modelDropout_gui_sex", envir=env)
       }
       if(exists(".strvalidator_modelDropout_gui_column", envir=env, inherits = FALSE)){
         svalue(f1_column_opt) <- get(".strvalidator_modelDropout_gui_column", envir=env)
@@ -1195,6 +1226,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       if(exists(".strvalidator_modelDropout_gui_xlabel_justv", envir=env, inherits = FALSE)){
         svalue(e4g1_vjust_spb) <- get(".strvalidator_modelDropout_gui_xlabel_justv", envir=env)
       }
+      if(exists(".strvalidator_modelDropout_gui_h", envir=env, inherits = FALSE)){
+        svalue(f1_h_chk) <- get(".strvalidator_modelDropout_gui_h", envir=env)
+      }
       
       if(debug){
         print("Saved settings loaded!")
@@ -1213,7 +1247,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       assign(x=".strvalidator_modelDropout_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_modelDropout_gui_x_title", value=svalue(f1_x_title_edt), envir=env)
       assign(x=".strvalidator_modelDropout_gui_y_title", value=svalue(f1_y_title_edt), envir=env)
-      assign(x=".strvalidator_modelDropout_gui_gender", value=svalue(f1_gender_chk), envir=env)
+      assign(x=".strvalidator_modelDropout_gui_sex", value=svalue(f1_sex_chk), envir=env)
       assign(x=".strvalidator_modelDropout_gui_column", value=svalue(f1_column_opt), envir=env)
       assign(x=".strvalidator_modelDropout_gui_print_model", value=svalue(f1_printmodel_chk), envir=env)
       assign(x=".strvalidator_modelDropout_gui_mark_threshold", value=svalue(e1f1_threshold_chk), envir=env)
@@ -1238,7 +1272,8 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       assign(x=".strvalidator_modelDropout_gui_xlabel_angle", value=svalue(e4g1_angle_spb), envir=env)
       assign(x=".strvalidator_modelDropout_gui_xlabel_justh", value=svalue(e4g1_hjust_spb), envir=env)
       assign(x=".strvalidator_modelDropout_gui_xlabel_justv", value=svalue(e4g1_vjust_spb), envir=env)
-            
+      assign(x=".strvalidator_modelDropout_gui_h", value=svalue(f1_h_chk), envir=env)
+      
     } else { # or remove all saved values if false.
       
       if(exists(".strvalidator_modelDropout_gui_savegui", envir=env, inherits = FALSE)){
@@ -1256,8 +1291,8 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       if(exists(".strvalidator_modelDropout_gui_y_title", envir=env, inherits = FALSE)){
         remove(".strvalidator_modelDropout_gui_y_title", envir = env)
       }
-      if(exists(".strvalidator_modelDropout_gui_gender", envir=env, inherits = FALSE)){
-        remove(".strvalidator_modelDropout_gui_gender", envir = env)
+      if(exists(".strvalidator_modelDropout_gui_sex", envir=env, inherits = FALSE)){
+        remove(".strvalidator_modelDropout_gui_sex", envir = env)
       }
       if(exists(".strvalidator_modelDropout_gui_column", envir=env, inherits = FALSE)){
         remove(".strvalidator_modelDropout_gui_column", envir = env)
@@ -1331,7 +1366,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       if(exists(".strvalidator_modelDropout_gui_xlabel_justv", envir=env, inherits = FALSE)){
         remove(".strvalidator_modelDropout_gui_xlabel_justv", envir = env)
       }
-      
+      if(exists(".strvalidator_modelDropout_gui_h", envir=env, inherits = FALSE)){
+        remove(".strvalidator_modelDropout_gui_h", envir = env)
+      }
       
       if(debug){
         print("Settings cleared!")

@@ -1,3 +1,40 @@
+Version 1.4.0
+------------------------------------------------------------------------------
+* GUI changes: Tab 'Edit' changed to 'Tools'.
+* New function to analyse and plot pull-up (bleed-through) peaks (tab 'Pull-up').
+* New function to generate EPG like plot to visualise profiles (tab 'Tools').
+* New structure of kit file to support multiple sex markers.
+* Changed all parameter names to the same naming convention (period.separated)
+  for all functions except for in checkDataset and getKit (will be changed in the future).
+* Minor bug fixes and improvements with the most significant listed below:
+  addColor
+  - Fixed error NA Dye for e.g. Yfiler Plus.
+  addSize_gui
+  - Fixed bug (https://github.com/OskarHansson/strvalidator/issues/7).
+  calculateBalance
+  - Fixed error when NA's in markerPeakHeightSum.
+  calculateBalance_gui / calculateDropout_gui
+  - Added kit dropdown and kit attribute to result.
+  editData_gui
+  - Now copy attribute list to new object upon 'Save As'.
+  getKit
+  - what='Gender' changed to 'Sex.Marker' and now return vector.
+  makeKit_gui
+  - Fixed "Error in read.table..." when 'Save' is pressed without data.
+  - Fixed "Error in basename(x) : a character vector argument expected"
+  - Changed single gender marker to general sex markers (multiple).
+  modelDropout_gui
+  - Added option to use average peak height 'H'.
+  plotStutter_gui
+  - Option to drop sex markers.
+* New functions:
+  - calculatePullup
+  - calculatePullup_gui
+  - plotPullup_gui
+  - generateEPG
+  - generateEPG_gui
+
+
 Version 1.3.1
 ------------------------------------------------------------------------------
 * Now handles window focus correctly.

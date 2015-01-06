@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 22.09.2013: Fixed bug when reading LifeTech bins with comment.
 # 22.09.2013: Added 'debug' parameter.
 # 22.06.2013: First version.
@@ -15,7 +16,7 @@
 #'
 #' @details Reads useful information from Panels files and save it as a data.frame.
 #' 
-#' @param panelFiles string, complete path to Panels file.
+#' @param panel.files string, complete path to Panels file.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @keywords internal
@@ -24,17 +25,17 @@
 #' 'Marker.Min', 'Marker.Max', 'Repeat'.
 #' 
 
-readPanelsFile <- function (panelFiles, debug=FALSE){
+readPanelsFile <- function (panel.files, debug=FALSE){
 
   # Constants.
   keyPanel <- "Panel"
   cDelimeter <- "\t"
   
   # Check if files are specified.
-  if (!is.na(panelFiles)) {
+  if (!is.na(panel.files)) {
     
     # Open file for reading.  	
-    f1 = file(panelFiles[1], open = "r")
+    f1 = file(panel.files[1], open = "r")
     
     # Read raw text.
     allTextRaw<-readLines(f1)

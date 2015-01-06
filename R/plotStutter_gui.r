@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.01.2015: 'Save as object' now disabled when complex plot.
+# 14.12.2014: Option to drop sex markers.
+# 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
@@ -21,10 +24,6 @@
 # 30.11.2013: Specified package for functions from 'grid' -> 'grid::xxxx'
 # 20.11.2013: Specified package for function 'gtable' -> 'gtable::gtable'
 # 05.11.2013: Fixed not possible to limit both y/x axes.
-# 01.11.2013: Added 'override titles' option.
-# 29.10.2013: Fixed limit y/x axis drop observations.
-# 23.10.2013: Fixed plot unequal facets and save as image.
-# 18.09.2013: Updated to support new 'addColor' function, replacing 'addDye'.
 
 #' @title Plot Stutter
 #'
@@ -212,6 +211,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                                          selected=1,
                                          container = f1g2)
   
+  f1_drop_chk <- gcheckbox(text="Drop sex markers",
+                           checked=TRUE,
+                           container=f1)
 
   # FRAME 7 ###################################################################
   
@@ -235,10 +237,6 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     .plotStutter(what="allele")
     enabled(plot_allele_btn) <- TRUE
 
-    # Change save button.
-    svalue(f5_save_btn) <- "Save as object"
-    enabled(f5_save_btn) <- TRUE
-    
   } )
   
   addHandlerChanged(plot_height_btn, handler = function(h, ...) {
@@ -246,10 +244,6 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     enabled(plot_height_btn) <- FALSE
     .plotStutter(what="height")
     enabled(plot_height_btn) <- TRUE
-    
-    # Change save button.
-    svalue(f5_save_btn) <- "Save as object"
-    enabled(f5_save_btn) <- TRUE
     
   } )
 
@@ -395,6 +389,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     val_scales <- svalue(scales_opt)
     val_kit <- svalue(kit_drp)
     val_theme <- svalue(f1_theme_drp)
+    val_drop <- svalue(f1_drop_chk)
     
     # Declare variables.
     ymax <- NULL  # For complex plots.
@@ -438,6 +433,8 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       print(levels(.gData$Marker))
       print("val_theme")
       print(val_theme)
+      print("val_drop")
+      print(val_drop)
     }
     
     if (!is.na(.gData) && !is.null(.gData)){
@@ -452,17 +449,28 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       # Sort by marker in kit
       .gData <- sortMarker(data=.gData,
                           kit=val_kit,
-                          addMissingLevels = TRUE)
-      
-      # Drop gender marker if exist in kit:
-      # Get gender marker.
-      genderMarker <- getKit(val_kit, what="Gender")
-      if(length(genderMarker) > 0){
-        # Drop gender marker.
-        .gData <- .gData[.gData$Marker != genderMarker, ]
-        # Refactor and keep order of levels.
-        .gData$Marker <- factor(.gData$Marker, 
-                                levels=levels(.gData$Marker)[levels(.gData$Marker) != genderMarker])
+                          add.missing.levels = TRUE)
+
+      # Drop sex markers.
+      if(val_drop){
+        
+        # Get sex markers.
+        sexMarkers <- getKit(val_kit, what="Sex.Marker")
+        if(length(sexMarkers) > 0){
+          # Drop sex markers.
+          n0 <- nrow(.gData)
+          for(m in seq(along=sexMarkers)){
+            .gData <- .gData[.gData$Marker != sexMarkers[m], ]
+          }
+          n1 <- nrow(.gData)
+          message(paste(n1, " rows after removing ", n0-n1, " sex marker rows.", sep=""))
+          
+          # Refactor and keep order of levels.
+          .gData$Marker <- factor(.gData$Marker, 
+                                  levels=levels(.gData$Marker)[!levels(.gData$Marker) %in% sexMarkers])
+          
+        }
+        
       }
       
       # Create factors and round. IMPORTANT!
@@ -887,6 +895,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_plotStutter_gui_theme", envir=env, inherits = FALSE)){
         svalue(f1_theme_drp) <- get(".strvalidator_plotStutter_gui_theme", envir=env)
       }
+      if(exists(".strvalidator_plotStutter_gui_sex", envir=env, inherits = FALSE)){
+        svalue(f1_drop_chk) <- get(".strvalidator_plotStutter_gui_sex", envir=env)
+      }
       
       if(debug){
         print("Saved settings loaded!")
@@ -918,6 +929,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       assign(x=".strvalidator_plotStutter_gui_xlabel_justh", value=svalue(hjust_spb), envir=env)
       assign(x=".strvalidator_plotStutter_gui_xlabel_justv", value=svalue(vjust_spb), envir=env)
       assign(x=".strvalidator_plotStutter_gui_theme", value=svalue(f1_theme_drp), envir=env)
+      assign(x=".strvalidator_plotStutter_gui_sex", value=svalue(f1_drop_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -974,6 +986,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       if(exists(".strvalidator_plotStutter_gui_theme", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotStutter_gui_theme", envir = env)
+      }
+      if(exists(".strvalidator_plotStutter_gui_sex", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotStutter_gui_sex", envir = env)
       }
       
       if(debug){

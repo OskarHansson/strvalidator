@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 27.11.2014: Fixed bug (GitHub issue #7) introduced in strvalidator version 1.3.1.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
@@ -210,14 +211,8 @@ addSize_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       
     } else {
 
-      # Get kit with offset information.
-      offset <- getKit(kit=val_kit, what="Offset")
-      
-      # Get kit with repeat information.
-      repeatUnit <- getKit(kit=val_kit, what="Repeat")
-      
-      # Merge information.
-      val_kitinfo <- merge(offset, repeatUnit, by="Marker", sort=FALSE)
+      # Get kit with offset and repeat information.
+      val_kitinfo <- getKit(kit=val_kit, what="Offset")
       
     }
     

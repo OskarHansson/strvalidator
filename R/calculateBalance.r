@@ -5,6 +5,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
+# 20.11.2014: Fixed error when NA's in markerPeakHeightSum.
 # 03.10.2014: Added 'word' parameter (word boundary), and progress.
 # 07.05.2014: New column 'TPH' for the total locus peak height.
 # 23.02.2014: Removed 'perSample' parameter. Use 'tableBalance' for summary statistics.
@@ -44,10 +46,10 @@
 #'  'Sample.Name', 'Marker', 'Allele'.
 #' @param lb string. 'prop' is defualt and locus balance is calculated proportionally
 #' 'norm' locus balance is normalised in relation to the locus with the highest total peakheight.
-#' @param perDye logical, default is TRUE and locus balance is calculated within each dye.
+#' @param per.dye logical, default is TRUE and locus balance is calculated within each dye.
 #'  FALSE locus balance is calculated globally across all dyes.
 #' @param hb numerical, definition of heterozygous balance. hb=1; HMW/LMW, hb=2; Max1(Ph)/Max2(Ph).
-#' @param ignoreCase logical indicating if sample matching should ignore case.
+#' @param ignore.case logical indicating if sample matching should ignore case.
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param debug logical indicating printing debug information.
 #' 
@@ -61,8 +63,8 @@
 #' # Calculate average balances.
 #' calculateBalance(data=set2, ref=ref2)
 
-calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
-                             hb=1, ignoreCase=TRUE, word=FALSE, debug=FALSE){
+calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
+                             hb=1, ignore.case=TRUE, word=FALSE, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -73,19 +75,19 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
     print(str(ref))
     print("lb")
     print(lb)
-    print("perDye")
-    print(perDye)
+    print("per.dye")
+    print(per.dye)
     print("hb")
     print(hb)
-    print("ignoreCase")
-    print(ignoreCase)
+    print("ignore.case")
+    print(ignore.case)
     print("word")
     print(word)
   }
   
   # Check data ----------------------------------------------------------------
   
-  if(perDye){
+  if(per.dye){
     if(is.null(data$Dye)){
       stop("'Dye' does not exist!")
     }
@@ -198,11 +200,11 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
                   " (", r, " of ", length(refNames),").", sep=""))
     
     # Subset sample data.
-    cSampleRows <- grepl(grepNames[r], data$Sample.Name, ignore.case=ignoreCase)
+    cSampleRows <- grepl(grepNames[r], data$Sample.Name, ignore.case=ignore.case)
     cSubsetData <- data[cSampleRows,]
     
     # Subset reference data.
-    cReferenceRows <- grepl(grepNames[r], ref$Sample.Name, ignore.case=ignoreCase)
+    cReferenceRows <- grepl(grepNames[r], ref$Sample.Name, ignore.case=ignore.case)
     cSubsetRef <- ref[cReferenceRows,]
       
     # Get data for current subset.
@@ -235,7 +237,7 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
         markerRows <- cData$Marker == markerNames[m]
         markerRowsRef <- cRef$Marker == markerNames[m]
         
-        if(perDye){
+        if(per.dye){
           # Keep track of dyes.
           markerDye[m] <- unique(cData$Dye[markerRows])
         }
@@ -398,33 +400,34 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
 
       # Check ok dye channels.
       dyeOk <- logical(0)
-      if(perDye){
+      if(per.dye){
         dyes <- unique(markerDye)
         for(d in seq(along=dyes)){
           # Channel is marked as ok if peaks in all markers in that channel.
           dyeOk[d] <- sum(markerPeakHeightSum[markerDye==dyes[d]] == 0) == 0
         }
+        if(debug){
+          print("dyes")
+          print(dyes)
+          print("dyeOk")
+          print(dyeOk)
+        }
       }
       
       # Check if missing markers.
       allMarkersOk <- TRUE
-      if(sum(markerPeakHeightSum == 0) > 0) {
+      if(sum(markerPeakHeightSum == 0, na.rm=TRUE) > 0) {
         allMarkersOk <- FALSE
       }
 
       if(debug){
-        print("dyes")
-        print(dyes)
         print("markerPeakHeightSum")
         print(markerPeakHeightSum)
-        print("dyeOk")
-        print(dyeOk)
       }
-      
       
       # Calculate inter locus balance.
       if(lb=="norm"){
-        if(perDye & any(dyeOk)){
+        if(per.dye & any(dyeOk)){
           for(d in seq(along=dyes)){
             # Calculate per dye.
             if(dyeOk[d]){
@@ -442,7 +445,7 @@ calculateBalance <- function(data, ref, lb="prop", perDye=TRUE,
           locusBalance <- rep(NA, length(markerPeakHeightSum))
         }
       } else if(lb=="prop"){
-        if(perDye & any(dyeOk)){
+        if(per.dye & any(dyeOk)){
           for(d in seq(along=dyes)){
             # Calculate per dye.
             if(dyeOk[d]){

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 30.09.2014: Check if package is loaded to avoid error in path.package.
 # 01.10.2013: First version.
 
@@ -17,7 +18,7 @@
 #' the file database.txt in the package directory.
 #' It returns the specified allele frequency database.
 #' 
-#' @param dbNameOrIndex string or integer specifying the database.
+#' @param db.name.or.index string or integer specifying the database.
 #' If NULL a vector of available databases is returned.
 #' @param debug logical indicating printing debug information.
 #' 
@@ -33,7 +34,7 @@
 #' # Show available allele frequency databases.
 #' getDb()
 
-getDb <- function(dbNameOrIndex=NULL, debug=FALSE) {
+getDb <- function(db.name.or.index=NULL, debug=FALSE) {
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -63,7 +64,7 @@ getDb <- function(dbNameOrIndex=NULL, debug=FALSE) {
   databases<-unique(.db$Database)
   
 	# Check if NULL
-	if (is.null(dbNameOrIndex)) {
+	if (is.null(db.name.or.index)) {
 
 		db <- databases
 
@@ -71,15 +72,15 @@ getDb <- function(dbNameOrIndex=NULL, debug=FALSE) {
 	} else {
 
 		# Check if number or string.
-		if (is.numeric(dbNameOrIndex)) {
+		if (is.numeric(db.name.or.index)) {
 
 			# Set index to number.
-			index <- dbNameOrIndex
+			index <- db.name.or.index
 
 		} else {
 
 			# Find matching database index (case insensitive)
-			index <- match(toupper(dbNameOrIndex),toupper(databases))
+			index <- match(toupper(db.name.or.index),toupper(databases))
 
 		}
 

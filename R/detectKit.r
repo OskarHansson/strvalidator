@@ -228,7 +228,7 @@ detectKit <- function(data, index=TRUE, debug=FALSE){
     
   } ###########################################################################
     
-# THIS STRATEGY DOES NOT PERFORM WELL IF MARKERS ARE NOT IN ORDER (e.g. no gender marker).  
+# THIS STRATEGY DOES NOT PERFORM WELL IF MARKERS ARE NOT IN ORDER (e.g. no sex marker).  
 #  
 #   # Check if more than one.
 #   if(candidates > 1){

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.12.2014: Added kit dropdown and kit attribute to result.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
@@ -127,8 +128,15 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste("", samples, "samples")
       svalue(f1g1_ldt_edt) <- min(as.numeric(.gData$Height), na.rm=TRUE)
+      
+      # Suggest a name for result.
       svalue(f2_save_edt) <- paste(val_obj, "_dropout", sep="")
-        
+      
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(f2_kit_drp, index=TRUE) <- kitIndex
+      
     } else {
       
       # Reset components.
@@ -270,6 +278,12 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
   f2_save_edt <- gedit(text="", container=f2)
 
+  glabel(text=" Kit attribute:", container=f2)
+  
+  f2_kit_drp <- gdroplist(items=getKit(), selected = 1,
+                          editable = FALSE, container = f2) 
+  
+  
   # BUTTON ####################################################################
   
   
@@ -282,6 +296,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     val_ignore_case <- svalue(f1_ignore_case_chk)
     val_threshold <- as.numeric(svalue(f1g1_ldt_edt))
     val_name <- svalue(f2_save_edt)
+    val_kit <- svalue(f2_kit_drp)
     val_method <- vector()
     
     # Get methods:
@@ -335,8 +350,11 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
                                   ref=.gRef,
                                   threshold=val_threshold,
                                   method=val_method,
-                                  ignoreCase=val_ignore_case,
+                                  ignore.case=val_ignore_case,
                                   debug=debug)
+      
+      # Add attribute for detected kit.
+      attr(datanew, which="kit") <- val_kit
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

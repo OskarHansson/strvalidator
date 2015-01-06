@@ -16,7 +16,7 @@
 #' a dataset containing information about panel name, marker name, alleles in the
 #' allelic ladder, their size and size range, a flag indicating virtual alleles,
 #' fluorophore color, repeat size, marker range. The short name, full name,
-#'  and gender marker flag is populated through the \code{makeKit_gui} user interface.
+#'  and sex marker flag is populated through the \code{makeKit_gui} user interface.
 #' In addition the function calculates an estimated offset for each marker, 
 #' which can be used for creating epg-like plots.
 #' Note: offset is estimated by taking the smallest physical ladder fragment

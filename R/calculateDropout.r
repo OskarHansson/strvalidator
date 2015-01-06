@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
 # 16.01.2014: Adde option for selection of one or more scoring methods.
 # 16.01.2014: Changed names 'Model[]'/'Method[]'.
@@ -68,7 +69,7 @@
 #' @param method character vector, specifying which scoring method(s) to use.
 #' Method 'X' for random allele, '1' or '2' for the low/high molecular weight allele,
 #' and 'L' for the locus method (the option is case insensitive).
-#' @param ignoreCase logical, default TRUE for case insensitive.
+#' @param ignore.case logical, default TRUE for case insensitive.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with columns 'Sample.Name', 'Marker', 'Allele', 'Height', 'Dropout',
@@ -101,11 +102,11 @@
 #' @examples
 #' data(set4)
 #' data(ref4)
-#' drop <- calculateDropout(data=set4, ref=ref4, ignoreCase=TRUE)
+#' drop <- calculateDropout(data=set4, ref=ref4, ignore.case=TRUE)
 
 
 calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"),
-                             ignoreCase=TRUE, debug=FALSE){
+                             ignore.case=TRUE, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -260,7 +261,7 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
   for(r in seq(along=sampleNamesRef)){
 
     # Select current subsets.
-    if(ignoreCase){
+    if(ignore.case){
       selectedSamples <- grepl(toupper(sampleNamesRef[r]),
                                toupper(data$Sample.Name))
       selectedRefs <- grepl(toupper(sampleNamesRef[r]),

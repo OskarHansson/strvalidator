@@ -290,12 +290,12 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
   
       datanew <- calculateResultType(data=.gData,
                                      kit=val_kit,
-                                     addMissingMarker=val_add,
+                                     add.missing.marker=val_add,
                                      threshold=val_threshold,
-                                     mixtureLimits=val_mix,
-                                     partialLimits=val_par,
-                                     subsetName=val_subkit,
-                                     markerSubset=val_marker,
+                                     mixture.limits=val_mix,
+                                     partial.limits=val_par,
+                                     subset.name=val_subkit,
+                                     marker.subset=val_marker,
                                      debug=debug)
       
       # Save data.

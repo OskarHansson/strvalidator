@@ -26,9 +26,9 @@ test_that("filterProfile", {
   
   # Analyse dataframe.
   res <- filterProfile(data=set2, ref=ref2,
-                       addMissingLoci=FALSE,
-                       keepNA=FALSE,
-                       ignoreCase=FALSE,
+                       add.missing.loci=FALSE,
+                       keep.na=FALSE,
+                       ignore.case=FALSE,
                        debug=FALSE)
 
   
@@ -60,9 +60,9 @@ test_that("filterProfile", {
   
   # Analyse dataframe.
   res <- filterProfile(data=set3, ref=ref2,
-                       addMissingLoci=TRUE,
-                       keepNA=TRUE,
-                       ignoreCase=FALSE,
+                       add.missing.loci=TRUE,
+                       keep.na=TRUE,
+                       ignore.case=FALSE,
                        debug=FALSE)
   
   
@@ -90,9 +90,9 @@ test_that("filterProfile", {
   
   # Analyse dataframe.
   res <- filterProfile(data=set2, ref=ref2,
-                       addMissingLoci=FALSE,
-                       keepNA=TRUE,
-                       ignoreCase=FALSE,
+                       add.missing.loci=FALSE,
+                       keep.na=TRUE,
+                       ignore.case=FALSE,
                        debug=FALSE)
   
   
@@ -123,9 +123,9 @@ test_that("filterProfile", {
   
   # Analyse dataframe.
   res <- filterProfile(data=set2, ref=ref2,
-                       addMissingLoci=FALSE,
-                       keepNA=TRUE,
-                       ignoreCase=FALSE,
+                       add.missing.loci=FALSE,
+                       keep.na=TRUE,
+                       ignore.case=FALSE,
                        debug=FALSE)
   
   
@@ -153,25 +153,25 @@ test_that("filterProfile", {
   
   # Test using 'fat' data.
   expect_that(filterProfile(data=set1, ref=ref2,
-                       addMissingLoci=FALSE,
-                       keepNA=TRUE,
-                       ignoreCase=FALSE,
+                       add.missing.loci=FALSE,
+                       keep.na=TRUE,
+                       ignore.case=FALSE,
                        debug=FALSE),
               throws_error())
   
   # Test using 'fat' ref.
   expect_that(filterProfile(data=set2, ref=ref1,
-                            addMissingLoci=FALSE,
-                            keepNA=TRUE,
-                            ignoreCase=FALSE,
+                            add.missing.loci=FALSE,
+                            keep.na=TRUE,
+                            ignore.case=FALSE,
                             debug=FALSE),
               throws_error())
   
   # Test using 'fat' data and ref.
   expect_that(filterProfile(data=set1, ref=ref1,
-                            addMissingLoci=FALSE,
-                            keepNA=TRUE,
-                            ignoreCase=FALSE,
+                            add.missing.loci=FALSE,
+                            keep.na=TRUE,
+                            ignore.case=FALSE,
                             debug=FALSE),
               throws_error())
   
@@ -188,9 +188,9 @@ test_that("filterProfile", {
   
   # Analyse dataframe.
   res <- filterProfile(data=set6, ref=ref6,
-                       addMissingLoci=FALSE,
-                       keepNA=FALSE,
-                       ignoreCase=FALSE,
+                       add.missing.loci=FALSE,
+                       keep.na=FALSE,
+                       ignore.case=FALSE,
                        debug=FALSE)
   
   # Check return class.  
@@ -251,9 +251,9 @@ test_that("filterProfile", {
   
   # Analyse dataframe.
   res <- filterProfile(data=set7, ref=ref7,
-                       addMissingLoci=FALSE,
-                       keepNA=FALSE,
-                       ignoreCase=FALSE,
+                       add.missing.loci=FALSE,
+                       keep.na=FALSE,
+                       ignore.case=FALSE,
                        debug=FALSE)
   
   # Check return class.  
@@ -304,9 +304,9 @@ test_that("filterProfile", {
   
   # Analyse dataframe.
   res <- filterProfile(data=set8, ref=ref8,
-                       addMissingLoci=FALSE,
-                       keepNA=FALSE,
-                       ignoreCase=FALSE,
+                       add.missing.loci=FALSE,
+                       keep.na=FALSE,
+                       ignore.case=FALSE,
                        debug=FALSE)
   
   # Check return class.  

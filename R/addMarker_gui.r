@@ -208,7 +208,7 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
     
     datanew <- addMarker(data=.gData,
                          marker=getKit(val_kit, what="Marker"),
-                         ignoreCase=val_ignore, debug=debug)
+                         ignore.case=val_ignore, debug=debug)
     
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)

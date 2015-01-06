@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2014: Changed parameter names to format: lower.case
 # 24.07.2014: Fixed 'NA' bug when recycling names.
 # 26.07.2013: Added 'any' to class if-case.
 # 11.07.2013: Fixed scope bug.
@@ -25,7 +26,7 @@
 #' @param name string, list or vector containing file names. 
 #' Multiple names as string must be separated by pipe '|'.
 #' If not equal number of names as objects, first name will be used to construct names. 
-#' @param useObjectName logical, if TRUE file name will be the same as object name.
+#' @param use.object.name logical, if TRUE file name will be the same as object name.
 #' @param env environment where the objects exists.
 #' @param path string specifying the destination folder exported objects.
 #' @param ext string specifying file extension.
@@ -45,7 +46,7 @@
 #' @keywords internal
 #' 
 
-export <- function(object, name=NA, useObjectName=is.na(name),
+export <- function(object, name=NA, use.object.name=is.na(name),
                    env=parent.frame(), path=NA, 
                    ext="auto", delim="\t", 
                    width=3000, height=2000, res=250,
@@ -57,8 +58,8 @@ export <- function(object, name=NA, useObjectName=is.na(name),
     print(object)
     print("name")
     print(name)
-    print("useObjectName")
-    print(useObjectName)
+    print("use.object.name")
+    print(use.object.name)
     print("env")
     print(environmentName(env))
     print("path")
@@ -140,7 +141,7 @@ export <- function(object, name=NA, useObjectName=is.na(name),
       # Replace empty string with 'NA'.
       name <- NA
     }
-  } else if (!useObjectName){
+  } else if (!use.object.name){
     stop("'name' is required",
          call. = TRUE)
   }
@@ -150,8 +151,8 @@ export <- function(object, name=NA, useObjectName=is.na(name),
          call. = TRUE)
   }
   
-  if(!is.logical(useObjectName)){
-    stop("'useObjectName' must be logical",
+  if(!is.logical(use.object.name)){
+    stop("'use.object.name' must be logical",
          call. = TRUE)
   }
   
@@ -183,7 +184,7 @@ export <- function(object, name=NA, useObjectName=is.na(name),
   
   # Create file names.
   nbObj <- length(object)
-  if(useObjectName){
+  if(use.object.name){
     # Copy object names to name variable.
     name <- object
     

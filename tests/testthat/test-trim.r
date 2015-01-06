@@ -46,8 +46,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df1, samples=NULL, columns=NULL, word=FALSE,
-              ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
-              rmNaCol=FALSE, rmEmptyCol=FALSE, missing=NULL, debug=FALSE)
+              ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
+              rm.na.col=FALSE, rm.empty.col=FALSE, missing=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -75,8 +75,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df1, samples=NULL, columns=NULL, word=FALSE,
-              ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
-              rmNaCol=FALSE, rmEmptyCol=TRUE, missing=NULL, debug=FALSE)
+              ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
+              rm.na.col=FALSE, rm.empty.col=TRUE, missing=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -103,8 +103,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df1, samples=NULL, columns=NULL, word=FALSE,
-              ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
-              rmNaCol=TRUE, rmEmptyCol=FALSE, missing=NULL, debug=FALSE)
+              ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
+              rm.na.col=TRUE, rm.empty.col=FALSE, missing=NULL, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -131,8 +131,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df1, samples=NULL, columns=NULL, word=FALSE,
-              ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
-              rmNaCol=FALSE, rmEmptyCol=FALSE, missing=NA, debug=FALSE)
+              ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
+              rm.na.col=FALSE, rm.empty.col=FALSE, missing=NA, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -160,8 +160,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df1, samples=NULL, columns=NULL, word=FALSE,
-              ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
-              rmNaCol=FALSE, rmEmptyCol=FALSE, missing="N/A", debug=FALSE)
+              ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
+              rm.na.col=FALSE, rm.empty.col=FALSE, missing="N/A", debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -189,8 +189,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df1, samples=c("Sample.1"), columns=c("Sample.Name"), word=FALSE,
-              ignoreCase=TRUE, invertS=FALSE, invertC=FALSE,
-              rmNaCol=FALSE, rmEmptyCol=FALSE, missing=NA, debug=FALSE)
+              ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
+              rm.na.col=FALSE, rm.empty.col=FALSE, missing=NA, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -214,8 +214,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df1, samples=c("Sample.1"), columns=c("Sample.Name"), word=FALSE,
-              ignoreCase=TRUE, invertS=TRUE, invertC=TRUE,
-              rmNaCol=FALSE, rmEmptyCol=FALSE, missing=NA, debug=FALSE)
+              ignore.case=TRUE, invert.s=TRUE, invert.c=TRUE,
+              rm.na.col=FALSE, rm.empty.col=FALSE, missing=NA, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -242,8 +242,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df1, samples=c("pos|neg|ladder"), columns=c("Sample.Name|Allele"), word=FALSE,
-              ignoreCase=TRUE, invertS=TRUE, invertC=FALSE,
-              rmNaCol=FALSE, rmEmptyCol=FALSE, missing=NA, debug=FALSE)
+              ignore.case=TRUE, invert.s=TRUE, invert.c=FALSE,
+              rm.na.col=FALSE, rm.empty.col=FALSE, missing=NA, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -269,8 +269,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df2, samples=c("c+|c-"), columns=c("NAstr"), word=FALSE,
-              ignoreCase=FALSE, invertS=TRUE, invertC=TRUE,
-              rmNaCol=TRUE, rmEmptyCol=TRUE, missing=NA, debug=FALSE)
+              ignore.case=FALSE, invert.s=TRUE, invert.c=TRUE,
+              rm.na.col=TRUE, rm.empty.col=TRUE, missing=NA, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -296,8 +296,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df2, samples=c("c+|c-"), columns=c("NAstr"), word=FALSE,
-              ignoreCase=TRUE, invertS=TRUE, invertC=TRUE,
-              rmNaCol=TRUE, rmEmptyCol=TRUE, missing=NA, debug=FALSE)
+              ignore.case=TRUE, invert.s=TRUE, invert.c=TRUE,
+              rm.na.col=TRUE, rm.empty.col=TRUE, missing=NA, debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))
@@ -322,8 +322,8 @@ test_that("trim", {
   
   # Analyse dataframe.
   res <- trim(data=df2, samples=c("c"), columns=c("NAstr"), word=TRUE,
-              ignoreCase=TRUE, invertS=FALSE, invertC=TRUE,
-              rmNaCol=FALSE, rmEmptyCol=FALSE, missing="*", debug=FALSE)
+              ignore.case=TRUE, invert.s=FALSE, invert.c=TRUE,
+              rm.na.col=FALSE, rm.empty.col=FALSE, missing="*", debug=FALSE)
   
   # Check return class.  
   expect_that(class(res), matches(class(data.frame())))

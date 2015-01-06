@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.01.2015: Added kit dropdown and kit attribute to result.
 # 07.10.2014: Added 'focus', added 'parent' parameter.
 # 03.08.2014: Added detection of kit and add attribute to result.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -23,7 +24,6 @@
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
 # 27.04.2013: Added selection of dataframes from provided environment.
-# <27.04.2013: First version.
 
 #' @title Calculate Stutters
 #'
@@ -133,6 +133,10 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       samples <- length(unique(.gData$Sample.Name))
       svalue(f0_samples_lbl) <- paste("", samples, "samples")
       svalue(f2_save_edt) <- paste(val_obj, "_stutter", sep="")
+      # Detect kit.
+      kitIndex <- detectKit(.gData)
+      # Select in dropdown.
+      svalue(f2_kit_drp, index=TRUE) <- kitIndex
         
     } else {
 
@@ -304,6 +308,12 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   glabel(text="Name for result:", container=f2)
   
   f2_save_edt <- gedit(text="", container=f2)
+  
+  glabel(text=" Kit attribute:", container=f2)
+  
+  f2_kit_drp <- gdroplist(items=getKit(), selected = 1,
+                          editable = FALSE, container = f2) 
+  
 
   # BUTTON ####################################################################
 
@@ -328,6 +338,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     val_chk <- val_replace_df$Replace
     val_replace <- val_replace_df$False.Stutter
     val_by <- val_replace_df$True.Stutter
+    val_kit <- svalue(f2_kit_drp)
     
     # Get selected values.
     val_replace <- val_replace[val_chk]
@@ -362,21 +373,16 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
-      # Detect kit.
-      kit <- detectKit(data=val_data, index=FALSE, debug=debug)
-      
       # Calculate stutter.
       datanew <- calculateStutter(data=val_data, ref=val_ref, 
                                   back=val_back, forward=val_forward,
                                   interference=val_interference,
-                                  replaceVal=val_replace,
-                                  byVal=val_by,
+                                  replace.val=val_replace,
+                                  by.val=val_by,
                                   debug=debug)
       
-      # Add attribute if one match was found for detected kit.
-      if(length(kit) == 1){
-        attr(datanew, which="kit") <- kit
-      }
+      # Add attribute for detected kit.
+      attr(datanew, which="kit") <- val_kit
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

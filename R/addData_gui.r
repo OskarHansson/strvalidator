@@ -281,11 +281,11 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       enabled(add_btn) <- FALSE
   
       datanew <- addData(data=.gDataDest,
-                         newData=.gDataSource,
+                         new.data=.gDataSource,
                          exact=val_exact,
-                         byCol=val_key,
-                         thenByCol=val_key2,
-                         ignoreCase=val_ignore)
+                         by.col=val_key,
+                         then.by.col=val_key2,
+                         ignore.case=val_ignore)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

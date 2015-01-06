@@ -1,6 +1,8 @@
 ################################################################################
 # TODO LIST
 # TODO: Option to remove old datasets
+# TODO: Option to use rbind.fill to combine datasets when columns are not identical.
+#       Drawback: can increase the risk of people messing up their data...
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
