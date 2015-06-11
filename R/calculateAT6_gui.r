@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.06.2015: Added missing label 'Significance level:'.
 # 26.05.2015: First version.
 
 #' @title Calculate Analytical Threshold
@@ -25,7 +26,7 @@
 #'  \code{\link{calculateAT_gui}}, \code{\link{checkSubset}}
 
 calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
-                                 debug=FALSE, parent=NULL){
+                             debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData <- NULL
@@ -211,17 +212,17 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
     } 
     
   } )
-
+  
   # AMOUNT --------------------------------------------------------------------
   
   g0[4,1] <- glabel(text="Select amount dataset:", container=g0)
   
   g0[4,2] <- amset_drp <- gdroplist(items=c("<Select dataset>",
-                                             listObjects(env=env,
-                                                         objClass="data.frame")), 
-                                     selected = 1,
-                                     editable = FALSE,
-                                     container = g0) 
+                                            listObjects(env=env,
+                                                        objClass="data.frame")), 
+                                    selected = 1,
+                                    editable = FALSE,
+                                    container = g0) 
   
   g0[4,3] <- g0_am_lbl <- glabel(text=" 0 samples", container=g0)
   
@@ -264,9 +265,10 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   
   f1_items <- c("Linear regression", "Weighted linear regression")
   f1_weighted_opt <- gradio(items=f1_items, selected=1, container=f1)
-
+  
+  glabel(text="Significance level:", container=f1)
   f1_alpha_spn <- gspinbutton(from=0, to=1, by=0.01, value=0.05, container=f1)
-    
+  
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as",
@@ -281,8 +283,8 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   # BUTTON ####################################################################
   
   calculate_btn <- gbutton(text="Calculate",
-                         border=TRUE,
-                         container=gv)
+                           border=TRUE,
+                           container=gv)
   
   addHandlerChanged(calculate_btn, handler = function(h, ...) {
     
@@ -429,77 +431,3 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   focus(w)
   
 }
-
-# 
-# ################# EXAMPLE:
-# 
-# data <- c(500,3768.37,771.67
-#           ,250,1867.43,460.91
-#           ,157,1246.29,464.31
-#           ,125,1055.48,475.50
-#           ,101,800.50,388.46
-#           ,80.5,752.09,265.92
-#           ,63.5,522.65,169.74
-#           ,51,428.53,152.33
-#           ,41,398.08,196.20
-#           ,33,287.42,129.68
-#           ,21,176.72,56.76)
-# n <- length(data)/3
-# data <- t(matrix(data,ncol=n))
-# 
-# x <- data[,1]
-# y <- data[,2]
-# s <- data[,3]
-# n <- length(y)
-# alph <- 0.05
-# 
-# library(MASS)
-# boxcox(y~x)
-# fit1 <- lm(y~x)
-# fit2 <- lm(y~x,weights=1/s^2)
-# 
-# xz <- seq(0,max(x),l=1000)
-# plot(x,y,xlim=c(0,100),ylim=c(0,1000))
-# abline(h=0,col="gray")
-# abline(v=0,col="gray")
-# abline(fit1)
-# abline(fit2,col=2)
-# mu1 <- summary(fit1)$coef[1,1:2] #mu =  71.80417   19.16017
-# mu2 <- summary(fit2)$coef[1,1:2] #mu = 26.84158   12.05745 
-# points(0,mu1[1]+qt(alph/2,n-1)*mu1[2],pch="-",col=1,cex=1.2)
-# points(0,mu1[1]+qt(1-alph/2,n-1)*mu1[2],pch="-",col=1,cex=1.2)
-# points(0,mu2[1]+qt(alph/2,n-1)*mu2[2],pch="-",col=2,cex=1.2)
-# points(0,mu2[1]+qt(1-alph/2,n-1)*mu2[2],pch="-",col=2,cex=1.2)
-# 
-# require(ggplot2)
-# df <- data.frame(Amount=x, Height=y, Sd=s, Weight=1/s^2, N=n, Alpha=alph,
-#                  Lower=as.numeric(mu1[1]+qt(alph/2,n-1)*mu1[2]),
-#                  Intercept=as.numeric(mu1[1]),
-#                  AT6=as.numeric(mu1[1]-qt(alph/2,n-1)*mu1[2]))
-# 
-# ggplot(data=df) + geom_point(aes(x=X, y=Y)) + stat_smooth(method="lm", se=FALSE)
-# ggplot(data=df) + geom_point(aes(x=X, y=Y)) + stat_smooth(aes(x=X, y=Y), method="lm", se=FALSE)
-# 
-# # Plot
-# gp <- ggplot(data=df)
-# gp <- gp + geom_point(aes(x=Amount, y=Height))
-# gp <- gp + stat_smooth(aes(x=Amount, y=Height, weight=1/s^2), method="lm", se=FALSE)
-# gp <- gp + stat_smooth(aes(x=Amount, y=Height, weight=NA), method="lm", se=FALSE, color="black")
-# gp <- gp + stat_smooth(aes(x=Amount, y=Height), method="lm", se=FALSE, color="red")
-# 
-# gp <- gp + geom_rect(data = df,
-#             aes_string(ymin = "Lower", ymax = "AT6",
-#                        xmin = -Inf, xmax = Inf),
-#             alpha = 0.1,
-#             fill = "red")
-# 
-# gp <- gp + labs(title="mainTitle")
-# gp <- gp + title(main="TEST", sub=unique(df$AT6))
-# 
-# gp
-# 
-# points(0,mu1[1]+qt(alph/2,n-1)*mu1[2],pch="-",col=1,cex=1.2)
-# points(0,mu1[1]+qt(1-alph/2,n-1)*mu1[2],pch="-",col=1,cex=1.2)
-# 
-# 
-# mu1[1]+qt(alph/2,n-1)*mu1[2]
