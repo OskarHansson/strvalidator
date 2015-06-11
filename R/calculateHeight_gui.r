@@ -16,11 +16,10 @@
 # 20.05.2013: First version.
 
 
-#' @title Calculate peak height
+#' @title Calculate Peak Height
 #'
 #' @description
-#' \code{calculateHeight_gui} is a GUI wrapper for the \code{\link{calculateHeight}} 
-#' function.
+#' GUI wrapper for the \code{\link{calculateHeight}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateHeight}} function by providing a graphical 

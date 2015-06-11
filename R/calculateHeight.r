@@ -15,10 +15,10 @@
 # 11.04.2013: Changed 'Z' to 'Heterozygous' (het/hom now indicated by 1/0,
 #             but changed to 2 in function)
 
-#' @title Calculate peak height.
+#' @title Calculate Peak Height.
 #'
 #' @description
-#' \code{calculateHeight} calculate peak height metrics for a sample.
+#' Calculate peak height metrics for samples.
 #'
 #' @details
 #' Calculates the average peak height (H) and/or the total peak height (TPH) for each sample.

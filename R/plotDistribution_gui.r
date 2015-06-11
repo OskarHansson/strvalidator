@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.06.2015: Fixed 'overlay boxplot' not saved.
+# 04.05.2015: Added 'Histogram'.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 11.05.2014: Fixed boxplot bug, box not drawn.
@@ -17,11 +19,11 @@
 #' @title Plot Distribution
 #'
 #' @description
-#' \code{plotDistribution_gui} is a GUI simplifying the creation of distribution plots.
+#' GUI simplifying the creation of distribution plots.
 #'
-#' @details Plot the distribution of data as cumulative distribution function or
-#' probability density function. First select a dataset, then select a group
-#' (if any), finally select a column to plot the distribution of.
+#' @details Plot the distribution of data as cumulative distribution function,
+#' probability density function, or count. First select a dataset, then select
+#' a group (if any), finally select a column to plot the distribution of.
 #' It is possible to overlay a boxplot.
 #' Various smoothing kernels and bandwidths can be specified.
 #' More info on kernels and bandwidth: \url{http://www.inside-r.org/r-doc/stats/density}
@@ -156,6 +158,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       # Enable buttons.
       enabled(f7_ecdf_btn) <- TRUE
       enabled(f7_pdf_btn) <- TRUE
+      enabled(f7_qplot_btn) <- TRUE
       
     } else {
       
@@ -178,6 +181,14 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     
   } )  
   
+  addHandlerChanged(f0_column_drp, handler = function (h, ...) {
+    
+    # Enable buttons.
+    enabled(f7_ecdf_btn) <- TRUE
+    enabled(f7_pdf_btn) <- TRUE
+    enabled(f7_qplot_btn) <- TRUE
+    
+  } )  
   
   # FRAME 1 ###################################################################
   
@@ -248,6 +259,15 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   f1g4[2,2] <- f1_adjustbw_cbo <- gcombobox(items=f1_adjust,
                                             selected = 3, editable = TRUE,
                                             container=f1g4)
+
+  f1e3 <- gexpandgroup(text = "Histogram", horizontal=FALSE,
+                       spacing = 5, container = f1) 
+
+  f1g5 <- glayout(container = f1e3, spacing = 1)
+  
+  f1g5[1,1] <- glabel(text="Adjust binwidth:", container=f1g5)
+  f1g5[1,2] <- f1_binwidth_edt <- gedit(text="1", container=f1g5)
+  
   
   # FRAME 7 ###################################################################
   
@@ -296,6 +316,28 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       enabled(f7_pdf_btn) <- FALSE
       .plot(how="pdf")
       enabled(f7_pdf_btn) <- TRUE
+      
+    }
+    
+  } )
+  
+  f7g7[1,3] <- f7_qplot_btn <- gbutton(text="Histogram", border=TRUE, container=f7g7) 
+  
+  addHandlerChanged(f7_qplot_btn, handler = function(h, ...) {
+    
+    val_column <- svalue(f0_column_drp)
+    
+    if(val_column == "<Select column>"){
+      
+      gmessage(message="A data column must be specified!",
+               title="Error",
+               icon = "error")      
+      
+    } else {
+      
+      enabled(f7_qplot_btn) <- FALSE
+      .plot(how="qplot")
+      enabled(f7_qplot_btn) <- TRUE
       
     }
     
@@ -364,6 +406,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     val_adjustbw <- as.numeric(svalue(f1_adjustbw_cbo))
     val_boxplot <- svalue(f1_box_chk)
     val_width <- svalue(f1_width_spn)
+    val_binwidth <- as.numeric(svalue(f1_binwidth_edt))
     
     if(debug){
       print("val_titles")
@@ -412,30 +455,10 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
         
       }
       
-      # TODO: Make one general if...
-      
-      # Different X axis depending on chosen column.
-      if(val_column == "Height"){
-        
-        if(!is.numeric(val_data$Height)){
-          val_data$Height <- as.numeric(val_data$Height)
-          message("'Height' converted to numeric.")
-        }
-        
-      } else if(val_column == "Size"){
-        
-        if(!is.numeric(val_data$Size)){
-          val_data$Size <- as.numeric(val_data$Size)
-          message("'Size' converted to numeric.")
-        }
-        
-      } else if(val_column == "Data.Point"){
-        
-        if(!is.numeric(val_data$Data.Point)){
-          val_data$Data.Point <- as.numeric(val_data$Data.Point)
-          message("'Data.Point' converted to numeric.")
-        }
-        
+      # Convert to numeric.
+      if(!is.numeric(val_data[, val_column])){
+        val_data[, val_column] <- as.numeric(val_data[, val_column])
+        message(paste(val_column, " converted to numeric."))
       }
       
       if(debug){
@@ -446,7 +469,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       
       # TODO: Remove NA
       #       # Remove NA's
-      #       if(any(is.na(val_data[val_column]))){
+      #       if(any(is.na(val_data[, val_column]))){
       #         
       #         # Store nb of observations.
       #         nb0 <- nb
@@ -483,16 +506,27 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
           print("Default titles")
         }
         
-        # Diffeerent main title.
+        # Different titles.
         if(how == "cdf"){
           
           mainTitle <- paste("Cumulative density function (",
                              nb, " observations)", sep="")
+
+          yTitle <- "Proportion"
           
         } else if(how=="pdf"){
           
           mainTitle <- paste("Probability density function (",
                              nb, " observations)", sep="")
+
+          yTitle <- "Proportion"
+          
+        } else if(how=="qplot"){
+          
+          mainTitle <- paste("Quick plot (",
+                             nb, " observations)", sep="")
+          
+          yTitle <- "Count"
           
         } else {
           
@@ -518,10 +552,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
           xTitle <- val_column
           
         }
-        
-        # Y axis is always the same.
-        yTitle <- "Proportion"
-        
+
       }
       
       # Create plots.
@@ -545,7 +576,20 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
         # More info on kernels and bandwidth: http://www.inside-r.org/r-doc/stats/density
         gp <- gp + geom_density(aes_string(x=val_column), kernel=val_kernel, adjust=val_adjustbw)
         
-      } else {
+      } else if(how == "qplot"){
+
+        # Get data as vector.
+        dv <- val_data[, val_column]
+        
+        if(debug){
+          print("Create Histogram")
+          str(head(dv))
+        }
+
+        # Create plot.
+        gp <- qplot(x=dv, binwidth=val_binwidth)
+
+        } else {
         
         warning(paste("how=", how, "not implemented for plots!"))
         
@@ -633,7 +677,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
           print("Boxplot created")
         }
         
-      }
+      } # End if boxplot.
       
       # Add titles.
       gp <- gp + labs(title=mainTitle, x=xTitle, y=yTitle, fill=NULL)
@@ -741,6 +785,9 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       if(exists(".strvalidator_plotDistribution_gui_y_title", envir=env, inherits = FALSE)){
         svalue(f1_ytitle_edt) <- get(".strvalidator_plotDistribution_gui_y_title", envir=env)
       }
+      if(exists(".strvalidator_plotDistribution_gui_box", envir=env, inherits = FALSE)){
+        svalue(f1_box_chk) <- get(".strvalidator_plotDistribution_gui_box", envir=env)
+      }
       if(exists(".strvalidator_plotDistribution_gui_kernel", envir=env, inherits = FALSE)){
         svalue(f1_kernel_drp) <- get(".strvalidator_plotDistribution_gui_kernel", envir=env)
       }
@@ -749,6 +796,9 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       }
       if(exists(".strvalidator_plotDistribution_gui_width", envir=env, inherits = FALSE)){
         svalue(f1_width_spn) <- get(".strvalidator_plotDistribution_gui_width", envir=env)
+      }
+      if(exists(".strvalidator_plotDistribution_gui_binwidth", envir=env, inherits = FALSE)){
+        svalue(f1_binwidth_edt) <- get(".strvalidator_plotDistribution_gui_binwidth", envir=env)
       }
       
       if(debug){
@@ -768,9 +818,11 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       assign(x=".strvalidator_plotDistribution_gui_title", value=svalue(f1_title_edt), envir=env)
       assign(x=".strvalidator_plotDistribution_gui_x_title", value=svalue(f1_xtitle_edt), envir=env)
       assign(x=".strvalidator_plotDistribution_gui_y_title", value=svalue(f1_ytitle_edt), envir=env)
+      assign(x=".strvalidator_plotDistribution_gui_box", value=svalue(f1_box_chk), envir=env)
       assign(x=".strvalidator_plotDistribution_gui_kernel", value=svalue(f1_kernel_drp), envir=env)
       assign(x=".strvalidator_plotDistribution_gui_theme", value=svalue(f1_theme_drp), envir=env)
       assign(x=".strvalidator_plotDistribution_gui_width", value=svalue(f1_width_spn), envir=env)
+      assign(x=".strvalidator_plotDistribution_gui_binwidth", value=svalue(f1_binwidth_edt), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -789,6 +841,9 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       if(exists(".strvalidator_plotDistribution_gui_y_title", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotDistribution_gui_y_title", envir = env)
       }
+      if(exists(".strvalidator_plotDistribution_gui_box", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDistribution_gui_box", envir = env)
+      }
       if(exists(".strvalidator_plotDistribution_gui_kernel", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotDistribution_gui_kernel", envir = env)
       }
@@ -797,6 +852,9 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       }
       if(exists(".strvalidator_plotDistribution_gui_width", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotDistribution_gui_width", envir = env)
+      }
+      if(exists(".strvalidator_plotDistribution_gui_binwidth", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDistribution_gui_binwidth", envir = env)
       }
       
       if(debug){

@@ -12,11 +12,10 @@
 # 29.09.2013: First version.
 
 
-#' @title Analyse off-ladder alleles
+#' @title Analyse Off-ladder Alleles
 #'
 #' @description
-#' \code{calculateOL_gui} is a GUI wrapper for the \code{\link{calculateOL}}
-#'  function.
+#' GUI wrapper for the \code{\link{calculateOL}} function.
 #'
 #' @details By analysis of the allelic ladder the risk for getting off-ladder
 #' (OL) alleles are calculated. The frequencies from a provided population

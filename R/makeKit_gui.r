@@ -16,10 +16,10 @@
 # 21.09.2013: Fixed no gender marker by putting 'NA' as option.
 # 22.06.2013: First version.
 
-#' @title Make kit
+#' @title Make Kit
 #'
 #' @description
-#' \code{makeKit_gui} add new kits or edit the kit file.
+#' Add new kits or edit the kit file.
 #'
 #' @details A graphical user interface for reading information from 'bins' and 
 #' 'panels' file for the creation of additional kits. It is also possible to

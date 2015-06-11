@@ -4,12 +4,13 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.01.2015: Fixed $Sample -> $Sample.Name bug.
 # 27.11.2014: First version.
 
-#' @title Calculate Pull-up
+#' @title Calculate Spectral Pull-up
 #'
 #' @description
-#' \code{calculatePullup} calculates possible pull-up peaks.
+#' Calculates possible pull-up peaks.
 #'
 #' @details
 #' Calculates possible pull-up (aka. bleed-through) peaks in a dataset.
@@ -347,7 +348,7 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
           }
           
           # Extract known peak information.
-          knownSample <- c(knownSample, rep(knownTmp$Sample, len))
+          knownSample <- c(knownSample, rep(knownTmp$Sample.Name, len))
           knownMarker <- c(knownMarker, rep(knownTmp$Marker, len))
           knownDye <- c(knownDye, rep(knownTmp$Dye, len))
           knownAllele <- c(knownAllele, rep(knownTmp$Allele, len))
@@ -374,12 +375,10 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
   pulldelta <- as.numeric(pullPoint) - as.numeric(knownPoint)
   
   if(debug){
-    print("dfKnown")
-    print(dfKnown)
-    #print(head(dfKnown))
-    #print(tail(dfKnown))
+    print(head(dfKnown))
+    print(tail(dfKnown))
   }
-
+  
   res <- data.frame(Sample.Name=knownSample, Marker=knownMarker,Dye=knownDye,
                     Allele=knownAllele, Height=knownHeight, Size=knownSize,
                     Data.Point=knownPoint, P.Marker=pullMarker, P.Dye=pullDye,

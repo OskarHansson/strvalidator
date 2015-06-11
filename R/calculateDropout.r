@@ -24,11 +24,10 @@
 # 15.05.2013: Added check that 'Height' is numeric, convert if not.
 # 13.04.2013: Rewritten function for 'slim' data only.
 
-#' @title Calculate drop-out events
+#' @title Calculate Drop-out Events
 #'
 #' @description
-#' \code{calculateDropout} calculate drop-out events (allele and locus) and
-#' records the surviving peak height.
+#' Calculate drop-out events (allele and locus) and records the surviving peak height.
 #'
 #' @details
 #' Calculates drop-out events. In case of allele dropout the peak height of the

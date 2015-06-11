@@ -20,10 +20,10 @@
 # 05.06.2013: Added 'gender.marker'
 # 19.05.2013: Re-written for reading data from text file.
 
-#' @title Get kit
+#' @title Get Kit
 #'
 #' @description
-#' \code{getKit} provides information about STR kits.
+#' Provides information about STR kits.
 #'
 #' @details
 #' The function returns the following information for a kit specified in kits.txt:

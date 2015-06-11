@@ -18,11 +18,10 @@
 # 18.07.2013: Check before overwrite object.
 # 17.07.2013: First version.
 
-#' @title Crop or replace
+#' @title Crop Or Replace
 #'
 #' @description
-#' \code{cropData_gui} is a GUI simplifying cropping and replacing values in
-#' data frames.
+#' GUI simplifying cropping and replacing values in data frames.
 #'
 #' @details Select a data frame from the dropdown and a target column.
 #' Select to discard or replace values and additional options.

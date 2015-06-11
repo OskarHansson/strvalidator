@@ -10,7 +10,7 @@
 #' @title Guess Profile
 #'
 #' @description
-#' \code{guessProfile} try to guess the correct profile based on peak height.
+#' Guesses the correct profile based on peak height.
 #'
 #' @details
 #' Takes typing data from single source samples and filters out the presumed

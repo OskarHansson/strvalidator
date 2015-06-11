@@ -9,11 +9,10 @@
 # 08.05.2014: Implemented 'checkDataset'.
 # 11.01.2014: First version.
 
-#' @title Calculate peaks
+#' @title Calculate Peaks
 #'
 #' @description
-#' \code{calculatePeaks_gui} is a GUI wrapper for the
-#' \code{\link{calculatePeaks}} function.
+#' GUI wrapper for the \code{\link{calculatePeaks}} function.
 #'
 #' @details Counts the number of peaks in samples and markers with option to
 #'  discard off-ladder peaks and to label groups according to maximum number

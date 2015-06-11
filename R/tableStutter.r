@@ -12,10 +12,10 @@
 # <30.05.2013: n.alleles
 # <30.05.2013: 95% percentile and Max
 
-#' @title Table stutter
+#' @title Table Stutter
 #'
 #' @description
-#' \code{tableStutter} summarizes a stutter analysis in table format.
+#' Summarizes stutter analysis result in table format.
 #'
 #' @details
 #' Summarize the stutter analysis in table format with different scope

@@ -10,10 +10,10 @@
 # 01.03.2014: Fixed bug kit always "ESX17".
 # 11.09.2014: First version.
 
-#' @title Add size information.
+#' @title Add Size Information.
 #'
 #' @description
-#' \code{addSize} add size information to alleles.
+#' Add size information to alleles.
 #'
 #' @details
 #' Adds a column 'Size' with the fragment size in base pair (bp) for each allele as

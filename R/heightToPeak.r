@@ -7,13 +7,13 @@
 # 15.12.2014: Changed parameter names to format: lower.case
 # 09.12.2014: Moved from PCRsim.
 
-#' @title Height to peak.
+#' @title Height To Peak.
 #'
 #' @description
-#' \code{heightToPeak} 'converts' a peak into a plottable polygon.
+#' Internal helper function to convert a peak into a plottable polygon.
 #'
 #' @details
-#' 'Converts' a single height and size value to a plottable 0-height-0 triangle/peak value.
+#' Converts a single height and size value to a plottable 0-height-0 triangle/peak value.
 #' Makes 3 data points from each peak size for plotting a polygon representing a peak.
 #' Factors in other columns might get converted to factor level.
 #' 

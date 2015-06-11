@@ -18,7 +18,7 @@
 #' @title Plot Precision
 #'
 #' @description
-#' \code{plotPrecision_gui} is a GUI simplifying the creation of plots from precision data.
+#' GUI simplifying the creation of plots from precision data.
 #'
 #' @details Plot precision data for size, height, or data point as dotplot or
 #' boxplot. Plot per marker or all in one. Use the mean value or the allele

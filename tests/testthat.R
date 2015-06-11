@@ -17,4 +17,5 @@ test_check(package="strvalidator")
 #  # Run manually:
 # library(strvalidator)
 # library(testthat)
+# # Set wd to the dev source files, then run:
 # test_dir("tests/testthat")

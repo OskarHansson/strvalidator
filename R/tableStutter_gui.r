@@ -23,7 +23,7 @@
 #' @title Table Stutter
 #'
 #' @description
-#' \code{tableStutter_gui} is a GUI wrapper for the \code{\link{tableStutter}} function.
+#' GUI wrapper for the \code{\link{tableStutter}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{tableStutter}} function by providing a graphical 

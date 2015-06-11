@@ -6,10 +6,10 @@
 # CHANGE LOG (last 20 changes)
 # 18.06.2014: First version.
 
-#' @title Calculate concordance.
+#' @title Calculate Concordance.
 #'
 #' @description
-#' \code{calculateConcordance} Compares profiles in multiple datasets.
+#' Calculates concordance and discordance for profiles in multiple datasets.
 #'
 #' @details Takes a list of datasets as input. It is assumed that each unique 
 #' sample name represent a result originating from the same source DNA and 

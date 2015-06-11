@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.03.2015: Rounded printed conservative drop-out threshold to integer.
 # 05.01.2015: Changed check of suggested package ResourceSelection in accordance
 #             with Writing R extensions v 3.2.1 section 1.1.3.1.
 # 14.12.2014: Added option to use average peak height 'H'.
@@ -27,10 +28,10 @@
 # 29.10.2013: Fixed limit y axis drop observations.
 # 24.10.2013: Implemented the 'Hybrid' method and log for testing purposes.
 
-#' @title model and plot drop-out events
+#' @title Model And Plot Drop-out Events
 #'
 #' @description
-#' \code{modelDropout_gui} model probability of drop-out and plots a graph.
+#' Model probability of drop-out and plot graphs.
 #'
 #' @details
 #' Models the probability of drop-out P(dropout) using logistic regression
@@ -871,7 +872,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
         if(val_prediction_print){
           thresholdLegend <- paste(thresholdLegend,
                                    "\n P(dropout>", val_p_dropout,
-                                   "|T=", t_dropout_cons, ")<",
+                                   "|T=",
+                                   round(t_dropout_cons,0),
+                                   ")<",
                                    val_pi_alpha * 100, "%",
                                    sep="")
           

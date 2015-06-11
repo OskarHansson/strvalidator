@@ -23,10 +23,10 @@
 # 25.04.2013: New parameter 'debug'.
 # <25.04.2013: First version.
 
-#' @title Slim data frames
+#' @title Slim Data Frames
 #'
 #' @description
-#' \code{slim_gui} is a GUI wrapper for the \code{\link{slim}} function.
+#' GUI wrapper for the \code{\link{slim}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{slim}} function by providing a graphical 
@@ -169,10 +169,10 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       svalue(f2_save_edt) <- paste(val_obj, "_slim", sep="")
 
       # Guess column names to keep fixed.
-      svalue(fix_txt) <- colNames(.gData, slim=TRUE, concatenate="|")
+      svalue(fix_edt) <- colNames(data=.gData, slim=TRUE, numbered=TRUE, concatenate="|")
       
       # Guess column names to stack.
-      svalue(stack_txt) <- colNames(.gData, slim=FALSE, concatenate="|")
+      svalue(stack_edt) <- colNames(data=.gData, slim=FALSE, numbered=TRUE, concatenate="|")
       
       # Reset button.
       svalue(slim_btn) <- "Slim dataset"
@@ -182,8 +182,8 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gData <<- data.frame(No.Data=NA)
-      svalue(fix_txt) <- ""
-      svalue(stack_txt) <- ""
+      svalue(fix_edt) <- ""
+      svalue(stack_edt) <- ""
       .refresh_fix_tbl()
       .refresh_stack_tbl()
       svalue(f0_samples_lbl) <- paste(" ", "<NA>", "samples,")
@@ -207,7 +207,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
                     container=fix_f,
                     anchor=c(-1 ,0))
   
-  fix_txt <- gedit(initial.msg="Doubleklick or drag column names to list",
+  fix_edt <- gedit(initial.msg="Doubleklick or drag column names to list",
                    width = 40,
                    container=fix_f)
   
@@ -218,7 +218,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
   # Set initial size (only height is important here).
   size(fix_tbl) <- c(100,200)
   
-  addDropTarget(fix_txt, handler=function(h,...) {
+  addDropTarget(fix_edt, handler=function(h,...) {
     
     if(debug){
       print("SAMPLES:DROPTARGET")
@@ -256,7 +256,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
                       container=stack_f,
                       anchor=c(-1 ,0))
   
-  stack_txt <- gedit(initial.msg="Doubleklick or drag column names to list",
+  stack_edt <- gedit(initial.msg="Doubleklick or drag column names to list",
                      width = 40,
                      container=stack_f)
   
@@ -264,7 +264,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
                       container=stack_f,
                       expand=TRUE)
   
-  addDropTarget(stack_txt, handler=function(h,...) {
+  addDropTarget(stack_edt, handler=function(h,...) {
     # Get values.
     drp_val <- h$dropdata
     stack_val <- svalue(h$obj)
@@ -335,8 +335,8 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
     if(nchar(val_name) > 0) {
       
       # Get values.
-      fix_val <- svalue(fix_txt)
-      stack_val <- svalue(stack_txt)
+      fix_val <- svalue(fix_edt)
+      stack_val <- svalue(stack_edt)
       keep_val <- svalue(f1_keep_chk)
       
       # Slim require a vector of strings.
@@ -359,7 +359,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       enabled(slim_btn) <- FALSE
       
       datanew <- slim(data=.gData, fix=fix_val, stack=stack_val,
-                      keepAllFixed=keep_val, debug=debug)
+                      keep.na=keep_val, debug=debug)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -402,7 +402,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Get values.
       tbl_val <- svalue (h$obj)
-      fix_val <- svalue(fix_txt)
+      fix_val <- svalue(fix_edt)
       
       # Add new value to selected.
       new <- ifelse(nchar(fix_val) > 0,
@@ -410,7 +410,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
                     tbl_val)
       
       # Update text box.
-      svalue(fix_txt) <- new
+      svalue(fix_edt) <- new
       
       # Update sample name table.
       tmp_tbl <- fix_tbl[,]  # Get all values.
@@ -441,7 +441,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Get values.
       tbl_val <- svalue (h$obj)
-      stack_val <- svalue(stack_txt)
+      stack_val <- svalue(stack_edt)
       
       # Add new value to selected.
       new <- ifelse(nchar(stack_val) > 0,
@@ -449,7 +449,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
                     tbl_val)
       
       # Update text box.
-      svalue(stack_txt) <- new
+      svalue(stack_edt) <- new
       
       # Update column name table.
       tmp_tbl <- stack_tbl[,]  # Get all values.

@@ -5,8 +5,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.06.2015: Fixed 'Error in if (dyeOk[d]) { : missing value where TRUE/FALSE needed' (Fixes issue#9).
 # 15.12.2014: Changed parameter names to format: lower.case
-# 20.11.2014: Fixed error when NA's in markerPeakHeightSum.
+# 20.11.2014: Fixed error when NA's in markerPeakHeightSum (Fixes issue#9).
 # 03.10.2014: Added 'word' parameter (word boundary), and progress.
 # 07.05.2014: New column 'TPH' for the total locus peak height.
 # 23.02.2014: Removed 'perSample' parameter. Use 'tableBalance' for summary statistics.
@@ -24,10 +25,10 @@
 # 14.04.2013: Reworked the code:
 #             Removed dependency of column 'Zygosity' by adding parameter 'ref'.
 
-#' @title Calculate balance
+#' @title Calculate Balance
 #'
 #' @description
-#' \code{calculateBalance} calculates the inter and intra locus balance.
+#' Calculates the inter and intra locus balance.
 #'
 #' @details
 #' Calculates the inter and intra locus balance for a dataset.
@@ -404,7 +405,7 @@ calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
         dyes <- unique(markerDye)
         for(d in seq(along=dyes)){
           # Channel is marked as ok if peaks in all markers in that channel.
-          dyeOk[d] <- sum(markerPeakHeightSum[markerDye==dyes[d]] == 0) == 0
+          dyeOk[d] <- sum(markerPeakHeightSum[markerDye==dyes[d]] == 0, na.rm=TRUE) == 0
         }
         if(debug){
           print("dyes")

@@ -2,6 +2,7 @@
 # TODO LIST
 # TODO: This function is based on the old version in PCRsim and could 
 # probably benefit of a complete re-write...
+# TODO: Handle negative samples.
 #
 # NOTE:
 # NB! To avoid 'object not found' for data.table see solution at:
@@ -9,12 +10,14 @@
 
 ################################################################################
 # CHANGE LOG
+# 31.05.2015: Added 'numbered=TRUE' to 'slim' function.
+# 10.02.2015: Changed error message.
 # 09.12.2014: Function moved from PCRsim package.
 
 #' @title Generate EPG
 #'
 #' @description
-#' \code{generateEPG} visualises an EPG from DNA profiling data.
+#' Visualises an EPG from DNA profiling data.
 #'
 #' @details
 #' Generates a electropherogram like plot from 'data' and 'kit'.
@@ -186,8 +189,8 @@ generateEPG <- function(data, kit, title=NULL, peaks=TRUE, type="profile",
     } else {}
     
     # Slim data frame.
-    fixCol <- colNames(data, slim = TRUE, concatenate=NULL, debug=debug)
-    stackCol <- colNames(data, slim = FALSE, concatenate=NULL, debug=debug)
+    fixCol <- colNames(data=data, slim = TRUE, numbered=TRUE, concatenate=NULL, debug=debug)
+    stackCol <- colNames(data=data, slim = FALSE, numbered=TRUE, concatenate=NULL, debug=debug)
     data <- slim(data=data, fix=fixCol, stack=stackCol, debug=debug)
     
     # Debug info.
@@ -233,7 +236,8 @@ generateEPG <- function(data, kit, title=NULL, peaks=TRUE, type="profile",
   } else if(type=="profile") {
     distr <- FALSE
   } else {
-    message(paste("Plot type", type, "not supported, using default 'profile'"))
+    message(paste("Plot type '", type,
+                  "' not supported, using default 'profile'", sep=""))
   }
   
   # Create EPG -----------------------------------------------------------------

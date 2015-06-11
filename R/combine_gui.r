@@ -15,10 +15,10 @@
 # 17.05.2013: First version.
 
 
-#' @title Combine two datasets
+#' @title Combine Datasets
 #'
 #' @description
-#' \code{combine_gui} is a GUI for combining two datasets.
+#' GUI for combining two datasets.
 #'
 #' @details
 #' Simple GUI to combine two datasets using the \code{\link{rbind}} function.

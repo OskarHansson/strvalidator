@@ -10,10 +10,10 @@
 # 27.11.2013: Fixed uppercase marker names when ignore.case=TRUE.
 # 10.11.2013: First version.
 
-#' @title Add missing markers.
+#' @title Add Missing Markers.
 #'
 #' @description
-#' \code{addMarker} Add missing markers to a dataset given a kit.
+#' Add missing markers to a dataset given a kit.
 #'
 #' @details
 #' Given a dataset or a vector with sample names the function loops through

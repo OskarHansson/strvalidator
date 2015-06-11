@@ -8,10 +8,10 @@
 # 30.09.2014: Check if package is loaded to avoid error in path.package.
 # 01.10.2013: First version.
 
-#' @title Get allele frequency database
+#' @title Get Allele Frequency Database
 #'
 #' @description
-#' \code{getDb} gives access to allele frequency databases.
+#' Gives access to allele frequency databases.
 #'
 #' @details
 #' The function provides access to allele frequency databases stored in

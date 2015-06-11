@@ -4,14 +4,14 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 13.12.2014: Added kit dropdown and kit attribute to result.
 # 04.12.2014: First version.
 
-#' @title Calculate Spectral Pull-Up
+#' @title Calculate Spectral Pull-up
 #'
 #' @description
-#' \code{calculatePullup_gui} is a GUI wrapper for the
-#' \code{\link{calculatePullup}} function.
+#' GUI wrapper for the \code{\link{calculatePullup}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculatePullup}} function by
@@ -26,7 +26,8 @@
 #' 
 #' @export
 #' 
-#' @seealso \code{\link{calculatePullup}}
+#' @seealso \code{\link{calculatePullup}}, \code{\link{checkSubset}}
+
 
 calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
                                  debug=FALSE, parent=NULL){
@@ -213,7 +214,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_ref,
                                    console=FALSE,
-                                   ignoreCase=val_ignore,
+                                   ignore.case=val_ignore,
                                    word=val_word)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 

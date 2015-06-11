@@ -5,14 +5,15 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.06.2015: Changed column name 'File' to 'File.Name'.
 # 15.01.2014: Added message to show progress .
 # 12.01.2014: Replaced 'subset' with native code.
 # 11.01.2014: First version.
 
-#' @title Count peaks
+#' @title Calculate Peaks
 #'
 #' @description
-#' \code{calculatePeaks} calculates the number of peaks in a sample.
+#' Calculates the number of peaks in samples.
 #'
 #' @details
 #' Count the number of peaks in a sample profile based on values in the 
@@ -150,7 +151,7 @@ calculatePeaks <- function(data, bins=c(0,2,3), labels=c("No contamination",
   data$Group <- NA
   
   # Create Id by combining the sample and file name.
-  data$Id <- paste(data$Sample.Name, data$File, sep="_")
+  data$Id <- paste(data$Sample.Name, data$File.Name, sep="_")
   
   # Get unique sample names.
   sample <- unique(data$Id)

@@ -14,10 +14,10 @@
 # <18.09.2013: New parameter 'add.missing.levels'
 # <18.09.2013: First working version.
 
-#' @title Sort markers
+#' @title Sort Markers
 #'
 #' @description
-#' \code{sortMarkers} Sort markers and dye as they appear in the EPG.
+#' Sort markers and dye as they appear in the EPG.
 #'
 #' @details
 #' Change the order of factor levels for 'Marker' and 'Dye' according to 'kit'.

@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
+# 09.04.2015: Added option 'invert' to filter peaks NOT in reference.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -23,13 +25,13 @@
 #' @title Filter Profile
 #'
 #' @description
-#' \code{filterProfile_gui} is a GUI wrapper for the
-#' \code{\link{filterProfile}} function.
+#' GUI wrapper for the \code{\link{filterProfile}} function.
 #'
 #' @details Simplifies the use of the \code{\link{filterProfile}} function
 #' by providing a graphical user interface to it.
-#' All data not matching the reference will be discarded. Useful for
-#' filtering stutters and artifacts from raw typing data.
+#' All data not matching/matching the reference will be discarded.
+#' Useful for filtering stutters and artifacts from raw typing data or
+#' to identify drop-ins.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
@@ -211,7 +213,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_ref,
                                    console=FALSE,
-                                   ignoreCase=val_ignore,
+                                   ignore.case=val_ignore,
                                    word=val_word)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
@@ -250,6 +252,10 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                spacing = 5,
                container = gv) 
 
+  f1_invert_chk <- gcheckbox(text="Invert (remove peaks matching reference)",
+                                       checked = FALSE,
+                                       container = f1)
+  
   f1_add_missing_loci_chk <- gcheckbox(text="Add missing loci",
                                     checked = TRUE,
                                     container = f1)
@@ -301,6 +307,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
     
     val_data <- .gData
     val_ref <- .gRef
+    val_invert <- svalue(f1_invert_chk)
     val_add_missing_loci <- svalue(f1_add_missing_loci_chk)
     val_keep_na <- svalue(f1_keep_na_chk)
     val_ignore_case <- svalue(f1_ignore_case_chk)
@@ -332,7 +339,9 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                                ref=val_ref,
                                add.missing.loci=val_add_missing_loci,
                                keep.na=val_keep_na,
-                               ignore.case=val_ignore_case)
+                               ignore.case=val_ignore_case,
+                               invert=val_invert,
+                               debug=debug)
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -411,6 +420,9 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
     
     # Then load settings if true.
     if(svalue(savegui_chk)){
+      if(exists(".strvalidator_filterProfile_gui_invert", envir=env, inherits = FALSE)){
+        svalue(f1_invert_chk) <- get(".strvalidator_filterProfile_gui_invert", envir=env)
+      }
       if(exists(".strvalidator_filterProfile_gui_add_loci", envir=env, inherits = FALSE)){
         svalue(f1_add_missing_loci_chk) <- get(".strvalidator_filterProfile_gui_add_loci", envir=env)
       }
@@ -436,6 +448,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
     if(svalue(savegui_chk)){
       
       assign(x=".strvalidator_filterProfile_gui_savegui", value=svalue(savegui_chk), envir=env)
+      assign(x=".strvalidator_filterProfile_gui_invert", value=svalue(f1_invert_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_add_loci", value=svalue(f1_add_missing_loci_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_keep_na", value=svalue(f1_keep_na_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_ignore_case", value=svalue(f1_ignore_case_chk), envir=env)
@@ -445,6 +458,9 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       
       if(exists(".strvalidator_filterProfile_gui_savegui", envir=env, inherits = FALSE)){
         remove(".strvalidator_filterProfile_gui_savegui", envir = env)
+      }
+      if(exists(".strvalidator_filterProfile_gui_invert", envir=env, inherits = FALSE)){
+        remove(".strvalidator_filterProfile_gui_invert", envir = env)
       }
       if(exists(".strvalidator_filterProfile_gui_add_loci", envir=env, inherits = FALSE)){
         remove(".strvalidator_filterProfile_gui_add_loci", envir = env)

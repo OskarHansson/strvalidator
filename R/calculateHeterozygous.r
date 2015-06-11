@@ -11,10 +11,10 @@
 # <20.05.2013: First version
 
 
-#' @title Calculate heterozygous loci
+#' @title Calculate Heterozygous Loci
 #'
 #' @description
-#' \code{calculateHeterozygous} Calculates the number of alleles in each marker.
+#' Calculates the number of alleles in each marker.
 #'
 #' @details Adds a column 'Heterozygous' to 'data'. Calculates the number of
 #' unique values in the 'Allele*' columns for each marker.

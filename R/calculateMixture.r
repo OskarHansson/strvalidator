@@ -9,10 +9,10 @@
 # 28.08.2014: Fixed bug in drop-out of minor in If 3: AA:AB | (A-B)/(A+B). 
 # 06.07.2014: First version.
 
-#' @title Calculate mixture.
+#' @title Calculate Mixture.
 #'
 #' @description
-#' \code{calculateMixture} Calculate Mx, drop-in, and % profile for mixtures.
+#' Calculate Mx, drop-in, and % profile for mixtures.
 #'
 #' @details Given a set of mixture results, reference profiles for the 
 #' major component, and reference profile for the minor component the 

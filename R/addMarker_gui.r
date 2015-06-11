@@ -11,10 +11,10 @@
 # 27.11.2013: First version.
 
 
-#' @title Add missing markers
+#' @title Add Missing Markers
 #'
 #' @description
-#' \code{addMarker_gui} is a GUI wrapper for the \code{\link{addMarker}} function.
+#' GUI wrapper for the \code{\link{addMarker}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{addMarker}} function by providing a graphical 

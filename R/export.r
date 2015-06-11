@@ -14,7 +14,7 @@
 #' @title Export
 #'
 #' @description
-#' \code{export} exports or saves various objects.
+#' Exports or saves various objects.
 #'
 #' @details
 #' Export objects to a directory on the file system. Currently only objects

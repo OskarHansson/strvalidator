@@ -11,7 +11,7 @@
 #' @title Plot Pull-up
 #'
 #' @description
-#' \code{plotPullup_gui} is a GUI simplifying the creation of plots from pull-up data.
+#' GUI simplifying the creation of plots from pull-up data.
 #'
 #' @details Select a dataset to plot and the typing kit used (if not autodetected).
 #' Plot pull-up peak ratio versus the peak height of the known allele
@@ -464,14 +464,8 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
       dyes <- addColor(data=dyes, have="Color", need="Dye")
       
       # Factor and maintain correct order of levels.
-      print("xxxxxxxxxxxxxxxxxx")
-      print(str(.gData))
-      print(str(.gData$P.Dye))
       .gData$Dye <- factor(.gData$Dye, levels=dyes)
       .gData$P.Dye <- factor(.gData$P.Dye, levels=dyes)
-      print(str(.gData$P.Dye))
-      print(str(.gData))
-      print(dyes)
       
       # Drop sex markers.
       if(val_drop){

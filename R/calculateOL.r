@@ -7,10 +7,10 @@
 # 21.01.2014: Added parameter 'limit'.
 # 17.01.2014: First version.
 
-#' @title Off-ladder risk
+#' @title Analyse Off-ladder Alleles
 #'
 #' @description
-#' \code{calculateOL} analyse the risk for off-ladder alleles.
+#' Analyse the risk for off-ladder alleles.
 #'
 #' @details By analysing the allelic ladders the risk for getting off-ladder
 #' (OL) alleles are calculated. The frequencies from a provided population

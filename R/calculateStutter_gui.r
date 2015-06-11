@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 05.01.2015: Added kit dropdown and kit attribute to result.
 # 07.10.2014: Added 'focus', added 'parent' parameter.
 # 03.08.2014: Added detection of kit and add attribute to result.
@@ -25,11 +26,10 @@
 # 09.05.2013: .result removed, added save as group.
 # 27.04.2013: Added selection of dataframes from provided environment.
 
-#' @title Calculate Stutters
+#' @title Calculate Stutter
 #'
 #' @description
-#' \code{calculateStutter_gui} is a GUI wrapper for the
-#' \code{\link{calculateStutter}} function.
+#' GUI wrapper for the \code{\link{calculateStutter}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateStutter}} function by providing 
@@ -214,7 +214,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_ref,
                                    console=FALSE,
-                                   ignoreCase=TRUE,
+                                   ignore.case=TRUE,
                                    word=FALSE)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 

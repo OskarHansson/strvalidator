@@ -10,10 +10,10 @@
 # 20.01.2014: Added 'debug' parameter.
 # 17.07.2013: First version.
 
-#' @title Save object
+#' @title Save Object
 #'
 #' @description
-#' Saves an object in the specified environment.
+#' Save an object in the specified environment.
 #'
 #' @details Saves an object with the given name in the specified environment
 #' if it does not exist. If the object exist a message box ask if the object
@@ -42,6 +42,8 @@ saveObject <- function(name=NULL, object, parent=NULL, suggest="",
     print(paste("IN:", match.call()[[1]]))
     print("name:")
     print(name)
+    print("names(object)")
+    print(names(object))
   }
   
   # Initiate flag.

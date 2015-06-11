@@ -10,10 +10,10 @@
 # 17.05.2013: Made general. Changed name from listDataFrames -> listObjects.
 # <17.05.2013: First version.
 
-#' @title List objects
+#' @title List Objects
 #'
 #' @description
-#' \code{listObjects} returns a list of objects.
+#' Internal helper function to list objects in an environment.
 #'
 #' @details
 #' Internal helper function to retrieve a list of objects from a workspace.

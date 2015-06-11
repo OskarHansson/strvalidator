@@ -15,13 +15,14 @@
 # 09.05.2013: .result removed, added save as group.
 # 25.04.2013: First version.
 
-#' @title Add data
+#' @title Add Data
 #'
 #' @description
-#' \code{addData_gui} is a GUI wrapper for \code{\link{addData}}.
+#' GUI wrapper for \code{\link{addData}}.
 #'
-#' @details Add new information to a dataset from a second dataset by
-#' a key column.
+#' @details
+#' Simplifies the use of the \code{\link{addData}} function by providing a graphical 
+#' user interface to it.
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.

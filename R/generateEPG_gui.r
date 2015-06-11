@@ -4,14 +4,14 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2015: Enable 'generate' after selection of new sample.
 # 09.12.2014: First version.
 
 
 #' @title Generate EPG
 #'
 #' @description
-#' \code{generateEPG_gui} is a GUI wrapper for the \code{\link{generateEPG}} 
-#' function.
+#' GUI wrapper for the \code{\link{generateEPG}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{generateEPG}} function by providing a graphical 
@@ -175,6 +175,10 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         # Set sample name as proposed title.
         svalue(f1_title_edt) <- paste(val_sample, " (",
                                       svalue(kit_drp), ")", sep="")
+        
+        # Enable buttons.
+        enabled(plot_epg_btn) <- TRUE
+        
       }
     }
     

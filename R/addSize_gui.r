@@ -12,10 +12,10 @@
 # 11.02.2014: First version.
 
 
-#' @title Add size
+#' @title Add Size Information
 #'
 #' @description
-#' \code{addSize_gui} is a GUI wrapper for the \code{\link{addSize}} function.
+#' GUI wrapper for the \code{\link{addSize}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{addSize}} function by providing a

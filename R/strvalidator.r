@@ -12,7 +12,7 @@
 # (GTK+ must be installed by clicking 'OK' on the message box).
 
 # See http://r-pkgs.had.co.nz/release.html for advice on release.
-# IMPORTANT: Use build_win() to test on current R and R-dev.
+# IMPORTANT: Use build_win() to test on current R and R-dev 'library(devtools)'.
 # IMPORTANT: Use devtools::release() to submitt to CRAN.
 
 # Versioning convention (x.yy.z):
@@ -21,14 +21,15 @@
 # Increment z on minor changes and bug fixes.
 
 # NOTE:
-# \u00B5 is the unicode for µ
-# Access a file: system.file('doc', 'example', package = 'mypackage')
 # NOTE: Can't import data frame named 'drop'
 # NOTE: Buttons named 'Plot' will show up 'plot'.
 # NOTE: Some button names will change due to locale.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.06.2015: Added 'Calculate' and 'Plot' (AT6) button in 'AT' tab.
+# 24.05.2015: Added 'Columns' button in 'Tools' tab.
+# 04.05.2015: Added 'AT' tab.
 # 01.01.2015: Fixed error in 'Workspace' tab when no selection and 'Delete' is pressed.
 # 19.12.2014: Added 'EPG' button in 'Tools' tab.
 # 12.12.2014: Re-named 'Edit' tab to 'Tools' and change name on some buttons.
@@ -46,18 +47,11 @@
 # 17.06.2014: Added version number in title.
 # 15.02.2014: Added 'Summarize' balance data button in 'Balance' tab.
 # 11.02.2014: Added 'Add Size' button in edit tab.
-# 09.02.2014: Added buttons for plotting distributions in 'Result' tab.
-# 06.02.2014: Added 'Summarize' precision data button in 'Precision' tab.
-# 13.01.2014: Fixed bug not updating ws when empty, last df shows after removed.
-# 11.01.2014: Added buttons for analysis of peaks in 'Result' tab.
-# 07.12.2013: Added buttons for analysis of precision in new 'Precision' tab.
-# 27.11.2013: Added 'Add Marker' button in edit tab.
-# 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 
-#' @title Graphical user interface for the STR-validator package
+#' @title Graphical User Interface For The STR-validator Package
 #'
 #' @description
-#' \code{strvalidator} is validation and process control toolbox for forensic genetics.
+#' Validation and process control toolbox for forensic genetic laboratories.
 #'
 #' @details STR-validator (pronounced starvalidator) is a package developed
 #' for validation and process control of both methods and instruments in a
@@ -75,8 +69,9 @@
 #' General user information and tutorials:\cr
 #' \url{https://sites.google.com/site/forensicapps/strvalidator}\cr\cr
 #' 
-#' Facebook:\cr
+#' Facebook user community:\cr
 #' \url{https://www.facebook.com/pages/STR-validator/240891279451450?ref=tn_tnmn}\cr\cr
+#' \url{https://www.facebook.com/groups/strvalidator/}\cr\cr
 #' 
 #' Please report bugs to:\cr
 #' \url{https://github.com/OskarHansson/strvalidator/issues}\cr\cr
@@ -90,7 +85,7 @@
 #' 
 #' @references
 #' Recommended Minimum Criteria for the Validation of Various Aspects of the DNA Profiling Process
-#' \url{http://www.enfsi.eu/documents/minimum-validation-guidelines-dna-profiling-v2010}
+#' \url{http://www.enfsi.eu/sites/default/files/documents/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf}
 #' Validation Guidelines for Forensic DNA Analysis Methods (2012)
 #' \url{http://swgdam.org/SWGDAM_Validation_Guidelines_APPROVED_Dec_2012.pdf}
 #' 
@@ -129,6 +124,7 @@ strvalidator <- function(debug=FALSE){
   .project_tab_name <- "Projects"
   .drylab_tab_name <- "DryLab"
   .edit_tab_name <- "Tools"
+  .at_tab_name <- "AT"
   .stutter_tab_name <- "Stutter"
   .balance_tab_name <- "Balance"
   .concordance_tab_name <- "Concordance"
@@ -228,6 +224,13 @@ strvalidator <- function(debug=FALSE){
                      label=.edit_tab_name,
                      expand=TRUE)
   
+  at_tab <- ggroup(horizontal = FALSE,
+                   spacing=10,
+                   use.scrollwindow=FALSE,
+                   container = nb,
+                   label=.at_tab_name,
+                   expand=TRUE)
+  
   stutter_tab <- ggroup(horizontal = FALSE,
                         spacing=10,
                         use.scrollwindow=FALSE,
@@ -303,7 +306,8 @@ strvalidator <- function(debug=FALSE){
                      "General information and tutorials:\n",
                      "https://sites.google.com/site/forensicapps/strvalidator\n\n",
                      "Facebook:\n",
-                     "https://www.facebook.com/pages/STR-validator/240891279451450?ref=tn_tnmn\n\n",
+                     "https://www.facebook.com/pages/STR-validator/240891279451450?ref=tn_tnmn\n",
+                     "https://www.facebook.com/groups/strvalidator/\n\n",
                      "Please report bugs to:\n",
                      "https://github.com/OskarHansson/strvalidator/issues\n\n",
                      "The source is hosted at GitHub:\n",
@@ -1370,14 +1374,31 @@ strvalidator <- function(debug=FALSE){
     combine_gui(env=.strvalidator_env, debug=debug, parent=w)
     
   } )
+
+  # COLUMNS -------------------------------------------------------------------
+  
+  edit_grid[13,1] <- edit_columns_btn <- gbutton(text="Columns",
+                                                 border=TRUE,
+                                                 container = edit_grid) 
+  
+  edit_grid[13,2] <- glabel(text="Perform actions on columns.",
+                            container=edit_grid,
+                            anchor=c(-1 ,0))
+  
+  addHandlerChanged(edit_columns_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    columns_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
   
   # CALCULATE HETEROZYGOUS ----------------------------------------------------
   
-  edit_grid[13,1] <- edit_het_btn <- gbutton(text="Heterozygous",
+  edit_grid[14,1] <- edit_het_btn <- gbutton(text="Heterozygous",
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[13,2] <- glabel(text="Indicate heterozygous loci for a reference dataset.",
+  edit_grid[14,2] <- glabel(text="Indicate heterozygous loci for a reference dataset.",
                             container=edit_grid,
                             anchor=c(-1 ,0))
   
@@ -1390,11 +1411,11 @@ strvalidator <- function(debug=FALSE){
   
   # CALCULATE H ---------------------------------------------------------------
   
-  edit_grid[14,1] <- edit_h_btn <- gbutton(text="Height",
+  edit_grid[15,1] <- edit_h_btn <- gbutton(text="Height",
                                            border=TRUE,
                                            container = edit_grid) 
   
-  edit_grid[14,2] <- glabel(text="Calculate peak height metrics.",
+  edit_grid[15,2] <- glabel(text="Calculate peak height metrics.",
                             container=edit_grid,
                             anchor=c(-1 ,0))
   
@@ -1407,11 +1428,11 @@ strvalidator <- function(debug=FALSE){
 
   # GENERATE EPG --------------------------------------------------------------
   
-  edit_grid[15,1] <- edit_epg_btn <- gbutton(text="EPG",
+  edit_grid[16,1] <- edit_epg_btn <- gbutton(text="EPG",
                                            border=TRUE,
                                            container = edit_grid) 
   
-  edit_grid[15,2] <- glabel(text="Generate EPG like plot.",
+  edit_grid[16,2] <- glabel(text="Generate EPG like plot.",
                             container=edit_grid,
                             anchor=c(-1 ,0))
   
@@ -1419,6 +1440,77 @@ strvalidator <- function(debug=FALSE){
     
     # Open GUI.
     generateEPG_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+
+  # AT  #######################################################################
+  
+  
+  glabel("", container=at_tab) # Adds some space.
+  
+  at_grid <- glayout(container = at_tab)
+  
+  
+  # VIEW/EDIT -----------------------------------------------------------------
+  
+  at_grid[1,1] <- at_view_btn <- gbutton(text="Edit", border=TRUE,
+                                         container = at_grid) 
+  
+  at_grid[1,2] <- glabel(text="Edit or view a dataset.",
+                              container=at_grid, anchor=c(-1 ,0))
+  
+  addHandlerChanged(at_view_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    
+  } )
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  at_grid[3,1] <- at_calculate_btn <- gbutton(text="Calculate", border=TRUE,
+                                              container = at_grid) 
+  
+  at_grid[3,2] <- glabel(text="Calculate analytical threshold (AT1, AT2, AT4).",
+                              container=at_grid, anchor=c(-1 ,0))
+  
+  
+  addHandlerChanged(at_calculate_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateAT_gui(env=.strvalidator_env, savegui=.save_gui,
+                    debug=debug, parent=w)
+    
+  } )
+
+  # CALCULATE -----------------------------------------------------------------
+  
+  at_grid[4,1] <- at6_calculate_btn <- gbutton(text="Calculate", border=TRUE,
+                                              container = at_grid) 
+  
+  at_grid[4,2] <- glabel(text="Calculate analytical threshold (AT6).",
+                         container=at_grid, anchor=c(-1 ,0))
+  
+  addHandlerChanged(at6_calculate_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateAT6_gui(env=.strvalidator_env, savegui=.save_gui,
+                    debug=debug, parent=w)
+    
+  } )
+  
+  # PLOT AT -------------------------------------------------------------------
+  
+  at_grid[5,1] <- at_plot_btn <- gbutton(text="Plot", border=TRUE,
+                                         container = at_grid) 
+  
+  at_grid[5,2] <- glabel(text="Create plots for analysed data (AT6).",
+                         container=at_grid)
+  
+  addHandlerChanged(at_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotAT_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   

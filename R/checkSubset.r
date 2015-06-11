@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 27.05.2015: Accepts (the first) column name containing the string 'Sample'
+#             as alternative (case insensitive).
+# 05.05.2015: Added alternative column 'Sample.File.Name'.
+# 05.05.2015: Changed parameter name of ignoreCase to 'ignore.case'.
 # 25.07.2013: Added 'debug' option.
 # 25.07.2013: Fixed bug option 'word' was not correctly implemented.
 # 15.07.2013: Added parameter 'ingoreCase' and 'fixed'.
@@ -11,10 +15,10 @@
 # <15.07.2013: Roxygenized.
 # <15.07.2013: Works with atomic vector.
 
-#' @title check subset
+#' @title Check Subset
 #'
 #' @description
-#' \code{checkSubset} checks the result of subsetting
+#' Check the result of subsetting
 #'
 #' @details
 #' Check if ref and sample names are unique for subsetting.
@@ -25,30 +29,53 @@
 #'  OR an atomic vector e.g. a single sample name string.
 #' @param console logical, if TRUE result is printed to R console,
 #' if FALSE a string is returned. 
-#' @param ignoreCase logical, if TRUE case insesitive matching is used.
+#' @param ignore.case logical, if TRUE case insesitive matching is used.
 #' @param word logical, if TRUE only exact match.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @export
 #' 
 
-checkSubset <- function(data, ref, console=TRUE, ignoreCase=TRUE, word=FALSE, debug=FALSE){
+checkSubset <- function(data, ref, console=TRUE, ignore.case=TRUE, word=FALSE, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
+
+  # Result list.
+  res <- list()
   
   # Get reference name(s).
 	if(is.atomic(ref)){
 		ref.names <- ref
-	} else {
+	} else if("Sample.Name" %in% names(ref)) {
 		ref.names <- unique(ref$Sample.Name)
+	} else if("Sample.File.Name" %in% names(ref)) {
+	  ref.names <- unique(ref$Sample.File.Name)
+	} else if(any(grepl("SAMPLE", names(ref), ignore.case=TRUE))) {
+	  # Get (first) column name containing "Sample".
+	  sampleCol <- names(ref)[grep("SAMPLE", names(ref), ignore.case=TRUE)[1]]
+	  # Grab sample names.
+	  ref.names <- unique(ref[, sampleCol])
+	} else {
+    stop("'ref' must contain a column 'Sample.Name', 'Sample.File.Name',
+         or 'Sample'")
 	}
-
-  res <- list()
   
-  samples <- unique(data$Sample.Name)
-	
+  if("Sample.Name" %in% names(data)) {
+    samples <- unique(data$Sample.Name)
+  } else if("Sample.File.Name" %in% names(data)) {
+    samples <- unique(data$Sample.File.Name)
+  } else if(any(grepl("SAMPLE", names(data), ignore.case=TRUE))) {
+    # Get (first) column name containing "Sample".
+    sampleCol <- names(data)[grep("SAMPLE", names(data), ignore.case=TRUE)[1]]
+    # Grab sample names.
+    samples <- unique(data[, sampleCol])
+  } else {
+    stop("'data' must contain a column 'Sample.Name', 'Sample.File.Name',
+         or 'Sample'")
+  }
+  
 	# Subset 'data$Sample.Name' using 'ref.name'.
 	for(n in seq(along=ref.names)){
 
@@ -64,14 +91,14 @@ checkSubset <- function(data, ref, console=TRUE, ignoreCase=TRUE, word=FALSE, de
       print(cRef)
       print("samples")
       print(samples)
-      print("ignoreCase")
-      print(ignoreCase)
+      print("ignore.case")
+      print(ignore.case)
       print("word")
       print(word)
     }
     
     cSamples <- grep(cRef, samples,
-                     value = TRUE, fixed = FALSE, ignore.case = ignoreCase)
+                     value = TRUE, fixed = FALSE, ignore.case = ignore.case)
     
     res[n] <- paste("Reference name: ", ref.names[n], "\n",
                     "Subsetted samples: ", paste(cSamples, collapse=", "), "\n\n", sep="")

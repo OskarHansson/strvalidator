@@ -13,12 +13,10 @@
 # 24.05.2013: Improved error message for missing columns.
 # 20.05.2013: First version.
 
-
-#' @title Calculate Heterozygous
+#' @title Calculate Heterozygous Loci
 #'
 #' @description
-#' \code{calculateHeterozygous_gui} is a GUI wrapper for the
-#' \code{link{calculateHeterozygous}} function.
+#' GUI wrapper for the \code{link{calculateHeterozygous}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateHeterozygous}} function by

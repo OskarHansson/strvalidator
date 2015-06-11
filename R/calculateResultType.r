@@ -15,10 +15,10 @@
 # <03.11.2013: Grouping of partial results.
 # <03.11.2013: First version.
 
-#' @title Calculate result type
+#' @title Calculate Result Type
 #'
 #' @description
-#' \code{calculateResultType} calculate the result type for samples.
+#' Calculate the result type for samples.
 #'
 #' @details
 #' Calculates result types for samples in 'data'.

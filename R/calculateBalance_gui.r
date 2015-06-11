@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.06.2015: Added option to drop sex markers (Fixes issue#9).
+# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 13.12.2014: Added kit dropdown and kit attribute to result.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 03.10.2014: Added 'word' parameter (word boundary).
@@ -23,13 +25,11 @@
 # 10.07.2013: Check if object exist and ask for overwrite or new name if it does.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
-# 29.05.2013: Added subset check.
 
 #' @title Calculate Balance
 #'
 #' @description
-#' \code{calculateBalance_gui} is a GUI wrapper for the 
-#' \code{\link{calculateBalance}} function.
+#' GUI wrapper for the \code{\link{calculateBalance}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateBalance}} function
@@ -231,7 +231,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_ref,
                                    console=FALSE,
-                                   ignoreCase=val_ignore,
+                                   ignore.case=val_ignore,
                                    word=val_word)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
@@ -269,6 +269,9 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
                            checked = FALSE,
                            container = f1)
   
+  f1_drop_chk <- gcheckbox(text="Drop sex markers",
+                           checked=TRUE,
+                           container=f1)
   
   f1g1 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
   glabel(text="Calculate balance using:", anchor=c(-1 ,0), container=f1g1)
@@ -337,6 +340,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     val_ref <- .gRef
     val_name <- svalue(f4_save_edt)
     val_kit <- svalue(f4_kit_drp)
+    val_drop <- svalue(f1_drop_chk)
     
     if(debug){
       print("Read Values:")
@@ -354,6 +358,8 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       print(head(val_data))
       print("val_ref")
       print(head(val_ref))
+      print("val_drop")
+      print(val_drop)
     }
     
     # Check if data.
@@ -385,6 +391,27 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
           gmessage(message, title="'OL' detected in dataset",
                    icon = "warning",
                    parent = w)
+          
+        }
+        
+        # Drop sex markers.
+        if(val_drop){
+          
+          # Get sex marker.
+          sexMarkers <- getKit(val_kit, what="Sex.Marker")
+          
+          # Check if sexMarkers was found.
+          if(length(sexMarkers) > 0){
+            
+            # Drop sex markers.
+            n0 <- nrow(.gData)
+            for(m in seq(along=sexMarkers)){
+              .gData <- .gData[.gData$Marker != sexMarkers[m], ]
+            }
+            n1 <- nrow(.gData)
+            message(paste(n1, " rows after removing ", n0-n1, " sex marker rows.", sep=""))
+            
+          }
           
         }
     
@@ -476,6 +503,9 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_chk) <- get(".strvalidator_calculateBalance_gui_ignore", envir=env)
       }
+      if(exists(".strvalidator_calculateBalance_gui_sex", envir=env, inherits = FALSE)){
+        svalue(f1_drop_chk) <- get(".strvalidator_calculateBalance_gui_sex", envir=env)
+      }
       if(debug){
         print("Saved settings loaded!")
       }
@@ -493,6 +523,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       assign(x=".strvalidator_calculateBalance_gui_lb", value=svalue(f1_lb_opt), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_perDye", value=svalue(f1_perDye_opt), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_sex", value=svalue(f1_drop_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -510,6 +541,9 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       }
       if(exists(".strvalidator_calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateBalance_gui_ignore", envir = env)
+      }
+      if(exists(".strvalidator_calculateBalance_gui_sex", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateBalance_gui_sex", envir = env)
       }
       
       if(debug){

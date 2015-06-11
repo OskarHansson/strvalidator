@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.08.2014: Fixed bug in 'Check subsetting' showing extra combinations in many cases.
 # 08.07.2014: First version.
@@ -11,8 +12,7 @@
 #' @title Calculate Mixture
 #'
 #' @description
-#' \code{calculateMixture_gui} is a GUI wrapper for the
-#' \code{\link{calculateMixture}} function.
+#' GUI wrapper for the \code{\link{calculateMixture}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateMixture}} function by
@@ -27,7 +27,7 @@
 #' 
 #' @export
 #' 
-#' @seealso \code{\link{calculateMixture}}
+#' @seealso \code{\link{calculateMixture}}, \code{\link{checkSubset}}
 
 calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
                                  debug=FALSE, parent=NULL){
@@ -261,7 +261,7 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_pattern,
                                    console=FALSE,
-                                   ignoreCase=val_ignore,
+                                   ignore.case=val_ignore,
                                    word=val_word,
                                    debug=debug)
       

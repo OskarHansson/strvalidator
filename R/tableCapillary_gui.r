@@ -14,7 +14,7 @@
 #' @title Table Capillary
 #'
 #' @description
-#' \code{tableCapillary_gui} is a GUI wrapper for the \code{\link{tableCapillary}} function.
+#' GUI wrapper for the \code{\link{tableCapillary}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{tableCapillary}} function by providing a graphical 

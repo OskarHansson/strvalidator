@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.05.2015: Fixed issue#10 colors hardcoded as ESX17 for dotplot.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -29,10 +30,10 @@
 # 17.05.2013: save plot moved to external function.
 # 17.05.2013: listDataFrames() -> listObjects()
 
-#' @title Plot Dropout
+#' @title Plot Drop-out Events
 #'
 #' @description
-#' \code{plotDropout_gui} is a GUI simplifying the creation of plots from dropout data.
+#' GUI simplifying the creation of plots from dropout data.
 #'
 #' @details Plot dropout data as heatmap arranged by, average peak height, 
 #' amount, concentration, or sample name. It is also possible to plot the
@@ -696,7 +697,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         # Create default titles.
         if(!val_titles){
           mainTitle <- "Allele and locus dropout"
-          xTitle <- "Concentration (ng/\u00B5L)"  # \u00B5 is unicode for µ.
+          xTitle <- "Concentration (ng/uL)"
           yTitle <- "Marker"
         }
         
@@ -953,13 +954,11 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         }
         
         # Create plot.
-        plotColor <- getKit(kit="ESX17", what="Color")
+        plotColor <- getKit(kit=val_kit, what="Color")
         plotColor <- unique(plotColor$Color)
         plotColor <- addColor(plotColor, need="R.Color", have="Color")
-        #plotColor <- factor(plotColor, levels=plotColor)
 
-        # Color must be sorted factors(?)
-        #.gData$Color <- factor(.gData$Color, levels=plotColor)
+        # Create plot.
         gp <- ggplot(data=.gData, aes_string(x="Marker", y="Height"))
         
         # NB! This colour is only a grouping variable, NOT plot color.

@@ -11,11 +11,10 @@
 # 29.09.2013: First version.
 
 
-#' @title Bins Overlap
+#' @title Calculate Bins Overlap
 #'
 #' @description
-#' \code{calculateOverlap_gui} is a GUI wrapper for the
-#' \code{\link{calculateOverlap}} function.
+#' GUI wrapper for the \code{\link{calculateOverlap}} function.
 #'
 #' @details By analysis of the bins overlap between dye channels a measure of
 #' the risk for spectral pull-up artefacts can be obtain. The default result

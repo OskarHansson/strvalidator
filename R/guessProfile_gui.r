@@ -21,10 +21,10 @@
 # 04.05.2013: First version.
 
 
-#' @title Guess profile
+#' @title Guess Profile
 #'
 #' @description
-#' \code{guessProfile_gui} is a GUI wrapper for the \code{\link{guessProfile}} function.
+#' GUI wrapper for the \code{\link{guessProfile}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{guessProfile}} function by providing

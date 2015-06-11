@@ -1,12 +1,15 @@
 ################################################################################
 # TODO LIST
-# TODO: make ignore.case as parameter.
 # TODO: Use choose.files instead of file.choose to avoid error if no file?
-# TODO: re-make function to read line and specify type for each column.
-# TODO: Expand to handle other separators (e.g. comma).
+# TODO: re-make function to read line and specify type for each column?
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.06.2015: Re-named column name 'File' to 'File.Name' to increase specificity in 'trim'.
+# 23.05.2015: Changed names on parameters 'file.name' -> 'import.file'.
+# 23.05.2015: Added parameters for auto trim and auto slim.
+# 22.05.2015: Added parameters 'file.name', 'time.stamp', and 'ignore.case'.
+# 22.05.2015: Re-wrote import loop.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 20.01.2014: Added parameter 'colClasses = "character"' to 'read.table'.
 # 15.01.2014: Added message to show progress.
@@ -23,24 +26,44 @@
 # <13.06.2013: add column 'File' when importing from a folder.
 # <13.06.2013: new parameter 'extension' (fixes error in folder import)
 
-#' @title Import GeneMapper.
+#' @title Import Data.
 #'
 #' @description
-#' \code{import} imports text files exported from GeneMapper.
+#' Import text files and apply post processing.
 #'
 #' @details
-#' Imports GeneMapper results exported as tab delimited text files.
+#' Imports text files (e.g. GeneMapper results exported as text files)
+#' as data frames. Options to import one or multiple files. For multiple
+#' files it is possible to specify prefix, suffix, and file extension
+#' to create a file name filter. The file name and/or file time stamp
+#' can be imported.
 #' NB! Empty strings ("") and NA strings ("NA") are converted to NA.
+#' See \code{\link{list.files}} and \code{\link{read.table}} for additional details.
 #' 
 #' @param folder logical, TRUE all files in folder will be imported,
 #' FALSE only selected file will be imported.
 #' @param suffix string, only files with specified suffix will be imported.
 #' @param prefix string, only files with specified prefix will be imported.
-#' @param file.name string if file name is provided file will be imported
+#' @param import.file string if file name is provided file will be imported
 #' without showing the file open dialogue. 
 #' @param folder.name string if folder name is provided files in folder
 #' will be imported without showing the select folder dialogue. 
 #' @param extension string providing the file extension.
+#' @param file.name logical if TRUE the file name is written in a column 'File.Name'.
+#' NB! Any existing 'File.Name' column is overwritten.
+#' @param time.stamp logical if TRUE the file modified time stamp is written
+#' in a column 'Time'.
+#' NB! Any existing 'Time' column is overwritten.
+#' @param separator character for the delimiter used to separate columns
+#'  (see 'sep' in \code{\link{read.table}} for details).
+#' @param ignore.case logical indicating if case should be ignored. Only applies
+#' to multiple file import option.
+#' @param auto.trim logical indicating if dataset should be trimmed.
+#' @param trim.samples character vector with sample names to trim.
+#' @param trim.invert logical indicating if samples should be keept (TRUE) or
+#'  removed (FALSE).
+#' @param auto.slim logical indicating if dataset should be slimmed.
+#' @param slim.na logical indicating if rows without data should remain.
 #' @param debug logical indicating printing debug information.
 #' 
 # @importFrom plyr rbind.fill
@@ -48,12 +71,20 @@
 #' @export
 #' 
 #' @return data.frame with imported result.
+#' 
+#' @seealso \code{\link{trim}}, \code{\link{slim}}, \code{\link{list.files}}, \code{\link{read.table}}
+
 
 
 import <- function (folder = TRUE, extension="txt", 
                     suffix = NA, prefix = NA, 
-                    file.name=NA, folder.name=NA,
-                    debug=FALSE){
+                    import.file = NA, folder.name = NA,
+                    file.name = TRUE, time.stamp = TRUE,
+                    separator = "\t", ignore.case = TRUE,
+                    auto.trim = FALSE, trim.samples = NULL,
+                    trim.invert = FALSE,
+                    auto.slim = FALSE, slim.na = TRUE,
+                    debug = FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -68,14 +99,20 @@ import <- function (folder = TRUE, extension="txt",
     print(suffix)
     print("prefix")
     print(prefix)
-    print("file.name")
-    print(file.name)
+    print("import.file")
+    print(import.file)
     print("folder.name")
     print(folder.name)
+    print("file.name")
+    print(file.name)
+    print("time.stamp")
+    print(time.stamp)
+    print("ignore.case")
+    print(ignore.case)
   }
   
   
-  manualPick <- is.na(file.name) && is.na(folder.name)
+  manualPick <- is.na(import.file) && is.na(folder.name)
   
   if(debug){
     print("manualPick")
@@ -90,14 +127,13 @@ import <- function (folder = TRUE, extension="txt",
     
     if(manualPick){
       # Ask user to select a folder.
-      resFolder <- choose.dir()
+      folder <- choose.dir()
     } else {
-      
-      resFolder <- folder.name
+      folder <- folder.name
     }
     
     # Check if folder is specified.
-    if (!is.na(resFolder)) {
+    if (!is.na(folder)) {
       
       # Create file filter.
       fileFilter <- paste(".*", sep="")
@@ -119,80 +155,111 @@ import <- function (folder = TRUE, extension="txt",
       if(debug){
         print("fileFilter")
         print(fileFilter)
-        print("resFolder")
-        print(resFolder)
+        print("folder")
+        print(folder)
       }  
       
-      # Get list of result files.
-      file.name <- list.files(path = resFolder, pattern = fileFilter,
+      # Get list of files.
+      import.file <- list.files(path = folder, pattern = fileFilter,
                                 full.names = TRUE, recursive = FALSE,
-                                ignore.case = TRUE, include.dirs = FALSE)
+                                ignore.case = ignore.case, include.dirs = FALSE)
     }
     
   } else if (manualPick) {
     
     # Ask user to select a file.
-    file.name <- file.choose()
+    import.file <- file.choose()
     
   }
-  
+
   if(debug){
-    print("file.name")
-    print(file.name)
+    print("import.file")
+    print(import.file)
   }  
   
   # Check if files are specified.
-  if (any(length(file.name) > 0, !is.na(file.name))) {
-    
-    # Read first file to create data frame.		
-    res <- read.table(file.name[1], header = TRUE,
-                      sep = "\t", fill = TRUE,
-                      na.strings = c("NA",""),
-                      colClasses = "character",
-                      stringsAsFactors=FALSE)
-    
-    # Create a colum name for file name.
-    colName <- "File"
-    if(colName %in% names(res)){
-      tmpName <- make.unique(c(names(res),colName))
-      colName <- tmpName[length(tmpName)]
+  if (any(length(import.file) > 0, !is.na(import.file))) {
+
+    # Autotrim message (function inside loop).
+    if(auto.trim){
+      message(paste("Auto trim samples:", trim.samples,
+                    " invert =", trim.invert))
     }
     
-    # Add column and save file name.
-    res[colName] <- basename(file.name[1])
+    # Read files.
+    for (f in seq(along=import.file)) {
+      
+      # Read a file.  
+      tmpdf <- read.table(import.file[f], header = TRUE,
+                        sep = separator, fill = TRUE,
+                        na.strings = c("NA",""),
+                        colClasses = "character",
+                        stringsAsFactors=FALSE)
 
-    # Get number of files.
-    files <- length(file.name)
+      # Autotrim datset (message before loop).
+      if(auto.trim){
+        tmpdf <- trim(data=tmpdf, samples=trim.samples,
+                    invert.s=trim.invert, debug=debug)
+      }
+      
+      # Show progress.
+      message(paste("Importing (", f, " of ", length(import.file),"): ",
+                    import.file[f], sep=""))
 
-    # Show progress.
-    message(paste("Importing (", 1, " of ", files,"): ",
-                  file.name[1], sep=""))
-    
-    # Read additional files.
-    if (files > 1) {
-      for (f in 2:files) {
-        
-        # Read a file.	
-        tmp <- read.table(file.name[f], header = TRUE,
-                          sep = "\t", fill = TRUE,
-                          na.strings = c("NA",""),
-                          colClasses = "character",
-                          stringsAsFactors=FALSE)
-        
+      # Check if file path should be saved.
+      if(file.name){
+
         # Add column and save file name.
-        tmp[colName] <- basename(file.name[f])
-        
-        # Show progress.
-        message(paste("Importing (", f, " of ", files,"): ",
-                      file.name[f], sep=""))
-        
-        # Add to data frame.
-        res <- plyr::rbind.fill(res, tmp)
+        tmpdf$File.Name <- basename(import.file[f])
         
       }
+      
+      # Check if time stamp should be saved.
+      if(time.stamp){
+        
+        # Add column and save file name.
+        tmptime <- file.info(import.file[f])
+        tmpdf$File.Time <- as.character(tmptime$mtime)
+        
+      }
+      
+      # Check if multiple files.
+      if(f > 1){
+        # Add to result data frame.
+        res <- plyr::rbind.fill(res, tmpdf)
+      } else {
+        # Create result data frame.
+        res <- tmpdf
+      }
+      
+    }
+
+    # Autoslim dataset.
+    if(auto.slim){
+      
+      # Autodetect column names to keep fixed.
+      fixCol <- colNames(data=res, slim=TRUE, numbered=TRUE, concatenate="|")
+      
+      # Autodetect column names to stack.
+      stackCol <- colNames(data=res, slim=FALSE, numbered=TRUE, concatenate="|")
+      
+      # Progress.
+      message("Auto slim dataset...")
+      message(paste("  Stack columns:", stackCol))
+      message(paste("  Fix columns:", fixCol))
+      
+      # Slim require a vector of strings.
+      fixCol <- unlist(strsplit(fixCol, "|", fixed = TRUE))
+      stackCol <- unlist(strsplit(stackCol, "|", fixed = TRUE))
+      
+      # Slim data.      
+      res <- slim(data=res, fix=fixCol, stack=stackCol,
+                  keep.na=slim.na, debug=debug)
+      
     }
     
   }
   
   return(res)
+  
 }

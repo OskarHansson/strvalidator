@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -17,11 +18,10 @@
 # 27.04.2013: First version.
 
 
-#' @title Check subsetting of a dataset
+#' @title Check Subset
 #'
 #' @description
-#' \code{checkSubset_gui} is a GUI wrapper for the \code{\link{checkSubset}}
-#' function.
+#' GUI wrapper for the \code{\link{checkSubset}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{checkSubset}} function by providing
@@ -215,7 +215,7 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_ref,
-                                   ignoreCase=val_ignore,
+                                   ignore.case=val_ignore,
                                    word=val_word,
                                    console=FALSE)
       

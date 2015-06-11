@@ -4,6 +4,7 @@
 
 ###############################################################################
 # CHANGE LOG (last 20 changes)
+# 04.06.2015: Changed button label 'Calculate result type' to 'Calculate'.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -14,8 +15,7 @@
 #' @title Calculate Result Type
 #'
 #' @description
-#' \code{calculateResultType_gui} is a GUI wrapper for the
-#' \code{\link{calculateResultType}} function.
+#' GUI wrapper for the \code{\link{calculateResultType}} function.
 #'
 #' @details Simplifies the use of \code{\link{calculateResultType}} by providing a 
 #' graphical user interface.
@@ -193,7 +193,7 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
   # BUTTON ####################################################################
   
   
-  calculate_btn <- gbutton(text="Calculate result type",
+  calculate_btn <- gbutton(text="Calculate",
                         border=TRUE,
                         container=gv)
   

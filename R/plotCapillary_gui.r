@@ -17,8 +17,7 @@
 #' @title Plot Capillary Balance
 #'
 #' @description
-#' \code{plotCapillary_gui} is a GUI simplifying the creation of plots from
-#' capillary balance data.
+#' GUI simplifying the creation of plots from capillary balance data.
 #'
 #' @details Select a dataset to plot from the drop-down meny.
 #' Plot capillary balance as a dotplot, boxplot or as a distribution.

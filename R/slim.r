@@ -5,6 +5,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.06.2015: Fixed columns is found using 'match' instead of 'grep'
+#  (fixes problem with partial matching).
+# 25.05.2015: Renamed parameters (keepAllFixed -> keep.na)
+# 23.05.2014: Improved error message.
 # 23.01.2014: Fixed bug when only one column in 'fix'.
 # 13.01.2014: Completely re-written for improved performance.
 # <13.01.2014: Renamed parameters (slim.col -> stack / fix.col -> fix (as earlier)
@@ -12,37 +16,37 @@
 # <13.01.2014: Renamed parameters (slim -> slim.col / fixed -> fix.col
 # <13.01.2014: to avoid function/parameter slim to crash. 
 # <13.01.2014: Roxygenized.
-# <13.01.2014: new parameter 'keepAllFixed' - WORKING for two key kolumns, but not for unslim
+# <13.01.2014: new parameter 'keep.na' - WORKING for two key kolumns, but not for unslim
 # <13.01.2014: new name flattenGM() -> slim(), new parameter names.
 
-#' @title Slim data frames
+#' @title Slim Data Frames
 #'
 #' @description
-#' \code{slim} slims data frames with GeneMapper data.
+#' Slim data frames with repeated columns.
 #'
 #' @details
-#' \code{slim} repeated columns into single columns, also see \code{unslim()}.
+#' Stack repeated columns into single columns.
 #' For example, the following data frame:
 #'  Sample.Name|Marker|Allele.1|Allele.2|Size.1|Size.2|Data.Point..
 #' using this command:
 #'  slim(data, fix=c("Sample.Name","Marker"), stack=c("Allele","Size"))
-#' would result in this data frame (NB! 'Data.Point' is lost):
+#' would result in this data frame (NB! 'Data.Point' is dropped):
 #'  Sample.Name|Marker|Allele|Size
 #' 
-#' @param data data frame.
+#' @param data data.frame.
 #' @param fix vector of strings with colum names to keep fixed.
 #' @param stack vector of strings with colum names to slim.
-#' @param keepAllFixed logical, keep a rows even if no data.
+#' @param keep.na logical, keep a row even if no data.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @export
 #' 
-#' @return list with simulation results.
+#' @return data.frame
 #' 
 
 
 slim <- function(data, fix=NULL, stack=NULL, 
-                 keepAllFixed=TRUE, debug=FALSE){
+                 keep.na=TRUE, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -52,8 +56,8 @@ slim <- function(data, fix=NULL, stack=NULL,
     print(fix)
     print("stack")
     print(stack)
-    print("keepAllFixed")
-    print(keepAllFixed)
+    print("keep.na")
+    print(keep.na)
   }
   
   # Get columns to slim.
@@ -68,13 +72,17 @@ slim <- function(data, fix=NULL, stack=NULL,
   # Check if equal.
   if(length(nbCol) != 1){
     stop(paste("Columns to stack must have equal number of columns each!",
-               paste(paste(stack, nbSlimCol, sep=":"), collapse="\n"), sep="\n"))
+               paste(paste(stack, nbSlimCol, sep=":"), collapse="\n"),
+               "The most common problem is multiple columns matching the same 'base' name.",
+               "Here are your column names:",
+               paste(names(data), collapse=", "), sep="\n"))
   }
 
   # Get fixed indexes.
   fixedIndex <- vector()
   for(k in seq(along=fix)){
-    fixedIndex[k] <- grep(fix[k], names(data))
+    #fixedIndex[k] <- grep(fix[k], names(data))
+    fixedIndex[k] <- match(fix[k], names(data))
   }
   
   # Get fixed data.
@@ -95,7 +103,7 @@ slim <- function(data, fix=NULL, stack=NULL,
     # Transpose and vectorize.
     vectorStack <- c(t(matrixStack))
     
-    if(keepAllFixed) {
+    if(keep.na) {
       
       # Keep one value per fixed row.
       values <- replace(values, values==0, 1)

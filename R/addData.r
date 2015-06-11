@@ -13,19 +13,20 @@
 # 21.05.2013: Added a second 'by' level and bugs fixed.
 # 20.05.2013: Handle keys with no match.
 
-#' @title Adds new data columns to a data frame
+#' @title Adds New Data Columns to a Data Frame
 #'
 #' @description
-#' \code{addData} Adds columns in 'new.data' to 'data' by column 'by.col'.
+#' Adds values from columns in 'new.data' to 'data' by keys.
 #'
 #' @details
-#' Information in columns in data frame 'new.data' is added to data frame 'data'
-#' based on value in column 'by.col' and optionally on 'then.by.col'.
+#' Information in columns in data frame 'new.data' is added to data frame
+#' 'data' based on primary key value in column 'by.col', and optionally on
+#' secondary key values in column 'then.by.col'.
 #'   
 #' @param data Data frame containing your main data.
 #' @param new.data Data frame containing information you want to add to 'data'.
-#' @param by.col character, key column.
-#' @param then.by.col character, key column level 2.
+#' @param by.col character, primary key column.
+#' @param then.by.col character, secondary key column.
 #' @param exact logical, TRUE matches keys exact.
 #' @param ignore.case logical, TRUE ignore case.
 #' @param debug logical indicating printing debug information.

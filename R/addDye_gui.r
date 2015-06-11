@@ -20,10 +20,10 @@
 # 09.05.2013: .result removed, added save as group.
 # 27.04.2013: First version.
 
-#' @title Add dye information
+#' @title Add Dye Information
 #'
 #' @description
-#' \code{addDye_gui} is a GUI to the \code{\link{addColor}} function.
+#' GUI wrapper to the \code{\link{addColor}} function.
 #'
 #' @details
 #' Convenience GUI for the use of \code{\link{addColor}} to add 'Dye' to a dataset.

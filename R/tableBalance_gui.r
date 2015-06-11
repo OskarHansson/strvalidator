@@ -11,10 +11,10 @@
 # 15.02.2014: First version.
 
 
-#' @title Table balance
+#' @title Table Balance
 #'
 #' @description
-#' \code{tableBalance_gui} is a GUI wrapper for the \code{\link{tableBalance}} function.
+#' GUI wrapper for the \code{\link{tableBalance}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{tableBalance}} function by providing a graphical 

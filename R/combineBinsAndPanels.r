@@ -4,12 +4,13 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.02.2015: Fixed error message 'not identical panels'.
 # 15.09.2013: First version.
 
-#' @title combine bins and panels files.
+#' @title Combine Bins And Panels Files.
 #'
 #' @description
-#' \code{combineBinsAndPanels} combines useful information into one dataset.
+#' Combines useful information into one dataset.
 #'
 #' @details
 #' Combines information from two sources ('Bins' and 'Panels' file) to create
@@ -50,9 +51,9 @@ combineBinsAndPanels <- function(bin, panel){
   binPanel2 <- unique(panel$Panel)
   
   if(!all(binPanel == binPanel2)){
+    print(paste("bin panels:", paste(binPanel, collapse=",")))
+    print(paste("panel panels:", paste(binPanel2, collapse=",")))
     stop("Panels in 'bin' and 'panel' files not identical")
-    print(binPanel)
-    print(binPanel2)
   }
   
   # Loop over all panels.

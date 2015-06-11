@@ -12,7 +12,7 @@
 #' @title Read Bins file
 #'
 #' @description
-#' \code{readBinsFile} reads GeneMapper 'Bins' files.
+#' Reads GeneMapper 'Bins' files.
 #'
 #' @details Reads useful information from 'Bins' files and save it as a data.frame.
 #' 

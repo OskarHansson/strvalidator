@@ -1,12 +1,12 @@
 Roxygen: list(wrap = FALSE)
 Package: strvalidator
 Type: Package
-Title: Process Control And Internal Validation Of Forensic STR Kits
-Version: 1.4.0
-Date: 2015-01-06
+Title: Process Control and Internal Validation of Forensic STR Kits
+Version: 1.5.0
+Date: 2015-06-09
 Author: Oskar Hansson
 Maintainer: Oskar Hansson <oskar.hansson@fhi.no>
-URL: https://www.facebook.com/pages/STR-validator/240891279451450?ref=tn_tnmn
+URL: https://sites.google.com/site/forensicapps/strvalidator
 BugReports: https://github.com/OskarHansson/strvalidator/issues
 Depends:
     gridExtra
@@ -23,10 +23,13 @@ Imports:
 Suggests:
     ResourceSelection,
     testthat
-Description: strvalidator is an open source platform for validation and process
-    control. It provide tools to analyse data from internal validation of
-    forensic short tandem repeat (STR) kits. The tools are developed to provide
-    the necessary data to conform with the ENFSI guidelines for internal
-    validation. More information about each function can be found in the
+Description: An open source platform for validation and process control.
+    Tools to analyse data from internal validation of forensic short tandem
+    repeat (STR) kits are provided. The tools are developed to provide
+    the necessary data to conform with guidelines for internal validation
+    issued by the European Network of Forensic Science Institutes (ENFSI)
+    DNA Working Group, and the Scientific Working Group on DNA Analysis Methods
+    (SWGDAM). A front-end graphical user interface is provided.
+    More information about each function can be found in the
     respective help documentation.
 License: GPL-2

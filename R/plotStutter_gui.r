@@ -28,7 +28,7 @@
 #' @title Plot Stutter
 #'
 #' @description
-#' \code{plotStutter_gui} is a GUI simplifying the creation of plots from stutter data.
+#' GUI simplifying the creation of plots from stutter data.
 #'
 #' @details Select data to plot in the drop-down menu. Check that the correct
 #' kit has been detected. Plot stutter data by parent allele or by peak height. 

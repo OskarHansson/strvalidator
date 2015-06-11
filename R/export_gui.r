@@ -11,10 +11,10 @@
 # 15.07.2013: Added save GUI settings.
 # 10.07.2013: First version.
 
-#' @title Export objects
+#' @title Export
 #'
 #' @description
-#' \code{export_gui} is a GUI wrapper for the \code{\link{export}} function.
+#' GUI wrapper for the \code{\link{export}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{export}} function by providing a graphical 

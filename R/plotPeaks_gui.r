@@ -13,8 +13,7 @@
 #' @title Plot Peaks
 #'
 #' @description
-#' \code{plotPeaks_gui} is a GUI simplifying the creation of plots from
-#' result type data.
+#' GUI simplifying the creation of plots from result type data.
 #'
 #' @details Plot result type data. It is possible to customise titles and font
 #' size. Data can be plotted as as frequency or proportion. The values can be

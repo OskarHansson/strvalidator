@@ -7,6 +7,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.06.2015: Fixed bug column names not saved. Introduced 02.01.2015 with attributes.
+# 11.05.2015: Accepts (the first) column name containing the string 'Sample'
+# as alternative to colum name 'Sample.Name'. 'Sample' is case in-sensitive.
+# 04.05.2015: Added 'Sample.File.Name' as a defined alternative to Sample.Name.
 # 02.01.2015: Copy attribute list to new object upon 'Save As'.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -21,10 +25,10 @@
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: First version.
 
-#' @title Edit or view data frames
+#' @title Edit or View Data Frames
 #'
 #' @description
-#' \code{editData_gui} is a GUI simplifying editing and viewing of data frames.
+#' GUI to edit and view data frames.
 #'
 #' @details Select a data frame from the dropdown and view/edit. Optionally
 #' save as a new dataframe.
@@ -137,10 +141,17 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE,
       
       if("Sample.Name" %in% names(.gData)){
         samples <- length(unique(.gData$Sample.Name))
-        svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
+      } else  if("Sample.File.Name" %in% names(.gData)){
+        samples <- length(unique(.gData$Sample.File.Name))
+      } else if(any(grepl("SAMPLE", names(.gData), ignore.case=TRUE))) {
+        # Get (first) column name containing "Sample".
+        sampleCol <- names(.gData)[grep("SAMPLE", names(.gData), ignore.case=TRUE)[1]]
+        # Grab sample names.
+        samples <- length(unique(.gData[, sampleCol]))
       } else {
-        svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
+        samples <- "<NA>"
       }
+      svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
       svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
       svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
       
@@ -202,9 +213,15 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE,
     val_name <- svalue(save_txt)
     datanew <- data_tbl[]
     
+    if(debug){
+      print("names(datanew)")
+      print(names(datanew))
+    }
+    
     if (!is.na(val_name) && !is.null(val_name)){
 
-      # Copy and add attributes.
+      # Copy and add attributes (retain names).
+      names(.gData) <- names(datanew)
       attributes(datanew) <- attributes(.gData)
       
       # Change button.
@@ -212,7 +229,7 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE,
       enabled(save_btn) <- FALSE
 
       # Save data.
-      saveObject(name=val_name, object=datanew, parent=w, env=env)
+      saveObject(name=val_name, object=datanew, parent=w, env=env, debug=debug)
       
       # Change button.
       svalue(save_btn) <- "Save as"
@@ -244,10 +261,17 @@ editData_gui <- function(env=parent.frame(), data=NULL, name=NULL, edit=TRUE,
     # Update info.
     if("Sample.Name" %in% names(.gData)){
       samples <- length(unique(.gData$Sample.Name))
-      svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
+    } else if("Sample.File.Name" %in% names(.gData)){
+      samples <- length(unique(.gData$Sample.File.Name))
+    } else if(any(grepl("SAMPLE", names(.gData), ignore.case=TRUE))) {
+      # Get (first) column name containing "Sample".
+      sampleCol <- names(.gData)[grep("SAMPLE", names(.gData), ignore.case=TRUE)[1]]
+      # Grab sample names.
+      samples <- length(unique(.gData[, sampleCol]))
     } else {
-      svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
+      samples <- "<NA>"
     }
+    svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
     svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
     svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
 

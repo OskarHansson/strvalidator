@@ -7,10 +7,10 @@
 # 15.12.2014: Changed parameter names to format: lower.case
 # 09.12.2014: Derived from PCRsim.
 
-#' @title Compact 
+#' @title Compact Profile
 #'
 #' @description
-#' \code{compact}  Add identical peaks.
+#' Adds Identical Peaks.
 #'
 #' @details
 #' Add peak heights of identical alleles together.

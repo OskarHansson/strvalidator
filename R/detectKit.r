@@ -14,10 +14,10 @@
 # 28.04.2013: Best match from proportion instead of number of matching markers.
 # <28.04.2013: First version
 
-#' @title Detect kit
+#' @title Detect Kit
 #'
 #' @description
-#' \code{detectKit} finds the most likely STR kit for a dataset.
+#' Finds the most likely STR kit for a dataset.
 #'
 #' @details
 #' The function first check if there is a 'kit' attribute for the dataset.

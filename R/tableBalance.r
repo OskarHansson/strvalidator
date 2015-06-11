@@ -8,10 +8,10 @@
 # 07.05.2014: Added 'suppressWarnings' around 'min' to prevent warning if no values.
 # 15.02.2014: First version.
 
-#' @title Table stutter
+#' @title Table Balance
 #'
 #' @description
-#' \code{tableBalance} summarizes a balance analysis in table format.
+#' Summarize balance analysis data in table format.
 #'
 #' @details
 #' Summarize the balance analysis in table format with different scope.

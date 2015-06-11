@@ -7,10 +7,10 @@
 # 10.08.2014: Added scope=RUN.
 # 29.10.2013: First version.
 
-#' @title Table capillary
+#' @title Table Capillary
 #'
 #' @description
-#' \code{tableCapillary} summarize capillary analysis result in table format.
+#' Summarize capillary analysis result in table format.
 #'
 #' @details
 #' Summarize the capillary analysis result in table format by capillary,

@@ -2,8 +2,12 @@
 # TODO LIST
 # TODO: ...
 
+# NOTE: Column names used for calculations with data.table is declared
+# in globals.R to avoid NOTES in R CMD CHECK.
+
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.04.2015: Included a check for plot facet error caused by all NA's.
 # 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -28,7 +32,7 @@
 #' @title Plot Balance
 #'
 #' @description
-#' \code{plotBalance_gui} is a GUI simplifying the creation of plots from balance data.
+#' GUI simplifying the creation of plots from balance data.
 #'
 #' @details Select a dataset to plot and the typing kit used (if not autodetected).
 #' Plot heterozygote peak balance versus the average locus peak height,
@@ -584,7 +588,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                           kit=val_kit,
                           add.missing.levels = TRUE)
 
-      # Drop Amelogenin.
+      # Drop sex markers.
       if(val_drop){
 
         # Get sex marker.
@@ -739,27 +743,60 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         if(debug){
           print("Simple plot.")
         }
+
+        # Create data.table to check for facet error caused by all NA's.
+        dt <- data.table(.gData)
         
         # Select what to plot and create default titles.
         if(what == "Hb"){
           
           gp <- ggplot(.gData, aes_string(x="MPH", y="Hb", colour="Dye"))
           
+          # Check for facet error caused by all NA's.
+          tmp <- dt[, list(Sum=sum(Hb)), by=Marker]
+          if(any(is.na(tmp$Sum))){
+            message("Empty facets detected! If this leads to plot error try another scale for axes")
+          }
+          
         } else if (what == "Hb_D") {
           
           gp <- ggplot(.gData, aes_string(x="Delta", y="Hb", colour="Dye"))
+
+          # Check for facet error caused by all NA's.
+          tmp <- dt[, list(Sum=sum(Hb)), by=Marker]
+          if(any(is.na(tmp$Sum))){
+            message("Empty facets detected! If this leads to plot error try another scale for axes")
+          }
           
         } else if (what == "Hb_H") {
           
           gp <- ggplot(.gData, aes_string(x="H", y="Hb", colour="Dye"))
+
+          # Check for facet error caused by all NA's.
+          tmp <- dt[, list(Sum=sum(Hb)), by=Marker]
+          if(any(is.na(tmp$Sum))){
+            message("Empty facets detected! If this leads to plot error try another scale for axes")
+          }
           
         } else if (what == "Lb") {
           
           gp <- ggplot(.gData, aes_string(x="TPH", y="Lb", colour="Dye"))
           
+          # Check for facet error caused by all NA's.
+          tmp <- dt[, list(Sum=sum(Lb)), by=Marker]
+          if(any(is.na(tmp$Sum))){
+            message("Empty facets detected! If this leads to plot error try another scale for axes")
+          }
+          
         } else if (what == "Lb_H") {
           
           gp <- ggplot(.gData, aes_string(x="H", y="Lb", colour="Dye"))
+          
+          # Check for facet error caused by all NA's.
+          tmp <- dt[, list(Sum=sum(Lb)), by=Marker]
+          if(any(is.na(tmp$Sum))){
+            message("Empty facets detected! If this leads to plot error try another scale for axes")
+          }
           
         }
 
@@ -879,27 +916,60 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
           gDataSub$Marker <- factor(gDataSub$Marker, levels=gDyeLevel)
           gDataSub$Dye <- factor(dyes[d])
           
+          # Create data.table to check for facet error caused by all NA's.
+          dt <- data.table(gDataSub)
+          
           # Create a plot for the current subset.
           # Select what to plot.
           if(what == "Hb"){
             
             gp <- ggplot(gDataSub, aes_string(x = "MPH", y = "Hb", colour="Dye"))
+
+            # Check for facet error caused by all NA's.
+            tmp <- dt[, list(Sum=sum(Hb)), by=Marker]
+            if(any(is.na(tmp$Sum))){
+              message("Empty facets detected! If this leads to plot error try another scale for axes")
+            }
             
           } else if (what == "Hb_D") {
             
             gp <- ggplot(gDataSub, aes_string(x="Delta", y="Hb", colour="Dye"))
+
+            # Check for facet error caused by all NA's.
+            tmp <- dt[, list(Sum=sum(Hb)), by=Marker]
+            if(any(is.na(tmp$Sum))){
+              message("Empty facets detected! If this leads to plot error try another scale for axes")
+            }
             
           } else if (what == "Hb_H") {
             
             gp <- ggplot(gDataSub, aes_string(x = "H", y = "Hb", colour="Dye"))
             
+            # Check for facet error caused by all NA's.
+            tmp <- dt[, list(Sum=sum(Hb)), by=Marker]
+            if(any(is.na(tmp$Sum))){
+              message("Empty facets detected! If this leads to plot error try another scale for axes")
+            }
+            
           } else if (what == "Lb") {
             
             gp <- ggplot(gDataSub, aes_string(x = "TPH", y = "Lb", colour="Dye"))
+          
+            # Check for facet error caused by all NA's.
+            tmp <- dt[, list(Sum=sum(Lb)), by=Marker]
+            if(any(is.na(tmp$Sum))){
+              message("Empty facets detected! If this leads to plot error try another scale for axes")
+            }
             
           } else if (what == "Lb_H") {
             
             gp <- ggplot(gDataSub, aes_string(x = "H", y = "Lb", colour="Dye"))
+            
+            # Check for facet error caused by all NA's.
+            tmp <- dt[, list(Sum=sum(Lb)), by=Marker]
+            if(any(is.na(tmp$Sum))){
+              message("Empty facets detected! If this leads to plot error try another scale for axes")
+            }
             
           }
 

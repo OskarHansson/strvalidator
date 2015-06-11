@@ -1,10 +1,14 @@
 ################################################################################
 # TODO LIST
-# TODO: Implemented 'checkDataset'.
+# TODO: ...
 
 # NB! Can't handle Sample.Names as factors?
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.05.2015: Re-named internal variable 'new' (R function) to 'new_val'.
+# 11.05.2015: Accepts (the first) column name containing the string 'Sample'
+# as alternative to colum name 'Sample.Name'. All made case in-sensitive.
+# 04.05.2015: Implemented 'checkDataset'.
 # 07.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 14.01.2014: Removed requirement for column 'Sample.Name'.
@@ -22,14 +26,11 @@
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
 # 27.04.2013: Add selection of dataset in gui. Removed parameter 'data'.
-# 27.04.2013: New parameter 'debug'.
-# <27.04.2013: Changed data=NA to data=NULL
-# <27.04.2013: First version.
 
-#' @title Trim data
+#' @title Trim Data
 #'
 #' @description
-#' \code{trim_gui} is a GUI wrapper for the \code{\link{trim}} function.
+#' GUI wrapper for the \code{\link{trim}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{trim}} function by providing a graphical 
@@ -148,7 +149,12 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
+    # Check if suitable.
+    requiredCol <- NULL
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
       
       .gData <<- get(val_obj, envir=env)
 
@@ -156,8 +162,16 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
       .refresh_samples_tbl()
       .refresh_columns_tbl()
       # Info.
-      if("Sample.Name" %in% names(.gData)){
+      if("SAMPLE.NAME" %in% toupper(names(.gData))){
         samples <- length(unique(.gData$Sample.Name))
+        svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
+      } else if("SAMPLE.FILE.NAME" %in% toupper(names(.gData))){
+        samples <- length(unique(.gData$Sample.File.Name))
+        svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
+      } else if(any(grepl("SAMPLE", names(.gData), ignore.case=TRUE))){
+        # Get (first) column name containing "Sample".
+        sampleCol <- names(.gData)[grep("Sample", names(.gData), ignore.case=TRUE)[1]]
+        samples <- length(unique(.gData[sampleCol]))
         svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
       } else {
         svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
@@ -171,8 +185,8 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gData <<- data.frame(Sample.Name="NA")
-      svalue(sample_txt) <- ""
-      svalue(column_txt) <- ""
+      svalue(sample_edt) <- ""
+      svalue(column_edt) <- ""
       .refresh_samples_tbl()
       .refresh_columns_tbl()
       svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
@@ -201,28 +215,37 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
                        container=sample_f,
                        anchor=c(-1 ,0))
 
-  sample_txt <- gedit(initial.msg="Doubleklick or drag sample names to list",
+  sample_edt <- gedit(initial.msg="Doubleklick or drag sample names to list",
                       width = 40,
                       container=sample_f)
 
-  sample_tbl <- gWidgets::gtable(items=data.frame(Sample.Names=unique(.gData$Sample.Name),
-                                        stringsAsFactors=FALSE),
-                       container=sample_f,
-                       expand=TRUE)
+  if("SAMPLE.NAME" %in% toupper(names(.gData))){
+    df_items <- data.frame(Samples=unique(.gData$Sample.Name),
+                           stringsAsFactors=FALSE)
+  } else if("SAMPLE.FILE.NAME" %in% toupper(names(.gData))){
+    df_items <- data.frame(Samples=unique(.gData$Sample.File.Name),
+                           stringsAsFactors=FALSE)
+  } else if(any(grepl("SAMPLE", names(.gData), ignore.case=TRUE))){
+    # Get (first) column name containing "Sample".
+    sampleCol <- names(.gData)[grep("Sample", names(.gData), ignore.case=TRUE)[1]]
+    df_items <- data.frame(Samples=unique(.gData[sampleCol]),
+                           stringsAsFactors=FALSE)
+  }
+  sample_tbl <- gWidgets::gtable(items=df_items, container=sample_f, expand=TRUE)
   
   # Set initial size (only height is important here).
   size(sample_tbl) <- c(100,200)
 
-  addDropTarget(sample_txt, handler=function(h,...) {
+  addDropTarget(sample_edt, handler=function(h,...) {
     # Get values.
     drp_val <- h$dropdata
     sample_val <- svalue(h$obj)
     
     # Add new value to selected.
-    new <- ifelse(nchar(sample_val) > 0, paste(sample_val, drp_val, sep="|"), drp_val)
+    new_val <- ifelse(nchar(sample_val) > 0, paste(sample_val, drp_val, sep="|"), drp_val)
     
     # Update text box.
-    svalue(h$obj) <- new
+    svalue(h$obj) <- new_val
     
     # Update sample name table.
     tmp_tbl <- sample_tbl[,]  # Get all values.
@@ -252,7 +275,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
                        container=column_f,
                        anchor=c(-1 ,0))
   
-  column_txt <- gedit(initial.msg="Doubleklick or drag column names to list", 
+  column_edt <- gedit(initial.msg="Doubleklick or drag column names to list", 
                       width = 40,
                       container=column_f)
   
@@ -261,18 +284,18 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
                        container=column_f,
                        expand=TRUE)
 
-  addDropTarget(column_txt, handler=function(h,...) {
+  addDropTarget(column_edt, handler=function(h,...) {
     # Get values.
     drp_val <- h$dropdata
     column_val <- svalue(h$obj)
     
     # Add new value to selected.
-    new <- ifelse(nchar(column_val) > 0,
+    new_val <- ifelse(nchar(column_val) > 0,
                   paste(column_val, drp_val, sep="|"),
                   drp_val)
     
     # Update text box.
-    svalue(h$obj) <- new
+    svalue(h$obj) <- new_val
     
     # Update column name table.
     tmp_tbl <- column_tbl[,]  # Get all values.
@@ -310,7 +333,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Replace missing values with:",
                   container=option_f)
-  na_txt <- gedit(text="NA",
+  na_edt <- gedit(text="NA",
                   container=option_f)
 
   # FRAME 2 ###################################################################
@@ -346,19 +369,19 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
     if(nchar(val_name) > 0) {
       
       # Get values.
-      sample_val <- svalue(sample_txt)
-      column_val <- svalue(column_txt)
+      sample_val <- svalue(sample_edt)
+      column_val <- svalue(column_edt)
       word_val <- svalue(word_chk)
       case_val <- svalue(case_chk)
       sample_opt_val <- if(svalue(sample_opt, index=TRUE)==1){FALSE}else{TRUE}
       column_opt_val <- if(svalue(column_opt, index=TRUE)==1){FALSE}else{TRUE}
       na_val <- svalue(na_chk)
       empty_val <- svalue(empty_chk)
-      na_txt_val <- svalue(na_txt)
+      na_edt_val <- svalue(na_edt)
 
       # NA can't be string.
-      if(na_txt_val == "NA"){
-        na_txt_val <- NA
+      if(na_edt_val == "NA"){
+        na_edt_val <- NA
       }
 
       # Empty string -> NULL.
@@ -390,8 +413,8 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
         print(na_val)
         print("empty_val")
         print(empty_val)
-        print("na_txt_val")
-        print(na_txt_val)
+        print("na_edt_val")
+        print(na_edt_val)
       }
   
       # Change button.
@@ -400,7 +423,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
       
       datanew <- trim(data=.gData, samples=sample_val, columns=column_val, 
                    word=word_val, ignore.case=case_val, invert.s=sample_opt_val, invert.c=column_opt_val,
-                   rm.na.col=na_val, rm.empty.col=empty_val, missing=na_txt_val, debug=debug)
+                   rm.na.col=na_val, rm.empty.col=empty_val, missing=na_edt_val, debug=debug)
   
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -425,17 +448,26 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
       print(paste("IN:", match.call()[[1]]))
     }
     
-    if("Sample.Name" %in% names(.gData)){
+    if(any(grepl("SAMPLE", names(.gData), ignore.case=TRUE))){
 
-      
       # Refresh widget by removing it and...
       delete(sample_f, sample_tbl)
       
+      if("SAMPLE.NAME" %in% toupper(names(.gData))){
+        df_items <- data.frame(Samples=unique(.gData$Sample.Name),
+                               stringsAsFactors=FALSE)
+      } else if("SAMPLE.FILE.NAME" %in% toupper(names(.gData))){
+        df_items <- data.frame(Samples=unique(.gData$Sample.File.Name),
+                               stringsAsFactors=FALSE)
+      } else if(any(grepl("SAMPLE", names(.gData), ignore.case=TRUE))){
+        # Get (first) column name containing "Sample".
+        sampleCol <- names(.gData)[grep("Sample", names(.gData), ignore.case=TRUE)[1]]
+        df_items <- data.frame(Samples=unique(.gData[sampleCol]),
+                               stringsAsFactors=FALSE)
+      }
+      
       # ...creating a new table.
-      sample_tbl <<- gWidgets::gtable(items=data.frame(Sample.Names=unique(.gData$Sample.Name),
-                                                       stringsAsFactors=FALSE),
-                                      container=sample_f,
-                                      expand=TRUE)
+      sample_tbl <<- gWidgets::gtable(items=df_items, container=sample_f, expand=TRUE)
       
       addDropSource(sample_tbl, handler=function(h,...) svalue(h$obj))
       
@@ -443,15 +475,15 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
         
         # Get values.
         tbl_val <- svalue (h$obj)
-        sample_val <- svalue(sample_txt)
+        sample_val <- svalue(sample_edt)
         
         # Add new value to selected.
-        new <- ifelse(nchar(sample_val) > 0,
+        new_val <- ifelse(nchar(sample_val) > 0,
                       paste(sample_val, tbl_val, sep="|"),
                       tbl_val)
         
         # Update text box.
-        svalue(sample_txt) <- new
+        svalue(sample_edt) <- new_val
         
         
         # Update sample name table.
@@ -485,15 +517,15 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
     
       # Get values.
       tbl_val <- svalue (h$obj)
-      column_val <- svalue(column_txt)
+      column_val <- svalue(column_edt)
       
       # Add new value to selected.
-      new <- ifelse(nchar(column_val) > 0,
+      new_val <- ifelse(nchar(column_val) > 0,
                     paste(column_val, tbl_val, sep="|"),
                     tbl_val)
       
       # Update text box.
-      svalue(column_txt) <- new
+      svalue(column_edt) <- new_val
       
       # Update column name table.
       tmp_tbl <- column_tbl[,]  # Get all values.
@@ -547,7 +579,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
         svalue(case_chk) <- get(".strvalidator_trim_gui_ignore_case", envir=env)
       }
       if(exists(".strvalidator_trim_gui_replace_na", envir=env, inherits = FALSE)){
-        svalue(na_txt) <- get(".strvalidator_trim_gui_replace_na", envir=env)
+        svalue(na_edt) <- get(".strvalidator_trim_gui_replace_na", envir=env)
       }
       
       if(debug){
@@ -569,7 +601,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
       assign(x=".strvalidator_trim_gui_remove_na", value=svalue(na_chk), envir=env)
       assign(x=".strvalidator_trim_gui_add_word", value=svalue(word_chk), envir=env)
       assign(x=".strvalidator_trim_gui_ignore_case", value=svalue(case_chk), envir=env)
-      assign(x=".strvalidator_trim_gui_replace_na", value=svalue(na_txt), envir=env)
+      assign(x=".strvalidator_trim_gui_replace_na", value=svalue(na_edt), envir=env)
       
     } else { # or remove all saved values if false.
       

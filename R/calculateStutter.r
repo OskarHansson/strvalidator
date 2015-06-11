@@ -27,10 +27,10 @@
 # 30.05.2013: 'Type' rounded to 1 digit (avoid floating point 'bug' when ==)
 # 11.04.2013: Added some more data controls.
 
-#' @title Calculate stutter
+#' @title Calculate Stutter
 #'
 #' @description
-#' \code{calculateStutter} calculates statistics for stutters.
+#' Calculate statistics for stutters.
 #'
 #' @details
 #' Calculates stutter ratios based on the 'reference' data set

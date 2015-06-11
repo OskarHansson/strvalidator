@@ -11,8 +11,7 @@
 #' @title Calculate Concordance
 #'
 #' @description
-#' \code{calculateConcordance_gui} is a GUI wrapper for the
-#' \code{\link{calculateConcordance}} function.
+#' GUI wrapper for the \code{\link{calculateConcordance}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateConcordance}} function by

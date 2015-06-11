@@ -13,16 +13,16 @@
 # 18.09.2013: Added support for vector conversion.
 # 17.09.2013: First version.
 
-#' @title Add color information.
+#' @title Add Color Information.
 #'
 #' @description
-#' \code{addColor} add color information 'Color', 'Dye' or 'R Color'.
+#' Add color information 'Color', 'Dye' or 'R Color'.
 #'
 #' @details
 #' Primers in forensic STR typing kits are labelled with a fluorescent
 #' dye. The dyes are represented with single letters (Dye) in exported result
 #' files or with strings (Color) in 'panels' files.
-#' For visualisation in R these R color names is used (R.Color).
+#' For visualisation in R the R color names are used (R.Color).
 #' The function can add new color schemes matched to the existing, or
 #' it can convert a vector containing on scheme to another. 
 #' 

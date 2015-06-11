@@ -9,11 +9,10 @@
 # 06.05.2014: Implemented 'checkDataset'.
 # 28.10.2013: First version.
 
-#' @title Capillary balance
+#' @title Calculate Capillary Balance
 #'
 #' @description
-#' \code{calculateCapillary_gui} is a GUI wrapper for the
-#' \code{\link{calculateCapillary}} function.
+#' GUI wrapper for the \code{\link{calculateCapillary}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateCapillary}} function by providing 

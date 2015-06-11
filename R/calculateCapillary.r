@@ -7,10 +7,10 @@
 # 15.12.2014: Changed parameter names to format: lower.case
 # 28.10.2013: First version.
 
-#' @title Calculate capillary balance
+#' @title Calculate Capillary Balance
 #'
 #' @description
-#' \code{calculateCapillary} calculates the ILS inter capillary balance.
+#' Calculates the ILS inter capillary balance.
 #'
 #' @details
 #' Calculates the inter capillary balance for the internal lane standard (ILS).

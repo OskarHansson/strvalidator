@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.05.2015: Corrected parameter description.
+# 11.05.2015: Accepts (the first) column name containing the string 'Sample'
+# as alternative to colum name 'Sample.Name'. 'Sample' is case in-sensitive.
+# 04.05.2015: Added 'Sample.File.Name' as a defined alternative to Sample.Name.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 28.04.2014: More robust and handles '+' and '-' in sample names.
 # 14.01.2014: Support dataframes without a 'Sample.Name' column.
@@ -14,23 +18,27 @@
 # <27.04.2013: remove NA/empty cols.
 # <27.04.2013: handle no sample/ no columns.
 
-#' @title Trim data
+#' @title Trim Data
 #'
 #' @description
-#' \code{trim} Extracts data from a larger data set.
+#' Extract data from a dataset.
 #'
 #' @details
-#' Simplifies extraction of specific data from a larger set of typing data.
+#' Simplifies extraction of specific data from a larger dataset.
+#' Look for samples in column named 'Sample.Name', 'Sample.File.Name', or
+#' the first column containing the string 'Sample' in mentioned order
+#' (not case sensitive). Remove unwanted columns.
 #' 
 #' @param data data frame with genotype data.
-#' @param samples string giving sample names separated by pipe.
-#' @param columns string giving column names separated by pipe.
+#' @param samples string giving sample names separated by pipe (|).
+#' @param columns string giving column names separated by pipe (|).
 #' @param word logical indicating if a word boundary should be added to 
 #'  \code{samples} and \code{columns}.
 #' @param ignore.case logical, TRUE ignore case in sample names.
-#' @param invert.s logical, FALSE samples given will be removed from 'data'
-#' while TRUE will remove samples NOT given.
-#' @param invert.c logical, FALSE columns given will be removed from 'data'
+#' @param invert.s logical, TRUE to remove matching samples from 'data',
+#' FALSE to remove samples NOT matching (i.e. keep matching samples).
+#' @param invert.c logical, TRUE to remove matching columns from 'data',
+#' FALSE to remove columns NOT matching (i.e. keep matching columns).
 #' while TRUE will remove columns NOT given.
 #' @param rm.na.col logical, TRUE columns with only NA are removed from 'data'
 #' while FALSE will preserve the columns.
@@ -168,7 +176,78 @@ trim <- function(data, samples=NULL, columns=NULL,
       }
       
     }
+
+  # Check if column 'Sample.File.Name' exist.
+  } else if("Sample.File.Name" %in% names(data)){
     
+    # Grab rows.
+    if(ignore.case){
+      sampleNames <- toupper(as.character(data$Sample.File.Name))
+    } else {
+      sampleNames <- as.character(data$Sample.File.Name)
+    }
+    
+    if(debug){
+      print("Pattern for samples")
+      print(head(samples))
+      print("String")
+      print(head(sampleNames))
+    }
+    
+    if(is.null(samples)){
+      
+      # Default is to keep all samples.
+      rows <- rep(TRUE, length(sampleNames))
+      
+    } else {
+      
+      # Get matching rows.
+      rows <- grepl(samples, sampleNames, fixed=FALSE)
+      
+      # Invert selection of samples.
+      if(invert.s){
+        rows <- !rows
+      }
+      
+    }
+
+  # Check if any column containing 'Sample' exist.
+  } else if(any(grepl("SAMPLE", names(data), ignore.case=TRUE))){
+    
+    # Get (first) column name containing "Sample".
+    sampleCol <- names(data)[grep("SAMPLE", names(data), ignore.case=TRUE)[1]]
+    
+      # Grab rows.
+      if(ignore.case){
+        sampleNames <- toupper(as.character(data[, sampleCol]))
+      } else {
+        sampleNames <- as.character(data[, sampleCol])
+      }
+      
+      if(debug){
+        print("Pattern for samples")
+        print(head(samples))
+        print("String")
+        print(head(sampleNames))
+      }
+      
+      if(is.null(samples)){
+        
+        # Default is to keep all samples.
+        rows <- rep(TRUE, length(sampleNames))
+        
+      } else {
+        
+        # Get matching rows.
+        rows <- grepl(samples, sampleNames, fixed=FALSE)
+        
+        # Invert selection of samples.
+        if(invert.s){
+          rows <- !rows
+        }
+        
+      }
+      
   } else {
     
     # Keep all rows.

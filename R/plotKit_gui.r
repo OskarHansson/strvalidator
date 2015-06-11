@@ -10,10 +10,10 @@
 # 23.10.2013: Added save as image.
 # 21.09.2013: First gui version.
 
-#' @title Plot kit marker ranges
+#' @title Plot Kit Marker Ranges
 #'
 #' @description
-#' \code{plotKit_gui} is a GUI for plotting marker ranges for kits.
+#' GUI for plotting marker ranges for kits.
 #'
 #' @details Create an overview of the size range for markers in different kits.
 #' It is possible to select multiple kits, specify titles, font size, distance

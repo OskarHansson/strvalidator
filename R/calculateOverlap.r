@@ -8,10 +8,10 @@
 # 30.11.2013: Specified package for function in 'plyr' -> 'plyr::rbind.fill'
 # 25.09.2013: First version.
 
-#' @title Bins Overlap
+#' @title Calculate Bins Overlap
 #'
 #' @description
-#' \code{calculateOverlap} analyses the bins overlap between colors.
+#' Analyses the bins overlap between colors.
 #'
 #' @details By analysing the bins overlap between dye channels a measure of
 #' the risk for spectral pull-up artefacts can be obtain. The default result

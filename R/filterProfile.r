@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.04.2015: Added option 'invert' to filter peaks NOT in reference.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 22.01.2014: Fixed bug. add.missing.loci=TRUE now overrides keep.na=FALSE.
 # 10.12.2013: Fixed bug returning all NAs when add.missing.loci=TRUE.
@@ -20,17 +21,19 @@
 # <11.04.2013: Roxygenized.
 # <11.04.2013: filter profile using data in slim format (faster).
 
-#' @title Filter out profiles from DNA results
+#' @title Filter Profile
 #'
 #' @description
-#' \code{filterProfile} Filters out the result matching a specified
-#' known profiles from typing data containing 'noise' such as stutters.
-#' If 'ref' does not contain a 'Sample.Name' column it will be used
-#' as reference for all samples in 'data'.
-#' NB! add.missing.loci overrides keep.na.
+#' Filter peaks from profiles.
 #'
 #' @details
-#' Returns data where allele names match 'ref' allele names.
+#' Filters out the peaks matching (or not matching) specified known profiles
+#' from typing data containing 'noise' such as stutters.
+#' If 'ref' does not contain a 'Sample.Name' column it will be used
+#' as reference for all samples in 'data'. The 'invert' option filters out
+#' peaks NOT matching the reference (e.g. drop-in peaks).
+#' NB! add.missing.loci overrides keep.na.
+#' Returns data where allele names match/not match 'ref' allele names.
 #' Required columns are: 'Sample.Name', 'Marker', and 'Allele'.
 #' 
 #' @param data data frame with genotype data in 'slim' format.
@@ -40,6 +43,7 @@
 #' @param add.missing.loci logical. TRUE add loci present in ref but not in data.
 #' Overrides keep.na=FALSE.   
 #' @param ignore.case logical TRUE ignore case.
+#' @param invert logical TRUE filter peaks NOT matching the reference.
 #' @param debug logical indicating printing debug information.
 #' 
 # @importFrom plyr rbind.fill
@@ -49,8 +53,8 @@
 #' @return data.frame with extracted result.
 #' 
 
-filterProfile <- function(data, ref, add.missing.loci=FALSE,
-                          keep.na=FALSE, ignore.case=TRUE, debug=FALSE){
+filterProfile <- function(data, ref, add.missing.loci=FALSE, keep.na=FALSE,
+                          ignore.case=TRUE, invert=FALSE, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -64,6 +68,8 @@ filterProfile <- function(data, ref, add.missing.loci=FALSE,
     print(keep.na)
     print("ignore.case:")
     print(ignore.case)
+    print("invert:")
+    print(invert)
   }
 
   # CHECK DATA ----------------------------------------------------------------
@@ -127,7 +133,8 @@ filterProfile <- function(data, ref, add.missing.loci=FALSE,
   
   # SELECT METHOD -------------------------------------------------------------
   
-  if(!add.missing.loci & !keep.na){
+  if(!add.missing.loci & !keep.na & !invert){
+    # Fast method cannot be used if add.missingloci/keep.na/invert is TRUE.
   
     # 'FAST' METHOD -----------------------------------------------------------
     # NB! Discards all NA alleles/loci/samples.
@@ -218,7 +225,7 @@ filterProfile <- function(data, ref, add.missing.loci=FALSE,
   } else {
     
     # 'SLOW' METHOD -----------------------------------------------------------
-    # NB! Possible to keep NA alleles and add missing loci.
+    # NB! Possible to keep NA alleles, add missing loci, and invert.
     
     if(debug){
       print("'slow' method")
@@ -302,7 +309,11 @@ filterProfile <- function(data, ref, add.missing.loci=FALSE,
           } else {
 
             # Filter alleles and add to selection.
-            selection <- selection & currentData$Allele %in% refAlleles
+            if(invert){
+              selection <- selection & !currentData$Allele %in% refAlleles
+            } else {
+              selection <- selection & currentData$Allele %in% refAlleles
+            }
             tmpDf <- currentData[selection, ]
             
             # matching is of length 0 if no matching allele.

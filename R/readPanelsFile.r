@@ -9,10 +9,10 @@
 # 22.09.2013: Added 'debug' parameter.
 # 22.06.2013: First version.
 
-#' @title Read Panels file
+#' @title Read Panels File
 #'
 #' @description
-#' \code{readPanelsFile} reads GeneMapper Panels files.
+#' Reads GeneMapper Panels files.
 #'
 #' @details Reads useful information from Panels files and save it as a data.frame.
 #' 

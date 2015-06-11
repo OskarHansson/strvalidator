@@ -4,12 +4,13 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.05.2015: 'slimcol' and 'stringcol' now accept vectors. 
 # 06.05.2014: First version.
 
-#' @title Plot Stutter GUI
+#' @title Check Dataset
 #'
 #' @description
-#' \code{checkDataset} is an internal function to check a data.frame before analysis.
+#' Internal function to check a data.frame before analysis.
 #'
 #' @details Check that the object exist, there are rows, the required columns exist,
 #' if data.frame is 'fat', and if invalid strings exist. Show error message if not.
@@ -17,9 +18,9 @@
 #' @param name character name of data.frame.
 #' @param reqcol character vector with required column names.
 #' @param slim logical TRUE to check if 'slim' data.
-#' @param slimcol character column name to check if 'slim' data.
+#' @param slimcol character vector with column names to check if 'slim' data.
 #' @param string character vector with invalid strings in 'stringcol', return FALSE if found.
-#' @param stringcol character column name to check for 'string'.
+#' @param stringcol character vector with column names to check for 'string'.
 #' @param env environment where to look for the data frame.
 #' @param parent parent gWidget.
 #' @param debug logical indicating printing debug information.
@@ -78,33 +79,43 @@ checkDataset <- function(name, reqcol=NULL, slim=FALSE, slimcol=NULL,
       ok <- FALSE
     
     } else if(slim & !is.null(slimcol)){
-        
-      # Check if slimmed.
-      slimmed <- sum(grepl(slimcol, names(df), fixed=TRUE)) == 1
       
-      if(!slimmed){
+      # Loop over columns to check.
+      for(c in seq(along=slimcol)){
+
+        # Check if slimmed.
+        slimmed <- sum(grepl(slimcol[c], names(df), fixed=TRUE)) == 1
         
-        # Construct error message.
-        messageText <- paste("The dataset is too fat!\n\n",
-                         "There can only be 1", slimcol, "column\n",
-                         "Slim the dataset", sep="")
-        
-        # Change flag.
-        ok <- FALSE
+        if(!slimmed){
+          
+          # Construct error message.
+          messageText <- paste("The dataset is too fat!\n\n",
+                               "There can only be 1", slimcol[c], "column\n",
+                               "Slim the dataset", sep="")
+          
+          # Change flag.
+          ok <- FALSE
+          
+        }
         
       }
       
     } else if(!is.null(string) & !is.null(stringcol)){
       
-      if(any(string %in% df[,stringcol])){
-        
-        # Construct error message.
-        messageText <- paste("'", string, "' detected in column ", stringcol, "!\n",
-                         "Please make sure that data is clean/filtered.\n",
-                         sep="")
-        
-        # Change flag.
-        ok <- FALSE
+      # Loop over columns to check.
+      for(c in seq(along=stringcol)){
+
+        if(any(string %in% df[,stringcol[c]])){
+          
+          # Construct error message.
+          messageText <- paste("'", string, "' detected in column ", stringcol[c], "!\n",
+                               "Please make sure that data is clean/filtered.\n",
+                               sep="")
+          
+          # Change flag.
+          ok <- FALSE
+          
+        }
         
       }
       

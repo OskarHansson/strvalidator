@@ -13,10 +13,10 @@
 # 09.02.2014: Removed unsupported unit 'px'.
 # 20.01.2014: First version.
 
-#' @title Save image
+#' @title Save Image
 #'
 #' @description
-#' \code{ggsave_gui} is a simple GUI wrapper for \code{\link{ggsave}}.
+#' A simple GUI wrapper for \code{\link{ggsave}}.
 #'
 #' @details
 #' Simple GUI wrapper for ggsave.

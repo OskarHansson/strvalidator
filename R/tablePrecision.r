@@ -9,10 +9,10 @@
 # 15.12.2013: Fixed multiple targets.
 # 07.12.2013: First version.
 
-#' @title Calculate precision
+#' @title Calculate Precision
 #'
 #' @description
-#' \code{tablePrecision} Calculates the precision.
+#' Summarize precision analysis result in table format.
 #'
 #' @details Calculates summary statistics for 'target' columns for each unique
 #' 'key' combination. For example the precision of determined size for alleles

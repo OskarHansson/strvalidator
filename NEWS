@@ -1,3 +1,51 @@
+Version 1.5.0
+------------------------------------------------------------------------------
+* New functions to estimate analytical threshold (tab 'AT').
+* New function to perform actions (concatenate, add, multiply, subtract,
+  divide) on columns in a dataset (tab 'Tools').
+* New plot option 'Histogram' in funtion plotDistribution_gui.
+* Bug fixes and improvements with the most significant listed below:
+  - Fixed bug in calculatePullup (https://github.com/OskarHansson/strvalidator/issues/8) partial column name match.
+  - Fixed bug in calculateBalance (https://github.com/OskarHansson/strvalidator/issues/9) error when NA.
+  - Fixed bug in plotDropout_gui (https://github.com/OskarHansson/strvalidator/issues/10) colors in dotplot hardcoded as ESX17.
+  - checkSubset, editData_gui, and trim
+  Now accept columns named 'Sample.File.Name' or the first occurance of any
+  column name containing '*Sample*' as alternative to 'Sample.Name'.
+  - colNames
+  New option to require number suffix on repeated columns improve autodetection
+  for the 'import' and 'slim' function. 
+  - editData
+  Fixed bug column name changes not saved (introduced in 1.4.0)
+  - filterProfile / filterProfile_gui
+  Now have and option 'invert' to filter peaks NOT in the reference profile
+  - import / import_gui
+  Function parameter name changed from 'file.name' to 'import.file',
+  New options to autotrim and autolim the imported data,
+  New options to import file name and time stamp.
+  - calculateBalance_gui
+  Option to drop sex markers.
+  - plotBalance_gui
+  Implemented check for plot facet error caused by all NA'.
+  - slim / slim_gui
+  Fixed problems with partial column name matching.
+  Function parameter name changed from 'keepAllFixed' to 'keep.na',
+* Changed parameter names to the same naming convention (period.separated)
+  for checkDataset.
+* New functions:
+  - blockAT
+  - calculateAT
+  - calculateAT_gui
+  - calculateAT6
+  - calculateAT6_gui
+  - plotAT_gui
+  - columns
+  - columns_gui
+* Removed unused function: loadPackage.
+* New tests:
+  test-filterProfile
+    - Test for parameter 'invert'.
+
+
 Version 1.4.0
 ------------------------------------------------------------------------------
 * GUI changes: Tab 'Edit' changed to 'Tools'.

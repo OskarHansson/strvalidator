@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 13.12.2014: Added kit dropdown and kit attribute to result.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -22,11 +23,10 @@
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: First version.
 
-#' @title Calculate Dropout
+#' @title Calculate Dropout Events
 #'
 #' @description
-#' \code{calculateDropout_gui} is a GUI wrapper for the
-#' \code{\link{calculateDropout}} function.
+#' GUI wrapper for the \code{\link{calculateDropout}} function.
 #'
 #' @details Scores dropouts for a dataset.
 #' @param env environment in wich to search for data frames and save result.
@@ -215,7 +215,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       chksubset_txt <- checkSubset(data=val_data,
                                    ref=val_ref,
                                    console=FALSE,
-                                   ignoreCase=val_ignore,
+                                   ignore.case=val_ignore,
                                    word=FALSE)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 

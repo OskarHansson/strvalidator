@@ -74,7 +74,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name set3
-#' @method set3 <- import(fileName=system.file("extdata", "set3.txt", package = "strvalidator"))
+#' @method set3 <- import(import.file=system.file("extdata", "set3.txt", package = "strvalidator"))
 #' @format ASCII text file
 NULL
 
@@ -86,7 +86,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name ref3
-#' @method ref3 <- import(fileName=system.file("extdata", "ref3.txt", package = "strvalidator"))
+#' @method ref3 <- import(import.file=system.file("extdata", "ref3.txt", package = "strvalidator"))
 #' @format ASCII text file
 NULL
 
