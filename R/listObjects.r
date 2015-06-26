@@ -26,6 +26,8 @@
 #' 
 #' @return character vector with the object names.
 #' 
+#' @export
+#'  
 #' @examples
 #' \dontrun{
 #' # List data frames in the workspace.

@@ -1,3 +1,10 @@
+Version 1.5.1
+------------------------------------------------------------------------------
+* AT function now calculate global AT per dye.
+* Bug fixes and improvements with the most significant listed below:
+  - Fixed bug in calculateAT (hardcoded dyes)
+  - Changed from two-sided critical t-valued to one-sided in calculateAT6.
+
 Version 1.5.0
 ------------------------------------------------------------------------------
 * New functions to estimate analytical threshold (tab 'AT').

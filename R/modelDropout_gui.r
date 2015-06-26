@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.06.2015: Rounded printed probabilities to three decimals.
 # 20.03.2015: Rounded printed conservative drop-out threshold to integer.
 # 05.01.2015: Changed check of suggested package ResourceSelection in accordance
 #             with Writing R extensions v 3.2.1 section 1.1.3.1.
@@ -25,8 +26,6 @@
 # 05.11.2013: Fixed limit x/y axis drop observations.
 # 01.11.2013: Added 'override titles' option.
 # 01.11.2013: Added 'Save as image'.
-# 29.10.2013: Fixed limit y axis drop observations.
-# 24.10.2013: Implemented the 'Hybrid' method and log for testing purposes.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -863,15 +862,15 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
         
         # Create threshold label.
         thresholdLegend <- paste("P(dropout|T=",
-                                 round(t_dropout,0),
+                                 round(t_dropout, 0),
                                  ")=",
-                                 val_p_dropout,
+                                 round(val_p_dropout, 3),
                                  sep="")
 
         # Add prediction interval.
         if(val_prediction_print){
           thresholdLegend <- paste(thresholdLegend,
-                                   "\n P(dropout>", val_p_dropout,
+                                   "\n P(dropout>", round(val_p_dropout, 3),
                                    "|T=",
                                    round(t_dropout_cons,0),
                                    ")<",

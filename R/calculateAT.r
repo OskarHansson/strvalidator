@@ -7,6 +7,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 26.06.2015: Added global AT per dye.
+# 26.06.2015: Fixed hard-coded kit/dye set.
 # 03.05.2015: First version.
 
 #' @title Calculate Analytical Threshold
@@ -29,6 +31,9 @@
 #' Similarily a range around the peaks of the internal lane standard (ILS) can be 
 #' blocked across all dye channels. Which can bleed-through in week samples
 #' (i.e. negative controls)
+#' The mean, standard deviation, and number of peaks are calculated per dye per sample,
+#' per sample, globally across all samples, and globally across all samples per dye,
+#' for each method to estimate AT. Also the complete percentile rank list is calculated.
 #' 
 #' @param data a data frame containing at least 'Dye.Sample.Peak',
 #'  'Sample.File.Name', 'Marker', 'Allele', 'Height', and 'Data.Point'.
@@ -54,8 +59,8 @@
 #' @param debug logical to indicate if debug information should be printed.
 #' 
 #' @return list of two data frames. The first with result per dye per sample,
-#'  per sample, and all data for each method. The second is the complete percentile
-#'  rank list.
+#'  per sample, globally across all samples, and globally across all samples per dye,
+#'  for each method. The second is the complete percentile rank list.
 #' 
 #' @export
 #' 
@@ -253,10 +258,9 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   
   # Get all dyes.
   dyes <- as.character(unique(data$Dye))
-  colorsKit <- unique(getKit("ESX17", what="Color")$Color)
-  dyesKit <- addColor(colorsKit, have="Color", need="Dye")
-  dyeILS <- setdiff(dyes, dyesKit)
-
+  dyeILS <- unique(data$Dye[data$ILS])
+  dyesKit <- setdiff(dyes, dyeILS)
+  
   # Get number of samples.
   nSamples <- length(unique(data$Sample.File.Name))
 
@@ -279,12 +283,23 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   # Analyse1 ------------------------------------------------------------------
   
   # Calculate for sample per dye.
-  res1 <- dt[, list(Mean=mean(Height, na.rm=TRUE),
+  at.sample.dye <- dt[, list(Mean=mean(Height, na.rm=TRUE),
                     Sd=sd(Height, na.rm=TRUE),
                     Peaks=sum(Blocked==FALSE),
                     AT2=rankThreshold(Height, rank.t)),
              by=list(Sample.File.Name, Dye)]
+  
+  # Extract AT2 and remove from dataset to get final row order correct.
+  at.sample.dye.AT2 <- at.sample.dye$AT2
+  at.sample.dye$AT2 <- NULL
 
+  # Calculate globally for each dye.
+  at.dye <- dt[, list(Mean=mean(Height, na.rm=TRUE),
+                    Sd=sd(Height, na.rm=TRUE),
+                    Peaks=sum(Blocked==FALSE),
+                    AT2=rankThreshold(Height, rank.t)),
+             by=list(Dye)]
+  
   # Calculate for sample.
   at.sample <- dt[, list(Mean=mean(Height, na.rm=TRUE),
                          Sd=sd(Height, na.rm=TRUE),
@@ -292,69 +307,108 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
                          AT2=rankThreshold(Height, rank.t)),
                   by=list(Sample.File.Name)]
 
+  # Extract AT2 and remove from dataset to get final row order correct.
+  at.sample.AT2 <- at.sample$AT2
+  at.sample$AT2 <- NULL
+  
   # Join the result.
-  res1$Sample.Mean <- rep(at.sample$Mean, each=length(dyesKit))
-  res1$Sample.Sd <- rep(at.sample$Sd, each=length(dyesKit))
-  res1$Sample.Peaks <- rep(at.sample$Peaks, each=length(dyesKit))
-  res1$Sample.AT2 <- rep(at.sample$AT2, each=length(dyesKit))
+  at.sample.dye$Sample.Mean <- rep(at.sample$Mean, each=length(dyesKit))
+  at.sample.dye$Sample.Sd <- rep(at.sample$Sd, each=length(dyesKit))
+  at.sample.dye$Sample.Peaks <- rep(at.sample$Peaks, each=length(dyesKit))
 
   # Calculate globally for all data.
   at.global <- dt[, list(Mean=mean(Height, na.rm=TRUE),
                          Sd=sd(Height, na.rm=TRUE),
                          Peaks=sum(Blocked==FALSE),
                          AT2=rankThreshold(Height, rank.t))]
-  
+
   # Join the result.
-  res1$Global.Mean <- rep(at.global$Mean, nrow(res1))
-  res1$Global.Sd <- rep(at.global$Sd, nrow(res1))
-  res1$Global.Peaks <- rep(at.global$Peaks, nrow(res1))
-  res1$Global.AT2 <- rep(at.global$AT2, nrow(res1))
+  at.sample.dye$Global.Mean <- rep(at.global$Mean, nrow(at.sample.dye))
+  at.sample.dye$Global.Sd <- rep(at.global$Sd, nrow(at.sample.dye))
+  at.sample.dye$Global.Peaks <- rep(at.global$Peaks, nrow(at.sample.dye))
 
   # Calculate AT1.
-  res1$AT1 <- res1$Mean + k * res1$Sd
-  res1$Sample.AT1 <- res1$Sample.Mean + k * res1$Sample.Sd
-  res1$Global.AT1 <- res1$Global.Mean + k * res1$Global.Sd
-
+  at.sample.dye$AT1 <- at.sample.dye$Mean + k * at.sample.dye$Sd
+  at.sample.dye$Sample.AT1 <- at.sample.dye$Sample.Mean + k * at.sample.dye$Sample.Sd
+  at.sample.dye$Global.AT1 <- at.sample.dye$Global.Mean + k * at.sample.dye$Global.Sd
+  
+  # Calculate AT1 per dye.
+  at.dye$AT1 <- at.dye$Mean + k * at.dye$Sd
+  for(d in seq(along=dyesKit)){
+    colName <- paste(dyesKit[d],"AT1", sep=".")
+    colVal <- rep(at.dye$AT1[d], nrow(at.sample.dye))
+    colCnt <- length(colVal)
+    dtNew <- data.table(col = colVal)
+    setnames(dtNew, colName)
+    at.sample.dye <- data.table(at.sample.dye, dtNew)
+  }
+  
+  # Add AT2 results.
+  at.sample.dye$AT2 <- at.sample.dye.AT2
+  at.sample.dye$Sample.AT2 <- rep(at.sample.AT2, each=length(dyesKit))
+  at.sample.dye$Global.AT2 <- rep(at.global$AT2, nrow(at.sample.dye))
+  
+  # Add AT2 per dye.
+  for(d in seq(along=dyesKit)){
+    colName <- paste(dyesKit[d],"AT2", sep=".")
+    colVal <- rep(at.dye$AT2[d], nrow(at.sample.dye))
+    colCnt <- length(colVal)
+    dtNew <- data.table(col = colVal)
+    setnames(dtNew, colName)
+    at.sample.dye <- data.table(at.sample.dye, dtNew)
+  }
+  
   # Calculate AT4.
   #Note: Actually no point using t-distribution since degrees of freedom
   # (number of observations - 1) are large (>100).
-  res1$AT4 <- res1$Mean + abs(qt(alpha, res1$Peaks - 1)) * (1 + 1 / 1)^0.5 * res1$Sd
-  res1$Sample.AT4 <- res1$Sample.Mean + abs(qt(alpha, res1$Sample.Peaks - 1)) * (1 + 1 / 1)^0.5 * res1$Sample.Sd
-  res1$Global.AT4 <- res1$Global.Mean + abs(qt(alpha, res1$Global.Peaks - 1)) * (1 + 1 / nSamples)^0.5 * res1$Global.Sd
+  at.sample.dye$AT4 <- at.sample.dye$Mean + abs(qt(alpha, at.sample.dye$Peaks - 1)) * (1 + 1 / 1)^0.5 * at.sample.dye$Sd
+  at.sample.dye$Sample.AT4 <- at.sample.dye$Sample.Mean + abs(qt(alpha, at.sample.dye$Sample.Peaks - 1)) * (1 + 1 / 1)^0.5 * at.sample.dye$Sample.Sd
+  at.sample.dye$Global.AT4 <- at.sample.dye$Global.Mean + abs(qt(alpha, at.sample.dye$Global.Peaks - 1)) * (1 + 1 / nSamples)^0.5 * at.sample.dye$Global.Sd
 
+  # Calculate AT4 per dye.
+  at.dye$AT4 <- at.dye$Mean + abs(qt(alpha, at.dye$Peaks - 1)) * (1 + 1 / 1)^0.5 * at.dye$Sd
+  for(d in seq(along=dyesKit)){
+    colName <- paste(dyesKit[d],"AT4", sep=".")
+    colVal <- rep(at.dye$AT4[d], nrow(at.sample.dye))
+    colCnt <- length(colVal)
+    dtNew <- data.table(col = colVal)
+    setnames(dtNew, colName)
+    at.sample.dye <- data.table(at.sample.dye, dtNew)
+  }
+  
   # Add number of samples.
-  res1$Total.Samples <-  nSamples
+  at.sample.dye$Total.Samples <-  nSamples
 
   # Add attributes.
-  attr(res1, which="k") <- k
-  attr(res1, which="rank.t") <- rank.t
-  attr(res1, which="alpha") <- alpha
-  attr(res1, which="block") <- block.sample
-  attr(res1, which="range.sample") <- range.sample
-  attr(res1, which="block.ils") <- block.ils
-  attr(res1, which="range.ils") <- range.ils
-  attr(res1, which="per.dye") <- per.dye
+  attr(at.sample.dye, which="k") <- k
+  attr(at.sample.dye, which="rank.t") <- rank.t
+  attr(at.sample.dye, which="alpha") <- alpha
+  attr(at.sample.dye, which="block") <- block.sample
+  attr(at.sample.dye, which="range.sample") <- range.sample
+  attr(at.sample.dye, which="block.ils") <- block.ils
+  attr(at.sample.dye, which="range.ils") <- range.ils
+  attr(at.sample.dye, which="per.dye") <- per.dye
  
-  # Re-order columns and convert back to data.frame.
-  res1 <- data.frame(setcolorder(res1, c(1:5, 7:9, 11:13, 15:17, 6, 10, 14, 18:21)))
+  # Convert back to data.frame.
+  res1 <- data.frame(at.sample.dye)
   
   # Analyse2 ------------------------------------------------------------------
   
   # Calculate complete percentile rank list.
-  res2 <- data.frame(Height=unique(sort(dt$Height)),
+  at.rank <- data.frame(Height=unique(sort(dt$Height)),
                      Rank=unique(percentileRank(sort(dt$Height))),
                      Observations=as.numeric(table(dt$Height)))
 
   # Add attributes.
-  attr(res2, which="rank.t") <- rank.t
-  attr(res2, which="block") <- block.sample
-  attr(res2, which="range.sample") <- range.sample
-  attr(res2, which="block.ils") <- block.ils
-  attr(res2, which="range.ils") <- range.ils
-  attr(res2, which="per.dye") <- per.dye
-  
+  attr(at.rank, which="rank.t") <- rank.t
+  attr(at.rank, which="block") <- block.sample
+  attr(at.rank, which="range.sample") <- range.sample
+  attr(at.rank, which="block.ils") <- block.ils
+  attr(at.rank, which="range.ils") <- range.ils
+  attr(at.rank, which="per.dye") <- per.dye
+ 
   # Convert back to data frame.
-  res2 <- data.frame(res2)
+  res2 <- data.frame(at.rank)
   
   if(debug){
     print("str(res1)")
