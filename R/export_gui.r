@@ -86,8 +86,8 @@ export_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
                container = gv) 
   
   # Create list of objects.
-  itemList <- listObjects(env=env, objClass="data.frame")
-  itemList <- c(itemList, listObjects(env=env, objClass="ggplot"))
+  itemList <- listObjects(env=env, obj.class="data.frame")
+  itemList <- c(itemList, listObjects(env=env, obj.class="ggplot"))
   
   f0_object_tbl <- gWidgets::gtable(items=itemList, multiple = TRUE,
                           expand=TRUE, container = f0)

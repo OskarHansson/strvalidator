@@ -95,7 +95,7 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
   
   f0g0[1,1] <- glabel(text="Dataset:", container=f0g0)
   
-  f0_list <- c("<Select dataset>", listObjects(env=env, objClass="data.frame"))
+  f0_list <- c("<Select dataset>", listObjects(env=env, obj.class="data.frame"))
   
   f0g0[1,2] <- dataset_drp <- gdroplist(items=f0_list, selected = 1,
                                         editable = FALSE, container = f0g0) 

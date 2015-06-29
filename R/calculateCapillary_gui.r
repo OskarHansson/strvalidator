@@ -93,7 +93,7 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[1,1] <- glabel(text="Samples Table:", container=g0)
   
-  dfs <- c("<Select a dataset>", listObjects(env=env, objClass="data.frame"))
+  dfs <- c("<Select a dataset>", listObjects(env=env, obj.class="data.frame"))
   
   g0[1,2] <- g0_data_drp <- gdroplist(items=dfs, 
                            selected = 1,

@@ -5,8 +5,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
-# 26.07.2013: 'objClass' can now be a vector.
-# 17.05.2013: New parameters 'objClass', 'debug'.
+# 28.06.2015: Changed parameter names to format: lower.case
+# 26.07.2013: 'obj.class' can now be a vector.
+# 17.05.2013: New parameters 'obj.class', 'debug'.
 # 17.05.2013: Made general. Changed name from listDataFrames -> listObjects.
 # <17.05.2013: First version.
 
@@ -21,7 +22,7 @@
 #' Returns a list of objects of the specified class in the environment.
 #' 
 #' @param env environment in wich to search for objects.
-#' @param objClass character string or vector specifying the object class.
+#' @param obj.class character string or vector specifying the object class.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return character vector with the object names.
@@ -31,12 +32,12 @@
 #' @examples
 #' \dontrun{
 #' # List data frames in the workspace.
-#' listObjects(objClass="data.frame")
+#' listObjects(obj.class="data.frame")
 #' # List functions in the workspace.
-#' listObjects(objClass="function")
+#' listObjects(obj.class="function")
 #' }
 
-listObjects <- function(env=parent.frame(), objClass=NULL, debug=FALSE){
+listObjects <- function(env=parent.frame(), obj.class=NULL, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -54,7 +55,7 @@ listObjects <- function(env=parent.frame(), objClass=NULL, debug=FALSE){
   }
   
   # Check if specified object class.
-  if(!is.null(objClass)){
+  if(!is.null(obj.class)){
 
     classes <- list()
 
@@ -66,9 +67,9 @@ listObjects <- function(env=parent.frame(), objClass=NULL, debug=FALSE){
     }
     
     # Filter objects with specified classes.
-    for(c in seq(along=objClass)){
+    for(c in seq(along=obj.class)){
       for(i in seq(along=classes)){
-        if(objClass[c] %in% classes[[i]]){
+        if(obj.class[c] %in% classes[[i]]){
           res <- c(res, wsObj[i])
         }
       }

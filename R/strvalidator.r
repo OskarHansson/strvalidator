@@ -1045,7 +1045,7 @@ strvalidator <- function(debug=FALSE){
   
   ws_r_drp <- gdroplist(items=c("<Select object>", 
                                 listObjects(env=.strvalidator_env,
-                                            objClass=.object_classes_import)), 
+                                            obj.class=.object_classes_import)), 
                         selected = 1,
                         editable = FALSE,
                         container = workspace_f2g1) 
@@ -2270,7 +2270,7 @@ strvalidator <- function(debug=FALSE){
   .refreshWs <- function(){
     
     # Get data frames in global workspace.
-    dfs <- listObjects(env=.GlobalEnv, objClass=.object_classes_import)
+    dfs <- listObjects(env=.GlobalEnv, obj.class=.object_classes_import)
     
     if(!is.null(dfs)){
       
@@ -2294,7 +2294,7 @@ strvalidator <- function(debug=FALSE){
     }
     
     # Get list of objects.
-    dfs <- listObjects(env=.strvalidator_env, objClass=.object_classes_view)
+    dfs <- listObjects(env=.strvalidator_env, obj.class=.object_classes_view)
     
     # Get size of objects.
     dfsSize <- sapply(dfs, function(x) object.size(get(x, envir = .strvalidator_env)))

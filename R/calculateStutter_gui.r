@@ -110,7 +110,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   f0g0[1,2] <- f0_dataset_drp <- gdroplist(items=c("<Select dataset>",
                                               listObjects(env=env,
-                                                          objClass="data.frame")), 
+                                                          obj.class="data.frame")), 
                                       selected = 1,
                                       editable = FALSE,
                                       container = f0g0)
@@ -154,7 +154,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   f0g0[2,2] <- f0_refset_drp <- gdroplist(items=c("<Select dataset>",
                                              listObjects(env=env,
-                                                         objClass="data.frame")), 
+                                                         obj.class="data.frame")), 
                                      selected = 1,
                                      editable = FALSE,
                                      container = f0g0) 

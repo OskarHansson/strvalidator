@@ -1,9 +1,20 @@
+Version 1.5.1.9000
+------------------------------------------------------------------------------
+* Now fully enforces the version numbering convention (http://r-pkgs.had.co.nz/release.html)
+ x.y.z.9XXX, where x is a major release, y is a minor release, z is a bug fix, 
+ and 9XXX is a in-development version. Development versions will be synchronised to
+ GitHub (https://github.com/OskarHansson/strvalidator) and possibly made available at
+ the website (https://sites.google.com/site/forensicapps/strvalidator) as file
+ for manual download and installation (binary package).
+* Bug fix:
+  - Plot AT confidence interval now matches the one-sided used in calculateAT6.
+
 Version 1.5.1
 ------------------------------------------------------------------------------
 * AT function now calculate global AT per dye.
 * Bug fixes and improvements with the most significant listed below:
   - Fixed bug in calculateAT (hardcoded dyes)
-  - Changed from two-sided critical t-valued to one-sided in calculateAT6.
+  - Changed from two-sided critical t-value to one-sided in calculateAT6.
 
 Version 1.5.0
 ------------------------------------------------------------------------------

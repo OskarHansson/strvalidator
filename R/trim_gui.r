@@ -136,7 +136,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
                                                  listObjects(env=env,
-                                                             objClass="data.frame")),
+                                                             obj.class="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
                                          container = g0)

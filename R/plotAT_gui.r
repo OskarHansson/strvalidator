@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.06.2015: Changed confidence interval level to match one-sided critical t-value.
 # 01.06.2015: First version.
 
 #' @title Plot Analytical Threshold
@@ -87,7 +88,7 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
 
   dataset_drp <- gdroplist(items=c("<Select dataset>",
                                    listObjects(env=env,
-                                               objClass="data.frame")), 
+                                               obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
                            container = f0) 
@@ -402,14 +403,14 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
           # Add regression line.
           gp <- gp + stat_smooth(aes_string(x="Amount", y="Height"),
                                  method="lm", se=TRUE, n=npoints,
-                                 fullrange=TRUE, level=1-alpha)
+                                 fullrange=TRUE, level=1-alpha*2)
 
           } else {
 
           # Add weighted regression line.
           gp <- gp + stat_smooth(aes_string(x="Amount", y="Height", weight="Weight"),
                                  method="lm", se=TRUE, n=npoints,
-                                 fullrange=TRUE, level=1-alpha)
+                                 fullrange=TRUE, level=1-alpha*2)
 
         }
         
