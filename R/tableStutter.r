@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 01.11.2013: Fixed quant parameter always 0.95 (hard-coded instead of variable).
 # 06.08.2013: Fixed data.frame bug giving 'TRUE' instead of 'NA'.
 # 10.06.2013: Changed name parameter 'per' -> 'scope'
@@ -29,9 +30,11 @@
 #' @param scope string, summarize 'global', by 'locus', or by 'stutter'.
 #' @param quant numeric, quantile to calculate.
 #' 
+#' @return data.frame with summarized result.
+#' 
 #' @export
 #' 
-#' @return data.frame with summarized result.
+#' @importFrom stats sd quantile
 #' 
 
 

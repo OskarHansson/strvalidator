@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
+# 17.08.2015: Changed erroneus  to  option 'High peak / low peak' to 'Smaller peak / larger peak'.
 # 08.06.2015: Added option to drop sex markers (Fixes issue#9).
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 13.12.2014: Added kit dropdown and kit attribute to result.
@@ -22,9 +24,6 @@
 # 18.07.2013: Check before overwrite object (new function).
 # 17.07.2013: Added check subsetting.
 # 11.07.2013: Added save GUI settings.
-# 10.07.2013: Check if object exist and ask for overwrite or new name if it does.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 04.06.2013: Fixed bug in 'missingCol'.
 
 #' @title Calculate Balance
 #'
@@ -43,6 +42,9 @@
 #' @return TRUE
 #' 
 #' @export
+#' 
+#' @importFrom utils help head str
+#' @importFrom graphics title
 #' 
 #' @seealso \code{link{calculateBalance}}, \code{link{checkSubset}}
 
@@ -275,7 +277,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   
   f1g1 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
   glabel(text="Calculate balance using:", anchor=c(-1 ,0), container=f1g1)
-  f1_methods <- c("High molecular weight / low molecular weight", "High peak / low peak")
+  f1_methods <- c("High molecular weight / low molecular weight", "Smaller peak / larger peak")
   f1_method_drp <- gdroplist(items=f1_methods,
                              selected = 2,
                              expand = FALSE,

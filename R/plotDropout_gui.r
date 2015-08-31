@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 16.05.2015: Fixed issue#10 colors hardcoded as ESX17 for dotplot.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -27,8 +28,6 @@
 # 15.07.2013: Save as ggplot object to workspace instead of image.
 # 15.07.2013: Added save GUI settings.
 # 04.06.2013: Fixed bug in 'missingCol'.
-# 17.05.2013: save plot moved to external function.
-# 17.05.2013: listDataFrames() -> listObjects()
 
 #' @title Plot Drop-out Events
 #'
@@ -48,11 +47,13 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
-# @importFrom scales pretty_breaks
+#' @return TRUE
 #' 
 #' @export
 #' 
-#' @return TRUE
+#' @importFrom scales pretty_breaks
+#' @importFrom utils help str
+#' @importFrom grDevices rgb
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 27.11.2014: Fixed bug (GitHub issue #7) introduced in strvalidator version 1.3.1.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -29,6 +30,8 @@
 #' @return TRUE
 #' 
 #' @export
+#' 
+#' @importFrom utils help str head
 #' 
 #' @seealso \code{\link{addSize}}
 

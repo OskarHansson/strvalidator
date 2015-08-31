@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 26.06.2015: Added global AT per dye.
 # 26.06.2015: Fixed hard-coded kit/dye set.
 # 03.05.2015: First version.
@@ -63,6 +64,9 @@
 #'  for each method. The second is the complete percentile rank list.
 #' 
 #' @export
+#' 
+#' @importFrom stats sd qt
+#' @importFrom utils str head tail
 #' 
 #' @seealso \code{\link{blockAT}}, \code{\link{checkSubset}}
 #' 

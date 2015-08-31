@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 26.06.2015: More precise warning messages (include sample name and marker).
 # 15.12.2014: Changed parameter names to format: lower.case
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
@@ -82,6 +83,8 @@
 #' 'MethodX', 'Method1', 'Method2', 'MethodL' and 'MethodL.Ph'.
 #' 
 #' @export
+#' 
+#' @importFrom utils str
 #' 
 #' @references
 #' Peter Gill et.al.,

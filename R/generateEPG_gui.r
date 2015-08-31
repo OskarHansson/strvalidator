@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 09.01.2015: Enable 'generate' after selection of new sample.
 # 09.12.2014: First version.
 
@@ -25,6 +26,8 @@
 #' @return TRUE
 #' 
 #' @export
+#' 
+#' @importFrom utils help
 #' 
 #' @seealso \code{\link{generateEPG}}
 

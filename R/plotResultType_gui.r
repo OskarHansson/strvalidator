@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -28,11 +29,14 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
-# @importFrom plyr count
+#' 
+#' @return TRUE
 #' 
 #' @export
 #' 
-#' @return TRUE
+#' @importFrom plyr count
+#' @importFrom utils help str
+#' 
 
 plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
 

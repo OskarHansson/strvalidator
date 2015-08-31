@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 17.04.2015: Included a check for plot facet error caused by all NA's.
 # 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -26,8 +27,6 @@
 # 02.12.2013: Fixed 'val_palette' to get 'R.Color'.
 # 30.11.2013: Fixed 'complex' plot.
 # 30.11.2013: Specified package for functions in 'grid' -> 'grid::xxxxx'
-# 27.11.2013: Fixed 'facet_wrap' with strings. But still problem in 'complex'.
-# 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 
 #' @title Plot Balance
 #'
@@ -47,12 +46,14 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
-# @importFrom gridExtra arrangeGrob
-# @importFrom grid unit textGrob grid.newpage grid.draw
-# @importFrom gtable gtable_add_grob gtable
-# @importFrom plyr rbind.fill
-#' 
 #' @export
+#' 
+#' @importFrom utils help str
+#' @importFrom stats as.formula
+# @importFrom gridExtra arrangeGrob
+#' @importFrom grid unit textGrob grid.newpage grid.draw
+# @importFrom gtable gtable_add_grob gtable
+#' @importFrom plyr rbind.fill
 #' 
 #' @return TRUE
 #' 

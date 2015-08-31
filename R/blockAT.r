@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 26.06.2015: Fixed hard-coded kit/dye set.
 # 05.05.2015: First version.
 
@@ -41,6 +42,11 @@
 #' 
 #' @return data.frame with added columns 'Dye' and 'ILS'.
 #' 
+#' @export
+#' 
+#' @importFrom utils str head
+#' 
+#' @seealso \code{\link{calculateAT}}
 
 
 blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,

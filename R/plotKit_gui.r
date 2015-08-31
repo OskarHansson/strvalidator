@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 20.01.2014: Implemented ggsave with workaround for complex plots.
@@ -23,9 +24,12 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
+#' @return TRUE
+#' 
 #' @export
 #' 
-#' @return TRUE
+#' @importFrom utils help
+#' 
 
 plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   

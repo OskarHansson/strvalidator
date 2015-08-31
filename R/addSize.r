@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 26.08.2014: Fixed bug when scrambled markers (issue#5)
 # 27.04.2014: Added option to ignore case in marker names.
 # 01.03.2014: Added options 'bins' and calculation of size.
@@ -33,6 +34,8 @@
 #' @return data.frame with additional columns for added size.
 #' 
 #' @export
+#' 
+#' @importFrom utils head str
 #' 
 
 addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){

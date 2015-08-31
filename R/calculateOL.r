@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 21.01.2014: Added parameter 'limit'.
 # 17.01.2014: First version.
 
@@ -27,6 +28,8 @@
 #' @return data.frame with columns 'Kit', 'Marker', 'Database', 'Risk', and 'Total'.
 #' 
 #' @export
+#' 
+#' @importFrom utils head str
 #' 
 
 calculateOL <- function (kit, db, virtual=TRUE, limit=TRUE, debug=FALSE){

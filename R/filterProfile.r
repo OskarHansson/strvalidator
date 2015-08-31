@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 09.04.2015: Added option 'invert' to filter peaks NOT in reference.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 22.01.2014: Fixed bug. add.missing.loci=TRUE now overrides keep.na=FALSE.
@@ -46,9 +47,11 @@
 #' @param invert logical TRUE filter peaks NOT matching the reference.
 #' @param debug logical indicating printing debug information.
 #' 
-# @importFrom plyr rbind.fill
 #' 
 #' @export
+#' 
+#' @importFrom plyr rbind.fill
+#' @importFrom utils str flush.console
 #' 
 #' @return data.frame with extracted result.
 #' 

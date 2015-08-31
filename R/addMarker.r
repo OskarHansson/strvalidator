@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 15.12.2014: Changed parameter names to format: lower.case
 # 15.01.2014: Added message to show progress.
 # 30.11.2013: Specified package for function in 'plyr' -> 'plyr::rbind.fill'
@@ -28,7 +29,8 @@
 #' @param ignore.case logical. TRUE ignores case in marker names.
 #' @param debug logical indicating printing debug information.
 #' 
-# @importFrom plyr rbind.fill
+#' @importFrom plyr rbind.fill
+#' @importFrom utils head
 #' 
 #' @export
 #' 

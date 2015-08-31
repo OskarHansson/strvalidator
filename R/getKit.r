@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 28.06.2015: Changed parameter names to format: lower.case
 # 14.12.2014: what='Gender' changed to 'Sex.Marker' now return vector.
 # 26.09.2014: Fixed error if kit=NULL and what!=NA.
@@ -43,9 +44,11 @@
 #' @param .kit.info data frame, run function on a data frame instead of the kits.txt file.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return data.frame with kit information.
+#' 
 #' @export
 #' 
-#' @return data.frame with kit information.
+#' @importFrom utils read.delim
 #' 
 #' @examples
 #' # Show all information stored for kit with short name 'ESX17'.

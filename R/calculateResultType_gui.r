@@ -4,6 +4,7 @@
 
 ###############################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 04.06.2015: Changed button label 'Calculate result type' to 'Calculate'.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -26,6 +27,8 @@
 #' @param parent widget to get focus when finished.
 #' 
 #' @export
+#' 
+#' @importFrom utils help
 #' 
 #' @return TRUE
 #' 

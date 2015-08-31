@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 23.02.2014: Added option 'ol.rm'.
 # 20.04.2013: first version.
 
@@ -25,9 +26,11 @@
 #' @param ol.rm logical indicating if off-ladder alleles should be discarded.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return data.frame 'data' with genotype rows only.
+#' 
 #' @export
 #' 
-#' @return data.frame 'data' with genotype rows only.
+#' @importFrom utils help
 #' 
 #' @examples
 #' # Load an example dataset.

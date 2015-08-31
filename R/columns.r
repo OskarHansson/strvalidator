@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 24.05.2015: First version.
 
 #' @title Column Actions
@@ -34,6 +35,8 @@
 #' @return data frame.
 #' 
 #' @export
+#' 
+#' @importFrom utils str
 #' 
 #' @examples
 #' # Get a sample dataset.

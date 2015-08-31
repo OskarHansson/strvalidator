@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus'.
 # 06.10.2014: Correct pixel dimensions are now shown.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -35,9 +36,12 @@
 #' @param parent object specifying the parent widget to center the message box,
 #' and to get focus when finished.
 #' 
+#' @return TRUE
+#' 
 #' @export
 #' 
-#' @return TRUE
+#' @importFrom utils help
+#' @importFrom grDevices dev.cur dev.list dev.size
 #' 
 #' @seealso \code{\link{ggsave}}
 

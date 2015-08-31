@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.08.2014: Fixed bug in 'Check subsetting' showing extra combinations in many cases.
@@ -26,6 +27,9 @@
 #' @return TRUE
 #' 
 #' @export
+#' 
+#' @importFrom utils help head str
+#' @importFrom graphics title
 #' 
 #' @seealso \code{\link{calculateMixture}}, \code{\link{checkSubset}}
 

@@ -10,6 +10,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 29.08.2015: Added importFrom.
 # 31.05.2015: Added 'numbered=TRUE' to 'slim' function.
 # 10.02.2015: Changed error message.
 # 09.12.2014: Function moved from PCRsim package.
@@ -50,6 +51,10 @@
 #' @return ggplot object.
 #' 
 #' @export
+#' 
+#' @importFrom utils str head tail flush.console
+#' @importFrom stats as.formula
+#' 
 
 generateEPG <- function(data, kit, title=NULL, peaks=TRUE, type="profile",
                         collapse=TRUE, silent=FALSE, ignore.case=TRUE,

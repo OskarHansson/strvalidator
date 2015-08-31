@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 22.01.2014: Fixed bug by adding check that 'Height' is numeric and convert.
 # 15.01.2014: Fixed NA's when 'mixture.limits' and 'partial.limits' is NULL.
@@ -43,6 +44,8 @@
 #' @return data.frame with columns 'Sample.Name','Type', and 'Subtype'.
 #' 
 #' @export
+#' 
+#' @importFrom utils head
 #' 
 
 calculateResultType <- function(data, kit=NULL, add.missing.marker=TRUE,

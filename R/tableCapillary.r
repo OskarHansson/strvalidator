@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 10.08.2014: Added scope=RUN.
 # 29.10.2013: First version.
 
@@ -23,10 +24,12 @@
 #' run, or instrument. Values {"cap", "inj", "row", "run", "instr"}.
 #' @param debug logical indicating printing debug information.
 #' 
-#' @export
-#'  
 #' @return data.frame with columns 'Instrument', 'Capillary/Injection/Row/Run/Instrument',
 #' 'N', 'Min', 'Q1', 'Median', 'Mean', 'Q3', 'Max', 'Std.Dev'.
+#' 
+#' @export
+#'  
+#' @importFrom stats quantile median sd 
 #' 
 
 tableCapillary <- function(data, scope="cap", debug=FALSE){

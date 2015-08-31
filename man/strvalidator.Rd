@@ -50,7 +50,7 @@ strvalidator()
 }
 \references{
 Recommended Minimum Criteria for the Validation of Various Aspects of the DNA Profiling Process
-\url{http://www.enfsi.eu/sites/default/files/documents/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf}
+(access have been unstable lately but it is usually found at http://www.enfsi.eu/sites/default/files/documents/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf)
 Validation Guidelines for Forensic DNA Analysis Methods (2012)
 \url{http://swgdam.org/SWGDAM_Validation_Guidelines_APPROVED_Dec_2012.pdf}
 }

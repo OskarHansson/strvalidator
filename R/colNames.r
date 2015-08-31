@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 31.05.2015: New option 'numbered' for more precise control.
 # 23.05.2015: Changed parameter name 'df' to 'data' for consistency with other functions.
 # 15.12.2013: Fixed cropping column names with multiple periods.
@@ -32,6 +33,10 @@
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return character, vector or string.
+#' 
+#' @export
+#' 
+#' @importFrom utils str
 #' 
 
 colNames <- function(data, slim=TRUE, concatenate=NULL, numbered=TRUE, debug=FALSE){

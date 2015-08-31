@@ -1,10 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: Use choose.files instead of file.choose to avoid error if no file?
 # TODO: re-make function to read line and specify type for each column?
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 31.08.2015: Removed option to manually pick folder using 'choose.dir'.
+# 29.08.2015: Added importFrom.
 # 01.06.2015: Re-named column name 'File' to 'File.Name' to increase specificity in 'trim'.
 # 23.05.2015: Changed names on parameters 'file.name' -> 'import.file'.
 # 23.05.2015: Added parameters for auto trim and auto slim.
@@ -66,11 +67,13 @@
 #' @param slim.na logical indicating if rows without data should remain.
 #' @param debug logical indicating printing debug information.
 #' 
-# @importFrom plyr rbind.fill
+#' 
+#' @return data.frame with imported result.
 #' 
 #' @export
 #' 
-#' @return data.frame with imported result.
+#' @importFrom plyr rbind.fill
+#' @importFrom utils read.table
 #' 
 #' @seealso \code{\link{trim}}, \code{\link{slim}}, \code{\link{list.files}}, \code{\link{read.table}}
 
@@ -111,27 +114,24 @@ import <- function (folder = TRUE, extension="txt",
     print(ignore.case)
   }
   
+  # Check data ----------------------------------------------------------------
   
-  manualPick <- is.na(import.file) && is.na(folder.name)
+  # Check data.
+  if(is.na(import.file) && is.na(folder.name)){
+    stop("Either 'import.file' or 'folder.name' must be provided")
+  }
   
-  if(debug){
-    print("manualPick")
-    print(manualPick)
-  }  
+  # Import --------------------------------------------------------------------
   
   # Initialise result data.frame (no match return empty dataframe)
   res <- data.frame()
   
   # Check if result files in folder.
   if (folder) {
-    
-    if(manualPick){
-      # Ask user to select a folder.
-      folder <- choose.dir()
-    } else {
-      folder <- folder.name
-    }
-    
+
+    # Get path.    
+    folder <- folder.name
+
     # Check if folder is specified.
     if (!is.na(folder)) {
       
@@ -164,14 +164,9 @@ import <- function (folder = TRUE, extension="txt",
                                 full.names = TRUE, recursive = FALSE,
                                 ignore.case = ignore.case, include.dirs = FALSE)
     }
-    
-  } else if (manualPick) {
-    
-    # Ask user to select a file.
-    import.file <- file.choose()
-    
+  
   }
-
+    
   if(debug){
     print("import.file")
     print(import.file)

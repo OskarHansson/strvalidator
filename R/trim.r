@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 25.05.2015: Corrected parameter description.
 # 11.05.2015: Accepts (the first) column name containing the string 'Sample'
 # as alternative to colum name 'Sample.Name'. 'Sample' is case in-sensitive.
@@ -47,9 +48,11 @@
 #' @param missing value to replace missing values with.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return data.frame with extracted result.
+#' 
 #' @export
 #' 
-#' @return data.frame with extracted result.
+#' @importFrom utils head
 #' 
 
 

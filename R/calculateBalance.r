@@ -5,6 +5,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
+# 17.08.2015: Changed erroneus description for parameter 'hb'  to 'hb=2; Max2(Ph)/Max1(Ph)'.
 # 08.06.2015: Fixed 'Error in if (dyeOk[d]) { : missing value where TRUE/FALSE needed' (Fixes issue#9).
 # 15.12.2014: Changed parameter names to format: lower.case
 # 20.11.2014: Fixed error when NA's in markerPeakHeightSum (Fixes issue#9).
@@ -49,7 +51,7 @@
 #' 'norm' locus balance is normalised in relation to the locus with the highest total peakheight.
 #' @param per.dye logical, default is TRUE and locus balance is calculated within each dye.
 #'  FALSE locus balance is calculated globally across all dyes.
-#' @param hb numerical, definition of heterozygous balance. hb=1; HMW/LMW, hb=2; Max1(Ph)/Max2(Ph).
+#' @param hb numerical, definition of heterozygous balance. hb=1; HMW/LMW, hb=2; Max2(Ph)/Max1(Ph).
 #' @param ignore.case logical indicating if sample matching should ignore case.
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param debug logical indicating printing debug information.
@@ -57,6 +59,8 @@
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Delta', 'Hb', 'Lb', 'MPH', 'TPH'.
 #' 
 #' @export
+#' 
+#' @importFrom utils str
 #' 
 #' @examples 
 #' data(ref2)

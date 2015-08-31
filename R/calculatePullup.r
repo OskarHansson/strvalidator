@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 29.01.2015: Fixed $Sample -> $Sample.Name bug.
 # 27.11.2014: First version.
 
@@ -45,6 +46,8 @@
 #' 'P.Height', 'P.Size', 'P.Data.Point', 'Delta', 'Ratio'.
 #' 
 #' @export
+#' 
+#' @importFrom utils head str tail
 #' 
 
 calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FALSE,

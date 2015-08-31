@@ -5,6 +5,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
+# 25.08.2015: Fixed error when 'stack' and 'slim' is empty or "".
 # 01.06.2015: Fixed columns is found using 'match' instead of 'grep'
 #  (fixes problem with partial matching).
 # 25.05.2015: Renamed parameters (keepAllFixed -> keep.na)
@@ -39,9 +41,11 @@
 #' @param keep.na logical, keep a row even if no data.
 #' @param debug logical indicating printing debug information.
 #' 
+#' @return data.frame
+#' 
 #' @export
 #' 
-#' @return data.frame
+#' @importFrom utils str head
 #' 
 
 
@@ -60,136 +64,187 @@ slim <- function(data, fix=NULL, stack=NULL,
     print(keep.na)
   }
   
-  # Get columns to slim.
-  slimCols <- NULL
-  for(c in seq(along=stack)){
-    slimCols[c] <- list(grepl(stack[c], names(data)))
+  # Check data ----------------------------------------------------------------
+  
+  # Check parameters.  
+  if(!is.logical(keep.na)){
+    stop("'keep.na' must be logical",
+         call. = TRUE)
   }
   
-  # Number of columns to slim
-  nbSlimCol <- unlist(lapply(slimCols, sum))
-  nbCol <- unique(nbSlimCol)
-  # Check if equal.
-  if(length(nbCol) != 1){
-    stop(paste("Columns to stack must have equal number of columns each!",
-               paste(paste(stack, nbSlimCol, sep=":"), collapse="\n"),
-               "The most common problem is multiple columns matching the same 'base' name.",
-               "Here are your column names:",
-               paste(names(data), collapse=", "), sep="\n"))
+  if(!is.data.frame(data)){
+    stop("'data' must be a data.frame",
+         call. = TRUE)
   }
 
-  # Get fixed indexes.
-  fixedIndex <- vector()
-  for(k in seq(along=fix)){
-    #fixedIndex[k] <- grep(fix[k], names(data))
-    fixedIndex[k] <- match(fix[k], names(data))
+  # Prepare -------------------------------------------------------------------
+
+  # Handle fix="" and fix=character(0)
+  if(length(fix) == 0 || all(nchar(fix) == 0)){
+    fix = NULL
+    message("'fix' set to NULL")
   }
   
-  # Get fixed data.
-  fixedData <- as.data.frame(data[,fixedIndex])
-  names(fixedData) <- fix
+  # Handle stack="" and stack=character(0)
+  if(length(stack) == 0 || all(nchar(stack) == 0)){
+    stack = NULL
+    message("'stack' set to NULL")
+  }
   
-  # Make a list of matrixes for columns to stack.
-  listStack <- list()
-  listRep <- vector()
-  for(c in seq(along=slimCols)){
+  # Slim ----------------------------------------------------------------------
+  
+  if(!is.null(stack)){
     
-    # Get columns for current stack key.
-    matrixStack <- data[,slimCols[[c]]]
-    
-    # Count number of values.
-    values <- rowSums(!is.na(matrixStack))
-    
-    # Transpose and vectorize.
-    vectorStack <- c(t(matrixStack))
-    
-    if(keep.na) {
-      
-      # Keep one value per fixed row.
-      values <- replace(values, values==0, 1)
-      
-      # Create a boolean vector with values to keep.
-      bolVec <- rep(c(TRUE,FALSE), nrow(data))
-      bolTimes <- vector()
-      bolTimes[seq(from=1, to=length(values)*2, by=2)] <- values
-      bolTimes[seq(from=2, to=length(values)*2, by=2)] <- nbCol - values
-      keep <- rep(bolVec, times=bolTimes)
-      
-      # Extract values to keep.
-      vectorStack <- vectorStack[keep]
-      
-    } else {
-
-      # Extract values to keep.
-      vectorStack <- vectorStack[!is.na(vectorStack)]
-      
+    # Get columns to slim.
+    slimCols <- NULL
+    for(c in seq(along=stack)){
+      slimCols[c] <- list(grepl(stack[c], names(data)))
     }
     
-    # Add values to list.
-    listRep[c] <- list(values)
+    # Number of columns to slim
+    nbSlimCol <- unlist(lapply(slimCols, sum))
+    nbCol <- unique(nbSlimCol)
+    # Check if equal.
+    if(length(nbCol) != 1){
+      stop(paste("Columns to stack must have equal number of columns each!",
+                 paste(paste(stack, nbSlimCol, sep=":"), collapse="\n"),
+                 "The most common problem is multiple columns matching the same 'base' name.",
+                 "Here are your column names:",
+                 paste(names(data), collapse=", "), sep="\n"))
+    }
     
-    # Transpose and vectorize matrix, and put in list.
-    listStack[c] <- list(vectorStack)
-    
-  }
-  
-  # Check if all listRep's are equal.
-  for(i in seq(along=listRep)){
-
-    # Compare lists.
-    if(!identical(listRep[i], listRep[1])){
-
-      # Convert mismatch to vectors.
-      testA <- unlist(listRep[1])
-      testB <- unlist(listRep[i])
+    if(!is.null(fix)){
       
-      # Find row causing the error.
-      for(e in seq(along=testA)){
+      # Get fixed indexes.
+      fixedIndex <- vector()
+      for(k in seq(along=fix)){
+        #fixedIndex[k] <- grep(fix[k], names(data))
+        fixedIndex[k] <- match(fix[k], names(data))
+      }
+      
+      # Get fixed data.
+      fixedData <- as.data.frame(data[,fixedIndex])
+      names(fixedData) <- fix
+      
+      # Make a list of matrixes for columns to stack.
+      listStack <- list()
+      listRep <- vector()
+      for(c in seq(along=slimCols)){
         
-        # Compare elements.
-        if(testA[e] != testB[e]){
+        # Get columns for current stack key.
+        matrixStack <- data[,slimCols[[c]]]
+        
+        # Count number of values.
+        values <- rowSums(!is.na(matrixStack))
+        
+        # Transpose and vectorize.
+        vectorStack <- c(t(matrixStack))
+        
+        if(keep.na) {
           
-          stop(paste("Different repeat patterns detected for stacked columns!\n",
-                     "Caused by: ",
-                     paste(paste(names(fixedData), ":", fixedData[e,], sep=""),
-                           collapse=", ") ,"\n",
-                     "Please fix and try again!"), sep="")
-
+          # Keep one value per fixed row.
+          values <- replace(values, values==0, 1)
+          
+          # Create a boolean vector with values to keep.
+          bolVec <- rep(c(TRUE,FALSE), nrow(data))
+          bolTimes <- vector()
+          bolTimes[seq(from=1, to=length(values)*2, by=2)] <- values
+          bolTimes[seq(from=2, to=length(values)*2, by=2)] <- nbCol - values
+          keep <- rep(bolVec, times=bolTimes)
+          
+          # Extract values to keep.
+          vectorStack <- vectorStack[keep]
+          
+        } else {
+          
+          # Extract values to keep.
+          vectorStack <- vectorStack[!is.na(vectorStack)]
+          
         }
+        
+        # Add values to list.
+        listRep[c] <- list(values)
+        
+        # Transpose and vectorize matrix, and put in list.
+        listStack[c] <- list(vectorStack)
         
       }
       
-    }
-  }
-  
-  # Loop over columns in fixed data.
-  fixedDataExt <- list()
-  for(k in seq(along=fix)){
+      # Check if all listRep's are equal.
+      for(i in seq(along=listRep)){
+        
+        # Compare lists.
+        if(!identical(listRep[i], listRep[1])){
+          
+          # Convert mismatch to vectors.
+          testA <- unlist(listRep[1])
+          testB <- unlist(listRep[i])
+          
+          # Find row causing the error.
+          for(e in seq(along=testA)){
+            
+            # Compare elements.
+            if(testA[e] != testB[e]){
+              
+              stop(paste("Different repeat patterns detected for stacked columns!\n",
+                         "Caused by: ",
+                         paste(paste(names(fixedData), ":", fixedData[e,], sep=""),
+                               collapse=", ") ,"\n",
+                         "Please fix and try again!"), sep="")
+              
+            }
+            
+          }
+          
+        }
+      }
+      
+      # Loop over columns in fixed data.
+      fixedDataExt <- list()
+      for(k in seq(along=fix)){
+        
+        # Repeat each 'row' to fit the stacked data.
+        fixedDataExt[k] <- list(rep(fixedData[,k], times=unlist(listRep[1])))
+        
+      }
+      
+      # Get number of rows.
+      numberOfRows <- length(fixedDataExt[[1]])
+      # Create a data frame for the result.
+      res <- data.frame(matrix(NA, numberOfRows, length(fix) + length(stack)))
+      # Add new column names.
+      names(res) <- paste(c(fix,stack))
+      
+      # Combine fixed and stacked list into one.
+      listRes <- append(fixedDataExt, listStack)
+      for(i in seq(along=listRes)){
+        res[,i] <- as.character(listRes[[i]])
+      }  
+      
+      if(debug){
+        print(head(res))
+        print(str(res))
+        print(paste("EXIT:", match.call()[[1]]))
+      }
+      
+      return(res)
+      
+    } else {
 
-    # Repeat each 'row' to fit the stacked data.
-    fixedDataExt[k] <- list(rep(fixedData[,k], times=unlist(listRep[1])))
+      message("fix=NULL, return data unchanged!")
+      
+      # Return the data frame unchanged.
+      return(data)
+      
+    }
+    
+  } else {
+
+    message("stack=NULL, return data unchanged!")
+    
+    # Return the data frame unchanged.
+    return(data)
     
   }
-  
-  # Get number of rows.
-  numberOfRows <- length(fixedDataExt[[1]])
-  # Create a data frame for the result.
-  res <- data.frame(matrix(NA, numberOfRows, length(fix) + length(stack)))
-  # Add new column names.
-  names(res) <- paste(c(fix,stack))
-
-  # Combine fixed and stacked list into one.
-  listRes <- append(fixedDataExt, listStack)
-  for(i in seq(along=listRes)){
-    res[,i] <- as.character(listRes[[i]])
-  }  
-  
-  if(debug){
-    print(head(res))
-    print(str(res))
-    print(paste("EXIT:", match.call()[[1]]))
-  }
-  
-  return(res)
   
 }

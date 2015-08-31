@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 01.06.2015: Changed column name 'File' to 'File.Name'.
 # 15.01.2014: Added message to show progress .
 # 12.01.2014: Replaced 'subset' with native code.
@@ -49,6 +50,8 @@
 #' @return data.frame with with additional columns 'Peaks', 'Group', and 'Id'.
 #' 
 #' @export
+#' 
+#' @importFrom utils str
 #' 
 
 calculatePeaks <- function(data, bins=c(0,2,3), labels=c("No contamination",

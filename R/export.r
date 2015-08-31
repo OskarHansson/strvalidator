@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 24.07.2014: Fixed 'NA' bug when recycling names.
 # 26.07.2013: Added 'any' to class if-case.
@@ -42,6 +43,10 @@
 #' @return NA if all objects were exported OR,
 #' data.frame with columns 'Object', 'Name', and 'New.Name' with objects
 #' that were not exported.
+#' 
+#' @importFrom utils write.table
+#' @importFrom grDevices png dev.off
+#' @importFrom graphics plot
 #' 
 #' @keywords internal
 #' 

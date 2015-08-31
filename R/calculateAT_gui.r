@@ -7,6 +7,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
+# 18.08.2015: Changed label for AT4 option.
 # 04.05.2015: First version.
 
 #' @title Calculate Analytical Threshold
@@ -27,6 +29,9 @@
 #' @return TRUE
 #' 
 #' @export
+#' 
+#' @importFrom utils help head str
+#' @importFrom graphics title
 #' 
 #' @seealso \code{\link{calculateAT}}, \code{\link{blockAT}},
 #'  \code{\link{checkSubset}}
@@ -295,7 +300,7 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
   f1g2[2,1] <- glabel(text="Percentile rank threshold (AT2): ", container=f1g2)
   f1g2[2,2] <- f1_t_spb <- gspinbutton(from=0, to=1, by=0.01, value=0.99, container=f1g2)
   
-  f1g2[3,1] <- glabel(text="Confidence interval 'alpha' (AT4): ", container=f1g2)
+  f1g2[3,1] <- glabel(text="Upper confidence 'alpha' (AT4): ", container=f1g2)
   f1g2[3,2] <- f1_a_spb <- gspinbutton(from=0, to=1, by=0.01, value=0.01, container=f1g2)
   
   # Handlers ------------------------------------------------------------------

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 18.06.2014: First version.
 
 #' @title Calculate Concordance.
@@ -36,6 +37,8 @@
 #' @return list of data.frames (discordance table, and pair-wise comparison).
 #' 
 #' @export
+#' 
+#' @importFrom utils str combn
 #' 
 
 calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",

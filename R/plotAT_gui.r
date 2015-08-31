@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 28.06.2015: Changed confidence interval level to match one-sided critical t-value.
 # 01.06.2015: First version.
 
@@ -21,9 +22,11 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
+#' @return TRUE
+#' 
 #' @export
 #' 
-#' @return TRUE
+#' @importFrom utils help str
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 

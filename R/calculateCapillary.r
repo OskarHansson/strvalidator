@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 15.12.2014: Changed parameter names to format: lower.case
 # 28.10.2013: First version.
 
@@ -29,6 +30,9 @@
 #' 'Mean.Height', 'SQ', 'Injection', 'Capillary', 'Well', 'Comment'.
 #' 
 #' @export
+#' 
+#' @importFrom utils read.delim help head tail str
+#' @importFrom graphics title
 #' 
 
 calculateCapillary <- function(samples.table, plot.table, sq=0, run="", debug=FALSE){

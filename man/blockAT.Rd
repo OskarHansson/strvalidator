@@ -54,4 +54,7 @@ dye channel information is extracted from the 'Dye.Sample.Peak' column and
 added to its own 'Dye' column, known fragments of the internal lane standard
 (marked with an asterisk '*') is flagged as 'TRUE' in a new column 'ILS'.
 }
+\seealso{
+\code{\link{calculateAT}}
+}
 

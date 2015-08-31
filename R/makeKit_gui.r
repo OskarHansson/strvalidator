@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 14.12.2014: Fixed "Error in read.table..." when 'Save' is pressed without data.
 # 14.12.2014: Fixed "Error in basename(x) : a character vector argument expected"
 # 14.12.2014: Changed single gender marker to general sex markers (multiple).
@@ -32,9 +33,11 @@
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 
+#' @return TRUE
+#' 
 #' @export
 #' 
-#' @return TRUE
+#' @importFrom utils write.table read.delim help head tail  
 #' 
 #' @seealso \code{\link{readBinsFile}}, \code{\link{readPanelsFile}}, \code{\link{combineBinsAndPanels}}
 

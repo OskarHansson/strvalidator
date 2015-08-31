@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 11.06.2015: Fixed title for histogram plot.
 # 09.06.2015: Fixed 'overlay boxplot' not saved.
 # 04.05.2015: Added 'Histogram'.
@@ -37,6 +38,8 @@
 #' @param parent widget to get focus when finished.
 #' 
 #' @export
+#' 
+#' @importFrom utils help str head
 #' 
 #' @return TRUE
 

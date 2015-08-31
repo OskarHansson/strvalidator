@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 17.12.2014: Fixed error NA Dye for e.g. Yfiler Plus (added 'toupper' in 'match' calls).
 # 11.05.2014: Added 'orange' and 'purple'.
 # 27.04.2014: Added option to ignore case in marker names.
@@ -44,6 +45,8 @@
 #' or vector with converted values.
 #' 
 #' @export
+#' 
+#' @importFrom utils str
 #' 
 #' @examples
 #' # Get marker and colors for SGM Plus.

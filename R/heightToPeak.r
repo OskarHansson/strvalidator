@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 29.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 09.12.2014: Moved from PCRsim.
 
@@ -22,6 +23,10 @@
 #' @param keep.na logical, TRUE keep empty markers.
 #' 
 #' @return data.frame with new values.
+#' 
+#' @export
+#' 
+#' @importFrom utils str flush.console
 #' 
 #' @keywords internal
 

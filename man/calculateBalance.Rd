@@ -20,7 +20,7 @@ calculateBalance(data, ref, lb = "prop", per.dye = TRUE, hb = 1,
 \item{per.dye}{logical, default is TRUE and locus balance is calculated within each dye.
 FALSE locus balance is calculated globally across all dyes.}
 
-\item{hb}{numerical, definition of heterozygous balance. hb=1; HMW/LMW, hb=2; Max1(Ph)/Max2(Ph).}
+\item{hb}{numerical, definition of heterozygous balance. hb=1; HMW/LMW, hb=2; Max2(Ph)/Max1(Ph).}
 
 \item{ignore.case}{logical indicating if sample matching should ignore case.}
 

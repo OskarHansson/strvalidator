@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 10.06.2015: Added missing label 'Significance level:'.
 # 26.05.2015: First version.
 
@@ -21,6 +22,9 @@
 #' @return TRUE
 #' 
 #' @export
+#' 
+#' @importFrom utils help head
+#' @importFrom graphics title
 #' 
 #' @seealso \code{\link{calculateAT6}}, \code{\link{calculateAT}},
 #'  \code{\link{calculateAT_gui}}, \code{\link{checkSubset}}
@@ -264,7 +268,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
                                   container=f1)
   
   f1_items <- c("Linear regression", "Weighted linear regression")
-  f1_weighted_opt <- gradio(items=f1_items, selected=1, container=f1)
+  f1_weighted_opt <- gradio(items=f1_items, selected=2, container=f1)
   
   glabel(text="Significance level:", container=f1)
   f1_alpha_spn <- gspinbutton(from=0, to=1, by=0.01, value=0.05, container=f1)

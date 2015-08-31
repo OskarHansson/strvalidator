@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
@@ -27,6 +28,8 @@
 #' @param parent widget to get focus when finished.
 #' 
 #' @return TRUE
+#' 
+#' @importFrom utils help
 #' 
 #' @seealso \code{\link{export}}
 

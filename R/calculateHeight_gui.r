@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 26.09.2014: Implemented text field for 'exclude'.
 # 12.09.2014: Implemented new options 'exclude OL'.
@@ -33,6 +34,8 @@
 #' @return TRUE
 #' 
 #' @export
+#' 
+#' @importFrom utils help
 #' 
 #' @references
 #' Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,

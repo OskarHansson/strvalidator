@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 05.01.2015: Added kit dropdown and kit attribute to result.
 # 07.10.2014: Added 'focus', added 'parent' parameter.
@@ -23,8 +24,6 @@
 # 28.05.2013: Added warning for additive effects.
 # 24.05.2013: Improved error message for missing columns.
 # 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: .result removed, added save as group.
-# 27.04.2013: Added selection of dataframes from provided environment.
 
 #' @title Calculate Stutter
 #'
@@ -41,6 +40,9 @@
 #' @param parent widget to get focus when finished.
 #' 
 #' @export
+#' 
+#' @importFrom utils help head
+#' @importFrom graphics title
 #' 
 #' @return TRUE
 #' 

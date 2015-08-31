@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 28.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 09.12.2014: Derived from PCRsim.
 
@@ -22,6 +23,8 @@
 #' @param debug logical for printing debug information.
 #' 
 #' @return data.frame with columns 'Sample.Name', 'Marker', 'Allele', and 'Height'.
+#' 
+#' @importFrom utils flush.console str head tail
 #' 
 #' @keywords internal
 #' 

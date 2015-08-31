@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom.
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -33,6 +34,9 @@
 #' @param parent widget to get focus when finished.
 #' 
 #' @export
+#' 
+#' @importFrom utils help
+#' @importFrom graphics title
 #' 
 #' @return TRUE
 #' 

@@ -7,6 +7,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.08.2015: Added importFrom
+# 20.08.2015: Now use 'sigma' instead of 'standard error of the intercept'.
 # 26.06.2015: Changed to a one-sided critical t-value (alpha/2 -> alpha).
 # 24.06.2015: Added some debug information.
 # 18.06.2015: Flipped the signs when calculating 'Lower' and 'AT6' and added 'lower.tail = FALSE'.
@@ -45,6 +47,9 @@
 #'  'Alpha', 'Lower', 'Intercept', and 'AT6'.
 #' 
 #' @export
+#' 
+#' @importFrom stats sd qt lm
+#' @importFrom utils str head tail
 #' 
 #' @seealso \code{\link{calculateAT6_gui}}, \code{\link{calculateAT}},
 #'  \code{\link{calculateAT_gui}}, \code{\link{lm}}
@@ -216,9 +221,8 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
     # Perform weighted linear regression.
     fit <- lm(dfSd$H ~ dfSd$Amount, weights=weight)
     
-    # Extract estimate and standard error.
-    coeff <- summary(fit)$coef[1:2,1:2]
-    #coeff <- c(summary(fit)$coef[1:2], summary(fit)$sigma)
+    # Extract estimates and standard error of the regression.
+    coeff <- c(summary(fit)$coef[1:2], summary(fit)$sigma)
     
     if(debug){
       print("coeff:")
@@ -243,8 +247,8 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
     # Perform linear regression.
     fit <- lm(dfSd$H ~ dfSd$Amount)
 
-    # Extract estimate and standard error.
-    coeff <- summary(fit)$coef[1:2,1:2]
+    # Extract estimates and standard error of the regression.
+    coeff <- c(summary(fit)$coef[1:2], summary(fit)$sigma)
     
     if(debug){
       print("coeff:")

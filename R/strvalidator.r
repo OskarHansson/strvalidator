@@ -27,6 +27,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 01.06.2015: Added 'Calculate' and 'Plot' (AT6) button in 'AT' tab.
 # 24.05.2015: Added 'Columns' button in 'Tools' tab.
 # 04.05.2015: Added 'AT' tab.
@@ -85,7 +86,7 @@
 #' 
 #' @references
 #' Recommended Minimum Criteria for the Validation of Various Aspects of the DNA Profiling Process
-#' \url{http://www.enfsi.eu/sites/default/files/documents/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf}
+#' (access have been unstable lately but it is usually found at http://www.enfsi.eu/sites/default/files/documents/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf)
 #' Validation Guidelines for Forensic DNA Analysis Methods (2012)
 #' \url{http://swgdam.org/SWGDAM_Validation_Guidelines_APPROVED_Dec_2012.pdf}
 #' 
@@ -95,6 +96,8 @@
 #' @import RGtk2
 #' @import data.table
 #' @import gridExtra
+#' @importFrom utils packageVersion help object.size
+#' @importFrom graphics title
 #' 
 #' @export
 #' 

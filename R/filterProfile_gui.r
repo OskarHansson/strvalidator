@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.08.2015: Added importFrom.
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 09.04.2015: Added option 'invert' to filter peaks NOT in reference.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -39,6 +40,9 @@
 #' @param parent widget to get focus when finished.
 #' 
 #' @export
+#' 
+#' @importFrom utils help str
+#' @importFrom graphics title
 #' 
 #' @return TRUE
 #' 
