@@ -15,10 +15,12 @@
 # IMPORTANT: Use build_win() to test on current R and R-dev 'library(devtools)'.
 # IMPORTANT: Use devtools::release() to submitt to CRAN.
 
-# Versioning convention (x.yy.z):
+# Versioning convention (x.yy.z[.9###]):
 # Increment x on major change.
 # Increment yy on new features.
 # Increment z on minor changes and bug fixes.
+# [optional]Increment ### on development versions.
+# NB! Write changes in NEWS for x.yy.z.9### versions, but move changes to NEWS under x.yy.z upon release official version.
 
 # NOTE:
 # NOTE: Can't import data frame named 'drop'

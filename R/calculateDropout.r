@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.09.2015: Handle reference allele is NA.
 # 28.08.2015: Added importFrom
 # 26.06.2015: More precise warning messages (include sample name and marker).
 # 15.12.2014: Changed parameter names to format: lower.case
@@ -327,471 +328,473 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
 
         # Count the number of observed alleles.
         observed <- length(matchedAlleles)
-
-        # Score dropout for modelling -----------------------------------------
-
-        # Reset variables.
-        methodXTmp <- NULL
-        method1Tmp <- NULL
-        method2Tmp <- NULL
-        methodLTmp <- NULL
-        methodLPh <- NULL
         
-        if(observed == 1 || observed == 2){
-
-          # Check expected number of alleles.
-          if(expected == 1){
-            # Expected homozygous.
-            
-            methodXTmp <- NA
-            method1Tmp <- NA
-            method2Tmp <- NA
-            
-          } else if (expected == 2){
-            # Expected heterozygous.
-            
-            # Randomly choose an allele.
-            random <- sample(c(1, 2), 2, replace=FALSE)
-            selected0 <- match(refAlleles[random[1]], matchedAlleles)
-            partner0 <- match(refAlleles[random[2]], matchedAlleles)
-            
-            # Choose Allele 1   
-            selected1 <- match(refAlleles[1], matchedAlleles)
-            partner1 <- match(refAlleles[2], matchedAlleles)
-
-            # Choose Allele 2   
-            selected2 <- match(refAlleles[2], matchedAlleles)
-            partner2 <- match(refAlleles[1], matchedAlleles)
-            
-
-            # SCORE RANDOM ALLELE ---------------------------------------BEGIN-
-            if("X" %in% toupper(method)){
-              
-              # Dropout if not partner.
-              if(is.na(partner0)){
-                
-                # Score as dropout.
-                modeldrop <- 1
-                methodXTmp <- modeldrop
-                
-              } else if(peakHeight[partner0] < threshold){
-                # If both alleles, check if below LDT.
-                
-                # Score as dropout.
-                modeldrop <- 1
-                
-                # Save one or two entries.
-                if(observed == 1){
-                  methodXTmp <- modeldrop
-                } else if (observed == 2){
-                  methodXTmp[selected0] <- modeldrop
-                  methodXTmp[partner0] <- NA
-                }
-                
-              } else {
-                # Partner peak is above LDT.
-                
-                # Score as NO dropout.
-                modeldrop <- 0
-                
-                # Save one or two entries.
-                if(observed == 1){
-                  methodXTmp <- modeldrop
-                } else if (observed == 2){
-                  methodXTmp[selected0] <- modeldrop
-                  methodXTmp[partner0] <- NA
-                }
-                
-              }
-              
-            }
-            # SCORE RANDOM ALLELE -----------------------------------------END-
-            
-            # SCORE ALLELE 1 --------------------------------------------BEGIN-
-            if("1" %in% toupper(method)){
-              
-              # Dropout if not partner.
-              if(is.na(partner1)){
-                
-                # Score as dropout.
-                modeldrop <- 1
-                method1Tmp <- modeldrop
-                
-              } else if(peakHeight[partner1] < threshold){
-                # If both alleles, check if below LDT.
-                
-                # Score as dropout.
-                modeldrop <- 1
-  
-                # Save one or two entries.
-                if(observed == 1){
-                  method1Tmp <- modeldrop
-                } else if (observed == 2){
-                  method1Tmp[selected1] <- modeldrop
-                  method1Tmp[partner1] <- NA
-                }
-                
-              } else {
-                # Partner peak is above LDT.
-                
-                # Score as NO dropout.
-                modeldrop <- 0
-                
-                # Save one or two entries.
-                if(observed == 1){
-                  method1Tmp <- modeldrop
-                } else if (observed == 2){
-                  method1Tmp[selected1] <- modeldrop
-                  method1Tmp[partner1] <- NA
-                }
-                
-              }
-              
-            }
-            # SCORE ALLELE 1 ----------------------------------------------END-
-            
-            # SCORE ALLELE 2 --------------------------------------------BEGIN-
-            if("2" %in% toupper(method)){
-              
-              # Dropout if not partner.
-              if(is.na(partner2)){
-                
-                # Score as dropout.
-                modeldrop <- 1
-                method2Tmp <- modeldrop
-                
-              } else if(peakHeight[partner2] < threshold){
-                # If both alleles, check if below LDT.
-                
-                # Score as dropout.
-                modeldrop <- 1
-                
-                # Save one or two entries.
-                if(observed == 1){
-                  method2Tmp <- modeldrop
-                } else if (observed == 2){
-                  method2Tmp[selected2] <- modeldrop
-                  method2Tmp[partner2] <- NA
-                }
-                
-              } else {
-                # Partner peak is above LDT.
-                
-                # Score as NO dropout.
-                modeldrop <- 0
-                
-                # Save one or two entries.
-                if(observed == 1){
-                  method2Tmp <- modeldrop
-                } else if (observed == 2){
-                  method2Tmp[selected2] <- modeldrop
-                  method2Tmp[partner2] <- NA
-                }
-                
-              }
-            }
-            
-          }
-          # SCORE ALLELE 2 ----------------------------------------------END-
+        if(!is.na(refAlleles)){
           
-          # SCORE LOCUS -----------------------------------------------BEGIN-
-          if("L" %in% toupper(method)){
+          # Score dropout for modelling -----------------------------------------
+          
+          # Reset variables.
+          methodXTmp <- NULL
+          method1Tmp <- NULL
+          method2Tmp <- NULL
+          methodLTmp <- NULL
+          methodLPh <- NULL
+          
+          if(observed == 1 || observed == 2){
             
             # Check expected number of alleles.
             if(expected == 1){
               # Expected homozygous.
               
-              if(peakHeight < threshold){
-                # Dropout.
-                methodLTmp <- 2
-                methodLPh <- NA
-              } else {
-                # No dropout.
-                methodLTmp <- 0
-                methodLPh <- NA
-              }
+              methodXTmp <- NA
+              method1Tmp <- NA
+              method2Tmp <- NA
               
             } else if (expected == 2){
               # Expected heterozygous.
               
-              # Marker approach
-              selA1 <- match(refAlleles[1], matchedAlleles)
-              selA2 <- match(refAlleles[2], matchedAlleles)
+              # Randomly choose an allele.
+              random <- sample(c(1, 2), 2, replace=FALSE)
+              selected0 <- match(refAlleles[random[1]], matchedAlleles)
+              partner0 <- match(refAlleles[random[2]], matchedAlleles)
               
-              if(debug){
-                print("Peak heights:")
-                print(peakHeight[selA1])
-                print(peakHeight[selA2])
-              }
+              # Choose Allele 1   
+              selected1 <- match(refAlleles[1], matchedAlleles)
+              partner1 <- match(refAlleles[2], matchedAlleles)
               
-              if(is.na(peakHeight[selA1])){
-                drop1 <- TRUE
-              } else {
-                drop1 <- peakHeight[selA1] < threshold
-              }
-              if(is.na(peakHeight[selA2])){
-                drop2 <- TRUE
-              } else {
-                drop2 <- peakHeight[selA2] < threshold
-              }
-              passingAlleles <- sum(!drop1, !drop2, na.rm=TRUE)
+              # Choose Allele 2   
+              selected2 <- match(refAlleles[2], matchedAlleles)
+              partner2 <- match(refAlleles[1], matchedAlleles)
               
-              if(debug){
-                print("drop1")
-                print(drop1)
-                print("drop2")
-                print(drop2)
-                print("passingAlleles:")
-                print(passingAlleles)
-                print("observed:")
-                print(observed)
-              }
               
-              # Check for any dropouts.
-              if(any(drop1, drop2, na.rm=TRUE)){
+              # SCORE RANDOM ALLELE ---------------------------------------BEGIN-
+              if("X" %in% toupper(method)){
                 
-                if(debug){
-                  print("At least one dropout!")
-                }
-                
-                # Save one or two entries.
-                if(passingAlleles == 1){
-                  if(observed==1){
-                    methodLTmp <- 1
-                    methodLPh <- max(peakHeight[selA1], peakHeight[selA2], na.rm=TRUE)
-                  } else if(observed==2){
-                    methodLTmp[1] <- 1
-                    methodLTmp[2] <- NA
-                    methodLPh[1] <- max(peakHeight[selA1], peakHeight[selA2], rm.na=TRUE)
-                    methodLPh[2] <- NA
-                  } else {
-                    stop("observed not 1 or 2")
+                # Dropout if not partner.
+                if(is.na(partner0)){
+                  
+                  # Score as dropout.
+                  modeldrop <- 1
+                  methodXTmp <- modeldrop
+                  
+                } else if(peakHeight[partner0] < threshold){
+                  # If both alleles, check if below LDT.
+                  
+                  # Score as dropout.
+                  modeldrop <- 1
+                  
+                  # Save one or two entries.
+                  if(observed == 1){
+                    methodXTmp <- modeldrop
+                  } else if (observed == 2){
+                    methodXTmp[selected0] <- modeldrop
+                    methodXTmp[partner0] <- NA
                   }
-                } else if (passingAlleles == 2){
-                  methodLTmp[1] <- 0
-                  methodLTmp[2] <- NA
-                  methodLPh[1] <- mean(c(peakHeight[selA1], peakHeight[selA2]))
-                  methodLPh[2] <- NA
-                } else if(passingAlleles == 0){
-                  if(observed==1){
-                    methodLTmp <- 2
-                    methodLPh <- NA
-                  } else if(observed==2){
-                    methodLTmp[1] <- 2
-                    methodLTmp[2] <- NA
-                    methodLPh[1] <- NA
-                    methodLPh[2] <- NA
-                  } else {
-                    stop("observed not 1 or 2")
-                  }
+                  
                 } else {
-                  stop("passingAlleles not {0,1,2}")
+                  # Partner peak is above LDT.
+                  
+                  # Score as NO dropout.
+                  modeldrop <- 0
+                  
+                  # Save one or two entries.
+                  if(observed == 1){
+                    methodXTmp <- modeldrop
+                  } else if (observed == 2){
+                    methodXTmp[selected0] <- modeldrop
+                    methodXTmp[partner0] <- NA
+                  }
+                  
                 }
                 
-              } else { # No dropout or NA.
+              }
+              # SCORE RANDOM ALLELE -----------------------------------------END-
+              
+              # SCORE ALLELE 1 --------------------------------------------BEGIN-
+              if("1" %in% toupper(method)){
+                
+                # Dropout if not partner.
+                if(is.na(partner1)){
+                  
+                  # Score as dropout.
+                  modeldrop <- 1
+                  method1Tmp <- modeldrop
+                  
+                } else if(peakHeight[partner1] < threshold){
+                  # If both alleles, check if below LDT.
+                  
+                  # Score as dropout.
+                  modeldrop <- 1
+                  
+                  # Save one or two entries.
+                  if(observed == 1){
+                    method1Tmp <- modeldrop
+                  } else if (observed == 2){
+                    method1Tmp[selected1] <- modeldrop
+                    method1Tmp[partner1] <- NA
+                  }
+                  
+                } else {
+                  # Partner peak is above LDT.
+                  
+                  # Score as NO dropout.
+                  modeldrop <- 0
+                  
+                  # Save one or two entries.
+                  if(observed == 1){
+                    method1Tmp <- modeldrop
+                  } else if (observed == 2){
+                    method1Tmp[selected1] <- modeldrop
+                    method1Tmp[partner1] <- NA
+                  }
+                  
+                }
+                
+              }
+              # SCORE ALLELE 1 ----------------------------------------------END-
+              
+              # SCORE ALLELE 2 --------------------------------------------BEGIN-
+              if("2" %in% toupper(method)){
+                
+                # Dropout if not partner.
+                if(is.na(partner2)){
+                  
+                  # Score as dropout.
+                  modeldrop <- 1
+                  method2Tmp <- modeldrop
+                  
+                } else if(peakHeight[partner2] < threshold){
+                  # If both alleles, check if below LDT.
+                  
+                  # Score as dropout.
+                  modeldrop <- 1
+                  
+                  # Save one or two entries.
+                  if(observed == 1){
+                    method2Tmp <- modeldrop
+                  } else if (observed == 2){
+                    method2Tmp[selected2] <- modeldrop
+                    method2Tmp[partner2] <- NA
+                  }
+                  
+                } else {
+                  # Partner peak is above LDT.
+                  
+                  # Score as NO dropout.
+                  modeldrop <- 0
+                  
+                  # Save one or two entries.
+                  if(observed == 1){
+                    method2Tmp <- modeldrop
+                  } else if (observed == 2){
+                    method2Tmp[selected2] <- modeldrop
+                    method2Tmp[partner2] <- NA
+                  }
+                  
+                }
+              }
+              
+            }
+            # SCORE ALLELE 2 ----------------------------------------------END-
+            
+            # SCORE LOCUS -----------------------------------------------BEGIN-
+            if("L" %in% toupper(method)){
+              
+              # Check expected number of alleles.
+              if(expected == 1){
+                # Expected homozygous.
+                
+                if(peakHeight < threshold){
+                  # Dropout.
+                  methodLTmp <- 2
+                  methodLPh <- NA
+                } else {
+                  # No dropout.
+                  methodLTmp <- 0
+                  methodLPh <- NA
+                }
+                
+              } else if (expected == 2){
+                # Expected heterozygous.
+                
+                # Marker approach
+                selA1 <- match(refAlleles[1], matchedAlleles)
+                selA2 <- match(refAlleles[2], matchedAlleles)
                 
                 if(debug){
-                  print("No dropout:")
+                  print("Peak heights:")
+                  print(peakHeight[selA1])
+                  print(peakHeight[selA2])
                 }
+                
+                if(is.na(peakHeight[selA1])){
+                  drop1 <- TRUE
+                } else {
+                  drop1 <- peakHeight[selA1] < threshold
+                }
+                if(is.na(peakHeight[selA2])){
+                  drop2 <- TRUE
+                } else {
+                  drop2 <- peakHeight[selA2] < threshold
+                }
+                passingAlleles <- sum(!drop1, !drop2, na.rm=TRUE)
+                
                 if(debug){
-                  print("Observed:")
+                  print("drop1")
+                  print(drop1)
+                  print("drop2")
+                  print(drop2)
+                  print("passingAlleles:")
+                  print(passingAlleles)
+                  print("observed:")
                   print(observed)
                 }
                 
-                # Save one or two entries.
-                if(observed == 1){
-                  methodLTmp <- 1
-                  methodLPh <- max(peakHeight[selA1], peakHeight[selA2], rm.na=TRUE)
-                } else if (observed == 2){
+                # Check for any dropouts.
+                if(any(drop1, drop2, na.rm=TRUE)){
                   
-                  methodLTmp[1] <- 0
-                  methodLTmp[2] <- NA
-                  methodLPh[1] <- mean(c(peakHeight[selA1], peakHeight[selA2]))
-                  methodLPh[2] <- NA
-                }
-                if(debug){
-                  print("Pk:")
-                  print(methodLPh)
+                  if(debug){
+                    print("At least one dropout!")
+                  }
+                  
+                  # Save one or two entries.
+                  if(passingAlleles == 1){
+                    if(observed==1){
+                      methodLTmp <- 1
+                      methodLPh <- max(peakHeight[selA1], peakHeight[selA2], na.rm=TRUE)
+                    } else if(observed==2){
+                      methodLTmp[1] <- 1
+                      methodLTmp[2] <- NA
+                      methodLPh[1] <- max(peakHeight[selA1], peakHeight[selA2], rm.na=TRUE)
+                      methodLPh[2] <- NA
+                    } else {
+                      stop("observed not 1 or 2")
+                    }
+                  } else if (passingAlleles == 2){
+                    methodLTmp[1] <- 0
+                    methodLTmp[2] <- NA
+                    methodLPh[1] <- mean(c(peakHeight[selA1], peakHeight[selA2]))
+                    methodLPh[2] <- NA
+                  } else if(passingAlleles == 0){
+                    if(observed==1){
+                      methodLTmp <- 2
+                      methodLPh <- NA
+                    } else if(observed==2){
+                      methodLTmp[1] <- 2
+                      methodLTmp[2] <- NA
+                      methodLPh[1] <- NA
+                      methodLPh[2] <- NA
+                    } else {
+                      stop("observed not 1 or 2")
+                    }
+                  } else {
+                    stop("passingAlleles not {0,1,2}")
+                  }
+                  
+                } else { # No dropout or NA.
+                  
+                  if(debug){
+                    print("No dropout:")
+                  }
+                  if(debug){
+                    print("Observed:")
+                    print(observed)
+                  }
+                  
+                  # Save one or two entries.
+                  if(observed == 1){
+                    methodLTmp <- 1
+                    methodLPh <- max(peakHeight[selA1], peakHeight[selA2], rm.na=TRUE)
+                  } else if (observed == 2){
+                    
+                    methodLTmp[1] <- 0
+                    methodLTmp[2] <- NA
+                    methodLPh[1] <- mean(c(peakHeight[selA1], peakHeight[selA2]))
+                    methodLPh[2] <- NA
+                  }
+                  if(debug){
+                    print("Pk:")
+                    print(methodLPh)
+                  }
+                  
                 }
                 
-              }
+              }          
               
-            }          
+            }
+            # SCORE LOCUS -------------------------------------------------END-
+            
+          } else { # Zero or more peaks.
+            if(observed == 0){
+              methodXTmp <- NA
+              method1Tmp <- NA
+              method2Tmp <- NA
+              methodLTmp <- 2
+              methodLPh <- NA
+            } else {
+              methodXTmp <- rep(NA, observed)
+              method1Tmp <- rep(NA, observed)
+              method2Tmp <- rep(NA, observed)
+              methodLTmp <- rep(NA, observed)
+              methodLPh <- rep(NA, observed)
+            }
+          }
+          
+          # Score all dropouts --------------------------------------------------
+          # TODO: This is not needed if the 'locus' method is used. With that
+          #       approach both regression and heat-maps can use the same data.
+          
+          # Compare to threshold
+          if(!is.null(threshold)){
+            # Mark peaks above threhold.
+            pass <- peakHeight >= threshold
+            if(length(pass) == 0){
+              # This happens when there are no mathing alleles.
+              pass <- NULL
+            }
+          }
+          
+          # Count the number of observed peaks passing the threshold.
+          observedPass <- sum(pass)
+          
+          # Count the number of alleles that have dropped out.
+          dropCount <- expected - observedPass
+          
+          if(debug){
+            if(length(dataHeight) != length(dataAlleles)){
+              print("WARNING! Different length for dataHeight and dataAlleles")
+            }
+            print("dataAlleles")
+            print(dataAlleles)
+            print("dataHeight")
+            print(dataHeight)
+            print("pass")
+            print(pass)
+            print("expected")
+            print(expected)
+            print("observedPass")
+            print(observedPass)
+            print("Sample")
+            print(sampleNames[s])
+            print("Marker")
+            print(markers[m])
+          }
+          
+          # Handle locus dropout.
+          if(length(matchedAlleles) == 0){
+            
+            allelesTmp <- NA
+            heightsTmp <- NA
+            records <- 1
+            
+          } else {
+            
+            # Store all peaks.
+            allelesTmp <- matchedAlleles
+            heightsTmp <- peakHeight
+            records <- length(matchedAlleles)
             
           }
-          # SCORE LOCUS -------------------------------------------------END-
           
-        } else { # Zero or more peaks.
-          if(observed == 0){
-            methodXTmp <- NA
-            method1Tmp <- NA
-            method2Tmp <- NA
-            methodLTmp <- 2
-            methodLPh <- NA
+          # Uppdate vector.
+          allelesVec <- c(allelesVec, allelesTmp)
+          heightsVec <- c(heightsVec, heightsTmp)
+          methodXVec <- c(methodXVec, methodXTmp)
+          method1Vec <- c(method1Vec, method1Tmp)
+          method2Vec <- c(method2Vec, method2Tmp)
+          methodLVec <- c(methodLVec, methodLTmp)
+          methodLPhVec <- c(methodLPhVec, methodLPh)
+          
+          # Samples and markers.
+          samplesTmp <- rep(sampleNames[s], records)
+          markersTmp <- rep(markers[m], records)
+          
+          # Update vectors.
+          samplesVec <- c(samplesVec, samplesTmp)
+          markersVec <- c(markersVec, markersTmp)
+          
+          # Indicate zygosity (1-Heterozygote, 0-Homozygote).
+          if(expected == 1){
+            
+            hetTmp <- rep(0, records)
+            het=FALSE
+            
+          } else if(expected == 2){
+            
+            hetTmp <- rep(1, records)
+            het=TRUE
+            
           } else {
-            methodXTmp <- rep(NA, observed)
-            method1Tmp <- rep(NA, observed)
-            method2Tmp <- rep(NA, observed)
-            methodLTmp <- rep(NA, observed)
-            methodLPh <- rep(NA, observed)
+            
+            warning(paste("Sample:", sampleNames[s], "Marker: ", markers[m],
+                          "- Unhandled number of expected alleles (expected =",
+                          expected,"in sample",  sampleNames[s]),
+                    call. = TRUE, immediate. = FALSE, domain = NULL)
+            
           }
-        }
-
-        # Score all dropouts --------------------------------------------------
-        # TODO: This is not needed if the 'locus' method is used. With that
-        #       approach both regression and heat-maps can use the same data.
-        
-        # Compare to threshold
-        if(!is.null(threshold)){
-          # Mark peaks above threhold.
-          pass <- peakHeight >= threshold
-          if(length(pass) == 0){
-            # This happens when there are no mathing alleles.
-            pass <- NULL
-          }
-        }
-        
-        # Count the number of observed peaks passing the threshold.
-        observedPass <- sum(pass)
-        
-        # Count the number of alleles that have dropped out.
-        dropCount <- expected - observedPass
-
-        if(debug){
-          if(length(dataHeight) != length(dataAlleles)){
-            print("WARNING! Different length for dataHeight and dataAlleles")
-          }
-          print("dataAlleles")
-          print(dataAlleles)
-          print("dataHeight")
-          print(dataHeight)
-          print("pass")
-          print(pass)
-          print("expected")
-          print(expected)
-          print("observedPass")
-          print(observedPass)
-          print("Sample")
-          print(sampleNames[s])
-          print("Marker")
-          print(markers[m])
-        }
-        
-        # Handle locus dropout.
-        if(length(matchedAlleles) == 0){
           
-          allelesTmp <- NA
-          heightsTmp <- NA
-          records <- 1
+          # Update vector.
+          hetVec <- c(hetVec, hetTmp)
           
-        } else {
-          
-          # Store all peaks.
-          allelesTmp <- matchedAlleles
-          heightsTmp <- peakHeight
-          records <- length(matchedAlleles)
-          
-        }
-
-        # Uppdate vector.
-        allelesVec <- c(allelesVec, allelesTmp)
-        heightsVec <- c(heightsVec, heightsTmp)
-        methodXVec <- c(methodXVec, methodXTmp)
-        method1Vec <- c(method1Vec, method1Tmp)
-        method2Vec <- c(method2Vec, method2Tmp)
-        methodLVec <- c(methodLVec, methodLTmp)
-        methodLPhVec <- c(methodLPhVec, methodLPh)
-        
-        # Samples and markers.
-        samplesTmp <- rep(sampleNames[s], records)
-        markersTmp <- rep(markers[m], records)
-        
-        # Update vectors.
-        samplesVec <- c(samplesVec, samplesTmp)
-        markersVec <- c(markersVec, markersTmp)
-
-        # Indicate zygosity (1-Heterozygote, 0-Homozygote).
-        if(expected == 1){
-          
-          hetTmp <- rep(0, records)
-          het=FALSE
-          
-        } else if(expected == 2){
-          
-          hetTmp <- rep(1, records)
-          het=TRUE
-          
-        } else {
-          
-          warning(paste("Sample:", sampleNames[s], "Marker: ", markers[m],
-                        "- Unhandled number of expected alleles (expected =",
-                        expected,"in sample",  sampleNames[s]),
-                  call. = TRUE, immediate. = FALSE, domain = NULL)
-          
-        }
-        
-        # Update vector.
-        hetVec <- c(hetVec, hetTmp)
-        
-        # Indicate dropout:
-        # 0 - for no dropout, 1 - for allele dropout, 2 - for locus dropout
-        if(dropCount == 0){
-          
-          dropoutTmp <- rep(0, records)
-          
-        } else if(dropCount == 1 & het){
-          
-          dropoutTmp <- rep(1, records)
-          
-        } else if(dropCount == 1 & !het){
-          
-          dropoutTmp <- rep(2, records)
-          
-        } else if(dropCount == 2 & het){
-          
-          dropoutTmp <- rep(2, records)
-          
-        } else {
-          
-          warning(paste("Sample:", sampleNames[s], "Marker: ", markers[m],
-                        "- Unhandled combination (dropCount =",
-                        dropCount,", het =", het),
-                  call. = TRUE, immediate. = FALSE, domain = NULL)
-          
-        }
-        
-        # Replace dropout for heights below threshold with NA or 2 if locus dropout.
-        if(!is.null(pass)){
-          if(all(!pass)){
-            dropoutTmp[!pass] <- 2
+          # Indicate dropout:
+          # 0 - for no dropout, 1 - for allele dropout, 2 - for locus dropout
+          if(dropCount == 0){
+            
+            dropoutTmp <- rep(0, records)
+            
+          } else if(dropCount == 1 & het){
+            
+            dropoutTmp <- rep(1, records)
+            
+          } else if(dropCount == 1 & !het){
+            
+            dropoutTmp <- rep(2, records)
+            
+          } else if(dropCount == 2 & het){
+            
+            dropoutTmp <- rep(2, records)
+            
           } else {
-            dropoutTmp[!pass] <- NA
+            
+            warning(paste("Sample:", sampleNames[s], "Marker: ", markers[m],
+                          "- Unhandled combination (dropCount =",
+                          dropCount,", het =", het),
+                    call. = TRUE, immediate. = FALSE, domain = NULL)
+            
           }
-        }
-        
-        # Update vector.
-        dropoutVec <- c(dropoutVec, dropoutTmp)
-
-        # Store peak height of surviving allele, or NA.
-        if(dropCount == 1 & observed > 0){
-        
-          rfuTmp <- peakHeight
           
-        } else {
+          # Replace dropout for heights below threshold with NA or 2 if locus dropout.
+          if(!is.null(pass)){
+            if(all(!pass)){
+              dropoutTmp[!pass] <- 2
+            } else {
+              dropoutTmp[!pass] <- NA
+            }
+          }
           
-          rfuTmp <- rep(NA, records)
+          # Update vector.
+          dropoutVec <- c(dropoutVec, dropoutTmp)
           
-        }
-        
-        # Replace rfu for heights below threshold with NA.
-        if(!is.null(pass)){
-          rfuTmp[!pass] <- NA
-        }
-        
-        # Update vector.
-        rfuVec <- c(rfuVec, rfuTmp)
-                
-        if(debug){
+          # Store peak height of surviving allele, or NA.
+          if(dropCount == 1 & observed > 0){
+            
+            rfuTmp <- peakHeight
+            
+          } else {
+            
+            rfuTmp <- rep(NA, records)
+            
+          }
+          
+          # Replace rfu for heights below threshold with NA.
+          if(!is.null(pass)){
+            rfuTmp[!pass] <- NA
+          }
+          
+          # Update vector.
+          rfuVec <- c(rfuVec, rfuTmp)
+          
+          if(debug){
             print("dataAlleles")
             print(dataAlleles)
             print("dataHeight")
@@ -828,8 +831,14 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
             print(method1Tmp)
             print("method2Tmp")
             print(method2Tmp)
+          }
+          
+        } else {
+          
+          message(paste("Skipped marker", markers[m], "in sample", sampleNames[s], ", reference allele is NA."))
+          
         }
-        
+
       }
 
     }

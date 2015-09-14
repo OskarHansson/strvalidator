@@ -1,3 +1,9 @@
+Version 1.5.2.9000
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateDropout / calculateDropout_gui
+  Handles the case when a reference allele is NA (skip to next marker).
+
 Version 1.5.2
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:
@@ -6,6 +12,7 @@ Version 1.5.2
   - slim / slim_gui
   Fixed error when 'stack' and 'slim' is empty or "" (replaced by 'NULL').
   Now handle no columns to slim/stack (return unchanged data.frame).
+  - Plot AT confidence interval now matches the one-sided used in calculateAT6.
 * Corrections in documentation or GUI:
   - calculateBalance / calculateBalance_gui
   Parameter description for 'hb=2' changed to 'Max2(Ph)/Max1(Ph)'.
@@ -13,17 +20,12 @@ Version 1.5.2
   - modelDropout_gui
   More information in the detailes.
 * Use of 'importFrom' as required in R 3.3.0 pre-release.
-
-Version 1.5.1.9000
-------------------------------------------------------------------------------
 * Now fully enforces the version numbering convention (http://r-pkgs.had.co.nz/release.html)
  x.y.z.9XXX, where x is a major release, y is a minor release, z is a bug fix, 
  and 9XXX is a in-development version. Development versions will be synchronised to
  GitHub (https://github.com/OskarHansson/strvalidator) and possibly made available at
  the website (https://sites.google.com/site/forensicapps/strvalidator) as file
  for manual download and installation (binary package).
-* Bug fix:
-  - Plot AT confidence interval now matches the one-sided used in calculateAT6.
 
 Version 1.5.1
 ------------------------------------------------------------------------------
