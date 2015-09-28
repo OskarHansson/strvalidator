@@ -1,3 +1,14 @@
+Version 1.5.2.9001
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - readPanelsFile
+  Convert all color names to lower case. Fixes kit plot D16 bug in Fusion 6C.
+  - calculateDropout / calculateDropout_gui
+  Reverted fix in 1.5.2.9000 and instead removed all NA rows from reference prior to analysis.
+* Updated kit file. Added 'Fusion 6C', removed 'ESX17' and 'ESI17'. Kit sorted
+  roughly according to vendor and release.
+  
+
 Version 1.5.2.9000
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

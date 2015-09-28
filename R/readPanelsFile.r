@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.09.2015: Convert color names to lower case.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 22.09.2013: Fixed bug when reading LifeTech bins with comment.
 # 22.09.2013: Added 'debug' parameter.
@@ -108,7 +109,7 @@ readPanelsFile <- function (panel.files, debug=FALSE){
           
           # Extract information.
           markerName <- allTextSplit[[row]][1]
-          colorName <- allTextSplit[[row]][2]
+          colorName <- tolower(allTextSplit[[row]][2])
           rangeMin <- as.numeric(allTextSplit[[row]][3])
           rangeMax <- as.numeric(allTextSplit[[row]][4])
           # [5] Positive control delimited by " # Not needed.
