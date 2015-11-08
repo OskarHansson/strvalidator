@@ -22,6 +22,16 @@
 # [optional]Increment ### on development versions.
 # NB! Write changes in NEWS for x.yy.z.9### versions, but move changes to NEWS under x.yy.z upon release official version.
 
+# Attributes:
+# Put these in 'base functions':
+# attr(dataDrop, which="[function], strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+# attr(dataDrop, which="[function], call") <- match.call()
+# attr(at.rank, which="[function], date") <- date()
+# Put additional attributes in 'gui functions' like this:
+# attr(datanew, which="[function], [attribute]") <- parameter
+# Except for 'global' parameters used by other functions:
+# attr(datanew, which="kit") <- kit
+
 # NOTE:
 # NOTE: Can't import data frame named 'drop'
 # NOTE: Buttons named 'Plot' will show up 'plot'.
@@ -29,6 +39,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 12.10.2015: Added 'Calculate' and 'Filter' button in 'Result' tab.
+# 12.10.2015: Added new group 'Drop-in tools' in 'Result' tab.
 # 29.08.2015: Added importFrom.
 # 01.06.2015: Added 'Calculate' and 'Plot' (AT6) button in 'AT' tab.
 # 24.05.2015: Added 'Columns' button in 'Tools' tab.
@@ -96,7 +108,7 @@
 #' @import gWidgets
 #' @import gWidgetsRGtk2
 #' @import RGtk2
-#' @import data.table
+# @import data.table
 #' @import gridExtra
 #' @importFrom utils packageVersion help object.size
 #' @importFrom graphics title
@@ -806,6 +818,7 @@ strvalidator <- function(debug=FALSE){
         
         # Open GUI.
         editData_gui(env=.strvalidator_env,
+                     savegui=.save_gui,
                      data=get(val_obj, envir=.strvalidator_env),
                      name=val_obj,
                      edit=FALSE, debug=debug, parent=w)
@@ -1100,7 +1113,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(dry_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1186,7 +1200,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(edit_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1467,7 +1482,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(at_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui
+                 , edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1540,7 +1556,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(stutter_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1617,7 +1634,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1753,7 +1771,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(conc_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1794,7 +1813,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(drop_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1870,7 +1890,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(mix_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -1915,7 +1936,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(result_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -2050,6 +2072,52 @@ strvalidator <- function(debug=FALSE){
     plotDistribution_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
+
+    
+  # DROPIN ====================================================================
+  
+  result_f5 <- gframe(text = "Drop-in tools",
+                      horizontal=FALSE, container = result_tab) 
+  
+  result_g5 <- glayout(container = result_f5)
+  
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  result_g5[1,1] <- result_g5_calc_btn <- gbutton(text="Calculate",
+                                                  border=TRUE,
+                                                  container = result_g5) 
+  
+  result_g5[1,2] <- glabel(text="Find spikes in sample.",
+                           container=result_g5,
+                           anchor=c(-1 ,0))
+  
+  
+  addHandlerChanged(result_g5_calc_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateSpike_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+  
+  # FILTER PEAKS --------------------------------------------------------------
+  
+  result_g5[2,1] <- result_g5_filter_btn <- gbutton(text="Filter",
+                                                  border=TRUE,
+                                                  container = result_g5) 
+  
+  result_g5[2,2] <- glabel(text="Filter spikes from data.",
+                           container=result_g5)
+  
+  addHandlerChanged(result_g5_filter_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    #filterSpike_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    gmessage(message = "This function is not yet implemented", title = "No function",
+             icon = "warning", parent = w)
+    
+    
+  } )
   
   # PRECISION  ################################################################
   
@@ -2070,7 +2138,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(precision_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   
@@ -2127,7 +2196,8 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(pull_view_btn, handler = function(h, ...) {
     
     # Open GUI.
-    editData_gui(env=.strvalidator_env, edit=TRUE, debug=debug, parent=w)
+    editData_gui(env=.strvalidator_env, savegui=.save_gui,
+                 edit=TRUE, debug=debug, parent=w)
     
   } )
   

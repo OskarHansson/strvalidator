@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.10.2015: Added attributes to result.
 # 28.09.2015: Remove rows with missing alleles from the reference dataset.
 # 11.09.2015: Handle reference allele is NA.
 # 28.08.2015: Added importFrom
@@ -903,7 +904,11 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
     dataDrop$MethodL.Ph <- methodLPhVec
   }
     
-
+  # Add attributes to result.
+  attr(dataDrop, which="calculateDropout, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(dataDrop, which="calculateDropout, call") <- match.call()
+  attr(dataDrop, which="calculateDropout, date") <- date()
+  
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

@@ -22,11 +22,13 @@ ALLELE FREQUENCY DATABASES
 -------------------------------------------------------------------------------
 SGM Norway
 -------------------------------------------------------------------------------
-Title: "Norwegian population data for the 10 autosomal STR loci in the AMPFlSTR® SGM PlusT system"
+Title: "Norwegian population data for the 10 autosomal STR loci in the AMPFlSTR SGM Plus system"
 
 Authors: R. Andreassen, S. Jakobsen, B. Mevaag
 
 Source: Forensic Science International - 20 July 2007 (Vol. 170, Issue 1, Pages 59-61, DOI: 10.1016/j.forsciint.2006.03.026)
+
+NB! The AMEL frequencies were not published but have been copied from the 'ESX 17 Hill' to be used in simulations.
 
 -------------------------------------------------------------------------------
 ESX 17 Hill

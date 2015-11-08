@@ -24,11 +24,13 @@ GUI simplifying cropping and replacing values in data frames.
 }
 \details{
 Select a data frame from the dropdown and a target column.
+To remove rows with 'NA' check the appropriate box.
 Select to discard or replace values and additional options.
 Click button to 'Apply' changes.
 Multiple actions can be performed on one dataset before saving as
 a new dataframe.
-NB! Check that datatype is correct before click apply to avoid strange behaviour.
+NB! Check that data type is correct before click apply to avoid strange behaviour.
+If data type is numeric any string will become a numeric 'NA'.
 }
 \seealso{
 \code{\link{trim_gui}}, \code{\link{editData_gui}}, \code{\link{combine_gui}}

@@ -15,6 +15,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 26.10.2015: Added attributes.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 30.11.2013: 'warning' changed to 'message' when data is converted.
 # 01.07.2013: Added "Sample.Name" in result.
@@ -640,6 +641,11 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
     }
   }
   
+  # Add attributes to result.
+  attr(stutterRatio, which="calculateStutter, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(stutterRatio, which="calculateStutter, call") <- match.call()
+  attr(stutterRatio, which="calculateStutter, date") <- date()
+
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

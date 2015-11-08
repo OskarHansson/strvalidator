@@ -1,9 +1,12 @@
 ################################################################################
 # TODO LIST
-# TODO: re-make function to read line and specify type for each column?
+# TODO: Update to use 'fread' when problem with colClasses is solved.
+
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.10.2015: Added call to 'colConvert' to convert known numeric columns.
+# 05.10.2015: Added attributes.
 # 31.08.2015: Removed option to manually pick folder using 'choose.dir'.
 # 29.08.2015: Added importFrom.
 # 01.06.2015: Re-named column name 'File' to 'File.Name' to increase specificity in 'trim'.
@@ -24,10 +27,8 @@
 # <13.06.2013: Added parameter 'file.name' and 'folder.name' for direct import.
 # <13.06.2013: Changed regex from (".",".",extension, sep="") to (".*","\\.",extension, sep="")
 # <13.06.2013: Roxygenized.
-# <13.06.2013: add column 'File' when importing from a folder.
-# <13.06.2013: new parameter 'extension' (fixes error in folder import)
 
-#' @title Import Data.
+#' @title Import Data
 #'
 #' @description
 #' Import text files and apply post processing.
@@ -74,6 +75,7 @@
 #' 
 #' @importFrom plyr rbind.fill
 #' @importFrom utils read.table
+# @importFrom data.table fread
 #' 
 #' @seealso \code{\link{trim}}, \code{\link{slim}}, \code{\link{list.files}}, \code{\link{read.table}}
 
@@ -183,14 +185,25 @@ import <- function (folder = TRUE, extension="txt",
     
     # Read files.
     for (f in seq(along=import.file)) {
+
+      # Should change to more efficient and simpler 'fread' but
+      # problem is that autodetection of colClasses does not always work
+      # and it is not possible(?) to set all to character.
+      # Use read.table for the time being.
+      # Read a file.  
+      # tmpdf <- data.table::fread(import.file[f], data.table=FALSE)
       
+      # Ensures column names are identical as when read.table was used.
+      # Needed since many functions specify columns by name.
+      # names(tmpdf) <- make.names(colnames(tmpdf))
+
       # Read a file.  
       tmpdf <- read.table(import.file[f], header = TRUE,
-                        sep = separator, fill = TRUE,
-                        na.strings = c("NA",""),
-                        colClasses = "character",
-                        stringsAsFactors=FALSE)
-
+                          sep = separator, fill = TRUE,
+                          na.strings = c("NA",""),
+                          colClasses = "character",
+                          stringsAsFactors=FALSE)
+      
       # Autotrim datset (message before loop).
       if(auto.trim){
         tmpdf <- trim(data=tmpdf, samples=trim.samples,
@@ -254,6 +267,14 @@ import <- function (folder = TRUE, extension="txt",
     }
     
   }
+
+  # Convert common known numeric columns.
+  res <- colConvert(data=res)
+    
+  # Add attributes.
+  attr(res, which="import, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(res, which="import, call") <- match.call()
+  attr(res, which="import, date") <- date()
   
   return(res)
   

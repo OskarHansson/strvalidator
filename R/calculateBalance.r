@@ -5,7 +5,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
-# 28.08.2015: Added importFrom
+# 12.10.2015: Added attributes.
+# 28.08.2015: Added importFrom.
 # 17.08.2015: Changed erroneus description for parameter 'hb'  to 'hb=2; Max2(Ph)/Max1(Ph)'.
 # 08.06.2015: Fixed 'Error in if (dyeOk[d]) { : missing value where TRUE/FALSE needed' (Fixes issue#9).
 # 15.12.2014: Changed parameter names to format: lower.case
@@ -24,8 +25,6 @@
 # 20.04.2013: Changes max/min to max1/max2 so can handle unfiltered data.
 # 20.04.2013: If ref=NULL use guess 'ref' from 'data' and issue a warning.
 # 20.04.2013: Fixed bug for homozygous: min/2 to max/2.
-# 14.04.2013: Reworked the code:
-#             Removed dependency of column 'Zygosity' by adding parameter 'ref'.
 
 #' @title Calculate Balance
 #'
@@ -503,6 +502,11 @@ calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
     
   }
   
+  # Add attributes to result.
+  attr(res, which="calculateBalance, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(res, which="calculateBalance, call") <- match.call()
+  attr(res, which="calculateBalance, date") <- date()
+
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

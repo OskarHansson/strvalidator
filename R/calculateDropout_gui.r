@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.10.2015: Added more attributes to result.
+# 04.10.2015: Added automatic calculation of average peak height 'H'.
 # 28.08.2015: Added importFrom
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 13.12.2014: Added kit dropdown and kit attribute to result.
@@ -21,8 +23,6 @@
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 24.05.2013: Improved error message for missing columns.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: First version.
 
 #' @title Calculate Dropout Events
 #'
@@ -249,6 +249,9 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   f1_ignore_case_chk <- gcheckbox(text="Ignore case", checked = TRUE,
                                   container = f1)
   
+  f1_h_chk <- gcheckbox(text="Calculate average peak height", checked = TRUE,
+                                  container = f1)
+  
   f1g1 <- glayout(container = f1)
   
   f1g1[1,1] <- glabel(text="Limit of detection threshold (LDT):",
@@ -298,6 +301,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   addHandlerChanged(dropout_btn, handler = function(h, ...) {
     
     val_ignore_case <- svalue(f1_ignore_case_chk)
+    val_h <- svalue(f1_h_chk)
     val_threshold <- as.numeric(svalue(f1g1_ldt_edt))
     val_name <- svalue(f2_save_edt)
     val_kit <- svalue(f2_kit_drp)
@@ -357,8 +361,62 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
                                   ignore.case=val_ignore_case,
                                   debug=debug)
       
-      # Add attribute for detected kit.
+      # Add attributes to result.
       attr(datanew, which="kit") <- val_kit
+      attr(datanew, which="calculateDropout_gui, data") <- svalue(dataset_drp)
+      attr(datanew, which="calculateDropout_gui, ref") <- svalue(refset_drp)
+      attr(datanew, which="calculateDropout_gui, threshold") <- val_threshold
+      attr(datanew, which="calculateDropout_gui, method") <- val_method
+      attr(datanew, which="calculateDropout_gui, ignore.case") <- val_ignore_case
+      attr(datanew, which="calculateDropout_gui, calculate.h") <- val_h
+      
+      # Calculate and add average peak height.
+      if(val_h){
+
+        # Heterozygote status is required to calculate 'H'.        
+        if(!"Heterozygous" %in% names(.gData)){
+          
+          if(!"Heterozygous" %in% names(.gRef)){
+            
+            # Calculate heterozygote indicator for reference set.
+            .gRef <- calculateHeterozygous(data=.gRef, debug=debug)
+            
+            message("Heterozygote indicator calculated for reference set.")
+          
+          }
+          
+          # Filter known profile.
+          .gData <- filterProfile(data=.gData, ref=.gRef, add.missing.loci=TRUE,
+                                  keep.na=TRUE, ignore.case=val_ignore_case,
+                                  invert=FALSE, debug=debug)
+
+          message("Filter known profile from dataset.")
+          
+          # Add heterozygote indicator to dataset.
+          .gData <- addData(data=.gData, new.data=.gRef,
+                            by.col="Sample.Name", then.by.col="Marker",
+                            exact=FALSE, ignore.case=val_ignore_case,
+                            debug=debug)
+
+          message("Heterozygote indicator added to dataset.")
+          
+        }
+
+        # Calculate average peak height.
+        dfH <- calculateHeight(data=.gData, na=0, add=FALSE,
+                               exclude="OL", debug=debug)
+        
+        message("Average peak height calculated.")
+
+        # Add heterozygote indicator to dataset.
+        datanew <- addData(data=datanew, new.data=dfH,
+                          by.col="Sample.Name", then.by.col=NULL,
+                          exact=TRUE, ignore.case=val_ignore_case,
+                          debug=debug)
+        
+        message("Average peak height added to result.")
+        
+      }
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -412,6 +470,9 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_case_chk) <- get(".strvalidator_calculateDropout_gui_ignore", envir=env)
       }
+      if(exists(".strvalidator_calculateDropout_gui_h", envir=env, inherits = FALSE)){
+        svalue(f1_h_chk) <- get(".strvalidator_calculateDropout_gui_h", envir=env)
+      }
       if(exists(".strvalidator_calculateDropout_gui_score1", envir=env, inherits = FALSE)){
         svalue(f1_score1_chk) <- get(".strvalidator_calculateDropout_gui_score1", envir=env)
       }
@@ -439,6 +500,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       
       assign(x=".strvalidator_calculateDropout_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculateDropout_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_h", value=svalue(f1_h_chk), envir=env)
       assign(x=".strvalidator_calculateDropout_gui_score1", value=svalue(f1_score1_chk), envir=env)
       assign(x=".strvalidator_calculateDropout_gui_score2", value=svalue(f1_score2_chk), envir=env)
       assign(x=".strvalidator_calculateDropout_gui_scorex", value=svalue(f1_scorex_chk), envir=env)
@@ -451,6 +513,9 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       }
       if(exists(".strvalidator_calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateDropout_gui_ignore", envir = env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_h", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_h", envir = env)
       }
       if(exists(".strvalidator_calculateDropout_gui_score1", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateDropout_gui_score1", envir = env)

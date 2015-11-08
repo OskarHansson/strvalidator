@@ -4,11 +4,13 @@
 \alias{editData_gui}
 \title{Edit or View Data Frames}
 \usage{
-editData_gui(env = parent.frame(), data = NULL, name = NULL,
-  edit = TRUE, debug = FALSE, parent = NULL)
+editData_gui(env = parent.frame(), savegui = NULL, data = NULL,
+  name = NULL, edit = TRUE, debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in wich to search for data frames.}
+
+\item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 
 \item{data}{data.frame for instant viewing.}
 

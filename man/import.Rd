@@ -2,7 +2,7 @@
 % Please edit documentation in R/import.r
 \name{import}
 \alias{import}
-\title{Import Data.}
+\title{Import Data}
 \usage{
 import(folder = TRUE, extension = "txt", suffix = NA, prefix = NA,
   import.file = NA, folder.name = NA, file.name = TRUE,

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 26.10.2015: Added attributes.
 # 28.08.2015: Added importFrom.
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 05.01.2015: Added kit dropdown and kit attribute to result.
@@ -23,7 +24,6 @@
 # 29.05.2013: Added subset check.
 # 28.05.2013: Added warning for additive effects.
 # 24.05.2013: Improved error message for missing columns.
-# 17.05.2013: listDataFrames() -> listObjects()
 
 #' @title Calculate Stutter
 #'
@@ -383,9 +383,16 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
                                   by.val=val_by,
                                   debug=debug)
       
-      # Add attribute for detected kit.
+      # Add attributes.
       attr(datanew, which="kit") <- val_kit
-      
+      attr(datanew, which="calculateStutter_gui, data") <- svalue(f0_dataset_drp)
+      attr(datanew, which="calculateStutter_gui, ref") <- svalue(f0_refset_drp)
+      attr(datanew, which="calculateStutter_gui, back") <- val_back
+      attr(datanew, which="calculateStutter_gui, forward") <- val_forward
+      attr(datanew, which="calculateStutter_gui, interference") <- val_interference
+      attr(datanew, which="calculateStutter_gui, replace.val") <- val_replace
+      attr(datanew, which="calculateStutter_gui, by.val") <- val_by
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

@@ -7,6 +7,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 21.10.2015: Added attributes.
+# 06.10.2015: Added importFrom for data.table
 # 28.08.2015: Added importFrom
 # 26.06.2015: Added global AT per dye.
 # 26.06.2015: Fixed hard-coded kit/dye set.
@@ -67,6 +69,7 @@
 #' 
 #' @importFrom stats sd qt
 #' @importFrom utils str head tail
+#' @importFrom data.table data.table setnames
 #' 
 #' @seealso \code{\link{blockAT}}, \code{\link{checkSubset}}
 #' 
@@ -342,9 +345,9 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     colName <- paste(dyesKit[d],"AT1", sep=".")
     colVal <- rep(at.dye$AT1[d], nrow(at.sample.dye))
     colCnt <- length(colVal)
-    dtNew <- data.table(col = colVal)
-    setnames(dtNew, colName)
-    at.sample.dye <- data.table(at.sample.dye, dtNew)
+    dtNew <- data.table::data.table(col = colVal)
+    data.table::setnames(dtNew, colName)
+    at.sample.dye <- data.table::data.table(at.sample.dye, dtNew)
   }
   
   # Add AT2 results.
@@ -357,9 +360,9 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     colName <- paste(dyesKit[d],"AT2", sep=".")
     colVal <- rep(at.dye$AT2[d], nrow(at.sample.dye))
     colCnt <- length(colVal)
-    dtNew <- data.table(col = colVal)
-    setnames(dtNew, colName)
-    at.sample.dye <- data.table(at.sample.dye, dtNew)
+    dtNew <- data.table::data.table(col = colVal)
+    data.table::setnames(dtNew, colName)
+    at.sample.dye <- data.table::data.table(at.sample.dye, dtNew)
   }
   
   # Calculate AT4.
@@ -375,24 +378,19 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     colName <- paste(dyesKit[d],"AT4", sep=".")
     colVal <- rep(at.dye$AT4[d], nrow(at.sample.dye))
     colCnt <- length(colVal)
-    dtNew <- data.table(col = colVal)
-    setnames(dtNew, colName)
-    at.sample.dye <- data.table(at.sample.dye, dtNew)
+    dtNew <- data.table::data.table(col = colVal)
+    data.table::setnames(dtNew, colName)
+    at.sample.dye <- data.table::data.table(at.sample.dye, dtNew)
   }
   
   # Add number of samples.
   at.sample.dye$Total.Samples <-  nSamples
 
   # Add attributes.
-  attr(at.sample.dye, which="k") <- k
-  attr(at.sample.dye, which="rank.t") <- rank.t
-  attr(at.sample.dye, which="alpha") <- alpha
-  attr(at.sample.dye, which="block") <- block.sample
-  attr(at.sample.dye, which="range.sample") <- range.sample
-  attr(at.sample.dye, which="block.ils") <- block.ils
-  attr(at.sample.dye, which="range.ils") <- range.ils
-  attr(at.sample.dye, which="per.dye") <- per.dye
- 
+  attr(at.sample.dye, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(at.sample.dye, which="calculateAT, call") <- match.call()
+  attr(at.sample.dye, which="calculateAT, date") <- date()
+
   # Convert back to data.frame.
   res1 <- data.frame(at.sample.dye)
   
@@ -404,13 +402,10 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
                      Observations=as.numeric(table(dt$Height)))
 
   # Add attributes.
-  attr(at.rank, which="rank.t") <- rank.t
-  attr(at.rank, which="block") <- block.sample
-  attr(at.rank, which="range.sample") <- range.sample
-  attr(at.rank, which="block.ils") <- block.ils
-  attr(at.rank, which="range.ils") <- range.ils
-  attr(at.rank, which="per.dye") <- per.dye
- 
+  attr(at.rank, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(at.rank, which="calculateAT, call") <- match.call()
+  attr(at.rank, which="calculateAT, date") <- date()
+  
   # Convert back to data frame.
   res2 <- data.frame(at.rank)
   

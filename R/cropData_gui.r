@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.10.2015: Option to remove NA (earlier NA was automatically removed).
+# 08.10.2015: Fixed Info not updated when selecting a column.
 # 28.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -25,11 +27,13 @@
 #' GUI simplifying cropping and replacing values in data frames.
 #'
 #' @details Select a data frame from the dropdown and a target column.
+#' To remove rows with 'NA' check the appropriate box.
 #' Select to discard or replace values and additional options.
 #' Click button to 'Apply' changes.
 #' Multiple actions can be performed on one dataset before saving as
 #' a new dataframe.
-#' NB! Check that datatype is correct before click apply to avoid strange behaviour.
+#' NB! Check that data type is correct before click apply to avoid strange behaviour.
+#' If data type is numeric any string will become a numeric 'NA'.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
@@ -140,7 +144,10 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
                  icon = "warning", parent = w) 
       }
       
-      # Update info.
+      # Refresh column drop-down menu.
+      .refresh_column_drp()
+      
+      # Update info prior to action.
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
       svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
@@ -196,7 +203,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
   glabel(text=" Info:", container=f1)
   f1_min_lbl <- glabel(text=" Min:", container=f1)
   f1_max_lbl <- glabel(text=" Max:", container=f1)
-  f1_na_chk <- gcheckbox(text="Exclude NA", checked=FALSE, container=f1)
+  f1_na_chk <- gcheckbox(text="Ignore NA for info", checked=TRUE, container=f1)
   
   addHandlerChanged(f1_na_chk, handler = function (h, ...) {
 
@@ -222,6 +229,8 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
           }
         }
         # Update target value etc.
+        .refresh_info()
+        # Update target value etc.
         .refresh_options()
       }
     }
@@ -234,6 +243,8 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
                horizontal=FALSE,
                spacing = 5,
                container = gv) 
+  
+  f2_na_rm_chk <- gcheckbox(text="Remove NA", checked=FALSE, container=f2)
   
   glabel(text="Action:", visible=FALSE, anchor=c(-1, -1), container=f2)
   
@@ -304,6 +315,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
     val_target <- svalue(f2g1_target_cbo)
     val_new <- svalue(f2g1_new_edt)
     val_type <- svalue(f2_type_opt, index=TRUE)
+    val_na_rm <- svalue(f2_na_rm_chk)
     
     # If second round, get name from save box.
     if(svalue(dataset_drp, index=TRUE) == 1){
@@ -358,77 +370,56 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
         print(head(.gData))
         print(tail(.gData))
       }
+
+      if(val_na_rm){
+        # Remove all rows with NA in target column.
+        .gData <<- .gData[!is.na(.gData[val_column]), ]
+      }
       
       if(val_operator == 1){  # above
         
-        # Remove all rows with NA in target column.
-        .gData <<- .gData[!is.na(.gData[val_column]), ]
-        
         if(val_task == 1){  # crop
-          .gData <<- .gData[!.gData[val_column] > val_target, ]
+          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] > val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] > val_target] <<- val_new
         }
         
       } else if (val_operator == 2){  # above or equal to
 
-        # Remove all rows with NA in target column.
-        .gData <<- .gData[!is.na(.gData[val_column]), ]
-
         if(val_task == 1){  # crop
-          .gData <<- .gData[!.gData[val_column] >= val_target, ]
+          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] >= val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] >= val_target] <<- val_new
         }
         
       } else if (val_operator == 3){  # below
       
-        # Remove all rows with NA in target column.
-        .gData <<- .gData[!is.na(.gData[val_column]), ]
-
-        if(debug){
-          print(".gData dim, str, head, tail:")
-          print(dim(.gData))
-          print(str(.gData))
-          print(head(.gData))
-          print(tail(.gData))
-        }
-        
         if(val_task == 1){  # crop
-          .gData <<- .gData[!.gData[val_column] < val_target, ]
+          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] < val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] < val_target] <<- val_new
         }
       
       } else if (val_operator == 4){  # below or equal to
         
-        # Remove all rows with NA in target column.
-        .gData <<- .gData[!is.na(.gData[val_column]), ]
-        
         if(val_task == 1){  # crop
-          .gData <<- .gData[!.gData[val_column] <= val_target, ]
+          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] <= val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] <= val_target] <<- val_new
         }
         
       } else if (val_operator == 5){  # equal to
         
-        # Remove all rows with NA in target column.
-        .gData <<- .gData[!is.na(.gData[val_column]), ]
-
         if(val_task == 1){  # crop
-          .gData <<- .gData[!.gData[val_column] == val_target, ]
+          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] == val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] == val_target] <<- val_new
         }
         
       } else if (val_operator == 6){  # not equal to
         
-        # Remove all rows with NA in target column.
-        .gData <<- .gData[!is.na(.gData[val_column]), ]
-
         if(val_task == 1){  # crop
-          .gData <<- .gData[!.gData[val_column] != val_target, ]
+          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] != val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] != val_target] <<- val_new
         }
@@ -682,6 +673,9 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       if(exists(".strvalidator_cropData_gui_na", envir=env, inherits = FALSE)){
         svalue(f1_na_chk) <- get(".strvalidator_cropData_gui_na", envir=env)
       }
+      if(exists(".strvalidator_cropData_gui_na_rm", envir=env, inherits = FALSE)){
+        svalue(f2_na_rm_chk) <- get(".strvalidator_cropData_gui_na_rm", envir=env)
+      }
       if(exists(".strvalidator_cropData_gui_task", envir=env, inherits = FALSE)){
         svalue(f2g1_task_opt) <- get(".strvalidator_cropData_gui_task", envir=env)
       }
@@ -705,6 +699,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       
       assign(x=".strvalidator_cropData_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_cropData_gui_na", value=svalue(f1_na_chk), envir=env)
+      assign(x=".strvalidator_cropData_gui_na_rm", value=svalue(f2_na_rm_chk), envir=env)
       assign(x=".strvalidator_cropData_gui_task", value=svalue(f2g1_task_opt), envir=env)
       assign(x=".strvalidator_cropData_gui_operator", value=svalue(f2g1_operator_drp), envir=env)
       assign(x=".strvalidator_cropData_gui_new", value=svalue(f2g1_new_edt), envir=env)
@@ -716,6 +711,9 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       }
       if(exists(".strvalidator_cropData_gui_na", envir=env, inherits = FALSE)){
         remove(".strvalidator_cropData_gui_na", envir = env)
+      }
+      if(exists(".strvalidator_cropData_gui_na_rm", envir=env, inherits = FALSE)){
+        remove(".strvalidator_cropData_gui_na_rm", envir = env)
       }
       if(exists(".strvalidator_cropData_gui_task", envir=env, inherits = FALSE)){
         remove(".strvalidator_cropData_gui_task", envir = env)

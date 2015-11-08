@@ -1,4 +1,6 @@
 Database	N	Allele	AMEL	D3S1358	vWA	D16S539	D2S1338	D8S1179	D21S11	D18S51	D19S433	TH01	FGA	D12S391	D1S1656	D22S1045	D2S441	D10S1248	SE33
+SGM Norway	1000	X	0.501																
+SGM Norway	1000	Y	0.499																
 SGM Norway	1000	5										0.005							
 SGM Norway	1000	6										0.209							
 SGM Norway	1000	7										0.197							

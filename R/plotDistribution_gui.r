@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: Fix TODO's in code (nb observations etc.)
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.10.2015: NA's now removed prior to plotting, and from number of observations.
 # 29.08.2015: Added importFrom.
 # 11.06.2015: Fixed title for histogram plot.
 # 09.06.2015: Fixed 'overlay boxplot' not saved.
@@ -471,28 +472,26 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
         print(head(val_data))
       }
       
-      # TODO: Remove NA
-      #       # Remove NA's
-      #       if(any(is.na(val_data[, val_column]))){
-      #         
-      #         # Store nb of observations.
-      #         nb0 <- nb
-      #         
-      #         # Update number of observations.
-      #         nb <- nrow(val_data[!is.na(val_data[val_column]),])
-      #         
-      #         # Show message.
-      #         message(paste("Removed ", nb0-nb, " NA rows.", sep=""))
-      #         
-      #         if(debug){
-      #           print("After subsetting (val_data)")
-      #           print(str(val_data))
-      #           print(head(val_data))
-      #         }
-      #         
-      #       }
-      
-      
+      # Remove NA's
+      if(any(is.na(val_data[, val_column]))){
+        
+        # Store nb of observations.
+        nb0 <- nb
+        
+        # Update number of observations.
+        nb <- nrow(val_data[!is.na(val_data[val_column]),])
+        
+        # Show message.
+        message(paste("Removed ", nb0-nb, " NA rows.", sep=""))
+        
+        if(debug){
+          print("After subsetting (val_data)")
+          print(str(val_data))
+          print(head(val_data))
+        }
+        
+      }
+
       # Create titles.
       if(val_titles){
         

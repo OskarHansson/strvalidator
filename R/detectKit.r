@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.11.2015: Changed default to index=TRUE. Export function.
 # 03.08.2014: Added support for kit attribute.
 # 15.04.2014: Revert to previous match if no match in a method.
 # 24.10.2013: Improved matching.
@@ -30,10 +31,12 @@
 #' @param index logical, returns kit index if TRUE or short name if FALSE.
 #' @param debug logical, prints debug information if TRUE.
 #' 
+#' @export
+#' 
 #' @return integer or string indicating the detected kit.
 #' 
 
-detectKit <- function(data, index=TRUE, debug=FALSE){
+detectKit <- function(data, index=FALSE, debug=FALSE){
   
   if(!'Marker' %in% colnames(data)){
     stop("Data frame must contain a column 'Marker'")
