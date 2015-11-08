@@ -135,7 +135,7 @@ tablePrecision_gui <- function(env=parent.frame(), savegui=NULL,
       svalue(f4_save_edt) <- paste(val_obj, "_precision_table", sep="")
       
       # Detect kit.
-      kitIndex <- detectKit(.gData)
+      kitIndex <- detectKit(.gData, index=TRUE)
       # Select in dropdown.
       svalue(f2g2_kit_drp, index=TRUE) <- kitIndex
       

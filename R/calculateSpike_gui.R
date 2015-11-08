@@ -119,7 +119,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       svalue(f2_save_edt) <- paste(.gDataName, "_spikes", sep = "")
       
       # Detect kit.
-      kitIndex <- detectKit(.gData)
+      kitIndex <- detectKit(.gData, index=TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
 

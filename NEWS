@@ -20,6 +20,8 @@ Version 1.5.2.9002
   - colConvert
   - calculateSpike / calculateSpike_gui
   - calculateAllele
+* New exported function:
+  - detectKit
 * Added attributes for the following functions:
   import
   import_gui

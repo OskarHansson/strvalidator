@@ -150,7 +150,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       # Suggest name.
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep="")
       # Detect kit.
-      kitIndex <- detectKit(.gData)
+      kitIndex <- detectKit(.gData, index=TRUE)
       # Select in dropdown.
       svalue(kit_drp, index=TRUE) <- kitIndex
       

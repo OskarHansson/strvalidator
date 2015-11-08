@@ -138,7 +138,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       svalue(f2_save_edt) <- paste(.gDataName, "_filter", sep="")
       
       # Detect kit.
-      kitIndex <- detectKit(.gData)
+      kitIndex <- detectKit(.gData, index=TRUE)
       # Select in dropdown.
       svalue(g0_kit_drp, index=TRUE) <- kitIndex
         

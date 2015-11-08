@@ -142,7 +142,7 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                                            " samples)", sep="")
       
       # Detect kit.
-      kitIndex <- detectKit(.gData)
+      kitIndex <- detectKit(.gData, index=TRUE)
       # Select in dropdown.
       svalue(kit_drp, index=TRUE) <- kitIndex
       

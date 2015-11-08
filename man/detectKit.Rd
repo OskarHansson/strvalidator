@@ -4,7 +4,7 @@
 \alias{detectKit}
 \title{Detect Kit}
 \usage{
-detectKit(data, index = TRUE, debug = FALSE)
+detectKit(data, index = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{data frame.}
