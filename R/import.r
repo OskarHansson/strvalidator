@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2015: Added "0" to 'na.strings' in 'read.table'.
 # 06.10.2015: Added call to 'colConvert' to convert known numeric columns.
 # 05.10.2015: Added attributes.
 # 31.08.2015: Removed option to manually pick folder using 'choose.dir'.
@@ -25,8 +26,6 @@
 # 13.06.2013: Added parameter 'debug'. Fixed regexbug when importing from folder.
 # <13.06.2013: Renamed from importGM to import.
 # <13.06.2013: Added parameter 'file.name' and 'folder.name' for direct import.
-# <13.06.2013: Changed regex from (".",".",extension, sep="") to (".*","\\.",extension, sep="")
-# <13.06.2013: Roxygenized.
 
 #' @title Import Data
 #'
@@ -200,7 +199,7 @@ import <- function (folder = TRUE, extension="txt",
       # Read a file.  
       tmpdf <- read.table(import.file[f], header = TRUE,
                           sep = separator, fill = TRUE,
-                          na.strings = c("NA",""),
+                          na.strings = c("NA","","0"),
                           colClasses = "character",
                           stringsAsFactors=FALSE)
       
