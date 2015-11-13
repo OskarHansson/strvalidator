@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom grid and gridExtra arrangeGrob, and ggplot2.
+# 11.11.2015: Added more themes.
 # 29.08.2015: Added importFrom.
 # 05.01.2015: 'Save as object' now disabled when complex plot.
 # 14.12.2014: Option to drop sex markers.
@@ -22,9 +24,6 @@
 # 30.11.2013: Added info on number of samples.
 # 30.11.2013: Fixed 'complex' plot.
 # 30.11.2013: Fixed 'facet_wrap' with strings.
-# 30.11.2013: Specified package for functions from 'grid' -> 'grid::xxxx'
-# 20.11.2013: Specified package for function 'gtable' -> 'gtable::gtable'
-# 05.11.2013: Fixed not possible to limit both y/x axes.
 
 #' @title Plot Stutter
 #'
@@ -45,13 +44,17 @@
 #' 
 #' @export
 #' 
-# @importFrom gridExtra arrangeGrob
+#' @importFrom gridExtra arrangeGrob
 # @importFrom gtable gtable_add_grob gtable gtable_filter
+#' @importFrom grid unit textGrob grid.newpage grid.draw
 #' @importFrom plyr rbind.fill
 #' @importFrom scales pretty_breaks
 #' @importFrom utils help str
 #' @importFrom stats as.formula
 #' @importFrom grDevices hcl
+#' @importFrom ggplot2 ggplot aes_string scale_x_continuous geom_point position_jitter
+#'  facet_grid facet_wrap coord_cartesian guides guide_legend theme element_text
+#'  labs xlab ylab ggplotGrob scale_colour_manual element_blank
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
@@ -211,8 +214,10 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
 
   f1g2 <- glayout(container = f1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items=c("theme_grey()","theme_bw()"),
-                                         selected=1,
+  items_theme <- c("theme_grey()","theme_bw()","theme_dark()",
+                   "theme_minimal()","theme_void()")
+  f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+                                         selected = 1,
                                          container = f1g2)
   
   f1_drop_chk <- gcheckbox(text="Drop sex markers",

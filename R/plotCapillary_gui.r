@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 07.08.2014: Fixed boxplot error 
@@ -35,6 +36,8 @@
 #' @export
 #' 
 #' @importFrom utils help str
+#' @importFrom ggplot2 ggplot aes_string facet_grid geom_point geom_line labs
+#'  geom_boxplot stat_boxplot theme geom_density coord_cartesian
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 

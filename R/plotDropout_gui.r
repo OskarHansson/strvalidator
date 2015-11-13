@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 16.05.2015: Fixed issue#10 colors hardcoded as ESX17 for dotplot.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -27,7 +28,6 @@
 # 18.07.2013: Check before overwrite object.
 # 15.07.2013: Save as ggplot object to workspace instead of image.
 # 15.07.2013: Added save GUI settings.
-# 04.06.2013: Fixed bug in 'missingCol'.
 
 #' @title Plot Drop-out Events
 #'
@@ -54,6 +54,10 @@
 #' @importFrom scales pretty_breaks
 #' @importFrom utils help str
 #' @importFrom grDevices rgb
+#' @importFrom ggplot2 ggplot aes_string geom_tile scale_fill_manual guides
+#'  guide_legend theme element_text labs ylab xlab scale_y_discrete scale_x_discrete
+#'  stat_ecdf scale_colour_discrete scale_x_continuous scale_y_continuous
+#'  coord_cartesian geom_point position_jitter scale_colour_manual
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 

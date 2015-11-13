@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -29,6 +30,8 @@
 #' @export
 #' 
 #' @importFrom utils help
+#' @importFrom ggplot2 ggplot geom_rect aes_string geom_text scale_fill_manual
+#'  scale_y_reverse theme element_blank labs element_text
 #' 
 
 plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){

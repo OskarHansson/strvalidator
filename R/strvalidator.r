@@ -104,12 +104,12 @@
 #' Validation Guidelines for Forensic DNA Analysis Methods (2012)
 #' \url{http://swgdam.org/SWGDAM_Validation_Guidelines_APPROVED_Dec_2012.pdf}
 #' 
-#' @import ggplot2
+# @import ggplot2
 #' @import gWidgets
 #' @import gWidgetsRGtk2
 #' @import RGtk2
 # @import data.table
-#' @import gridExtra
+# @import gridExtra
 #' @importFrom utils packageVersion help object.size
 #' @importFrom graphics title
 #' 

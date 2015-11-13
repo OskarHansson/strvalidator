@@ -7,6 +7,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom gridExtra arrangeGrob, and ggplot2.
+# 11.11.2015: Added more themes.
 # 08.11.2015: Added new plot options 'Hb vs. Marker' and 'Lb vs. Marker'.
 # 08.11.2015: Added options to plot all data 'Facet per marker and wrap by dye'. 
 # 29.08.2015: Added importFrom.
@@ -26,7 +28,6 @@
 # 23.02.2014: Fixed shape for 'complex' plots.
 # 20.01.2014: Implemented ggsave with workaround for 'complex' plots.
 # 18.12.2013: New plot option 'Hb by Delta' + better handling of titles.
-# 02.12.2013: Fixed 'val_palette' to get 'R.Color'.
 
 #' @title Plot Balance
 #'
@@ -50,11 +51,14 @@
 #' 
 #' @importFrom utils help str
 #' @importFrom stats as.formula
-# @importFrom gridExtra arrangeGrob
+#' @importFrom gridExtra arrangeGrob
 #' @importFrom grid unit textGrob grid.newpage grid.draw
 # @importFrom gtable gtable_add_grob gtable
 #' @importFrom plyr rbind.fill
 #' @importFrom  data.table data.table
+#' @importFrom ggplot2 ggplot aes_string geom_boxplot geom_point position_jitter
+#'  facet_grid facet_wrap scale_colour_manual coord_cartesian guides guide_legend
+#'  theme element_text labs xlab ylab element_blank ggplotGrob
 #' 
 #' @return TRUE
 #' 
@@ -220,8 +224,10 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
 
   f1g2 <- glayout(container = f1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items=c("theme_grey()","theme_bw()"),
-                                         selected=1,
+  items_theme <- c("theme_grey()","theme_bw()","theme_dark()",
+                   "theme_minimal()","theme_void()")
+  f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+                                         selected = 1,
                                          container = f1g2)
 
   f1_drop_chk <- gcheckbox(text="Drop sex markers", checked=TRUE, container=f1)

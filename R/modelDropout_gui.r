@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 19.08.2015: Added more information to the description.
 # 18.06.2015: Rounded printed probabilities to three decimals.
@@ -25,7 +26,6 @@
 # 13.11.2013: Implemented 'Hosmer-Lemeshow test'.
 # 13.11.2013: Nicer code for multiple input choices to model + bug in limit x/y.
 # 06.11.2013: Fixed prediction interval for log.
-# 05.11.2013: Fixed limit x/y axis drop observations.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -129,7 +129,10 @@
 #' @importFrom utils help str head
 #' @importFrom grDevices palette
 #' @importFrom stats glm binomial fitted predict plogis qnorm
-#' 
+#' @importFrom ggplot2 ggplot aes_string geom_line geom_point position_jitter
+#'  geom_ribbon geom_segment geom_text coord_cartesian theme element_text labs
+#'  xlab ylab
+#'  
 #' @seealso \code{\link{calculateDropout}}, \code{\link{plotDropout_gui}}
 
 modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){

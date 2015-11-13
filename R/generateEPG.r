@@ -10,6 +10,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 31.05.2015: Added 'numbered=TRUE' to 'slim' function.
 # 10.02.2015: Changed error message.
@@ -54,6 +55,9 @@
 #' 
 #' @importFrom utils str head tail flush.console
 #' @importFrom stats as.formula
+#' @importFrom ggplot2 geom_polygon ggplot aes_string scale_fill_manual
+#' geom_boxplot scale_colour_manual geom_rect geom_text scale_y_continuous
+#' facet_grid facet_wrap coord_cartesian theme element_blank labs xlab ylab
 #' 
 
 generateEPG <- function(data, kit, title=NULL, peaks=TRUE, type="profile",

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 28.06.2015: Changed confidence interval level to match one-sided critical t-value.
 # 01.06.2015: First version.
@@ -27,6 +28,8 @@
 #' @export
 #' 
 #' @importFrom utils help str
+#' @importFrom ggplot2 stat_smooth geom_abline xlim ggplot aes_string geom_point
+#' position_jitter coord_cartesian theme element_text labs xlab ylab
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 

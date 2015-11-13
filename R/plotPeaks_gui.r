@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -33,6 +34,8 @@
 #' 
 #' @importFrom plyr count
 #' @importFrom utils help str
+#' @importFrom ggplot2 ggplot aes_string theme_grey geom_bar scale_fill_brewer
+#'  labs geom_text theme
 #' 
 
 plotPeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){

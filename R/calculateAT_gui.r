@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.11.2015: Added importFrom ggplot2.
 # 21.10.2015: Added attributes.
 # 28.08.2015: Added importFrom
 # 18.08.2015: Changed label for AT4 option.
@@ -33,6 +34,8 @@
 #' 
 #' @importFrom utils help head str
 #' @importFrom graphics title
+#' @importFrom ggplot2 ggtitle scale_shape_discrete ggplot facet_wrap geom_point
+#'  aes_string scale_colour_manual geom_rect
 #' 
 #' @seealso \code{\link{calculateAT}}, \code{\link{blockAT}},
 #'  \code{\link{checkSubset}}
