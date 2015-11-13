@@ -1,3 +1,12 @@
+Version 1.5.2.9003
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - import
+  "0" now handled as NA.
+  - calculateBalance / calculateBalance_gui
+  Added option to calculate Hb by LMW/HMW, and updated test-calculateBalance accordingly.
+* Removed global variables for ggplot2 in 'globals.R', added importFrom in functions.
+
 Version 1.5.2.9002
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

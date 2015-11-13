@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.11.2015: Added option to calculate Hb as LMW/HMW.
 # 12.10.2015: Added attributes.
 # 28.08.2015: Added importFrom.
 # 17.08.2015: Changed erroneus description for parameter 'hb'  to 'hb=2; Max2(Ph)/Max1(Ph)'.
@@ -24,7 +25,6 @@
 # 20.04.2013: Lb can be calculated per dye channel with no missing markers.
 # 20.04.2013: Changes max/min to max1/max2 so can handle unfiltered data.
 # 20.04.2013: If ref=NULL use guess 'ref' from 'data' and issue a warning.
-# 20.04.2013: Fixed bug for homozygous: min/2 to max/2.
 
 #' @title Calculate Balance
 #'
@@ -38,7 +38,6 @@
 #' Be careful to not have actual alleles marked as 'OL' in dataset.
 #' It will lead to underestimation of the total peak height per locus/sample.
 #' Also calculates the allele size difference between heterozygous alleles.
-#' Takes 'slimmed' data for samples and references as input.
 #' NB! Requires at least one row for each marker per sample, even if no data.
 #' NB! 'X' and 'Y' will be handled as '1' and '2' respectively.
 #' 
@@ -50,7 +49,8 @@
 #' 'norm' locus balance is normalised in relation to the locus with the highest total peakheight.
 #' @param per.dye logical, default is TRUE and locus balance is calculated within each dye.
 #'  FALSE locus balance is calculated globally across all dyes.
-#' @param hb numerical, definition of heterozygous balance. hb=1; HMW/LMW, hb=2; Max2(Ph)/Max1(Ph).
+#' @param hb numerical, definition of heterozygous balance. Default is hb=1. 
+#'  hb=1: HMW/LMW, hb=2: LMW/HMW, hb=3; Max2(Ph)/Max1(Ph).
 #' @param ignore.case logical indicating if sample matching should ignore case.
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param debug logical indicating printing debug information.
@@ -352,8 +352,24 @@ calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
               }
               
             }
-            
+
           } else if(hb == 2){
+            # Low molecular weight over high molecular weigt.
+            
+            if(!is.na(allele1) && !is.na(allele2)){
+              
+              if(as.numeric(allele1) > as.numeric(allele2)){
+                nominator <- max2
+                denominator <- max1
+              } else {
+                nominator <- max1
+                denominator <- max2
+              }
+              
+            }
+              
+              
+          } else if(hb == 3){
           # Highest peak over second highest peak.
             
             nominator <- max2
@@ -362,9 +378,8 @@ calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
           } else {
           # Not supported.
             
-            nominator <- NA
-            denominator <- NA
-            
+            stop(paste("hb =", hb, "not implemented!"))
+
           }
           
           # Heterozygote balance.

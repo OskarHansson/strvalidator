@@ -6,6 +6,7 @@ context("tableBalance")
 
 ################################################################################
 # CHANGE LOG
+# 13.11.2015: Updated hb=2 to hb=3 in to correspond to new implemented method in calculateBalance.
 # 07.05.2014: First version.
 # 
 # 
@@ -23,7 +24,7 @@ test_that("tableBalance", {
   
   # Analyse dataframe.
   tmp <- calculateBalance(data=set2, ref=ref2, lb="prop",
-                          per.dye=TRUE, hb=2,
+                          per.dye=TRUE, hb=3,
                           ignore.case=TRUE)
   
   res <- tableBalance(data=tmp, scope="locus", quant=0.05)
@@ -166,7 +167,7 @@ test_that("tableBalance", {
   
   # Analyse dataframe.
   tmp <- calculateBalance(data=set2, ref=ref2, lb="prop",
-                          per.dye=TRUE, hb=2,
+                          per.dye=TRUE, hb=3,
                           ignore.case=TRUE)
   
   res <- tableBalance(data=tmp, scope="global", quant=0.10)

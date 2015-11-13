@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.11.2015: Added option to calculate Hb as LMW / HMW.
 # 08.11.2015: Added automatic calculation of average peak height 'H'.
 # 21.10.2015: Added attributes.
 # 28.08.2015: Added importFrom
@@ -23,7 +24,6 @@
 # 09.09.2013: Added option 'hb' to specify the definition of Hb.
 # 26.07.2013: Removed parameters 'minHeight', 'maxHeight', 'matchSource' and related code.
 # 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
-# 18.07.2013: Check before overwrite object (new function).
 
 #' @title Calculate Balance
 #'
@@ -277,9 +277,11 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
 
   f1g1 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
   glabel(text="Calculate balance using:", anchor=c(-1 ,0), container=f1g1)
-  f1_methods <- c("High molecular weight / low molecular weight", "Smaller peak / larger peak")
+  f1_methods <- c("High molecular weight / low molecular weight",
+                  "Low molecular weight / high molecular weight",
+                  "Smaller peak / larger peak")
   f1_method_drp <- gdroplist(items=f1_methods,
-                             selected = 2,
+                             selected = 1,
                              expand = FALSE,
                              container = f1g1)
   
