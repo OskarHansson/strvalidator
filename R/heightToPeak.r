@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: Handle factors...
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG
+# 30.11.2015: More efficient implementation. Added attributes.
 # 29.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 09.12.2014: Moved from PCRsim.
@@ -26,18 +27,22 @@
 #' 
 #' @export
 #' 
-#' @importFrom utils str flush.console
+#' @importFrom utils str
 #' 
 #' @keywords internal
 
 heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
   
-  # Debug info.
   if(debug){
-    print("ENTER: heightToPeak")
+    print(paste("IN:", match.call()[[1]]))
     print("data:")
-    print(data)
     print(str(data))
+    print(head(data))
+    print(tail(data))
+    print("width:")
+    print(width)
+    print("keep.na:")
+    print(keep.na)
   }
   
   # CHECK ARGUMENTS -----------------------------------------------------------
@@ -84,49 +89,41 @@ heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
     data$Height[is.na(data$Height)] <- 0
   }
   
-  # Create an empty data frame 3 times the length of 'data'.
-  newData <- data.frame(matrix(NA,nrow(data)*3,ncol(data)))
+  # Calculate coordinates for plotting peaks ----------------------------------
   
-  # Add column names.
-  names(newData) <- names(data)
+  # Size should be: [size-x], [size], [size+x].
+  nb <- length(data$Size)
+  vsize <- vector(mode = "numeric", length = nb * 3)
+  vsize[seq(1, nb * 3, 3)] <- data$Size - width/2
+  vsize[seq(2, nb * 3, 3)] <- data$Size
+  vsize[seq(3, nb * 3, 3)] <- data$Size + width/2
   
-  # Initiate row counter.
-  r <- 1
+  # Height should be: 0, [height], 0.
+  vheight <- vector(mode = "numeric", length = nb * 3)
+  vheight[seq(1, nb * 3, 3)] <- 0
+  vheight[seq(2, nb * 3, 3)] <- data$Height
+  vheight[seq(3, nb * 3, 3)] <- 0
   
-  # Do not enter loop if no rows.
-  if(nrow(data) > 0){
-    
-    # Loop through the data frame.
-    for(i in 1:nrow(data)){
-      
-      # Copy data and change value of x1 and y1.
-      newData[r,] <- data[i,]
-      newData$Size[r] <- newData$Size[r] - width/2
-      newData$Height[r] <- 0
-      r <- r + 1
-      
-      # Copy data for x2 and y2.
-      newData[r,] <- data[i,]
-      r <- r + 1
-      
-      # Copy data and change value of x3 and y3.
-      newData[r,] <- data[i,]
-      newData$Size[r] <- newData$Size[r] + width/2
-      newData$Height[r] <- 0
-      r <- r + 1
-      
-    }
-  }
+  # Stretch data frame 3 times (repeat each row).
+  data <- data[rep(seq_len(nrow(data)), each=3),]
+
+  # Add new data.  
+  data$Size <- vsize
+  data$Height <- vheight
   
-  # Debug info.
+  # Add attributes to result.
+  attr(data, which="heightToPeak, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(data, which="heightToPeak, call") <- match.call()
+  attr(data, which="heightToPeak, date") <- date()
+  
   if(debug){
-    print("EXIT: heightToPeak")
-    print("newData:")
-    print(newData)
-    print(str(newData))
-    flush.console()
+    print(paste("EXIT:", match.call()[[1]]))
+    print("data:")
+    print(str(data))
+    print(head(data))
+    print(tail(data))
   }
-  
-  return(newData)
+
+  return(data)
   
 }
