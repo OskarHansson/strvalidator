@@ -5,7 +5,7 @@
 \title{Adds New Data Columns to a Data Frame}
 \usage{
 addData(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
-  ignore.case = TRUE, debug = FALSE)
+  ignore.case = TRUE, what = NULL, debug = FALSE)
 }
 \arguments{
 \item{data}{Data frame containing your main data.}
@@ -19,6 +19,8 @@ addData(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
 \item{exact}{logical, TRUE matches keys exact.}
 
 \item{ignore.case}{logical, TRUE ignore case.}
+
+\item{what}{character vector defining columns to add. Default is all new columns.}
 
 \item{debug}{logical indicating printing debug information.}
 }

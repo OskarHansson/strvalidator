@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Option to overwrite columns if they exists.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 30.11.2015: Added attributes to result.
+# 30.11.2015: Added new option for columns to add.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -178,6 +180,9 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
         
       f1_key2_drp[] <- c(.gDefaultDrp,
                         intersect(.gDataDestColumns,.gDataSourceColumns))
+      
+      f1_col_drp[] <- c(.gDefaultDrp, .gDataSourceColumns)
+      
     } else {
       
       .gDataSource <<- NULL
@@ -185,6 +190,7 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       svalue(g0_ref_lbl) <- " 0 samples"
       f1_key_drp[] <- .gDefaultDrp
       f1_key2_drp[] <- .gDefaultDrp
+      f1_col_drp[] <- .gDefaultDrp
       
     }
     
@@ -217,6 +223,15 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                           editable = FALSE,
                           container = f1)
 
+  glabel(text="Select columns to add to the new dataset:", container = f1, anchor=c(-1 ,0))
+  f1_col_drp <- gdroplist(items=.gDefaultDrp,
+                           selected = 1,
+                           editable = FALSE,
+                           container = f1)
+
+  f1_col_edt <- gedit(text="", initial.msg="Default is all columns",
+                      container = f1)
+  
   # HANDLERS ------------------------------------------------------------------
   
   addHandlerChanged(f1_exact_chk, handler = function (h, ...) {
@@ -231,6 +246,21 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     
   } )  
 
+  addHandlerChanged(f1_col_drp, handler = function (h, ...) {
+    
+    val_drp <- svalue(f1_col_drp)
+    val_edt <- svalue(f1_col_edt)
+    
+    if(!is.null(val_drp) && val_drp!=.gDefaultDrp){
+      if(nchar(val_edt)==0){
+        svalue(f1_col_edt) <- val_drp
+      } else {
+        svalue(f1_col_edt) <- paste(val_edt, val_drp, sep=",")
+      }
+    }
+    
+  } )  
+  
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as",
@@ -251,17 +281,37 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   addHandlerChanged(add_btn, handler = function(h, ...) {
     
+    # Get values.
+    val_destination <- svalue(dataset_drp)
+    val_source <- svalue(refset_drp)
     val_exact <- svalue(f1_exact_chk)
     val_key <- svalue(f1_key_drp)
     val_key2 <- svalue(f1_key2_drp)
-    val_name <- svalue(f2_save_edt)
+    val_what <- svalue(f1_col_edt)
     val_ignore <- svalue(f1_ignore_chk)
+    val_name <- svalue(f2_save_edt)
     
+    # Check if default.
     if(val_key == .gDefaultDrp){
       val_key <- NULL
     }
     if(val_key2 == .gDefaultDrp){
       val_key2 <- NULL
+    }
+
+    # Prepare columns to add.    
+    if(nchar(val_what)==0){
+    
+      # Default is all columns.
+      val_what <- NULL
+      
+    } else {
+      
+      # Create vector of column names to add.
+      delimeters <- ",|, | |;|; |:|: "
+      val_what <- strsplit(x = val_what, split = delimeters, fixed = FALSE)
+      val_what <- unlist(val_what)
+      
     }
     
     if(debug){
@@ -271,6 +321,8 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       print(val_key)
       print("val_key2")
       print(val_key2)
+      print("val_what")
+      print(val_what)
       print("val_name")
       print(val_name)
       print("val_ignore")
@@ -289,8 +341,18 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                          exact=val_exact,
                          by.col=val_key,
                          then.by.col=val_key2,
+                         what=val_what,
                          ignore.case=val_ignore)
       
+      # Add attributes.
+      attr(datanew, which="addData_gui, data") <- val_destination
+      attr(datanew, which="addData_gui, new.data") <- val_source
+      attr(datanew, which="addData_gui, exact") <- val_exact
+      attr(datanew, which="addData_gui, by.col") <- val_key
+      attr(datanew, which="addData_gui, then.by.col") <- val_key2
+      attr(datanew, which="addData_gui, what") <- val_what
+      attr(datanew, which="addData_gui, ignore.case") <- val_ignore
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       
