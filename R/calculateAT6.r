@@ -7,6 +7,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 30.11.2015: Added 'NB!' in the description.
+# 30.11.2015: Remove rows with NA. Added 'what' parameter to 'addData'.
+# 24.11.2015: Added message to print data to be used in regression.
 # 28.08.2015: Added importFrom
 # 20.08.2015: Now use 'sigma' instead of 'standard error of the intercept'.
 # 26.06.2015: Changed to a one-sided critical t-value (alpha/2 -> alpha).
@@ -31,6 +34,15 @@
 #' Assumes the y-intercept is not different from the mean blank signal.
 #' The mean blank signal should be included in the confidence range
 #' ('Lower' to 'AT6' in the resulting data frame).
+#' NB! This is an indirect method to estimate AT and should be verified
+#' by other methods. From the reference: A way to determine the validity
+#' of this approach is based on whether the y-intercept +- (1-a)100%
+#' contains the mean blank signal. If the mean blank signal is included
+#' in the y-intercept band, the following relationship [i.e. AT6] can be used
+#' to determine the AT. However, it should be noted that the ATs derived in
+#' this manner need to be calculated for each color and for all preparations
+#' (i.e., different injections, sample preparation volumes, post-PCR cleanup,
+#' etc.).
 #' 
 #' @param data data.frame containing at least columns 'Sample.Name', 'Marker',
 #'  'Allele', and 'Height'.
@@ -167,13 +179,15 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
   # Add heterozygous indicator to ref.
   if(!"Heterozygous" %in% names(ref)){
     ref <- calculateHeterozygous(data=ref, debug=debug)
+    message("Heterozygous indicator added to 'ref'.")
   }
   
   # Add heterozygous indicator to data.
   if(!"Heterozygous" %in% names(data)){
     data <- addData(data=data, new.data=ref, by.col="Sample.Name",
-                    then.by.col="Marker", exact=FALSE,
-                    ignore.case=ignore.case, debug=debug)
+                    then.by.col="Marker", exact=FALSE, ignore.case=ignore.case,
+                    what="Heterozygous", debug=debug)
+    message("Heterozygous indicator added to 'data'.")
   }
 
   # Calculate the average peak height.
@@ -182,24 +196,37 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
   # Add amount to data.
   if(is.null(amount)){
     dfHeight <- addData(data=dfHeight, new.data=data, by.col="Sample.Name",
-                        then.by.col=NULL, exact=TRUE,
-                        ignore.case=ignore.case, debug=debug)
+                        then.by.col=NULL, exact=TRUE, ignore.case=ignore.case,
+                        what="Amount", debug=debug)
+    message("Amount added to 'data'.")
   } else {
     dfHeight <- addData(data=dfHeight, new.data=amount, by.col="Sample.Name",
-                        then.by.col=NULL, exact=TRUE,
-                        ignore.case=ignore.case, debug=debug)
+                        then.by.col=NULL, exact=TRUE, ignore.case=ignore.case,
+                        what="Amount", debug=debug)
+    message("Amount added to 'data'.")
   }
+  
+  message("Processed data to be used in regression:")
+  print(dfHeight)
   
   # Convert -------------------------------------------------------------------
 
   # Convert to numeric.
   if(!is.numeric(dfHeight$H)){
     dfHeight$H <-  as.numeric(dfHeight$H)
+    message("'H' must be numeric. 'data' converted!")
   }
   
   # Convert to numeric.
   if(!is.numeric(dfHeight$Amount)){
     dfHeight$Amount <-  as.numeric(dfHeight$Amount)
+    message("'Amount' must be numeric. 'data' converted!")
+  }
+
+  # Remove NA rows.  
+  if(any(is.na(dfHeight$Amount))){
+    dfHeight <- dfHeight[!is.na(dfHeight$Amount), ]
+    message("Removed rows where Amount=NA.")
   }
 
   # Analyse -------------------------------------------------------------------

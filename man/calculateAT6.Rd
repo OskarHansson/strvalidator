@@ -43,6 +43,15 @@ AT6 = y-intercept + t-statistic * standard error of the regression.
 Assumes the y-intercept is not different from the mean blank signal.
 The mean blank signal should be included in the confidence range
 ('Lower' to 'AT6' in the resulting data frame).
+NB! This is an indirect method to estimate AT and should be verified
+by other methods. From the reference: A way to determine the validity
+of this approach is based on whether the y-intercept +- (1-a)100%
+contains the mean blank signal. If the mean blank signal is included
+in the y-intercept band, the following relationship [i.e. AT6] can be used
+to determine the AT. However, it should be noted that the ATs derived in
+this manner need to be calculated for each color and for all preparations
+(i.e., different injections, sample preparation volumes, post-PCR cleanup,
+etc.).
 }
 \references{
 J. Bregu et.al.,
