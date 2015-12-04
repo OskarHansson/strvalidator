@@ -7,10 +7,15 @@ Version 1.5.2.9003
   Added option to calculate Hb by LMW/HMW, and updated test-calculateBalance accordingly.
   - addData / addData_gui
   New parameter to specify columns to add.
+  - heightToPeak
+  Improved implementation.
+  - checkSubset_gui
+  'Marker' is no longer a required column.
 * Removed global variables for ggplot2 in 'globals.R', added importFrom in functions.
 * Added attributes for the following functions:
   addData
   addData_gui
+  heightToPeak
 
 Version 1.5.2.9002
 ------------------------------------------------------------------------------
