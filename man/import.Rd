@@ -8,7 +8,8 @@ import(folder = TRUE, extension = "txt", suffix = NA, prefix = NA,
   import.file = NA, folder.name = NA, file.name = TRUE,
   time.stamp = TRUE, separator = "\\t", ignore.case = TRUE,
   auto.trim = FALSE, trim.samples = NULL, trim.invert = FALSE,
-  auto.slim = FALSE, slim.na = TRUE, debug = FALSE)
+  auto.slim = FALSE, slim.na = TRUE, na.strings = c("NA", "", "0"),
+  debug = FALSE)
 }
 \arguments{
 \item{folder}{logical, TRUE all files in folder will be imported,
@@ -49,6 +50,8 @@ removed (FALSE).}
 \item{auto.slim}{logical indicating if dataset should be slimmed.}
 
 \item{slim.na}{logical indicating if rows without data should remain.}
+
+\item{na.strings}{character vector with strings to be replaced by NA.}
 
 \item{debug}{logical indicating printing debug information.}
 }

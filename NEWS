@@ -1,8 +1,9 @@
 Version 1.5.2.9003
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:
-  - import
-  "0" now handled as NA.
+  - import / import_gui
+  "0" now handled as NA by default.
+  New parameter 'na.strings' to specify what gets converted to NA.
   - calculateBalance / calculateBalance_gui
   Added option to calculate Hb by LMW/HMW, and updated test-calculateBalance accordingly.
   - addData / addData_gui

@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.12.2015: Implemented new parameter 'na.strings'.
 # 05.10.2015: Added attributes.
 # 29.08.2015: Added importFrom.
 # 23.05.2015: Added new options available in 'import'.
@@ -149,6 +150,9 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   opt_sep_drp <- gdroplist(items=c("TAB","SPACE","COMMA","SEMICOLON"),
                            selected=1, editable=FALSE, container=opt_frm)
   
+  glabel(text="NA strings:", container=opt_frm, anchor=c(-1 ,0))
+  opt_na_edt <- gedit(text="NA,,0", container=opt_frm)
+
   opt_trim_chk <- gcheckbox(text="Auto trim samples", checked = FALSE,
                             container=opt_frm)
   
@@ -240,6 +244,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
     get_file_val <- svalue(opt_file_chk)
     get_time_val <- svalue(opt_time_chk)
     del_val <- svalue(opt_sep_drp, index=TRUE)
+    na_val <- svalue(opt_na_edt)
     trim_val <- svalue(opt_trim_chk)
     trim_what_val <- svalue(trim_samples_edt)
     trim_invert_val <- svalue(trim_invert_chk)
@@ -257,8 +262,12 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       val_delimiter <- ";"
     } 
     
+    # Convert to character vector.
+    val_na <- unlist(strsplit(na_val,","))
+
+    # Initiate variable.  
     ok <- TRUE
-    
+
     # Check that a name has been provided for the new data object.
     if(nchar(val_name) == 0){
       
@@ -320,6 +329,10 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
         print(get_time_val)
         print("del_val")
         print(del_val)
+        print("na_val")
+        print(na_val)
+        print("val_na")
+        print(val_na)
         print("trim_val")
         print(trim_val)
         print("trim_what_val")
@@ -352,6 +365,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
                         trim.invert=trim_invert_val,
                         auto.slim=slim_val,
                         slim.na=slim_fix_val,
+                        na.strings=val_na,
                         debug=debug)
       
       if(length(datanew) == 0){
@@ -384,7 +398,9 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
         attr(datanew, which="import_gui, trim.invert") <- trim_invert_val
         attr(datanew, which="import_gui, auto.slim") <- slim_val
         attr(datanew, which="import_gui, slim.na") <- slim_fix_val
-
+        attr(datanew, which="import_gui, separator") <- val_delimiter
+        attr(datanew, which="import_gui, na.strings") <- val_na
+        
         # Save data.
         saveObject(name=val_name, object=datanew, parent=w, env=env)
         
@@ -469,6 +485,9 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       if(exists(".strvalidator_import_gui_sep", envir=env, inherits = FALSE)){
         svalue(opt_sep_drp) <- get(".strvalidator_import_gui_sep", envir=env)
       }
+      if(exists(".strvalidator_import_gui_na", envir=env, inherits = FALSE)){
+        svalue(opt_na_edt) <- get(".strvalidator_import_gui_na", envir=env)
+      }
       if(exists(".strvalidator_import_gui_ignore", envir=env, inherits = FALSE)){
         svalue(multi_case_chk) <- get(".strvalidator_import_gui_ignore", envir=env)
       }
@@ -513,6 +532,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       assign(x=".strvalidator_import_gui_file", value=svalue(opt_file_chk), envir=env)
       assign(x=".strvalidator_import_gui_time", value=svalue(opt_time_chk), envir=env)
       assign(x=".strvalidator_import_gui_sep", value=svalue(opt_sep_drp), envir=env)
+      assign(x=".strvalidator_import_gui_na", value=svalue(opt_na_edt), envir=env)
       assign(x=".strvalidator_import_gui_ignore", value=svalue(multi_case_chk), envir=env)
       assign(x=".strvalidator_import_gui_prefix", value=svalue(multi_pre_edt), envir=env)
       assign(x=".strvalidator_import_gui_suffix", value=svalue(multi_suf_edt), envir=env)
@@ -539,6 +559,9 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       }
       if(exists(".strvalidator_import_gui_sep", envir=env, inherits = FALSE)){
         remove(".strvalidator_import_gui_sep", envir = env)
+      }
+      if(exists(".strvalidator_import_gui_na", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_na", envir = env)
       }
       if(exists(".strvalidator_import_gui_ignore", envir=env, inherits = FALSE)){
         remove(".strvalidator_import_gui_ignore", envir = env)

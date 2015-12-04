@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.12.2015: Added parameter 'na.strings'.
 # 09.11.2015: Added "0" to 'na.strings' in 'read.table'.
 # 06.10.2015: Added call to 'colConvert' to convert known numeric columns.
 # 05.10.2015: Added attributes.
@@ -25,7 +26,6 @@
 # 12.11.2013: Changed 'rbind' to 'rbind.fill' from package 'plyr'.
 # 13.06.2013: Added parameter 'debug'. Fixed regexbug when importing from folder.
 # <13.06.2013: Renamed from importGM to import.
-# <13.06.2013: Added parameter 'file.name' and 'folder.name' for direct import.
 
 #' @title Import Data
 #'
@@ -65,6 +65,7 @@
 #'  removed (FALSE).
 #' @param auto.slim logical indicating if dataset should be slimmed.
 #' @param slim.na logical indicating if rows without data should remain.
+#' @param na.strings character vector with strings to be replaced by NA.
 #' @param debug logical indicating printing debug information.
 #' 
 #' 
@@ -88,6 +89,7 @@ import <- function (folder = TRUE, extension="txt",
                     auto.trim = FALSE, trim.samples = NULL,
                     trim.invert = FALSE,
                     auto.slim = FALSE, slim.na = TRUE,
+                    na.strings = c("NA","","0"),
                     debug = FALSE){
   
   if(debug){
@@ -199,7 +201,7 @@ import <- function (folder = TRUE, extension="txt",
       # Read a file.  
       tmpdf <- read.table(import.file[f], header = TRUE,
                           sep = separator, fill = TRUE,
-                          na.strings = c("NA","","0"),
+                          na.strings = na.strings,
                           colClasses = "character",
                           stringsAsFactors=FALSE)
       
