@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.12.2015: Implemented option to type a reference sample name.
+# 15.12.2015: Implemented 'exact' option.
 # 04.12.2015: Removed 'Marker' from required columns.
 # 28.08.2015: Added importFrom.
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
@@ -150,6 +152,11 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   f0g1[2,3] <- dataset_ref_lbl <- glabel(text=" 0 reference samples",
                                               container=f0g1)
+
+  
+  f0g1[3,1] <- glabel(text="Or type a reference name:", container=f0g1)
+  
+  f0g1[3,2] <- dataset_ref_edt <- gedit(container = f0g1)
   
   addHandlerChanged(dataset_ref_drp, handler = function (h, ...) {
     
@@ -191,7 +198,11 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   f1_word_chk <- gcheckbox(text="Add word boundaries ('A' will match 'A', 'B-A.2', and 'A 2' but not 'A2')",
                                   checked = FALSE,
                                   container = f1)
-
+  
+  f1_exact_chk <- gcheckbox(text="Exact matching ('A' will match 'A' but not 'B-A.2', 'A 2', or 'A2')",
+                           checked = FALSE,
+                           container = f1)
+  
   # BUTTON ####################################################################
 
   if(debug){
@@ -207,11 +218,18 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
+    val_ref_name <- svalue(dataset_ref_edt)
     val_ignore <- svalue(f1_ignore_case_chk)
     val_word <- svalue(f1_word_chk)
+    val_exact <- svalue(f1_exact_chk)
     
-    
-    if (!is.null(.gData) || !is.null(.gRef)){
+    if(is.null(.gRef)){
+      # If no reference dataset use given name.
+      val_ref <- val_ref_name
+    }
+
+    # Check that data is available.
+    if (!is.null(val_data) && !is.null(val_ref)){
       
       chksubset_w <- gwindow(title = "Check subsetting",
                              visible = FALSE, name=title,
@@ -222,6 +240,7 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                                    ref=val_ref,
                                    ignore.case=val_ignore,
                                    word=val_word,
+                                   exact=val_exact,
                                    console=FALSE)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
@@ -232,7 +251,7 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     } else {
       
       gmessage(message="Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
+               Make sure to select a dataset and a reference set or type a reference name",
                title="Error",
                icon = "error")      
       
@@ -269,8 +288,11 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_checkSubset_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_case_chk) <- get(".strvalidator_checkSubset_gui_ignore", envir=env)
       }
-      if(exists(".strvalidator_checkSubset_gui_fixed", envir=env, inherits = FALSE)){
-        svalue(f1_word_chk) <- get(".strvalidator_checkSubset_gui_fixed", envir=env)
+      if(exists(".strvalidator_checkSubset_gui_word", envir=env, inherits = FALSE)){
+        svalue(f1_word_chk) <- get(".strvalidator_checkSubset_gui_word", envir=env)
+      }
+      if(exists(".strvalidator_checkSubset_gui_exact", envir=env, inherits = FALSE)){
+        svalue(f1_exact_chk) <- get(".strvalidator_checkSubset_gui_exact", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -286,7 +308,8 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       
       assign(x=".strvalidator_checkSubset_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_checkSubset_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
-      assign(x=".strvalidator_checkSubset_gui_fixed", value=svalue(f1_word_chk), envir=env)
+      assign(x=".strvalidator_checkSubset_gui_word", value=svalue(f1_word_chk), envir=env)
+      assign(x=".strvalidator_checkSubset_gui_exact", value=svalue(f1_word_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -296,8 +319,11 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_checkSubset_gui_ignore", envir=env, inherits = FALSE)){
         remove(".strvalidator_checkSubset_gui_ignore", envir = env)
       }
-      if(exists(".strvalidator_checkSubset_gui_fixed", envir=env, inherits = FALSE)){
-        remove(".strvalidator_checkSubset_gui_fixed", envir = env)
+      if(exists(".strvalidator_checkSubset_gui_word", envir=env, inherits = FALSE)){
+        remove(".strvalidator_checkSubset_gui_word", envir = env)
+      }
+      if(exists(".strvalidator_checkSubset_gui_exact", envir=env, inherits = FALSE)){
+        remove(".strvalidator_checkSubset_gui_exact", envir = env)
       }
       
       if(debug){
