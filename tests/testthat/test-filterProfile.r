@@ -6,10 +6,12 @@ context("filterProfile")
 
 ################################################################################
 # CHANGE LOG
+# 15.12.2015: Added test 10-12 to test new option 'exact'.
 # 09.04.2015: Added test 09 to test new option 'invert'.
 # 22.01.2014: Fixed test 2 in accordance with change in 'filterProfile'.
 # 20.01.2014: All tests working.
 # 
+# require(testthat)
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-filterProfile.r")
 # test_dir("tests/testthat")
@@ -55,7 +57,13 @@ test_that("filterProfile", {
   ref8 <- slim(ref1, fix=c("Sample.Name", "Marker"), stack=c("Allele"))
   ref8 <- ref8[,c("Marker","Allele")]
   
-  
+  # Dataset testing exact matching.
+  # 'PC1' is in 'NOPC15'
+  set9 <- slim(set1, fix=c("Sample.Name", "Marker"), stack=c("Allele", "Height"))
+  set9 <- trim(data = set9, samples = "PC1|ladder")
+  set9[set9$Sample.Name == "Ladder", ]$Sample.Name <- "NOPC15"
+  ref9 <- guessProfile(data = set9, ol.rm = TRUE)
+  ref9$Height <- as.character(ref9$Height) # To enable comparison using 'all.equal'.
   
   # TEST 01 -------------------------------------------------------------------
   # Test that filtering of two 'clean' samples work.
@@ -401,5 +409,149 @@ test_that("filterProfile", {
   expect_false(all(unique(res$Allele[res$Marker=="D12S391"]) %in% c("18","23")))
   expect_false(all(unique(res$Allele[res$Marker=="D19S433"]) %in% c("13","14")))
   expect_false(all(unique(res$Allele[res$Marker=="SE33"]) %in% c("15","16")))
+
+  # TEST 10 -------------------------------------------------------------------
+  # Test that filtering generates incorrect profile in 'fast' mode.
   
+  # Analyse dataframe.
+  res <- filterProfile(data = set9, ref = ref9,
+                       add.missing.loci = FALSE,
+                       keep.na = FALSE,
+                       ignore.case = FALSE,
+                       exact = FALSE,
+                       debug = FALSE)
+  
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true(any(grepl("Sample.Name", names(res))))
+  expect_true(any(grepl("Marker", names(res))))
+  expect_true(any(grepl("Allele", names(res))))
+  expect_true(any(grepl("Height", names(res))))
+
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Height)))
+
+  # Check result.
+  expect_that(ncol(res), equals(4))
+  expect_that(nrow(res), equals(71))
+  
+  # Check if filtered profile equals reference.
+  expect_false(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
+                                     ref9[ref9$Sample.Name == "NOPC15", ],
+                                     check.attributes=FALSE)))
+  
+  # TEST 11 -------------------------------------------------------------------
+  # Test that filtering generates correct profile in 'fast' mode.
+  
+  # Analyse dataframe.
+  res <- filterProfile(data = set9, ref = ref9,
+                       add.missing.loci = FALSE,
+                       keep.na = FALSE,
+                       ignore.case = FALSE,
+                       exact = TRUE,
+                       debug = FALSE)
+  
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true(any(grepl("Sample.Name", names(res))))
+  expect_true(any(grepl("Marker", names(res))))
+  expect_true(any(grepl("Allele", names(res))))
+  expect_true(any(grepl("Height", names(res))))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Height)))
+  
+  # Check result.
+  expect_that(ncol(res), equals(4))
+  expect_that(nrow(res), equals(66))
+  
+  # Check if filtered profile equals reference.
+  expect_true(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
+                                   ref9[ref9$Sample.Name == "NOPC15", ],
+                                   check.attributes=FALSE)))
+
+  # TEST 12 -------------------------------------------------------------------
+  # Test that filtering generates incorrect profile in 'slow' mode.
+  
+  # Analyse dataframe.
+  res <- filterProfile(data = set9, ref = ref9,
+                       add.missing.loci = TRUE,
+                       keep.na = TRUE,
+                       ignore.case = FALSE,
+                       exact = FALSE,
+                       debug = FALSE)
+  
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true(any(grepl("Sample.Name", names(res))))
+  expect_true(any(grepl("Marker", names(res))))
+  expect_true(any(grepl("Allele", names(res))))
+  expect_true(any(grepl("Height", names(res))))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Height)))
+  
+  # Check result.
+  expect_that(ncol(res), equals(4))
+  expect_that(nrow(res), equals(105))
+  
+  # Check if filtered profile equals reference.
+  expect_false(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
+                         ref9[ref9$Sample.Name == "NOPC15", ],
+                         check.attributes = FALSE)))
+
+  # TEST 12 -------------------------------------------------------------------
+  # Test that filtering generates correct profile in 'slow' mode.
+  
+  # Analyse dataframe.
+  res <- filterProfile(data = set9, ref = ref9,
+                       add.missing.loci = TRUE,
+                       keep.na = TRUE,
+                       ignore.case = FALSE,
+                       exact = TRUE,
+                       debug = FALSE)
+  
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true(any(grepl("Sample.Name", names(res))))
+  expect_true(any(grepl("Marker", names(res))))
+  expect_true(any(grepl("Allele", names(res))))
+  expect_true(any(grepl("Height", names(res))))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Height)))
+  
+  # Check result.
+  expect_that(ncol(res), equals(4))
+  expect_that(nrow(res), equals(66))
+  
+  # Check if filtered profile equals reference.
+  expect_true(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
+                                   ref9[ref9$Sample.Name == "NOPC15", ],
+                                   check.attributes = FALSE)))
+
 })

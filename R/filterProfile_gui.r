@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2015: Added attributes to result.
+# 15.12.2015: Added option 'exact' sample name matching.
 # 29.08.2015: Added importFrom.
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 09.04.2015: Added option 'invert' to filter peaks NOT in reference.
@@ -53,6 +55,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   .gData <- NULL
   .gDataName <- NULL
   .gRef <- NULL
+  .gRefName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -179,6 +182,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       
       # Load or change components.
       .gRef <<- get(val_obj, envir=env)
+      .gRefName <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
       svalue(g0_ref_lbl) <- paste("", ref, "references")
         
@@ -205,6 +209,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
     val_data <- .gData
     val_ref <- .gRef
     val_ignore <- svalue(f1_ignore_case_chk)
+    val_exact <- svalue(f1_exact_chk)
     val_word <- FALSE
     
     if (!is.null(.gData) || !is.null(.gRef)){
@@ -218,6 +223,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                                    ref=val_ref,
                                    console=FALSE,
                                    ignore.case=val_ignore,
+                                   exact=exact,
                                    word=val_word)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
@@ -272,6 +278,10 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                            checked = TRUE,
                            container = f1)
   
+  f1_exact_chk <- gcheckbox(text="Exact matching ",
+                                  checked = FALSE,
+                                  container = f1)
+  
   f1_options <- c("Filter by reference dataset",
                   "Filter by kit bins (allelic ladder)")
   
@@ -310,11 +320,14 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   addHandlerChanged(filter_btn, handler = function(h, ...) {
     
     val_data <- .gData
+    val_name_data <- .gDataName
     val_ref <- .gRef
+    val_name_ref <- .gRefName
     val_invert <- svalue(f1_invert_chk)
     val_add_missing_loci <- svalue(f1_add_missing_loci_chk)
     val_keep_na <- svalue(f1_keep_na_chk)
     val_ignore_case <- svalue(f1_ignore_case_chk)
+    val_exact <- svalue(f1_exact_chk)
     val_name <- svalue(f2_save_edt)
     val_filter <- svalue(f1_filter_opt, index=TRUE)
     val_kit <- svalue(g0_kit_drp)
@@ -339,14 +352,24 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       svalue(filter_btn) <- "Processing..."
       enabled(filter_btn) <- FALSE
   
-      datanew <- filterProfile(data=val_data,
-                               ref=val_ref,
-                               add.missing.loci=val_add_missing_loci,
-                               keep.na=val_keep_na,
-                               ignore.case=val_ignore_case,
-                               invert=val_invert,
-                               debug=debug)
-      
+      datanew <- filterProfile(data = val_data,
+                               ref = val_ref,
+                               add.missing.loci = val_add_missing_loci,
+                               keep.na = val_keep_na,
+                               ignore.case = val_ignore_case,
+                               exact = val_exact,
+                               invert = val_invert,
+                               debug = debug)
+
+      # Add attributes.
+      attr(datanew, which="filterProfile_gui, data") <- val_name_data
+      attr(datanew, which="filterProfile_gui, ref") <- val_name_ref
+      attr(datanew, which="filterProfile_gui, add.missing.loci") <- val_add_missing_loci
+      attr(datanew, which="filterProfile_gui, keep.na") <- val_keep_na
+      attr(datanew, which="filterProfile_gui, ignore.case") <- val_ignore_case
+      attr(datanew, which="filterProfile_gui, exact") <- val_exact
+      attr(datanew, which="filterProfile_gui, invert") <- val_invert
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       
@@ -436,6 +459,9 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       if(exists(".strvalidator_filterProfile_gui_ignore_case", envir=env, inherits = FALSE)){
         svalue(f1_ignore_case_chk) <- get(".strvalidator_filterProfile_gui_ignore_case", envir=env)
       }
+      if(exists(".strvalidator_filterProfile_gui_exact", envir=env, inherits = FALSE)){
+        svalue(f1_exact_chk) <- get(".strvalidator_filterProfile_gui_exact", envir=env)
+      }
       if(exists(".strvalidator_filterProfile_gui_by", envir=env, inherits = FALSE)){
         svalue(f1_filter_opt) <- get(".strvalidator_filterProfile_gui_by", envir=env)
       }
@@ -456,6 +482,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       assign(x=".strvalidator_filterProfile_gui_add_loci", value=svalue(f1_add_missing_loci_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_keep_na", value=svalue(f1_keep_na_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_ignore_case", value=svalue(f1_ignore_case_chk), envir=env)
+      assign(x=".strvalidator_filterProfile_gui_exact", value=svalue(f1_exact_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_by", value=svalue(f1_filter_opt), envir=env)
       
     } else { # or remove all saved values if false.
@@ -474,6 +501,9 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       }
       if(exists(".strvalidator_filterProfile_gui_ignore_case", envir=env, inherits = FALSE)){
         remove(".strvalidator_filterProfile_gui_ignore_case", envir = env)
+      }
+      if(exists(".strvalidator_filterProfile_gui_exact", envir=env, inherits = FALSE)){
+        remove(".strvalidator_filterProfile_gui_exact", envir = env)
       }
       if(exists(".strvalidator_filterProfile_gui_by", envir=env, inherits = FALSE)){
         remove(".strvalidator_filterProfile_gui_by", envir = env)

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2015: Added 'exact' option.
 # 27.05.2015: Accepts (the first) column name containing the string 'Sample'
 #             as alternative (case insensitive).
 # 05.05.2015: Added alternative column 'Sample.File.Name'.
@@ -30,13 +31,16 @@
 #' @param console logical, if TRUE result is printed to R console,
 #' if FALSE a string is returned. 
 #' @param ignore.case logical, if TRUE case insesitive matching is used.
-#' @param word logical, if TRUE only exact match.
+#' @param word logical, if TRUE only word matching (regex).
+#' @param exact logical, if TRUE only exact match.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @export
 #' 
+#' @seealso \code{\link{grep}}
 
-checkSubset <- function(data, ref, console=TRUE, ignore.case=TRUE, word=FALSE, debug=FALSE){
+checkSubset <- function(data, ref, console=TRUE, ignore.case=TRUE,
+                        word=FALSE, exact=FALSE, debug=FALSE){
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -86,6 +90,10 @@ checkSubset <- function(data, ref, console=TRUE, ignore.case=TRUE, word=FALSE, d
       cRef <- paste("\\b", cRef, "\\b", sep="")
     }
     
+    if(exact){
+      cRef <- paste("^", cRef, "$", sep="")
+    }
+    
     if(debug){
       print("cRef")
       print(cRef)
@@ -95,11 +103,13 @@ checkSubset <- function(data, ref, console=TRUE, ignore.case=TRUE, word=FALSE, d
       print(ignore.case)
       print("word")
       print(word)
+      print("exact")
+      print(exact)
     }
     
     cSamples <- grep(cRef, samples,
                      value = TRUE, fixed = FALSE, ignore.case = ignore.case)
-    
+      
     res[n] <- paste("Reference name: ", ref.names[n], "\n",
                     "Subsetted samples: ", paste(cSamples, collapse=", "), "\n\n", sep="")
     
