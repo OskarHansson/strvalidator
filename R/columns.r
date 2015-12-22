@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 22.12.2015: Added option to add new column by setting col1=NA.
 # 28.08.2015: Added importFrom.
 # 24.05.2015: First version.
 
@@ -13,13 +14,15 @@
 #' Perform actions on columns.
 #'
 #' @details
-#' Perform actions on columns in a data frame. There are five actions: concatenate,
-#' add, multiply, subtract, divide. The selected action can be
-#' performed on two columns, or one column and a fixed value. A target column
-#' for the result is specified. NB! if the target column already exist it will
-#' be overwritten, else it will be created. A common use is to create a unique 
-#' Sample.Name from the existing Sample.Name column and e.g. the File.Name or File.Time
-#' columns. It can also be used to calculate the Amount from the Concentration.
+#' Perform actions on columns in a data frame. There are five actions:
+#' concatenate, add, multiply, subtract, divide. The selected action can be
+#' performed on two columns, or one column and a fixed value, or a new column
+#' can be added. A target column for the result is specified.
+#' NB! if the target column already exist it will be overwritten,
+#' else it will be created. A common use is to create a unique 
+#' Sample.Name from the existing Sample.Name column and e.g. the File.Name
+#' or File.Time columns. It can also be used to calculate the Amount from
+#' the Concentration.
 #' 
 #' @param data a data frame.
 #' @param col1 character column name to perform action on.
@@ -45,8 +48,10 @@
 #' set2 <- columns(data=set2, col1="Sample.Name", col2="Dye")
 #' # Multiply Height by 4.
 #' set2 <- columns(data=set2, col1="Height", operator="*", fixed=4)
+#' # Add a new column.
+#' set2 <- columns(data=set2, operator="&", fixed="1234", target="Batch")
 
-columns <- function(data, col1, col2=NA, operator="&",
+columns <- function(data, col1=NA, col2=NA, operator="&",
                     fixed=NA, target=NA, debug=FALSE){
 
   if(debug){
@@ -72,12 +77,21 @@ columns <- function(data, col1, col2=NA, operator="&",
     stop("'data' must be of type data.frame",
          call. = TRUE)
   }
-  
-  if(!col1 %in% names(data)){
-    stop("'col1' must be a column in 'data'",
-         call. = TRUE)
-  }
 
+  if(!is.na(col1)){
+    if(!col1 %in% names(data)){
+      stop("'col1' must be a column in 'data'",
+           call. = TRUE)
+    }
+  }  
+
+  if(!is.na(col2)){
+    if(!col2 %in% names(data)){
+      stop("'col2' must be a column in 'data'",
+           call. = TRUE)
+    }
+  }  
+  
   if(!operator %in% c("&", "+", "-", "*", "/")){
     stop("The following operators are supported: &, +, -, *, and /.",
          call. = TRUE)
@@ -86,7 +100,17 @@ columns <- function(data, col1, col2=NA, operator="&",
   # Prepare -------------------------------------------------------------------
   
   # Get values from column.
-  value1 <- data[,col1]
+  if(is.na(col1)){
+    # Leave empty to allow adding a new column without specifying a source.
+    value1 <- rep("", nrow(data))
+    if(operator!="&"){
+      operator <- "&"
+      message("'operator' changed to '&', since column 1 is not specified.")
+    }
+  } else {
+    # Get source values from column 1.
+    value1 <- data[,col1]
+  }
 
   # Get second values from column or argument.
   if(col2 %in% names(data)){

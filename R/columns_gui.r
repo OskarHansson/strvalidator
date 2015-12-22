@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 22.12.2015: Removed colum check to enable no selected column etc.
 # 28.08.2015: Added importFrom.
 # 23.05.2015: First version.
 
@@ -34,6 +35,7 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
+  .columnDropDefault <- "<Select column>"
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -116,8 +118,8 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       svalue(f0g0_data_col_lbl) <- paste(" ", ncol(.gData), " columns")
       svalue(f2_name) <- paste(.gDataName, "new", sep="_")
       
-      f1g1_col1_drp[] <- c("<Select column>", names(.gData))
-      f1g1_col2_drp[] <- c("<Select column>", names(.gData))
+      f1g1_col1_drp[] <- c(.columnDropDefault, names(.gData))
+      f1g1_col2_drp[] <- c(.columnDropDefault, names(.gData))
       
     } else {
       
@@ -126,8 +128,8 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       svalue(f0g0_data_col_lbl) <- " 0 columns"
       svalue(f2_name) <- ""
       
-      f1g1_col1_drp[] <- c("<Select column>")
-      f1g1_col2_drp[] <- c("<Select column>")
+      f1g1_col1_drp[] <- c(.columnDropDefault)
+      f1g1_col2_drp[] <- c(.columnDropDefault)
 
     }
     
@@ -141,13 +143,13 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   f1g1[1,1] <- glabel(text="Select column 1:", container=f1g1)
   
-  f1g1[1,2] <- f1g1_col1_drp <- gdroplist(items=c("<Select column>"),
+  f1g1[1,2] <- f1g1_col1_drp <- gdroplist(items=c(.columnDropDefault),
                                            editable = FALSE,
                                            container = f1g1)
   
   f1g1[2,1] <- glabel(text="Select column 2:", container=f1g1)
   
-  f1g1[2,2] <- f1g1_col2_drp <- gdroplist(items=c("<Select column>"),
+  f1g1[2,2] <- f1g1_col2_drp <- gdroplist(items=c(.columnDropDefault),
                                            editable = FALSE,
                                            container = f1g1)
 
@@ -236,33 +238,29 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     val_fixed <- svalue(f3g1_val_edt)
     val_name <- svalue(f2_name)
     
-    colOk <- val_col1 %in% names(.gData)
+    # Check values.
+    if(val_col1 == .columnDropDefault){
+      val_col1 <- NA
+    }
+    if(val_col2 == .columnDropDefault){
+      val_col2 <- NA
+    }
     
-    if (colOk){
-      
-      datanew <- columns(data=.gData, col1=val_col1, col2=val_col2,
+    datanew <- columns(data=.gData, col1=val_col1, col2=val_col2,
                          operator=val_action, fixed=val_fixed,
                          target=val_target, debug=debug)
       
-      # Save data.
-      saveObject(name=val_name, object=datanew, parent=w, env=env)
+    # Save data.
+    saveObject(name=val_name, object=datanew, parent=w, env=env)
       
-      if(debug){
-        print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
-      }
+    if(debug){
+      print(datanew)
+      print(paste("EXIT:", match.call()[[1]]))
+    }
       
-      # Close GUI.
-      dispose(w)
+    # Close GUI.
+    dispose(w)
       
-    } else {
-      
-      gmessage(message="Selected column must exist in data frame!",
-               title="Error",
-               icon = "error")      
-      
-    } 
-    
   } )
   
   # INTERNAL FUNCTIONS ########################################################
