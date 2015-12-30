@@ -2,9 +2,13 @@
 # TODO LIST
 # TODO: calculate the distributions...
 # TODO: Regression Analysis and construction of Hb bins...
+# TODO: Rewrite using data.table (1 Filter, 2 calculate H, 3 Size (if not present),
+# 4 data.table by... size descending or ascending to get HMW/LMW etc. Will be faster!
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 30.12.2015: Removed unused code.
+# 02.12.2015: Added error message at 'stop' when >2 matching alleles or peaks.
 # 13.11.2015: Added option to calculate Hb as LMW/HMW.
 # 12.10.2015: Added attributes.
 # 28.08.2015: Added importFrom.
@@ -22,9 +26,6 @@
 # 09.09.2013: Added parameter 'hb' to specify the definition of Hb.
 # 26.07.2013: Removed parameters 'minHeight', 'maxHeight', 'matchSource' and related code.
 # 04.06.2013: Added warning/stop for missing markers.
-# 20.04.2013: Lb can be calculated per dye channel with no missing markers.
-# 20.04.2013: Changes max/min to max1/max2 so can handle unfiltered data.
-# 20.04.2013: If ref=NULL use guess 'ref' from 'data' and issue a warning.
 
 #' @title Calculate Balance
 #'
@@ -183,8 +184,7 @@ calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
   
   # Get the reference sample names.
   refNames <- unique(ref$Sample.Name)
-  sampleNames <- unique(data$Sample.Name)
-  
+
   # Create match vector.
   if(word){
     # Add word anchor.
@@ -278,9 +278,15 @@ calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
         cHeights <- cHeights[matchIndex]
 
         if(length(cAlleles) > 2){
+          print(paste("Error at sample", cSampleNames[s],
+                        "marker", markerNames[m],
+                        "alleles=", paste(cAlleles, collapse = ", ")))
           stop("More than two alleles after matching with reference sample!")
         }
         if(length(cHeights) > 2){
+          print(paste("Error at sample", cSampleNames[s],
+                        "marker", markerNames[m],
+                        "heights=", paste(cHeights, collapse = ", ")))
           stop("More than two heigths after matching with reference sample!")
         }
         

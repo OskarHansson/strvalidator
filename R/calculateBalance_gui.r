@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 30.12.2015: Added option for 'exact' matching.
+# 30.12.2015: Fixed option 'word' matching not saved.
+# 13.11.2015: Added attribute drop.sex.
 # 13.11.2015: Added option to calculate Hb as LMW / HMW.
 # 08.11.2015: Added automatic calculation of average peak height 'H'.
 # 21.10.2015: Added attributes.
@@ -22,8 +25,6 @@
 # 27.11.2013: Passed debug to calculateBalance.
 # 21.10.2013: Fixed dropdown state not loaded.
 # 09.09.2013: Added option 'hb' to specify the definition of Hb.
-# 26.07.2013: Removed parameters 'minHeight', 'maxHeight', 'matchSource' and related code.
-# 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
 
 #' @title Calculate Balance
 #'
@@ -222,7 +223,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
     val_ref <- .gRef
     val_ignore <- svalue(f1_ignore_chk)
     val_word <- svalue(f1_word_chk)
-    
+
     if (!is.null(.gData) || !is.null(.gRef)){
       
       chksubset_w <- gwindow(title = "Check subsetting",
@@ -375,8 +376,10 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         
         if(val_lb == 1){
           val_lb <- "prop"
-        } else {
+        } else if(val_lb == 2) {
           val_lb <- "norm"
+        } else {
+          stop("val_lb =", val_lb, "not implemented!")
         }
   
         if(debug){
@@ -442,6 +445,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         attr(datanew, which="calculateBalance_gui, ignore.case") <- val_ignore
         attr(datanew, which="calculateBalance_gui, word") <- val_word
         attr(datanew, which="calculateBalance_gui, calculate.h") <- val_h
+        attr(datanew, which="calculateBalance_gui, drop.sex") <- val_drop
         
         # Calculate and add average peak height.
         if(val_h){
@@ -482,7 +486,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
           
           message("Average peak height calculated.")
           
-          # Add heterozygote indicator to dataset.
+          # Add average peak height to dataset.
           datanew <- addData(data=datanew, new.data=dfH,
                              by.col="Sample.Name", then.by.col=NULL,
                              exact=TRUE, ignore.case=val_ignore,
@@ -564,6 +568,9 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_chk) <- get(".strvalidator_calculateBalance_gui_ignore", envir=env)
       }
+      if(exists(".strvalidator_calculateBalance_gui_word", envir=env, inherits = FALSE)){
+        svalue(f1_word_chk) <- get(".strvalidator_calculateBalance_gui_word", envir=env)
+      }
       if(exists(".strvalidator_calculateBalance_gui_sex", envir=env, inherits = FALSE)){
         svalue(f1_drop_chk) <- get(".strvalidator_calculateBalance_gui_sex", envir=env)
       }
@@ -587,6 +594,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       assign(x=".strvalidator_calculateBalance_gui_lb", value=svalue(f1_lb_opt), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_perDye", value=svalue(f1_perDye_opt), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
+      assign(x=".strvalidator_calculateBalance_gui_word", value=svalue(f1_word_chk), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_sex", value=svalue(f1_drop_chk), envir=env)
       assign(x=".strvalidator_calculateBalance_gui_h", value=svalue(f1_h_chk), envir=env)
       
@@ -606,6 +614,9 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
       }
       if(exists(".strvalidator_calculateBalance_gui_ignore", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateBalance_gui_ignore", envir = env)
+      }
+      if(exists(".strvalidator_calculateBalance_gui_word", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateBalance_gui_word", envir = env)
       }
       if(exists(".strvalidator_calculateBalance_gui_sex", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateBalance_gui_sex", envir = env)

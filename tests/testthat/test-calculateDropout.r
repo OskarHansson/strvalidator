@@ -7,8 +7,9 @@ context("calculateDropout")
 
 ################################################################################
 # CHANGE LOG
-# dd.mm.yyyy: ...
+# 07.12.2015: Fixed reference sample name subsetting bug.
 # 
+# require(testthat)
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-calculateDropout.r")
 # test_dir("tests/testthat")
@@ -364,5 +365,57 @@ test_that("calculateDropout", {
   
   expect_that(sum(res$Rfu, na.rm=TRUE), equals(0))
   expect_that(sum(is.na(res$Rfu)), equals(32))
+  
+  # TEST 09 -------------------------------------------------------------------
+  # Test reference subsetting bug.
+  # This test gives error in version 1.5.2 and earlier because
+  # reference alleles from 'A2' and 'A2B' get mixed.
+
+  # Get sample.
+  testSample <- set4[set4$Sample.Name == "18-A2.14",]
+  
+  # Rename F2 to A2B wich match with A2
+  testRef <- ref4
+  testRef[testRef$Sample.Name == "F2", ]$Sample.Name <- "A2B"
+  
+  res <- calculateDropout(data=testSample, ref=testRef, ignore.case=TRUE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns and rows exist.  
+  #expect_that(ncol(res), equals(7)) # TODO: Number of columns not fixed yet.
+  expect_that(nrow(res), equals(24))
+  expect_true(any(grepl("Sample.Name", names(res))))
+  expect_true(any(grepl("Marker", names(res))))
+  expect_true(any(grepl("Allele", names(res))))
+  expect_true(any(grepl("Height", names(res))))
+  expect_true(any(grepl("Dropout", names(res))))
+  expect_true(any(grepl("Rfu", names(res))))
+  expect_true(any(grepl("Heterozygous", names(res))))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Dropout)))
+  expect_false(any(is.na(res$Heterozygous)))
+  expect_true(any(is.na(res$Allele)))
+  expect_true(any(is.na(res$Height)))
+  expect_true(any(is.na(res$Rfu)))
+  
+  # Check result.
+  expect_that(sum(res$Dropout==0), equals(16))
+  expect_that(sum(res$Dropout==1), equals(7))
+  expect_that(sum(res$Dropout==2), equals(1))
+  
+  expect_that(sum(res$Heterozygous==0), equals(2))
+  expect_that(sum(res$Heterozygous==1), equals(22))
+  
+  expect_that(sum(res$Height, na.rm=TRUE), equals(5954))
+  expect_that(sum(is.na(res$Height)), equals(1))
+  
+  expect_that(sum(res$Rfu, na.rm=TRUE), equals(1647))
+  expect_that(sum(is.na(res$Rfu)), equals(17))
+  
   
 })

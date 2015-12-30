@@ -7,6 +7,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 30.12.2015: Wrapping options changed to radio button and implemented by Dye.
+# 30.12.2015: Changed default for drop sex markers to FALSE.
+# 30.12.2015: Wrapped 'is.numeric' with checking that columns exist.
+# 19.11.2015: Changed axes default to 'fixed' to avoid common plot error.
 # 11.11.2015: Added importFrom gridExtra arrangeGrob, and ggplot2.
 # 11.11.2015: Added more themes.
 # 08.11.2015: Added new plot options 'Hb vs. Marker' and 'Lb vs. Marker'.
@@ -25,9 +29,6 @@
 # 14.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
 # 23.02.2014: Fixed different y max for complex plot, when supposed to be fixed.
 # 23.02.2014: Implemented theme.
-# 23.02.2014: Fixed shape for 'complex' plots.
-# 20.01.2014: Implemented ggsave with workaround for 'complex' plots.
-# 18.12.2013: New plot option 'Hb by Delta' + better handling of titles.
 
 #' @title Plot Balance
 #'
@@ -230,14 +231,16 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                                          selected = 1,
                                          container = f1g2)
 
-  f1_drop_chk <- gcheckbox(text="Drop sex markers", checked=TRUE, container=f1)
+  f1_drop_chk <- gcheckbox(text="Drop sex markers", checked=FALSE, container=f1)
   
   f1_logHb_chk <- gcheckbox(text="Plot Log(balance)", checked=FALSE,
                             container=f1)
   
-  f1_wrap_chk <- gcheckbox(text="Facet per marker and wrap by colour",
-                           checked=TRUE, container=f1)
-
+  f1_wrap_opt <- gradio(items = c("Do not facet or wrap",
+                                  "Wrap by Dye",
+                                  "Facet by Marker and wrap by Dye"),
+                        horizontal = FALSE, container = f1)
+  
   # FRAME 7 ###################################################################
   
   f7 <- gframe(text = "Plot Balance data",
@@ -543,7 +546,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   grid3[1,4] <- glabel(text="Scales:", container=grid3)
   grid3[2:4,4] <- e3_scales_opt <- gradio(items=c("fixed","free_x","free_y","free"),
-                                      selected = 2,
+                                      selected = 1,
                                       horizontal = FALSE,
                                       container = grid3)
   
@@ -600,8 +603,8 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     val_kit <- svalue(kit_drp)
     val_drop <- svalue(f1_drop_chk)
     val_theme <- svalue(f1_theme_drp)
-    val_wrap <- svalue(f1_wrap_chk)
-
+    val_wrap <- svalue(f1_wrap_opt, index = TRUE)
+    
     if(debug){
       print("val_title")
       print(val_title)
@@ -685,42 +688,45 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       
       # Height must be numeric (not string).
-      if(!is.numeric(.gData$MPH)){
-        .gData$MPH <- as.numeric(as.character(.gData$MPH))
-        message("'MPH' not numeric, converting to numeric.")
-        
+      if("MPH" %in% names(.gData)){
+        if(!is.numeric(.gData$MPH)){
+          .gData$MPH <- as.numeric(as.character(.gData$MPH))
+          message("'MPH' not numeric, converting to numeric.")
+        }
       }
       
       # Height must be numeric (not string).
-      if(!is.numeric(.gData$TPH)){
-        .gData$TPH <- as.numeric(as.character(.gData$TPH))
-        message("'TPH' not numeric, converting to numeric.")
-        
+      if("TPH" %in% names(.gData)){
+        if(!is.numeric(.gData$TPH)){
+          .gData$TPH <- as.numeric(as.character(.gData$TPH))
+          message("'TPH' not numeric, converting to numeric.")
+          
+        }
+      }
+      
+      # Control complex plot.
+      if(val_wrap == 1 | val_wrap == 2){
+        complex <- FALSE
+        message("val_wrap=1/2 overrides and set complex=FALSE")
       }
       
       # Check if 'simple' or 'complex' plotting:
-      # Make data frame from dataset marker levels.
-      markerDye <- data.frame(Marker=levels(.gData$Marker))
-      # Add colors.
-      markerDye <- addColor(data=markerDye, kit=val_kit)
-      # Get Marker and Dye column.
-      markerDye <- markerDye[c("Marker","Dye")]
-      # Extract unique elements.
-      uniqueMarkerDye <- markerDye[!duplicated(markerDye),]
-      # Calculate number of unique columns per dye.
-      val_ncol <- unique(table(uniqueMarkerDye$Dye))
-
-      # Control complex plot.
-      if(!val_wrap){
-        complex <- FALSE
-        message("val_wrap=FALSE overrides and set complex=FALSE")
-      }
       if(is.null(complex)){
+        
+        # Make data frame from dataset marker levels.
+        markerDye <- data.frame(Marker=levels(.gData$Marker))
+        # Add colors.
+        markerDye <- addColor(data=markerDye, kit=val_kit)
+        # Get Marker and Dye column.
+        markerDye <- markerDye[c("Marker","Dye")]
+        # Extract unique elements.
+        uniqueMarkerDye <- markerDye[!duplicated(markerDye),]
+        # Calculate number of unique columns per dye.
+        val_ncol <- unique(table(uniqueMarkerDye$Dye))
+        
         # Auto detect if complex plot.
-        complex_plot <- length(val_ncol) > 1
-      } else {
-        # Use provided.
-        complex_plot <- complex
+        complex <- length(val_ncol) > 1
+        
       }
       
       # Make palette.
@@ -845,7 +851,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       
       # Construct plot differently.
-      if(!complex_plot){
+      if(!complex){
         # Simple plot, equal number of markers per dye.
 
         if(debug){
@@ -961,14 +967,28 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         }
         
         # Facet plot.
-        if(val_wrap){
+        if(val_wrap == 1){
           
+          # Do nothing.
+          
+        } else if(val_wrap == 2){
+          
+          # Plot by dye per row.
+          gp <- gp + facet_wrap(as.formula(paste("~", "Dye")), ncol=1,
+                                drop=FALSE, scales=val_scales)
+
+        } else if(val_wrap == 3){
+
           # Plot per marker one dye per row.
           gp <- gp + facet_grid("Dye ~ Marker")
           # NB! 'facet_wrap' does not seem to support strings.
           #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-          gp <- gp + facet_wrap(as.formula(paste("~", "Marker")), ncol=val_ncol, # No dye labels.
-                                drop=FALSE, scales=val_scales)
+          gp <- gp + facet_wrap(as.formula(paste("~", "Marker")),
+                                ncol=val_ncol, drop=FALSE, scales=val_scales)
+          
+        } else {
+          
+          stop("val_wrap =", val_wrap, "not implemented.")
           
         }
         
@@ -1011,7 +1031,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- TRUE
         
-      } else if (complex_plot){
+      } else if (complex){
         # Complex plot, unequal number of markers per dye.
         
         if(debug){
@@ -1180,15 +1200,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
             
           }
           
-          # Facet plot.
-          if(val_wrap){
-            
-            # Plot per marker one dye per row.
-            gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales, drop = FALSE) # Keep dye labels.
-            #gp <- gp + facet_grid("~ Marker", scales=val_scales)  # No dye labels.
-            
-          }
-          
+          # Wrap by marker one dye per row.
+          gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales, drop = FALSE) # Keep dye labels.
+
           # Add colours.
           gp <- gp + scale_colour_manual(guide=FALSE, values=val_palette[d], drop=FALSE)
           
@@ -1251,10 +1265,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- FALSE
         
-      } else {
-        # Not supported!
-        stop(paste("Unsupported number of columns:", val_ncol))
-      }
+      } # End if(complex)
       
       # Store in global variable.
       .gPlot <<- gp
@@ -1353,7 +1364,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         svalue(f1_theme_drp) <- get(".strvalidator_plotBalance_gui_theme", envir=env)
       }
       if(exists(".strvalidator_plotBalance_gui_wrap", envir=env, inherits = FALSE)){
-        svalue(f1_wrap_chk) <- get(".strvalidator_plotBalance_gui_wrap", envir=env)
+        svalue(f1_wrap_opt) <- get(".strvalidator_plotBalance_gui_wrap", envir=env)
       }
 
       if(debug){
@@ -1388,7 +1399,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       assign(x=".strvalidator_plotBalance_gui_xlabel_justh", value=svalue(e4_hjust_spb), envir=env)
       assign(x=".strvalidator_plotBalance_gui_xlabel_justv", value=svalue(e4_vjust_spb), envir=env)
       assign(x=".strvalidator_plotBalance_gui_theme", value=svalue(f1_theme_drp), envir=env)
-      assign(x=".strvalidator_plotBalance_gui_wrap", value=svalue(f1_wrap_chk), envir=env)
+      assign(x=".strvalidator_plotBalance_gui_wrap", value=svalue(f1_wrap_opt), envir=env)
 
     } else { # or remove all saved values if false.
       

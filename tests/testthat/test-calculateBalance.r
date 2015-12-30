@@ -177,6 +177,7 @@ test_that("calculateBalance", {
   expect_that(res$TPH[21], equals(362))
   expect_that(res$TPH[22], equals(as.numeric(NA)))
   
+  
   # TEST 02 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, lb="prop",
@@ -327,6 +328,7 @@ test_that("calculateBalance", {
   expect_that(res$TPH[20], equals(284))
   expect_that(res$TPH[21], equals(362))
   expect_that(res$TPH[22], equals(as.numeric(NA)))
+  
   
   # TEST 03 -------------------------------------------------------------------
 
@@ -630,7 +632,7 @@ test_that("calculateBalance", {
   expect_that(res$TPH[20], equals(284))
   expect_that(res$TPH[21], equals(362))
   expect_that(res$TPH[22], equals(as.numeric(NA)))
-  
+
   
   # TEST 05 -------------------------------------------------------------------
   
@@ -784,6 +786,7 @@ test_that("calculateBalance", {
   expect_that(res$TPH[21], equals(362))
   expect_that(res$TPH[22], equals(as.numeric(NA)))
   
+
   # TEST 06 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, lb="prop",
@@ -935,6 +938,7 @@ test_that("calculateBalance", {
   expect_that(res$TPH[21], equals(362))
   expect_that(res$TPH[22], equals(as.numeric(NA)))
   
+
   # TEST 07 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, lb="norm",
@@ -1238,6 +1242,7 @@ test_that("calculateBalance", {
   expect_that(res$TPH[21], equals(362))
   expect_that(res$TPH[22], equals(as.numeric(NA)))
 
+
   # TEST 09 -------------------------------------------------------------------
   
   # Analyse dataframe.
@@ -1390,6 +1395,7 @@ test_that("calculateBalance", {
   expect_that(res$TPH[21], equals(362))
   expect_that(res$TPH[22], equals(as.numeric(NA)))
   
+  
   # TEST 10 -------------------------------------------------------------------
   
   res <- calculateBalance(data=set2, ref=ref2, lb="prop",
@@ -1540,6 +1546,7 @@ test_that("calculateBalance", {
   expect_that(res$TPH[20], equals(284))
   expect_that(res$TPH[21], equals(362))
   expect_that(res$TPH[22], equals(as.numeric(NA)))
+  
   
   # TEST 11 -------------------------------------------------------------------
   
@@ -1993,6 +2000,113 @@ test_that("calculateBalance", {
   expect_that(res$Hb[20], equals(as.numeric(NA)))
   expect_that(res$Hb[21], equals(179/183))
   expect_that(res$Hb[22], equals(as.numeric(NA)))
-  
 
+  
+  # TEST 16 -------------------------------------------------------------------
+  
+  # Test that unfiltered data works.
+  setUnfiltered <- set2
+  extraName <- c("SampleA01","SampleA01","SampleA02")
+  extraMarker <- c("D3S1358", "D16S539", "FGA")
+  extraAllele <- c("17", "10", "24")
+  extraHeight <- c(50, 400, 40)
+  extraDye <- c("B", "B", "Y")
+  extra <- data.frame(Sample.Name = extraName,
+                      Marker = extraMarker,
+                      Allele = extraAllele,
+                      Height = extraHeight,
+                      Dye = extraDye,
+                      stringsAsFactors = FALSE)
+  setUnfiltered <- rbind(setUnfiltered, extra)
+  
+  # Analyse dataframe.
+  res <- calculateBalance(data=setUnfiltered, ref=ref2, lb="prop",
+                          per.dye=TRUE, hb=1,
+                          ignore.case=TRUE)
+  
+  # Check result: Heterozygous balance.
+  expect_that(res$Hb[1], equals(402/460))
+  expect_that(res$Hb[2], equals(as.numeric(NA)))
+  expect_that(res$Hb[3], equals(491/423))
+  expect_that(res$Hb[4], equals(as.numeric(NA)))
+  expect_that(res$Hb[5], equals(587/632))
+  expect_that(res$Hb[6], equals(as.numeric(NA)))
+  expect_that(res$Hb[7], equals(as.numeric(NA)))
+  expect_that(res$Hb[8], equals(361/398))
+  expect_that(res$Hb[9], equals(as.numeric(NA)))
+  expect_that(res$Hb[10], equals(384/359))
+  expect_that(res$Hb[11], equals(as.numeric(NA)))
+  
+  expect_that(res$Hb[12], equals(215/225))
+  expect_that(res$Hb[13], equals(as.numeric(NA)))
+  expect_that(res$Hb[14], equals(241/198))
+  expect_that(res$Hb[15], equals(as.numeric(NA)))
+  expect_that(res$Hb[16], equals(312/326))
+  expect_that(res$Hb[17], equals(as.numeric(NA)))
+  expect_that(res$Hb[18], equals(as.numeric(NA)))
+  expect_that(res$Hb[19], equals(195/206))
+  expect_that(res$Hb[20], equals(as.numeric(NA)))
+  expect_that(res$Hb[21], equals(179/183))
+  expect_that(res$Hb[22], equals(as.numeric(NA)))
+  
+  # Analyse dataframe.
+  res <- calculateBalance(data=setUnfiltered, ref=ref2, lb="prop",
+                          per.dye=TRUE, hb=2,
+                          ignore.case=TRUE)
+  
+  # Check result: Heterozygous balance.
+  expect_that(res$Hb[1], equals(460/402))
+  expect_that(res$Hb[2], equals(as.numeric(NA)))
+  expect_that(res$Hb[3], equals(423/491))
+  expect_that(res$Hb[4], equals(as.numeric(NA)))
+  expect_that(res$Hb[5], equals(632/587))
+  expect_that(res$Hb[6], equals(as.numeric(NA)))
+  expect_that(res$Hb[7], equals(as.numeric(NA)))
+  expect_that(res$Hb[8], equals(398/361))
+  expect_that(res$Hb[9], equals(as.numeric(NA)))
+  expect_that(res$Hb[10], equals(359/384))
+  expect_that(res$Hb[11], equals(as.numeric(NA)))
+  
+  expect_that(res$Hb[12], equals(225/215))
+  expect_that(res$Hb[13], equals(as.numeric(NA)))
+  expect_that(res$Hb[14], equals(198/241))
+  expect_that(res$Hb[15], equals(as.numeric(NA)))
+  expect_that(res$Hb[16], equals(326/312))
+  expect_that(res$Hb[17], equals(as.numeric(NA)))
+  expect_that(res$Hb[18], equals(as.numeric(NA)))
+  expect_that(res$Hb[19], equals(206/195))
+  expect_that(res$Hb[20], equals(as.numeric(NA)))
+  expect_that(res$Hb[21], equals(183/179))
+  expect_that(res$Hb[22], equals(as.numeric(NA)))
+  
+  # Analyse dataframe.
+  res <- calculateBalance(data=setUnfiltered, ref=ref2, lb="prop",
+                          per.dye=TRUE, hb=3,
+                          ignore.case=TRUE)
+  
+  # Check result: Heterozygous balance.
+  expect_that(res$Hb[1], equals(402/460))
+  expect_that(res$Hb[2], equals(as.numeric(NA)))
+  expect_that(res$Hb[3], equals(423/491))
+  expect_that(res$Hb[4], equals(as.numeric(NA)))
+  expect_that(res$Hb[5], equals(587/632))
+  expect_that(res$Hb[6], equals(as.numeric(NA)))
+  expect_that(res$Hb[7], equals(as.numeric(NA)))
+  expect_that(res$Hb[8], equals(361/398))
+  expect_that(res$Hb[9], equals(as.numeric(NA)))
+  expect_that(res$Hb[10], equals(359/384))
+  expect_that(res$Hb[11], equals(as.numeric(NA)))
+  
+  expect_that(res$Hb[12], equals(215/225))
+  expect_that(res$Hb[13], equals(as.numeric(NA)))
+  expect_that(res$Hb[14], equals(198/241))
+  expect_that(res$Hb[15], equals(as.numeric(NA)))
+  expect_that(res$Hb[16], equals(312/326))
+  expect_that(res$Hb[17], equals(as.numeric(NA)))
+  expect_that(res$Hb[18], equals(as.numeric(NA)))
+  expect_that(res$Hb[19], equals(195/206))
+  expect_that(res$Hb[20], equals(as.numeric(NA)))
+  expect_that(res$Hb[21], equals(179/183))
+  expect_that(res$Hb[22], equals(as.numeric(NA)))
+  
 })

@@ -1,6 +1,7 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Currently destroy information in unsupported columns e.g. Dye -> NA
+#       if add missing markers is TRUE and markers are missing.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
@@ -309,12 +310,12 @@ filterProfile <- function(data, ref, add.missing.loci=FALSE, keep.na=FALSE,
     if("Sample.Name" %in% names(ref)){
       
       # Get reference names from reference dataset.
-      refSampleNames<- unique(ref$Sample.Name)
+      refSampleNames <- unique(ref$Sample.Name)
       
     } else {
       
       # Get reference names from dataset.
-      refSampleNames<- unique(data$Sample.Name)
+      refSampleNames <- unique(data$Sample.Name)
       
     }
     

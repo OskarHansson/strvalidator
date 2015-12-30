@@ -8,6 +8,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.12.2015: Fixed reference sample name subsetting bug.
+# 05.12.2015: More information in 'stop' messages.
+#            'warning' for unhandled combinations changed to 'stop'.
 # 05.10.2015: Added attributes to result.
 # 28.09.2015: Remove rows with missing alleles from the reference dataset.
 # 11.09.2015: Handle reference allele is NA.
@@ -26,8 +29,6 @@
 # 17.10.2013: New parameter threshold, and corrections complying with ref. 2012. 
 # 18.07.2013: Fixed "OL" bug.
 # 18.07.2013: Added 'debug' parameter, example, and text in details.
-# 15.05.2013: Added check that 'Height' is numeric, convert if not.
-# 13.04.2013: Rewritten function for 'slim' data only.
 
 #' @title Calculate Drop-out Events
 #'
@@ -285,12 +286,16 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
     if(ignore.case){
       selectedSamples <- grepl(toupper(sampleNamesRef[r]),
                                toupper(data$Sample.Name))
-      selectedRefs <- grepl(toupper(sampleNamesRef[r]),
+      selectedRefs <- grepl(paste("\\b",
+                                  toupper(sampleNamesRef[r]),
+                                  "\\b", sep=""),
                             toupper(ref$Sample.Name))
     } else {
       selectedSamples <- grepl(sampleNamesRef[r],
                                data$Sample.Name)
-      selectedRefs <- grepl(sampleNamesRef[r],
+      selectedRefs <- grepl(paste("\\b",
+                                  sampleNamesRef[r],
+                                  "\\b", sep=""),
                             ref$Sample.Name)
     }
     
@@ -583,7 +588,15 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
                     methodLPh[1] <- max(peakHeight[selA1], peakHeight[selA2], rm.na=TRUE)
                     methodLPh[2] <- NA
                   } else {
-                    stop("observed not 1 or 2")
+                    stop(paste("Sample: ", sampleNames[s],
+                               ", Marker: ", markers[m],
+                               " - unhandled number of observed alleles",
+                               " (observed = ", observed,
+                               ", matchedAlleles = ", paste(matchedAlleles, collapse="/"),
+                               ", passingAlleles = ",  paste(passingAlleles, collapse="/"),
+                               ")", sep=""),
+                         call. = TRUE)
+                    
                   }
                 } else if (passingAlleles == 2){
                   methodLTmp[1] <- 0
@@ -600,18 +613,30 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
                     methodLPh[1] <- NA
                     methodLPh[2] <- NA
                   } else {
-                    stop("observed not 1 or 2")
+                    stop(paste("Sample: ", sampleNames[s],
+                               " Marker: ", markers[m],
+                               " - unhandled number of observed alleles",
+                               " (observed = ", observed,
+                               ", matchedAlleles = ", paste(matchedAlleles, collapse="/"),
+                               ", passingAlleles = ", paste(passingAlleles, collapse="/"),
+                               ")", sep=""),
+                         call. = TRUE)
                   }
                 } else {
-                  stop("passingAlleles not {0,1,2}")
+                  stop(paste("Sample: ", sampleNames[s],
+                             " Marker: ", markers[m],
+                             " - unhandled number of observed alleles > LDT",
+                             " (passingAlleles = ", paste(passingAlleles, collapse="/"),
+                             ", matchedAlleles = ", paste(matchedAlleles, collapse="/"),
+                             ")", sep=""),
+                       call. = TRUE)
+                  
                 }
                 
               } else { # No dropout or NA.
                 
                 if(debug){
                   print("No dropout:")
-                }
-                if(debug){
                   print("Observed:")
                   print(observed)
                 }
@@ -741,10 +766,13 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
           
         } else {
           
-          warning(paste("Sample:", sampleNames[s], "Marker: ", markers[m],
-                        "- Unhandled number of expected alleles (expected =",
-                        expected,"in sample",  sampleNames[s]),
-                  call. = TRUE, immediate. = FALSE, domain = NULL)
+          stop(paste("Sample: ", sampleNames[s],
+                     " Marker: ", markers[m],
+                     " - unhandled number of expected alleles",
+                     " (expected = ", expected,
+                     ", refAlleles = ", paste(refAlleles, collapse="/"),
+                     ")", sep=""),
+               call. = TRUE)
           
         }
         
@@ -771,10 +799,13 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
           
         } else {
           
-          warning(paste("Sample:", sampleNames[s], "Marker: ", markers[m],
-                        "- Unhandled combination (dropCount =",
-                        dropCount,", het =", het),
-                  call. = TRUE, immediate. = FALSE, domain = NULL)
+          stop(paste("Sample: ", sampleNames[s],
+                     " Marker: ", markers[m],
+                     " - unhandled combination",
+                     " (dropCount = ", dropCount,
+                     ", het = ", het,
+                     ")", sep=""),
+                  call. = TRUE)
           
         }
         

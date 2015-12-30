@@ -223,7 +223,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                                    ref=val_ref,
                                    console=FALSE,
                                    ignore.case=val_ignore,
-                                   exact=exact,
+                                   exact=val_exact,
                                    word=val_word)
       
       gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 

@@ -1,3 +1,32 @@
+Version 1.5.2.9005
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateBalance_gui
+  Added option for exact matching, and dropping sex markers, fixed word optin not saved.
+  - plotBalance_gui
+  Implemented by dye.
+  Better default values reduce risk of errors.
+  - import / import_gui
+  Remove "0" from the default 'na.strings'.
+  - calculateDropout
+  Fixed reference sample name subsetting bug.
+  Some 'warnings' changed to 'stop'.
+  Better information in stop messages.
+* New functions:
+  - calculateLb / calculateLb_gui
+  Implemented locus balance calculations using data.table wich is much faster.
+  Does not require a reference dataset. Calculates as proportion, normalised,
+  or centred quantities (sum to 0). Global or by dye.
+  - calculateRatio / calculateRatio_gui / plotRatio_gui
+  Implemented calculation of locus ratios and plotting of the result.
+* New tests:
+  test-filterProfile
+    - Test for unfiltered data.
+  test-calculateDropout
+    - Test for reference subsetting bug.
+  test-calculateLb
+    - Tests for new function.
+
 Version 1.5.2.9004
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:
@@ -8,8 +37,8 @@ Version 1.5.2.9004
   - calculateDropout
   'warning' for unhandled situations changed to 'stop'.
   Fixed reference sample name subsetting bug. Confirmed with new test 09.
-  - calculateBalance / calculateBalance_gui
-  Implemented locus balance calculated as centred quantities (sum to 0). 
+  - columns / columns_gui
+  Now possible to add new column without combining with an existing column.
 * Added attributes for the following functions:
   filterProfile / filterProfile_gui
 

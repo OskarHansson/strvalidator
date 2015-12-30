@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2015: Removed "0" from the default 'na.strings'.
 # 04.12.2015: Added parameter 'na.strings'.
 # 09.11.2015: Added "0" to 'na.strings' in 'read.table'.
 # 06.10.2015: Added call to 'colConvert' to convert known numeric columns.
@@ -25,7 +26,6 @@
 #              and 'resultFolder' -> 'folder.name'.
 # 12.11.2013: Changed 'rbind' to 'rbind.fill' from package 'plyr'.
 # 13.06.2013: Added parameter 'debug'. Fixed regexbug when importing from folder.
-# <13.06.2013: Renamed from importGM to import.
 
 #' @title Import Data
 #'
@@ -89,7 +89,7 @@ import <- function (folder = TRUE, extension="txt",
                     auto.trim = FALSE, trim.samples = NULL,
                     trim.invert = FALSE,
                     auto.slim = FALSE, slim.na = TRUE,
-                    na.strings = c("NA","","0"),
+                    na.strings = c("NA",""),
                     debug = FALSE){
   
   if(debug){

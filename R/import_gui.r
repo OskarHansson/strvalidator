@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.12.2015: Removed "0" from the default 'na.strings'.
 # 04.12.2015: Implemented new parameter 'na.strings'.
 # 05.10.2015: Added attributes.
 # 29.08.2015: Added importFrom.
@@ -150,8 +151,9 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   opt_sep_drp <- gdroplist(items=c("TAB","SPACE","COMMA","SEMICOLON"),
                            selected=1, editable=FALSE, container=opt_frm)
   
-  glabel(text="NA strings:", container=opt_frm, anchor=c(-1 ,0))
-  opt_na_edt <- gedit(text="NA,,0", container=opt_frm)
+  glabel(text="NA strings (separated by comma):",
+         container=opt_frm, anchor=c(-1 ,0))
+  opt_na_edt <- gedit(text="NA,,", container=opt_frm)
 
   opt_trim_chk <- gcheckbox(text="Auto trim samples", checked = FALSE,
                             container=opt_frm)

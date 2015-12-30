@@ -39,6 +39,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 30.12.2015: Added button to new function 'calculateLb' in the 'Balance' tab.
+# 22.12.2015: Added new group 'Marker ratio' in the 'Balance' tab.
+# 18.12.2015: Added tooltips in the 'Workspace' tab.
 # 30.11.2015: Moved updated description. Previous information moved to 'strvalidator-package'.
 # 12.10.2015: Added 'Calculate' and 'Filter' button in 'Result' tab.
 # 12.10.2015: Added new group 'Drop-in tools' in 'Result' tab.
@@ -56,13 +59,6 @@
 # 08.07.2014: Added 'Mixture' tab.
 # 04.07.2014: Ask to overwrite project file if exist.
 # 04.07.2014: Added new button 'Add' and 'Save As' to 'Workspace' tab.
-# 30.06.2014: Added 'Projects' tab.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 23.06.2014: Added options("guiToolkit"="RGtk2") bugs when using TclTK.
-# 22.06.2014: Added 'Concordance' tab.
-# 17.06.2014: Added version number in title.
-# 15.02.2014: Added 'Summarize' balance data button in 'Balance' tab.
-# 11.02.2014: Added 'Add Size' button in edit tab.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -381,17 +377,15 @@ strvalidator <- function(debug=FALSE){
   
   glabel("", container=project_g1) # Adds some space.
   
-  project_open_btn <- gbutton(text="Open",
-                              border=TRUE,
-                              container = project_g1)
+  project_open_btn <- gbutton(text="Open", border=TRUE, container = project_g1)
+  tooltip(project_open_btn) <- "Open selected project"
+
+  project_add_btn <- gbutton(text="Add", border=TRUE, container = project_g1)
+  tooltip(project_add_btn) <- "Merge with current project"
   
-  project_add_btn <- gbutton(text="Add",
-                             border=TRUE,
-                             container = project_g1)
-  
-  project_delete_btn <- gbutton(text="Delete",
-                                border=TRUE,
+  project_delete_btn <- gbutton(text="Delete", border=TRUE,
                                 container = project_g1)
+  tooltip(project_delete_btn) <- "Delete selected project from the file system"
   
   addSpring(project_g1)
   
@@ -562,14 +556,12 @@ strvalidator <- function(debug=FALSE){
                        expand=TRUE)
   
   # Button group.
-  project_g3 <- ggroup(horizontal=FALSE,
-                       spacing=10,
-                       container = project_f3,
-                       expand=FALSE)
+  project_g3 <- ggroup(horizontal = FALSE, spacing = 10,
+                       container = project_f3, expand = FALSE)
   
-  project_save_btn <- gbutton(text="Save",
-                              border=TRUE,
-                              container = project_g3)
+  project_save_btn <- gbutton(text="Save", border=TRUE, container = project_g3)
+  tooltip(project_save_btn) <- "Save project description"
+  
   
   glabel("", container=project_g1) # Adds some space.
   
@@ -629,26 +621,32 @@ strvalidator <- function(debug=FALSE){
   ws_open_btn <- gbutton(text="Open",
                          border=TRUE,
                          container = workspace_f1g1)
+  tooltip(ws_open_btn) <- "Open project"
   
   ws_save_btn <- gbutton(text="Save",
                          border=TRUE,
                          container = workspace_f1g1)
+  tooltip(ws_save_btn) <- "Save project"
   
   ws_saveas_btn <- gbutton(text="Save As",
                            border=TRUE,
                            container = workspace_f1g1)
+  tooltip(ws_saveas_btn) <- "Choose a location and save project"
   
   ws_import_btn <- gbutton(text="Import",
                            border=TRUE,
                            container = workspace_f1g1)
+  tooltip(ws_import_btn) <- "Import data from file"
   
   ws_export_btn <- gbutton(text="Export",
                            border=TRUE,
                            container = workspace_f1g1)
+  tooltip(ws_export_btn) <- "Open the export dialoge"
   
   ws_add_btn <- gbutton(text="Add",
                         border=TRUE,
                         container = workspace_f1g1)
+  tooltip(ws_add_btn) <- "Merge a project with the current project"
   
   ws_refresh_btn <- gbutton(text="Refresh",
                             border=TRUE,
@@ -657,14 +655,17 @@ strvalidator <- function(debug=FALSE){
   ws_remove_btn <- gbutton(text="Delete",
                            border=TRUE,
                            container = workspace_f1g1) 
+  tooltip(ws_remove_btn) <- "Delete selected object"
   
   ws_rename_btn <- gbutton(text="Rename",
                            border=TRUE,
                            container = workspace_f1g1)
+  tooltip(ws_rename_btn) <- "Rename selected object"
   
   ws_view_btn <- gbutton(text="View",
                          border=TRUE,
                          container = workspace_f1g1)
+  tooltip(ws_view_btn) <- "View selected object"
   
   ws_loaded_tbl <- gWidgets::gtable(items=data.frame(Object="", Size="",
                                                      stringsAsFactors=FALSE), 
@@ -1624,8 +1625,9 @@ strvalidator <- function(debug=FALSE){
   balance_g2 <- glayout(container = balance_f2)
   
   # CALCULATE -----------------------------------------------------------------
-  
-  balance_g2[1,1] <- balance_g3_calc_btn <- gbutton(text="Calculate",
+
+  # FUNCTION 1.  
+  balance_g2[1,1] <- balance_g2_calc_1_btn <- gbutton(text="Calculate",
                                                     border=TRUE,
                                                     container = balance_g2) 
   
@@ -1633,20 +1635,36 @@ strvalidator <- function(debug=FALSE){
                             container=balance_g2)
   
   
-  addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
+  addHandlerChanged(balance_g2_calc_1_btn, handler = function(h, ...) {
     
     # Open GUI.
     calculateBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
-  # PLOT ----------------------------------------------------------------------
-  
-  balance_g2[2,1] <- balance_g2_plot_btn <- gbutton(text="Plot",
+  # FUNCTION 2.
+  balance_g2[2,1] <- balance_g2_calc_2_btn <- gbutton(text="Calculate",
                                                     border=TRUE,
                                                     container = balance_g2) 
   
-  balance_g2[2,2] <- glabel(text="Create plots for analysed data",
+  balance_g2[2,2] <- glabel(text="Calculate inter locus balance for a dataset.",
+                            container=balance_g2)
+  
+  
+  addHandlerChanged(balance_g2_calc_2_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateLb_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+  
+  # PLOT ----------------------------------------------------------------------
+  
+  balance_g2[3,1] <- balance_g2_plot_btn <- gbutton(text="Plot",
+                                                    border=TRUE,
+                                                    container = balance_g2) 
+  
+  balance_g2[3,2] <- glabel(text="Create plots for analysed data",
                             container=balance_g2)
   
   addHandlerChanged(balance_g2_plot_btn, handler = function(h, ...) {
@@ -1658,11 +1676,11 @@ strvalidator <- function(debug=FALSE){
   
   # SUMMARY TABLE -------------------------------------------------------------
   
-  balance_g2[3,1] <- balance_table_btn <- gbutton(text="Summarize",
+  balance_g2[4,1] <- balance_table_btn <- gbutton(text="Summarize",
                                                   border=TRUE,
                                                   container = balance_g2) 
   
-  balance_g2[3,2] <- glabel(text="Summarize balance data in a table.",
+  balance_g2[4,2] <- glabel(text="Summarize balance data in a table.",
                             container=balance_g2)
   
   addHandlerChanged(balance_table_btn, handler = function(h, ...) {
@@ -1726,6 +1744,46 @@ strvalidator <- function(debug=FALSE){
     
     # Open GUI.
     tableCapillary_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+
+  # MARKER RATIO ==============================================================
+  
+  balance_f4 <- gframe(text = "Marker peak height ratio",
+                       horizontal=FALSE, container = balance_tab) 
+  
+  balance_g4 <- glayout(container = balance_f4)
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  balance_g4[1,1] <- balance_g4_calc_btn <- gbutton(text="Calculate",
+                                                    border=TRUE,
+                                                    container = balance_g4) 
+  
+  balance_g4[1,2] <- glabel(text="Calculate locus ratio for a dataset.",
+                            container=balance_g4)
+  
+  
+  addHandlerChanged(balance_g4_calc_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateRatio_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+  
+  # PLOT ----------------------------------------------------------------------
+  
+  balance_g4[2,1] <- balance_g4_plot_btn <- gbutton(text="Plot",
+                                                    border=TRUE,
+                                                    container = balance_g4)
+  
+  balance_g4[2,2] <- glabel(text="Create plots for analysed data",
+                            container=balance_g4)
+  
+  addHandlerChanged(balance_g4_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotRatio_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -2409,5 +2467,6 @@ strvalidator <- function(debug=FALSE){
   svalue(nb)<-1
   visible(w)<-TRUE
   focus(w)
+  message("STR-validator graphical user interface loaded!")
   
 } # END OF GUI
