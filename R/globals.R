@@ -18,10 +18,11 @@ if (base::getRversion() >= "2.15.1") {
 
 ## Needed to avoid notes when using data.table in functions:
 ## calculateAllele, calculateAT, calculateAT_gui, calculateAT6,
-## calculateAT6_gui, plotBalance_gui, calculateLb, calculateRatio
+## calculateAT6_gui, plotBalance_gui, calculateLb, calculateRatio,
+## generateEPG
 if (base::getRversion() >= "2.15.1") {
   utils::globalVariables(c("Height","Blocked","Sample.File.Name","Dye",
                            "Hb","Marker","Lb", "H", "Amount", "Size",
                            "Sample.Name", "TPH", "MPH", "TPPH", "MTPH",
-                           "Group"))
+                           "Group", "Allele", "Id"))
 }
