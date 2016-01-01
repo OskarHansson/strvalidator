@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 31.12.2015: New options 'wrap' and 'at'. 'type' replaced by 'boxplot'. 
 # 29.08.2015: Added importFrom.
 # 09.01.2015: Enable 'generate' after selection of new sample.
 # 09.12.2014: First version.
@@ -60,11 +61,8 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   })
   
   # Vertical main group.
-  gv <- ggroup(horizontal=FALSE,
-               spacing=8,
-               use.scrollwindow=FALSE,
-               container = w,
-               expand=TRUE) 
+  gv <- ggroup(horizontal=FALSE, spacing=8, use.scrollwindow=FALSE,
+               container = w, expand=TRUE) 
 
   # Help button group.
   gh <- ggroup(container = gv, expand=FALSE, fill="both")
@@ -186,69 +184,82 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     }
     
   } )  
-  
-  
-  
+
   # FRAME 1 ###################################################################
   
-  f1 <- gframe(text = "Options",
-               horizontal=FALSE,
-               spacing = 10,
-               container = gv) 
+  f1 <- gframe(text = "Options", horizontal=FALSE, spacing = 10, container = gv)
   
   glabel(text="Plot title:", anchor=c(-1 ,0), container=f1)
   f1_title_edt <- gedit(text="", width=25, container=f1)
   
   # Layout --------------------------------------------------------------------
   f1g1 <- glayout(container = f1, spacing = 1)
+
+  f1g1[1,1] <- glabel(text = "Axis scales:   ", anchor=c(-1 ,0), container = f1g1)  
+  f1g1[2:3,1] <- f1_scale_opt <- gradio(items = c("free", "free_y", "free_x"),
+                         selected = 2, horizontal = FALSE, container = f1g1)
   
-  f1g1[1,1] <- glabel(text="Allele label text size:", container=f1g1)
-  f1g1[1,2] <- f1_size_spb <- gspinbutton(from=0, to=10, by=1, value=3,
+  f1g1[1,2] <- glabel(text="Allele label text size:", container=f1g1)
+  f1g1[1,3] <- f1_size_spb <- gspinbutton(from=0, to=10, by=1, value=2,
                                           container=f1g1)
 
-  f1g1[1,3] <- glabel(text="Vertical justification:", container=f1g1)
-  f1g1[1,4] <- f1_vjust_spb <- gspinbutton(from=0, to=1, by=0.5, value=1,
+  f1g1[1,4] <- glabel(text="Vertical justification:", container=f1g1)
+  f1g1[1,5] <- f1_vjust_spb <- gspinbutton(from=0, to=1, by=0.5, value=1,
                                            container=f1g1)
   
-  f1g1[2,1] <- glabel(text="Allele label angle:", container=f1g1)
-  f1g1[2,2] <- f1_angle_spb <- gspinbutton(from=0, to=360, by=15, value=0,
-                                           container=f1g1)
-
-  f1g1[2,3] <- glabel(text="Horizontal justification:", container=f1g1)
-  f1g1[2,4] <- f1_hjust_spb <- gspinbutton(from=0, to=1, by=0.5, value=0.5,
+  f1g1[2,2] <- glabel(text="Allele label angle:", container=f1g1)
+  f1g1[2,3] <- f1_angle_spb <- gspinbutton(from=0, to=360, by=15, value=0,
                                            container=f1g1)
 
-  f1g1[3,1] <- glabel(text="Plot area expansion:", container=f1g1)
-  f1g1[3,2] <- f1_expand_spb <- gspinbutton(from=0, to=1, by=0.05, value=0.10,
+  f1g1[2,4] <- glabel(text="Horizontal justification:", container=f1g1)
+  f1g1[2,5] <- f1_hjust_spb <- gspinbutton(from=0, to=1, by=0.5, value=0.5,
+                                           container=f1g1)
+
+  f1g1[3,2] <- glabel(text="Plot area expansion:", container=f1g1)
+  f1g1[3,3] <- f1_expand_spb <- gspinbutton(from=0, to=1, by=0.05, value=0.10,
                                            container=f1g1)
   
-  f1g1[4,1] <- glabel(text="Scales:", container=f1g1)
-  f1_scale_items <- c("free", "free_y", "free_x")
-  f1g1[5,1] <- f1_scale_opt <- gradio(items=f1_scale_items, selected=3,
-                                      horizontal=FALSE, container=f1g1)
+  f1g1[3,4] <- glabel(text="Analytical threshold:", container=f1g1)
+  f1g1[3,5] <- f1_at_spb <- gspinbutton(from=0, to=1000, by=10, value=0,
+                                        container=f1g1)
+
+  f1_ignore_chk <- gcheckbox(text="Ignore case in marker names",
+                             checked=TRUE, container=f1)
   
-  f1g1[4,2] <- glabel(text="Plot type:", container=f1g1)
-  f1_type_items <- c("Single profile","Distribution")
-  f1g1[5,2] <- f1_type_opt <- gradio(items=f1_type_items, selected=1,
-                                     horizontal=FALSE, container=f1g1)
-  
-  f1_collapse_chk <- gcheckbox(text="Collapse (add peak heights of identical alleles. Discards OL)",
-                          checked=TRUE,
-                          container=f1)
+  f1_wrap_chk <- gcheckbox(text="Wrap by dye and add marker ranges and allele names",
+                           checked=TRUE, container=f1)
   
   f1_fix_chk <- gcheckbox(text="Fix x-axis to size range",
-                              checked=TRUE,
-                              container=f1)
+                          checked=TRUE, container=f1)
   
-  f1_ignore_chk <- gcheckbox(text="Ignore case in marker names",
-                          checked=TRUE,
-                          container=f1)
-
+  f1_collapse_chk <- gcheckbox(text="Collapse (add peak heights of identical alleles. Discards OL)",
+                               checked=TRUE, container=f1)
+  
+  f1_box_chk <- gcheckbox(text="Plot peak height distribution (boxplot)",
+                          checked=FALSE, container=f1)
+  
   f1_peaks_chk <- gcheckbox(text="Plot mean peak height for distributions",
-                            checked=TRUE,
-                            container=f1)
+                            checked=TRUE, container=f1)
 
-  
+
+  addHandlerChanged(f1_collapse_chk, handler = function(h, ...) {
+    
+    val_collapse <- svalue(f1_collapse_chk)
+    
+    if(val_collapse){
+      
+      enabled(f1_box_chk) <- TRUE
+      enabled(f1_peaks_chk) <- TRUE
+      
+    } else {
+      
+      enabled(f1_box_chk) <- FALSE
+      enabled(f1_peaks_chk) <- FALSE
+      
+    }
+
+  } )
+
   # FRAME 2 ###################################################################
   
   f5 <- gframe(text = "Save as",
@@ -309,8 +320,9 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     val_sample <- svalue(g0_sample_drp)
     val_kit <- svalue(kit_drp)
     val_peaks <- svalue(f1_peaks_chk)
-    val_type_opt <- svalue(f1_type_opt, index=TRUE)
     val_scale <- svalue(f1_scale_opt)
+    val_wrap <- svalue(f1_wrap_chk)
+    val_box <- svalue(f1_box_chk)
     val_collapse <- svalue(f1_collapse_chk)
     val_fix <- svalue(f1_fix_chk)
     val_ignore <- svalue(f1_ignore_chk)
@@ -320,15 +332,8 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     val_vjust <- svalue(f1_vjust_spb)
     val_hjust <- svalue(f1_hjust_spb)
     val_expand <- svalue(f1_expand_spb)
+    val_at <- svalue(f1_at_spb)
     val_data <- .gData
-    
-    if(val_type_opt==1){
-      val_type <- "profile"
-    } else if(val_type_opt==2){
-      val_type <- "distr"
-    } else {
-      warning(paste("val_type =", val_type, "not handled!"))
-    }
     
     if(!is.null(val_data)){
       
@@ -341,14 +346,15 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       svalue(plot_epg_btn) <- "Processing..."
       enabled(plot_epg_btn) <- FALSE
       
-      gp <- generateEPG(data=val_data, kit=val_kit, title=val_title,
-                        peaks=val_peaks, type=val_type, collapse=val_collapse,
-                        silent=FALSE, ignore.case=val_ignore, at=0,
-                        scale=val_scale, limit.x=val_fix, label.size=val_size,
-                        label.angle=val_angle, label.vjust=val_vjust,
-                        label.hjust=val_hjust, expand=val_expand, debug=debug)
+      gp <- generateEPG(data = val_data, kit = val_kit, title = val_title,
+                        wrap = val_wrap, boxplot = val_box, peaks = val_peaks,
+                        collapse = val_collapse, silent = FALSE,
+                        ignore.case = val_ignore, at = val_at,
+                        scale = val_scale, limit.x = val_fix,
+                        label.size = val_size, label.angle = val_angle,
+                        label.vjust = val_vjust, label.hjust = val_hjust,
+                        expand = val_expand, debug = debug)
         
-      
       # Store in global variable.
       .gPlot <<- gp
 
@@ -436,9 +442,6 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_generateEPG_gui_expand", envir=env, inherits = FALSE)){
         svalue(f1_expand_spb) <- get(".strvalidator_generateEPG_gui_expand", envir=env)
       }
-      if(exists(".strvalidator_generateEPG_gui_type", envir=env, inherits = FALSE)){
-        svalue(f1_type_opt) <- get(".strvalidator_generateEPG_gui_type", envir=env)
-      }
       if(exists(".strvalidator_generateEPG_gui_scales", envir=env, inherits = FALSE)){
         svalue(f1_scale_opt) <- get(".strvalidator_generateEPG_gui_scales", envir=env)
       }
@@ -453,6 +456,15 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       if(exists(".strvalidator_generateEPG_gui_peaks", envir=env, inherits = FALSE)){
         svalue(f1_peaks_chk) <- get(".strvalidator_generateEPG_gui_peaks", envir=env)
+      }
+      if(exists(".strvalidator_generateEPG_gui_box", envir=env, inherits = FALSE)){
+        svalue(f1_box_chk) <- get(".strvalidator_generateEPG_gui_box", envir=env)
+      }
+      if(exists(".strvalidator_generateEPG_gui_wrap", envir=env, inherits = FALSE)){
+        svalue(f1_wrap_chk) <- get(".strvalidator_generateEPG_gui_wrap", envir=env)
+      }
+      if(exists(".strvalidator_generateEPG_gui_at", envir=env, inherits = FALSE)){
+        svalue(f1_at_spb) <- get(".strvalidator_generateEPG_gui_at", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -472,12 +484,14 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       assign(x=".strvalidator_generateEPG_gui_vjust", value=svalue(f1_vjust_spb), envir=env)
       assign(x=".strvalidator_generateEPG_gui_hjust", value=svalue(f1_hjust_spb), envir=env)
       assign(x=".strvalidator_generateEPG_gui_expand", value=svalue(f1_expand_spb), envir=env)
-      assign(x=".strvalidator_generateEPG_gui_type", value=svalue(f1_type_opt), envir=env)
       assign(x=".strvalidator_generateEPG_gui_scales", value=svalue(f1_scale_opt), envir=env)
       assign(x=".strvalidator_generateEPG_gui_collapse", value=svalue(f1_collapse_chk), envir=env)
       assign(x=".strvalidator_generateEPG_gui_fix", value=svalue(f1_fix_chk), envir=env)
       assign(x=".strvalidator_generateEPG_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
       assign(x=".strvalidator_generateEPG_gui_peaks", value=svalue(f1_peaks_chk), envir=env)
+      assign(x=".strvalidator_generateEPG_gui_box", value=svalue(f1_box_chk), envir=env)
+      assign(x=".strvalidator_generateEPG_gui_wrap", value=svalue(f1_wrap_chk), envir=env)
+      assign(x=".strvalidator_generateEPG_gui_at", value=svalue(f1_at_spb), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -499,9 +513,6 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_generateEPG_gui_expand", envir=env, inherits = FALSE)){
         remove(".strvalidator_generateEPG_gui_expand", envir = env)
       }
-      if(exists(".strvalidator_generateEPG_gui_type", envir=env, inherits = FALSE)){
-        remove(".strvalidator_generateEPG_gui_type", envir = env)
-      }
       if(exists(".strvalidator_generateEPG_gui_scales", envir=env, inherits = FALSE)){
         remove(".strvalidator_generateEPG_gui_scales", envir = env)
       }
@@ -516,6 +527,15 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       if(exists(".strvalidator_generateEPG_gui_peaks", envir=env, inherits = FALSE)){
         remove(".strvalidator_generateEPG_gui_peaks", envir = env)
+      }
+      if(exists(".strvalidator_generateEPG_gui_box", envir=env, inherits = FALSE)){
+        remove(".strvalidator_generateEPG_gui_box", envir = env)
+      }
+      if(exists(".strvalidator_generateEPG_gui_wrap", envir=env, inherits = FALSE)){
+        remove(".strvalidator_generateEPG_gui_wrap", envir = env)
+      }
+      if(exists(".strvalidator_generateEPG_gui_at", envir=env, inherits = FALSE)){
+        remove(".strvalidator_generateEPG_gui_at", envir = env)
       }
       
       if(debug){
