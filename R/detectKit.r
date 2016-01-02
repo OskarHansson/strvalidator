@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.01.2016: Added support for vector.
 # 08.11.2015: Changed default to index=TRUE. Export function.
 # 03.08.2014: Added support for kit attribute.
 # 15.04.2014: Revert to previous match if no match in a method.
@@ -27,7 +28,7 @@
 #' If an attribute does not exist the function looks at the markers
 #' in the dataset and returns the most likely kit(s).
 #' 
-#' @param data data frame.
+#' @param data data frame with column 'Marker' or vector with marker names.
 #' @param index logical, returns kit index if TRUE or short name if FALSE.
 #' @param debug logical, prints debug information if TRUE.
 #' 
@@ -37,9 +38,15 @@
 #' 
 
 detectKit <- function(data, index=FALSE, debug=FALSE){
-  
-  if(!'Marker' %in% colnames(data)){
-    stop("Data frame must contain a column 'Marker'")
+
+  if(is.data.frame(data)){
+    if(!'Marker' %in% colnames(data)){
+      stop("Data frame must contain a column 'Marker'")
+    }
+  } else if(is.vector(data)){
+    if(!is.character(data)){
+      stop("Vector must be a character vector with marker names")
+    }
   }
   
   # Get kit attribute.
@@ -76,8 +83,20 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
     
   }
   
-  # Get unique markers.
-  markers <- unique(data$Marker)
+  if(is.data.frame(data)){
+
+    # Get unique markers.
+    markers <- unique(data$Marker)
+    
+  } else if(is.vector(data)){
+    
+    # Get unique markers.
+    markers <- unique(data)
+    
+  } else {
+    
+    stop("'data' must be a data.frame or character vector.")
+  }
   
   # Get available kits.
   kits <- getKit()
@@ -138,8 +157,22 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
     
     # Try to distinguish based on marker order.
     kitScore <- vector()
-    markers<-unique(data$Marker)
 
+    if(is.data.frame(data)){
+      
+      # Get unique markers.
+      markers <- unique(data$Marker)
+      
+    } else if(is.vector(data)){
+      
+      # Get unique markers.
+      markers <- unique(data)
+      
+    } else {
+      
+      stop("'data' must be a data.frame or character vector.")
+    }
+    
     # Loop over all candidate kits.
     for(c in seq(along=detectedKit)){
       

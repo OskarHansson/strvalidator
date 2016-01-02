@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: Return multiple kits by specifying a vector? Not priority since easy to loop.
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.12.2016: Possible to return multiple kits by specifying a vector.
 # 29.08.2015: Added importFrom.
 # 28.06.2015: Changed parameter names to format: lower.case
 # 14.12.2014: what='Gender' changed to 'Sex.Marker' now return vector.
@@ -118,7 +119,7 @@ getKit<-function(kit=NULL, what=NA, show.messages=FALSE, .kit.info=NULL, debug=F
 		# Assign matching kit information.
 		} else {
 		  
-		  currentKit <- .kit.info[.kit.info$Short.Name==kits[index], ]
+		  currentKit <- .kit.info[.kit.info$Short.Name %in% kits[index], ]
       
       res <- data.frame(Panel = currentKit$Panel,
                         Short.Name = currentKit$Short.Name,
