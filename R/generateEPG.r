@@ -1,6 +1,10 @@
 ################################################################################
 # TODO LIST
+<<<<<<< HEAD
 # TODO: Fix problem with overplotting resulting in 'invisible' peaks.
+=======
+# TODO: ...
+>>>>>>> aee045b354d9416d67fd8d3d4a4708fb5dfaeeff
 
 ################################################################################
 # CHANGE LOG
