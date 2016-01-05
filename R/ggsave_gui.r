@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.01.2016: Fixed 'dev' not find error in ggplot2 2.0.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus'.
 # 06.10.2014: Correct pixel dimensions are now shown.
@@ -21,11 +22,6 @@
 #'
 #' @details
 #' Simple GUI wrapper for ggsave.
-#' NB! Uses a workaround bypassing the class check for saving 'complex plots':
-#' Step 1 is performed in the \code{strvalidator} plot functions.
-#' \url{http://stackoverflow.com/a/20433318/2173340}  
-#' Step 2 is performed in this function \code{ggsave_gui}.
-#' \url{http://stackoverflow.com/a/18407452/2173340}  
 #' 
 #' @param ggplot plot object.
 #' @param name optional string providing a file name.
@@ -55,11 +51,6 @@ ggsave_gui <- function(ggplot=NULL, name="", env=parent.frame(),
     print("Device list")
     print(dev.list())
   }
-  
-  # This is step 2 in workaround to save 'complex plots'.
-  # Step 1: http://stackoverflow.com/a/20433318/2173340
-  # Step 2: http://stackoverflow.com/a/18407452/2173340
-  ggsave <- ggplot2::ggsave; body(ggsave) <- body(ggplot2::ggsave)[-2]
   
   # Constants.
   .separator <- .Platform$file.sep # Platform dependent path separator.
@@ -403,6 +394,8 @@ ggsave_gui <- function(ggplot=NULL, name="", env=parent.frame(),
     if(debug){
       print("val_name")
       print(val_name)
+      print("val_ext")
+      print(val_ext)
       print("val_replace")
       print(val_replace)
       print("val_w")
