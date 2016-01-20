@@ -5,6 +5,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
+# 06.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 25.08.2015: Fixed error when 'stack' and 'slim' is empty or "".
 # 01.06.2015: Fixed columns is found using 'match' instead of 'grep'
@@ -219,8 +221,17 @@ slim <- function(data, fix=NULL, stack=NULL,
       listRes <- append(fixedDataExt, listStack)
       for(i in seq(along=listRes)){
         res[,i] <- as.character(listRes[[i]])
-      }  
+      }
       
+      # Add attributes to result.
+      attr(res, which="slim, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+      attr(res, which="slim, call") <- match.call()
+      attr(res, which="slim, date") <- date()
+      attr(res, which="slim, data") <- substitute(data)
+      attr(res, which="slim, fix") <- fix
+      attr(res, which="slim, keep.na") <- keep.na
+      attr(res, which="slim, stack") <- stack
+
       if(debug){
         print(head(res))
         print(str(res))

@@ -1,10 +1,6 @@
 ################################################################################
 # TODO LIST
-<<<<<<< HEAD
 # TODO: Fix problem with overplotting resulting in 'invisible' peaks.
-=======
-# TODO: ...
->>>>>>> aee045b354d9416d67fd8d3d4a4708fb5dfaeeff
 
 ################################################################################
 # CHANGE LOG
@@ -267,6 +263,16 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
   # Add unique 'Id' column for grouping.
   if("Size" %in% names(data)){
     
+    # Check if numeric.
+    if(!is.numeric(data$Size)){
+      
+      # Convert to numeric.    
+      data$Size <- as.numeric(data$Size)
+      
+      message("'Size' must be numeric. 'data' converted!")
+      
+    }  
+    
     # Combine rounded 'Size' and 'Marker'.
     # This can preserve 'OL' peaks but may also result in two peaks for alleles.
     data$Id <- paste(round(data$Size, 0), data$Marker, sep="")
@@ -401,7 +407,7 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
   mYmax <- vector()
   
   # Find max peak height by dye channel.
-  DT <- data.table(data)
+  DT <- data.table::data.table(data)
   
   # NB! Use keyby instead of key to sort the result.
   tmpYmax <- DT[, list(Max = max(Height)), keyby = Dye]

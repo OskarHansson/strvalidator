@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 21.10.2015: Added attributes.
 # 06.10.2015: Added importFrom for data.table
 # 28.08.2015: Added importFrom
@@ -130,7 +131,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   if(is.null(data$Sample.File.Name)){
     stop("'data' must contain a column 'Sample.File.Name'")
   }
-
+  
   if(is.null(data$Marker)){
     stop("'data' must contain a column 'Marker'")
   }
@@ -142,7 +143,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   if(is.null(data$Height)){
     stop("'data' must contain a column 'Height'")
   }
-
+  
   if(is.null(data$Data.Point)){
     stop("'data' must contain a column 'Data.Point'")
   }
@@ -157,14 +158,14 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     stop("'data' must be in 'slim' format",
          call. = TRUE)
   }
-
+  
   if(sum(grepl("Data.Point", names(data))) > 1){
     stop("'data' must be in 'slim' format",
          call. = TRUE)
   }
   
   if(!is.null(ref)){
-
+    
     if(is.null(ref$Sample.Name)){
       stop("'ref' must contain a column 'Sample.Name'")
     }
@@ -220,7 +221,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     stop("'range.ils' must be numeric",
          call. = TRUE)
   }
-
+  
   if(!is.numeric(k)){
     stop("'k' must be numeric",
          call. = TRUE)
@@ -230,7 +231,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     stop("'rank.t' must be numeric",
          call. = TRUE)
   }
-
+  
   if(!is.numeric(alpha)){
     stop("'alpha' must be numeric",
          call. = TRUE)
@@ -252,7 +253,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   }
   
   # Prepare -------------------------------------------------------------------
-
+  
   if(!all(c("Blocked", "Dye") %in% names(data))){
     # Block data for AT calculation
     # (need to be separate function to enable control plots in GUI).
@@ -270,7 +271,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   
   # Get number of samples.
   nSamples <- length(unique(data$Sample.File.Name))
-
+  
   # Internal functions --------------------------------------------------------
   
   # Function to calculate the percentile rank .
@@ -278,7 +279,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   
   # Function to get height above a percentile.
   rankThreshold <- function(x, t) min(x[percentileRank(x) > t])
-
+  
   # Convert -------------------------------------------------------------------
   
   # Strip blocked data, and ILS channel.
@@ -291,21 +292,21 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   
   # Calculate for sample per dye.
   at.sample.dye <- dt[, list(Mean=mean(Height, na.rm=TRUE),
-                    Sd=sd(Height, na.rm=TRUE),
-                    Peaks=sum(Blocked==FALSE),
-                    AT2=rankThreshold(Height, rank.t)),
-             by=list(Sample.File.Name, Dye)]
+                             Sd=sd(Height, na.rm=TRUE),
+                             Peaks=sum(Blocked==FALSE),
+                             AT2=rankThreshold(Height, rank.t)),
+                      by=list(Sample.File.Name, Dye)]
   
   # Extract AT2 and remove from dataset to get final row order correct.
   at.sample.dye.AT2 <- at.sample.dye$AT2
   at.sample.dye$AT2 <- NULL
-
+  
   # Calculate globally for each dye.
   at.dye <- dt[, list(Mean=mean(Height, na.rm=TRUE),
-                    Sd=sd(Height, na.rm=TRUE),
-                    Peaks=sum(Blocked==FALSE),
-                    AT2=rankThreshold(Height, rank.t)),
-             by=list(Dye)]
+                      Sd=sd(Height, na.rm=TRUE),
+                      Peaks=sum(Blocked==FALSE),
+                      AT2=rankThreshold(Height, rank.t)),
+               by=list(Dye)]
   
   # Calculate for sample.
   at.sample <- dt[, list(Mean=mean(Height, na.rm=TRUE),
@@ -313,7 +314,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
                          Peaks=sum(Blocked==FALSE),
                          AT2=rankThreshold(Height, rank.t)),
                   by=list(Sample.File.Name)]
-
+  
   # Extract AT2 and remove from dataset to get final row order correct.
   at.sample.AT2 <- at.sample$AT2
   at.sample$AT2 <- NULL
@@ -322,18 +323,18 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   at.sample.dye$Sample.Mean <- rep(at.sample$Mean, each=length(dyesKit))
   at.sample.dye$Sample.Sd <- rep(at.sample$Sd, each=length(dyesKit))
   at.sample.dye$Sample.Peaks <- rep(at.sample$Peaks, each=length(dyesKit))
-
+  
   # Calculate globally for all data.
   at.global <- dt[, list(Mean=mean(Height, na.rm=TRUE),
                          Sd=sd(Height, na.rm=TRUE),
                          Peaks=sum(Blocked==FALSE),
                          AT2=rankThreshold(Height, rank.t))]
-
+  
   # Join the result.
   at.sample.dye$Global.Mean <- rep(at.global$Mean, nrow(at.sample.dye))
   at.sample.dye$Global.Sd <- rep(at.global$Sd, nrow(at.sample.dye))
   at.sample.dye$Global.Peaks <- rep(at.global$Peaks, nrow(at.sample.dye))
-
+  
   # Calculate AT1.
   at.sample.dye$AT1 <- at.sample.dye$Mean + k * at.sample.dye$Sd
   at.sample.dye$Sample.AT1 <- at.sample.dye$Sample.Mean + k * at.sample.dye$Sample.Sd
@@ -371,7 +372,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   at.sample.dye$AT4 <- at.sample.dye$Mean + abs(qt(alpha, at.sample.dye$Peaks - 1)) * (1 + 1 / 1)^0.5 * at.sample.dye$Sd
   at.sample.dye$Sample.AT4 <- at.sample.dye$Sample.Mean + abs(qt(alpha, at.sample.dye$Sample.Peaks - 1)) * (1 + 1 / 1)^0.5 * at.sample.dye$Sample.Sd
   at.sample.dye$Global.AT4 <- at.sample.dye$Global.Mean + abs(qt(alpha, at.sample.dye$Global.Peaks - 1)) * (1 + 1 / nSamples)^0.5 * at.sample.dye$Global.Sd
-
+  
   # Calculate AT4 per dye.
   at.dye$AT4 <- at.dye$Mean + abs(qt(alpha, at.dye$Peaks - 1)) * (1 + 1 / 1)^0.5 * at.dye$Sd
   for(d in seq(along=dyesKit)){
@@ -385,12 +386,12 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   
   # Add number of samples.
   at.sample.dye$Total.Samples <-  nSamples
-
+  
   # Add attributes.
   attr(at.sample.dye, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(at.sample.dye, which="calculateAT, call") <- match.call()
   attr(at.sample.dye, which="calculateAT, date") <- date()
-
+  
   # Convert back to data.frame.
   res1 <- data.frame(at.sample.dye)
   
@@ -398,13 +399,28 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   
   # Calculate complete percentile rank list.
   at.rank <- data.frame(Height=unique(sort(dt$Height)),
-                     Rank=unique(percentileRank(sort(dt$Height))),
-                     Observations=as.numeric(table(dt$Height)))
-
+                        Rank=unique(percentileRank(sort(dt$Height))),
+                        Observations=as.numeric(table(dt$Height)))
+  
   # Add attributes.
   attr(at.rank, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(at.rank, which="calculateAT, call") <- match.call()
   attr(at.rank, which="calculateAT, date") <- date()
+  attr(at.rank, which="calculateAT, data") <- substitute(data)
+  attr(at.rank, which="calculateAT, ref") <- substitute(ref)
+  attr(at.rank, which="calculateAT, block.height") <- block.height
+  attr(at.rank, which="calculateAT, height") <- height
+  attr(at.rank, which="calculateAT, block.sample") <- block.sample
+  attr(at.rank, which="calculateAT, per.dye") <- per.dye
+  attr(at.rank, which="calculateAT, range.sample") <- range.sample
+  attr(at.rank, which="calculateAT, block.ils") <- block.ils
+  attr(at.rank, which="calculateAT, range.ils") <- range.ils
+  attr(at.rank, which="calculateAT, k") <- k
+  attr(at.rank, which="calculateAT, rank.t") <- rank.t
+  attr(at.rank, which="calculateAT, alpha") <- alpha
+  attr(at.rank, which="calculateAT, ignore.case") <- ignore.case
+  attr(at.rank, which="calculateAT, word") <- word
+  attr(at.rank, which="calculateAT, debug") <- debug
   
   # Convert back to data frame.
   res2 <- data.frame(at.rank)
@@ -423,7 +439,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     print("tail(res2)")
     print(tail(res2))
   }
-
+  
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

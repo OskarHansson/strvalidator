@@ -1,77 +1,30 @@
-Version 1.5.2.9005
+Version 1.6.0
 ------------------------------------------------------------------------------
+* STR-validator now requires R version >= 3.1.3 and ggplot2 version >= 2.0.0
+* Updated kit file. Added 'Fusion 6C', removed 'ESI17'.
+  Kit sorted roughly according to vendor and release.
 * Bug fixes and improvements with the most significant listed below:
-  - calculateBalance_gui
-  Added option for exact matching, and dropping sex markers, fixed word optin not saved.
-  - plotBalance_gui
-  Implemented by dye.
-  Better default values reduce risk of errors.
-  - import / import_gui
-  Remove "0" from the default 'na.strings'.
+  - calculateDropout / calculateDropout_gui
+  Handles the case when a reference allele is NA (skip to next marker).
+  Reverted fix in 1.5.2.9000 and instead removed all NA rows from reference prior to analysis.
+  - calculateDropout_gui
+  Added automatic calculation of average peak height 'H'.
   - calculateDropout
-  Fixed reference sample name subsetting bug.
+  Fixed reference sample name subsetting bug. Confirmed with new test #09.
   Some 'warnings' changed to 'stop'.
   Better information in stop messages.
-* New functions:
-  - calculateLb / calculateLb_gui
-  Implemented locus balance calculations using data.table wich is much faster.
-  Does not require a reference dataset. Calculates as proportion, normalised,
-  or centred quantities (sum to 0). Global or by dye.
-  - calculateRatio / calculateRatio_gui / plotRatio_gui
-  Implemented calculation of locus ratios and plotting of the result.
-* New tests:
-  test-filterProfile
-    - Test for unfiltered data.
-  test-calculateDropout
-    - Test for reference subsetting bug.
-  test-calculateLb
-    - Tests for new function.
-
-Version 1.5.2.9004
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - filterProfile / filterProfile_gui
-  New parameter 'exact' for sample name matching.
-  - checkSubset / checkSubset_gui
-  New parameter 'exact' for sample name matching.
-  - calculateDropout
-  'warning' for unhandled situations changed to 'stop'.
-  Fixed reference sample name subsetting bug. Confirmed with new test 09.
-  - columns / columns_gui
-  Now possible to add new column without combining with an existing column.
-* Added attributes for the following functions:
-  filterProfile / filterProfile_gui
-
-Version 1.5.2.9003
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - import / import_gui
-  "0" now handled as NA by default.
-  New parameter 'na.strings' to specify what gets converted to NA.
+  - readPanelsFile
+  Convert all color names to lower case. Fixes kit plot D16 bug in Fusion 6C.
   - calculateBalance / calculateBalance_gui
   Added option to calculate Hb by LMW/HMW, and updated test-calculateBalance accordingly.
-  - addData / addData_gui
-  New parameter to specify columns to add.
-  - heightToPeak
-  Improved implementation.
-  - checkSubset_gui
-  'Marker' is no longer a required column.
-* Removed global variables for ggplot2 in 'globals.R', added importFrom in functions.
-* Added attributes for the following functions:
-  addData
-  addData_gui
-  heightToPeak
-
-Version 1.5.2.9002
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
   - calculateBalance_gui
   Added automatic calculation of average peak height 'H'.
+  Added option for exact matching, and drop sex markers, fixed word option not saved.
   - plotBalance_gui
   Added new plot options 'Hb vs. Marker' and 'Lb vs. Marker'.
   Added options to plot all data 'Facet per marker and wrap by dye'. 
-  - calculateDropout_gui
-  Added automatic calculation of average peak height 'H'.
+  Implemented by dye.
+  Better default values reduce risk of plot error.
   - editData_gui
   Added option to limit number of rows.
   Added option to show attributes.
@@ -80,40 +33,66 @@ Version 1.5.2.9002
   - cropData_gui
   Option to remove NA (earlier NA was automatically removed).
   Fixed 'Info' not updated when selecting a column.
+  - import / import_gui
+  New parameter 'na.strings' to specify what gets converted to NA.
+  - addData / addData_gui
+  New parameter to specify columns to add.
+  - heightToPeak
+  Improved implementation.
+  - checkSubset_gui
+  'Marker' is no longer a required column.
+  - filterProfile / filterProfile_gui
+  New parameter 'exact' for sample name matching.
+  - checkSubset / checkSubset_gui
+  New parameter 'exact' for sample name matching.
+  - columns / columns_gui
+  Now possible to add new column without combining with an existing column.
+  - ggsave_gui
+  Updated to work with ggplot2 2.0. Fixes error 'dev' function not found.
+  - generateEPG / generateEPG_gui
+  Rewrote funtion and fixed dye channel bug introduced in ggplot2 2.0.
 * New functions:
+  - scrambleAlleles
+  Scrambles alleles in a dataset to anonymise the profile.
   - colConvert
   - calculateSpike / calculateSpike_gui
+  Detection of spikes in profiles.
   - calculateAllele
+  Counts the number of each allele per marker over the entire dataset.
+  - calculateLb / calculateLb_gui
+  Implemented locus balance calculations using data.table wich is much faster.
+  Does not require a reference dataset. Calculates as proportion, normalised,
+  or centred quantities (sum to 0). Global or by dye.
+  - calculateRatio / calculateRatio_gui / plotRatio_gui
+  Implemented calculation of locus ratios and plotting of the result.
 * New exported function:
   - detectKit
+* New tests:
+  test-filterProfile
+    - Test for unfiltered data.
+  test-calculateDropout
+    - Test for reference subsetting bug.
+  test-calculateLb
+    - Tests for new function.
+* Removed global variables for ggplot2 in 'globals.R', added importFrom in functions.
+* Functions removed:
+  - compact
 * Added attributes for the following functions:
-  import
-  import_gui
-  calculateAT
-  calculateAT_gui
-  calculateBalance
-  calculateBalance_gui
-  calculateDropout
-  calculateDropout_gui
-  calculateStutter
-  calculateStutter_gui
-
-Version 1.5.2.9001
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - readPanelsFile
-  Convert all color names to lower case. Fixes kit plot D16 bug in Fusion 6C.
-  - calculateDropout / calculateDropout_gui
-  Reverted fix in 1.5.2.9000 and instead removed all NA rows from reference prior to analysis.
-* Updated kit file. Added 'Fusion 6C', removed 'ESI17'.
-  Kit sorted roughly according to vendor and release.
-  
-
-Version 1.5.2.9000
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - calculateDropout / calculateDropout_gui
-  Handles the case when a reference allele is NA (skip to next marker).
+  - addColor/addDye_gui
+  - addData/addData_gui
+  - addMarker/addMarker_gui
+  - addSize/addSize_gui
+  - calculateAT/calculateAT_gui
+  - calculateBalance/calculateBalance_gui
+  - calculateDropout/calculateDropout_gui
+  - calculateHeight/calculateHeight_gui
+  - calculateStutter/calculateStutter_gui
+  - filterProfile/filterProfile_gui
+  - heightToPeak
+  - import/import_gui
+  - slim/slim_gui
+  - tableBalance/tableBalance_gui
+  - trim/trim_gui
 
 Version 1.5.2
 ------------------------------------------------------------------------------

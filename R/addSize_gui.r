@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
 # 27.11.2014: Fixed bug (GitHub issue #7) introduced in strvalidator version 1.3.1.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -195,8 +196,8 @@ addSize_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     # Get values.
     val_kit <- svalue(kit_drp)
     val_data <- .gData
+    val_data_name <- .gDataName
     val_name <- svalue(f2_save_edt)
-    val_data <- .gData
     val_bins <- svalue(f1_size_opt, index=TRUE) == 1 # TRUE / FALSE
     
     if(debug){
@@ -225,7 +226,12 @@ addSize_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     
     datanew <- addSize(data=val_data, kit=val_kitinfo,
                        bins=val_bins, debug=debug)
-    
+
+    # Add attributes.
+    attr(datanew, which="addSize_gui, data") <- val_data_name
+    attr(datanew, which="addSize_gui, kit") <- val_kit
+    attr(datanew, which="addSize_gui, bins") <- val_bins
+
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
     

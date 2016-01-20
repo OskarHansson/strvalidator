@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.12.2016: Fixed options save bug.
 # 30.12.2015: First version.
 
 #' @title Calculate Locus Balance
@@ -569,7 +570,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
     # Then load settings if true.
     if(svalue(savegui_chk)){
       if(exists(".strvalidator_calculateLb_gui_option", envir=env, inherits = FALSE)){
-        svalue(f1_options_lb) <- get(".strvalidator_calculateLb_gui_option", envir=env)
+        svalue(f1_lb_opt) <- get(".strvalidator_calculateLb_gui_option", envir=env)
       }
       if(exists(".strvalidator_calculateLb_gui_dye", envir=env, inherits = FALSE)){
         svalue(f1_dye_chk) <- get(".strvalidator_calculateLb_gui_dye", envir=env)
@@ -608,7 +609,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
     if(svalue(savegui_chk)){
       
       assign(x=".strvalidator_calculateLb_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".strvalidator_calculateLb_gui_option", value=svalue(f1_options_lb), envir=env)
+      assign(x=".strvalidator_calculateLb_gui_option", value=svalue(f1_lb_opt), envir=env)
       assign(x=".strvalidator_calculateLb_gui_dye", value=svalue(f1_dye_chk), envir=env)
       assign(x=".strvalidator_calculateLb_gui_ol", value=svalue(f1_ol_chk), envir=env)
       assign(x=".strvalidator_calculateLb_gui_sex", value=svalue(f1_sex_chk), envir=env)

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 07.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -51,6 +52,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
   
   # Global variables.
   .gData <- data.frame(No.Data=NA)
+  .gDataName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -154,6 +156,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Load or change components.
       .gData <<- get(val_obj, envir=env)
+      .gDataName <<- val_obj
 
       .refresh_fix_tbl()
       .refresh_stack_tbl()
@@ -185,6 +188,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gData <<- data.frame(No.Data=NA)
+      .gDataName <<- NULL
       svalue(fix_edt) <- ""
       svalue(stack_edt) <- ""
       .refresh_fix_tbl()
@@ -334,6 +338,8 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
     
     # Get new dataset name.
     val_name <- svalue(f2_save_edt)
+    val_data <- .gData
+    val_data_name <- .gDataName
     
     if(nchar(val_name) > 0) {
       
@@ -347,8 +353,8 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       stack_val <- unlist(strsplit(stack_val, "|", fixed = TRUE))
       
       if(debug){
-        print(".gData")
-        print(names(.gData))
+        print("val_data")
+        print(names(val_data))
         print("fix_val")
         print(fix_val)
         print("stack_val")
@@ -361,9 +367,15 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       svalue(slim_btn) <- "Processing..."
       enabled(slim_btn) <- FALSE
       
-      datanew <- slim(data=.gData, fix=fix_val, stack=stack_val,
+      datanew <- slim(data=val_data, fix=fix_val, stack=stack_val,
                       keep.na=keep_val, debug=debug)
       
+      # Add attributes.
+      attr(datanew, which="slim_gui, data") <- val_data_name
+      attr(datanew, which="slim_gui, fix") <- fix_val
+      attr(datanew, which="slim_gui, stack") <- stack_val
+      attr(datanew, which="slim_gui, keep.na") <- keep_val
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

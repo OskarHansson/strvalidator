@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
 # 17.12.2014: Fixed error NA Dye for e.g. Yfiler Plus (added 'toupper' in 'match' calls).
 # 11.05.2014: Added 'orange' and 'purple'.
@@ -365,6 +366,17 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
     warning("Unsupported data type!\n No color was added!")
     
   }
+  
+  # Add attributes to result.
+  attr(data, which="addColor, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(data, which="addColor, call") <- match.call()
+  attr(data, which="addColor, date") <- date()
+  attr(data, which="addColor, data") <- substitute(data)
+  attr(data, which="addColor, kit") <- kit
+  attr(data, which="addColor, have") <- have
+  attr(data, which="addColor, need") <- need
+  attr(data, which="addColor, overwrite") <- overwrite
+  attr(data, which="addColor, ignore.case") <- ignore.case
   
   if(debug){
     print("Return")

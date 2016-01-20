@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Fixed attributes window bug. Error when close using X.
 # 26.10.2015: Fixed attributes window bug.
 # 04.10.2015: Added options to limit number of rows, and show attributes.
 # 28.08.2015: Added importFrom.
@@ -196,7 +197,9 @@ editData_gui <- function(env=parent.frame(), savegui=NULL, data=NULL,
     if(svalue(f1_show_attr_chk)){
       .showAttributes()
     } else {
-      visible(w_attributes) <- FALSE
+      if(isExtant(w_attributes)){
+        visible(w_attributes) <- FALSE
+      }
     }
     
   } )

@@ -1,22 +1,18 @@
-## Resubmission
-
-This is a resubmission.
-
-In this version I have removed the 'choose.dir' call from the 'import' function (it is Windows specific).
-
 ## Test environments
-* local Windows 7 (64-bit) install, R 3.2.2, RStudio 0.99.473
-* win-builder: devel r69224 (2015-08-30) and release version 3.2.2 (2015-08-14)
+* local Windows 7 (64-bit) install, R 3.2.3, RStudio 0.99.491
+* win-builder: devel 2016-01-16 r69946 and release version 3.2.3 (2015-12-10)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-There was 1 NOTE for the local build:
+There was 1 NOTE:
 
-* checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Oskar Hansson <oskar.hansson@fhi.no>'
+* Possibly mis-spelled words in DESCRIPTION:
+  ENFSI (20:68)
+  STR (4:60, 18:13)
+  SWGDAM (22:6)
 
-  Maintainer address is correct.
+  Abbreviations are spelled out.
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package.

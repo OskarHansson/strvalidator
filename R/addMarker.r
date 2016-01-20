@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 28.08.2015: Added importFrom
 # 15.12.2014: Changed parameter names to format: lower.case
 # 15.01.2014: Added message to show progress.
@@ -144,6 +145,14 @@ addMarker <- function(data, marker, ignore.case=FALSE, debug=FALSE){
   
   # RETURN --------------------------------------------------------------------
   
+  # Add attributes to result.
+  attr(res, which="addMarker, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(res, which="addMarker, call") <- match.call()
+  attr(res, which="addMarker, date") <- date()
+  attr(res, which="addMarker, data") <- substitute(data)
+  attr(res, which="addMarker, marker") <- marker
+  attr(res, which="addMarker, ignore.case") <- ignore.case
+
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

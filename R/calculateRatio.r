@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 22.12.2015: First version.
 
 #' @title Calculate Ratio
@@ -322,6 +323,15 @@ calculateRatio <- function(data, ref=NULL, numerator=NULL, denominator=NULL, gro
   attr(res, which="calculateRatio, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="calculateRatio, call") <- match.call()
   attr(res, which="calculateRatio, date") <- date()
+  attr(res, which="calculateRatio, data") <- substitute(data)
+  attr(res, which="calculateRatio, ref") <- substitute(ref)
+  attr(res, which="calculateRatio, numerator") <- numerator
+  attr(res, which="calculateRatio, denominator") <- denominator
+  attr(res, which="calculateRatio, group") <- group
+  attr(res, which="calculateRatio, ol.rm") <- ol.rm
+  attr(res, which="calculateRatio, ignore.case") <- ignore.case
+  attr(res, which="calculateRatio, word") <- word
+  attr(res, which="calculateRatio, exact") <- exact
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

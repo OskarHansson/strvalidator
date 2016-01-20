@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -195,6 +196,7 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
     # Get values.
     val_kit <- svalue(kit_drp)
     val_data <- .gData
+    val_data_name <- .gDataName
     val_ignore <- svalue(f1_ignore_chk)
     val_name <- svalue(f2_save_edt)
     
@@ -209,9 +211,15 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
     svalue(add_btn) <- "Processing..."
     enabled(add_btn) <- FALSE
     
-    datanew <- addMarker(data=.gData,
+    datanew <- addMarker(data=val_data,
                          marker=getKit(val_kit, what="Marker"),
                          ignore.case=val_ignore, debug=debug)
+    
+    # Add attributes.
+    attr(datanew, which="addMarker_gui, data") <- val_data_name
+    attr(datanew, which="addMarker_gui, kit") <- val_kit
+    attr(datanew, which="addMarker_gui, ignore.case") <- val_ignore
+
     
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)

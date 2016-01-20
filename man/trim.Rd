@@ -9,7 +9,7 @@ trim(data, samples = NULL, columns = NULL, word = FALSE,
   rm.na.col = TRUE, rm.empty.col = TRUE, missing = NA, debug = FALSE)
 }
 \arguments{
-\item{data}{data frame with genotype data.}
+\item{data}{data.frame with genotype data.}
 
 \item{samples}{string giving sample names separated by pipe (|).}
 

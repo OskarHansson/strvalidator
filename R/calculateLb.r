@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 22.12.2015: First version.
 
 #' @title Calculate Inter-locus Balance
@@ -394,6 +395,8 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   attr(res, which="calculateLb, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="calculateLb, call") <- match.call()
   attr(res, which="calculateLb, date") <- date()
+  attr(res, which="calculateLb, data") <- substitute(data)
+  attr(res, which="calculateLb, ref") <- substitute(ref)
   attr(res, which="calculateLb, option") <- option
   attr(res, which="calculateLb, by.dye") <- by.dye
   attr(res, which="calculateLb, ol.rm") <- ol.rm
@@ -403,7 +406,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   attr(res, which="calculateLb, exact") <- exact
   attr(res, which="calculateLb, na") <- na
   attr(res, which="calculateLb, kit") <- kit
-  attr(res, which="calculateLb, debug") <- debug
 
   # Convert to data.table.  
   res <- as.data.frame(res)

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Fixed theme methods not found and added more themes.
 # 22.12.2015: First version.
 
 #' @title Plot Ratio
@@ -26,7 +27,10 @@
 #' 
 #' @importFrom utils help
 #' @importFrom stats as.formula
-#' @importFrom ggplot2 ggplot aes_string facet_wrap
+#' @importFrom ggplot2 ggplot aes_string facet_wrap theme_gray theme_bw
+#'  theme_linedraw theme_light theme_dark theme_minimal theme_classic
+#'  theme_void 
+#' @importFrom graphics par
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
@@ -178,8 +182,9 @@ plotRatio_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
 
   f1g2 <- glayout(container = f1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
-  items_theme <- c("theme_grey()","theme_bw()","theme_dark()",
-                   "theme_minimal()","theme_void()")
+  items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
+                   "theme_light()","theme_dark()","theme_minimal()",
+                   "theme_classic()","theme_void()")
   f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
                                          selected = 1,
                                          container = f1g2)

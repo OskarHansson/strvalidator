@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 07.12.2015: Fixed reference sample name subsetting bug.
 # 05.12.2015: More information in 'stop' messages.
 #            'warning' for unhandled combinations changed to 'stop'.
@@ -28,7 +29,6 @@
 # 20.10.2013: Fixed dropout always scoring for 'Model'. 
 # 17.10.2013: New parameter threshold, and corrections complying with ref. 2012. 
 # 18.07.2013: Fixed "OL" bug.
-# 18.07.2013: Added 'debug' parameter, example, and text in details.
 
 #' @title Calculate Drop-out Events
 #'
@@ -939,6 +939,11 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
   attr(dataDrop, which="calculateDropout, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(dataDrop, which="calculateDropout, call") <- match.call()
   attr(dataDrop, which="calculateDropout, date") <- date()
+  attr(dataDrop, which="calculateDropout, data") <- substitute(data)
+  attr(dataDrop, which="calculateDropout, ref") <- substitute(ref)
+  attr(dataDrop, which="calculateDropout, threshold") <- threshold
+  attr(dataDrop, which="calculateDropout, method") <- method
+  attr(dataDrop, which="calculateDropout, ignore.case") <- ignore.case
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

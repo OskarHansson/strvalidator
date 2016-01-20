@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 09.01.2016: Added more attributes to result.
 # 30.11.2015: More efficient implementation. Added attributes.
 # 29.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
@@ -115,6 +116,9 @@ heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
   attr(data, which="heightToPeak, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(data, which="heightToPeak, call") <- match.call()
   attr(data, which="heightToPeak, date") <- date()
+  attr(data, which="heightToPeak, data") <- substitute(data)
+  attr(data, which="heightToPeak, width") <- width
+  attr(data, which="heightToPeak, keep.na") <- keep.na
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

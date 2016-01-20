@@ -15,6 +15,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.01.2016: Fixed save attribute saves dataset.
+# 09.01.2016: Added more attributes to result.
 # 26.10.2015: Added attributes.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 30.11.2013: 'warning' changed to 'message' when data is converted.
@@ -72,6 +74,9 @@
 
 calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
                              replace.val=NULL, by.val=NULL, debug=FALSE){
+
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -645,7 +650,14 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
   attr(stutterRatio, which="calculateStutter, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(stutterRatio, which="calculateStutter, call") <- match.call()
   attr(stutterRatio, which="calculateStutter, date") <- date()
-
+  attr(stutterRatio, which="calculateStutter, data") <- attr_data
+  attr(stutterRatio, which="calculateStutter, ref") <- substitute(ref)
+  attr(stutterRatio, which="calculateStutter, back") <- back
+  attr(stutterRatio, which="calculateStutter, forward") <- forward
+  attr(stutterRatio, which="calculateStutter, interference") <- interference
+  attr(stutterRatio, which="calculateStutter, replace.val") <- replace.val
+  attr(stutterRatio, which="calculateStutter, by.val") <- by.val
+  
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

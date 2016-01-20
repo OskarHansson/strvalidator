@@ -7,6 +7,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Fixed theme methods not found and added more themes.
+# 04.01.2016: Fixed error object 'val_ncol' not found when val_wrap=1.
 # 30.12.2015: Wrapping options changed to radio button and implemented by Dye.
 # 30.12.2015: Changed default for drop sex markers to FALSE.
 # 30.12.2015: Wrapped 'is.numeric' with checking that columns exist.
@@ -59,7 +61,9 @@
 #' @importFrom  data.table data.table
 #' @importFrom ggplot2 ggplot aes_string geom_boxplot geom_point position_jitter
 #'  facet_grid facet_wrap scale_colour_manual coord_cartesian guides guide_legend
-#'  theme element_text labs xlab ylab element_blank ggplotGrob
+#'  theme element_text labs xlab ylab element_blank ggplotGrob theme_gray
+#'  theme_bw theme_linedraw theme_light theme_dark theme_minimal theme_classic
+#'  theme_void 
 #' 
 #' @return TRUE
 #' 
@@ -225,8 +229,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
 
   f1g2 <- glayout(container = f1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
-  items_theme <- c("theme_grey()","theme_bw()","theme_dark()",
-                   "theme_minimal()","theme_void()")
+  items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
+                   "theme_light()","theme_dark()","theme_minimal()",
+                   "theme_classic()","theme_void()")
   f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
                                          selected = 1,
                                          container = f1g2)
@@ -710,19 +715,19 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         message("val_wrap=1/2 overrides and set complex=FALSE")
       }
       
+      # Make data frame from dataset marker levels.
+      markerDye <- data.frame(Marker=levels(.gData$Marker))
+      # Add colors.
+      markerDye <- addColor(data=markerDye, kit=val_kit)
+      # Get Marker and Dye column.
+      markerDye <- markerDye[c("Marker","Dye")]
+      # Extract unique elements.
+      uniqueMarkerDye <- markerDye[!duplicated(markerDye),]
+      # Calculate number of unique columns per dye.
+      val_ncol <- unique(table(uniqueMarkerDye$Dye))
+
       # Check if 'simple' or 'complex' plotting:
       if(is.null(complex)){
-        
-        # Make data frame from dataset marker levels.
-        markerDye <- data.frame(Marker=levels(.gData$Marker))
-        # Add colors.
-        markerDye <- addColor(data=markerDye, kit=val_kit)
-        # Get Marker and Dye column.
-        markerDye <- markerDye[c("Marker","Dye")]
-        # Extract unique elements.
-        uniqueMarkerDye <- markerDye[!duplicated(markerDye),]
-        # Calculate number of unique columns per dye.
-        val_ncol <- unique(table(uniqueMarkerDye$Dye))
         
         # Auto detect if complex plot.
         complex <- length(val_ncol) > 1

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -194,6 +195,7 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     
     # Get values.
     val_data <- .gData
+    val_data_name <- .gDataName
     val_ratio <- as.numeric(svalue(f1g1_quant_spb))
     val_scope <- svalue(f1g1_scope_opt)
     val_name <- svalue(f2_save_edt)
@@ -208,6 +210,11 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                    quant=val_ratio,
                    scope=val_scope)
       
+      # Add attributes.
+      attr(datanew, which="tableBalance_gui, data") <- val_data_name
+      attr(datanew, which="tableBalance_gui, ratio") <- val_ratio
+      attr(datanew, which="tableBalance_gui, scope") <- val_scope
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

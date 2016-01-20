@@ -27,7 +27,7 @@
 # attr(dataDrop, which="[function], strvalidator") <- as.character(utils::packageVersion("strvalidator"))
 # attr(dataDrop, which="[function], call") <- match.call()
 # attr(at.rank, which="[function], date") <- date()
-# Put additional attributes in 'gui functions' like this:
+# Add additional attributes as:
 # attr(datanew, which="[function], [attribute]") <- parameter
 # Except for 'global' parameters used by other functions:
 # attr(datanew, which="kit") <- kit
@@ -651,6 +651,7 @@ strvalidator <- function(debug=FALSE){
   ws_refresh_btn <- gbutton(text="Refresh",
                             border=TRUE,
                             container = workspace_f1g1) 
+  tooltip(ws_refresh_btn) <- "Refresh the workspace"
   
   ws_remove_btn <- gbutton(text="Delete",
                            border=TRUE,
@@ -1631,7 +1632,7 @@ strvalidator <- function(debug=FALSE){
                                                     border=TRUE,
                                                     container = balance_g2) 
   
-  balance_g2[1,2] <- glabel(text="Calculate intra/inter locus balance for a dataset.",
+  balance_g2[1,2] <- glabel(text="Calculate intra/inter locus balance for a dataset (reference required).",
                             container=balance_g2)
   
   
@@ -1647,7 +1648,7 @@ strvalidator <- function(debug=FALSE){
                                                     border=TRUE,
                                                     container = balance_g2) 
   
-  balance_g2[2,2] <- glabel(text="Calculate inter locus balance for a dataset.",
+  balance_g2[2,2] <- glabel(text="Calculate inter locus balance for a dataset (no reference required).",
                             container=balance_g2)
   
   

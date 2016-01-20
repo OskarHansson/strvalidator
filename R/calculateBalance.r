@@ -7,6 +7,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.01.2016: Fixed save attribute saves dataset.
+# 09.01.2016: Added more attributes to result.
 # 30.12.2015: Removed unused code.
 # 02.12.2015: Added error message at 'stop' when >2 matching alleles or peaks.
 # 13.11.2015: Added option to calculate Hb as LMW/HMW.
@@ -71,6 +73,9 @@
 calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
                              hb=1, ignore.case=TRUE, word=FALSE, debug=FALSE){
   
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -527,7 +532,14 @@ calculateBalance <- function(data, ref, lb="prop", per.dye=TRUE,
   attr(res, which="calculateBalance, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="calculateBalance, call") <- match.call()
   attr(res, which="calculateBalance, date") <- date()
-
+  attr(res, which="calculateBalance, data") <- attr_data
+  attr(res, which="calculateBalance, ref") <- substitute(ref)
+  attr(res, which="calculateBalance, lb") <- lb
+  attr(res, which="calculateBalance, per.dye") <- per.dye
+  attr(res, which="calculateBalance, hb") <- hb
+  attr(res, which="calculateBalance, ignore.case") <- ignore.case
+  attr(res, which="calculateBalance, word") <- word
+  
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
+# 06.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 07.05.2014: Replace 'Inf' with 'NA' (min return Inf if no value).
 # 07.05.2014: Added 'suppressWarnings' around 'min' to prevent warning if no values.
@@ -141,6 +143,14 @@ tableBalance <- function(data, scope="locus", quant=0.05){
     res$Lb.Min[is.infinite(res$Lb.Min)] <- as.numeric(NA)
   }
   
+  # Add attributes to result.
+  attr(res, which="tableBalance, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(res, which="tableBalance, call") <- match.call()
+  attr(res, which="tableBalance, date") <- date()
+  attr(res, which="tableBalance, data") <- substitute(data)
+  attr(res, which="tableBalance, scope") <-  scope
+  attr(res, which="tableBalance, quant") <- quant
+
   return(res)
   
 }

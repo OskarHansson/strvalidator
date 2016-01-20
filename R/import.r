@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 15.12.2015: Removed "0" from the default 'na.strings'.
 # 04.12.2015: Added parameter 'na.strings'.
 # 09.11.2015: Added "0" to 'na.strings' in 'read.table'.
@@ -276,7 +277,22 @@ import <- function (folder = TRUE, extension="txt",
   attr(res, which="import, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="import, call") <- match.call()
   attr(res, which="import, date") <- date()
-  
+  attr(res, which="import, folder") <- folder
+  attr(res, which="import, extension") <- extension
+  attr(res, which="import, suffix") <- suffix
+  attr(res, which="import, prefix") <- prefix
+  attr(res, which="import, import.file") <- import.file
+  attr(res, which="import, folder.name") <- folder.name
+  attr(res, which="import, file.name") <- time.stamp
+  attr(res, which="import, separator") <- separator
+  attr(res, which="import, ignore.case") <- ignore.case
+  attr(res, which="import, auto.trim") <- auto.trim
+  attr(res, which="import, trim.samples") <- trim.samples
+  attr(res, which="import, trim.invert") <- trim.invert
+  attr(res, which="import, auto.slim") <- auto.slim
+  attr(res, which="import, slim.na") <- slim.na
+  attr(res, which="import, na.strings") <- na.strings
+
   return(res)
   
 }

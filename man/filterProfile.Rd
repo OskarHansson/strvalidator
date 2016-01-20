@@ -5,7 +5,7 @@
 \title{Filter Profile}
 \usage{
 filterProfile(data, ref, add.missing.loci = FALSE, keep.na = FALSE,
-  ignore.case = TRUE, invert = FALSE, debug = FALSE)
+  ignore.case = TRUE, exact = FALSE, invert = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{data frame with genotype data in 'slim' format.}
@@ -19,6 +19,8 @@ Overrides keep.na=FALSE.}
 TRUE keep loci/sample even if no matching allele.}
 
 \item{ignore.case}{logical TRUE ignore case.}
+
+\item{exact}{logical TRUE use exact matching of sample names.}
 
 \item{invert}{logical TRUE filter peaks NOT matching the reference.}
 

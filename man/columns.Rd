@@ -4,8 +4,8 @@
 \alias{columns}
 \title{Column Actions}
 \usage{
-columns(data, col1, col2 = NA, operator = "&", fixed = NA, target = NA,
-  debug = FALSE)
+columns(data, col1 = NA, col2 = NA, operator = "&", fixed = NA,
+  target = NA, debug = FALSE)
 }
 \arguments{
 \item{data}{a data frame.}
@@ -32,13 +32,15 @@ data frame.
 Perform actions on columns.
 }
 \details{
-Perform actions on columns in a data frame. There are five actions: concatenate,
-add, multiply, subtract, divide. The selected action can be
-performed on two columns, or one column and a fixed value. A target column
-for the result is specified. NB! if the target column already exist it will
-be overwritten, else it will be created. A common use is to create a unique 
-Sample.Name from the existing Sample.Name column and e.g. the File.Name or File.Time
-columns. It can also be used to calculate the Amount from the Concentration.
+Perform actions on columns in a data frame. There are five actions:
+concatenate, add, multiply, subtract, divide. The selected action can be
+performed on two columns, or one column and a fixed value, or a new column
+can be added. A target column for the result is specified.
+NB! if the target column already exist it will be overwritten,
+else it will be created. A common use is to create a unique 
+Sample.Name from the existing Sample.Name column and e.g. the File.Name
+or File.Time columns. It can also be used to calculate the Amount from
+the Concentration.
 }
 \examples{
 # Get a sample dataset.
@@ -47,5 +49,7 @@ data(set2)
 set2 <- columns(data=set2, col1="Sample.Name", col2="Dye")
 # Multiply Height by 4.
 set2 <- columns(data=set2, col1="Height", operator="*", fixed=4)
+# Add a new column.
+set2 <- columns(data=set2, operator="&", fixed="1234", target="Batch")
 }
 

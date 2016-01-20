@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 26.09.2014: Implemented text field for 'exclude'.
@@ -51,6 +52,7 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
   
   # Global variables.
   .gData <- NULL
+  .gDataName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -124,6 +126,7 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
     if(exists(val_obj, envir=env, inherits = FALSE)){
       
       .gData <<- get(val_obj, envir=env)
+      .gDataName <<- val_obj
       requiredCol <- c("Sample.Name", "Height")
       
       if(!all(requiredCol %in% colnames(.gData))){
@@ -139,6 +142,7 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       
         # Reset components.
         .gData <<- NULL
+        .gDataName <<- NULL
         svalue(dataset_drp, index=TRUE) <- 1
         svalue(f0g0_samples_lbl) <- " 0 samples"
         svalue(f2_save_edt) <- ""
@@ -156,6 +160,7 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       
       # Reset components.
       .gData <<- NULL
+      .gDataName <<- NULL
       svalue(dataset_drp, index=TRUE) <- 1
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -223,11 +228,15 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
   
   addHandlerChanged(calculate_btn, handler = function(h, ...) {
     
+    val_data <- .gData
+    val_data_name <- .gDataName
     val_name <- svalue(f2_save_edt)
     val_add <- svalue(f1_add_chk)
     val_replace <- svalue(f1_replace_chk)
     val_exclude <- svalue(f1_exclude_chk)
     val_ex_values <- svalue(f1_exclude_edt)
+    val_na <- NULL
+    val_ex <- NULL
     
     if(val_replace){
       val_na <- 0
@@ -241,15 +250,21 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       val_ex <- NULL
     }
     
-    if(!is.null(.gData)){
+    if(!is.null(val_data)){
       
       # Change button.
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
-      datanew <- calculateHeight(data=.gData, na=val_na, add=val_add,
+      datanew <- calculateHeight(data=val_data, na=val_na, add=val_add,
                                  exclude=val_ex, debug=debug)
-      
+
+      # Add attributes.
+      attr(datanew, which="calculateHeight_gui, data") <- val_data_name
+      attr(datanew, which="calculateHeight_gui, na") <- val_na
+      attr(datanew, which="calculateHeight_gui, add") <- val_add
+      attr(datanew, which="calculateHeight_gui, exclude") <- val_ex
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

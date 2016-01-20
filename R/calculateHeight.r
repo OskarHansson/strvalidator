@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
+# 06.01.2016: Added attributes to result.
 # 12.10.2014: Fixed bug when NA in Allele column.
 # 26.09.2014: Accept vector for 'exclude'.
 # 12.09.2014: Included 'exclude' parameter.
@@ -256,6 +258,15 @@ calculateHeight <- function(data, na=NULL, add=TRUE, exclude=NULL, debug=FALSE){
     }
     
   }
+	
+	# Add attributes to result.
+	attr(res, which="calculateHeight, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+	attr(res, which="calculateHeight, call") <- match.call()
+	attr(res, which="calculateHeight, date") <- date()
+	attr(res, which="calculateHeight, data") <- substitute(data)
+	attr(res, which="calculateHeight, na") <- na
+	attr(res, which="calculateHeight, add") <- add
+	attr(res, which="calculateHeight, exclude") <- exclude
 
 	# Return result.
 	return(res)

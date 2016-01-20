@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom ggplot2.
 # 11.11.2015: Added more themes.
 # 07.10.2015: NA's now removed prior to plotting, and from number of observations.
@@ -44,7 +45,9 @@
 #' 
 #' @importFrom utils help str head
 #' @importFrom ggplot2 qplot ggplot aes_string stat_ecdf geom_density ggplot_build
-#'  geom_boxplot geom_segment geom_point labs
+#'  geom_boxplot geom_segment geom_point labs theme_gray theme_bw
+#'  theme_linedraw theme_light theme_dark theme_minimal theme_classic
+#'  theme_void 
 #' 
 #' @return TRUE
 
@@ -237,8 +240,9 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   f1g2 <- glayout(container = f1, spacing = 1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
-  items_theme <- c("theme_grey()","theme_bw()","theme_dark()",
-                   "theme_minimal()","theme_void()")
+  items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
+                   "theme_light()","theme_dark()","theme_minimal()",
+                   "theme_classic()","theme_void()")
   f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
                                          selected = 1,
                                          container = f1g2)

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 25.05.2015: Corrected parameter description.
 # 11.05.2015: Accepts (the first) column name containing the string 'Sample'
@@ -30,7 +31,7 @@
 #' the first column containing the string 'Sample' in mentioned order
 #' (not case sensitive). Remove unwanted columns.
 #' 
-#' @param data data frame with genotype data.
+#' @param data data.frame with genotype data.
 #' @param samples string giving sample names separated by pipe (|).
 #' @param columns string giving column names separated by pipe (|).
 #' @param word logical indicating if a word boundary should be added to 
@@ -60,6 +61,10 @@ trim <- function(data, samples=NULL, columns=NULL,
 	word=FALSE, ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
 	rm.na.col=TRUE, rm.empty.col=TRUE, missing=NA, debug=FALSE){
 
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+  attr_columns <- columns
+  
   # Variables.
   colNames <- columns
   
@@ -327,6 +332,22 @@ trim <- function(data, samples=NULL, columns=NULL,
     data <- data.frame(Name=data)
     names(data) <- colNames
   }
-  
-    return(data)
+	
+	# Add attributes to result.
+	attr(data, which="trim, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+	attr(data, which="trim, call") <- match.call()
+	attr(data, which="trim, date") <- date()
+	attr(data, which="trim, data") <- attr_data
+	attr(data, which="trim, samples") <- samples
+	attr(data, which="trim, columns") <- attr_columns
+	attr(data, which="trim, word") <- word
+	attr(data, which="trim, ignore.case") <- ignore.case
+	attr(data, which="trim, invert.s") <- invert.s
+	attr(data, which="trim, invert.c") <- invert.c
+	attr(data, which="trim, rm.na.col") <- rm.na.col
+	attr(data, which="trim, rm.empty.col") <- rm.empty.col
+	attr(data, which="trim, missing") <- missing
+	
+  return(data)
+	
 }

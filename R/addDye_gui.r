@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -194,6 +195,7 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
     # Get values.
     val_kit <- svalue(kit_drp)
     val_data <- .gData
+    val_data_name <- .gDataName
     val_name <- svalue(f2_save_edt)
     val_ignore <- svalue(f1_ignore_chk)
     
@@ -210,9 +212,14 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
     svalue(add_btn) <- "Processing..."
     enabled(add_btn) <- FALSE
     
-    datanew <- addColor(data=.gData, kit=val_kit, need="Dye",
+    datanew <- addColor(data=val_data, kit=val_kit, need="Dye",
                         overwrite=TRUE, ignore.case=val_ignore, debug=debug)
     
+    # Add attributes.
+    attr(datanew, which="addDye_gui, data") <- val_data_name
+    attr(datanew, which="addDye_gui, kit") <- val_kit
+    attr(datanew, which="addDye_gui, ignore.case") <- val_ignore
+
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
     

@@ -36,6 +36,7 @@
 #' 
 #' @export
 #' 
+#' @importFrom ggplot2 ggsave
 #' @importFrom utils help
 #' @importFrom grDevices dev.cur dev.list dev.size
 #' 

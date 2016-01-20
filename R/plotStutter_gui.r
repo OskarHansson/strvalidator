@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom grid and gridExtra arrangeGrob, and ggplot2.
 # 11.11.2015: Added more themes.
 # 29.08.2015: Added importFrom.
@@ -54,7 +55,9 @@
 #' @importFrom grDevices hcl
 #' @importFrom ggplot2 ggplot aes_string scale_x_continuous geom_point position_jitter
 #'  facet_grid facet_wrap coord_cartesian guides guide_legend theme element_text
-#'  labs xlab ylab ggplotGrob scale_colour_manual element_blank
+#'  labs xlab ylab ggplotGrob scale_colour_manual element_blank theme_gray
+#'  theme_bw theme_linedraw theme_light theme_dark theme_minimal theme_classic
+#'  theme_void
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
@@ -214,8 +217,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
 
   f1g2 <- glayout(container = f1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
-  items_theme <- c("theme_grey()","theme_bw()","theme_dark()",
-                   "theme_minimal()","theme_void()")
+  items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
+                   "theme_light()","theme_dark()","theme_minimal()",
+                   "theme_classic()","theme_void()")
   f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
                                          selected = 1,
                                          container = f1g2)

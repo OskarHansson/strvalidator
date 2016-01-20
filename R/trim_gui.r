@@ -5,6 +5,7 @@
 # NB! Can't handle Sample.Names as factors?
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 23.05.2015: Re-named internal variable 'new' (R function) to 'new_val'.
 # 11.05.2015: Accepts (the first) column name containing the string 'Sample'
@@ -57,6 +58,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
 
   # Global variables.
   .gData <- data.frame(Sample.Name="NA")
+  .gDataName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -161,7 +163,8 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
     if(ok){
       
       .gData <<- get(val_obj, envir=env)
-
+      .gDataName <<- val_obj
+      
       # Load or change components.
       .refresh_samples_tbl()
       .refresh_columns_tbl()
@@ -189,6 +192,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gData <<- data.frame(Sample.Name="NA")
+      .gDataName <<- NULL
       svalue(sample_edt) <- ""
       svalue(column_edt) <- ""
       .refresh_samples_tbl()
@@ -373,6 +377,8 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
     if(nchar(val_name) > 0) {
       
       # Get values.
+      val_data <- .gData
+      val_data_name <- .gDataName
       sample_val <- svalue(sample_edt)
       column_val <- svalue(column_edt)
       word_val <- svalue(word_chk)
@@ -399,8 +405,8 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
       }
       
       if(debug){
-        print(".gData")
-        print(names(.gData))
+        print("val_data")
+        print(names(val_data))
         print("sample_val")
         print(sample_val)
         print("column_val")
@@ -425,10 +431,22 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
       svalue(trim_btn) <- "Processing..."
       enabled(trim_btn) <- FALSE
       
-      datanew <- trim(data=.gData, samples=sample_val, columns=column_val, 
+      datanew <- trim(data=val_data, samples=sample_val, columns=column_val, 
                    word=word_val, ignore.case=case_val, invert.s=sample_opt_val, invert.c=column_opt_val,
                    rm.na.col=na_val, rm.empty.col=empty_val, missing=na_edt_val, debug=debug)
-  
+      
+      # Add attributes.
+      attr(datanew, which="trim_gui, data") <- val_data_name
+      attr(datanew, which="trim_gui, samples") <- sample_val
+      attr(datanew, which="trim_gui, columns") <- column_val
+      attr(datanew, which="trim_gui, word") <- word_val
+      attr(datanew, which="trim_gui, ignore.case") <- case_val
+      attr(datanew, which="trim_gui, invert.s") <- sample_opt_val
+      attr(datanew, which="trim_gui, invert.c") <- column_opt_val
+      attr(datanew, which="trim_gui, rm.na.col") <- na_val
+      attr(datanew, which="trim_gui, rm.empty.col") <- empty_val
+      attr(datanew, which="trim_gui, missing") <- na_edt_val
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

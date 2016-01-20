@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
 # 26.08.2014: Fixed bug when scrambled markers (issue#5)
 # 27.04.2014: Added option to ignore case in marker names.
@@ -223,6 +224,15 @@ addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){
     print(head(data))
   }
   
+  # Add attributes to result.
+  attr(data, which="slim, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(data, which="slim, call") <- match.call()
+  attr(data, which="slim, date") <- date()
+  attr(data, which="slim, data") <- substitute(data)
+  attr(data, which="slim, kit") <- substitute(kit)
+  attr(data, which="slim, bins") <- bins
+  attr(data, which="slim, ignore.case") <- ignore.case
+
   return(data)
   
 }

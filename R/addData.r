@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 30.11.2015: Added attributes to result.
 # 30.11.2015: Added parameter 'what' to specify columns to add.
 # 15.12.2014: Changed parameter names to format: lower.case
@@ -51,8 +52,9 @@
 addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
                     ignore.case=TRUE, what=NULL, debug=FALSE){
   
-  # Adds columns in 'new.data' to 'data' by column 'by.col.
-  
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
@@ -238,6 +240,13 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
   attr(data, which="addData, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(data, which="addData, call") <- match.call()
   attr(data, which="addData, date") <- date()
+  attr(data, which="addData, data") <- attr_data
+  attr(data, which="addData, new.data") <- substitute(new.data)
+  attr(data, which="addData, by.col") <- by.col
+  attr(data, which="addData, then.by.col") <- then.by.col
+  attr(data, which="addData, exact") <- exact
+  attr(data, which="addData, ignore.case") <- ignore.case
+  attr(data, which="addData, what") <- what
 
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

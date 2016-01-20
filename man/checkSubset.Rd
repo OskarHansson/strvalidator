@@ -5,7 +5,7 @@
 \title{Check Subset}
 \usage{
 checkSubset(data, ref, console = TRUE, ignore.case = TRUE, word = FALSE,
-  debug = FALSE)
+  exact = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{a data frame in GeneMapper format containing column 'Sample.Name'.}
@@ -18,7 +18,9 @@ if FALSE a string is returned.}
 
 \item{ignore.case}{logical, if TRUE case insesitive matching is used.}
 
-\item{word}{logical, if TRUE only exact match.}
+\item{word}{logical, if TRUE only word matching (regex).}
+
+\item{exact}{logical, if TRUE only exact match.}
 
 \item{debug}{logical indicating printing debug information.}
 }
@@ -28,5 +30,8 @@ Check the result of subsetting
 \details{
 Check if ref and sample names are unique for subsetting.
 Prints the result to the R-prompt.
+}
+\seealso{
+\code{\link{grep}}
 }
 

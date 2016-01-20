@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.01.2016: Added more attributes to result.
 # 16.12.2015: Added attributes to result and improved use of 'grepl'.
 # 15.12.2015: Added option to use 'exact' matching of sample names.
 # 29.08.2015: Added importFrom.
@@ -441,7 +442,14 @@ filterProfile <- function(data, ref, add.missing.loci=FALSE, keep.na=FALSE,
   attr(resDf, which="filterProfile, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(resDf, which="filterProfile, call") <- match.call()
   attr(resDf, which="filterProfile, date") <- date()
-
+  attr(resDf, which="filterProfile, data") <- substitute(data)
+  attr(resDf, which="filterProfile, ref") <- substitute(ref)
+  attr(resDf, which="filterProfile, add.missing.loci") <- add.missing.loci
+  attr(resDf, which="filterProfile, keep.na") <- keep.na
+  attr(resDf, which="filterProfile, ignore.case") <- ignore.case
+  attr(resDf, which="filterProfile, exact") <- exact
+  attr(resDf, which="filterProfile, invert") <- invert
+  
   # RETURN --------------------------------------------------------------------
   
   if(debug){

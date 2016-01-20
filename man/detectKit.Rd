@@ -7,7 +7,7 @@
 detectKit(data, index = FALSE, debug = FALSE)
 }
 \arguments{
-\item{data}{data frame.}
+\item{data}{data frame with column 'Marker' or vector with marker names.}
 
 \item{index}{logical, returns kit index if TRUE or short name if FALSE.}
 

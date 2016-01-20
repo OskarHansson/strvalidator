@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom grid unit.c, gridExtra arrangeGrob, and ggplot2.
 # 11.11.2015: Added more themes.
 # 29.08.2015: Added importFrom.
@@ -46,7 +47,8 @@
 #' @importFrom stats as.formula
 #' @importFrom ggplot2 ggplot geom_point aes_string geom_boxplot facet_grid
 #'  facet_wrap coord_cartesian labs xlab ylab theme element_text element_blank
-#'  ggplotGrob
+#'  ggplotGrob theme_gray theme_bw theme_linedraw theme_light theme_dark
+#'  theme_minimal theme_classic theme_void 
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 #' 
@@ -214,8 +216,9 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                                      container = f1g2)
 
   f1g2[2,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
-  items_theme <- c("theme_grey()","theme_bw()","theme_dark()",
-                   "theme_minimal()","theme_void()")
+  items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
+                   "theme_light()","theme_dark()","theme_minimal()",
+                   "theme_classic()","theme_void()")
   f1g2[2,2] <- f1_theme_drp <- gdroplist(items = items_theme,
                                          selected = 1,
                                          container = f1g2)

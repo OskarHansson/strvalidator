@@ -30,11 +30,6 @@ A simple GUI wrapper for \code{\link{ggsave}}.
 }
 \details{
 Simple GUI wrapper for ggsave.
-NB! Uses a workaround bypassing the class check for saving 'complex plots':
-Step 1 is performed in the \code{strvalidator} plot functions.
-\url{http://stackoverflow.com/a/20433318/2173340}  
-Step 2 is performed in this function \code{ggsave_gui}.
-\url{http://stackoverflow.com/a/18407452/2173340}
 }
 \seealso{
 \code{\link{ggsave}}

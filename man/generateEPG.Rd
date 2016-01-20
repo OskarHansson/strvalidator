@@ -4,10 +4,11 @@
 \alias{generateEPG}
 \title{Generate EPG}
 \usage{
-generateEPG(data, kit, title = NULL, peaks = TRUE, type = "profile",
-  collapse = TRUE, silent = FALSE, ignore.case = TRUE, at = 0,
-  scale = "free", limit.x = TRUE, label.size = 3, label.angle = 0,
-  label.vjust = 1, label.hjust = 0.5, expand = 0.1, debug = FALSE)
+generateEPG(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
+  peaks = TRUE, collapse = TRUE, silent = FALSE, ignore.case = TRUE,
+  at = 0, scale = "free", limit.x = TRUE, label.size = 3,
+  label.angle = 0, label.vjust = 1, label.hjust = 0.5, expand = 0.1,
+  debug = FALSE)
 }
 \arguments{
 \item{data}{data frame containing at least columns 'Sample.Name', 'Allele', and 'Marker'.}
@@ -16,9 +17,11 @@ generateEPG(data, kit, title = NULL, peaks = TRUE, type = "profile",
 
 \item{title}{string providing the title for the EPG.}
 
-\item{peaks}{logical TRUE to plot peaks for distributions using mean peak height.}
+\item{wrap}{logical TRUE to wrap by dye.}
 
-\item{type}{character plot type "distr" and "profile".}
+\item{boxplot}{logical TRUE to plot distributions of peak heights as boxplots.}
+
+\item{peaks}{logical TRUE to plot peaks for distributions using mean peak height.}
 
 \item{collapse}{logical TRUE to add the peak heights of identical alleles peaks within each marker.
 NB! Removes off-ladder alleles.}
@@ -58,6 +61,6 @@ If 'Size' is not present it is estimated from kit information and allele values.
 If 'Height' is not present a default of 1000 RFU is used.
 Off-ladder alleles can be plotted if 'Size' is provided.
 There are various options to customise the plot scale and labels.
-It is also possible to plot 'distributions' of peak heights.
+It is also possible to plot 'distributions' of peak heights as boxplots.
 }
 
