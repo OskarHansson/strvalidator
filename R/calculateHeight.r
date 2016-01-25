@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.01.2016: Fixed save attribute saves dataset.
 # 09.01.2016: Added more attributes to result.
 # 06.01.2016: Added attributes to result.
 # 12.10.2014: Fixed bug when NA in Allele column.
@@ -53,6 +54,9 @@
 #' \url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
 
 calculateHeight <- function(data, na=NULL, add=TRUE, exclude=NULL, debug=FALSE){
+  
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -263,7 +267,7 @@ calculateHeight <- function(data, na=NULL, add=TRUE, exclude=NULL, debug=FALSE){
 	attr(res, which="calculateHeight, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
 	attr(res, which="calculateHeight, call") <- match.call()
 	attr(res, which="calculateHeight, date") <- date()
-	attr(res, which="calculateHeight, data") <- substitute(data)
+	attr(res, which="calculateHeight, data") <- attr_data
 	attr(res, which="calculateHeight, na") <- na
 	attr(res, which="calculateHeight, add") <- add
 	attr(res, which="calculateHeight, exclude") <- exclude
