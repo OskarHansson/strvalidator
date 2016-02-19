@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.02.2016: Add missing markers after removing OL alleles.
 # 09.01.2016: Added more attributes to result.
 # 22.12.2015: First version.
 
@@ -224,6 +225,21 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     
     message("Removed ", tmp1 - tmp2, " off-ladder alleles.")
     
+    # Check that each sample have all markers.
+    DT <- data.table::data.table(data)
+    tmp <- DT[,list(Marker=length(unique(Marker))), by=list(Sample.Name)]
+    if(length(unique(tmp$Marker)) != 1){
+      
+      message("Missing markers detected.")
+      
+      # Get kit markers.      
+      marker <- getKit(kit = kit, what = "Marker")
+      
+      # Add missing markers.
+      data <- addMarker(data = data, marker = marker, ignore.case = ignore.case, debug = debug)
+
+    }
+
   }
   
   # Filter data.
