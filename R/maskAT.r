@@ -4,18 +4,20 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.05.2016: File name changed from blockAT.r to maskAT.r.
+# 20.05.2016: 'Block*' changed to 'mask*' throughout.
 # 28.08.2015: Added importFrom
 # 26.06.2015: Fixed hard-coded kit/dye set.
 # 05.05.2015: First version.
 
-#' @title Block And Prepare Data To Analyze Analytical Threshold
+#' @title Mask And Prepare Data To Analyze Analytical Threshold
 #'
 #' @description
 #' Break-out function to prepare data for the function \code{calculateAT}.
 #'
 #' @details
 #' Prepares the 'SamplePlotSizingTable' for analysis of analytical threshold. It is needed
-#' by the plot functions for control of blocking. The preparation consist of 
+#' by the plot functions for control of masking. The preparation consist of 
 #' converting the 'Height' and 'Data.Point' column to numeric (if needed), then
 #' dye channel information is extracted from the 'Dye.Sample.Peak' column and
 #' added to its own 'Dye' column, known fragments of the internal lane standard
@@ -25,17 +27,17 @@
 #'  'Sample.File.Name', 'Marker', 'Allele', 'Height', and 'Data.Point'.
 #' @param ref a data frame containing at least
 #'  'Sample.Name', 'Marker', 'Allele'.
-#' @param block.height logical to indicate if high peaks should be blocked.
+#' @param mask.height logical to indicate if high peaks should be masked.
 #' @param height integer for global lower peak height threshold for peaks
-#' to be excluded from the analysis. Active if 'block.peak=TRUE.
-#' @param block.sample logical to indicate if sample allelic peaks should be blocked.
-#' @param per.dye logical TRUE if sample peaks should be blocked per dye channel.
-#' FALSE if sample peaks should be blocked globally across dye channels.
-#' @param range.sample integer to specify the blocking range in (+/-) data points.
-#' Active if block.sample=TRUE.
-#' @param block.ils logical to indicate if internal lane standard peaks should be blocked.
-#' @param range.ils integer to specify the blocking range in (+/-) data points.
-#' Active if block.ils=TRUE.
+#' to be excluded from the analysis. Active if 'mask.peak=TRUE.
+#' @param mask.sample logical to indicate if sample allelic peaks should be masked.
+#' @param per.dye logical TRUE if sample peaks should be masked per dye channel.
+#' FALSE if sample peaks should be masked globally across dye channels.
+#' @param range.sample integer to specify the masking range in (+/-) data points.
+#' Active if mask.sample=TRUE.
+#' @param mask.ils logical to indicate if internal lane standard peaks should be masked.
+#' @param range.ils integer to specify the masking range in (+/-) data points.
+#' Active if mask.ils=TRUE.
 #' @param ignore.case logical to indicate if sample matching should ignore case.
 #' @param word logical to indicate if word boundaries should be added before sample matching.
 #' @param debug logical to indicate if debug information should be printed.
@@ -49,9 +51,9 @@
 #' @seealso \code{\link{calculateAT}}
 
 
-blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
-                    block.sample=TRUE, per.dye = TRUE, range.sample=20,
-                    block.ils=TRUE, range.ils=10,
+maskAT <- function(data, ref=NULL, mask.height=TRUE, height=500,
+                    mask.sample=TRUE, per.dye = TRUE, range.sample=20,
+                    mask.ils=TRUE, range.ils=10,
                     ignore.case=TRUE, word=FALSE, debug=FALSE){
   
   if(debug){
@@ -61,14 +63,14 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     print(str(data))
     print("ref")
     print(str(ref))
-    print("block.sample")
-    print(block.sample)
+    print("mask.sample")
+    print(mask.sample)
     print("per.dye")
     print(per.dye)
     print("range.sample")
     print(range.sample)
-    print("block.ils")
-    print(block.ils)
+    print("mask.ils")
+    print(mask.ils)
     print("range.ils")
     print(range.ils)
     print("ignore.case")
@@ -126,8 +128,8 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   }
   
   # Check parameters.  
-  if(!is.logical(block.height)){
-    stop("'block.height' must be logical",
+  if(!is.logical(mask.height)){
+    stop("'mask.height' must be logical",
          call. = TRUE)
   }
 
@@ -136,8 +138,8 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
          call. = TRUE)
   }
 
-  if(!is.logical(block.sample)){
-    stop("'block.sample' must be logical",
+  if(!is.logical(mask.sample)){
+    stop("'mask.sample' must be logical",
          call. = TRUE)
   }
 
@@ -151,8 +153,8 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
          call. = TRUE)
   }
 
-  if(!is.logical(block.ils)){
-    stop("'block.ils' must be logical",
+  if(!is.logical(mask.ils)){
+    stop("'mask.ils' must be logical",
          call. = TRUE)
   }
 
@@ -192,11 +194,11 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     data$Data.Point <- suppressWarnings(as.numeric(data$Data.Point))
   }
   
-  if(!is.numeric(height) & block.height){
-    block.height=FALSE
+  if(!is.numeric(height) & mask.height){
+    mask.height=FALSE
     message(paste("No valid threshold for peak height was provided (",
                   height, ")\n",
-                  "Setting block.height to FALSE"))
+                  "Setting mask.height to FALSE"))
   }
   
   # Split information in Dye.Sample.Peak column.
@@ -232,20 +234,20 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     
   }
 
-  # Add columns for block status for ILS and sample.
-  data$I.Block <- FALSE # Block ILS peak position.
-  data$S.Block <- FALSE # Block sample allele positions.
-  data$H.Block <- FALSE # Block according to height.
+  # Add columns for mask status for ILS and sample.
+  data$I.Mask <- FALSE # Mask ILS peak position.
+  data$S.Mask <- FALSE # Mask sample allele positions.
+  data$H.Mask <- FALSE # Mask according to height.
   
-  # Block ---------------------------------------------------------------------
+  # Mask ---------------------------------------------------------------------
   
-  # Block ILS peak range in all dyes per sample.
-  if(block.ils){
+  # Mask ILS peak range in all dyes per sample.
+  if(mask.ils){
 
-    message(paste("Blocking internal lane standard (ILS) +/-",
+    message(paste("Masking internal lane standard (ILS) +/-",
                   range.ils, "data points."))
 
-    # Add columns for blocking range.
+    # Add columns for masking range.
     data$ILS.Min <- NA
     data$ILS.Max <- NA
     
@@ -256,7 +258,7 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     # Loop over all samples.
     for(s in seq(along=sample)){
       
-      message(paste("Blocking ILS in sample", sample[s]))
+      message(paste("Masking ILS in sample", sample[s]))
       
       # Select start and end data point for current samples ILS.
       selection <- data$Sample.File.Name==sample[s] 
@@ -275,22 +277,22 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
         # Create a sequence of data points to search for pull-up within.
         seqVec <- seq(start[e],end[e])
         
-        # Check if any overlap in block range.
-        blockVec <- dp %in% seqVec
+        # Check if any overlap in mask range.
+        maskVec <- dp %in% seqVec
         
-        # Mark blocked data points.
-        data$I.Block[selection] <- data$I.Block[selection] | blockVec
+        # Mark masked data points.
+        data$I.Mask[selection] <- data$I.Mask[selection] | maskVec
         
       } # End element loop.
       
     } # End sample loop.
     
-  } # End block.ils if.
+  } # End mask.ils if.
   
-  # Block sample peak range per sample.
-  if(block.sample & !is.null(ref)){
+  # Mask sample peak range per sample.
+  if(mask.sample & !is.null(ref)){
     
-    message(paste("Blocking sample alleles +/-", range.sample, "data points."))
+    message(paste("Masking sample alleles +/-", range.sample, "data points."))
     
     # Get data into temporary vectors.
     sVec <- data$Sample.File.Name
@@ -308,7 +310,7 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
       selSample <- grepl(grepNames[r], sVec, ignore.case=ignore.case)
       
       # Show progress.
-      message(paste("Blocking", length(unique(sVec[selSample])),
+      message(paste("Masking", length(unique(sVec[selSample])),
                     "samples matching reference", grepNames[r]))
       
       # Select current reference sample.
@@ -338,7 +340,7 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
         # Combine selection.
         sel <- selSample & selMarker & selAlleles
         
-        # Calculate min and max data point to block.
+        # Calculate min and max data point to mask.
         minVec[sel] <- pVec[sel] - range.sample
         maxVec[sel] <- pVec[sel] + range.sample
         
@@ -346,11 +348,11 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
       
     } # End reference loop.
 
-    # Add columns with block range.
+    # Add columns with mask range.
     data$Min <- minVec
     data$Max <- maxVec
 
-    # Loop over all samples and block sample peaks.
+    # Loop over all samples and mask sample peaks.
     for(s in seq(along=sample)){
       
       # Select current sample.
@@ -362,7 +364,7 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
       }
       
       if(per.dye){
-        # Block sample peaks per dye.
+        # Mask sample peaks per dye.
         
         for(d in seq(along=dyesKit)){
           
@@ -388,18 +390,18 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
             # Create a sequence of data points to search for overlap within.
             seqVec <- seq(start[e],end[e])
             
-            # Check if any overlap in block range.
-            blockVec <- dp %in% seqVec
+            # Check if any overlap in mask range.
+            maskVec <- dp %in% seqVec
             
-            # Mark blocked data points.
-            data$S.Block[selection] <- data$S.Block[selection] | blockVec
+            # Mark masked data points.
+            data$S.Mask[selection] <- data$S.Mask[selection] | maskVec
 
           } # End element loop.
           
         } # End dye loop.
 
       } else {
-        # Block sample peaks per sample
+        # Mask sample peaks per sample
         
         # Select start and end data point for current samples peaks.
         start <- data[selSample,]$Min
@@ -417,32 +419,32 @@ blockAT <- function(data, ref=NULL, block.height=TRUE, height=500,
           # Create a sequence of data points to search for overlap within.
           seqVec <- seq(start[e],end[e])
           
-          # Check if any overlap in block range.
-          blockVec <- dp %in% seqVec
+          # Check if any overlap in mask range.
+          maskVec <- dp %in% seqVec
           
-          # Mark blocked data points.
-          data$S.Block[selSample] <- data$S.Block[selSample] | blockVec
+          # Mark masked data points.
+          data$S.Mask[selSample] <- data$S.Mask[selSample] | maskVec
           
         } # End element for loop.
         
-      } # End block sample if.
+      } # End mask sample if.
 
     } # End sample loop.    
     
-  } # End block.sample if.
+  } # End mask.sample if.
   
-  # Block sample peak range per sample.
-  if(block.height){
+  # Mask sample peak range per sample.
+  if(mask.height){
     
-    message(paste("Blocking peaks >", height, "RFU."))
+    message(paste("Masking peaks >", height, "RFU."))
     
-    # Block peaks.
-    data$H.Block <- data$Height > height
+    # Mask peaks.
+    data$H.Mask <- data$Height > height
     
   }    
   
-  # Mark blocked data points.
-  data$Blocked <- data$S.Block | data$I.Block | data$H.Block
+  # Mark masked data points.
+  data$Masked <- data$S.Mask | data$I.Mask | data$H.Mask
 
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

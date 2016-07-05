@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 26.04.2016: Fixed message returning string + 'TRUE'.
 # 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
 # 26.08.2014: Fixed bug when scrambled markers (issue#5)
@@ -109,9 +110,8 @@ addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){
   # Check for column 'Size'
   if("Size" %in% names(data)){
     
-    message(paste("'data' already contain a column 'Size'\n",
-                  "Size will be overwritten!"),
-         call. = TRUE)
+    message("'data' already contain a column 'Size'")
+    message("Size will be overwritten!")
     
   }
   

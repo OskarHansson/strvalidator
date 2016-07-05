@@ -5,7 +5,7 @@
 \title{Calculate Inter-locus Balance}
 \usage{
 calculateLb(data, ref = NULL, option = "prop", by.dye = FALSE,
-  ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = NULL,
+  ol.rm = TRUE, sex.rm = FALSE, qs.rm = FALSE, na = NULL, kit = NULL,
   ignore.case = TRUE, word = FALSE, exact = FALSE, debug = FALSE)
 }
 \arguments{
@@ -27,6 +27,9 @@ will be removed.}
 
 \item{sex.rm}{logical. Default is FALSE indicating that all markers will be
 considered. If TRUE sex markers will be removed.}
+
+\item{qs.rm}{logical. Default is TRUE indicating that all quality sensors
+will be removed.}
 
 \item{na}{numeric. Numeric to replace NA values e.g. locus dropout can be 
 given a peak height equal to the limit of detection threshold, or zero.
@@ -60,10 +63,12 @@ Lb can be calculated globally across the complete profile or within each dye
 channel. All markers must be present in each sample. Data can be unfiltered
 or filtered since the sum of peak heights by marker is used. A reference
 dataset is required to filter the dataset, which also adds any missing
-markers. A kit should be provided for filtering of known profile or sex
-markers. If not automatic detection is attempted. If missing, dye will be
-added according to kit. Off-ladder alleles is by default removed from the
-dataset. Sex markers are optionally removed. Some columns in the result may vary:
+markers. A kit should be provided for filtering of known profile, sex
+markers, or quality sensors. If not automatic detection will be attempted.
+If missing, dye will be added according to kit. Off-ladder alleles and
+quality sensors are by default removed from the dataset.
+Sex markers are optionally removed. 
+Some columns in the result may vary:
 TPH: Total (marker) Peak Height.
 TPPH: Total Profile Peak Height.
 MTPH: Maximum (sample) Total Peak Height.

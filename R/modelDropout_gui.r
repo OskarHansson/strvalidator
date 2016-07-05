@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.06.2016: 'Save as' textbox expandable.
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 19.08.2015: Added more information to the description.
@@ -311,7 +312,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   glabel(text=paste("NB! Currently, the recommended methods are the first three options.\n",
                     "The fourth alternative has not been evaluated by the DNA Commission.",
-                    "\nSee details for more information."),
+                    "\nSee 'Details' in 'Help' for more information.", sep=""),
          anchor=c(-1 ,0), container=f1)
   
   glabel(text="Model drop-out from scoring method:", anchor=c(-1 ,0), container=f1)
@@ -384,10 +385,10 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   glabel(text="Name for result:", container=f5)
   
-  f5_save_edt <- gedit(text="", container=f5)
+  f5_save_edt <- gedit(text = "", expand = TRUE, container = f5)
 
   f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
+                         border = TRUE,
                          container = f5)
   
   f5_ggsave_btn <- gbutton(text = "Save as image",

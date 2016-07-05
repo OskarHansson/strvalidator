@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.05.2016: Added new option 'limit' to remove high ratios from the result.
+# 10.05.2016: Added attributes to result.
+# 10.05.2016: 'Save as' textbox expandable.
 # 28.08.2015: Added importFrom.
 # 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
 # 13.12.2014: Added kit dropdown and kit attribute to result.
@@ -39,7 +42,9 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
   
   # Global variables.
   .gData <- NULL
+  .gDataName <- NULL
   .gRef <- NULL
+  .gRefName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -129,6 +134,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       
       # get dataset.
       .gData <<- get(val_obj, envir=env)
+      .gDataName <<- val_obj
       svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
                                            "samples.")
       
@@ -144,6 +150,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gData <<- NULL
+      .gDataName <<- NULL
       svalue(g0_data_drp, index=TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
       svalue(f4_save_edt) <- ""
@@ -178,6 +185,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       # Load or change components.
       
       .gRef <<- get(val_obj, envir=env)
+      .gRefName <<- val_obj
       svalue(g0_ref_samples_lbl) <- paste(length(unique(.gRef$Sample.Name)),
                                           "samples.")
       
@@ -185,6 +193,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gRef <<- NULL
+      .gRefName <<- NULL
       svalue(g0_ref_drp, index=TRUE) <- 1
       svalue(g0_ref_samples_lbl) <- " 0 references"
       
@@ -270,11 +279,14 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
 
   f1g1[2,1] <- glabel(text="Blocking range (data points) around known alleles: ", container=f1g1)
   f1g1[2,2] <- f1_block_spb <- gspinbutton(from=0, to=1000, by=10, value=70, container=f1g1)
+
+  f1g1[3,1] <- glabel(text="Discard pull-ups with ratio: > ", container=f1g1)
+  f1g1[3,2] <- f1_limit_spb <- gspinbutton(from=0, to=10, by=0.1, value=1, container=f1g1)
   
   f1_discard_chk <- gcheckbox(text="Discard alleles with no pullup from the result table",
                          checked = FALSE,
                          container = f1)
-  
+
   # FRAME 4 ###################################################################
   
   if(debug){
@@ -288,7 +300,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f4)
   
-  f4_save_edt <- gedit(text="", container=f4)
+  f4_save_edt <- gedit(text="", container=f4, expand = TRUE)
 
   glabel(text=" Kit attribute:", container=f4)
   
@@ -310,11 +322,14 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
+    val_name_data <- .gDataName
+    val_name_ref <- .gRefName
     val_ignore <- svalue(f1_ignore_chk)
     val_word <- svalue(f1_word_chk)
     val_ol <- svalue(f1_ol_chk)
     val_pullup <- svalue(f1_pullup_spb)
     val_block <- svalue(f1_block_spb)
+    val_limit <- svalue(f1_limit_spb)
     val_discard <- svalue(f1_discard_chk)
     val_name <- svalue(f4_save_edt)
     val_kit <- svalue(f4_kit_drp)
@@ -335,6 +350,8 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_pullup)
       print("val_block")
       print(val_block)
+      print("val_limit")
+      print(val_limit)
       print("val_name")
       print(val_name)
     }
@@ -357,10 +374,21 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
                                    ignore.case=val_ignore,
                                    word=val_word,
                                    discard=val_discard,
+                                   limit=val_limit,
                                    debug=debug)
         
-        # Add attribute for detected kit.
+        # Add attributes.
         attr(datanew, which="kit") <- val_kit
+        attr(datanew, which="calculatePullup_gui, data") <- val_name_data
+        attr(datanew, which="calculatePullup_gui, ref") <- val_name_ref
+        attr(datanew, which="calculatePullup_gui, pullup.range") <- val_pullup
+        attr(datanew, which="calculatePullup_gui, block.range") <- val_block
+        attr(datanew, which="calculatePullup_gui, ol.rm") <- val_ol
+        attr(datanew, which="calculatePullup_gui, ignore.case") <- val_ignore
+        attr(datanew, which="calculatePullup_gui, word") <- val_word
+        attr(datanew, which="calculatePullup_gui, discard") <- val_discard
+        attr(datanew, which="calculatePullup_gui, limit") <- val_limit
+        
         
         # Save data.
         saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -428,6 +456,9 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculatePullup_gui_block", envir=env, inherits = FALSE)){
         svalue(f1_block_spb) <- get(".strvalidator_calculatePullup_gui_block", envir=env)
       }
+      if(exists(".strvalidator_calculatePullup_gui_limit", envir=env, inherits = FALSE)){
+        svalue(f1_limit_spb) <- get(".strvalidator_calculatePullup_gui_limit", envir=env)
+      }
       if(exists(".strvalidator_calculatePullup_gui_ol", envir=env, inherits = FALSE)){
         svalue(f1_ol_chk) <- get(".strvalidator_calculatePullup_gui_ol", envir=env)
       }
@@ -455,6 +486,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       assign(x=".strvalidator_calculatePullup_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculatePullup_gui_window", value=svalue(f1_pullup_spb), envir=env)
       assign(x=".strvalidator_calculatePullup_gui_block", value=svalue(f1_block_spb), envir=env)
+      assign(x=".strvalidator_calculatePullup_gui_limit", value=svalue(f1_limit_spb), envir=env)
       assign(x=".strvalidator_calculatePullup_gui_ol", value=svalue(f1_ol_chk), envir=env)
       assign(x=".strvalidator_calculatePullup_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
       assign(x=".strvalidator_calculatePullup_gui_word", value=svalue(f1_word_chk), envir=env)
@@ -470,6 +502,9 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       }
       if(exists(".strvalidator_calculatePullup_gui_block", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculatePullup_gui_block", envir = env)
+      }
+      if(exists(".strvalidator_calculatePullup_gui_limit", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculatePullup_gui_limit", envir = env)
       }
       if(exists(".strvalidator_calculatePullup_gui_ol", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculatePullup_gui_ol", envir = env)

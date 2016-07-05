@@ -1,9 +1,12 @@
 ################################################################################
 # TODO LIST
-# TODO: Implement 'checkDataset'.
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.06.2016: Implement 'checkDataset'.
+# 29.06.2016: Added option to remove sex markers and quality sensor.
+# 29.04.2016: 'Save as' textbox expandable.
 # 06.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -123,39 +126,28 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
     
     val_obj <- svalue(dataset_drp)
     
-    if(exists(val_obj, envir=env, inherits = FALSE)){
-      
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Height")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       slim=TRUE, slimcol="Height",
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+
+      # Load or change components.
       .gData <<- get(val_obj, envir=env)
       .gDataName <<- val_obj
-      requiredCol <- c("Sample.Name", "Height")
+      samples <- length(unique(.gData$Sample.Name))
+      svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
       
-      if(!all(requiredCol %in% colnames(.gData))){
-
-        missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
-
-        message <- paste("Additional columns required:\n",
-                         paste(missingCol, collapse="\n"), sep="")
-        
-        gmessage(message, title="Data error",
-                 icon = "error",
-                 parent = w) 
+      # Suggest name for the result.
+      svalue(f2_save_edt) <- paste(val_obj, "_height", sep="")
       
-        # Reset components.
-        .gData <<- NULL
-        .gDataName <<- NULL
-        svalue(dataset_drp, index=TRUE) <- 1
-        svalue(f0g0_samples_lbl) <- " 0 samples"
-        svalue(f2_save_edt) <- ""
-        
-      } else {
+      # Detect kit.
+      kitIndex <- detectKit(data = .gData, index = TRUE)
+      # Select in dropdown.
+      svalue(kit_drp, index = TRUE) <- kitIndex
 
-        # Load or change components.
-        samples <- length(unique(.gData$Sample.Name))
-        svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
-        svalue(f2_save_edt) <- paste(val_obj, "_height", sep="")
-        
-      }
-      
     } else {
       
       # Reset components.
@@ -168,6 +160,13 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
     }
   } )  
   
+  # Kit -----------------------------------------------------------------------
+  
+  f0g0[4,1] <- glabel(text="Select the kit used:", container=f0g0)
+  
+  f0g0[4,2] <- kit_drp <- gdroplist(items = getKit(), selected = 1,
+                                  editable = FALSE, container = f0g0) 
+  
   # FRAME 1 ###################################################################
   
   f1 <- gframe(text = "Options",
@@ -175,17 +174,20 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
                spacing = 10,
                container = gv) 
   
+  f1_sex_chk <- gcheckbox(text="Remove sex markers",
+                          checked = FALSE, container = f1)
+  
+  f1_qs_chk <- gcheckbox(text="Remove quality sensors",
+                         checked = TRUE, container = f1)
+  
   f1_replace_chk <- gcheckbox(text="Replace NA with 0",
-                              checked=TRUE,
-                              container=f1)
+                              checked=TRUE, container=f1)
   
   f1_add_chk <- gcheckbox(text="Add result to dataset",
-                          checked=TRUE,
-                          container=f1)
+                          checked=TRUE, container=f1)
   
   f1_exclude_chk <- gcheckbox(text="Exclude values in 'Allele' column",
-                              checked=TRUE,
-                              container=f1)
+                              checked=TRUE, container=f1)
   
   f1_exclude_lbl <- glabel(text="Case sensitive values separated by comma:",
                            anchor=c(-1 ,0), container=f1)
@@ -217,7 +219,7 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", container=f2, expand = TRUE)
   
   # BUTTON ####################################################################
   
@@ -237,6 +239,9 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
     val_ex_values <- svalue(f1_exclude_edt)
     val_na <- NULL
     val_ex <- NULL
+    val_sex <- svalue(f1_sex_chk)
+    val_qs <- svalue(f1_qs_chk)
+    val_kit <- svalue(kit_drp)
     
     if(val_replace){
       val_na <- 0
@@ -257,14 +262,18 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       enabled(calculate_btn) <- FALSE
       
       datanew <- calculateHeight(data=val_data, na=val_na, add=val_add,
+                                 sex.rm=val_sex, qs.rm=val_qs, kit=val_kit,
                                  exclude=val_ex, debug=debug)
 
       # Add attributes.
+      attr(datanew, which="kit") <- val_kit
       attr(datanew, which="calculateHeight_gui, data") <- val_data_name
       attr(datanew, which="calculateHeight_gui, na") <- val_na
       attr(datanew, which="calculateHeight_gui, add") <- val_add
       attr(datanew, which="calculateHeight_gui, exclude") <- val_ex
-
+      attr(datanew, which="calculateHeight_gui, sex.rm") <- val_sex
+      attr(datanew, which="calculateHeight_gui, qs.rm") <- val_qs
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

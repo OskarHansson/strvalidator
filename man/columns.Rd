@@ -5,7 +5,7 @@
 \title{Column Actions}
 \usage{
 columns(data, col1 = NA, col2 = NA, operator = "&", fixed = NA,
-  target = NA, debug = FALSE)
+  target = NA, start = 1, stop = 1, debug = FALSE)
 }
 \arguments{
 \item{data}{a data frame.}
@@ -14,14 +14,18 @@ columns(data, col1 = NA, col2 = NA, operator = "&", fixed = NA,
 
 \item{col2}{character optional second column name to perform action on.}
 
-\item{operator}{character to indicate operator: & concatenate, + add,
-* multiply, - subtract, / divide.}
+\item{operator}{character to indicate operator: '&' concatenate, '+' add,
+'*' multiply, '-' subtract, '/' divide, 'substr' extract a substring.}
 
 \item{fixed}{character or numeric providing the second operand if 'col2'
 is not used.}
 
 \item{target}{character to specify column name for result. Default is to
 overwrite 'col1'. If not present it will be added.}
+
+\item{start}{integer, the first position to be extracted.}
+
+\item{stop}{integer, the last position to be extracted.}
 
 \item{debug}{logical to indicate if debug information should be printed.}
 }
@@ -51,5 +55,8 @@ set2 <- columns(data=set2, col1="Sample.Name", col2="Dye")
 set2 <- columns(data=set2, col1="Height", operator="*", fixed=4)
 # Add a new column.
 set2 <- columns(data=set2, operator="&", fixed="1234", target="Batch")
+}
+\seealso{
+\link{substr}
 }
 

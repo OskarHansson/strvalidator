@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.06.2016: Added option to remove sex markers and quality sensor.
 # 09.01.2016: Added more attributes to result.
 # 07.12.2015: Fixed reference sample name subsetting bug.
 # 05.12.2015: More information in 'stop' messages.
@@ -28,7 +29,6 @@
 # 21.10.2013: Fixed 'Rfu' storing height when below threshold and other bugs. 
 # 20.10.2013: Fixed dropout always scoring for 'Model'. 
 # 17.10.2013: New parameter threshold, and corrections complying with ref. 2012. 
-# 18.07.2013: Fixed "OL" bug.
 
 #' @title Calculate Drop-out Events
 #'
@@ -40,9 +40,10 @@
 #' surviving allele is given. Homozygous alleles in the reference set can be
 #' either single or double notation (X or X X). Markers present in the
 #' reference set but not in the data set will be added to the result.
-#' NB! "Sample Names" in 'ref' must be unique 'core' name of replicate sample
+#' NB! 'Sample.Name' in 'ref' must be unique core name of replicate sample
 #' names in 'data'.
 #' Use \code{checkSubset} to make sure subsetting works as intended.
+#' There are options to remove sex markers and quality sensors from analysis.
 #' 
 #' NB! There are several methods of scoring drop-out events for regression.
 #' Currently the 'MethodX', 'Method1', and 'Method2' are endorsed by the DNA
@@ -75,6 +76,9 @@
 #' Method 'X' for random allele, '1' or '2' for the low/high molecular weight allele,
 #' and 'L' for the locus method (the option is case insensitive).
 #' @param ignore.case logical, default TRUE for case insensitive.
+#' @param sex.rm logical, default FALSE to include sex markers in the analysis.
+#' @param qs.rm logical, default TRUE to exclude quality sensors from the analysis.
+#' @param kit character, required if sex.rm=TRUE or qs.rm=TRUE to define the kit.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with columns 'Sample.Name', 'Marker', 'Allele', 'Height', 'Dropout',
@@ -113,7 +117,8 @@
 
 
 calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"),
-                             ignore.case=TRUE, debug=FALSE){
+                             ignore.case=TRUE, sex.rm=FALSE, qs.rm=TRUE,
+                             kit=NULL, debug=FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -214,24 +219,115 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
     }
   }
   
-#   # Check allele parameter.
-#   if(!is.null(allele)){
-#     if(!is.numeric(allele)){
-#       message("'allele' must be numeric. 'allele' converted!")
-#       allele <- as.numeric(allele)
-#     }
-#     if(is.na(allele)){
-#       stop("'allele' must be numeric.",
-#            call. = TRUE)
-#     }
-#     if(allele != 1 && allele != 2){
-#       stop("'allele' must be numeric and {1,2}.",
-#            call. = TRUE)
-#     }
-#   }
+  # Check logical arguments.
+  if(!is.logical(ignore.case)){
+    stop("'ignore.case' must be logical.")
+  }
+  if(!is.logical(sex.rm)){
+    stop("'sex.rm' must be logical.")
+  }
+  if(!is.logical(qs.rm)){
+    stop("'qs.rm' must be logical.")
+  }
+
+  # Check kit.  
+  if(!is.null(kit)){
+    if(is.na(getKit(kit = kit))){
+      stop("'kit' was not found in the kit definition file.")
+    }
+  }
 
   # PREPARE -------------------------------------------------------------------
   
+  # Remove sex markers.
+  if(sex.rm){
+    
+    message("Removing sex markers defined in kit: ", kit)
+    
+    # Get sex markers.    
+    sexMarkers <- getKit(kit = kit, what = "Sex.Marker")
+    
+    if(debug){
+      print("Sex markers:")
+      print(sexMarkers)
+    }
+    
+    # Loop through and remove all sex markers in data.
+    message("Removing sex markers in 'data':")
+    for(i in seq(along = sexMarkers)){
+      
+      tmp1 <- nrow(data)
+      
+      data <- data[data$Marker != sexMarkers[i],]
+      
+      tmp2 <- nrow(data)
+      
+      message("Removed ", tmp1 - tmp2, " rows with marker ", sexMarkers[i])
+      
+    }
+    
+    # Loop through and remove all sex markers in ref.
+    message("Removing sex markers in 'ref':")
+    for(i in seq(along = sexMarkers)){
+      
+      tmp1 <- nrow(ref)
+      
+      ref <- ref[ref$Marker != sexMarkers[i],]
+      
+      tmp2 <- nrow(ref)
+      
+      message("Removed ", tmp1 - tmp2, " rows with marker ", sexMarkers[i])
+      
+    }
+
+  }
+  
+  # Remove quality sensors. 
+  if(qs.rm){
+
+    message("Removing quality sensors defined in kit: ", kit, ".")
+    
+    # Get quality sensors.
+    qsMarkers <- getKit(kit = kit, what = "Quality.Sensor")
+    
+    if(debug){
+      print("Quality sensors:")
+      print(qsMarkers)
+    }
+    
+    # Loop through and remove all quality sensors in data.
+    message("Removing quality sensors in 'data':")
+    for(i in seq(along = qsMarkers)){
+      
+      tmp1 <- nrow(data)
+      
+      data <- data[data$Marker != qsMarkers[i],]
+      
+      tmp2 <- nrow(data)
+      
+      message("Removed ", tmp1 - tmp2,
+              " rows with quality sensor ", qsMarkers[i], ".")
+      
+    }
+
+    # Loop through and remove all quality sensors in ref.
+    message("Removing quality sensors in 'ref':")
+    for(i in seq(along = qsMarkers)){
+      
+      tmp1 <- nrow(ref)
+      
+      ref <- ref[ref$Marker != qsMarkers[i],]
+      
+      tmp2 <- nrow(ref)
+      
+      message("Removed ", tmp1 - tmp2,
+              " rows with quality sensor ", qsMarkers[i], ".")
+      
+    }
+    
+  }
+
+  # Check for NA alleles (this must be after 'remove sex markers').
   if(any(is.na(ref$Allele))){
     # Remove markers with no allele in reference dataset.
     
@@ -242,9 +338,9 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
     tmp2 <- nrow(ref)
     
     message(paste("Removed", tmp1 - tmp2, "NA rows in 'ref'. This may be DYS markers in female profiles."))
-
+    
   }
-  
+
   # ANALYZE -------------------------------------------------------------------
 
   # Create vectors for temporary.
@@ -936,6 +1032,7 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
   }
     
   # Add attributes to result.
+  attr(dataDrop, which="kit") <- kit
   attr(dataDrop, which="calculateDropout, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(dataDrop, which="calculateDropout, call") <- match.call()
   attr(dataDrop, which="calculateDropout, date") <- date()
@@ -944,6 +1041,8 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
   attr(dataDrop, which="calculateDropout, threshold") <- threshold
   attr(dataDrop, which="calculateDropout, method") <- method
   attr(dataDrop, which="calculateDropout, ignore.case") <- ignore.case
+  attr(dataDrop, which="calculateDropout, sex") <- sex.rm
+  attr(dataDrop, which="calculateDropout, qs") <- qs.rm
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

@@ -5,7 +5,7 @@
 \title{Calculate Peak Height.}
 \usage{
 calculateHeight(data, na = NULL, add = TRUE, exclude = NULL,
-  debug = FALSE)
+  sex.rm = FALSE, qs.rm = FALSE, kit = NULL, debug = FALSE)
 }
 \arguments{
 \item{data}{data.frame with at least columns 'Sample.Name' and 'Height'.}
@@ -17,6 +17,12 @@ calculateHeight(data, na = NULL, add = TRUE, exclude = NULL,
 
 \item{exclude}{character vector (case sensitive) e.g. "OL" excludes rows with
 "OL" in the 'Allele' column.}
+
+\item{sex.rm}{logical, default FALSE to include sex markers in the analysis.}
+
+\item{qs.rm}{logical, default TRUE to exclude quality sensors from the analysis.}
+
+\item{kit}{character, required if sex.rm=TRUE or qs.rm=TRUE to define the kit.}
 
 \item{debug}{logical indicating printing debug information.}
 }

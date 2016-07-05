@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Fix updating GUI correctly upon multiple selections (edit/add).
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.07.2016: Fixed bug removing space within marker names.
+# 04.07.2016: Added support for quality sensors.
 # 29.08.2015: Added importFrom.
 # 14.12.2014: Fixed "Error in read.table..." when 'Save' is pressed without data.
 # 14.12.2014: Fixed "Error in basename(x) : a character vector argument expected"
@@ -48,6 +50,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   }
   
   # Global variables.
+  .noQsMarkerString <- "<none>"
   .noSexMarkerString <- "<none>"
   .f3g1 <- NULL
   .separator <- .Platform$file.sep # Platform dependent path separator.
@@ -193,6 +196,10 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     
     val_obj <- svalue(f1g1_file_edt)
     
+    # Disable options after loading the kit definition file.
+    # This is because the GUI cannot handle adding widgets correct. 
+    enabled(f0_opt) <- FALSE
+    
     if(debug){
       print("Kit file:")
       print(val_obj)
@@ -208,7 +215,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                                stringsAsFactors=FALSE)
         
         # Update GUI.
-        .update(kitInfo=.newKitInfo, newKit=FALSE)
+        .update(kitInfo=.newKitInfo, addKit=FALSE)
         
       } else {
         
@@ -290,12 +297,16 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     
     if(file.exists(.binsFiles) & file.exists(.panelsFiles)){
 
+      # Disable options after loading the kit definition file.
+      # This is because the GUI cannot handle adding widgets correct. 
+      enabled(f0_opt) <- FALSE
+
       # Read and combine files.
       .newKitInfo <<- combineBinsAndPanels(bin=readBinsFile(.binsFiles),
                            panel=readPanelsFile(.panelsFiles))    
       
       # Update GUI.
-      .update(kitInfo=.newKitInfo, newKit=TRUE)
+      .update(kitInfo=.newKitInfo, addKit=TRUE)
       
     } else {
 
@@ -318,17 +329,29 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                container = gv) 
   
   # Function for updating GUI with kits.  
-  .update <- function(kitInfo, newKit){
+  .update <- function(kitInfo, addKit){
     # kitInfo - data.frame with kit information.
-    # newKit - logical, if TRUE autodetect sex marker.
+    # addKit - logical, if TRUE autodetect sex marker and quality sensor.
     #                   if FALSE read from file.
     
-    # Get panels.
-    panel <- unique(kitInfo$Panel)
-    shortName <- unique(kitInfo$Short.Name)
-    fullName <- unique(kitInfo$Full.Name)
+    if(debug){
+      print("head(kitInfo)")
+      print(head(kitInfo))
+    }
+
+    # Get kits (short name and panel must be unique).
+    if(addKit){
+      panel <- unique(kitInfo$Panel)
+      shortName <- rep("", length(panel))
+      fullName <- rep("", length(panel))
+    } else {
+      df <- unique(kitInfo[c("Panel", "Short.Name", "Full.Name")])
+      panel <- df$Panel
+      shortName <- df$Short.Name
+      fullName <- df$Full.Name
+    }
     
-    # Clear.
+    # Clear (does not work as expected).
     if(!is.null(.f3g1)){
       delete(obj=.f3g1, widget=f3)
     }
@@ -343,8 +366,10 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     .f3g1[1,4] <<- glabel(text="Full.Name", container=.f3g1)
     .f3g1[1,5] <<- glabel(text="List sex markers (separate by comma)",
                           container=.f3g1)
+    .f3g1[1,6] <<- glabel(text="List quality sensors (separate by comma)",
+                          container=.f3g1)
     
-    # Loop over panels and add objects.
+    # Loop over panel and add objects.
     for(p in seq(along=panel)){
       
       # Get all markers.
@@ -352,7 +377,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       
       # sex marker.
       sexMarkers <- NULL
-      if(newKit){
+      if(addKit){
         # Try to autodetect sex marker.
         sexMarkers <- grep("AM|Y", markers, ignore.case=TRUE, value=TRUE)
         if(length(sexMarkers) == 0){
@@ -360,7 +385,8 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
         }
       } else {
         # Get current sex marker.
-        sexMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p] & kitInfo$Sex.Marker])
+        sexMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p]
+                                            & kitInfo$Sex.Marker])
         if(length(sexMarkers) == 0){
           # If no matching marker, set to no sex marker string.
           sexMarkers <- .noSexMarkerString
@@ -368,22 +394,45 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       }
       # Collapse to string.
       sexMarkers <- paste(sexMarkers, collapse=",")
+
+      # Quality sensor.
+      qsMarkers <- NULL
+      if(addKit){
+        # Try to autodetect quality sensors.
+        qsMarkers <- grep("QS", markers, ignore.case=TRUE, value=TRUE)
+        if(length(qsMarkers) == 0){
+          qsMarkers <- .noQsMarkerString
+        }
+      } else {
+        # Get current quality sensors.
+        qsMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p]
+                                           & kitInfo$Quality.Sensor])
+        if(length(qsMarkers) == 0){
+          # If no matching marker, set to no qs marker string.
+          qsMarkers <- .noQsMarkerString
+        }
+      }
+      # Collapse to string.
+      qsMarkers <- paste(qsMarkers, collapse=",")
       
       if(debug){
-        print("newKit:")
-        print(newKit)
+        print("addKit:")
+        print(addKit)
         print("markers:")
         print(markers)
         print("sexMarkers:")
         print(sexMarkers)
+        print("qsMarkers:")
+        print(qsMarkers)
       }
-
+      
       # Add widgets, and populate.
       .f3g1[p + 1, 1] <<- gcheckbox(text="", checked=FALSE, container=.f3g1)
       .f3g1[p + 1, 2] <<- glabel(text=panel[p], container=.f3g1)
       .f3g1[p + 1, 3] <<- gedit(text=shortName[p], width = 20, container=.f3g1)
       .f3g1[p + 1, 4] <<- gedit(text=fullName[p], width = 40, container=.f3g1)
-      .f3g1[p + 1, 5] <<- gedit(text=sexMarkers, width = 30, container=.f3g1)
+      .f3g1[p + 1, 5] <<- gedit(text=sexMarkers, width = 40, container=.f3g1)
+      .f3g1[p + 1, 6] <<- gedit(text=qsMarkers, width = 20, container=.f3g1)
       
     }
   
@@ -406,7 +455,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                    horizontal = FALSE,
                    container=f4)
   
-  f4_name_edt <- gedit(width=25, container=f4)
+  f4_name_edt <- gedit(expand=TRUE, container=f4)
   enabled(f4_name_edt) <- FALSE
   
   f4_save_btn <- gbutton(text="Save", border=TRUE, expand=FALSE, container=f4)
@@ -447,6 +496,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     # Get variables.
     val_name <- svalue(f4_name_edt)
     val_opt <- svalue(f4_opt, index=TRUE)
+    val_check <- svalue(f0_opt, index=TRUE)
     
     # Check if kit info exist.
     if(!is.null(.newKitInfo)){
@@ -456,6 +506,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       shortName <- character()
       fullName <- character()
       sexMarkers <- 0
+      qsMarkers <- 0
       
       # Get panels.
       panel <- unique(.newKitInfo$Panel)
@@ -468,8 +519,20 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
         
         # Read sex marker value and replace any spaces.
         sexTmp <- svalue(.f3g1[1 + p, 5])
-        sexTmp <- gsub(" ", "", sexTmp, fixed=TRUE)
+        # Replace comma plus one or more space with just comma.
+        sexTmp <- gsub(",\\s+", ",", sexTmp)
+        # Replace one or more space plus comma with just comma.
+        sexTmp <- gsub("\\s+,", ",", sexTmp)
         sexMarkers[p] <- sexTmp
+        
+        # Read quality sensor value and replace any spaces.
+        qsTmp <- svalue(.f3g1[1 + p, 6])
+        # Replace comma plus one or more space with just comma.
+        qsTmp <- gsub(",\\s+", ",", qsTmp)
+        # Replace one or more space plus comma with just comma.
+        qsTmp <- gsub("\\s+,", ",", qsTmp)
+        qsMarkers[p] <- qsTmp
+        
       }
       
       if(debug){
@@ -479,15 +542,17 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
         print(fullName)
         print("sexMarkers:")
         print(sexMarkers)
+        print("qsMarkers:")
+        print(qsMarkers)
       }
       
       # Check that short name is provided for all kits not removed.
       missing <- shortName[!removeKit] %in% ""
-      
+
       # Check if short name is missing.
       if(!any(missing)){
         
-        if(val_opt == 1){ # Add new.
+        if(val_opt == 1){ # Append (add new kits).
           # Check if short name exist in kit file.
           exist <- shortName[!removeKit] %in% getKit()
         } else { # Overwrite or save as data frame.
@@ -524,9 +589,10 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
             
             # Set sex marker flag.
             if(is.null(.newKitInfo$Sex.Marker)){
-              .newKitInfo$Sex.Marker <<- NA
+              .newKitInfo$Sex.Marker <<- NA # Create a new column.
             }
             currentSexMarkers <- unlist(strsplit(sexMarkers[p], split=",", fixed=TRUE))
+            currentSexMarkers <- currentSexMarkers[currentSexMarkers != .noSexMarkerString]
             selPanel <- .newKitInfo$Panel == panel[p]
             selMarker <- .newKitInfo$Marker %in% currentSexMarkers
             selection <- selPanel & selMarker
@@ -535,11 +601,30 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
             # Check for misspelled markers.
             ok <- currentSexMarkers %in% .newKitInfo$Marker[selPanel]
             if(!all(ok)){
-              warning(paste("Given sex marker:",
-                            paste(currentSexMarkers[!ok], collapse=","),
-                            "not found in", panel[p]))
+              stop(paste("Given sex marker:",
+                         paste(currentSexMarkers[!ok], collapse=","),
+                         "not found in", panel[p]))
             }
-            
+
+            # Set quality sensor flag.
+            if(is.null(.newKitInfo$Quality.Sensor)){
+              .newKitInfo$Quality.Sensor <<- NA # Create a new column.
+            }
+            currentQsMarkers <- unlist(strsplit(qsMarkers[p], split=",", fixed=TRUE))
+            currentQsMarkers <- currentQsMarkers[currentQsMarkers != .noQsMarkerString]
+            selPanel <- .newKitInfo$Panel == panel[p]
+            selMarker <- .newKitInfo$Marker %in% currentQsMarkers
+            selection <- selPanel & selMarker
+            .newKitInfo$Quality.Sensor[selPanel] <<- FALSE # Reset current panel.
+            .newKitInfo$Quality.Sensor[selection] <<- TRUE # Flag qs markers.
+            # Check for misspelled markers.
+            ok <- currentQsMarkers %in% .newKitInfo$Marker[selPanel]
+            if(!all(ok)){
+              stop(paste("Given quality sensor:",
+                         paste(currentQsMarkers[!ok], collapse=","),
+                         "not found in", panel[p]))
+            }
+
           }
           
           # Remove kits if any.

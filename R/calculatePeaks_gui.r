@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.04.2016: 'Save as' textbox expandable.
 # 27.08.2015: Updated text for option to calculate per marker.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -164,7 +165,7 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", container=f2, expand = TRUE)
 
   # BUTTON ####################################################################
   

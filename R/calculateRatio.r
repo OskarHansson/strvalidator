@@ -60,6 +60,10 @@
 
 calculateRatio <- function(data, ref=NULL, numerator=NULL, denominator=NULL, group=NULL,
                            ol.rm = TRUE, ignore.case=TRUE, word=FALSE, exact=FALSE, debug=FALSE){
+
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -323,8 +327,8 @@ calculateRatio <- function(data, ref=NULL, numerator=NULL, denominator=NULL, gro
   attr(res, which="calculateRatio, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="calculateRatio, call") <- match.call()
   attr(res, which="calculateRatio, date") <- date()
-  attr(res, which="calculateRatio, data") <- substitute(data)
-  attr(res, which="calculateRatio, ref") <- substitute(ref)
+  attr(res, which="calculateRatio, data") <- attr_data
+  attr(res, which="calculateRatio, ref") <- attr_ref
   attr(res, which="calculateRatio, numerator") <- numerator
   attr(res, which="calculateRatio, denominator") <- denominator
   attr(res, which="calculateRatio, group") <- group

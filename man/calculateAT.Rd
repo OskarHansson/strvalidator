@@ -4,10 +4,10 @@
 \alias{calculateAT}
 \title{Calculate Analytical Threshold}
 \usage{
-calculateAT(data, ref = NULL, block.height = TRUE, height = 500,
-  block.sample = TRUE, per.dye = TRUE, range.sample = 20,
-  block.ils = TRUE, range.ils = 10, k = 3, rank.t = 0.99,
-  alpha = 0.01, ignore.case = TRUE, word = FALSE, debug = FALSE)
+calculateAT(data, ref = NULL, mask.height = TRUE, height = 500,
+  mask.sample = TRUE, per.dye = TRUE, range.sample = 20,
+  mask.ils = TRUE, range.ils = 10, k = 3, rank.t = 0.99, alpha = 0.01,
+  ignore.case = TRUE, word = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{a data frame containing at least 'Dye.Sample.Peak',
@@ -16,23 +16,23 @@ calculateAT(data, ref = NULL, block.height = TRUE, height = 500,
 \item{ref}{a data frame containing at least
 'Sample.Name', 'Marker', 'Allele'.}
 
-\item{block.height}{logical to indicate if high peaks should be blocked.}
+\item{mask.height}{logical to indicate if high peaks should be masked.}
 
 \item{height}{integer for global lower peak height threshold for peaks
-to be excluded from the analysis. Active if 'block.peak=TRUE.}
+to be excluded from the analysis. Active if 'mask.peak=TRUE.}
 
-\item{block.sample}{logical to indicate if sample allelic peaks should be blocked.}
+\item{mask.sample}{logical to indicate if sample allelic peaks should be masked.}
 
-\item{per.dye}{logical TRUE if sample peaks should be blocked per dye channel.
-FALSE if sample peaks should be blocked globally across dye channels.}
+\item{per.dye}{logical TRUE if sample peaks should be masked per dye channel.
+FALSE if sample peaks should be masked globally across dye channels.}
 
-\item{range.sample}{integer to specify the blocking range in (+/-) data points.
-Active if block.sample=TRUE.}
+\item{range.sample}{integer to specify the masking range in (+/-) data points.
+Active if mask.sample=TRUE.}
 
-\item{block.ils}{logical to indicate if internal lane standard peaks should be blocked.}
+\item{mask.ils}{logical to indicate if internal lane standard peaks should be masked.}
 
-\item{range.ils}{integer to specify the blocking range in (+/-) data points.
-Active if block.ils=TRUE.}
+\item{range.ils}{integer to specify the masking range in (+/-) data points.
+Active if mask.ils=TRUE.}
 
 \item{k}{numeric factor for the desired confidence level (method AT1).}
 
@@ -48,9 +48,11 @@ critical value from the t-distribution (method AT4).}
 \item{debug}{logical to indicate if debug information should be printed.}
 }
 \value{
-list of two data frames. The first with result per dye per sample,
- per sample, globally across all samples, and globally across all samples per dye,
- for each method. The second is the complete percentile rank list.
+list of three data frames. The first with result per dye per sample,
+ per sample, globally across all samples, and globally across all samples
+ per dye, for each method. The second is the complete percentile rank list.
+ The third is the masked raw data used for calculation to enable manual
+ check of the result.
 }
 \description{
 Calculate analytical thresholds estimates.
@@ -58,17 +60,20 @@ Calculate analytical thresholds estimates.
 \details{
 Calculate the analytical threshold (AT) according to method 1, 2, and 4 as
 recommended in the reference by analysing the background signal (noise).
+In addition method 7, a log-normal version of method 1 has been implemented.
 Method 1: The average signal + 'k' * the standard deviation.
 Method 2: The percentile rank method. The percentage of noise peaks below 'rank.t'.
 Method 4: Utilize the mean and standard deviation and the critical value obtained 
 from the t-distribution for confidence interval 'alpha' (one-sided) and observed
-peaks analysed (i.e. not blocked) minus one as degrees of freedom, and the number
+peaks analysed (i.e. not masked) minus one as degrees of freedom, and the number
 of samples.
-If samples containing DNA are used a range around the allelic peaks can be blocked
-from the analysis to discard peaks higher than the noise. Blocking can be within
+Method 7: The average natural logarithm of the signal + k * the standard deviation.
+
+If samples containing DNA are used, a range around the allelic peaks can be masked
+from the analysis to discard peaks higher than the noise. Masking can be within
 each dye or across all dye channels.
 Similarily a range around the peaks of the internal lane standard (ILS) can be 
-blocked across all dye channels. Which can bleed-through in week samples
+masked across all dye channels. Which can bleed-through in week samples
 (i.e. negative controls)
 The mean, standard deviation, and number of peaks are calculated per dye per sample,
 per sample, globally across all samples, and globally across all samples per dye,
@@ -82,6 +87,6 @@ J. Bregu et.al.,
 \url{http://onlinelibrary.wiley.com/doi/10.1111/1556-4029.12008/abstract}
 }
 \seealso{
-\code{\link{blockAT}}, \code{\link{checkSubset}}
+\code{\link{maskAT}}, \code{\link{checkSubset}}
 }
 

@@ -5,6 +5,7 @@
 # NB! Can't handle Sample.Names as factors?
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.06.2016: 'Save as' textbox expandable.
 # 09.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 23.05.2015: Re-named internal variable 'new' (R function) to 'new_val'.
@@ -27,7 +28,6 @@
 # 24.05.2013: Improved error message for missing columns.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
-# 27.04.2013: Add selection of dataset in gui. Removed parameter 'data'.
 
 #' @title Trim Data
 #'
@@ -357,7 +357,7 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", expand=TRUE, container=f2)
 
   # BUTTON ####################################################################
   

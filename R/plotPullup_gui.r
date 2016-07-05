@@ -5,6 +5,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.05.2016: Implemented check for missing values.
+# 10.05.2016: 'Save as' textbox expandable.
+# 10.05.2016: New method '.enablePlotButtons' and called when changing plot options.
 # 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom gridExtra arrangeGrob, and ggplot2.
 # 11.11.2015: Added importFrom grid.
@@ -41,6 +44,7 @@
 #'  element_text labs xlab ylab element_blank ggplotGrob theme_gray theme_bw
 #'  theme_linedraw theme_light theme_dark theme_minimal theme_classic
 #'  theme_void 
+#' @importFrom  data.table data.table
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
@@ -150,9 +154,8 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
       svalue(kit_drp, index=TRUE) <- kitIndex
       
       # Enable buttons.
-      enabled(plot_height_btn) <- TRUE
-      enabled(plot_allele_btn) <- TRUE
-      
+      .enablePlotButtons()
+
     } else {
       
       # Reset components.
@@ -213,6 +216,13 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   f1_drop_chk <- gcheckbox(text="Drop sex markers",
                            checked=TRUE,
                            container=f1)
+  
+  addHandlerChanged(f1_drop_chk, handler = function(h, ...) {
+    
+    # Enable buttons.
+    .enablePlotButtons()
+    
+  } )
   
   # FRAME 7 ###################################################################
   
@@ -295,7 +305,7 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   
   glabel(text="Name for result:", container=f5)
   
-  f5_save_edt <- gedit(text="", container=f5)
+  f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
   f5_save_btn <- gbutton(text = "Save as object",
                          border=TRUE,
@@ -376,6 +386,14 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
                                           selected = 2,
                                           horizontal = FALSE,
                                           container = grid3)
+
+  addHandlerChanged(e3_scales_opt, handler = function(h, ...) {
+    
+    # Enable buttons.
+    .enablePlotButtons()
+    
+  } )
+  
   
   # FRAME 4 ###################################################################
   
@@ -590,6 +608,14 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
         print(yTitle)
       }
       
+      # Create data.table to check for facet error caused by all NA's.
+      dt <- data.table::data.table(.gData)
+      # Check for facet error caused by all NA's.
+      tmp <- dt[, list(Sum=sum(Ratio)), by=Marker]
+      if(any(tmp$Sum==0) || !all(levels(dt$Marker) %in% unique(dt$Marker))){
+        message("Empty facets detected! If this leads to plot error try another scale for axes.")
+      }
+
       # Construct plot differently.
       if(length(val_ncol) == 1){
         # Simple plot, equal number of markers per dye.
@@ -829,6 +855,13 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   
   # INTERNAL FUNCTIONS ########################################################
   
+  .enablePlotButtons <- function(){
+    
+    enabled(plot_allele_btn) <- TRUE
+    enabled(plot_height_btn) <- TRUE
+    
+  }
+
   .loadSavedSettings <- function(){
     
     # First check status of save flag.

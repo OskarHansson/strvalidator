@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.06.2016: Added support for 'Quality Sensor'.
 # 02.12.2016: Possible to return multiple kits by specifying a vector.
 # 29.08.2015: Added importFrom.
 # 28.06.2015: Changed parameter names to format: lower.case
@@ -136,6 +137,7 @@ getKit<-function(kit=NULL, what=NA, show.messages=FALSE, .kit.info=NULL, debug=F
                         Marker.Max = currentKit$Marker.Max,
                         Offset = currentKit$Offset,
                         Sex.Marker = currentKit$Sex.Marker,
+                        Quality.Sensor = currentKit$Quality.Sensor,
                         stringsAsFactors = FALSE)
       
       # Create useful factors.
@@ -158,7 +160,8 @@ getKit<-function(kit=NULL, what=NA, show.messages=FALSE, .kit.info=NULL, debug=F
                    "Repeat",
                    "Range",
                    "Offset",
-                   "Sex.Marker", sep=", ")
+                   "Sex.Marker",
+                   "Quality.Sensor", sep=", ")
   
   # WHAT ----------------------------------------------------------------------
   
@@ -297,6 +300,13 @@ getKit<-function(kit=NULL, what=NA, show.messages=FALSE, .kit.info=NULL, debug=F
                         stringsAsFactors=FALSE)
       
       return(res)
+      
+    } else if (toupper(what) == "QUALITY.SENSOR"){
+      # Return quality sensors as vector.
+      
+      qsMarkers <- as.character(unique(res$Marker[res$Quality.Sensor == TRUE]))
+      
+      return(qsMarkers)
       
     } else if (toupper(what) == "SEX.MARKER"){
       # Return sex markers as vector.

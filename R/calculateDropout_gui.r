@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.06.2016: Added option to remove sex markers and quality sensor.
+# 16.06.2016: 'Save as' textbox expandable.
 # 05.10.2015: Added more attributes to result.
 # 04.10.2015: Added automatic calculation of average peak height 'H'.
 # 28.08.2015: Added importFrom
@@ -22,7 +24,6 @@
 # 11.07.2013: Added save GUI settings.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Improved error message for missing columns.
 
 #' @title Calculate Dropout Events
 #'
@@ -139,7 +140,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       # Detect kit.
       kitIndex <- detectKit(.gData, index=TRUE)
       # Select in dropdown.
-      svalue(f2_kit_drp, index=TRUE) <- kitIndex
+      svalue(kit_drp, index=TRUE) <- kitIndex
       
     } else {
       
@@ -238,7 +239,13 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     
   } )
   
+  # Kit -----------------------------------------------------------------------
   
+  g0[4,1] <- glabel(text="Select the kit used:", container=g0)
+  
+  g0[4,2] <- kit_drp <- gdroplist(items = getKit(), selected = 1,
+                                  editable = FALSE, container = g0) 
+
   # FRAME 1 ###################################################################
   
   f1 <- gframe(text = "Options",
@@ -249,9 +256,15 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   f1_ignore_case_chk <- gcheckbox(text="Ignore case", checked = TRUE,
                                   container = f1)
   
+  f1_sex_chk <- gcheckbox(text="Remove sex markers", checked = FALSE,
+                          container = f1)
+  
+  f1_qs_chk <- gcheckbox(text="Remove quality sensors", checked = TRUE,
+                         container = f1)
+  
   f1_h_chk <- gcheckbox(text="Calculate average peak height", checked = TRUE,
                                   container = f1)
-  
+
   f1g1 <- glayout(container = f1)
   
   f1g1[1,1] <- glabel(text="Limit of detection threshold (LDT):",
@@ -266,13 +279,13 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
                              checked=TRUE, container=f1)
 
   f1_score2_chk <- gcheckbox(text="Score drop-out relative to the high molecular weight allele",
-                             checked=FALSE, container=f1)
+                             checked=TRUE, container=f1)
   
   f1_scorex_chk <- gcheckbox(text="Score drop-out relative to a random allele",
-                             checked=FALSE, container=f1)
+                             checked=TRUE, container=f1)
 
   f1_scorel_chk <- gcheckbox(text="Score drop-out per locus",
-                             checked=FALSE, container=f1)
+                             checked=TRUE, container=f1)
   
   # FRAME 2 ###################################################################
   
@@ -283,14 +296,8 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text = "", expad = TRUE, container = f2)
 
-  glabel(text=" Kit attribute:", container=f2)
-  
-  f2_kit_drp <- gdroplist(items=getKit(), selected = 1,
-                          editable = FALSE, container = f2) 
-  
-  
   # BUTTON ####################################################################
   
   
@@ -304,8 +311,10 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     val_h <- svalue(f1_h_chk)
     val_threshold <- as.numeric(svalue(f1g1_ldt_edt))
     val_name <- svalue(f2_save_edt)
-    val_kit <- svalue(f2_kit_drp)
+    val_kit <- svalue(kit_drp)
     val_method <- vector()
+    val_sex <- svalue(f1_sex_chk)
+    val_qs <- svalue(f1_qs_chk)
     
     # Get methods:
     if(svalue(f1_score1_chk)){
@@ -346,6 +355,10 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_threshold)
       print("val_name")
       print(val_name)
+      print("val_sex")
+      print(val_sex)
+      print("val_qs")
+      print(val_qs)
     }
     
     if(!is.null(.gData) & !is.null(.gRef)){
@@ -359,6 +372,9 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
                                   threshold=val_threshold,
                                   method=val_method,
                                   ignore.case=val_ignore_case,
+                                  sex.rm=val_sex,
+                                  qs.rm=val_qs,
+                                  kit=val_kit,
                                   debug=debug)
       
       # Add attributes to result.
@@ -368,10 +384,14 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       attr(datanew, which="calculateDropout_gui, threshold") <- val_threshold
       attr(datanew, which="calculateDropout_gui, method") <- val_method
       attr(datanew, which="calculateDropout_gui, ignore.case") <- val_ignore_case
+      attr(datanew, which="calculateDropout_gui, sex.rm") <- val_sex
+      attr(datanew, which="calculateDropout_gui, qs.rm") <- val_qs
       attr(datanew, which="calculateDropout_gui, calculate.h") <- val_h
       
       # Calculate and add average peak height.
       if(val_h){
+        
+        message("User selected to add average peak height...")
 
         # Heterozygote status is required to calculate 'H'.        
         if(!"Heterozygous" %in% names(.gData)){
@@ -404,6 +424,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
 
         # Calculate average peak height.
         dfH <- calculateHeight(data=.gData, na=0, add=FALSE,
+                               sex.rm=val_sex, qs.rm=val_qs, kit=val_kit,
                                exclude="OL", debug=debug)
         
         message("Average peak height calculated.")
@@ -470,6 +491,12 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_case_chk) <- get(".strvalidator_calculateDropout_gui_ignore", envir=env)
       }
+      if(exists(".strvalidator_calculateDropout_gui_sex", envir=env, inherits = FALSE)){
+        svalue(f1_sex_chk) <- get(".strvalidator_calculateDropout_gui_sex", envir=env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_qs", envir=env, inherits = FALSE)){
+        svalue(f1_qs_chk) <- get(".strvalidator_calculateDropout_gui_qs", envir=env)
+      }
       if(exists(".strvalidator_calculateDropout_gui_h", envir=env, inherits = FALSE)){
         svalue(f1_h_chk) <- get(".strvalidator_calculateDropout_gui_h", envir=env)
       }
@@ -500,6 +527,8 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       
       assign(x=".strvalidator_calculateDropout_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculateDropout_gui_ignore", value=svalue(f1_ignore_case_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_sex", value=svalue(f1_sex_chk), envir=env)
+      assign(x=".strvalidator_calculateDropout_gui_qs", value=svalue(f1_qs_chk), envir=env)
       assign(x=".strvalidator_calculateDropout_gui_h", value=svalue(f1_h_chk), envir=env)
       assign(x=".strvalidator_calculateDropout_gui_score1", value=svalue(f1_score1_chk), envir=env)
       assign(x=".strvalidator_calculateDropout_gui_score2", value=svalue(f1_score2_chk), envir=env)
@@ -513,6 +542,12 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       }
       if(exists(".strvalidator_calculateDropout_gui_ignore", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateDropout_gui_ignore", envir = env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_sex", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_sex", envir = env)
+      }
+      if(exists(".strvalidator_calculateDropout_gui_qs", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateDropout_gui_qs", envir = env)
       }
       if(exists(".strvalidator_calculateDropout_gui_h", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateDropout_gui_h", envir = env)

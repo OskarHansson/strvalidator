@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.06.2016: 'Save as' textbox expandable.
 # 06.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 07.10.2014: Added 'focus', added 'parent' parameter.
@@ -23,7 +24,6 @@
 # 09.05.2013: .result removed, added save as group.
 # 25.04.2013: Add selection of dataset in gui. Removed parameter 'data'.
 # 25.04.2013: New parameter 'debug'.
-# <25.04.2013: First version.
 
 #' @title Slim Data Frames
 #'
@@ -322,7 +322,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", expand=TRUE, container=f2)
 
   # BUTTON ####################################################################
 

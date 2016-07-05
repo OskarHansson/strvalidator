@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.04.2016: 'Save as' textbox expandable.
 # 30.12.2015: Added option for 'exact' matching.
 # 30.12.2015: Fixed option 'word' matching not saved.
 # 13.11.2015: Added attribute drop.sex.
@@ -315,7 +316,7 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f4)
   
-  f4_save_edt <- gedit(text="", container=f4)
+  f4_save_edt <- gedit(text="", container=f4, expand = TRUE)
   
   glabel(text=" Kit attribute:", container=f4)
   

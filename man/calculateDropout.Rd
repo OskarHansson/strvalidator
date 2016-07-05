@@ -5,7 +5,8 @@
 \title{Calculate Drop-out Events}
 \usage{
 calculateDropout(data, ref, threshold = NULL, method = c("1", "2", "X",
-  "L"), ignore.case = TRUE, debug = FALSE)
+  "L"), ignore.case = TRUE, sex.rm = FALSE, qs.rm = TRUE, kit = NULL,
+  debug = FALSE)
 }
 \arguments{
 \item{data}{data frame in GeneMapper format containing at least a column 'Allele'.}
@@ -20,6 +21,12 @@ Method 'X' for random allele, '1' or '2' for the low/high molecular weight allel
 and 'L' for the locus method (the option is case insensitive).}
 
 \item{ignore.case}{logical, default TRUE for case insensitive.}
+
+\item{sex.rm}{logical, default FALSE to include sex markers in the analysis.}
+
+\item{qs.rm}{logical, default TRUE to exclude quality sensors from the analysis.}
+
+\item{kit}{character, required if sex.rm=TRUE or qs.rm=TRUE to define the kit.}
 
 \item{debug}{logical indicating printing debug information.}
 }
@@ -41,9 +48,10 @@ Calculates drop-out events. In case of allele dropout the peak height of the
 surviving allele is given. Homozygous alleles in the reference set can be
 either single or double notation (X or X X). Markers present in the
 reference set but not in the data set will be added to the result.
-NB! "Sample Names" in 'ref' must be unique 'core' name of replicate sample
+NB! 'Sample.Name' in 'ref' must be unique core name of replicate sample
 names in 'data'.
 Use \code{checkSubset} to make sure subsetting works as intended.
+There are options to remove sex markers and quality sensors from analysis.
 
 NB! There are several methods of scoring drop-out events for regression.
 Currently the 'MethodX', 'Method1', and 'Method2' are endorsed by the DNA

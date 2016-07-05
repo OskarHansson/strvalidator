@@ -6,7 +6,7 @@
 \usage{
 calculatePullup(data, ref, pullup.range = 6, block.range = 12,
   ol.rm = FALSE, ignore.case = TRUE, word = FALSE, discard = FALSE,
-  debug = FALSE)
+  limit = 1, debug = FALSE)
 }
 \arguments{
 \item{data}{a data frame containing at least 'Sample.Name', 'Marker', 'Height',
@@ -30,6 +30,9 @@ Default is FALSE to include off-ladder peaks.}
 
 \item{discard}{logical TRUE if known alleles with no detected pull-up should
 be discarded from the result. Default is FALSE to include alleles not causing pull-up.}
+
+\item{limit}{numeric remove ratios > limit from the result. Default is 1 to remove 
+pull-up peaks that are higher than the source peak and hence likely not a real pull-up.}
 
 \item{debug}{logical indicating printing debug information.}
 }

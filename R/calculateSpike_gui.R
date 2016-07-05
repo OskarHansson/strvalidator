@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.05.2016: Implemented more accurat method and parameter 'quick'.
+# 18.05.2016: Changed default of 'Round to nearest (bp)' from 1 to 1.5.
+#             Also changed min from 1 to 0 and step by from 1 to 0.1.
 # 12.10.2015: First version.
 
 #' @title Detect Spike
@@ -146,13 +149,19 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   f1g1[1,1] <- glabel(text = "Threshold (number of peaks at similar size):",
                       container = f1g1)  
-  f1g1[1,2] <- f1_t_spn <- gspinbutton(from = 1, to = 10, by = 1, value = 3,
-                                       container = f1g1)
+  f1g1[1,2] <- f1_threshold_spn <- gspinbutton(from = 1, to = 10, by = 1,
+                                               value = 3, container = f1g1)
   
-  f1g1[2,1] <- glabel(text = "Round to nearest (bp):", container = f1g1)  
-  f1g1[2,2] <- f1_r_spn <- gspinbutton(from = 1, to = 10, by = 1, value = 1,
-                                       container = f1g1)
-  
+  f1g1[2,1] <- glabel(text = "Tolerance (bp):", container = f1g1)  
+  f1g1[2,2] <- f1_tolerance_spn <- gspinbutton(from = 0, to = 10, by = 0.1,
+                                               value = 2, container = f1g1)
+
+  f1_quick_chk <- gcheckbox(text = "Quick and dirty", checked = FALSE,
+                         container = f1)
+  tooltip(f1_quick_chk) <- paste("NB! The quick method may not catch all spikes",
+                          "since two peaks can be separated by rounding e.g.",
+                          "200.5 and 200.6 becomes 200 and 201 respectively!")
+
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as", horizontal = TRUE, spacing = 5, container = gv) 
@@ -170,10 +179,11 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     
     # Get values.
     val_data <- .gData
-    val_t <- svalue(f1_t_spn)
-    val_r <- svalue(f1_r_spn)
+    val_threshold <- svalue(f1_threshold_spn)
+    val_tolerance <- svalue(f1_tolerance_spn)
     val_kit <- svalue(kit_drp)
     val_name <- svalue(f2_save_edt)
+    val_quick <- svalue(f1_quick_chk)
     
     if(!is.null(val_data)){
       
@@ -182,15 +192,17 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       enabled(calculate_btn) <- FALSE
       
       datanew <- calculateSpike(data=val_data,
-                                threshold=val_t,
-                                round.to=val_r,
+                                threshold=val_threshold,
+                                tolerance=val_tolerance,
                                 kit=val_kit,
+                                quick=val_quick,
                                 debug=debug)
       
       # Add attributes to result.
       attr(datanew, which="calculateSpike_gui, data") <- svalue(g0_dataset_drp)
-      attr(datanew, which="calculateSpike_gui, threshold") <- val_t
-      attr(datanew, which="calculateSpike_gui, round.to") <- val_r
+      attr(datanew, which="calculateSpike_gui, threshold") <- val_threshold
+      attr(datanew, which="calculateSpike_gui, tolerance") <- val_tolerance
+      attr(datanew, which="calculateSpike_gui, quick") <- val_quick
       attr(datanew, which="calculateSpike_gui, kit") <- val_kit
 
       # Save data.
@@ -242,11 +254,14 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     
     # Then load settings if true.
     if(svalue(savegui_chk)){
-      if(exists(".strvalidator_calculateSpike_gui_t", envir = env, inherits = FALSE)){
-        svalue(f1_t_spn) <- get(".strvalidator_calculateSpike_gui_t", envir = env)
+      if(exists(".strvalidator_calculateSpike_gui_threshold", envir = env, inherits = FALSE)){
+        svalue(f1_threshold_spn) <- get(".strvalidator_calculateSpike_gui_threshold", envir = env)
       }
-      if(exists(".strvalidator_calculateSpike_gui_r", envir = env, inherits = FALSE)){
-        svalue(f1_r_spn) <- get(".strvalidator_calculateSpike_gui_r", envir = env)
+      if(exists(".strvalidator_calculateSpike_gui_tolerance", envir = env, inherits = FALSE)){
+        svalue(f1_tolerance_spn) <- get(".strvalidator_calculateSpike_gui_tolerance", envir = env)
+      }
+      if(exists(".strvalidator_calculateSpike_gui_quick", envir = env, inherits = FALSE)){
+        svalue(f1_quick_chk) <- get(".strvalidator_calculateSpike_gui_quick", envir = env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -260,25 +275,26 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     # Then save settings if true.
     if(svalue(savegui_chk)){
       
-      assign(x = ".strvalidator_calculateSpike_gui_savegui",
-             value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateSpike_gui_t",
-             value = svalue(f1_t_spn), envir = env)
-      assign(x = ".strvalidator_calculateSpike_gui_r",
-             value = svalue(f1_r_spn), envir = env)
-
+      assign(x = ".strvalidator_calculateSpike_gui_savegui", value = svalue(savegui_chk), envir = env)
+      assign(x = ".strvalidator_calculateSpike_gui_threshold", value = svalue(f1_threshold_spn), envir = env)
+      assign(x = ".strvalidator_calculateSpike_gui_tolerance", value = svalue(f1_tolerance_spn), envir = env)
+      assign(x = ".strvalidator_calculateSpike_gui_quick", value = svalue(f1_quick_chk), envir = env)
+      
     } else { # or remove all saved values if false.
       
       if(exists(".strvalidator_calculateSpike_gui_savegui", envir = env, inherits = FALSE)){
         remove(".strvalidator_calculateSpike_gui_savegui", envir = env)
       }
-      if(exists(".strvalidator_calculateSpike_gui_t", envir = env, inherits = FALSE)){
-        remove(".strvalidator_calculateSpike_gui_t", envir = env)
+      if(exists(".strvalidator_calculateSpike_gui_threshold", envir = env, inherits = FALSE)){
+        remove(".strvalidator_calculateSpike_gui_threshold", envir = env)
       }
-      if(exists(".strvalidator_calculateSpike_gui_r", envir = env, inherits = FALSE)){
-        remove(".strvalidator_calculateSpike_gui_r", envir = env)
+      if(exists(".strvalidator_calculateSpike_gui_tolerance", envir = env, inherits = FALSE)){
+        remove(".strvalidator_calculateSpike_gui_tolerance", envir = env)
       }
-
+      if(exists(".strvalidator_calculateSpike_gui_quick", envir = env, inherits = FALSE)){
+        remove(".strvalidator_calculateSpike_gui_quick", envir = env)
+      }
+      
       if(debug){
         print("Settings cleared!")
       }

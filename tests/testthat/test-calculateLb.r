@@ -7,6 +7,7 @@ context("calculateLb")
 
 ################################################################################
 # CHANGE LOG
+# 01.03.2016: Upgraded to work with version 1.6.0.9002.
 # 26.12.2015: First version.
 # 
 # require(strvalidator)
@@ -972,17 +973,15 @@ test_that("calculateLb", {
                      ol.rm = TRUE, sex.rm = FALSE, na = NULL,
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
-  # This will not work since one marker is missing in the first sample.  
-  expect_that(calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = TRUE,
+  # This work in version >=1.6.0.9002 since the missing marker is detected and added.
+  res <- calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = TRUE,
                      ol.rm = TRUE, sex.rm = FALSE, na = NULL,
-                     ignore.case = TRUE, word = FALSE, exact = FALSE),
-              throws_error())
+                     ignore.case = TRUE, word = FALSE, exact = FALSE)
   
-  # Same as above but global Lb.
-  expect_that(calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = FALSE,
+  # Same as above but global Lb (this work in version >=1.6.0.9002).
+  res <- calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = FALSE,
                           ol.rm = TRUE, sex.rm = FALSE, na = NULL,
-                          ignore.case = TRUE, word = FALSE, exact = FALSE),
-              throws_error())
+                          ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   
   # TEST 14 -------------------------------------------------------------------
@@ -1004,17 +1003,15 @@ test_that("calculateLb", {
                      ol.rm = TRUE, sex.rm = FALSE, na = NULL,
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
-  # This will not work since one marker is missing in the first sample.  
-  expect_that(calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = TRUE,
+  # This work in version >=1.6.0.9002 since the missing marker is detected and added.
+  res <- calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = TRUE,
                           ol.rm = TRUE, sex.rm = FALSE, na = NULL,
-                          ignore.case = TRUE, word = FALSE, exact = FALSE),
-              throws_error())
+                          ignore.case = TRUE, word = FALSE, exact = FALSE)
   
-  # Same as above but global Lb.
-  expect_that(calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = FALSE,
+  # Same as above but global Lb (this work in version >=1.6.0.9002).
+  res <- calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = FALSE,
                           ol.rm = TRUE, sex.rm = FALSE, na = NULL,
-                          ignore.case = TRUE, word = FALSE, exact = FALSE),
-              throws_error())
+                          ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   
   # TEST 15 -------------------------------------------------------------------

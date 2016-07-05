@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.05.2016: 'Save as' textbox expandable.
+# 10.05.2016: Fixed some plot error and included check for missing values.
+# 10.05.2016: New method '.enablePlotButtons' and called when changing plot options.
 # 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom grid and gridExtra arrangeGrob, and ggplot2.
 # 11.11.2015: Added more themes.
@@ -23,8 +26,6 @@
 # 13.02.2014: Implemented theme.
 # 20.01.2014: Implemented ggsave with workaround for complex plots.
 # 30.11.2013: Added info on number of samples.
-# 30.11.2013: Fixed 'complex' plot.
-# 30.11.2013: Fixed 'facet_wrap' with strings.
 
 #' @title Plot Stutter
 #'
@@ -58,6 +59,7 @@
 #'  labs xlab ylab ggplotGrob scale_colour_manual element_blank theme_gray
 #'  theme_bw theme_linedraw theme_light theme_dark theme_minimal theme_classic
 #'  theme_void
+#' @importFrom  data.table data.table
 #' 
 #' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
 
@@ -164,8 +166,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       svalue(kit_drp, index=TRUE) <- kitIndex
       
       # Enable buttons.
-      enabled(plot_allele_btn) <- TRUE
-      enabled(plot_height_btn) <- TRUE
+      .enablePlotButtons()
       
     } else {
     
@@ -227,7 +228,14 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   f1_drop_chk <- gcheckbox(text="Drop sex markers",
                            checked=TRUE,
                            container=f1)
-
+  
+  addHandlerChanged(f1_drop_chk, handler = function(h, ...) {
+    
+    # Enable buttons.
+    .enablePlotButtons()
+    
+  } )
+  
   # FRAME 7 ###################################################################
   
   f7 <- gframe(text = "Plot stutter data",
@@ -269,7 +277,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   glabel(text="Name for result:", container=f5)
   
-  f5_save_edt <- gedit(text="", container=f5)
+  f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
   f5_save_btn <- gbutton(text = "Save as object",
                          border=TRUE,
@@ -350,6 +358,14 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                                       selected = 2,
                                       horizontal = FALSE,
                                       container = grid3)
+  
+  addHandlerChanged(scales_opt, handler = function(h, ...) {
+    
+    # Enable buttons.
+    .enablePlotButtons()
+    
+  } )
+  
   
   # FRAME 4 ###################################################################
   
@@ -520,6 +536,13 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       # Calculate number of unique columns per dye.
       val_ncol <- unique(table(uniqueMarkerDye$Dye))
       
+      # Create data.table to check for facet error caused by all NA's.
+      dt <- data.table::data.table(.gData)
+      # Check for facet error caused by all NA's.
+      tmp <- dt[, list(Sum=sum(Ratio)), by=Marker]
+      if(any(tmp$Sum==0) || !all(levels(dt$Marker) %in% unique(dt$Marker))){
+        message("Empty facets detected! If this leads to plot error try another scale for axes.")
+      }
       
       # Plotting alleles for observed stutters per marker.
       if(what == "allele"){
@@ -535,7 +558,6 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         }
         
         gp <- ggplot(.gData, aes_string(x="Allele", y="Ratio", colour="Type"))
-        
         
       } else if (what == "height") {
         
@@ -563,13 +585,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
 
       # Facet and keep all levels.
       gp <- gp + facet_grid("Dye ~ Marker", drop = FALSE)
-      # NB! 'facet_wrap' does not seem to support strings.
-      #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-      gp <- gp + facet_wrap(as.formula(paste("Dye ~ Marker")), ncol=val_ncol, # Keep dye labels
-                            drop=FALSE, scales=val_scales)
-      #gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol=val_ncol, # No dye labels
-      #                      drop=FALSE, scales=val_scales)
-      
+
       # Restrict y axis.
       if(!is.na(val_ymin) && !is.na(val_ymax)){
         val_y <- c(val_ymin, val_ymax)
@@ -645,14 +661,14 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
           print(paste("Complex plot, val_ncol:",
                       paste(val_ncol, collapse=", ")))
         }
-        
+
         # Extract the legend from the 'simple' plot.
         guide <- gtable::gtable_filter(ggplotGrob(gp), pattern="guide")
-        
+
         # Get y max to be able to use same scale across plots.
         ymax <- max(.gData$Ratio, na.rm=TRUE) * 1.05
         ymin <- min(.gData$Ratio, na.rm=TRUE) * 0.95
-        
+
         if(debug){
           print("ymax:")
           print(ymax)
@@ -826,6 +842,13 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   }
 
   # INTERNAL FUNCTIONS ########################################################
+  
+  .enablePlotButtons <- function(){
+    
+    enabled(plot_allele_btn) <- TRUE
+    enabled(plot_height_btn) <- TRUE
+    
+  }
 
   # Return a number of ggplot default colors.
   .gg_color_hue <- function(n) {

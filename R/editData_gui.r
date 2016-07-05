@@ -1,10 +1,12 @@
 ################################################################################
 # TODO LIST
-# TODO: View attributes: Does not work well...
+# TODO: ...
 
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.06.2016: 'Save as' textbox expandable.
+# 14.04.2016: Limit number of rows now FALSE by default + tooltip.
 # 06.01.2016: Fixed attributes window bug. Error when close using X.
 # 26.10.2015: Fixed attributes window bug.
 # 04.10.2015: Added options to limit number of rows, and show attributes.
@@ -24,8 +26,6 @@
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 21.05.2013: Added 'copy to clipboard'
-# 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: First version.
 
 #' @title Edit or View Data Frames
 #'
@@ -187,9 +187,9 @@ editData_gui <- function(env=parent.frame(), savegui=NULL, data=NULL,
   
   
   g1[2,1] <- f1_limit_chk <- gcheckbox(text="Limit number of rows to:",
-                                       checked=TRUE, container=g1)
-  
-  
+                                       checked=FALSE, container=g1)
+  tooltip(f1_limit_chk) <- "NB! Sorting will only be performed on the loaded data."
+
   g1[2,2] <- f1_max_edt <- gedit(text=100, width=8, container=g1)
   
   addHandlerChanged(f1_show_attr_chk, handler = function(h, ...) {
@@ -214,24 +214,18 @@ editData_gui <- function(env=parent.frame(), savegui=NULL, data=NULL,
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Copy | Export | Save",
-               horizontal=FALSE,
-               spacing = 5,
-               container = gv) 
+               horizontal = TRUE, spacing = 5, container = gv) 
   
-  g2 <- glayout(container = f2, spacing = 1)
-  
-  g2[1,1] <- copy_btn <- gbutton(text="Copy", border=TRUE, container=g2)
+  copy_btn <- gbutton(text="Copy", border=TRUE, container=f2)
   tooltip(copy_btn) <- "Copy to clipboard (NB! large datasets might get truncated)"
   
-  g2[1,2] <- export_btn <- gbutton(text="Export", border=TRUE, container=g2)
+  export_btn <- gbutton(text="Export", border=TRUE, container=f2)
   tooltip(export_btn) <- "Opens the export dialog"
   
-  g2[1,3] <- save_btn <- gbutton(text="Save as", border=TRUE, container=g2)
+  save_btn <- gbutton(text="Save as", border=TRUE, container=f2)
   tooltip(save_btn) <- "Save as new dataset"
   
-  g2[1,4] <- save_txt <- gedit(text=.gDataName,
-                               container=g2, width = 50,
-                               anchor=c(-1 ,0))
+  save_txt <- gedit(text=.gDataName, container=f2, expand=TRUE)
   
   addHandlerChanged(copy_btn, handler = function(h, ...) {
     

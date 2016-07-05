@@ -1,15 +1,123 @@
-Version 1.6.0.9001
+Version 1.7.0
 ------------------------------------------------------------------------------
+* Updated kit file to support quality sensors (new column) and added:
+  Investigator 24plex GO! Kit
+  Investigator ESSplex Plus Kit
+  Investigator ESSplex SE QS Kit
+  Updated panel for 'Investigator ESSplex SE Plus Kit' from v1 to v4.
+  Defined 'Yindel' and 'DYS391' as sex markers for 'GlobalFiler'.
 * Bug fixes and improvements with the most significant listed below:
-  - calculateLb
-  Fixed missing markers after removing OL alleles when only OL alles were obsserved.
-  
-Version 1.6.0.9000
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - calculateHeight
+  - calculateAT / calculateAT_gui
+  Implemented method AT7 assuming log normal-distribution of noise.
+  Changed some column names.
+  - calculateAT_gui
+  Fixed bug in plot sample masking range (ESX17 hardcoded).
+  Now all excluded peaks are marked in plot (not only high peaks).
+  Prepare button and drop-down menu now disabled while processing.
+  -detectKit
+  Now check for and removes NA in markers to handle SamplePlotSizingTable.
+  - plotDistribution_gui
+  Fixed update of drop-down and information when selecting a new dataset without selected column.
+  Implemented log option and number of bins. Changed layout.
+  Default binwidth changed from 1 to 'empty', which will use default 'bins=30'.
+  - calculateSpike
+  Implemented accurate method.
+  Fixed multiple peaks in same dye triggers treshold by adding additional check
+  that number of unique dyes must be > threshold.
+  - addSize
+  Fixed message returing string + 'TRUE'.
+  - saveObject
+  Fixed object not saved if an object existed and the new object is renamed.
+  - columns / columns_gui
+  Added option to extract a substring.
+  - plotStutter_gui
+  Enabling of plot buttons after changing some plot options.
+  Fixed some plot error and implemented check for missing values.
+  - calculatePullup/calculatePullup_gui
+  Now handles missing alleles in the reference dataset (e.g. sex markers).
+  New option 'limit' that by default removes ratios > 1, unlikely pull-ups.
+  - plotPullup_gui
+  Enabling of plot buttons after changing some plot options.
+  Implemented check for missing values.
+  - heightToPeak
+  Fixed error when no peaks in sample.
+  - plotDropout_gui
+  New option 'Round to digits' (x-tick labels).
+  - editData_gui
+  Limit number of rows now FALSE by default + tooltip.
+  - calculateAT
+  Handles missing ILS dye.
+  - getKit
+  Added support for quality sensors.
+  - calculateLb / calculateLb_gui
+  Added option to remove quality sensors.
+  Fixed missing markers after removing OL alleles when only OL alles were observed.
+  Fixed problem with replacing NAs.
+  - calculateDropout / calculateDropout_gui
+  Added option to remove sex markers and quality sensors.
+  - calculateHeight / calculateHeight_gui
+  Added option to remove sex markers and quality sensors.
   Fixed attribute saved dataset.
-  
+  - generateEPG / generateEPG_gui
+  Fixed bug in plotting of marker ranges.
+  - makeKit_gui
+  Fixed bug removing space within marker names.
+  Added support for quality sensors.
+* New functions
+  - calculateSlope
+  - calculateSlope_gui
+  - plotSlope_gui
+  - removeSpike
+  - removeSpike_gui
+  - removeArtefact
+  - removeArtefact_gui
+* Name changes.
+  - blockAT
+  Changed to maskAT to better reflect the function.
+  Parameter names changed from 'block*' to 'mask*'.
+  - calculateAT / calculateAT_gui
+  Parameter names changed from 'block*' to 'mask*'.
+* Minor changes
+  - plotDropout_gui
+  Removed units on automatic titles.
+  - calculateAT_gui
+  Removed check for reference samples if masking is active (does no harm).
+* Added button to create new project in the 'Workspace' tab.
+* Added attributes for the following functions:
+  - columns/columns_gui
+  - calculatePullup/calculatePullup_gui
+* Added expand=TRUE to 'save as' textbox:
+  - addDye_gui
+  - addMarker_gui
+  - calculateRatio_gui
+  - calculateDropout_gui
+  - calculateCapillary_gui
+  - calculateHeterozygous_gui
+  - calculateAT6_gui
+  - calculateAT_gui
+  - calculateBalance_gui
+  - calculateStutter_gui
+  - calculateResultType_gui
+  - calculatePeaks_gui
+  - calculatePullup_gui
+  - calculateHeight_gui
+  - columns_gui
+  - cropData_gui
+  - editData_gui
+  - filterProfile_gui
+  - modelDropout_gui
+  - plotDistribution_gui
+  - plotResultType_gui
+  - plotBalance_gui
+  - plotStutter_gui
+  - plotPeaks_gui
+  - plotDropout_gui
+  - plotPullup_gui
+  - plotCapillary_gui
+  - slim_gui
+  - tableCapillary_gui
+  - trim_gui
+
 Version 1.6.0
 ------------------------------------------------------------------------------
 * STR-validator now requires R version >= 3.1.3 and ggplot2 version >= 2.0.0

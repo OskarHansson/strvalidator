@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.05.2016: 'Save as' textbox expandable.
 # 06.01.2016: Fixed theme methods not found and added more themes.
 # 04.01.2016: Fixed error object 'val_ncol' not found when val_wrap=1.
 # 30.12.2015: Wrapping options changed to radio button and implemented by Dye.
@@ -26,11 +27,6 @@
 # 06.05.2014: Implemented 'checkDataset'.
 # 05.05.2014: Fixed 'drop gender' and 'plot log' settings not saved.
 # 02.05.2014: Fixed bug when 'drop gender marker=TRUE' and no defined marker.
-# 25.05.2014: Fixed scale_colour_manual use first color for all in complex plot.
-# 15.04.2014: Fixed now handle no observation in an entire dye channel.
-# 14.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
-# 23.02.2014: Fixed different y max for complex plot, when supposed to be fixed.
-# 23.02.2014: Implemented theme.
 
 #' @title Plot Balance
 #'
@@ -473,7 +469,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   glabel(text="Name for result:", container=f5)
   
-  f5_save_edt <- gedit(text="", container=f5)
+  f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
   f5_save_btn <- gbutton(text = "Save as object",
                          border=TRUE,

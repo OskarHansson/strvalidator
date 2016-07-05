@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 01.07.2016: Fixed bug in plotting of marker ranges.
 # 31.12.2015: Rewritten function.
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
@@ -245,6 +246,7 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
   # Get kit markers, ranges, and colors.
   kitInfo <- getKit(kit=kit, what="Range")
   kitInfo <- addColor(kitInfo, have="Color", need="Dye")
+  kitInfo <- sortMarker(data = kitInfo, kit = kit)
 
   # Get unique Dyes.
   kitDye <- unique(kitInfo$Dye)
@@ -299,9 +301,8 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     
     # Calculate sum of peak heights for identical alleles in each sample.
     # to be used in boxplot.
-    DT <- DT[, list(Marker = Marker, Dye = Dye, Allele = Allele,
-                    Height = sum(Height)),
-             by = list(Sample.Name, Id)]
+    DT <- DT[, list(Height = sum(Height)),
+             by = list(Sample.Name, Marker, Dye, Allele, Id)]
     
     # Calculate mean peak height for each allele across all samples.
     # If plot peaks are true for boxplot.
@@ -311,6 +312,16 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     # Add size.
     dataMean <- addSize(data = dataMean, kit = getKit(kit = kit, what = "Offset"),
                         bins = FALSE, ignore.case = ignore.case, debug = debug)
+    
+    # Remove NA rows.
+    if(any(is.na(dataMean$Size))){
+      tmp1 <- nrow(dataMean)
+      data <- dataMean[!is.na(dataMean$Size),]
+      tmp2 <- nrow(dataMean)
+      if(debug){
+        print(tmp1 - tmp2, " rows with Size=NA removed from 'dataMean'.")
+      }
+    }
 
     # Check if distribution (boxplot).
     if(!boxplot){
@@ -411,6 +422,7 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
   
   # NB! Use keyby instead of key to sort the result.
   tmpYmax <- DT[, list(Max = max(Height)), keyby = Dye]
+  # NB! Dye must be sorted factors, or they will be sorted alphabetically.
   mYtimes <- as.vector(table(kitInfo$Dye))
 
   # Check scale.  
@@ -439,7 +451,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
   # Create plot ...............................................................
 
   # Create plot.
-  #gp <- ggplot(data = data, aes_string(x = "Size", y = "Height"))
   gp <- ggplot(data = dataPeaks, aes_string(x = "Size", y = "Height"))
   
   # Plot data.

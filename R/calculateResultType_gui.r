@@ -4,6 +4,7 @@
 
 ###############################################################################
 # CHANGE LOG (last 20 changes)
+# 29.04.2016: 'Save as' textbox expandable.
 # 28.08.2015: Added importFrom.
 # 04.06.2015: Changed button label 'Calculate result type' to 'Calculate'.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -191,7 +192,7 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", container=f2, expand = TRUE)
 
   # BUTTON ####################################################################
   

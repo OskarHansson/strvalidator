@@ -7,6 +7,14 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 27.06.2016: Added kit drop-down to fix hardcoded kit in mask plot.
+# 27.06.2016: Removed check for reference sample if masking is selected (no harm).
+# 16.06.2016: Fixed bug in plot sample masking range.
+# 16.06.2016: Now all excluded peaks are marked (not only high peaks).
+# 15.06.2016: Prepare button and drop-down menu now disabled while processing.
+# 22.05.2016: Added masked data to result for manual investigation.
+# 20.05.2016: 'Blocked' changed to 'masked' throughout.
+# 25.04.2016: 'Save as' textbox expandable.
 # 11.11.2015: Added importFrom ggplot2.
 # 21.10.2015: Added attributes.
 # 28.08.2015: Added importFrom
@@ -16,7 +24,7 @@
 #' @title Calculate Analytical Threshold
 #'
 #' @description
-#' GUI wrapper for the \code{\link{blockAT}} and \code{\link{calculateAT}} function.
+#' GUI wrapper for the \code{\link{maskAT}} and \code{\link{calculateAT}} function.
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateAT}} and
@@ -37,7 +45,7 @@
 #' @importFrom ggplot2 ggtitle scale_shape_discrete ggplot facet_wrap geom_point
 #'  aes_string scale_colour_manual geom_rect
 #' 
-#' @seealso \code{\link{calculateAT}}, \code{\link{blockAT}},
+#' @seealso \code{\link{calculateAT}}, \code{\link{maskAT}},
 #'  \code{\link{checkSubset}}
 
 
@@ -148,7 +156,13 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       # Suggest a name for result.
       svalue(f4_save1_edt) <- paste(val_obj, "_at", sep="")
       svalue(f4_save2_edt) <- paste(val_obj, "_rank", sep="")
+      svalue(f4_save3_edt) <- paste(val_obj, "_masked", sep="")
       
+      # Detect kit.
+      kitIndex <- detectKit(data = .gData, index = TRUE, debug = debug)
+      # Select in dropdown.
+      svalue(g0_kit_drp, index = TRUE) <- kitIndex
+
     } else {
       
       # Reset components.
@@ -251,7 +265,18 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     } 
     
   } )
+
+  # Kit -----------------------------------------------------------------------
+
+  g0[4,1] <- glabel(text="Select the kit used:", container=g0)
   
+  # NB! dfs defined in previous section.
+  g0[4,2] <- g0_kit_drp <- gdroplist(items = getKit(), 
+                                     selected = 1,
+                                     editable = FALSE,
+                                     container = g0)
+  tooltip(g0_kit_drp) <- "Only used to shad masked ranges in plot."
+
   # FRAME 1 ###################################################################
   
   if(debug){
@@ -275,29 +300,29 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
   
   f1g1 <- glayout(container = f1, spacing = 1)
   
-  f1g1[1,1] <- f1_block_h_chk <- gcheckbox(text="Block high peaks",
+  f1g1[1,1] <- f1_mask_h_chk <- gcheckbox(text="Mask high peaks",
                                            checked = TRUE, container = f1g1)
-  f1g1[1,2] <- glabel(text="Block all peaks above (RFU): ", anchor=c(-1, 0), container=f1g1)
+  f1g1[1,2] <- glabel(text="Mask all peaks above (RFU): ", anchor=c(-1, 0), container=f1g1)
   
-  f1g1[1,3] <- f1_block_h_edt <- gedit(text="200", width=6, container=f1g1)
+  f1g1[1,3] <- f1_mask_h_edt <- gedit(text="200", width=6, container=f1g1)
   
-  f1g1[2,1] <- f1_block_chk <- gcheckbox(text="Block sample alleles",
+  f1g1[2,1] <- f1_mask_chk <- gcheckbox(text="Mask sample alleles",
                                          checked=TRUE, container=f1g1)
-  f1g1[3,1] <- f1_block_d_chk <- gcheckbox(text="Block sample alleles per dye channel",
+  f1g1[3,1] <- f1_mask_d_chk <- gcheckbox(text="Mask sample alleles per dye channel",
                                            checked=TRUE, container=f1g1)
   f1g1[2,2] <- glabel(text="Range (data points) around known alleles:", anchor=c(-1, 0), container=f1g1)
-  f1g1[2,3] <- f1_block_spb <- gspinbutton(from=0, to=100, by=10, value=50, container=f1g1)
+  f1g1[2,3] <- f1_mask_spb <- gspinbutton(from=0, to=100, by=10, value=50, container=f1g1)
   
-  f1g1[4,1] <- f1_block_ils_chk <- gcheckbox(text="Block ILS peaks",
+  f1g1[4,1] <- f1_mask_ils_chk <- gcheckbox(text="Mask ILS peaks",
                                              checked=TRUE, container=f1g1)
   f1g1[4,2] <- glabel(text="Range (data points) around known peak: ", anchor=c(-1, 0), container=f1g1)
-  f1g1[4,3] <- f1_block_ils_spb <- gspinbutton(from=0, to=100, by=20, value=10, container=f1g1)
+  f1g1[4,3] <- f1_mask_ils_spb <- gspinbutton(from=0, to=100, by=20, value=10, container=f1g1)
   
   # LAYOUT --------------------------------------------------------------------
   
   f1g2 <- glayout(container = f1, spacing = 1)
   
-  f1g2[1,1] <- glabel(text="Confidence level 'k' (AT1): ", container=f1g2)
+  f1g2[1,1] <- glabel(text="Confidence level 'k' (AT1, AT7): ", container=f1g2)
   f1g2[1,2] <- f1_k_spb <- gspinbutton(from=0, to=100, by=1, value=3, container=f1g2)
   
   
@@ -309,21 +334,21 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
   
   # Handlers ------------------------------------------------------------------
   
-  addHandlerChanged(f1_block_h_chk, handler = function(h, ...) {
+  addHandlerChanged(f1_mask_h_chk, handler = function(h, ...) {
     
     # Update otions.
     .refresh_options()
     
   })
   
-  addHandlerChanged(f1_block_chk, handler = function(h, ...) {
+  addHandlerChanged(f1_mask_chk, handler = function(h, ...) {
     
     # Update otions.
     .refresh_options()
     
   })
   
-  addHandlerChanged(f1_block_ils_chk, handler = function(h, ...) {
+  addHandlerChanged(f1_mask_ils_chk, handler = function(h, ...) {
     
     # Update otions.
     .refresh_options()
@@ -338,12 +363,12 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     print("FRAME 3")
   }  
   
-  f3 <- gframe(text = "Prepare data and check blocking",
+  f3 <- gframe(text = "Prepare data and check masking",
                horizontal=TRUE,
                spacing = 5,
                container = gv) 
   
-  block_btn <- gbutton(text="Prepare and block", border=TRUE,
+  mask_btn <- gbutton(text="Prepare and mask", border=TRUE,
                        container=f3)
   
   f3_sample_drp <- gdroplist(items="<Select sample>", selected=1,
@@ -351,18 +376,18 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
   
   save_btn <- gbutton(text="Save plot", border=TRUE, container=f3)
   
-  addHandlerChanged(block_btn, handler = function(h, ...) {
+  addHandlerChanged(mask_btn, handler = function(h, ...) {
     
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
-    val_block_h <- svalue(f1_block_h_chk)
-    val_block <- svalue(f1_block_chk)
-    val_block_d <- svalue(f1_block_d_chk)
-    val_block_ils <- svalue(f1_block_ils_chk)
-    val_height <- as.numeric(svalue(f1_block_h_edt))
-    val_range <- svalue(f1_block_spb)
-    val_range_ils <- svalue(f1_block_ils_spb)
+    val_mask_h <- svalue(f1_mask_h_chk)
+    val_mask <- svalue(f1_mask_chk)
+    val_mask_d <- svalue(f1_mask_d_chk)
+    val_mask_ils <- svalue(f1_mask_ils_chk)
+    val_height <- as.numeric(svalue(f1_mask_h_edt))
+    val_range <- svalue(f1_mask_spb)
+    val_range_ils <- svalue(f1_mask_ils_spb)
     val_ignore <- svalue(f1_ignore_chk)
     val_word <- svalue(f1_word_chk)
     
@@ -370,16 +395,16 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       print("Read Values:")
       print("val_data")
       print(head(val_data))
-      print("val_block_h")
-      print(val_block_h)
-      print("val_block")
-      print(val_block)
+      print("val_mask_h")
+      print(val_mask_h)
+      print("val_mask")
+      print(val_mask)
       print("val_range")
       print(val_range)
-      print("val_block_d")
-      print(val_block_d)
-      print("val_block_ils")
-      print(val_block_ils)
+      print("val_mask_d")
+      print(val_mask_d)
+      print("val_mask_ils")
+      print(val_mask_ils)
       print("val_range_ils")
       print(val_range_ils)
       print("val_ignore")
@@ -388,18 +413,28 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_word)
     }
     
+    # Change button.
+    svalue(mask_btn) <- "Processing..."
+    enabled(mask_btn) <- FALSE
+    enabled(f3_sample_drp) <- FALSE
+    
     # Prepare data.
-    .gDataPrep <<- blockAT(data=val_data, ref=val_ref,
-                           block.height=val_block_h,
+    .gDataPrep <<- maskAT(data=val_data, ref=val_ref,
+                           mask.height=val_mask_h,
                            height=val_height,
-                           block.sample=val_block,
-                           per.dye=val_block_d,
+                           mask.sample=val_mask,
+                           per.dye=val_mask_d,
                            range.sample=val_range,
-                           block.ils=val_block_ils,
+                           mask.ils=val_mask_ils,
                            range.ils=val_range_ils,
                            ignore.case=val_ignore,
                            word=val_word,
                            debug=debug)
+    
+    # Change button.
+    svalue(mask_btn) <- "Prepare and mask"
+    enabled(mask_btn) <- TRUE
+    enabled(f3_sample_drp) <- TRUE
     
     # Unselect sample.
     svalue(f3_sample_drp, index=TRUE) <- 1
@@ -414,12 +449,13 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     if(!is.null(.gDataPrep) & !is.null(val_sample)){
       
       # Get values.
-      val_block_h <- svalue(f1_block_h_chk)
-      val_block <- svalue(f1_block_chk)
-      val_block_d <- svalue(f1_block_d_chk)
-      val_block_ils <- svalue(f1_block_ils_chk)
-      val_range <- svalue(f1_block_spb)
-      val_range_ils <- svalue(f1_block_ils_spb)
+      val_mask_h <- svalue(f1_mask_h_chk)
+      val_mask <- svalue(f1_mask_chk)
+      val_mask_d <- svalue(f1_mask_d_chk)
+      val_mask_ils <- svalue(f1_mask_ils_chk)
+      val_range <- svalue(f1_mask_spb)
+      val_range_ils <- svalue(f1_mask_ils_spb)
+      val_kit <- svalue(g0_kit_drp)
       
       if(val_sample %in% unique(.gDataPrep$Sample.File.Name)){
         
@@ -432,23 +468,25 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
           print(head(val_data))
           print("val_sample")
           print(val_sample)
-          print("val_block_h")
-          print(val_block_h)
-          print("val_block")
-          print(val_block)
+          print("val_mask_h")
+          print(val_mask_h)
+          print("val_mask")
+          print(val_mask)
           print("val_range")
           print(val_range)
-          print("val_block_d")
-          print(val_block_d)
-          print("val_block_ils")
-          print(val_block_ils)
+          print("val_mask_d")
+          print(val_mask_d)
+          print("val_mask_ils")
+          print(val_mask_ils)
           print("val_range_ils")
           print(val_range_ils)
+          print("val_kit")
+          print(val_kit)
         }
         
         # Get all dyes.
         dyes <- as.character(unique(val_data$Dye))
-        colorsKit <- unique(getKit("ESX17", what="Color")$Color)
+        colorsKit <- unique(getKit(val_kit, what="Color")$Color)
         dyesKit <- addColor(colorsKit, have="Color", need="Dye")
         dyeILS <- setdiff(dyes, dyesKit)
         
@@ -457,12 +495,12 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
         
         # Create plot.
         gp <- ggplot(data=val_data)
-        gp <- gp + ggtitle(paste("Blocked data for", val_sample))
+        gp <- gp + ggtitle(paste("Masked data for", val_sample))
         gp <- gp + facet_wrap( ~ Dye, ncol=1, scales = "fixed", drop = FALSE)
-        if(val_block_h){
+        if(any(val_mask, val_mask_h, val_mask_ils, val_mask_d)){
           # Change shape, color, and legend.
           gp <- gp + geom_point(aes_string(x="Data.Point", y="Height",
-                                           colour="H.Block", shape="H.Block"))
+                                           colour="Masked", shape="Masked"))
           gp <- gp + scale_shape_discrete(name  ="Peaks",
                                           breaks=c(FALSE, TRUE),
                                           labels=c("Included", "Excluded"))
@@ -479,22 +517,22 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
           print("Plot created!")
         }
         
-        if(val_block_ils){
+        if(val_mask_ils){
           
-          # ILS blocking data frame for plot:
+          # ILS masking data frame for plot:
           dfIls <- val_data[val_data$ILS == TRUE, ]
           ilsDye <- unique(dfIls$Dye)
-          dpBlock <- dfIls$Data.Point
-          dyeBlock <- rep(unique(val_data$Dye), each=length(dpBlock))
-          dpBlock <- rep(dpBlock, length(unique(val_data$Dye)))
-          dfBlock <- data.frame(Dye=dyeBlock, Data.Point=dpBlock,
-                                Xmin=dpBlock - val_range_ils,
-                                Xmax=dpBlock + val_range_ils)
+          dpMask <- dfIls$Data.Point
+          dyeMask <- rep(unique(val_data$Dye), each=length(dpMask))
+          dpMask <- rep(dpMask, length(unique(val_data$Dye)))
+          dfMask <- data.frame(Dye=dyeMask, Data.Point=dpMask,
+                                Xmin=dpMask - val_range_ils,
+                                Xmax=dpMask + val_range_ils)
           
-          if(nrow(dfBlock) > 0){
+          if(nrow(dfMask) > 0){
             
-            # Add blocking range to plot.
-            gp <- gp + geom_rect(data = dfBlock,
+            # Add masking range to plot.
+            gp <- gp + geom_rect(data = dfMask,
                                  aes_string(ymin = -Inf, ymax = Inf,
                                             xmin = "Xmin", xmax = "Xmax"),
                                  alpha = 0.2,
@@ -503,57 +541,70 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
           }
           
           if(debug){
-            print(str(dfBlock))
-            print("ILS blocked!")
+            print(str(dfMask))
+            print("ILS masked!")
           }
           
         }
         
-        if(val_block){
-          # Sample blocking data frame for plot:
-          dfSample <- val_data[val_data$S.Block==TRUE, ]
+        if(val_mask){
+          # Sample masking data frame for plot:
+          dfSample <- val_data[!is.na(val_data$Min), ]
           
-          if(val_block_d){
+          if(val_mask_d){
             
-            # Loop over dyes and add block ranges.
+            # Loop over dyes and add mask ranges.
             for(d in seq(along=dyesKit)){
-              # Get data points for selected sample.
-              dpBlock <- dfSample$Data.Point[dfSample$Dye==dyesKit[d]]
-              dyeBlock <- rep(dyesKit[d], length(dpBlock))
-              dfBlock <- data.frame(Dye=dyeBlock, Data.Point=dpBlock,
-                                    Xmin=dpBlock - val_range,
-                                    Xmax=dpBlock + val_range)
               
-              if(nrow(dfBlock) > 0){
+              # Get data points for selected sample.
+              dpMask <- dfSample$Data.Point[dfSample$Dye==dyesKit[d]]
+              dpMin <- dfSample$Min[dfSample$Dye==dyesKit[d]]
+              dpMax <- dfSample$Max[dfSample$Dye==dyesKit[d]]
+              
+              # Create mask data.frame.
+              dyeMask <- rep(dyesKit[d], length(dpMask))
+              dfMask <- data.frame(Dye=dyeMask, Data.Point=dpMask,
+                                   Xmin=dpMin, Xmax=dpMax)
+              
+              if(debug){
+                print(dfMask)
+              }
+              
+              if(nrow(dfMask) > 0){
                 
-                # Add blocking range to plot.
-                gp <- gp + geom_rect(data = dfBlock,
+                # Add masking range to plot.
+                gp <- gp + geom_rect(data = dfMask,
                                      aes_string(ymin = -Inf, ymax = Inf,
                                                 xmin = "Xmin", xmax = "Xmax"),
                                      alpha = 0.2, fill = colorsKit[d])
                 
               }
               
-            }
-            
-            if(debug){
-              print(str(dfBlock))
-              print("Sample blocked per dye!")
+              if(debug){
+                print("Sample masked per dye!")
+              }
+              
             }
             
           } else {
             
-            dpBlock <- dfSample$Data.Point
-            dyeBlock <- rep(dyesKit, each=length(dpBlock))
-            dpBlock <- rep(dpBlock, length(dyesKit))
-            dfBlock <- data.frame(Dye=dyeBlock, Data.Point=dpBlock,
-                                  Xmin=dpBlock - val_range,
-                                  Xmax=dpBlock + val_range)
+            # Get data points for selected sample.
+            dpMask <- dfSample$Data.Point
+            dpMin <- dfSample$Min
+            dpMax <- dfSample$Max
             
-            if(nrow(dfBlock) > 0){
+            # Create mask data.frame.
+            dyeMask <- rep(dyesKit, each=length(dpMask))
+            dpMask <- rep(dpMask, length(dyesKit))
+            dpMin <- rep(dpMin, length(dyesKit))
+            dpMax <- rep(dpMax, length(dyesKit))
+            dfMask <- data.frame(Dye=dyeMask, Data.Point=dpMask,
+                                 Xmin=dpMin, Xmax=dpMax)
+            
+            if(nrow(dfMask) > 0){
               
-              # Add blocking range to plot.
-              gp <- gp + geom_rect(data = dfBlock,
+              # Add masking range to plot.
+              gp <- gp + geom_rect(data = dfMask,
                                    aes_string(ymin = -Inf, ymax = Inf,
                                               xmin = "Xmin", xmax = "Xmax"),
                                    alpha = 0.2, fill="red")
@@ -561,8 +612,8 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
             }
             
             if(debug){
-              print(str(dfBlock))
-              print("Sample blocked across dyes!")
+              print(dfMask)
+              print("Sample masked across dyes!")
             }
             
           }
@@ -594,7 +645,7 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       
     } else {
       
-      message <- "Click 'Prepare and block' and select a sample before saving."
+      message <- "Click 'Prepare and mask' and select a sample before saving."
       gmessage(message, title="No plot!",
                icon = "info", parent = w) 
       
@@ -616,11 +667,16 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", anchor=c(-1, 0), container=f4)
   
-  f4_save1_edt <- gedit(text="", container=f4)
+  f4_save1_edt <- gedit(text="", container=f4, expand = TRUE)
   
   glabel(text="Name for percentile rank list:", anchor=c(-1, 0), container=f4)
   
-  f4_save2_edt <- gedit(text="", container=f4)
+  f4_save2_edt <- gedit(text="", container=f4, expand = TRUE)
+
+  glabel(text="Name for masked raw data:", anchor=c(-1, 0), container=f4)
+  
+  f4_save3_edt <- gedit(text="", container=f4, expand = TRUE)
+  
   
   # BUTTON ####################################################################
   
@@ -643,18 +699,19 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     val_ref <- .gRef
     val_ignore <- svalue(f1_ignore_chk)
     val_word <- svalue(f1_word_chk)
-    val_block_h <- svalue(f1_block_h_chk)
-    val_block <- svalue(f1_block_chk)
-    val_block_d <- svalue(f1_block_d_chk)
-    val_block_ils <- svalue(f1_block_ils_chk)
-    val_height <- as.numeric(svalue(f1_block_h_edt))
-    val_range <- svalue(f1_block_spb)
-    val_range_ils <- svalue(f1_block_ils_spb)
+    val_mask_h <- svalue(f1_mask_h_chk)
+    val_mask <- svalue(f1_mask_chk)
+    val_mask_d <- svalue(f1_mask_d_chk)
+    val_mask_ils <- svalue(f1_mask_ils_chk)
+    val_height <- as.numeric(svalue(f1_mask_h_edt))
+    val_range <- svalue(f1_mask_spb)
+    val_range_ils <- svalue(f1_mask_ils_spb)
     val_k <- svalue(f1_k_spb)
     val_t <- svalue(f1_t_spb)
     val_a <- svalue(f1_a_spb)
     val_name1 <- svalue(f4_save1_edt)
     val_name2 <- svalue(f4_save2_edt)
+    val_name3 <- svalue(f4_save3_edt)
     
     if(debug){
       print("Read Values:")
@@ -666,18 +723,18 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_ignore)
       print("val_word")
       print(val_word)
-      print("val_block_h")
-      print(val_block_h)
+      print("val_mask_h")
+      print(val_mask_h)
       print("val_height")
       print(val_height)
-      print("val_block")
-      print(val_block)
+      print("val_mask")
+      print(val_mask)
       print("val_range")
       print(val_range)
-      print("val_block_d")
-      print(val_block_d)
-      print("val_block_ils")
-      print(val_block_ils)
+      print("val_mask_d")
+      print(val_mask_d)
+      print("val_mask_ils")
+      print(val_mask_ils)
       print("val_range_ils")
       print(val_range_ils)
       print("val_k")
@@ -695,83 +752,82 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     # Check if data.
     if(!is.null(val_data)){
       
-      # If sample blocking is active a reference must be selected.
-      if((val_block & !is.null(.gRef)) | (!val_block)){
-        
-        
-        # Change button.
-        svalue(calculate_btn) <- "Processing..."
-        enabled(calculate_btn) <- FALSE
-        
-        datanew <- calculateAT(data=val_data,
-                               ref=val_ref,
-                               block.height=val_block_h,
-                               height=val_height,
-                               block.sample=val_block,
-                               per.dye=val_block_d,
-                               range.sample=val_range,
-                               block.ils=val_block_ils,
-                               range.ils=val_range_ils,
-                               k=val_k,
-                               rank.t=val_t,
-                               alpha=val_a,
-                               ignore.case=val_ignore,
-                               word=val_word,
-                               debug=debug)
-        
+      # Change button.
+      svalue(calculate_btn) <- "Processing..."
+      enabled(calculate_btn) <- FALSE
+      
+      datanew <- calculateAT(data=val_data,
+                             ref=val_ref,
+                             mask.height=val_mask_h,
+                             height=val_height,
+                             mask.sample=val_mask,
+                             per.dye=val_mask_d,
+                             range.sample=val_range,
+                             mask.ils=val_mask_ils,
+                             range.ils=val_range_ils,
+                             k=val_k,
+                             rank.t=val_t,
+                             alpha=val_a,
+                             ignore.case=val_ignore,
+                             word=val_word,
+                             debug=debug)
+      
 
-        # Add attributes.
-        attr(datanew[[1]], which="calculateAT_gui, data") <- svalue(g0_data_drp)
-        attr(datanew[[1]], which="calculateAT_gui, ref") <- svalue(g0_ref_drp)
-        attr(datanew[[1]], which="calculateAT_gui, k") <- val_k
-        attr(datanew[[1]], which="calculateAT_gui, rank.t") <- val_t
-        attr(datanew[[1]], which="calculateAT_gui, alpha") <- val_a
-        attr(datanew[[1]], which="calculateAT_gui, block.height") <- val_block_h
-        attr(datanew[[1]], which="calculateAT_gui, height") <- val_height
-        attr(datanew[[1]], which="calculateAT_gui, block") <- val_block
-        attr(datanew[[1]], which="calculateAT_gui, range.sample") <- val_range
-        attr(datanew[[1]], which="calculateAT_gui, block.ils") <- val_block_ils
-        attr(datanew[[1]], which="calculateAT_gui, range.ils") <- val_range_ils
-        attr(datanew[[1]], which="calculateAT_gui, per.dye") <- val_block_d
-        attr(datanew[[1]], which="calculateAT_gui, ignore.case") <- val_ignore
-        attr(datanew[[1]], which="calculateAT_gui, word") <- val_word
-        
-        attr(datanew[[2]], which="calculateAT_gui, data") <- svalue(g0_data_drp)
-        attr(datanew[[2]], which="calculateAT_gui, ref") <- svalue(g0_ref_drp)
-        attr(datanew[[2]], which="calculateAT_gui, rank.t") <- val_t
-        attr(datanew[[2]], which="calculateAT_gui, block.height") <- val_block_h
-        attr(datanew[[2]], which="calculateAT_gui, height") <- val_height
-        attr(datanew[[2]], which="calculateAT_gui, block") <- val_block
-        attr(datanew[[2]], which="calculateAT_gui, range.sample") <- val_range
-        attr(datanew[[2]], which="calculateAT_gui, block.ils") <- val_block_ils
-        attr(datanew[[2]], which="calculateAT_gui, range.ils") <- val_range_ils
-        attr(datanew[[2]], which="calculateAT_gui, per.dye") <- val_block_d
-        attr(datanew[[2]], which="calculateAT_gui, ignore.case") <- val_ignore
-        attr(datanew[[2]], which="calculateAT_gui, word") <- val_word
-        
-        # Save data.
-        saveObject(name=val_name1, object=datanew[[1]], parent=w, env=env)
-        saveObject(name=val_name2, object=datanew[[2]], parent=w, env=env)
-        
-        
-        if(debug){
-          print(str(datanew))
-          print(head(datanew))
-          print(paste("EXIT:", match.call()[[1]]))
-        }
-        
-        # Close GUI.
-        dispose(w)
-        
-      } else {
-        
-        message <- "If 'Block sample alleles' is active a reference dataset must be selected."
-        
-        gmessage(message, title="Datasets not selected",
-                 icon = "error",
-                 parent = w) 
-        
+      # Add attributes.
+      attr(datanew[[1]], which="calculateAT_gui, data") <- svalue(g0_data_drp)
+      attr(datanew[[1]], which="calculateAT_gui, ref") <- svalue(g0_ref_drp)
+      attr(datanew[[1]], which="calculateAT_gui, k") <- val_k
+      attr(datanew[[1]], which="calculateAT_gui, rank.t") <- val_t
+      attr(datanew[[1]], which="calculateAT_gui, alpha") <- val_a
+      attr(datanew[[1]], which="calculateAT_gui, mask.height") <- val_mask_h
+      attr(datanew[[1]], which="calculateAT_gui, height") <- val_height
+      attr(datanew[[1]], which="calculateAT_gui, mask") <- val_mask
+      attr(datanew[[1]], which="calculateAT_gui, range.sample") <- val_range
+      attr(datanew[[1]], which="calculateAT_gui, mask.ils") <- val_mask_ils
+      attr(datanew[[1]], which="calculateAT_gui, range.ils") <- val_range_ils
+      attr(datanew[[1]], which="calculateAT_gui, per.dye") <- val_mask_d
+      attr(datanew[[1]], which="calculateAT_gui, ignore.case") <- val_ignore
+      attr(datanew[[1]], which="calculateAT_gui, word") <- val_word
+      
+      attr(datanew[[2]], which="calculateAT_gui, data") <- svalue(g0_data_drp)
+      attr(datanew[[2]], which="calculateAT_gui, ref") <- svalue(g0_ref_drp)
+      attr(datanew[[2]], which="calculateAT_gui, rank.t") <- val_t
+      attr(datanew[[2]], which="calculateAT_gui, mask.height") <- val_mask_h
+      attr(datanew[[2]], which="calculateAT_gui, height") <- val_height
+      attr(datanew[[2]], which="calculateAT_gui, mask") <- val_mask
+      attr(datanew[[2]], which="calculateAT_gui, range.sample") <- val_range
+      attr(datanew[[2]], which="calculateAT_gui, mask.ils") <- val_mask_ils
+      attr(datanew[[2]], which="calculateAT_gui, range.ils") <- val_range_ils
+      attr(datanew[[2]], which="calculateAT_gui, per.dye") <- val_mask_d
+      attr(datanew[[2]], which="calculateAT_gui, ignore.case") <- val_ignore
+      attr(datanew[[2]], which="calculateAT_gui, word") <- val_word
+
+      attr(datanew[[3]], which="calculateAT_gui, data") <- svalue(g0_data_drp)
+      attr(datanew[[3]], which="calculateAT_gui, ref") <- svalue(g0_ref_drp)
+      attr(datanew[[3]], which="calculateAT_gui, rank.t") <- val_t
+      attr(datanew[[3]], which="calculateAT_gui, mask.height") <- val_mask_h
+      attr(datanew[[3]], which="calculateAT_gui, height") <- val_height
+      attr(datanew[[3]], which="calculateAT_gui, mask") <- val_mask
+      attr(datanew[[3]], which="calculateAT_gui, range.sample") <- val_range
+      attr(datanew[[3]], which="calculateAT_gui, mask.ils") <- val_mask_ils
+      attr(datanew[[3]], which="calculateAT_gui, range.ils") <- val_range_ils
+      attr(datanew[[3]], which="calculateAT_gui, per.dye") <- val_mask_d
+      attr(datanew[[3]], which="calculateAT_gui, ignore.case") <- val_ignore
+      attr(datanew[[3]], which="calculateAT_gui, word") <- val_word
+      
+      # Save data.
+      saveObject(name=val_name1, object=datanew[[1]], parent=w, env=env)
+      saveObject(name=val_name2, object=datanew[[2]], parent=w, env=env)
+      saveObject(name=val_name3, object=datanew[[3]], parent=w, env=env)
+
+      if(debug){
+        print(str(datanew))
+        print(head(datanew))
+        print(paste("EXIT:", match.call()[[1]]))
       }
+      
+      # Close GUI.
+      dispose(w)
       
     } else {
       
@@ -819,32 +875,32 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       print("Refresh options")
     }
     
-    val_block_h <- svalue(f1_block_h_chk)
-    val_block <- svalue(f1_block_chk)
-    val_block_d <- svalue(f1_block_d_chk)
-    val_block_ils <- svalue(f1_block_ils_chk)
+    val_mask_h <- svalue(f1_mask_h_chk)
+    val_mask <- svalue(f1_mask_chk)
+    val_mask_d <- svalue(f1_mask_d_chk)
+    val_mask_ils <- svalue(f1_mask_ils_chk)
     
     # Update dependent widgets.
-    if(val_block_h){
-      enabled(f1_block_h_edt) <- TRUE
+    if(val_mask_h){
+      enabled(f1_mask_h_edt) <- TRUE
     } else {
-      enabled(f1_block_h_edt) <- FALSE
+      enabled(f1_mask_h_edt) <- FALSE
     }
     
     # Update dependent widgets.
-    if(val_block){
-      enabled(f1_block_d_chk) <- TRUE
-      enabled(f1_block_spb) <- TRUE
+    if(val_mask){
+      enabled(f1_mask_d_chk) <- TRUE
+      enabled(f1_mask_spb) <- TRUE
     } else {
-      enabled(f1_block_d_chk) <- FALSE
-      enabled(f1_block_spb) <- FALSE
+      enabled(f1_mask_d_chk) <- FALSE
+      enabled(f1_mask_spb) <- FALSE
     }
     
     # Update dependent widgets.
-    if(val_block_ils){
-      enabled(f1_block_ils_spb) <- TRUE
+    if(val_mask_ils){
+      enabled(f1_mask_ils_spb) <- TRUE
     } else {
-      enabled(f1_block_ils_spb) <- FALSE
+      enabled(f1_mask_ils_spb) <- FALSE
     }
 
     if(debug){
@@ -877,26 +933,26 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     
     # Then load settings if true.
     if(svalue(savegui_chk)){
-      if(exists(".strvalidator_calculateAT_gui_block_h", envir=env, inherits = FALSE)){
-        svalue(f1_block_h_chk) <- get(".strvalidator_calculateAT_gui_block_h", envir=env)
+      if(exists(".strvalidator_calculateAT_gui_mask_h", envir=env, inherits = FALSE)){
+        svalue(f1_mask_h_chk) <- get(".strvalidator_calculateAT_gui_mask_h", envir=env)
       }
-      if(exists(".strvalidator_calculateAT_gui_block", envir=env, inherits = FALSE)){
-        svalue(f1_block_chk) <- get(".strvalidator_calculateAT_gui_block", envir=env)
+      if(exists(".strvalidator_calculateAT_gui_mask", envir=env, inherits = FALSE)){
+        svalue(f1_mask_chk) <- get(".strvalidator_calculateAT_gui_mask", envir=env)
       }
-      if(exists(".strvalidator_calculateAT_gui_block_ils", envir=env, inherits = FALSE)){
-        svalue(f1_block_ils_chk) <- get(".strvalidator_calculateAT_gui_block_ils", envir=env)
+      if(exists(".strvalidator_calculateAT_gui_mask_ils", envir=env, inherits = FALSE)){
+        svalue(f1_mask_ils_chk) <- get(".strvalidator_calculateAT_gui_mask_ils", envir=env)
       }
       if(exists(".strvalidator_calculateAT_gui_dye", envir=env, inherits = FALSE)){
-        svalue(f1_block_d_chk) <- get(".strvalidator_calculateAT_gui_dye", envir=env)
+        svalue(f1_mask_d_chk) <- get(".strvalidator_calculateAT_gui_dye", envir=env)
       }
       if(exists(".strvalidator_calculateAT_gui_height", envir=env, inherits = FALSE)){
-        svalue(f1_block_h_edt) <- get(".strvalidator_calculateAT_gui_height", envir=env)
+        svalue(f1_mask_h_edt) <- get(".strvalidator_calculateAT_gui_height", envir=env)
       }
       if(exists(".strvalidator_calculateAT_gui_range", envir=env, inherits = FALSE)){
-        svalue(f1_block_spb) <- get(".strvalidator_calculateAT_gui_range", envir=env)
+        svalue(f1_mask_spb) <- get(".strvalidator_calculateAT_gui_range", envir=env)
       }
       if(exists(".strvalidator_calculateAT_gui_range_ils", envir=env, inherits = FALSE)){
-        svalue(f1_block_ils_spb) <- get(".strvalidator_calculateAT_gui_range_ils", envir=env)
+        svalue(f1_mask_ils_spb) <- get(".strvalidator_calculateAT_gui_range_ils", envir=env)
       }
       if(exists(".strvalidator_calculateAT_gui_k", envir=env, inherits = FALSE)){
         svalue(f1_k_spb) <- get(".strvalidator_calculateAT_gui_k", envir=env)
@@ -926,13 +982,13 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     if(svalue(savegui_chk)){
       
       assign(x=".strvalidator_calculateAT_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".strvalidator_calculateAT_gui_block_h", value=svalue(f1_block_h_chk), envir=env)
-      assign(x=".strvalidator_calculateAT_gui_block", value=svalue(f1_block_chk), envir=env)
-      assign(x=".strvalidator_calculateAT_gui_block_ils", value=svalue(f1_block_ils_chk), envir=env)
-      assign(x=".strvalidator_calculateAT_gui_dye", value=svalue(f1_block_d_chk), envir=env)
-      assign(x=".strvalidator_calculateAT_gui_height", value=svalue(f1_block_h_edt), envir=env)
-      assign(x=".strvalidator_calculateAT_gui_range", value=svalue(f1_block_spb), envir=env)
-      assign(x=".strvalidator_calculateAT_gui_range_ils", value=svalue(f1_block_ils_spb), envir=env)
+      assign(x=".strvalidator_calculateAT_gui_mask_h", value=svalue(f1_mask_h_chk), envir=env)
+      assign(x=".strvalidator_calculateAT_gui_mask", value=svalue(f1_mask_chk), envir=env)
+      assign(x=".strvalidator_calculateAT_gui_mask_ils", value=svalue(f1_mask_ils_chk), envir=env)
+      assign(x=".strvalidator_calculateAT_gui_dye", value=svalue(f1_mask_d_chk), envir=env)
+      assign(x=".strvalidator_calculateAT_gui_height", value=svalue(f1_mask_h_edt), envir=env)
+      assign(x=".strvalidator_calculateAT_gui_range", value=svalue(f1_mask_spb), envir=env)
+      assign(x=".strvalidator_calculateAT_gui_range_ils", value=svalue(f1_mask_ils_spb), envir=env)
       assign(x=".strvalidator_calculateAT_gui_k", value=svalue(f1_k_spb), envir=env)
       assign(x=".strvalidator_calculateAT_gui_t", value=svalue(f1_t_spb), envir=env)
       assign(x=".strvalidator_calculateAT_gui_a", value=svalue(f1_a_spb), envir=env)
@@ -944,14 +1000,14 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculateAT_gui_savegui", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateAT_gui_savegui", envir = env)
       }
-      if(exists(".strvalidator_calculateAT_gui_block_h", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculateAT_gui_block_h", envir = env)
+      if(exists(".strvalidator_calculateAT_gui_mask_h", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateAT_gui_mask_h", envir = env)
       }
-      if(exists(".strvalidator_calculateAT_gui_block", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculateAT_gui_block", envir = env)
+      if(exists(".strvalidator_calculateAT_gui_mask", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateAT_gui_mask", envir = env)
       }
-      if(exists(".strvalidator_calculateAT_gui_block_ils", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculateAT_gui_block_ils", envir = env)
+      if(exists(".strvalidator_calculateAT_gui_mask_ils", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateAT_gui_mask_ils", envir = env)
       }
       if(exists(".strvalidator_calculateAT_gui_dye", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateAT_gui_dye", envir = env)

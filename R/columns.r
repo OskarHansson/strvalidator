@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.05.2016: Added attributes to result.
+# 09.05.2016: Added action 'substr' to extract a substring.
 # 22.12.2015: Added option to add new column by setting col1=NA.
 # 28.08.2015: Added importFrom.
 # 24.05.2015: First version.
@@ -27,12 +29,14 @@
 #' @param data a data frame.
 #' @param col1 character column name to perform action on.
 #' @param col2 character optional second column name to perform action on.
-#' @param operator character to indicate operator: & concatenate, + add,
-#'  * multiply, - subtract, / divide.
+#' @param operator character to indicate operator: '&' concatenate, '+' add,
+#'  '*' multiply, '-' subtract, '/' divide, 'substr' extract a substring.
 #' @param fixed character or numeric providing the second operand if 'col2'
 #'  is not used.
 #' @param target character to specify column name for result. Default is to
 #' overwrite 'col1'. If not present it will be added.
+#' @param start integer, the first position to be extracted.
+#' @param stop integer, the last position to be extracted.
 #' @param debug logical to indicate if debug information should be printed.
 #' 
 #' @return data frame.
@@ -40,6 +44,8 @@
 #' @export
 #' 
 #' @importFrom utils str
+#' 
+#' @seealso \link{substr}
 #' 
 #' @examples
 #' # Get a sample dataset.
@@ -52,8 +58,11 @@
 #' set2 <- columns(data=set2, operator="&", fixed="1234", target="Batch")
 
 columns <- function(data, col1=NA, col2=NA, operator="&",
-                    fixed=NA, target=NA, debug=FALSE){
+                    fixed=NA, target=NA, start=1, stop=1, debug=FALSE){
 
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -69,6 +78,10 @@ columns <- function(data, col1=NA, col2=NA, operator="&",
     print(fixed)
     print("target")
     print(target)
+    print("start")
+    print(start)
+    print("stop")
+    print(stop)
   }
   
   # Check data ----------------------------------------------------------------
@@ -92,11 +105,21 @@ columns <- function(data, col1=NA, col2=NA, operator="&",
     }
   }  
   
-  if(!operator %in% c("&", "+", "-", "*", "/")){
-    stop("The following operators are supported: &, +, -, *, and /.",
+  if(!operator %in% c("&", "+", "-", "*", "/", "substr")){
+    stop("The following operators are supported: &, +, -, *, /, and substr",
+         call. = TRUE)
+  }
+  
+  if(!is.numeric(start)){
+    stop("'start' must be a numeric integer",
          call. = TRUE)
   }
 
+  if(!is.numeric(stop)){
+    stop("'stop' must be a numeric integer",
+         call. = TRUE)
+  }
+  
   # Prepare -------------------------------------------------------------------
   
   # Get values from column.
@@ -128,37 +151,60 @@ columns <- function(data, col1=NA, col2=NA, operator="&",
   
   # Select action.
   if(operator == "&"){
-    
+
+    # Concatenate values.    
     valueNew <- paste(value1, value2, sep="")
     
   } else if(operator == "+"){
     
+    # Add values.
     value1 <- as.numeric(value1)
     value2 <- as.numeric(value2)
     valueNew <- value1 + value2
     
   } else if(operator == "*"){
     
+    # Multiply values.
     value1 <- as.numeric(value1)
     value2 <- as.numeric(value2)
     valueNew <- value1 * value2
     
   } else if(operator == "-"){
     
+    # Substract values.
     value1 <- as.numeric(value1)
     value2 <- as.numeric(value2)
     valueNew <- value1 - value2
     
   } else if(operator == "/"){
     
+    # Divide values.
     value1 <- as.numeric(value1)
     value2 <- as.numeric(value2)
     valueNew <- value1 / value2
+    
+  } else if(operator == "substr"){
+    
+    # Extract a substring from values.
+    valueNew <- substr(x = as.character(value1), start = start, stop = stop)
     
   }
   
   # Add new values to data frame.
   data[target] <- valueNew
+  
+  # Add attributes to result.
+  attr(data, which="columns, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(data, which="columns, call") <- match.call()
+  attr(data, which="columns, date") <- date()
+  attr(data, which="columns, data") <- attr_data
+  attr(data, which="columns, col1") <- col1
+  attr(data, which="columns, col2") <- col2
+  attr(data, which="columns, operator") <- operator
+  attr(data, which="columns, fixed") <- fixed
+  attr(data, which="columns, target") <- target
+  attr(data, which="columns, start") <- start
+  attr(data, which="columns, stop") <- stop
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

@@ -39,6 +39,12 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 27.06.2016: Added button to create new project in the 'Workspace' tab.
+# 02.05.2016: Added button to the function 'removeArtefact' in the 'Result' tab.
+# 29.04.2016: Added button to the function 'calculateAllele' in the 'Result' tab.
+# 29.04.2016: Activated button to new function 'removeSpike' in the 'Result' tab.
+# 25.04.2016: Added button to new function 'calculateSlope' in the 'Result' tab.
+# 25.04.2016: Added button to new function 'plotSlope' in the 'Result' tab.
 # 30.12.2015: Added button to new function 'calculateLb' in the 'Balance' tab.
 # 22.12.2015: Added new group 'Marker ratio' in the 'Balance' tab.
 # 18.12.2015: Added tooltips in the 'Workspace' tab.
@@ -53,12 +59,6 @@
 # 19.12.2014: Added 'EPG' button in 'Tools' tab.
 # 12.12.2014: Re-named 'Edit' tab to 'Tools' and change name on some buttons.
 # 04.12.2014: Added 'Pull-up' tab.
-# 28.10.2014: Fixed "Error in if (tabName == .file_tab_name) { : argument is of length zero"
-# 06.10.2014: Added ggplot support for 'View' button in 'Workspace' tab.
-# 28.08.2014: Fixed error message when no projects in projects folder.
-# 08.07.2014: Added 'Mixture' tab.
-# 04.07.2014: Ask to overwrite project file if exist.
-# 04.07.2014: Added new button 'Add' and 'Save As' to 'Workspace' tab.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -283,10 +283,10 @@ strvalidator <- function(debug=FALSE){
   
   # STR TYPING KIT ------------------------------------------------------------
   
-  about_txt <- paste("STR-validator (pronounced starvalidator) is a package ",
+  about_txt <- paste("STR-validator is a package ",
                      "developed for validation and process control of methods ",
                      "and instruments in a forensic genetic laboratory setting. ",
-                     "This graphical user interface make it very easy to ",
+                     "This graphical user interface make it easy to ",
                      "analyse validation data in accordance with ENFSI and SWGDAM ",
                      "guidelines.",
                      "The code has been extensively tested in order to assure correct results. ",
@@ -610,13 +610,18 @@ strvalidator <- function(debug=FALSE){
   workspace_f1 <- gframe(text = "Project",
                          markup = FALSE,
                          pos = 0,
-                         horizontal=TRUE,
+                         horizontal = TRUE,
                          container = file_tab,
-                         expand=TRUE)
+                         expand = TRUE)
   
-  workspace_f1g1 <- ggroup(horizontal=FALSE,
+  workspace_f1g1 <- ggroup(horizontal = FALSE,
                            container = workspace_f1,
-                           expand=FALSE)
+                           expand = FALSE)
+  
+  ws_new_btn <- gbutton(text="New",
+                         border=TRUE,
+                         container = workspace_f1g1)
+  tooltip(ws_new_btn) <- "Create a new project"
   
   ws_open_btn <- gbutton(text="Open",
                          border=TRUE,
@@ -676,6 +681,24 @@ strvalidator <- function(debug=FALSE){
                                     container = workspace_f1) 
   
   
+  addHandlerChanged(ws_new_btn, handler = function (h, ...) {
+    
+    msg <- paste("Are you sure you want to create a new project?\n",
+                 "Any changes to current project since last save will be lost!",
+                 sep="")
+    
+    response <- gconfirm(message = msg)
+    
+    if(response){
+      
+      # Create a new environment.
+      .strvalidator_env <<- new.env()
+      print("A new project environment was created.")
+      
+    }
+    
+  } )
+
   addHandlerChanged(ws_rename_btn, handler = function (h, ...) {
     
     
@@ -1471,7 +1494,7 @@ strvalidator <- function(debug=FALSE){
   at_grid[3,1] <- at_calculate_btn <- gbutton(text="Calculate", border=TRUE,
                                               container = at_grid) 
   
-  at_grid[3,2] <- glabel(text="Calculate analytical threshold (AT1, AT2, AT4).",
+  at_grid[3,2] <- glabel(text="Calculate analytical threshold (AT1, AT2, AT4, AT7).",
                               container=at_grid, anchor=c(-1 ,0))
   
   
@@ -2124,7 +2147,7 @@ strvalidator <- function(debug=FALSE){
                                                   border=TRUE,
                                                   container = result_g5) 
   
-  result_g5[1,2] <- glabel(text="Find spikes in sample.",
+  result_g5[1,2] <- glabel(text="Identify possible spikes.",
                            container=result_g5,
                            anchor=c(-1 ,0))
   
@@ -2138,21 +2161,93 @@ strvalidator <- function(debug=FALSE){
   
   # FILTER PEAKS --------------------------------------------------------------
   
-  result_g5[2,1] <- result_g5_filter_btn <- gbutton(text="Filter",
+  result_g5[1,3] <- result_g5_filter_btn <- gbutton(text="Filter",
                                                   border=TRUE,
                                                   container = result_g5) 
   
-  result_g5[2,2] <- glabel(text="Filter spikes from data.",
+  result_g5[1,4] <- glabel(text="Remove spikes.",
                            container=result_g5)
   
   addHandlerChanged(result_g5_filter_btn, handler = function(h, ...) {
     
     # Open GUI.
-    #filterSpike_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
-    gmessage(message = "This function is not yet implemented", title = "No function",
-             icon = "warning", parent = w)
+    removeSpike_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+
+  } )
+
+  # CALCULATE ALLELE ----------------------------------------------------------
+  
+  result_g5[2,1] <- result_g5_allele_btn <- gbutton(text="Calculate",
+                                                    border=TRUE,
+                                                    container = result_g5) 
+  
+  result_g5[2,2] <- glabel(text="Identify possible artefacts.",
+                           container=result_g5)
+  
+  addHandlerChanged(result_g5_allele_btn, handler = function(h, ...) {
     
+    # Open GUI.
+    calculateAllele_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
+  } )
+  
+  # REMOVE ARTEFACTS ----------------------------------------------------------
+  
+  result_g5[2,3] <- result_g5_artefact_btn <- gbutton(text="Filter",
+                                                      border=TRUE,
+                                                      container = result_g5) 
+  
+  result_g5[2,4] <- glabel(text="Remove artefacts.",
+                           container=result_g5)
+  
+  addHandlerChanged(result_g5_artefact_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    removeArtefact_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+  
+  
+  # SLOPE =====================================================================
+  
+  result_f6 <- gframe(text = "Profile slope",
+                      horizontal=FALSE, container = result_tab) 
+  
+  result_g6 <- glayout(container = result_f6)
+  
+  
+  # CALCULATE -----------------------------------------------------------------
+  
+  result_g6[1,1] <- result_g6_calc_btn <- gbutton(text="Calculate",
+                                                  border=TRUE,
+                                                  container = result_g6) 
+  
+  result_g6[1,2] <- glabel(text="Calculate the profile slope.",
+                           container=result_g6,
+                           anchor=c(-1 ,0))
+  
+  
+  addHandlerChanged(result_g6_calc_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    calculateSlope_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+  
+  # PLOT ----------------------------------------------------------------------
+  
+  result_g6[2,1] <- result_g6_plot_btn <- gbutton(text="Plot",
+                                                    border=TRUE,
+                                                    container = result_g6) 
+  
+  result_g6[2,2] <- glabel(text="Plot slope data.",
+                           container=result_g6)
+  
+  addHandlerChanged(result_g6_plot_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotSlope_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+
   } )
   
   # PRECISION  ################################################################

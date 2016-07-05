@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.05.2016: Added new option 'limit' to remove high ratios from the result.
+# 10.05.2016: Saved attributes to result.
+# 10.05.2016: Remove NA's in reference Allele column prior to analysis.
 # 28.08.2015: Added importFrom.
 # 29.01.2015: Fixed $Sample -> $Sample.Name bug.
 # 27.11.2014: First version.
@@ -39,6 +42,8 @@
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param discard logical TRUE if known alleles with no detected pull-up should
 #'  be discarded from the result. Default is FALSE to include alleles not causing pull-up.
+#' @param limit numeric remove ratios > limit from the result. Default is 1 to remove 
+#' pull-up peaks that are higher than the source peak and hence likely not a real pull-up.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Dye',
@@ -50,9 +55,14 @@
 #' @importFrom utils head str tail
 #' 
 
-calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FALSE,
-                            ignore.case=TRUE, word=FALSE, discard=FALSE, debug=FALSE){
-  
+calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
+                            ol.rm=FALSE, ignore.case=TRUE, word=FALSE,
+                            discard=FALSE, limit=1, debug=FALSE){
+
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+  attr_ref <- substitute(ref)
+
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -130,6 +140,17 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
   if(!is.logical(discard)){
     stop("'discard' must be logical.", call. = TRUE)
   }
+
+  # Check numeric.  
+  if(!is.numeric(pullup.range)){
+    stop("'pullup.range' must be numeric.", call. = TRUE)
+  }
+  if(!is.numeric(block.range)){
+    stop("'block.range' must be numeric.", call. = TRUE)
+  }
+  if(!is.numeric(limit)){
+    stop("'limit' must be numeric.", call. = TRUE)
+  }
   
   # Prepare -------------------------------------------------------------------
   
@@ -170,6 +191,15 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
     message(paste("Removed", tmp1-tmp2, "rows with OL in column Allele"))
   }
   
+  # Remove NA's from the reference dataset.  
+  if(any(is.na(ref$Allele))){
+    message(paste("The reference dataset cannot include missing alleles."))
+    tmp1 <- nrow(ref)
+    ref <- ref[!is.na(ref$Allele), ]
+    tmp2 <- nrow(ref)
+    message(paste("Removed", tmp1-tmp2, "rows with NA in column Allele from dataset ref."))
+  }
+
   # Add Size column. 
   if(!"Size" %in% names(data)){
     data$Size <- NA
@@ -181,7 +211,7 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
 
   # Get known -----------------------------------------------------------------
 
-  message("Indentify analysis window around known alleles...")
+  message("Identify analysis window around known alleles...")
   
   # Find data points for reference alleles.
   refSample <- unique(ref$Sample.Name)
@@ -214,6 +244,11 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
       allele <- unique(ref$Allele[ref$Sample.Name==grepNames[r] & ref$Marker==marker[m]])
       
       for(a in seq(along=allele)){
+        
+        if(debug){
+          # Show detailed progress.
+          message("Sample: ", grepNames[r], ", Marker: ", marker[m], ", Allele: ", allele[a])
+        }
         
         # Select current allele.
         selAllele <- data$Allele==allele[a]
@@ -249,7 +284,7 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
   for(s in seq(along=sample)){
 
     # Print progress.
-    message(paste("Indentify pull-up peaks for sample ",
+    message(paste("Identify pull-up peaks for sample ",
                   sample[s]," (", s, "of", length(sample), ")", sep=""))
     
     # Select start and end data point for current known profile.
@@ -273,7 +308,7 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
       # Check if any overlap in block range.
       maskedMin <- start %in% blockVec
       maskedMax <- end %in% blockVec
-      # Search ofr pull-up within analysis window.
+      # Search for pull-up within analysis window.
       matchPoints <- peaks %in% seqVec
       
       # Check if any overlapping allele.
@@ -392,7 +427,33 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12, ol.rm=FAL
   if(discard){
     # Discard alleles with no pull-up peaks from the result table.
     res <- res[!is.na(res$Ratio), ]
+    n1 <- nrow(res)
+    res <- res[res$Ratio <= limit || is.na(res$Ratio), ]
+    n2 <- nrow(res)
+    message("Removed ", n1 - n2, " alleles with no detected pull-up.")
   }
+  
+  if(limit){
+    # Limit ratios in the result table.
+    n1 <- nrow(res)
+    res <- res[res$Ratio <= limit | is.na(res$Ratio), ]
+    n2 <- nrow(res)
+    message("Removed ", n1 - n2, " rows with ratio >", limit, ".")
+  }
+  
+  # Add attributes to result.
+  attr(res, which="calculatePullup, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(res, which="calculatePullup, call") <- match.call()
+  attr(res, which="calculatePullup, date") <- date()
+  attr(res, which="calculatePullup, data") <- attr_data
+  attr(res, which="calculatePullup, ref") <- attr_ref
+  attr(res, which="calculatePullup, pullup.range") <- pullup.range
+  attr(res, which="calculatePullup, block.range") <- block.range
+  attr(res, which="calculatePullup, ol.rm") <- ol.rm
+  attr(res, which="calculatePullup, ignore.case") <- ignore.case
+  attr(res, which="calculatePullup, word") <- word
+  attr(res, which="calculatePullup, discard") <- discard
+  attr(res, which="calculatePullup, limit") <- limit
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.06.2016: 'Save as' textbox expandable.
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -298,7 +299,7 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   glabel(text="Name for result:", container=f5)
   
-  f5_save_edt <- gedit(text="", container=f5)
+  f5_save_edt <- gedit(text = "", expand = TRUE, container = f5)
   
   f5_save_btn <- gbutton(text = "Save as object",
                          border=TRUE,

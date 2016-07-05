@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.06.2016: 'Save as' textbox expandable.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 10.08.2014: Added scope=RUN.
@@ -173,7 +174,7 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", width=45, container=f2)
+  f2_save_edt <- gedit(text = "", expand = TRUE, container = f2)
 
   # BUTTON ####################################################################
 

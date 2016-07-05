@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 21.04.2016: Fixed error when no peaks in sample.
 # 09.01.2016: Added more attributes to result.
 # 30.11.2015: More efficient implementation. Added attributes.
 # 29.08.2015: Added importFrom.
@@ -94,23 +95,28 @@ heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
   
   # Size should be: [size-x], [size], [size+x].
   nb <- length(data$Size)
-  vsize <- vector(mode = "numeric", length = nb * 3)
-  vsize[seq(1, nb * 3, 3)] <- data$Size - width/2
-  vsize[seq(2, nb * 3, 3)] <- data$Size
-  vsize[seq(3, nb * 3, 3)] <- data$Size + width/2
   
-  # Height should be: 0, [height], 0.
-  vheight <- vector(mode = "numeric", length = nb * 3)
-  vheight[seq(1, nb * 3, 3)] <- 0
-  vheight[seq(2, nb * 3, 3)] <- data$Height
-  vheight[seq(3, nb * 3, 3)] <- 0
-  
-  # Stretch data frame 3 times (repeat each row).
-  data <- data[rep(seq_len(nrow(data)), each=3),]
+  if(nb > 0){
 
-  # Add new data.  
-  data$Size <- vsize
-  data$Height <- vheight
+    vsize <- vector(mode = "numeric", length = nb * 3)
+    vsize[seq(1, nb * 3, 3)] <- data$Size - width/2
+    vsize[seq(2, nb * 3, 3)] <- data$Size
+    vsize[seq(3, nb * 3, 3)] <- data$Size + width/2
+    
+    # Height should be: 0, [height], 0.
+    vheight <- vector(mode = "numeric", length = nb * 3)
+    vheight[seq(1, nb * 3, 3)] <- 0
+    vheight[seq(2, nb * 3, 3)] <- data$Height
+    vheight[seq(3, nb * 3, 3)] <- 0
+    
+    # Stretch data frame 3 times (repeat each row).
+    data <- data[rep(seq_len(nrow(data)), each=3),]
+    
+    # Add new data.  
+    data$Size <- vsize
+    data$Height <- vheight
+    
+  }
   
   # Add attributes to result.
   attr(data, which="heightToPeak, strvalidator") <- as.character(utils::packageVersion("strvalidator"))

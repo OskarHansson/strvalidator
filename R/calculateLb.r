@@ -7,6 +7,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.06.2016: Added option to remove quality sensor.
+# 27.06.2016: Fixed problem with replacing NAs.
+# 19.02.2016: Add fix broken dye after removing OL alleles.
 # 18.02.2016: Add missing markers after removing OL alleles.
 # 09.01.2016: Added more attributes to result.
 # 22.12.2015: First version.
@@ -23,10 +26,12 @@
 #' channel. All markers must be present in each sample. Data can be unfiltered
 #' or filtered since the sum of peak heights by marker is used. A reference
 #' dataset is required to filter the dataset, which also adds any missing
-#' markers. A kit should be provided for filtering of known profile or sex
-#' markers. If not automatic detection is attempted. If missing, dye will be
-#' added according to kit. Off-ladder alleles is by default removed from the
-#' dataset. Sex markers are optionally removed. Some columns in the result may vary:
+#' markers. A kit should be provided for filtering of known profile, sex
+#' markers, or quality sensors. If not automatic detection will be attempted.
+#' If missing, dye will be added according to kit. Off-ladder alleles and
+#' quality sensors are by default removed from the dataset.
+#' Sex markers are optionally removed. 
+#' Some columns in the result may vary:
 #' TPH: Total (marker) Peak Height.
 #' TPPH: Total Profile Peak Height.
 #' MTPH: Maximum (sample) Total Peak Height.
@@ -45,6 +50,8 @@
 #' will be removed.
 #' @param sex.rm logical. Default is FALSE indicating that all markers will be
 #' considered. If TRUE sex markers will be removed.
+#' @param qs.rm logical. Default is TRUE indicating that all quality sensors
+#' will be removed.
 #' @param na numeric. Numeric to replace NA values e.g. locus dropout can be 
 #' given a peak height equal to the limit of detection threshold, or zero.
 #' Default is NULL indicating that NA will be treated as missing values.
@@ -83,9 +90,9 @@
 #' 
 
 calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
-                        ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = NULL,
-                        ignore.case = TRUE, word = FALSE, exact = FALSE,
-                        debug = FALSE){
+                        ol.rm = TRUE, sex.rm = FALSE, qs.rm = FALSE,
+                        na = NULL, kit = NULL, ignore.case = TRUE,
+                        word = FALSE, exact = FALSE, debug = FALSE){
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -102,6 +109,8 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     print(ol.rm)
     print("sex.rm")
     print(sex.rm)
+    print("qs.rm")
+    print(qs.rm)
     print("na")
     print(na)
     print("kit")
@@ -165,6 +174,10 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
   if(!is.logical(sex.rm)){
     stop("'sex.rm' must be logical!")
+  }
+  
+  if(!is.logical(qs.rm)){
+    stop("'qs.rm' must be logical!")
   }
   
   if(!is.null(na) & !is.numeric(na)){
@@ -238,6 +251,19 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       # Add missing markers.
       data <- addMarker(data = data, marker = marker, ignore.case = ignore.case, debug = debug)
 
+      # Check and fix dye.
+      if(!is.null((data$Dye))){
+        
+        if(any(is.na(data$Dye))){
+          
+          # Fix broken dye.
+          data <- addColor(data = data, kit = kit, need = "Dye",
+                           ignore.case = ignore.case, overwrite = TRUE, debug = debug)    
+          
+        }
+        
+      }
+      
     }
 
   }
@@ -245,7 +271,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   # Filter data.
   if(!is.null(ref)){
     
-    message("Filter data")
+    message("Extracting known profiles and adding missing loci.")
     
     # Extract known profile.
     data <- filterProfile(data = data, ref = ref, add.missing.loci = TRUE,
@@ -271,7 +297,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   if(sex.rm){
     # NB! Must come after filterProfile, since it adds missing markers.
     
-    message("Removing sex markers defined in kit: ", kit)
+    message("Removing sex markers defined in kit: ", kit, ".")
     
     # Get sex markers.    
     sexMarkers <- getKit(kit = kit, what = "Sex.Marker")
@@ -290,24 +316,43 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       
       tmp2 <- nrow(data)
       
-      message("Removed ", tmp1 - tmp2, " rows with marker ", sexMarkers[i])
+      message("Removed ", tmp1 - tmp2,
+              " rows with marker ", sexMarkers[i], ".")
       
     }
     
   }
 
-  # Replace missing values.
-  if(!is.null(na)){
+  # Remove quality sensors. 
+  if(qs.rm){
+    # NB! Must come after filterProfile, since it adds missing markers.
     
-    nas <- length(is.na(data$Height))
+    message("Removing quality sensors defined in kit: ", kit, ".")
     
-    # Replace missing values with specified value.
-    data[is.na(data$Height),]$Height <- na
-
-    message(nas, " Height = NA replaced by ", na, ".")
+    # Get quality sensors.
+    qsMarkers <- getKit(kit = kit, what = "Quality.Sensor")
+    
+    if(debug){
+      print("Quality sensors:")
+      print(qsMarkers)
+    }
+    
+    # Loop through and remove all quality sensors.
+    for(i in seq(along = qsMarkers)){
+      
+      tmp1 <- nrow(data)
+      
+      data <- data[data$Marker != qsMarkers[i],]
+      
+      tmp2 <- nrow(data)
+      
+      message("Removed ", tmp1 - tmp2,
+              " rows with quality sensor ", qsMarkers[i], ".")
+      
+    }
     
   }
-
+  
   # Convert to numeric.  
   if(!is.numeric((data$Height))){
     
@@ -316,7 +361,23 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     message("'Height' converted to numeric.")
     
   }
-  
+
+  # Replace missing values.
+  if(!is.null(na)){
+    
+    nas <- sum(is.na(data$Height))
+    
+    if(nas > 0){
+      
+      # Replace missing values with specified value.
+      data[is.na(data$Height),]$Height <- na
+      
+    }
+    
+    message("Replaced ", nas, " Height = NA with ", na, ".")
+    
+  }
+
   # Check that each sample have all markers.
   DT <- data.table::data.table(data)
   tmp <- DT[,list(Marker=length(unique(Marker))), by=list(Sample.Name)]
@@ -417,6 +478,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   attr(res, which="calculateLb, by.dye") <- by.dye
   attr(res, which="calculateLb, ol.rm") <- ol.rm
   attr(res, which="calculateLb, sex.rm") <- sex.rm
+  attr(res, which="calculateLb, qs.rm") <- qs.rm
   attr(res, which="calculateLb, ignore.case") <- ignore.case
   attr(res, which="calculateLb, word") <- word
   attr(res, which="calculateLb, exact") <- exact

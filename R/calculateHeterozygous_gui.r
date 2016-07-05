@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.06.2016: 'Save as' textbox expandable.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -146,7 +147,7 @@ calculateHeterozygous_gui <- function(env=parent.frame(), debug=FALSE, parent=NU
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text = "", expand = TRUE, container = f2)
   
   # BUTTON ####################################################################
   

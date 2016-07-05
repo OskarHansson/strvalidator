@@ -4,26 +4,38 @@
 \alias{calculateAllele}
 \title{Calculate Allele}
 \usage{
-calculateAllele(data, threshold = NULL, debug = FALSE)
+calculateAllele(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
+  debug = FALSE)
 }
 \arguments{
-\item{data}{data.frame including colums 'Marker', 'Allele', 'Height'.}
+\item{data}{data.frame including colums 'Marker' and 'Allele', and
+optionally 'Height' and 'Size'.}
 
 \item{threshold}{numeric if not NULL only peak heights above 'threshold'
 will be considered.}
 
+\item{sex.rm}{logical TRUE removes all sex markers. Requires 'kit'.}
+
+\item{kit}{character for the DNA typing kit defining the sex markers.}
+
 \item{debug}{logical indicating printing debug information.}
 }
 \value{
-data.frame
+data.frame with columns 'Marker', 'Allele', 'Peaks', 'Size.Min',
+'Size.Mean', 'Size.Max', 'Height.Min', 'Height.Mean', 'Height.Max',
+'Total.Peaks', 'Allele.Proportion', 'Sum.Peaks', and 'Allele.Frequency'.
 }
 \description{
-Counts the number of each allele per marker over the entire dataset.
+Calculates summary statistics for alleles per marker over the entire dataset.
 }
 \details{
-Creates a sorted table of the most common alleles in the dataset.
-The list can be used to calculate allele frequencies or to identify artefacts.
-NB! Remove NA's and OL's prior to analysis.
+Creates a table of the alleles in the dataset sorted by number of
+observations.For each allele the porportion of total observations is
+calculated. Using a threshold this can be used to separate likely artefacts
+from likely drop-in peaks. In addition the observed allele frequency is
+calculated. If columns 'Height' and/or 'Size' are available summary
+statistics is calculated. 
+NB! The function removes NA's and OL's prior to analysis.
 }
 \seealso{
 \code{\link{data.table}}

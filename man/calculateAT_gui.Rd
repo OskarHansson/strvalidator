@@ -20,7 +20,7 @@ calculateAT_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
 TRUE
 }
 \description{
-GUI wrapper for the \code{\link{blockAT}} and \code{\link{calculateAT}} function.
+GUI wrapper for the \code{\link{maskAT}} and \code{\link{calculateAT}} function.
 }
 \details{
 Simplifies the use of the \code{\link{calculateAT}} and
@@ -28,7 +28,7 @@ Simplifies the use of the \code{\link{calculateAT}} and
  In addition there are integrated control functions.
 }
 \seealso{
-\code{\link{calculateAT}}, \code{\link{blockAT}},
+\code{\link{calculateAT}}, \code{\link{maskAT}},
  \code{\link{checkSubset}}
 }
 

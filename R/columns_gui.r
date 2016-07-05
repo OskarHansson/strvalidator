@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.05.2016: Added attributes to result.
+# 09.05.2016: 'Save as' textbox expandable.
 # 22.12.2015: Removed colum check to enable no selected column etc.
 # 28.08.2015: Added importFrom.
 # 23.05.2015: First version.
@@ -189,7 +191,7 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     
   } )
   
-  # COLUMNS ###################################################################
+  # OPTIONS ###################################################################
   
   f3 <- gframe(text="Options", horizontal=FALSE, spacing=10, container=gv)
   
@@ -205,9 +207,24 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   f3g1[3,1] <- glabel(text="Action:", container=f3g1)
   
-  action_items <- c("&","+","*","-", "/")
+  action_items <- c("&","+","*","-", "/", "substr")
   f3g1[3,2] <- f3g1_action_drp <- gdroplist(items=action_items, selected=1,
                                               editable=FALSE, container=f3g1)
+
+  f3g1[4,1] <- glabel(text="Start position:", container=f3g1)
+  
+  f3g1[4,2] <- f3g1_start_edt <- gedit(text="1", width=25, container=f3g1)
+  
+  f3g1[5,1] <- glabel(text="Stop position:", container=f3g1)
+  
+  f3g1[5,2] <- f3g1_stop_edt <- gedit(text="1", width=25, container=f3g1)
+  
+
+  addHandlerChanged(f3g1_action_drp, handler = function (h, ...) {
+    
+    .updateGui()
+
+  } )
   
   # NAME ######################################################################
   
@@ -217,7 +234,7 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                container = gv) 
   
   glabel(text="Save as:", container=f2)
-  f2_name <- gedit(text="", width=40, container=f2)
+  f2_name <- gedit(text="", container=f2, expand = TRUE)
   
   # BUTTON ####################################################################
 
@@ -236,7 +253,11 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     val_action <- svalue(f3g1_action_drp)
     val_target <- svalue(f3g1_col_edt)
     val_fixed <- svalue(f3g1_val_edt)
+    val_start <- as.integer(svalue(f3g1_start_edt))
+    val_stop <- as.integer(svalue(f3g1_stop_edt))
     val_name <- svalue(f2_name)
+    val_data_name <- .gDataName
+    val_data <- .gData
     
     # Check values.
     if(val_col1 == .columnDropDefault){
@@ -246,10 +267,21 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       val_col2 <- NA
     }
     
-    datanew <- columns(data=.gData, col1=val_col1, col2=val_col2,
-                         operator=val_action, fixed=val_fixed,
-                         target=val_target, debug=debug)
-      
+    datanew <- columns(data=val_data, col1=val_col1, col2=val_col2,
+                       operator=val_action, fixed=val_fixed,
+                       target=val_target, start=val_start, stop=val_stop,
+                       debug=debug)
+    
+    # Add attributes.
+    attr(datanew, which="columns_gui, data") <- val_data_name
+    attr(datanew, which="columns_gui, col1") <- val_col1
+    attr(datanew, which="columns_gui, col2") <- val_col2
+    attr(datanew, which="columns_gui, action") <- val_action
+    attr(datanew, which="columns_gui, target") <- val_target
+    attr(datanew, which="columns_gui, fixed") <- val_fixed
+    attr(datanew, which="columns_gui, start") <- val_start
+    attr(datanew, which="columns_gui, stop") <- val_stop
+    
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
       
@@ -264,6 +296,22 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   } )
   
   # INTERNAL FUNCTIONS ########################################################
+  
+  .updateGui <- function(){
+    
+    val_action <- svalue(f3g1_action_drp)
+    
+    if(val_action %in% "substr"){
+      enabled(f3g1_val_edt) <- FALSE
+      enabled(f3g1_start_edt) <- TRUE
+      enabled(f3g1_stop_edt) <- TRUE
+    } else {
+      enabled(f3g1_val_edt) <- TRUE
+      enabled(f3g1_start_edt) <- FALSE
+      enabled(f3g1_stop_edt) <- FALSE
+    }
+
+  }
   
   .loadSavedSettings <- function(){
     
@@ -298,6 +346,12 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       if(exists(".strvalidator_columns_gui_action", envir=env, inherits = FALSE)){
         svalue(f3g1_action_drp) <- get(".strvalidator_columns_gui_action", envir=env)
       }
+      if(exists(".strvalidator_columns_gui_start", envir=env, inherits = FALSE)){
+        svalue(f3g1_start_edt) <- get(".strvalidator_columns_gui_start", envir=env)
+      }
+      if(exists(".strvalidator_columns_gui_stop", envir=env, inherits = FALSE)){
+        svalue(f3g1_stop_edt) <- get(".strvalidator_columns_gui_stop", envir=env)
+      }
       if(debug){
         print("Saved settings loaded!")
       }
@@ -313,6 +367,8 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       assign(x=".strvalidator_columns_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_columns_gui_fixed", value=svalue(f3g1_val_edt), envir=env)
       assign(x=".strvalidator_columns_gui_action", value=svalue(f3g1_action_drp), envir=env)
+      assign(x=".strvalidator_columns_gui_start", value=svalue(f3g1_start_edt), envir=env)
+      assign(x=".strvalidator_columns_gui_stop", value=svalue(f3g1_stop_edt), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -324,6 +380,12 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       }
       if(exists(".strvalidator_columns_gui_action", envir=env, inherits = FALSE)){
         remove(".strvalidator_columns_gui_action", envir = env)
+      }
+      if(exists(".strvalidator_columns_gui_start", envir=env, inherits = FALSE)){
+        remove(".strvalidator_columns_gui_start", envir = env)
+      }
+      if(exists(".strvalidator_columns_gui_stop", envir=env, inherits = FALSE)){
+        remove(".strvalidator_columns_gui_stop", envir = env)
       }
       
       if(debug){
@@ -341,6 +403,7 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
   
   # Show GUI.
   visible(w) <- TRUE

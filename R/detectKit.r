@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 27.06.2016: Now check for and removes NA in markers to handle SamplePlotSizingTable.
 # 01.01.2016: Added support for vector.
 # 08.11.2015: Changed default to index=TRUE. Export function.
 # 03.08.2014: Added support for kit attribute.
@@ -49,6 +50,8 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
     }
   }
   
+  # Get kit from data ---------------------------------------------------------
+  
   # Get kit attribute.
   attribute <- attr(x=data, which="kit", exact = TRUE)
 
@@ -83,6 +86,8 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
     
   }
   
+  # Get markers from data -----------------------------------------------------
+  
   if(is.data.frame(data)){
 
     # Get unique markers.
@@ -96,7 +101,16 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
   } else {
     
     stop("'data' must be a data.frame or character vector.")
+    
   }
+
+  # Check if any NA in markers.  
+  if(any(is.na(markers))){
+    markers <- markers[!is.na(markers)]
+    message("Removed NA from markers.")
+  }
+
+  # Get markers from kit ------------------------------------------------------
   
   # Get available kits.
   kits <- getKit()
@@ -118,6 +132,8 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
     print("Data markers:")
     print(markers)
   }
+  
+  # Detect kit ----------------------------------------------------------------
 
   # First score 'data' in relation to kit (to account for missing markers).
   for(k in seq(along=kitMarkers)){
@@ -158,21 +174,6 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
     # Try to distinguish based on marker order.
     kitScore <- vector()
 
-    if(is.data.frame(data)){
-      
-      # Get unique markers.
-      markers <- unique(data$Marker)
-      
-    } else if(is.vector(data)){
-      
-      # Get unique markers.
-      markers <- unique(data)
-      
-    } else {
-      
-      stop("'data' must be a data.frame or character vector.")
-    }
-    
     # Loop over all candidate kits.
     for(c in seq(along=detectedKit)){
       

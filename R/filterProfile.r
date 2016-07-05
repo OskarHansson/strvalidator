@@ -1,10 +1,12 @@
 ################################################################################
 # TODO LIST
+# TODO: Implement 'word' matching.
 # TODO: Currently destroy information in unsupported columns e.g. Dye -> NA
 #       if add missing markers is TRUE and markers are missing.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.04.2016: Fixed numeric 'Allele' in 'ref' dataset not converted to character.
 # 09.01.2016: Added more attributes to result.
 # 16.12.2015: Added attributes to result and improved use of 'grepl'.
 # 15.12.2015: Added option to use 'exact' matching of sample names.
@@ -149,7 +151,7 @@ filterProfile <- function(data, ref, add.missing.loci=FALSE, keep.na=FALSE,
     
     message("'Allele' must be character. 'ref' converted")
     
-    data$Allele <- as.character(data$Allele)
+    ref$Allele <- as.character(ref$Allele)
     
   }
   

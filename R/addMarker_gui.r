@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 27.06.2016: Added expand=TRUE to save as field.
 # 09.01.2016: Added more attributes to result.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -179,7 +180,7 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", container=f2, expand=TRUE)
 
   # BUTTON ####################################################################
 

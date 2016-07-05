@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.04.2016: 'Save as' textbox expandable.
 # 15.12.2015: Added attributes to result.
 # 15.12.2015: Added option 'exact' sample name matching.
 # 29.08.2015: Added importFrom.
@@ -308,7 +309,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", container=f2, expand = TRUE)
 
   # BUTTON ####################################################################
   

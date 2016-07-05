@@ -291,7 +291,7 @@ calculateOverlap_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE, p
   
   glabel(text="Name for result:", container=f5)
   
-  f5_save_edt <- gedit(text="", width = 50, container=f5)
+  f5_save_edt <- gedit(text="", expand=TRUE, container=f5)
   
   
   # BUTTON ####################################################################

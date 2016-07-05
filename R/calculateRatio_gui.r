@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.06.2016: 'Save as' textbox expandable.
 # 22.12.2015: First version.
 
 #' @title Calculate Ratio
@@ -344,7 +345,7 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f4)
   
-  f4_save_edt <- gedit(text="", container=f4)
+  f4_save_edt <- gedit(text="", expand = TRUE, container=f4)
   
   # BUTTON ####################################################################
 

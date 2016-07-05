@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.05.2016: 'Save as' textbox expandable.
 # 08.10.2015: Option to remove NA (earlier NA was automatically removed).
 # 08.10.2015: Fixed Info not updated when selecting a column.
 # 28.08.2015: Added importFrom.
@@ -482,7 +483,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
   
   glabel(text="Name for result:", container=f3)
   
-  f3_save_edt <- gedit(text="", container=f3)
+  f3_save_edt <- gedit(text="", container=f3, expand = TRUE)
   
   f3_save_btn <- gbutton(text = "Save",
                          border=TRUE,

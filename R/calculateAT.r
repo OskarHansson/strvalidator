@@ -7,6 +7,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.05.2016: Changed name on some result columns.
+# 22.05.2016: Added masked data to result for manual investigation.
+# 20.05.2016: 'Blocked' changed to 'masked' throughout.
+# 20.05.2016: Implemented method 7 (assumes log-normal distribution).
+# 28.02.2016: Added check for ILS dye.
 # 09.01.2016: Added more attributes to result.
 # 21.10.2015: Added attributes.
 # 06.10.2015: Added importFrom for data.table
@@ -23,17 +28,20 @@
 #' @details
 #' Calculate the analytical threshold (AT) according to method 1, 2, and 4 as
 #' recommended in the reference by analysing the background signal (noise).
+#' In addition method 7, a log-normal version of method 1 has been implemented.
 #' Method 1: The average signal + 'k' * the standard deviation.
 #' Method 2: The percentile rank method. The percentage of noise peaks below 'rank.t'.
 #' Method 4: Utilize the mean and standard deviation and the critical value obtained 
 #' from the t-distribution for confidence interval 'alpha' (one-sided) and observed
-#' peaks analysed (i.e. not blocked) minus one as degrees of freedom, and the number
+#' peaks analysed (i.e. not masked) minus one as degrees of freedom, and the number
 #' of samples.
-#' If samples containing DNA are used a range around the allelic peaks can be blocked
-#' from the analysis to discard peaks higher than the noise. Blocking can be within
+#' Method 7: The average natural logarithm of the signal + k * the standard deviation.
+#' 
+#' If samples containing DNA are used, a range around the allelic peaks can be masked
+#' from the analysis to discard peaks higher than the noise. Masking can be within
 #' each dye or across all dye channels.
 #' Similarily a range around the peaks of the internal lane standard (ILS) can be 
-#' blocked across all dye channels. Which can bleed-through in week samples
+#' masked across all dye channels. Which can bleed-through in week samples
 #' (i.e. negative controls)
 #' The mean, standard deviation, and number of peaks are calculated per dye per sample,
 #' per sample, globally across all samples, and globally across all samples per dye,
@@ -43,17 +51,17 @@
 #'  'Sample.File.Name', 'Marker', 'Allele', 'Height', and 'Data.Point'.
 #' @param ref a data frame containing at least
 #'  'Sample.Name', 'Marker', 'Allele'.
-#' @param block.height logical to indicate if high peaks should be blocked.
+#' @param mask.height logical to indicate if high peaks should be masked.
 #' @param height integer for global lower peak height threshold for peaks
-#' to be excluded from the analysis. Active if 'block.peak=TRUE.
-#' @param block.sample logical to indicate if sample allelic peaks should be blocked.
-#' @param per.dye logical TRUE if sample peaks should be blocked per dye channel.
-#' FALSE if sample peaks should be blocked globally across dye channels.
-#' @param range.sample integer to specify the blocking range in (+/-) data points.
-#' Active if block.sample=TRUE.
-#' @param block.ils logical to indicate if internal lane standard peaks should be blocked.
-#' @param range.ils integer to specify the blocking range in (+/-) data points.
-#' Active if block.ils=TRUE.
+#' to be excluded from the analysis. Active if 'mask.peak=TRUE.
+#' @param mask.sample logical to indicate if sample allelic peaks should be masked.
+#' @param per.dye logical TRUE if sample peaks should be masked per dye channel.
+#' FALSE if sample peaks should be masked globally across dye channels.
+#' @param range.sample integer to specify the masking range in (+/-) data points.
+#' Active if mask.sample=TRUE.
+#' @param mask.ils logical to indicate if internal lane standard peaks should be masked.
+#' @param range.ils integer to specify the masking range in (+/-) data points.
+#' Active if mask.ils=TRUE.
 #' @param k numeric factor for the desired confidence level (method AT1).
 #' @param alpha numeric one-sided confidence interval to obtain the
 #' critical value from the t-distribution (method AT4).
@@ -62,9 +70,11 @@
 #' @param word logical to indicate if word boundaries should be added before sample matching.
 #' @param debug logical to indicate if debug information should be printed.
 #' 
-#' @return list of two data frames. The first with result per dye per sample,
-#'  per sample, globally across all samples, and globally across all samples per dye,
-#'  for each method. The second is the complete percentile rank list.
+#' @return list of three data frames. The first with result per dye per sample,
+#'  per sample, globally across all samples, and globally across all samples
+#'  per dye, for each method. The second is the complete percentile rank list.
+#'  The third is the masked raw data used for calculation to enable manual
+#'  check of the result.
 #' 
 #' @export
 #' 
@@ -72,7 +82,7 @@
 #' @importFrom utils str head tail
 #' @importFrom data.table data.table setnames
 #' 
-#' @seealso \code{\link{blockAT}}, \code{\link{checkSubset}}
+#' @seealso \code{\link{maskAT}}, \code{\link{checkSubset}}
 #' 
 #' @references
 #'  J. Bregu et.al.,
@@ -83,11 +93,15 @@
 #' 
 #' 
 
-calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
-                        block.sample=TRUE, per.dye = TRUE, range.sample=20,
-                        block.ils=TRUE, range.ils=10,
+calculateAT <- function(data, ref=NULL, mask.height=TRUE, height=500,
+                        mask.sample=TRUE, per.dye = TRUE, range.sample=20,
+                        mask.ils=TRUE, range.ils=10,
                         k=3, rank.t=0.99, alpha=0.01,
                         ignore.case=TRUE, word=FALSE, debug=FALSE){
+  
+  # Parameters that may change in the function must be saved first.
+  attr_data <- substitute(data)
+  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -96,18 +110,18 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     print(str(data))
     print("ref")
     print(str(ref))
-    print("block.height")
-    print(block.height)
+    print("mask.height")
+    print(mask.height)
     print("height")
     print(height)
-    print("block.sample")
-    print(block.sample)
+    print("mask.sample")
+    print(mask.sample)
     print("per.dye")
     print(per.dye)
     print("range.sample")
     print(range.sample)
-    print("block.ils")
-    print(block.ils)
+    print("mask.ils")
+    print(mask.ils)
     print("range.ils")
     print(range.ils)
     print("k")
@@ -187,8 +201,8 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   }
   
   # Check parameters.  
-  if(!is.logical(block.height)){
-    stop("'block.height' must be logical",
+  if(!is.logical(mask.height)){
+    stop("'mask.height' must be logical",
          call. = TRUE)
   }
   
@@ -197,8 +211,8 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
          call. = TRUE)
   }
   
-  if(!is.logical(block.sample)){
-    stop("'block.sample' must be logical",
+  if(!is.logical(mask.sample)){
+    stop("'mask.sample' must be logical",
          call. = TRUE)
   }
   
@@ -212,8 +226,8 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
          call. = TRUE)
   }
   
-  if(!is.logical(block.ils)){
-    stop("'block.ils' must be logical",
+  if(!is.logical(mask.ils)){
+    stop("'mask.ils' must be logical",
          call. = TRUE)
   }
   
@@ -254,12 +268,12 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   
   # Prepare -------------------------------------------------------------------
   
-  if(!all(c("Blocked", "Dye") %in% names(data))){
-    # Block data for AT calculation
+  if(!all(c("Masked", "Dye") %in% names(data))){
+    # Mask data for AT calculation
     # (need to be separate function to enable control plots in GUI).
-    data <- blockAT(data=data, ref=ref,block.height=block.height, height=height,
-                    block.sample=block.sample, per.dye=per.dye, range.sample=range.sample,
-                    block.ils=block.ils, range.ils=range.ils,
+    data <- maskAT(data=data, ref=ref,mask.height=mask.height, height=height,
+                    mask.sample=mask.sample, per.dye=per.dye, range.sample=range.sample,
+                    mask.ils=mask.ils, range.ils=range.ils,
                     ignore.case=ignore.case, word=word, debug=debug)
     
   }
@@ -268,7 +282,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   dyes <- as.character(unique(data$Dye))
   dyeILS <- unique(data$Dye[data$ILS])
   dyesKit <- setdiff(dyes, dyeILS)
-  
+
   # Get number of samples.
   nSamples <- length(unique(data$Sample.File.Name))
   
@@ -281,37 +295,56 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   rankThreshold <- function(x, t) min(x[percentileRank(x) > t])
   
   # Convert -------------------------------------------------------------------
-  
-  # Strip blocked data, and ILS channel.
-  dt <- data[data$Blocked==FALSE & data$Dye!=dyeILS,]
-  
+
+  # Check ILS dye.  
+  if(length(dyeILS) == 0){
+    
+    message("No ILS dye found!")
+    message("Identified dyes: ", paste(dyes, collapse = ", "))
+    
+    # Strip masked data.
+    dt <- data[data$Masked==FALSE,]
+    
+  } else {
+    
+    # Strip masked data, and ILS channel.
+    dt <- data[data$Masked==FALSE & data$Dye!=dyeILS,]
+    
+  }
+
   # Convert to data.table for performance.
   dt <- data.table::data.table(dt)
   
   # Analyse1 ------------------------------------------------------------------
   
   # Calculate for sample per dye.
-  at.sample.dye <- dt[, list(Mean=mean(Height, na.rm=TRUE),
-                             Sd=sd(Height, na.rm=TRUE),
-                             Peaks=sum(Blocked==FALSE),
-                             AT2=rankThreshold(Height, rank.t)),
+  at.sample.dye <- dt[, list(Dye.Mean=mean(Height, na.rm=TRUE),
+                             Dye.Sd=sd(Height, na.rm=TRUE),
+                             Dye.Mean.ln=mean(log(Height), na.rm=TRUE),
+                             Dye.Sd.ln=sd(log(Height), na.rm=TRUE),
+                             Dye.Peaks=sum(Masked==FALSE),
+                             Dye.AT2=rankThreshold(Height, rank.t)),
                       by=list(Sample.File.Name, Dye)]
   
   # Extract AT2 and remove from dataset to get final row order correct.
-  at.sample.dye.AT2 <- at.sample.dye$AT2
-  at.sample.dye$AT2 <- NULL
+  at.sample.dye.AT2 <- at.sample.dye$Dye.AT2
+  at.sample.dye$Dye.AT2 <- NULL
   
   # Calculate globally for each dye.
   at.dye <- dt[, list(Mean=mean(Height, na.rm=TRUE),
                       Sd=sd(Height, na.rm=TRUE),
-                      Peaks=sum(Blocked==FALSE),
+                      Mean.ln=mean(log(Height), na.rm=TRUE),
+                      Sd.ln=sd(log(Height), na.rm=TRUE),
+                      Peaks=sum(Masked==FALSE),
                       AT2=rankThreshold(Height, rank.t)),
                by=list(Dye)]
   
   # Calculate for sample.
   at.sample <- dt[, list(Mean=mean(Height, na.rm=TRUE),
                          Sd=sd(Height, na.rm=TRUE),
-                         Peaks=sum(Blocked==FALSE),
+                         Mean.ln=mean(log(Height), na.rm=TRUE),
+                         Sd.ln=sd(log(Height), na.rm=TRUE),
+                         Peaks=sum(Masked==FALSE),
                          AT2=rankThreshold(Height, rank.t)),
                   by=list(Sample.File.Name)]
   
@@ -322,28 +355,34 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   # Join the result.
   at.sample.dye$Sample.Mean <- rep(at.sample$Mean, each=length(dyesKit))
   at.sample.dye$Sample.Sd <- rep(at.sample$Sd, each=length(dyesKit))
+  at.sample.dye$Sample.Mean.ln <- rep(at.sample$Mean.ln, each=length(dyesKit))
+  at.sample.dye$Sample.Sd.ln <- rep(at.sample$Sd.ln, each=length(dyesKit))
   at.sample.dye$Sample.Peaks <- rep(at.sample$Peaks, each=length(dyesKit))
   
   # Calculate globally for all data.
   at.global <- dt[, list(Mean=mean(Height, na.rm=TRUE),
                          Sd=sd(Height, na.rm=TRUE),
-                         Peaks=sum(Blocked==FALSE),
+                         Peaks=sum(Masked==FALSE),
+                         Mean.ln=mean(log(Height), na.rm=TRUE),
+                         Sd.ln=sd(log(Height), na.rm=TRUE),
                          AT2=rankThreshold(Height, rank.t))]
   
   # Join the result.
   at.sample.dye$Global.Mean <- rep(at.global$Mean, nrow(at.sample.dye))
   at.sample.dye$Global.Sd <- rep(at.global$Sd, nrow(at.sample.dye))
+  at.sample.dye$Global.Mean.ln <- rep(at.global$Mean.ln, nrow(at.sample.dye))
+  at.sample.dye$Global.Sd.ln <- rep(at.global$Sd.ln, nrow(at.sample.dye))
   at.sample.dye$Global.Peaks <- rep(at.global$Peaks, nrow(at.sample.dye))
   
   # Calculate AT1.
-  at.sample.dye$AT1 <- at.sample.dye$Mean + k * at.sample.dye$Sd
+  at.sample.dye$Dye.AT1 <- at.sample.dye$Dye.Mean + k * at.sample.dye$Dye.Sd
   at.sample.dye$Sample.AT1 <- at.sample.dye$Sample.Mean + k * at.sample.dye$Sample.Sd
   at.sample.dye$Global.AT1 <- at.sample.dye$Global.Mean + k * at.sample.dye$Global.Sd
   
   # Calculate AT1 per dye.
   at.dye$AT1 <- at.dye$Mean + k * at.dye$Sd
   for(d in seq(along=dyesKit)){
-    colName <- paste(dyesKit[d],"AT1", sep=".")
+    colName <- paste("Global", dyesKit[d],"AT1", sep=".")
     colVal <- rep(at.dye$AT1[d], nrow(at.sample.dye))
     colCnt <- length(colVal)
     dtNew <- data.table::data.table(col = colVal)
@@ -352,13 +391,13 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   }
   
   # Add AT2 results.
-  at.sample.dye$AT2 <- at.sample.dye.AT2
+  at.sample.dye$Dye.AT2 <- at.sample.dye.AT2
   at.sample.dye$Sample.AT2 <- rep(at.sample.AT2, each=length(dyesKit))
   at.sample.dye$Global.AT2 <- rep(at.global$AT2, nrow(at.sample.dye))
   
   # Add AT2 per dye.
   for(d in seq(along=dyesKit)){
-    colName <- paste(dyesKit[d],"AT2", sep=".")
+    colName <- paste("Global", dyesKit[d],"AT2", sep=".")
     colVal <- rep(at.dye$AT2[d], nrow(at.sample.dye))
     colCnt <- length(colVal)
     dtNew <- data.table::data.table(col = colVal)
@@ -369,20 +408,38 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   # Calculate AT4.
   #Note: Actually no point using t-distribution since degrees of freedom
   # (number of observations - 1) are large (>100).
-  at.sample.dye$AT4 <- at.sample.dye$Mean + abs(qt(alpha, at.sample.dye$Peaks - 1)) * (1 + 1 / 1)^0.5 * at.sample.dye$Sd
+  at.sample.dye$Dye.AT4 <- at.sample.dye$Dye.Mean + abs(qt(alpha, at.sample.dye$Dye.Peaks - 1)) * (1 + 1 / 1)^0.5 * at.sample.dye$Dye.Sd
   at.sample.dye$Sample.AT4 <- at.sample.dye$Sample.Mean + abs(qt(alpha, at.sample.dye$Sample.Peaks - 1)) * (1 + 1 / 1)^0.5 * at.sample.dye$Sample.Sd
   at.sample.dye$Global.AT4 <- at.sample.dye$Global.Mean + abs(qt(alpha, at.sample.dye$Global.Peaks - 1)) * (1 + 1 / nSamples)^0.5 * at.sample.dye$Global.Sd
   
   # Calculate AT4 per dye.
   at.dye$AT4 <- at.dye$Mean + abs(qt(alpha, at.dye$Peaks - 1)) * (1 + 1 / 1)^0.5 * at.dye$Sd
   for(d in seq(along=dyesKit)){
-    colName <- paste(dyesKit[d],"AT4", sep=".")
+    colName <- paste("Global", dyesKit[d],"AT4", sep=".")
     colVal <- rep(at.dye$AT4[d], nrow(at.sample.dye))
     colCnt <- length(colVal)
     dtNew <- data.table::data.table(col = colVal)
     data.table::setnames(dtNew, colName)
     at.sample.dye <- data.table::data.table(at.sample.dye, dtNew)
   }
+  
+  # Calculate AT7.
+  at.sample.dye$Dye.AT7 <- exp(at.sample.dye$Dye.Mean.ln + k * at.sample.dye$Dye.Sd.ln)
+  at.sample.dye$Sample.AT7 <- exp(at.sample.dye$Sample.Mean.ln + k * at.sample.dye$Sample.Sd.ln)
+  at.sample.dye$Global.AT7 <- exp(at.sample.dye$Global.Mean.ln + k * at.sample.dye$Global.Sd.ln)
+
+  # Calculate AT7 per dye.
+  at.dye$AT7 <- exp(at.dye$Mean.ln + k * at.dye$Sd.ln)
+  for(d in seq(along=dyesKit)){
+    colName <- paste("Global", dyesKit[d],"AT7", sep=".")
+    colVal <- rep(at.dye$AT7[d], nrow(at.sample.dye))
+    colCnt <- length(colVal)
+    dtNew <- data.table::data.table(col = colVal)
+    data.table::setnames(dtNew, colName)
+    at.sample.dye <- data.table::data.table(at.sample.dye, dtNew)
+  }
+  
+  # Finally -------------------------------------------------------------------  
   
   # Add number of samples.
   at.sample.dye$Total.Samples <-  nSamples
@@ -391,9 +448,25 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   attr(at.sample.dye, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(at.sample.dye, which="calculateAT, call") <- match.call()
   attr(at.sample.dye, which="calculateAT, date") <- date()
+  attr(at.sample.dye, which="calculateAT, data") <- attr_data
+  attr(at.sample.dye, which="calculateAT, ref") <- attr_ref
+  attr(at.sample.dye, which="calculateAT, mask.height") <- mask.height
+  attr(at.sample.dye, which="calculateAT, height") <- height
+  attr(at.sample.dye, which="calculateAT, mask.sample") <- mask.sample
+  attr(at.sample.dye, which="calculateAT, per.dye") <- per.dye
+  attr(at.sample.dye, which="calculateAT, range.sample") <- range.sample
+  attr(at.sample.dye, which="calculateAT, mask.ils") <- mask.ils
+  attr(at.sample.dye, which="calculateAT, range.ils") <- range.ils
+  attr(at.sample.dye, which="calculateAT, k") <- k
+  attr(at.sample.dye, which="calculateAT, rank.t") <- rank.t
+  attr(at.sample.dye, which="calculateAT, alpha") <- alpha
+  attr(at.sample.dye, which="calculateAT, ignore.case") <- ignore.case
+  attr(at.sample.dye, which="calculateAT, word") <- word
+  attr(at.sample.dye, which="calculateAT, debug") <- debug
   
   # Convert back to data.frame.
   res1 <- data.frame(at.sample.dye)
+  
   
   # Analyse2 ------------------------------------------------------------------
   
@@ -406,14 +479,14 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   attr(at.rank, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(at.rank, which="calculateAT, call") <- match.call()
   attr(at.rank, which="calculateAT, date") <- date()
-  attr(at.rank, which="calculateAT, data") <- substitute(data)
-  attr(at.rank, which="calculateAT, ref") <- substitute(ref)
-  attr(at.rank, which="calculateAT, block.height") <- block.height
+  attr(at.rank, which="calculateAT, data") <- attr_data
+  attr(at.rank, which="calculateAT, ref") <- attr_ref
+  attr(at.rank, which="calculateAT, mask.height") <- mask.height
   attr(at.rank, which="calculateAT, height") <- height
-  attr(at.rank, which="calculateAT, block.sample") <- block.sample
+  attr(at.rank, which="calculateAT, mask.sample") <- mask.sample
   attr(at.rank, which="calculateAT, per.dye") <- per.dye
   attr(at.rank, which="calculateAT, range.sample") <- range.sample
-  attr(at.rank, which="calculateAT, block.ils") <- block.ils
+  attr(at.rank, which="calculateAT, mask.ils") <- mask.ils
   attr(at.rank, which="calculateAT, range.ils") <- range.ils
   attr(at.rank, which="calculateAT, k") <- k
   attr(at.rank, which="calculateAT, rank.t") <- rank.t
@@ -424,7 +497,34 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   
   # Convert back to data frame.
   res2 <- data.frame(at.rank)
+
   
+  # Masked data ---------------------------------------------------------------
+
+  # Add attributes.
+  attr(data, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(data, which="calculateAT, call") <- match.call()
+  attr(data, which="calculateAT, date") <- date()
+  attr(data, which="calculateAT, data") <- attr_data
+  attr(data, which="calculateAT, ref") <- attr_ref
+  attr(data, which="calculateAT, mask.height") <- mask.height
+  attr(data, which="calculateAT, height") <- height
+  attr(data, which="calculateAT, mask.sample") <- mask.sample
+  attr(data, which="calculateAT, per.dye") <- per.dye
+  attr(data, which="calculateAT, range.sample") <- range.sample
+  attr(data, which="calculateAT, mask.ils") <- mask.ils
+  attr(data, which="calculateAT, range.ils") <- range.ils
+  attr(data, which="calculateAT, k") <- k
+  attr(data, which="calculateAT, rank.t") <- rank.t
+  attr(data, which="calculateAT, alpha") <- alpha
+  attr(data, which="calculateAT, ignore.case") <- ignore.case
+  attr(data, which="calculateAT, word") <- word
+  attr(data, which="calculateAT, debug") <- debug
+  
+  # Convert back to data.frame.
+  res3 <- data.frame(data)
+
+    
   if(debug){
     print("str(res1)")
     print(str(res1))
@@ -438,6 +538,12 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
     print(head(res2))
     print("tail(res2)")
     print(tail(res2))
+    print("str(res3)")
+    print(str(res3))
+    print("head(res3)")
+    print(head(res3))
+    print("tail(res3)")
+    print(tail(res3))
   }
   
   if(debug){
@@ -445,7 +551,7 @@ calculateAT <- function(data, ref=NULL, block.height=TRUE, height=500,
   }
   
   # Return list of the two dataframes.
-  res <- list(res1, res2)
+  res <- list(res1, res2, res3)
   
   # Return result.
   return(res)

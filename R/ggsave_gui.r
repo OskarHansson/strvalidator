@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.06.2016: File name/path textbox made expandable.
 # 05.01.2016: Fixed 'dev' not find error in ggplot2 2.0.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus'.
@@ -107,9 +108,8 @@ ggsave_gui <- function(ggplot=NULL, name="", env=parent.frame(),
   
   f1g1 <- glayout(container = f1, spacing = 2)
   
-  f1g1[2,1] <- glabel(text="File name and extension:",
-                      container=f1g1,
-                      anchor=c(-1 ,0))
+  f1g1[2,1] <- glabel(text = "File name and extension:",
+                      container = f1g1, anchor = c(-1 ,0), expand = TRUE)
   
   f1g1[3,1] <- f1g1_name_edt <- gedit(text=name, width=50, container=f1g1)
   
@@ -349,9 +349,8 @@ ggsave_gui <- function(ggplot=NULL, name="", env=parent.frame(),
   
   f1g3 <- glayout(container = f1, spacing = 5)
   
-  f1g3[1,1] <- glabel(text="File path:",
-                      container=f1g3,
-                      anchor=c(-1 ,0))
+  f1g3[1,1] <- glabel(text = "File path:", container = f1g3,
+                      anchor = c(-1 ,0), expand = TRUE)
   
   f1g3[2,1:2] <- f1g3_save_brw <- gfilebrowse(text=getwd(),
                                               quote=FALSE,
@@ -360,9 +359,7 @@ ggsave_gui <- function(ggplot=NULL, name="", env=parent.frame(),
   
   # BUTTON ####################################################################
   
-  g_save_btn <- gbutton(text="Save",
-                          border=TRUE,
-                          container=gv) 
+  g_save_btn <- gbutton(text="Save", border=TRUE, container=gv) 
   
   # HANDLERS ##################################################################
   

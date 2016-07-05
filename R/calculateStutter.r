@@ -77,7 +77,8 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
 
   # Parameters that are changed by the function must be saved first.
   attr_data <- substitute(data)
-
+  attr_ref <- substitute(ref)
+  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
@@ -651,7 +652,7 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
   attr(stutterRatio, which="calculateStutter, call") <- match.call()
   attr(stutterRatio, which="calculateStutter, date") <- date()
   attr(stutterRatio, which="calculateStutter, data") <- attr_data
-  attr(stutterRatio, which="calculateStutter, ref") <- substitute(ref)
+  attr(stutterRatio, which="calculateStutter, ref") <- attr_ref
   attr(stutterRatio, which="calculateStutter, back") <- back
   attr(stutterRatio, which="calculateStutter, forward") <- forward
   attr(stutterRatio, which="calculateStutter, interference") <- interference

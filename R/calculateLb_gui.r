@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.06.2016: Added option to remove quality sensor.
 # 02.12.2016: Fixed options save bug.
 # 30.12.2015: First version.
 
@@ -252,11 +253,8 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[4,1] <- glabel(text="Select the kit used:", container=g0)
   
-  # NB! dfs defined in previous section.
-  g0[4,2] <- kit_drp <- gdroplist(items = getKit(), 
-                                  selected = 1,
-                                  editable = FALSE,
-                                  container = g0) 
+  g0[4,2] <- kit_drp <- gdroplist(items = getKit(), selected = 1,
+                                  editable = FALSE, container = g0) 
   
 
   # FRAME 1 ###################################################################
@@ -306,6 +304,9 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
   
   f1_sex_chk <- gcheckbox(text="Remove sex markers", checked = FALSE,
                            container = f1)
+  
+  f1_qs_chk <- gcheckbox(text="Remove quality sensors", checked = TRUE,
+                          container = f1)
 
   #----------------------------------------------------------------------------
   glabel(text = "Replace missing data with peak height:", anchor=c(-1 ,0),
@@ -340,7 +341,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
 
   if(debug){
     print("BUTTON")
-  }  
+  }
   
   calculate_btn <- gbutton(text = "Calculate",
                       border = TRUE,
@@ -362,6 +363,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
     val_kit <- svalue(kit_drp)
     val_ol <- svalue(f1_ol_chk)
     val_sex <- svalue(f1_sex_chk)
+    val_qs <- svalue(f1_qs_chk)
     val_na <- as.numeric(svalue(f1_na_edt))
     val_h_enabled <- enabled(f1_h_chk)
     val_h <- svalue(f1_h_chk)
@@ -376,6 +378,8 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_ol)
       print("val_sex")
       print(val_sex)
+      print("val_qs")
+      print(val_qs)
       print("val_na")
       print(val_na)
       print("val_ignore")
@@ -438,6 +442,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
                                by.dye = val_dye,
                                ol.rm = val_ol,
                                sex.rm = val_sex,
+                               qs.rm = val_qs,
                                na = val_na,
                                kit = val_kit,
                                ignore.case = val_ignore,
@@ -453,6 +458,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
         attr(datanew, which="calculateLb_gui, by.dye") <- val_dye
         attr(datanew, which="calculateLb_gui, ol.rm") <- val_ol
         attr(datanew, which="calculateLb_gui, sex.rm") <- val_sex
+        attr(datanew, which="calculateLb_gui, qs.rm") <- val_qs
         attr(datanew, which="calculateLb_gui, na") <- val_na
         attr(datanew, which="calculateLb_gui, ignore.case") <- val_ignore
         attr(datanew, which="calculateLb_gui, word") <- val_word
@@ -581,6 +587,9 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculateLb_gui_sex", envir=env, inherits = FALSE)){
         svalue(f1_sex_chk) <- get(".strvalidator_calculateLb_gui_sex", envir=env)
       }
+      if(exists(".strvalidator_calculateLb_gui_qs", envir=env, inherits = FALSE)){
+        svalue(f1_qs_chk) <- get(".strvalidator_calculateLb_gui_qs", envir=env)
+      }
       if(exists(".strvalidator_calculateLb_gui_na", envir=env, inherits = FALSE)){
         svalue(f1_na_edt) <- get(".strvalidator_calculateLb_gui_na", envir=env)
       }
@@ -613,6 +622,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
       assign(x=".strvalidator_calculateLb_gui_dye", value=svalue(f1_dye_chk), envir=env)
       assign(x=".strvalidator_calculateLb_gui_ol", value=svalue(f1_ol_chk), envir=env)
       assign(x=".strvalidator_calculateLb_gui_sex", value=svalue(f1_sex_chk), envir=env)
+      assign(x=".strvalidator_calculateLb_gui_qs", value=svalue(f1_qs_chk), envir=env)
       assign(x=".strvalidator_calculateLb_gui_na", value=svalue(f1_na_edt), envir=env)
       assign(x=".strvalidator_calculateLb_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
       assign(x=".strvalidator_calculateLb_gui_word", value=svalue(f1_word_chk), envir=env)
@@ -635,6 +645,9 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
       }
       if(exists(".strvalidator_calculateLb_gui_sex", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateLb_gui_sex", envir = env)
+      }
+      if(exists(".strvalidator_calculateLb_gui_qs", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateLb_gui_qs", envir = env)
       }
       if(exists(".strvalidator_calculateLb_gui_na", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateLb_gui_na", envir = env)

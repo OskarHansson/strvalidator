@@ -4,8 +4,8 @@
 \alias{calculateSpike}
 \title{Detect Spike}
 \usage{
-calculateSpike(data, threshold = NULL, round.to = 1, kit = NULL,
-  debug = FALSE)
+calculateSpike(data, threshold = NULL, tolerance = 2, kit = NULL,
+  quick = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{data.frame with including colums 'Sample.Name', 'Marker', 'Size'.}
@@ -14,9 +14,15 @@ calculateSpike(data, threshold = NULL, round.to = 1, kit = NULL,
 channels to pass as a possible spike (NULL = number of dye channels
 minus one to allow for on unlabelled peak).}
 
-\item{round.to}{numeric toleranse for Size.}
+\item{tolerance}{numeric tolerance for Size. For the quick and dirty
+rounding method e.g. 1.5 rounds Size to +/- 0.75 bp. For the slower but
+more accurate method the value is the maximum allowed difference between
+peaks in a spike.}
 
 \item{kit}{string or numeric for the STR-kit used (NULL = auto detect).}
+
+\item{quick}{logical TRUE for the quick and dirty method. Default is FALSE
+which use a slower but more accurate method.}
 
 \item{debug}{logical indicating printing debug information.}
 }
@@ -28,7 +34,16 @@ Detect samples with possible spikes in the DNA profile.
 }
 \details{
 Creates a list of possible spikes by searching for peaks aligned
-vertically (i.e. nearly identical size).
+vertically (i.e. nearly identical size). There are two methods to search.
+The default method (quick=FALSE) method that calculates the distance between
+each peak in a sample, and the quick and dirty method (quick=TRUE) that
+rounds the size and then group peaks with identical size. The rounding
+method is faster because it uses the data.table package. The accurate method
+is slower because it uses nested loops - the first through each sample to
+calculate the distance between all peaks, and the second loops through the
+distance matrix to identifiy which peaks lies within the tolerance.
+NB! The quick method may not catch all spikes since two peaks can be
+separated by rounding e.g. 200.5 and 200.6 becomes 200 and 201 respectively.
 }
 \seealso{
 \code{\link{data.table}}

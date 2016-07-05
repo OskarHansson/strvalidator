@@ -1,36 +1,53 @@
 ################################################################################
 # TODO LIST
-# TODO: calculate allele frequencies.
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.05.2016: Added parameters 'sex.rm' and 'kit'.
+# 02.05.2016: Implemented calculation of proportion and frequency.
+# 29.04.2016: Added more attributes.
 # 13.10.2015: First version.
 
 #' @title Calculate Allele
 #'
 #' @description
-#' Counts the number of each allele per marker over the entire dataset.
+#' Calculates summary statistics for alleles per marker over the entire dataset.
 #'
-#' @details Creates a sorted table of the most common alleles in the dataset.
-#' The list can be used to calculate allele frequencies or to identify artefacts.
-#' NB! Remove NA's and OL's prior to analysis.
+#' @details Creates a table of the alleles in the dataset sorted by number of
+#' observations.For each allele the porportion of total observations is
+#' calculated. Using a threshold this can be used to separate likely artefacts
+#' from likely drop-in peaks. In addition the observed allele frequency is
+#' calculated. If columns 'Height' and/or 'Size' are available summary
+#' statistics is calculated. 
+#' NB! The function removes NA's and OL's prior to analysis.
 #' 
-#' @param data data.frame including colums 'Marker', 'Allele', 'Height'.
+#' @param data data.frame including colums 'Marker' and 'Allele', and
+#'  optionally 'Height' and 'Size'.
 #' @param threshold numeric if not NULL only peak heights above 'threshold'
 #'  will be considered.
+#' @param sex.rm logical TRUE removes all sex markers. Requires 'kit'.
+#' @param kit character for the DNA typing kit defining the sex markers.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @export
 #' 
 #' @importFrom data.table data.table := .N
 #' 
-#' @return data.frame
+#' @return data.frame with columns 'Marker', 'Allele', 'Peaks', 'Size.Min',
+#' 'Size.Mean', 'Size.Max', 'Height.Min', 'Height.Mean', 'Height.Max',
+#' 'Total.Peaks', 'Allele.Proportion', 'Sum.Peaks', and 'Allele.Frequency'.
+
 #' 
 #' @seealso \code{\link{data.table}}
 
 
-calculateAllele <- function(data, threshold=NULL, debug=FALSE){
+calculateAllele <- function(data, threshold=NULL, sex.rm=FALSE, kit=NULL,
+                            debug=FALSE){
   
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("str(data):")
@@ -50,10 +67,6 @@ calculateAllele <- function(data, threshold=NULL, debug=FALSE){
     stop("'Allele' does not exist!")
   }
   
-  if(is.null(data$Height)){
-    stop("'Height' does not exist!")
-  }
-  
   # Check if slim format:
   if(sum(grepl("Allele", names(data))) > 1){
     stop("'data' must be in 'slim' format",
@@ -70,58 +83,140 @@ calculateAllele <- function(data, threshold=NULL, debug=FALSE){
          call. = TRUE)
   }
 
-  # Check data type:
-  if(!is.numeric(data$Size)){
-    data$Size <- as.numeric(data$Size)
-    warning("'Size' not numeric! 'data' converted.")
+  # Check logical.
+  if(!is.logical(sex.rm)){
+    stop("'sex.rm' must be logical!")
   }
 
-  if(!is.numeric(data$Height)){
-    data$Height <- as.numeric(data$Height)
-    warning("'Height' not numeric! 'data' converted.")
+  # Check character.  
+  if(is.character(kit)){
+    stop("'kit' must be character!")
   }
   
+  
   # Prepare -------------------------------------------------------------------
+
+  # Check data type:
+  if(!is.null(data$Height)){
+    if(!is.numeric(data$Height)){
+      data$Height <- as.numeric(data$Height)
+      message("'Height' not numeric! 'data' converted.")
+    }
+  }
+
+  # Check data type:
+  if(!is.null(data$Size)){
+    if(!is.numeric(data$Size)){
+      data$Size <- as.numeric(data$Size)
+      message("'Size' not numeric! 'data' converted.")
+    }
+  }
+
+  if(sex.rm){
+    # Remove sex markers.
+    
+    if(is.null(kit)){
+      # Kit is not provided.
+      
+      message("'kit' is not provided. Autodetect kit...")
+      kit <- detectKit(data = data, index = FALSE, debug = debug)[1]
+      message("Using first detected kit '", kit, "' to define sex markers.")
+      
+    }
+    
+    # Get sex markes.
+    sexMarker <- getKit(kit = kit, what = "Sex.Marker")
+    message("Defined markers: ", paste(sexMarker, collapse=", "))
+    
+    for(m in seq(along=sexMarker)){
+      
+      n1 <- nrow(data)
+      data <- data[!data$Marker==sexMarker[m], ]
+      n2 <- nrow(data)
+      message("Removed ", n1-n2, " rows with sex marker ", sexMarker[m])
+      
+    }
+    
+  } # End if remove sex markers.
   
   # Convert to data.table.  
-  dtable <- data.table::data.table(data)
+  DT <- data.table::data.table(data)
   
   # Remove NA's.
-  if(any(is.na(dtable$Allele))){
-    dtable <- dtable[!is.na(dtable$Allele), ]
+  if(any(is.na(DT$Allele))){
+    n1 <- nrow(DT)
+    DT <- DT[!is.na(DT$Allele), ]
+    n2 <- nrow(DT)
+    message("Removed ", n1-n2, " rows with Allele=NA.")
   }
 
   # Remove OL's.
-  if(any("OL" %in% dtable$Allele)){
-    dtable <- dtable[!dtable$Allele=="OL", ]
+  if(any("OL" %in% DT$Allele)){
+    n1 <- nrow(DT)
+    DT <- DT[!DT$Allele=="OL", ]
+    n2 <- nrow(DT)
+    message("Removed ", n1-n2, " rows with Allele=OL.")
   }
 
   # Remove peaks below threshold.
   if(!is.null(threshold)){
-    dtable <- dtable[dtable$Height >= threshold, ]
+    if("Height" %in% names(DT)){
+      n1 <- nrow(DT)
+      DT <- DT[DT$Height >= threshold, ]
+      n2 <- nrow(DT)
+      message("Removed ", n1-n2, " rows with peaks below ", threshold, " RFU.")
+    } else {
+      message("Option 'threshold' ignored since column 'Height' is missing.")
+    }
   }
   
   
   # Analyse -------------------------------------------------------------------
 
-  if("Size" %in% names(dtable)){
-    # Calculate for size and height.
+  if(all(c("Size", "Height") %in% names(DT))){
+    message("Counts number of peaks for each allele by marker.")
+    message("Calculates summary statistics for both 'Size' and 'Height'.")
     
-    # Count number of peaks of same size per sample.
-    res <- dtable[, list("Peaks"=.N, "Size.Min"=min(Size), "Size.Mean"=mean(Size),
+    res <- DT[, list("Peaks"=.N, "Size.Min"=min(Size), "Size.Mean"=mean(Size),
                          "Size.Max"=max(Size), "Height.Min"=min(Height),
                          "Height.Mean"=mean(Height), "Height.Max"=max(Height)),
                   by=c("Marker", "Allele")]
     
-  } else { # Do not calculate for size.
+  } else if ("Height" %in% names(DT)) {
+    message("Counts number of peaks for each allele by marker.")
+    message("Calculates summary statistics for 'Height'.")
     
-    # Count number of peaks of same size per sample.
-    res <- dtable[, list("Peaks"=.N, "Height.Min"=min(Height),
+    res <- DT[, list("Peaks"=.N, "Height.Min"=min(Height),
                          "Height.Mean"=mean(Height), "Height.Max"=max(Height)),
                   by=c("Marker", "Allele")]
     
+  } else if ("Size" %in% names(DT)) {
+    message("Counts number of peaks for each allele by marker.")
+    message("Calculates summary statistics for 'Size'.")
+    
+    res <- DT[, list("Peaks"=.N, "Size.Min"=min(Size),
+                     "Size.Mean"=mean(Size), "Size.Max"=max(Size)),
+              by=c("Marker", "Allele")]
+    
+  } else {
+    message("Counts number of peaks for each allele by marker.")
+    
+    res <- DT[, list("Peaks"=.N), by=c("Marker", "Allele")]
+    
   }
-
+  
+  if(debug){
+    print("str(DT)")
+    print(str(DT))
+  }
+  
+  message("Calculates proportion of the total for each allele.")
+  res[, Total.Peaks:=sum(Peaks)]
+  res[, Allele.Proportion:=Peaks/Total.Peaks]
+  
+  message("Calculates frequency of each allele.")
+  res[, Sum.Peaks:=sum(Peaks), by=c("Marker")]
+  res[, Allele.Frequency:=Peaks/Sum.Peaks]
   
   # Sort table with the most frequent peak at top.
   data.table::setorder(res, -"Peaks", "Marker", "Allele")
@@ -133,6 +228,10 @@ calculateAllele <- function(data, threshold=NULL, debug=FALSE){
   attr(res, which="calculateAllele, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="calculateAllele, call") <- match.call()
   attr(res, which="calculateAllele, date") <- date()
+  attr(res, which="calculateAllele, data") <- attr_data
+  attr(res, which="calculateAllele, threshold") <- threshold
+  attr(res, which="calculateAllele, sex.rm") <- sex.rm
+  attr(res, which="calculateAllele, kit") <- kit
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.04.2016:   Fixed object not saved if an object existed and the new object is renamed.
 # 18.07.2014: Added syntactically valid name check.
 # 18.07.2014: Added 'remove' and 'suggested' parameter.
 # 20.01.2014: Added 'debug' parameter.
@@ -135,10 +136,15 @@ saveObject <- function(name=NULL, object, parent=NULL, suggest="",
         # Return FALSE.
         return(ok)
       
-      }
-      
-      if(debug){
-        print(paste("New name:", name))
+      } else {
+        
+        # Save data.
+        assign(name, object, envir=env)
+        
+        if(debug){
+          print(paste("New name:", name))
+        }
+        
       }
       
     }

@@ -1,13 +1,14 @@
 ################################################################################
 # TODO LIST
-# TODO: Number of decimals on x axis as an option.
 # TODO: Custom colors.
 # TODO: Just one plot button, and a dropdown to select column to sort by. Ascend/descen+numeric/character
-# TODO: ...NOT FINISHED!!!
-#      (need to change if/when a preferred dropout method has beed decided)
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.04.2016: 'Save as' textbox expandable.
+# 29.04.2016: Removed unints from automatic titles.
+# 21.04.2016: Added new option 'Round to digits' (x-tick labels).
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 16.05.2015: Fixed issue#10 colors hardcoded as ESX17 for dotplot.
@@ -26,8 +27,6 @@
 # 18.09.2013: Updated to support new 'addColor' function, replacing 'addDye'.
 # 17.09.2013: Added missing plot by concentration.
 # 18.07.2013: Check before overwrite object.
-# 15.07.2013: Save as ggplot object to workspace instead of image.
-# 15.07.2013: Added save GUI settings.
 
 #' @title Plot Drop-out Events
 #'
@@ -254,7 +253,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     } else {
 
       enabled(f7_plot_h_btn) <- FALSE
-      .plotStutter(what="heat_h")
+      .plotDropout(what="heat_h")
       enabled(f7_plot_h_btn) <- TRUE
       
     }
@@ -284,7 +283,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     } else {
       
       enabled(f7_plot_amount_btn) <- FALSE
-      .plotStutter(what="heat_amount")
+      .plotDropout(what="heat_amount")
       enabled(f7_plot_amount_btn) <- TRUE
       
     }
@@ -314,7 +313,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     } else {
       
       enabled(f7_plot_conc_btn) <- FALSE
-      .plotStutter(what="heat_conc")
+      .plotDropout(what="heat_conc")
       enabled(f7_plot_conc_btn) <- TRUE
       
     }
@@ -344,7 +343,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     } else {
       
       enabled(f7_plot_sample_btn) <- FALSE
-      .plotStutter(what="sample")
+      .plotDropout(what="sample")
       enabled(f7_plot_sample_btn) <- TRUE
       
     }
@@ -392,7 +391,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     } else {
       
       enabled(f8_plot_ecdf_btn) <- FALSE
-      .plotStutter(what="ecdf")
+      .plotDropout(what="ecdf")
       enabled(f8_plot_ecdf_btn) <- TRUE
       
     }
@@ -422,7 +421,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     } else {
       
       enabled(f8_plot_dot_btn) <- FALSE
-      .plotStutter(what="dot")
+      .plotDropout(what="dot")
       enabled(f8_plot_dot_btn) <- TRUE
       
     }
@@ -442,7 +441,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   glabel(text="Name for result:", container=f5)
   
-  f5_save_edt <- gedit(text="", container=f5)
+  f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
   f5_save_btn <- gbutton(text = "Save as object",
                          border=TRUE,
@@ -504,28 +503,29 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                      container = f1)
   
   grid4 <- glayout(container = e4)
+
+  grid4[1,1] <- glabel(text="Round to digits:", container=grid4)
+  grid4[1,2] <- e4_round_spb <- gspinbutton (from=0, to=10, by=1,
+                                             value=3, container=grid4) 
   
-  grid4[1,1] <- glabel(text="Text size (pts):", container=grid4)
-  grid4[1,2] <- e4_size_txt <- gedit(text="10", width=4, container=grid4)
+  grid4[2,1] <- glabel(text="Text size (pts):", container=grid4)
+  grid4[2,2] <- e4_size_txt <- gedit(text="10", width=4, container=grid4)
 
-  grid4[1,3] <- glabel(text="Angle:", container=grid4)
-  grid4[1,4] <- e4_angle_spb <- gspinbutton (from=0, to=360, by=1,
-                                         value=270,
-                                         container=grid4) 
+  grid4[2,3] <- glabel(text="Angle:", container=grid4)
+  grid4[2,4] <- e4_angle_spb <- gspinbutton (from=0, to=360, by=1,
+                                         value=270, container=grid4) 
 
-  grid4[2,1] <- glabel(text="Justification (v/h):", container=grid4)
-  grid4[2,2] <- e4_vjust_spb <- gspinbutton (from=0, to=1, by=0.1,
-                                          value=0.3,
-                                          container=grid4)
+  grid4[3,1] <- glabel(text="Justification (v/h):", container=grid4)
+  grid4[3,2] <- e4_vjust_spb <- gspinbutton (from=0, to=1, by=0.1,
+                                          value=0.3, container=grid4)
 
-  grid4[2,3] <- e4_hjust_spb <- gspinbutton (from=0, to=1, by=0.1,
-                                          value=0,
-                                          container=grid4)
+  grid4[3,3] <- e4_hjust_spb <- gspinbutton (from=0, to=1, by=0.1,
+                                          value=0, container=grid4)
 
   # FUNCTIONS #################################################################
   
   
-  .plotStutter <- function(what){
+  .plotDropout <- function(what){
     
     # Get values.
     val_titles <- svalue(f1_titles_chk)
@@ -536,6 +536,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     val_vjust <- as.numeric(svalue(e4_vjust_spb))
     val_hjust <- as.numeric(svalue(e4_hjust_spb))
     val_size <- as.numeric(svalue(e4_size_txt))
+    val_round <- as.numeric(svalue(e4_round_spb))
     val_kit <- svalue(kit_drp)
     val_hom <- svalue(f8_hom_chk)
     val_ymin <- as.numeric(svalue(e3_y_min_edt))
@@ -558,6 +559,8 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       print(val_hjust)
       print("val_size")
       print(val_size)
+      print("val_round")
+      print(val_round)
       print("val_hom")
       print(val_hom)
       print("str(.gData)")
@@ -599,7 +602,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         # Create default titles.
         if(!val_titles){
           mainTitle <- "Allele and locus dropout"
-          xTitle <- "Average peak height 'H' (RFU)"
+          xTitle <- "Average peak height"
           yTitle <- "Marker"
         }
 
@@ -620,7 +623,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         
         # Create x labels.
         xlabels <- .gData[!duplicated(.gData[, c("Sample.Name", "H")]), ]$H
-        xlabels <- round(as.double(xlabels), digits=3)
+        xlabels <- round(as.double(xlabels), digits=0)
         
         # Define colours.
         col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
@@ -650,7 +653,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         # Create default titles.
         if(!val_titles){
           mainTitle <- "Allele and locus dropout"
-          xTitle <- "Amount amplified DNA (ng)"
+          xTitle <- "Amount amplified DNA"
           yTitle <- "Marker"
         }
         
@@ -671,7 +674,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         
         # Create x labels.
         xlabels <- .gData[!duplicated(.gData[, c("Sample.Name", "Amount")]), ]$Amount
-        xlabels <- round(as.double(xlabels), digits=3)
+        xlabels <- round(as.double(xlabels), digits=val_round) # val_round also used below.
         
         # Define colours.
         col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
@@ -690,9 +693,9 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         gp <- gp + ylab(yTitle)
         gp <- gp + xlab(xTitle)
 
-        # Reverse y-axis and relabel x-ticks.
+        # Reverse y-axis and relabel x-ticks. Note: formatC required for trailing 0.
         gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker))) + 
-          scale_x_discrete(labels=formatC(xlabels, 3, format = "f")) +
+          scale_x_discrete(labels=formatC(xlabels, val_round, format = "f")) +
           theme(axis.text.x=element_text(family="sans", face="bold", size=val_size))
         
         
@@ -702,7 +705,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         # Create default titles.
         if(!val_titles){
           mainTitle <- "Allele and locus dropout"
-          xTitle <- "Concentration (ng/uL)"
+          xTitle <- "Concentration"
           yTitle <- "Marker"
         }
         
@@ -723,7 +726,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         
         # Create x labels.
         xlabels <- .gData[!duplicated(.gData[, c("Sample.Name", "Concentration")]), ]$Concentration
-        xlabels <- round(as.double(xlabels), digits=4)
+        xlabels <- round(as.double(xlabels), digits=val_round) # val_round also used below.
         
         # Define colours.
         col <- c(rgb(0,0.737,0), rgb(1,0.526,1), rgb(0.526,0,0.526))
@@ -742,11 +745,11 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         gp <- gp + ylab(yTitle)
         gp <- gp + xlab(xTitle)
         
-        # Reverse y-axis and relabel x-ticks.
+        # Reverse y-axis and relabel x-ticks. Note: formatC required for trailing 0.
         gp <- gp + scale_y_discrete(limits = rev(levels(.gData$Marker))) + 
-          scale_x_discrete(labels=formatC(xlabels, 4, format = "f")) +
+          scale_x_discrete(labels=formatC(xlabels, val_round, format = "f")) +
           theme(axis.text.x=element_text(family="sans", face="bold", size=val_size))
-
+        
       } else if (what == "sample") {
         # Sort according to sample name.
         
@@ -1096,18 +1099,6 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_plotDropout_gui_y_title", envir=env, inherits = FALSE)){
         svalue(f1_ytitle_edt) <- get(".strvalidator_plotDropout_gui_y_title", envir=env)
       }
-#       if(exists(".strvalidator_plotDropout_gui_points_shape", envir=env, inherits = FALSE)){
-#         svalue(shape_txt) <- get(".strvalidator_plotDropout_gui_points_shape", envir=env)
-#       }
-#       if(exists(".strvalidator_plotDropout_gui_points_alpha", envir=env, inherits = FALSE)){
-#         svalue(alpha_txt) <- get(".strvalidator_plotDropout_gui_points_alpha", envir=env)
-#       }
-#       if(exists(".strvalidator_plotDropout_gui_points_jitterh", envir=env, inherits = FALSE)){
-#         svalue(jitterh_txt) <- get(".strvalidator_plotDropout_gui_points_jitterh", envir=env)
-#       }
-#       if(exists(".strvalidator_plotDropout_gui_points_jitterv", envir=env, inherits = FALSE)){
-#         svalue(jitterv_txt) <- get(".strvalidator_plotDropout_gui_points_jitterv", envir=env)
-#       }
       if(exists(".strvalidator_plotDropout_gui_axes_y_min", envir=env, inherits = FALSE)){
         svalue(e3_y_min_edt) <- get(".strvalidator_plotDropout_gui_axes_y_min", envir=env)
       }
@@ -1119,6 +1110,9 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       if(exists(".strvalidator_plotDropout_gui_axes_x_max", envir=env, inherits = FALSE)){
         svalue(e3_x_max_edt) <- get(".strvalidator_plotDropout_gui_axes_x_max", envir=env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_round", envir=env, inherits = FALSE)){
+        svalue(e4_round_spb) <- get(".strvalidator_plotDropout_gui_xlabel_round", envir=env)
       }
       if(exists(".strvalidator_plotDropout_gui_xlabel_size", envir=env, inherits = FALSE)){
         svalue(e4_size_txt) <- get(".strvalidator_plotDropout_gui_xlabel_size", envir=env)
@@ -1153,15 +1147,11 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       assign(x=".strvalidator_plotDropout_gui_title_chk", value=svalue(f1_titles_chk), envir=env)
       assign(x=".strvalidator_plotDropout_gui_x_title", value=svalue(f1_xtitle_edt), envir=env)
       assign(x=".strvalidator_plotDropout_gui_y_title", value=svalue(f1_ytitle_edt), envir=env)
-#       assign(x=".strvalidator_plotDropout_gui_points_plot", value=svalue(e2_plotpoints_chk), envir=env)
-#       assign(x=".strvalidator_plotDropout_gui_points_shape", value=svalue(shape_txt), envir=env)
-#       assign(x=".strvalidator_plotDropout_gui_points_alpha", value=svalue(alpha_txt), envir=env)
-#       assign(x=".strvalidator_plotDropout_gui_points_jitterh", value=svalue(jitterh_txt), envir=env)
-#       assign(x=".strvalidator_plotDropout_gui_points_jitterv", value=svalue(jitterv_txt), envir=env)
       assign(x=".strvalidator_plotDropout_gui_axes_y_min", value=svalue(e3_y_min_edt), envir=env)
       assign(x=".strvalidator_plotDropout_gui_axes_y_max", value=svalue(e3_y_max_edt), envir=env)
       assign(x=".strvalidator_plotDropout_gui_axes_x_min", value=svalue(e3_x_min_edt), envir=env)
       assign(x=".strvalidator_plotDropout_gui_axes_x_max", value=svalue(e3_x_max_edt), envir=env)
+      assign(x=".strvalidator_plotDropout_gui_xlabel_round", value=svalue(e4_round_spb), envir=env)
       assign(x=".strvalidator_plotDropout_gui_xlabel_size", value=svalue(e4_size_txt), envir=env)
       assign(x=".strvalidator_plotDropout_gui_xlabel_angle", value=svalue(e4_angle_spb), envir=env)
       assign(x=".strvalidator_plotDropout_gui_xlabel_justh", value=svalue(e4_hjust_spb), envir=env)
@@ -1185,21 +1175,6 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_plotDropout_gui_y_title", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotDropout_gui_y_title", envir = env)
       }
-#       if(exists(".strvalidator_plotDropout_gui_points_plot", envir=env, inherits = FALSE)){
-#         remove(".strvalidator_plotDropout_gui_points_plot", envir = env)
-#       }
-#       if(exists(".strvalidator_plotDropout_gui_points_shape", envir=env, inherits = FALSE)){
-#         remove(".strvalidator_plotDropout_gui_points_shape", envir = env)
-#       }
-#       if(exists(".strvalidator_plotDropout_gui_points_alpha", envir=env, inherits = FALSE)){
-#         remove(".strvalidator_plotDropout_gui_points_alpha", envir = env)
-#       }
-#       if(exists(".strvalidator_plotDropout_gui_points_jitterh", envir=env, inherits = FALSE)){
-#         remove(".strvalidator_plotDropout_gui_points_jitterh", envir = env)
-#       }
-#       if(exists(".strvalidator_plotDropout_gui_points_jitterv", envir=env, inherits = FALSE)){
-#         remove(".strvalidator_plotDropout_gui_points_jitterv", envir = env)
-#       }
       if(exists(".strvalidator_plotDropout_gui_axes_y_min", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotDropout_gui_axes_y_min", envir = env)
       }
@@ -1211,6 +1186,9 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       if(exists(".strvalidator_plotDropout_gui_axes_x_max", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotDropout_gui_axes_x_max", envir = env)
+      }
+      if(exists(".strvalidator_plotDropout_gui_xlabel_round", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotDropout_gui_xlabel_round", envir = env)
       }
       if(exists(".strvalidator_plotDropout_gui_xlabel_size", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotDropout_gui_xlabel_size", envir = env)

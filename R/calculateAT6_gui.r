@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.04.2016: 'Save as' textbox expandable.
 # 30.11.2015: Added warning.
 # 28.08.2015: Added importFrom
 # 10.06.2015: Added missing label 'Significance level:'.
@@ -288,7 +289,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", container=f2, expand = TRUE)
   
   # BUTTON ####################################################################
   
