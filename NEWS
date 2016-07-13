@@ -1,3 +1,11 @@
+Version 1.7.0.9000
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateLb
+  Fixed 'data' saved as attribute.
+  - calculateHeight_gui
+  Fixed options 'sex.rm' and 'qs.rm' not saved.
+
 Version 1.7.0
 ------------------------------------------------------------------------------
 * Updated kit file to support quality sensors (new column) and added:

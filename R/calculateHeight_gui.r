@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.07.2016: Fixed options 'sex.rm' and 'qs.rm' not saved.
 # 29.06.2016: Implement 'checkDataset'.
 # 29.06.2016: Added option to remove sex markers and quality sensor.
 # 29.04.2016: 'Save as' textbox expandable.
@@ -56,7 +57,7 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
-  
+
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
@@ -114,11 +115,10 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
   f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
   
   f0g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
-                                              listObjects(env=env,
-                                                          obj.class="data.frame")), 
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = f0g0)
+                                                listObjects(env=env,
+                                                            obj.class="data.frame")),
+                                        selected = 1, editable = FALSE,
+                                        container = f0g0)
   
   f0g0[1,3] <- f0g0_samples_lbl <- glabel(text=" 0 samples", container=f0g0)
   
@@ -159,7 +159,7 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       
     }
   } )  
-  
+
   # Kit -----------------------------------------------------------------------
   
   f0g0[4,1] <- glabel(text="Select the kit used:", container=f0g0)
@@ -273,7 +273,7 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       attr(datanew, which="calculateHeight_gui, exclude") <- val_ex
       attr(datanew, which="calculateHeight_gui, sex.rm") <- val_sex
       attr(datanew, which="calculateHeight_gui, qs.rm") <- val_qs
-      
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       
@@ -321,6 +321,12 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
     
     # Then load settings if true.
     if(svalue(savegui_chk)){
+      if(exists(".strvalidator_calculateHeight_gui_sex", envir=env, inherits = FALSE)){
+        svalue(f1_sex_chk) <- get(".strvalidator_calculateHeight_gui_sex", envir=env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_qs", envir=env, inherits = FALSE)){
+        svalue(f1_qs_chk) <- get(".strvalidator_calculateHeight_gui_qs", envir=env)
+      }
       if(exists(".strvalidator_calculateHeight_gui_replace", envir=env, inherits = FALSE)){
         svalue(f1_replace_chk) <- get(".strvalidator_calculateHeight_gui_replace", envir=env)
       }
@@ -346,6 +352,8 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
     if(svalue(savegui_chk)){
       
       assign(x=".strvalidator_calculateHeight_gui_savegui", value=svalue(savegui_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_sex", value=svalue(f1_sex_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_qs", value=svalue(f1_qs_chk), envir=env)
       assign(x=".strvalidator_calculateHeight_gui_replace", value=svalue(f1_replace_chk), envir=env)
       assign(x=".strvalidator_calculateHeight_gui_add", value=svalue(f1_add_chk), envir=env)
       assign(x=".strvalidator_calculateHeight_gui_exclude", value=svalue(f1_exclude_chk), envir=env)
@@ -355,6 +363,12 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       
       if(exists(".strvalidator_calculateHeight_gui_savegui", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateHeight_gui_savegui", envir = env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_sex", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_sex", envir = env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_qs", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_qs", envir = env)
       }
       if(exists(".strvalidator_calculateHeight_gui_replace", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateHeight_gui_replace", envir = env)

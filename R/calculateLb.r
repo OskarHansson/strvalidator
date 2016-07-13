@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2016: Fixed 'data' save as attribute.
 # 28.06.2016: Added option to remove quality sensor.
 # 27.06.2016: Fixed problem with replacing NAs.
 # 19.02.2016: Add fix broken dye after removing OL alleles.
@@ -93,6 +94,10 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
                         ol.rm = TRUE, sex.rm = FALSE, qs.rm = FALSE,
                         na = NULL, kit = NULL, ignore.case = TRUE,
                         word = FALSE, exact = FALSE, debug = FALSE){
+  
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -472,8 +477,8 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   attr(res, which="calculateLb, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="calculateLb, call") <- match.call()
   attr(res, which="calculateLb, date") <- date()
-  attr(res, which="calculateLb, data") <- substitute(data)
-  attr(res, which="calculateLb, ref") <- substitute(ref)
+  attr(res, which="calculateLb, data") <- attr_data
+  attr(res, which="calculateLb, ref") <- attr_ref
   attr(res, which="calculateLb, option") <- option
   attr(res, which="calculateLb, by.dye") <- by.dye
   attr(res, which="calculateLb, ol.rm") <- ol.rm
