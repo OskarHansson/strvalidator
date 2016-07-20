@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.07.2016: Added attributes to result.
+# 20.07.2016: Added new option 'list.all' to include missing samples in result.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -212,6 +214,11 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
                       anchor=c(-1 ,0), container=f1g0)
   f1g0[3,2] <- f1_no_marker_edt <- gedit(text = "NO MARKER",
                                          width = 15, container=f1g0)
+
+  f1g0[4,1] <- f1_all_chk <- gcheckbox(text="Include missing samples in result.",
+                                       checked = FALSE, container = f1)
+  tooltip(f1_all_chk) <- "Samples not in all datasets will always be included in the result."
+  
   
   # FRAME 3 ###################################################################
   
@@ -270,6 +277,7 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
     val_del <- svalue(f1_delimeter_edt)
     val_nosample <- svalue(f1_no_sample_edt)
     val_nomarker <- svalue(f1_no_marker_edt)
+    val_all <- svalue(f1_all_chk)
     val_list <- list()
     
     if(debug){
@@ -282,6 +290,14 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_name1)
       print("val_name2")
       print(val_name2)
+      print("val_delimeter")
+      print(val_del)
+      print("val_nosample")
+      print(val_nosample)
+      print("val_nomarker")
+      print(val_nomarker)
+      print("val_all")
+      print(val_all)
     }
     
     # Check if data.
@@ -309,6 +325,8 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
         print(val_nosample)
         print("val_nomarker")
         print(val_nomarker)
+        print("val_all")
+        print(val_all)
       }
       
       # Change button.
@@ -320,7 +338,23 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
                                       no.sample=val_nosample,
                                       no.marker=val_nomarker,
                                       delimeter=val_del,
+                                      list.all = val_all,
                                       debug=debug)
+
+      # Add attributes.
+      attr(datanew[[1]], which="calculateConcordance_gui, data") <- val_datasets
+      attr(datanew[[1]], which="calculateConcordance_gui, kit.name") <- val_kits
+      attr(datanew[[1]], which="calculateConcordance_gui, no.sample") <- val_nosample
+      attr(datanew[[1]], which="calculateConcordance_gui, no.marker") <- val_nomarker
+      attr(datanew[[1]], which="calculateConcordance_gui, delimeter") <- val_del
+      attr(datanew[[1]], which="calculateConcordance_gui, list.all") <- val_all
+
+      attr(datanew[[2]], which="calculateConcordance_gui, data") <- val_datasets
+      attr(datanew[[2]], which="calculateConcordance_gui, kit.name") <- val_kits
+      attr(datanew[[2]], which="calculateConcordance_gui, no.sample") <- val_nosample
+      attr(datanew[[2]], which="calculateConcordance_gui, no.marker") <- val_nomarker
+      attr(datanew[[2]], which="calculateConcordance_gui, delimeter") <- val_del
+      attr(datanew[[2]], which="calculateConcordance_gui, list.all") <- val_all
       
       # Save data.
       saveObject(name=val_name1, object=datanew[[1]], parent=w, env=env)
@@ -382,6 +416,9 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
       if(exists(".strvalidator_calculateConcordance_gui_marker", envir=env, inherits = FALSE)){
         svalue(f1_no_marker_edt) <- get(".strvalidator_calculateConcordance_gui_marker", envir=env)
       }
+      if(exists(".strvalidator_calculateConcordance_gui_all", envir=env, inherits = FALSE)){
+        svalue(f1_all_chk) <- get(".strvalidator_calculateConcordance_gui_all", envir=env)
+      }
       if(debug){
         print("Saved settings loaded!")
       }
@@ -398,6 +435,7 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
       assign(x=".strvalidator_calculateConcordance_gui_delimeter", value=svalue(f1_delimeter_edt), envir=env)
       assign(x=".strvalidator_calculateConcordance_gui_sample", value=svalue(f1_no_sample_edt), envir=env)
       assign(x=".strvalidator_calculateConcordance_gui_marker", value=svalue(f1_no_marker_edt), envir=env)
+      assign(x=".strvalidator_calculateConcordance_gui_all", value=svalue(f1_all_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -412,6 +450,9 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
       }
       if(exists(".strvalidator_calculateConcordance_gui_marker", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateConcordance_gui_marker", envir = env)
+      }
+      if(exists(".strvalidator_calculateConcordance_gui_all", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateConcordance_gui_all", envir = env)
       }
       
       if(debug){

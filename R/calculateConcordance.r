@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.07.2016: Added attributes to result.
+# 20.07.2016: Added new option 'list.all' to include missing samples in result.
 # 28.08.2015: Added importFrom
 # 18.06.2014: First version.
 
@@ -32,6 +34,7 @@
 #' @param no.sample character vector for string when sample is missing.
 #' @param delimeter character to separate the alleles in a genotype.
 #' Default is comma e.g '12,16'.
+#' @param list.all logical TRUE to return missing samples.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return list of data.frames (discordance table, and pair-wise comparison).
@@ -43,7 +46,10 @@
 
 calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
                                  no.sample="NO SAMPLE",
-                                 delimeter=",", debug=FALSE){
+                                 delimeter=",", list.all=FALSE, debug=FALSE){
+  
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -184,7 +190,7 @@ calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
         
         # Check if marker.
         if(!(markerList[[d]][m] & sampleList[[d]][s])){
-            
+
           if(!sampleList[[d]][s]){
 
             # Sample does not exist.
@@ -196,7 +202,7 @@ calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
             alleleSet[[d]] <- no.marker
             
           }
-            
+
         } else {
           
           # Get current alleles from dataset.
@@ -206,9 +212,21 @@ calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
         
       }
       
-      # Check for discordant results.
-      tmp <- alleleSet[alleleSet!=no.sample & alleleSet!=no.marker]
-      discordance <- !length(unique(tmp)) == 1
+      if(list.all){
+
+        # Check for discordant results excluding if only difference is missing
+        # marker (but including missing sample).
+        tmp <- alleleSet[alleleSet!=no.marker]
+        discordance <- !length(unique(tmp)) == 1
+        
+      } else {
+
+        # Check for discordant results excluding differences caused by missing
+        # sample or missing marker.
+        tmp <- alleleSet[alleleSet!=no.sample & alleleSet!=no.marker]
+        discordance <- !length(unique(tmp)) == 1
+        
+      }
       
       if(discordance){
         
@@ -250,6 +268,17 @@ calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
     
   }
   
+  # Add attributes to result.
+  attr(res1, which="calculateConcordance, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(res1, which="calculateConcordance, call") <- match.call()
+  attr(res1, which="calculateConcordance, date") <- date()
+  attr(res1, which="calculateConcordance, data") <- attr_data
+  attr(res1, which="calculateConcordance, kit.name") <- kit.name
+  attr(res1, which="calculateConcordance, no.marker") <- no.marker
+  attr(res1, which="calculateConcordance, no.sample") <- no.sample
+  attr(res1, which="calculateConcordance, delimeter") <- delimeter
+  attr(res1, which="calculateConcordance, list.all") <- list.all
+
   # CALCULATE -----------------------------------------------------------------
   # 2) A pair-wise comparison.
 
@@ -331,6 +360,18 @@ calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
                      Discordances=discordantAlleles,
                      Concordance=concordanceRate,
                      stringsAsFactors=FALSE)
+  
+  # Add attributes to result.
+  attr(res2, which="calculateConcordance, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(res2, which="calculateConcordance, call") <- match.call()
+  attr(res2, which="calculateConcordance, date") <- date()
+  attr(res2, which="calculateConcordance, data") <- attr_data
+  attr(res2, which="calculateConcordance, kit.name") <- kit.name
+  attr(res2, which="calculateConcordance, no.marker") <- no.marker
+  attr(res2, which="calculateConcordance, no.sample") <- no.sample
+  attr(res2, which="calculateConcordance, delimeter") <- delimeter
+  attr(res2, which="calculateConcordance, list.all") <- list.all
+
   
   # Return list of the two dataframes.
   res <- list(res1, res2)

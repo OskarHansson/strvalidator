@@ -6,6 +6,7 @@ context("calculateConcordance")
 
 ################################################################################
 # CHANGE LOG
+# 20.07.2016: Added test 04 for option list.all
 # 28.04.2014: First tests for 'calculateConcordance'.
 # 
 # test_dir("inst/tests/")
@@ -40,11 +41,11 @@ test_that("calculateConcordance", {
   # Kit/dataset name vector.
   kitVector <- c("KitA", "KitB","KitC", "KitD")
   
-  # List with dataset.
-  dataList <- list(x1, x2, x3, x4)
-  
   # TEST 01 -------------------------------------------------------------------
   # Test all differences with default settings.
+
+    # List with dataset.
+  dataList <- list(x1, x2, x3, x4)
   
   # Analyse dataframe.
   resList <- calculateConcordance(data=dataList, debug=FALSE)
@@ -169,6 +170,9 @@ test_that("calculateConcordance", {
   
   # TEST 02 -------------------------------------------------------------------
   # Test all differences with custom settings.
+  
+  # List with dataset.
+  dataList <- list(x1, x2, x3, x4)
   
   # Analyse dataframe.
   resList <- calculateConcordance(data=dataList, kit.name=kitVector, 
@@ -335,5 +339,182 @@ test_that("calculateConcordance", {
   expect_true(res2$Alleles[1]==40)
   expect_true(res2$Discordances[1]==0)
   expect_true(res2$Concordance[1]==100)
+  
+  # TEST 04 -------------------------------------------------------------------
+  # Test all differences with option list.all=TRUE.
+  
+  # List with dataset.
+  dataList <- list(x1, x2, x3, x4)
+  
+  # Analyse dataframe.
+  resList <- calculateConcordance(data=dataList, list.all=TRUE, debug=FALSE)
+  
+  # Extract result tables.
+  res1 <- resList[[1]]
+  res2 <- resList[[2]]
+  
+  # Check return class.  
+  expect_that(class(resList), matches(class(list())))
+  expect_that(class(res1), matches(class(data.frame())))
+  expect_that(class(res2), matches(class(data.frame())))
+  
+  # Check dimensions.
+  expect_true(ncol(res1) == 6)
+  expect_true(nrow(res1) == 29)
+  
+  expect_true(ncol(res2) == 6)
+  expect_true(nrow(res2) == 6)
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res1))
+  expect_true("Marker" %in% names(res1))
+  expect_true("Kit.1" %in% names(res1))
+  expect_true("Kit.2" %in% names(res1))
+  expect_true("Kit.3" %in% names(res1))
+  expect_true("Kit.4" %in% names(res1))
+  
+  expect_true("Kits" %in% names(res2))
+  expect_true("Samples" %in% names(res2))
+  expect_true("Loci" %in% names(res2))
+  expect_true("Alleles" %in% names(res2))
+  expect_true("Discordances" %in% names(res2))
+  expect_true("Concordance" %in% names(res2))
+  
+  # Check result.
+  expect_true(all(res1$Sample.Name[1:5]=="SampleA01"))
+  expect_true(all(res1$Sample.Name[6:7]=="SampleA02"))
+  expect_true(all(res1$Sample.Name[8:18]=="SampleA03"))
+  expect_true(all(res1$Sample.Name[19:29]=="SampleA04"))
+  expect_true(res1$Marker[1]=="D3S1358")
+  expect_true(res1$Marker[2]=="vWA")
+  expect_true(res1$Marker[3]=="D2S1338")
+  expect_true(res1$Marker[4]=="D18S51")
+  expect_true(res1$Marker[5]=="FGA")
+  expect_true(res1$Marker[6]=="vWA")
+  expect_true(res1$Marker[7]=="FGA")
+  expect_true(res1$Marker[8]=="D3S1358")
+  expect_true(res1$Marker[9]=="vWA")
+  expect_true(res1$Marker[10]=="D16S539")
+  expect_true(res1$Marker[11]=="D2S1338")
+  expect_true(res1$Marker[12]=="AMEL")
+  expect_true(res1$Marker[13]=="D8S1179")
+  expect_true(res1$Marker[14]=="D21S11")
+  expect_true(res1$Marker[15]=="D18S51")
+  expect_true(res1$Marker[16]=="D19S433")
+  expect_true(res1$Marker[17]=="FGA")
+  expect_true(res1$Marker[18]=="TH01")
+  expect_true(res1$Marker[19]=="D3S1358")
+  expect_true(res1$Marker[20]=="vWA")
+  expect_true(res1$Marker[21]=="D16S539")
+  expect_true(res1$Marker[22]=="D2S1338")
+  expect_true(res1$Marker[23]=="AMEL")
+  expect_true(res1$Marker[24]=="D8S1179")
+  expect_true(res1$Marker[25]=="D21S11")
+  expect_true(res1$Marker[26]=="D18S51")
+  expect_true(res1$Marker[27]=="D19S433")
+  expect_true(res1$Marker[28]=="FGA")
+  expect_true(res1$Marker[29]=="TH01")
+  expect_true(res1$Kit.1[1]=="15,18")
+  expect_true(res1$Kit.1[2]=="14")
+  expect_true(res1$Kit.1[3]=="19")
+  expect_true(res1$Kit.1[4]=="31.3,16")
+  expect_true(res1$Kit.1[5]=="25")
+  expect_true(res1$Kit.1[6]=="14")
+  expect_true(res1$Kit.1[7]=="NA")
+  expect_true(all(res1$Kit.1[8:29]=="NO SAMPLE"))
+  expect_true(res1$Kit.2[1]=="15,")
+  expect_true(res1$Kit.2[2]=="NO MARKER")
+  expect_true(res1$Kit.2[3]=="19")
+  expect_true(res1$Kit.2[4]=="31.2,16")
+  expect_true(res1$Kit.2[5]=="NO MARKER")
+  expect_true(res1$Kit.2[6]=="NO MARKER")
+  expect_true(res1$Kit.2[7]=="NO MARKER")
+  expect_true(all(res1$Kit.2[8:29]=="NO SAMPLE"))
+  expect_true(res1$Kit.3[1]=="15,18")
+  expect_true(res1$Kit.3[2]=="14")
+  expect_true(res1$Kit.3[3]=="OL")
+  expect_true(res1$Kit.3[4]=="31.2,16")
+  expect_true(res1$Kit.3[5]=="25")
+  expect_true(res1$Kit.3[6]=="14")
+  expect_true(res1$Kit.3[7]=="15")
+  expect_true(res1$Kit.3[8]=="15,18")
+  expect_true(res1$Kit.3[9]=="14")
+  expect_true(res1$Kit.3[10]=="11,13")
+  expect_true(res1$Kit.3[11]=="19")
+  expect_true(res1$Kit.3[12]=="X,Y")
+  expect_true(res1$Kit.3[13]=="12")
+  expect_true(res1$Kit.3[14]=="30")
+  expect_true(res1$Kit.3[15]=="31.2,16")
+  expect_true(res1$Kit.3[16]=="15")
+  expect_true(res1$Kit.3[17]=="25")
+  expect_true(res1$Kit.3[18]=="6,10")
+  expect_true(res1$Kit.3[19]=="15,18")
+  expect_true(res1$Kit.3[20]=="14")
+  expect_true(res1$Kit.3[21]=="11,13")
+  expect_true(res1$Kit.3[22]=="19")
+  expect_true(res1$Kit.3[23]=="X,Y")
+  expect_true(res1$Kit.3[24]=="12")
+  expect_true(res1$Kit.3[25]=="30")
+  expect_true(res1$Kit.3[26]=="31.2,16")
+  expect_true(res1$Kit.3[27]=="15")
+  expect_true(res1$Kit.3[28]=="NA")
+  expect_true(res1$Kit.3[29]=="6,10")
+  expect_true(res1$Kit.4[1]=="15,")
+  expect_true(res1$Kit.4[2]=="")
+  expect_true(res1$Kit.4[3]=="19")
+  expect_true(res1$Kit.4[4]=="31.2,16")
+  expect_true(res1$Kit.4[5]=="")
+  expect_true(res1$Kit.4[6]=="")
+  expect_true(res1$Kit.4[7]=="")
+  expect_true(res1$Kit.4[8]=="15,18")
+  expect_true(res1$Kit.4[9]=="14")
+  expect_true(res1$Kit.4[10]=="11,13")
+  expect_true(res1$Kit.4[11]=="19")
+  expect_true(res1$Kit.4[12]=="X,Y")
+  expect_true(res1$Kit.4[13]=="12")
+  expect_true(res1$Kit.4[14]=="30")
+  expect_true(res1$Kit.4[15]=="31.2,16")
+  expect_true(res1$Kit.4[16]=="16")
+  expect_true(res1$Kit.4[17]=="25")
+  expect_true(res1$Kit.4[18]=="6,10")
+  expect_true(all(res1$Kit.4[19:29]=="NO SAMPLE"))
+  
+  expect_true(res2$Kits[1]=="Kit.1 vs. Kit.2")
+  expect_true(res2$Kits[2]=="Kit.1 vs. Kit.3")
+  expect_true(res2$Kits[3]=="Kit.1 vs. Kit.4")
+  expect_true(res2$Kits[4]=="Kit.2 vs. Kit.3")
+  expect_true(res2$Kits[5]=="Kit.2 vs. Kit.4")
+  expect_true(res2$Kits[6]=="Kit.3 vs. Kit.4")
+  expect_true(res2$Samples[1]==2)
+  expect_true(res2$Samples[2]==2)
+  expect_true(res2$Samples[3]==2)
+  expect_true(res2$Samples[4]==2)
+  expect_true(res2$Samples[5]==2)
+  expect_true(res2$Samples[6]==3)
+  expect_true(res2$Loci[1]==8)
+  expect_true(res2$Loci[2]==10)
+  expect_true(res2$Loci[3]==10)
+  expect_true(res2$Loci[4]==9)
+  expect_true(res2$Loci[5]==9)
+  expect_true(res2$Loci[6]==11)
+  expect_true(res2$Alleles[1]==32)
+  expect_true(res2$Alleles[2]==40)
+  expect_true(res2$Alleles[3]==40)
+  expect_true(res2$Alleles[4]==36)
+  expect_true(res2$Alleles[5]==36)
+  expect_true(res2$Alleles[6]==66)
+  expect_true(res2$Discordances[1]==2)
+  expect_true(res2$Discordances[2]==3)
+  expect_true(res2$Discordances[3]==6)
+  expect_true(res2$Discordances[4]==2)
+  expect_true(res2$Discordances[5]==0)
+  expect_true(res2$Discordances[6]==7)
+  expect_true(res2$Concordance[1]==100*(32-2)/32)
+  expect_true(res2$Concordance[2]==100*(40-3)/40)
+  expect_true(res2$Concordance[3]==100*(40-6)/40)
+  expect_true(res2$Concordance[4]==100*(36-2)/36)
+  expect_true(res2$Concordance[5]==100*(36-0)/36)
+  expect_true(res2$Concordance[6]==100*(66-7)/66)
+  
   
 })

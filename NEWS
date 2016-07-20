@@ -1,3 +1,11 @@
+Version 1.7.0.9001
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateConcordance / calculateConcordance_gui
+  Added option 'list.all' to return missing samples in the result.
+  - test-calculateConcordance
+  Added test 04 to test option 'list.all'.
+
 Version 1.7.0.9000
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:
