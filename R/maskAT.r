@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.08.2016: Removed Allele rows with NA from reference dataset.
 # 20.05.2016: File name changed from blockAT.r to maskAT.r.
 # 20.05.2016: 'Block*' changed to 'mask*' throughout.
 # 28.08.2015: Added importFrom
@@ -219,6 +220,18 @@ maskAT <- function(data, ref=NULL, mask.height=TRUE, height=500,
 
   # Only if ref is provided.
   if(!is.null(ref)){
+    
+    # Check for NA alleles (Y markers in female references).
+    if(any(is.na(ref$Allele))){
+      
+      # Remove NA rows.
+      tmp1 <- nrow(ref)
+      ref <- ref[!is.na(ref$Allele), ]
+      tmp2 <- nrow(ref)
+      message("Removed ", tmp1 - tmp2,
+              " rows with NA in 'Allele' column in reference dataset.")
+      
+    }
     
     # Get the reference sample names.
     refNames <- unique(ref$Sample.Name)
