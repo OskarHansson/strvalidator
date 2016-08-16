@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2016: Fixed check for data.table.
+# 12.08.2016: Handles empty dataset by returning unchanged.
+# 09.07.2016: Added check for data.table and conversion to data.frame.
 # 09.01.2016: Added more attributes to result.
 # 30.11.2015: Added attributes to result.
 # 30.11.2015: Added parameter 'what' to specify columns to add.
@@ -59,6 +62,21 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
     print(paste("IN:", match.call()[[1]]))
   }
   
+  if("data.table" %in% class(data)){
+    data <- data.frame(data)
+    message("Converted data.table to data.frame (data).")
+  }
+  
+  if("data.table" %in% class(new.data)){
+    new.data <- data.frame(new.data)
+    message("Converted data.table to data.frame (new.data).")
+  }
+  
+  if(nrow(data)==0){
+    message("Dataset is empty. Nothing was added.")
+    return(data)
+  }
+  
   # Prepare -------------------------------------------------------------------
   
   # Remove unused colums.
@@ -74,7 +92,7 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
     colNamesNew <- colNamesNew[colNamesNew!=then.by.col]
   }
   colNamesNew <- colNamesNew[!colNamesNew %in% colNames]
-  
+
   # Add new columns to data.
   for(c in seq(along=colNamesNew)){
     data[colNamesNew[c]] <- NA

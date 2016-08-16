@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Implement remove qualilty sensors.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
 # 25.04.2016: 'Save as' textbox expandable.
 # 30.12.2015: Added option for 'exact' matching.
 # 30.12.2015: Fixed option 'word' matching not saved.
@@ -451,40 +452,13 @@ calculateBalance_gui <- function(env=parent.frame(), savegui=NULL,
         # Calculate and add average peak height.
         if(val_h){
           
-          # Heterozygote status is required to calculate 'H'.        
-          if(!"Heterozygous" %in% names(val_data)){
-            
-            if(!"Heterozygous" %in% names(val_ref)){
-              
-              # Calculate heterozygote indicator for reference set.
-              val_ref <- calculateHeterozygous(data=val_ref, debug=debug)
-              
-              message("Heterozygote indicator calculated for reference set.")
-              
-            }
-            
-            # Filter known profile.
-            val_data <- filterProfile(data=val_data, ref=val_ref,
-                                      add.missing.loci=TRUE, keep.na=TRUE,
-                                      ignore.case=val_ignore,
-                                      invert=FALSE, debug=debug)
-            
-            message("Filter known profile from dataset.")
-            
-            # Add heterozygote indicator to dataset.
-            val_data <- addData(data=val_data, new.data=val_ref,
-                                by.col="Sample.Name", then.by.col="Marker",
-                                exact=FALSE, ignore.case=val_ignore,
-                                debug=debug)
-            
-            message("Heterozygote indicator added to dataset.")
-            
-          }
-          
           # Calculate average peak height.
-          dfH <- calculateHeight(data=val_data, na=0, add=FALSE,
-                                 exclude="OL", debug=debug)
-          
+          dfH <- calculateHeight(data = val_data, ref = val_ref, na.replace = 0,
+                                 add = FALSE, exclude = "OL", sex.rm = val_drop,
+                                 qs.rm = TRUE, kit = val_kit,
+                                 ignore.case = val_ignore, exact = FALSE,
+                                 debug=debug)
+
           message("Average peak height calculated.")
           
           # Add average peak height to dataset.

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2016: Implemented new calculateHeight, selection of reference, and check subsetting.
 # 08.07.2016: Fixed options 'sex.rm' and 'qs.rm' not saved.
 # 29.06.2016: Implement 'checkDataset'.
 # 29.06.2016: Added option to remove sex markers and quality sensor.
@@ -57,6 +58,8 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
+  .gRef <- NULL
+  .gRefName <- NULL
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -158,7 +161,90 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       svalue(f2_save_edt) <- ""
       
     }
-  } )  
+  } )
+  
+  f0g0[2,1] <- glabel(text="Select reference:", container=f0g0)
+  
+  f0g0[2,2] <- refset_drp <- gdroplist(items=c("<Select dataset>",
+                                               listObjects(env=env,
+                                                           obj.class="data.frame")),
+                                       selected = 1, editable = FALSE,
+                                       container = f0g0) 
+  
+  f0g0[2,3] <- f0g0_ref_lbl <- glabel(text=" 0 references", container=f0g0)
+  
+  addHandlerChanged(refset_drp, handler = function (h, ...) {
+    
+    val_obj <- svalue(refset_drp)
+    
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Marker", "Allele")
+    ok <- checkDataset(name=val_obj, reqcol=requiredCol,
+                       slim=TRUE, slimcol="Allele",
+                       env=env, parent=w, debug=debug)
+    
+    if(ok){
+      
+      # Load or change components.
+      .gRef <<- get(val_obj, envir=env)
+      .gRefName <<- val_obj
+      ref <- length(unique(.gRef$Sample.Name))
+      svalue(f0g0_ref_lbl) <- paste("", ref, "references")
+      
+    } else {
+      
+      # Reset components.
+      .gRef <<- NULL
+      svalue(refset_drp, index=TRUE) <- 1
+      svalue(f0g0_ref_lbl) <- " 0 references"
+      
+    }
+    
+  } )
+  
+  # CHECK ---------------------------------------------------------------------
+  
+  f0g0[3,2] <- check_btn <- gbutton(text="Check subsetting",
+                                    border=TRUE, container=f0g0)
+  
+  addHandlerChanged(check_btn, handler = function(h, ...) {
+    
+    # Get values.
+    val_data <- .gData
+    val_ref <- .gRef
+    val_ignore <- svalue(f1_ignore_chk)
+    val_exact <- svalue(f1_exact_chk)
+    val_word <- FALSE
+    
+    if (!is.null(.gData) || !is.null(.gRef)){
+      
+      chksubset_w <- gwindow(title = "Check subsetting",
+                             visible = FALSE, name=title,
+                             width = NULL, height= NULL, parent=w,
+                             handler = NULL, action = NULL)
+      
+      chksubset_txt <- checkSubset(data=val_data,
+                                   ref=val_ref,
+                                   console=FALSE,
+                                   ignore.case=val_ignore,
+                                   exact=val_exact,
+                                   word=val_word)
+      
+      gtext (text = chksubset_txt, width = NULL, height = 300, font.attr = NULL, 
+             wrap = FALSE, container = chksubset_w)
+      
+      visible(chksubset_w) <- TRUE
+      
+    } else {
+      
+      gmessage(message="Data frame is NULL!\n\n
+               Make sure to select a dataset and a reference set",
+               title="Error",
+               icon = "error")      
+      
+    } 
+    
+  } )
 
   # Kit -----------------------------------------------------------------------
   
@@ -174,17 +260,13 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
                spacing = 10,
                container = gv) 
   
+  glabel(text="Pre-processing:", anchor=c(-1 ,0), container=f1)
+
   f1_sex_chk <- gcheckbox(text="Remove sex markers",
                           checked = FALSE, container = f1)
   
   f1_qs_chk <- gcheckbox(text="Remove quality sensors",
                          checked = TRUE, container = f1)
-  
-  f1_replace_chk <- gcheckbox(text="Replace NA with 0",
-                              checked=TRUE, container=f1)
-  
-  f1_add_chk <- gcheckbox(text="Add result to dataset",
-                          checked=TRUE, container=f1)
   
   f1_exclude_chk <- gcheckbox(text="Exclude values in 'Allele' column",
                               checked=TRUE, container=f1)
@@ -193,7 +275,23 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
                            anchor=c(-1 ,0), container=f1)
   
   f1_exclude_edt <- gedit(text="OL", container=f1)
+  
+  glabel(text="Reference sample name matching:", anchor=c(-1 ,0), container=f1)
+  
+  f1_ignore_chk <- gcheckbox(text="Ignore case in sample name matching",
+                             checked = TRUE, container = f1)
 
+  f1_exact_chk <- gcheckbox(text="Exact sample name matching",
+                            checked = FALSE, container = f1)
+  
+  glabel(text="Post-processing:", anchor=c(-1 ,0), container=f1)
+  
+  f1_replace_chk <- gcheckbox(text="Replace NA in the result with 0",
+                              checked=TRUE, container=f1)
+  
+  f1_add_chk <- gcheckbox(text="Add result to dataset",
+                          checked=TRUE, container=f1)
+  
   addHandlerChanged(f1_exclude_chk, handler = function(h, ...) {
     
     if(svalue(f1_exclude_chk)){
@@ -232,16 +330,20 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
     
     val_data <- .gData
     val_data_name <- .gDataName
+    val_ref <- .gRef
+    val_ref_name <- .gRefName
     val_name <- svalue(f2_save_edt)
     val_add <- svalue(f1_add_chk)
+    val_sex <- svalue(f1_sex_chk)
+    val_qs <- svalue(f1_qs_chk)
+    val_kit <- svalue(kit_drp)
+    val_ignore <- svalue(f1_ignore_chk)
+    val_exact <- svalue(f1_exact_chk)
     val_replace <- svalue(f1_replace_chk)
     val_exclude <- svalue(f1_exclude_chk)
     val_ex_values <- svalue(f1_exclude_edt)
     val_na <- NULL
     val_ex <- NULL
-    val_sex <- svalue(f1_sex_chk)
-    val_qs <- svalue(f1_qs_chk)
-    val_kit <- svalue(kit_drp)
     
     if(val_replace){
       val_na <- 0
@@ -261,9 +363,11 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
       
-      datanew <- calculateHeight(data=val_data, na=val_na, add=val_add,
-                                 sex.rm=val_sex, qs.rm=val_qs, kit=val_kit,
-                                 exclude=val_ex, debug=debug)
+      datanew <- calculateHeight(data=val_data, ref=val_ref, na.replace=val_na,
+                                 add=val_add, sex.rm=val_sex, qs.rm=val_qs,
+                                 kit=val_kit, exclude=val_ex,
+                                 ignore.case=val_ignore, exact=val_exact,
+                                 debug=debug)
 
       # Add attributes.
       attr(datanew, which="kit") <- val_kit
@@ -273,7 +377,9 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       attr(datanew, which="calculateHeight_gui, exclude") <- val_ex
       attr(datanew, which="calculateHeight_gui, sex.rm") <- val_sex
       attr(datanew, which="calculateHeight_gui, qs.rm") <- val_qs
-
+      attr(datanew, which="calculateHeight_gui, ignore.case") <- val_ignore
+      attr(datanew, which="calculateHeight_gui, exact") <- val_exact
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       
@@ -327,6 +433,12 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       if(exists(".strvalidator_calculateHeight_gui_qs", envir=env, inherits = FALSE)){
         svalue(f1_qs_chk) <- get(".strvalidator_calculateHeight_gui_qs", envir=env)
       }
+      if(exists(".strvalidator_calculateHeight_gui_ignore", envir=env, inherits = FALSE)){
+        svalue(f1_ignore_chk) <- get(".strvalidator_calculateHeight_gui_ignore", envir=env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_exact", envir=env, inherits = FALSE)){
+        svalue(f1_exact_chk) <- get(".strvalidator_calculateHeight_gui_exact", envir=env)
+      }
       if(exists(".strvalidator_calculateHeight_gui_replace", envir=env, inherits = FALSE)){
         svalue(f1_replace_chk) <- get(".strvalidator_calculateHeight_gui_replace", envir=env)
       }
@@ -354,6 +466,8 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       assign(x=".strvalidator_calculateHeight_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_calculateHeight_gui_sex", value=svalue(f1_sex_chk), envir=env)
       assign(x=".strvalidator_calculateHeight_gui_qs", value=svalue(f1_qs_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
+      assign(x=".strvalidator_calculateHeight_gui_exact", value=svalue(f1_exact_chk), envir=env)
       assign(x=".strvalidator_calculateHeight_gui_replace", value=svalue(f1_replace_chk), envir=env)
       assign(x=".strvalidator_calculateHeight_gui_add", value=svalue(f1_add_chk), envir=env)
       assign(x=".strvalidator_calculateHeight_gui_exclude", value=svalue(f1_exclude_chk), envir=env)
@@ -369,6 +483,12 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       }
       if(exists(".strvalidator_calculateHeight_gui_qs", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateHeight_gui_qs", envir = env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_ignore", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_ignore", envir = env)
+      }
+      if(exists(".strvalidator_calculateHeight_gui_exact", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculateHeight_gui_exact", envir = env)
       }
       if(exists(".strvalidator_calculateHeight_gui_replace", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculateHeight_gui_replace", envir = env)

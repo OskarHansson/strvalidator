@@ -1,3 +1,25 @@
+Version 1.7.0.9004
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateHeight_gui
+  Completely rewritten using data.table for better performance.
+  Calculates total peak height (TPH) and number of peaks (Peaks) by default.
+  Given a reference dataset, average peak height (H) and profile proportion (Proportion) are calculated.
+  - addData
+  Now handles empty dataset by returning unchanged.
+  Fixed detection and conversion of data.table.
+  - calculateDropout_gui
+  Implemented the new calculateHeight.
+  - calculateLb_gui
+  Implemented the new calculateHeight.
+  - calculateBalance_gui
+  Implemented the new calculateHeight.
+  - calculateAT6
+  Implemented the new calculateHeight.
+* Replaced functions:
+  -calculateHeterozygous/_gui -> calculateCopies/_gui (faster and more functions)
+
+
 Version 1.7.0.9003
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

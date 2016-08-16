@@ -25,8 +25,9 @@
 #' @export
 #' 
 #' @importFrom utils help
-#' @importFrom MASS fitdistr
 #' @importFrom data.table data.table
+#' @importFrom stats dpois
+#' @importFrom MASS fitdistr
 #' @importFrom ggplot2 ggplot aes_string theme_gray theme_bw
 #'  theme_linedraw theme_light theme_dark theme_minimal theme_classic
 #'  theme_void scale_y_log10 scale_colour_manual coord_cartesian geom_point
@@ -273,10 +274,10 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
       DT <- data.table(val_data)
       
       # Get number of peaks per sample (one row per sample).
-      DTsample <- DT[, .(Peaks=unique(Peaks)), by=.(Id)]
+      DTsample <- DT[, list(Peaks=unique(Peaks)), by=list(Id)]
       
       # Get count of samples with N peaks and sort by # peaks.
-      DTtable <- DTsample[, .(Samples=.N), keyby=.(Peaks)]
+      DTtable <- DTsample[, list(Samples=.N), keyby=list(Peaks)]
       
       # Calculate total number of sampels.
       totalSamples <- sum(DTtable$Samples)
@@ -294,13 +295,17 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
       # Fit a poisson distribution (estimate lambda parameter)
       maxpeaks <- max(DTsample$Peaks)
       parms <- fitdistr(DTsample$Peaks, "poisson")
+#      parms <- MASS::fitdistr(DTsample$Peaks, "poisson")
       lambda <- parms$estimate
       sd_x <- as.numeric(parms$sd)
       model <- paste("Pois(", signif(lambda, 3), "), sd=", signif(sd_x, 3), sep="")
       message("Best fit: ", model)
       
       # Create data frame with expected observations.
-      expected <- data.frame(Peaks=seq(0,maxpeaks), Proportion=dpois(seq(0,maxpeaks), lambda = lambda), Method="Poisson")
+      expected <- data.frame(Peaks=seq(0,maxpeaks),
+                             Proportion=stats::dpois(seq(0,maxpeaks),
+                                                     lambda = lambda),
+                             Method="Poisson")
       
       # Print some output.
       print("Expected:")

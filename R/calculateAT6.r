@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
 # 30.11.2015: Added 'NB!' in the description.
 # 30.11.2015: Remove rows with NA. Added 'what' parameter to 'addData'.
 # 24.11.2015: Added message to print data to be used in regression.
@@ -173,25 +174,13 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
   
   # Prepare -------------------------------------------------------------------
 
-  # Filter profiles.
-  data <- filterProfile(data=data, ref=ref)
-
-  # Add heterozygous indicator to ref.
-  if(!"Heterozygous" %in% names(ref)){
-    ref <- calculateHeterozygous(data=ref, debug=debug)
-    message("Heterozygous indicator added to 'ref'.")
-  }
-  
-  # Add heterozygous indicator to data.
-  if(!"Heterozygous" %in% names(data)){
-    data <- addData(data=data, new.data=ref, by.col="Sample.Name",
-                    then.by.col="Marker", exact=FALSE, ignore.case=ignore.case,
-                    what="Heterozygous", debug=debug)
-    message("Heterozygous indicator added to 'data'.")
-  }
-
   # Calculate the average peak height.
-  dfHeight <- calculateHeight(data=data, na=0, add=FALSE, exclude=NULL, debug=debug)
+  dfHeight <- calculateHeight(data = data, ref = ref, na.replace = 0,
+                              add = FALSE, exclude = NULL, sex.rm = TRUE,
+                              qs.rm = TRUE, kit = NULL,
+                              ignore.case = ignore.case,
+                              exact = FALSE, debug=debug)
+  
   
   # Add amount to data.
   if(is.null(amount)){

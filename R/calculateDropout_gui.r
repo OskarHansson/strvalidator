@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
 # 29.06.2016: Added option to remove sex markers and quality sensor.
 # 16.06.2016: 'Save as' textbox expandable.
 # 05.10.2015: Added more attributes to result.
@@ -307,6 +308,8 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
   addHandlerChanged(dropout_btn, handler = function(h, ...) {
     
+    val_data <- .gData
+    val_ref <- .gRef
     val_ignore_case <- svalue(f1_ignore_case_chk)
     val_h <- svalue(f1_h_chk)
     val_threshold <- as.numeric(svalue(f1g1_ldt_edt))
@@ -361,14 +364,14 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_qs)
     }
     
-    if(!is.null(.gData) & !is.null(.gRef)){
+    if(!is.null(val_data) & !is.null(val_ref)){
       
       # Change button.
       svalue(dropout_btn) <- "Processing..."
       enabled(dropout_btn) <- FALSE
   
-      datanew <- calculateDropout(data=.gData,
-                                  ref=.gRef,
+      datanew <- calculateDropout(data=val_data,
+                                  ref=val_ref,
                                   threshold=val_threshold,
                                   method=val_method,
                                   ignore.case=val_ignore_case,
@@ -393,39 +396,12 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
         
         message("User selected to add average peak height...")
 
-        # Heterozygote status is required to calculate 'H'.        
-        if(!"Heterozygous" %in% names(.gData)){
-          
-          if(!"Heterozygous" %in% names(.gRef)){
-            
-            # Calculate heterozygote indicator for reference set.
-            .gRef <- calculateHeterozygous(data=.gRef, debug=debug)
-            
-            message("Heterozygote indicator calculated for reference set.")
-          
-          }
-          
-          # Filter known profile.
-          .gData <- filterProfile(data=.gData, ref=.gRef, add.missing.loci=TRUE,
-                                  keep.na=TRUE, ignore.case=val_ignore_case,
-                                  invert=FALSE, debug=debug)
-
-          message("Filter known profile from dataset.")
-          
-          # Add heterozygote indicator to dataset.
-          .gData <- addData(data=.gData, new.data=.gRef,
-                            by.col="Sample.Name", then.by.col="Marker",
-                            exact=FALSE, ignore.case=val_ignore_case,
-                            debug=debug)
-
-          message("Heterozygote indicator added to dataset.")
-          
-        }
-
         # Calculate average peak height.
-        dfH <- calculateHeight(data=.gData, na=0, add=FALSE,
-                               sex.rm=val_sex, qs.rm=val_qs, kit=val_kit,
-                               exclude="OL", debug=debug)
+        dfH <- calculateHeight(data = val_data, ref = val_ref, na.replace = 0,
+                               add = FALSE, exclude = "OL", sex.rm = val_sex,
+                               qs.rm = val_qs, kit = val_kit,
+                               ignore.case = val_ignore_case, exact = FALSE,
+                               debug=debug)
         
         message("Average peak height calculated.")
 

@@ -37,7 +37,7 @@
 #' maximum marker, marker offset (bp), flag for sex markers (TRUE/FALSE).
 #' 
 #' If no matching kit or kit index is found NA is returned.
-#' If 'NULL' or '0' a vector of available kits is printed and NA returned.
+#' If kit='NULL' or '0' a vector of available kits is printed and NA returned.
 #' 
 #' @param kit string or integer to specify the kit.
 #' @param what string to specify which information to return. Default is 'NA' which return all info.

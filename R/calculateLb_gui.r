@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
 # 28.06.2016: Added option to remove quality sensor.
 # 02.12.2016: Fixed options save bug.
 # 30.12.2015: First version.
@@ -367,6 +368,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
     val_na <- as.numeric(svalue(f1_na_edt))
     val_h_enabled <- enabled(f1_h_chk)
     val_h <- svalue(f1_h_chk)
+    val_exclude <- NULL # Argument to calculateHeight.
 
     if(debug){
       print("Read Values:")
@@ -394,13 +396,15 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
       print(head(val_data))
       print("val_ref")
       print(head(val_ref))
+      print("val_exclude")
+      print(val_exclude)
     }
     
     # Check if data.
-    if(!is.null(.gData)){
+    if(!is.null(val_data)){
 
       # Check for NA's in dye column.
-      if(!any(is.na(.gData$Dye))){
+      if(!any(is.na(val_data$Dye))){
         
         if(val_option == 1){
           val_option <- "prop"
@@ -418,6 +422,12 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
         
         if(!val_h_enabled){
             val_h <- FALSE
+        }
+
+        
+        # Check if off-ladder peaks should be removed.
+        if(val_ol){
+          val_exclude <- "OL"
         }
         
         if(debug){
@@ -468,40 +478,13 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
         # Calculate and add average peak height.
         if(val_h){
           
-          # Heterozygote status is required to calculate 'H'.        
-          if(!"Heterozygous" %in% names(val_data)){
-            
-            if(!"Heterozygous" %in% names(val_ref)){
-              
-              # Calculate heterozygote indicator for reference set.
-              val_ref <- calculateHeterozygous(data=val_ref, debug=debug)
-              
-              message("Heterozygote indicator calculated for reference set.")
-              
-            }
-            
-            # Filter known profile.
-            val_data <- filterProfile(data = val_data, ref = val_ref,
-                                      add.missing.loci = TRUE, keep.na = TRUE,
-                                      ignore.case = val_ignore,
-                                      exact = val_exact,
-                                      invert = FALSE, debug = debug)
-            
-            message("Filter known profile from dataset.")
-            
-            # Add heterozygote indicator to dataset.
-            val_data <- addData(data = val_data, new.data = val_ref,
-                                by.col = "Sample.Name", then.by.col = "Marker",
-                                exact = FALSE, ignore.case = val_ignore,
-                                debug = debug)
-            
-            message("Heterozygote indicator added to dataset.")
-            
-          }
-          
           # Calculate average peak height.
-          dfH <- calculateHeight(data = val_data, na = 0, add = FALSE,
-                                 exclude = "OL", debug = debug)
+          dfH <- calculateHeight(data = val_data, ref = val_ref,
+                                 na.replace = 0, add = FALSE,
+                                 exclude = val_exclude, sex.rm = val_sex,
+                                 qs.rm = val_qs, kit = val_kit,
+                                 ignore.case = val_ignore, exact = FALSE,
+                                 debug=debug)
           
           message("Average peak height calculated.")
           

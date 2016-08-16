@@ -39,6 +39,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2016: Removed calculateHeterozygous, added calculateCopies in the 'Edit' tab.
+# 04.08.2016: Added button to plot contamination in the 'Result' tab.
 # 27.06.2016: Added button to create new project in the 'Workspace' tab.
 # 02.05.2016: Added button to the function 'removeArtefact' in the 'Result' tab.
 # 29.04.2016: Added button to the function 'calculateAllele' in the 'Result' tab.
@@ -57,8 +59,6 @@
 # 04.05.2015: Added 'AT' tab.
 # 01.01.2015: Fixed error in 'Workspace' tab when no selection and 'Delete' is pressed.
 # 19.12.2014: Added 'EPG' button in 'Tools' tab.
-# 12.12.2014: Re-named 'Edit' tab to 'Tools' and change name on some buttons.
-# 04.12.2014: Added 'Pull-up' tab.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -1416,18 +1416,18 @@ strvalidator <- function(debug=FALSE){
   
   # CALCULATE HETEROZYGOUS ----------------------------------------------------
   
-  edit_grid[14,1] <- edit_het_btn <- gbutton(text="Heterozygous",
+  edit_grid[14,1] <- edit_copies_btn <- gbutton(text="Copies",
                                              border=TRUE,
                                              container = edit_grid) 
   
-  edit_grid[14,2] <- glabel(text="Indicate heterozygous loci for a reference dataset.",
+  edit_grid[14,2] <- glabel(text="Calculate allele copies.",
                             container=edit_grid,
                             anchor=c(-1 ,0))
   
-  addHandlerChanged(edit_het_btn, handler = function(h, ...) {
+  addHandlerChanged(edit_copies_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateHeterozygous_gui(env=.strvalidator_env, debug=debug, parent=w)
+    calculateCopies_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -2204,6 +2204,22 @@ strvalidator <- function(debug=FALSE){
     
     # Open GUI.
     removeArtefact_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    
+  } )
+  
+  # PLOT CONTAMINATION --------------------------------------------------------
+  
+  result_g5[3,1] <- result_g5_cont_btn <- gbutton(text="Plot",
+                                                    border=TRUE,
+                                                    container = result_g5) 
+  
+  result_g5[3,2] <- glabel(text="Plot contamination.",
+                           container=result_g5)
+  
+  addHandlerChanged(result_g5_cont_btn, handler = function(h, ...) {
+    
+    # Open GUI.
+    plotContamination_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
