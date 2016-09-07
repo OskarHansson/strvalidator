@@ -2,10 +2,11 @@ context("filterProfile")
 
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Add tests 'word'.
 
 ################################################################################
 # CHANGE LOG
+# 28.08.2016: Updated to work with improved filterProfile.
 # 15.12.2015: Added test 10-12 to test new option 'exact'.
 # 09.04.2015: Added test 09 to test new option 'invert'.
 # 22.01.2014: Fixed test 2 in accordance with change in 'filterProfile'.
@@ -23,7 +24,22 @@ test_that("filterProfile", {
   data(ref1)
   data(set2)
   data(ref2)
+  data(set7)
+  data(ref7)
   
+  # Dataset with double notation (16/16 vs 16).
+  set1d <- slim(set1, fix=c("Sample.Name", "Marker"), stack=c("Allele", "Height"))
+  ref1d <- slim(ref1, fix=c("Sample.Name", "Marker"), stack=c("Allele"))
+  sampleName1 <- ref1d$Sample.Name
+  marker1 <- ref1d$Marker
+  allele1 <- ref1d$Allele
+  # Duplicate homozygous alleles.
+  allele1 <- c(allele1[1:19], allele1[19], allele1[20:33])
+  marker1 <- c(marker1[1:19],marker1[19],marker1[20:33])
+  sampleName1 <- c(sampleName1[1], sampleName1)
+  # Make new dataframe.
+  ref1d <- data.frame(Sample.Name=sampleName1, Marker=marker1, Allele=allele1, stringsAsFactors=FALSE)
+
   # Dataset with missing marker.
   set3 <- set2[set2$Marker!="TH01",]
   
@@ -39,18 +55,9 @@ test_that("filterProfile", {
                stack=c("Allele"),
                keep.na=TRUE)
   
-  # Dataset with double notation (16/16 vs 16).
-  set7 <- slim(set1, fix=c("Sample.Name", "Marker"), stack=c("Allele", "Height"))
-  ref7 <- slim(ref1, fix=c("Sample.Name", "Marker"), stack=c("Allele"))
-  sampleName7 <- ref7$Sample.Name
-  marker7 <- ref7$Marker
-  allele7 <- ref7$Allele
-  # Duplicate homozygous alleles.
-  allele7 <- c(allele7[1:19], allele7[19], allele7[20:33])
-  marker7 <- c(marker7[1:19],marker7[19],marker7[20:33])
-  sampleName7 <- c(sampleName7[1], sampleName7)
-  # Make new dataframe.
-  ref7 <- data.frame(Sample.Name=sampleName7, Marker=marker7, Allele=allele7, stringsAsFactors=FALSE)
+  # Extract a single samples.
+  set7 <- set7[set7$Sample.Name == "H01", ]
+  ref7 <- ref7[ref7$Sample.Name == "H", ]
   
   # Dataset without Sample.Name column.
   set8 <- slim(set1, fix=c("Sample.Name", "Marker"), stack=c("Allele", "Height"))
@@ -62,7 +69,7 @@ test_that("filterProfile", {
   set9 <- slim(set1, fix=c("Sample.Name", "Marker"), stack=c("Allele", "Height"))
   set9 <- trim(data = set9, samples = "PC1|ladder")
   set9[set9$Sample.Name == "Ladder", ]$Sample.Name <- "NOPC15"
-  ref9 <- guessProfile(data = set9, ol.rm = TRUE)
+  ref9 <- suppressWarnings(guessProfile(data = set9, ol.rm = TRUE))
   ref9$Height <- as.character(ref9$Height) # To enable comparison using 'all.equal'.
   
   # TEST 01 -------------------------------------------------------------------
@@ -105,6 +112,7 @@ test_that("filterProfile", {
                        add.missing.loci=TRUE,
                        keep.na=TRUE,
                        ignore.case=FALSE,
+                       kit="SGMPlus",
                        debug=FALSE)
   
   
@@ -124,7 +132,7 @@ test_that("filterProfile", {
   expect_true(any(is.na(res$Height)))
   
   # Check result.
-  expect_that(ncol(res), equals(5))
+  expect_that(ncol(res), equals(6))
   expect_that(nrow(res), equals(30))
 
   # TEST 03 -------------------------------------------------------------------
@@ -135,6 +143,7 @@ test_that("filterProfile", {
                        add.missing.loci=FALSE,
                        keep.na=TRUE,
                        ignore.case=FALSE,
+                       kit="SGMPlus",
                        debug=FALSE)
   
   
@@ -154,7 +163,7 @@ test_that("filterProfile", {
   expect_true(any(is.na(res$Height)))
   
   # Check result.
-  expect_that(ncol(res), equals(5))
+  expect_that(ncol(res), equals(6))
   expect_that(nrow(res), equals(32))
 
   # TEST 04 -------------------------------------------------------------------
@@ -165,6 +174,7 @@ test_that("filterProfile", {
                        add.missing.loci=FALSE,
                        keep.na=TRUE,
                        ignore.case=FALSE,
+                       kit="SGMPlus",
                        debug=FALSE)
   
   
@@ -184,7 +194,7 @@ test_that("filterProfile", {
   expect_true(any(is.na(res$Height)))
   
   # Check result.
-  expect_that(ncol(res), equals(5))
+  expect_that(ncol(res), equals(6))
   expect_that(nrow(res), equals(32))
   
   # TEST 05 -------------------------------------------------------------------
@@ -266,7 +276,7 @@ test_that("filterProfile", {
   # Test that filtering using double notation work (16/16 vs 16).
   
   # Analyse dataframe.
-  res <- filterProfile(data=set7, ref=ref7,
+  res <- filterProfile(data=set1d, ref=ref1d,
                        add.missing.loci=FALSE,
                        keep.na=FALSE,
                        ignore.case=FALSE,
@@ -553,5 +563,329 @@ test_that("filterProfile", {
   expect_true(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
                                    ref9[ref9$Sample.Name == "NOPC15", ],
                                    check.attributes = FALSE)))
+  
+  
+  # TEST 13 -------------------------------------------------------------------
+  # Test that filtering of only quality sensors work.
+  
+  # Analyse dataframe.
+  res <- filterProfile(data=set7, ref=ref7, kit="ESSplexSEQS",
+                       add.missing.loci=FALSE,
+                       keep.na=FALSE,
+                       qs.rm=TRUE,
+                       sex.rm=FALSE,
+                       ignore.case=FALSE,
+                       filter.allele=FALSE,
+                       debug=FALSE)
 
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("Marker" %in% names(res))
+  expect_true("Dye" %in% names(res))
+  expect_true("Allele" %in% names(res))
+  expect_true("Size" %in% names(res))
+  expect_true("Height" %in% names(res))
+  expect_true("Data.Point" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Dye)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Size)))
+  expect_false(any(is.na(res$Height)))
+  expect_false(any(is.na(res$Data.Point)))
+  
+  # Check result.
+  expect_that(ncol(res), equals(7))
+  expect_that(nrow(res), equals(42))
+
+  # Check markers.
+  expect_false("QS1" %in% res$Marker)
+  expect_true("AM" %in% res$Marker)
+  expect_true("TH01" %in% res$Marker)
+  expect_true("D3S1358" %in% res$Marker)
+  expect_true("vWA" %in% res$Marker)
+  expect_true("D21S11" %in% res$Marker)
+  expect_false("QS2" %in% res$Marker)
+  expect_true("D16S539" %in% res$Marker)
+  expect_true("D1S1656" %in% res$Marker)
+  expect_true("D19S433" %in% res$Marker)
+  expect_true("SE33" %in% res$Marker)
+  expect_true("D10S1248" %in% res$Marker)
+  expect_true("D22S1045" %in% res$Marker)
+  expect_true("D12S391" %in% res$Marker)
+  expect_true("D8S1179" %in% res$Marker)
+  expect_true("D2S1338" %in% res$Marker)
+  expect_true("D2S441" %in% res$Marker)
+  expect_true("D18S51" %in% res$Marker)
+  expect_true("FGA" %in% res$Marker)
+  
+  # Check success of filtering.
+  expect_false(all(c("Q") %in% res$Allele[res$Marker=="QS1"]))
+  expect_true(all(c("X","Y") %in% res$Allele[res$Marker=="AM"]))
+  expect_true(all(c("6","9.3") %in% res$Allele[res$Marker=="TH01"]))
+  expect_true(all(c("16","17","18") %in% res$Allele[res$Marker=="D3S1358"]))
+  expect_true(all(c("16","18","19") %in% res$Allele[res$Marker=="vWA"]))
+  expect_true(all(c("29","31.2") %in% res$Allele[res$Marker=="D21S11"]))
+  expect_false(all(c("S") %in% res$Allele[res$Marker=="QS2"]))
+  expect_true(all(c("9","10","13") %in% res$Allele[res$Marker=="D16S539"]))
+  expect_true(all(c("12","13","14") %in% res$Allele[res$Marker=="D1S1656"]))
+  expect_true(all(c("13","14") %in% res$Allele[res$Marker=="D19S433"]))
+  expect_true(all(c("15","16") %in% res$Allele[res$Marker=="SE33"]))
+  expect_true(all(c("13","15") %in% res$Allele[res$Marker=="D10S1248"]))
+  expect_true(all(c("13","OL","14","16") %in% res$Allele[res$Marker=="D22S1045"]))
+  expect_true(all(c("18","23") %in% res$Allele[res$Marker=="D12S391"]))
+  expect_true(all(c("14","15") %in% res$Allele[res$Marker=="D8S1179"]))
+  expect_true(all(c("22","25") %in% res$Allele[res$Marker=="D2S1338"]))
+  expect_true(all(c("OL","10","13.3","14") %in% res$Allele[res$Marker=="D2S441"]))
+  expect_true(all(c("16","18") %in% res$Allele[res$Marker=="D18S51"]))
+  expect_true(all(c("20","23") %in% res$Allele[res$Marker=="FGA"]))
+  
+  
+  # TEST 14 -------------------------------------------------------------------
+  # Test that filtering of only sex markers work.
+  
+  # Analyse dataframe.
+  res <- filterProfile(data=set7, ref=ref7, kit="ESSplexSEQS",
+                       add.missing.loci=FALSE,
+                       keep.na=FALSE,
+                       qs.rm=FALSE,
+                       sex.rm=TRUE,
+                       ignore.case=FALSE,
+                       filter.allele=FALSE,
+                       debug=FALSE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("Marker" %in% names(res))
+  expect_true("Dye" %in% names(res))
+  expect_true("Allele" %in% names(res))
+  expect_true("Size" %in% names(res))
+  expect_true("Height" %in% names(res))
+  expect_true("Data.Point" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Dye)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Size)))
+  expect_false(any(is.na(res$Height)))
+  expect_false(any(is.na(res$Data.Point)))
+
+  # Check markers.
+  expect_true("QS1" %in% res$Marker)
+  expect_false("AM" %in% res$Marker)
+  expect_true("TH01" %in% res$Marker)
+  expect_true("D3S1358" %in% res$Marker)
+  expect_true("vWA" %in% res$Marker)
+  expect_true("D21S11" %in% res$Marker)
+  expect_true("QS2" %in% res$Marker)
+  expect_true("D16S539" %in% res$Marker)
+  expect_true("D1S1656" %in% res$Marker)
+  expect_true("D19S433" %in% res$Marker)
+  expect_true("SE33" %in% res$Marker)
+  expect_true("D10S1248" %in% res$Marker)
+  expect_true("D22S1045" %in% res$Marker)
+  expect_true("D12S391" %in% res$Marker)
+  expect_true("D8S1179" %in% res$Marker)
+  expect_true("D2S1338" %in% res$Marker)
+  expect_true("D2S441" %in% res$Marker)
+  expect_true("D18S51" %in% res$Marker)
+  expect_true("FGA" %in% res$Marker)
+
+  # Check result.
+  expect_that(ncol(res), equals(7))
+  expect_that(nrow(res), equals(42))
+  
+  # Check success of filtering.
+  expect_true(all(c("Q") %in% res$Allele[res$Marker=="QS1"]))
+  expect_false(all(c("X","Y") %in% res$Allele[res$Marker=="AM"]))
+  expect_true(all(c("6","9.3") %in% res$Allele[res$Marker=="TH01"]))
+  expect_true(all(c("16","17","18") %in% res$Allele[res$Marker=="D3S1358"]))
+  expect_true(all(c("16","18","19") %in% res$Allele[res$Marker=="vWA"]))
+  expect_true(all(c("29","31.2") %in% res$Allele[res$Marker=="D21S11"]))
+  expect_true(all(c("S") %in% res$Allele[res$Marker=="QS2"]))
+  expect_true(all(c("9","10","13") %in% res$Allele[res$Marker=="D16S539"]))
+  expect_true(all(c("12","13","14") %in% res$Allele[res$Marker=="D1S1656"]))
+  expect_true(all(c("13","14") %in% res$Allele[res$Marker=="D19S433"]))
+  expect_true(all(c("15","16") %in% res$Allele[res$Marker=="SE33"]))
+  expect_true(all(c("13","15") %in% res$Allele[res$Marker=="D10S1248"]))
+  expect_true(all(c("13","OL","14","16") %in% res$Allele[res$Marker=="D22S1045"]))
+  expect_true(all(c("18","23") %in% res$Allele[res$Marker=="D12S391"]))
+  expect_true(all(c("14","15") %in% res$Allele[res$Marker=="D8S1179"]))
+  expect_true(all(c("22","25") %in% res$Allele[res$Marker=="D2S1338"]))
+  expect_true(all(c("OL","10","13.3","14") %in% res$Allele[res$Marker=="D2S441"]))
+  expect_true(all(c("16","18") %in% res$Allele[res$Marker=="D18S51"]))
+  expect_true(all(c("20","23") %in% res$Allele[res$Marker=="FGA"]))
+  
+  
+  # TEST 15 -------------------------------------------------------------------
+  # Test that filtering of sex markers and quality sensors work.
+  
+  # Analyse dataframe.
+  res <- filterProfile(data=set7, ref=ref7, kit="ESSplexSEQS",
+                       add.missing.loci=FALSE,
+                       keep.na=FALSE,
+                       qs.rm=TRUE,
+                       sex.rm=TRUE,
+                       ignore.case=FALSE,
+                       filter.allele=FALSE,
+                       debug=FALSE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("Marker" %in% names(res))
+  expect_true("Dye" %in% names(res))
+  expect_true("Allele" %in% names(res))
+  expect_true("Size" %in% names(res))
+  expect_true("Height" %in% names(res))
+  expect_true("Data.Point" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Dye)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Size)))
+  expect_false(any(is.na(res$Height)))
+  expect_false(any(is.na(res$Data.Point)))
+  
+  # Check markers.
+  expect_false("QS1" %in% res$Marker)
+  expect_false("AM" %in% res$Marker)
+  expect_true("TH01" %in% res$Marker)
+  expect_true("D3S1358" %in% res$Marker)
+  expect_true("vWA" %in% res$Marker)
+  expect_true("D21S11" %in% res$Marker)
+  expect_false("QS2" %in% res$Marker)
+  expect_true("D16S539" %in% res$Marker)
+  expect_true("D1S1656" %in% res$Marker)
+  expect_true("D19S433" %in% res$Marker)
+  expect_true("SE33" %in% res$Marker)
+  expect_true("D10S1248" %in% res$Marker)
+  expect_true("D22S1045" %in% res$Marker)
+  expect_true("D12S391" %in% res$Marker)
+  expect_true("D8S1179" %in% res$Marker)
+  expect_true("D2S1338" %in% res$Marker)
+  expect_true("D2S441" %in% res$Marker)
+  expect_true("D18S51" %in% res$Marker)
+  expect_true("FGA" %in% res$Marker)
+  
+  # Check result.
+  expect_that(ncol(res), equals(7))
+  expect_that(nrow(res), equals(40))
+  
+  # Check success of filtering.
+  expect_false(all(c("Q") %in% res$Allele[res$Marker=="QS1"]))
+  expect_false(all(c("X","Y") %in% res$Allele[res$Marker=="AM"]))
+  expect_true(all(c("6","9.3") %in% res$Allele[res$Marker=="TH01"]))
+  expect_true(all(c("16","17","18") %in% res$Allele[res$Marker=="D3S1358"]))
+  expect_true(all(c("16","18","19") %in% res$Allele[res$Marker=="vWA"]))
+  expect_true(all(c("29","31.2") %in% res$Allele[res$Marker=="D21S11"]))
+  expect_false(all(c("S") %in% res$Allele[res$Marker=="QS2"]))
+  expect_true(all(c("9","10","13") %in% res$Allele[res$Marker=="D16S539"]))
+  expect_true(all(c("12","13","14") %in% res$Allele[res$Marker=="D1S1656"]))
+  expect_true(all(c("13","14") %in% res$Allele[res$Marker=="D19S433"]))
+  expect_true(all(c("15","16") %in% res$Allele[res$Marker=="SE33"]))
+  expect_true(all(c("13","15") %in% res$Allele[res$Marker=="D10S1248"]))
+  expect_true(all(c("13","OL","14","16") %in% res$Allele[res$Marker=="D22S1045"]))
+  expect_true(all(c("18","23") %in% res$Allele[res$Marker=="D12S391"]))
+  expect_true(all(c("14","15") %in% res$Allele[res$Marker=="D8S1179"]))
+  expect_true(all(c("22","25") %in% res$Allele[res$Marker=="D2S1338"]))
+  expect_true(all(c("OL","10","13.3","14") %in% res$Allele[res$Marker=="D2S441"]))
+  expect_true(all(c("16","18") %in% res$Allele[res$Marker=="D18S51"]))
+  expect_true(all(c("20","23") %in% res$Allele[res$Marker=="FGA"]))
+
+    
+  # TEST 16 -------------------------------------------------------------------
+  # Test that filtering of sex markers, quality sensors, and known alleles work.
+  
+  res <- filterProfile(data=set7, ref=ref7, kit="ESSplexSEQS",
+                       add.missing.loci=FALSE,
+                       keep.na=FALSE,
+                       qs.rm=TRUE,
+                       sex.rm=TRUE,
+                       ignore.case=FALSE,
+                       filter.allele=TRUE,
+                       debug=FALSE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("Marker" %in% names(res))
+  expect_true("Dye" %in% names(res))
+  expect_true("Allele" %in% names(res))
+  expect_true("Size" %in% names(res))
+  expect_true("Height" %in% names(res))
+  expect_true("Data.Point" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Marker)))
+  expect_false(any(is.na(res$Dye)))
+  expect_false(any(is.na(res$Allele)))
+  expect_false(any(is.na(res$Size)))
+  expect_false(any(is.na(res$Height)))
+  expect_false(any(is.na(res$Data.Point)))
+  
+  # Check markers.
+  expect_false("QS1" %in% res$Marker)
+  expect_false("AM" %in% res$Marker)
+  expect_true("TH01" %in% res$Marker)
+  expect_true("D3S1358" %in% res$Marker)
+  expect_true("vWA" %in% res$Marker)
+  expect_true("D21S11" %in% res$Marker)
+  expect_false("QS2" %in% res$Marker)
+  expect_true("D16S539" %in% res$Marker)
+  expect_true("D1S1656" %in% res$Marker)
+  expect_true("D19S433" %in% res$Marker)
+  expect_true("SE33" %in% res$Marker)
+  expect_true("D10S1248" %in% res$Marker)
+  expect_true("D22S1045" %in% res$Marker)
+  expect_true("D12S391" %in% res$Marker)
+  expect_true("D8S1179" %in% res$Marker)
+  expect_true("D2S1338" %in% res$Marker)
+  expect_true("D2S441" %in% res$Marker)
+  expect_true("D18S51" %in% res$Marker)
+  expect_true("FGA" %in% res$Marker)
+  
+  # Check result.
+  expect_that(ncol(res), equals(7))
+  expect_that(nrow(res), equals(31))
+  
+  # Check success of filtering.
+  expect_false(all(c("Q") %in% res$Allele[res$Marker=="QS1"]))
+  expect_false(all(c("X","Y") %in% res$Allele[res$Marker=="AM"]))
+  expect_true(all(c("6","9.3") %in% res$Allele[res$Marker=="TH01"]))
+  expect_true(all(c("17","18") %in% res$Allele[res$Marker=="D3S1358"]))
+  expect_true(all(c("16","19") %in% res$Allele[res$Marker=="vWA"]))
+  expect_true(all(c("29","31.2") %in% res$Allele[res$Marker=="D21S11"]))
+  expect_false(all(c("S") %in% res$Allele[res$Marker=="QS2"]))
+  expect_true(all(c("9","13") %in% res$Allele[res$Marker=="D16S539"]))
+  expect_true(all(c("12","13") %in% res$Allele[res$Marker=="D1S1656"]))
+  expect_true(all(c("13","14") %in% res$Allele[res$Marker=="D19S433"]))
+  expect_true(all(c("15","16") %in% res$Allele[res$Marker=="SE33"]))
+  expect_true(all(c("13","15") %in% res$Allele[res$Marker=="D10S1248"]))
+  expect_true(all(c("16") %in% res$Allele[res$Marker=="D22S1045"]))
+  expect_true(all(c("18","23") %in% res$Allele[res$Marker=="D12S391"]))
+  expect_true(all(c("14","15") %in% res$Allele[res$Marker=="D8S1179"]))
+  expect_true(all(c("22","25") %in% res$Allele[res$Marker=="D2S1338"]))
+  expect_true(all(c("10","14") %in% res$Allele[res$Marker=="D2S441"]))
+  expect_true(all(c("16","18") %in% res$Allele[res$Marker=="D18S51"]))
+  expect_true(all(c("20","23") %in% res$Allele[res$Marker=="FGA"]))
+  
+  
 })

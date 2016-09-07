@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.09.2016: Re-named to tableHb.
+# 07.09.2016: Updated to use output from new function calculateHb.
 # 06.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -13,13 +15,13 @@
 # 15.02.2014: First version.
 
 
-#' @title Table Balance
+#' @title Table Hb
 #'
 #' @description
-#' GUI wrapper for the \code{\link{tableBalance}} function.
+#' GUI wrapper for the \code{\link{tableHb}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{\link{tableBalance}} function by providing a graphical 
+#' Simplifies the use of the \code{\link{tableHb}} function by providing a graphical 
 #' user interface to it.
 #' 
 #' @param env environment in wich to search for data frames.
@@ -33,9 +35,9 @@
 #' 
 #' @importFrom utils help
 #' 
-#' @seealso \code{\link{tableBalance}}
+#' @seealso \code{\link{tableHb}}
 
-tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
+tableHb_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
   
   # Global variables.
   .gData <- NULL
@@ -80,7 +82,7 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   addHandlerChanged(help_btn, handler = function(h, ...) {
     
     # Open help page for function.
-    print(help("tableBalance_gui", help_type="html"))
+    print(help("tableHb_gui", help_type="html"))
     
   })
   
@@ -206,14 +208,14 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       svalue(run_btn) <- "Processing..."
       enabled(run_btn) <- FALSE
       
-      datanew <- tableBalance(data=val_data,
+      datanew <- tableHb(data=val_data,
                    quant=val_ratio,
                    scope=val_scope)
       
       # Add attributes.
-      attr(datanew, which="tableBalance_gui, data") <- val_data_name
-      attr(datanew, which="tableBalance_gui, ratio") <- val_ratio
-      attr(datanew, which="tableBalance_gui, scope") <- val_scope
+      attr(datanew, which="tableHb_gui, data") <- val_data_name
+      attr(datanew, which="tableHb_gui, ratio") <- val_ratio
+      attr(datanew, which="tableHb_gui, scope") <- val_scope
 
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
@@ -250,8 +252,8 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       }  
     } else {
       # Load save flag.
-      if(exists(".strvalidator_tableBalance_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(savegui_chk) <- get(".strvalidator_tableBalance_gui_savegui", envir=env)
+      if(exists(".strvalidator_tableHb_gui_savegui", envir=env, inherits = FALSE)){
+        svalue(savegui_chk) <- get(".strvalidator_tableHb_gui_savegui", envir=env)
       }
       if(debug){
         print("Save GUI status loaded!")
@@ -263,11 +265,11 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     
     # Then load settings if true.
     if(svalue(savegui_chk)){
-      if(exists(".strvalidator_tableBalance_gui_quant", envir=env, inherits = FALSE)){
-        svalue(f1g1_quant_spb) <- get(".strvalidator_tableBalance_gui_quant", envir=env)
+      if(exists(".strvalidator_tableHb_gui_quant", envir=env, inherits = FALSE)){
+        svalue(f1g1_quant_spb) <- get(".strvalidator_tableHb_gui_quant", envir=env)
       }
-      if(exists(".strvalidator_tableBalance_gui_scope", envir=env, inherits = FALSE)){
-        svalue(f1g1_scope_opt) <- get(".strvalidator_tableBalance_gui_scope", envir=env)
+      if(exists(".strvalidator_tableHb_gui_scope", envir=env, inherits = FALSE)){
+        svalue(f1g1_scope_opt) <- get(".strvalidator_tableHb_gui_scope", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -281,20 +283,20 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     # Then save settings if true.
     if(svalue(savegui_chk)){
       
-      assign(x=".strvalidator_tableBalance_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".strvalidator_tableBalance_gui_quant", value=svalue(f1g1_quant_spb), envir=env)
-      assign(x=".strvalidator_tableBalance_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
+      assign(x=".strvalidator_tableHb_gui_savegui", value=svalue(savegui_chk), envir=env)
+      assign(x=".strvalidator_tableHb_gui_quant", value=svalue(f1g1_quant_spb), envir=env)
+      assign(x=".strvalidator_tableHb_gui_scope", value=svalue(f1g1_scope_opt), envir=env)
       
     } else { # or remove all saved values if false.
       
-      if(exists(".strvalidator_tableBalance_gui_savegui", envir=env, inherits = FALSE)){
-        remove(".strvalidator_tableBalance_gui_savegui", envir = env)
+      if(exists(".strvalidator_tableHb_gui_savegui", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableHb_gui_savegui", envir = env)
       }
-      if(exists(".strvalidator_tableBalance_gui_quant", envir=env, inherits = FALSE)){
-        remove(".strvalidator_tableBalance_gui_quant", envir = env)
+      if(exists(".strvalidator_tableHb_gui_quant", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableHb_gui_quant", envir = env)
       }
-      if(exists(".strvalidator_tableBalance_gui_scope", envir=env, inherits = FALSE)){
-        remove(".strvalidator_tableBalance_gui_scope", envir = env)
+      if(exists(".strvalidator_tableHb_gui_scope", envir=env, inherits = FALSE)){
+        remove(".strvalidator_tableHb_gui_scope", envir = env)
       }
 
       if(debug){

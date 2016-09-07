@@ -195,3 +195,68 @@ NULL
 #' @usage data(ref52)
 #' @format A data frame with 34 rows and 3 variables
 NULL
+
+#' Fusion example data for dropout analysis.
+#' 
+#' A slimmed dataset containing data from
+#' sensitivity experiment for dropout analysis.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name set6
+#' @usage data(set6)
+#' @format A data frame with 1848 rows and 7 variables
+NULL
+
+#' Fusion example data for dropout analysis.
+#' 
+#' A slimmed dataset containing the reference profile for the
+#' samples in set6.
+#' NB! Marker order is different from set6.
+#' NB! Reference R has a Y marker with NA.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref61
+#' @usage data(ref61)
+#' @format A data frame with 89 rows and 3 variables
+NULL
+
+#' Fusion example data for dropout analysis.
+#' 
+#' A slimmed dataset containing the reference profile for the
+#' samples in set6.
+#' NB! Marker order is same as set6.
+#' NB! Reference R has a Y marker with NA.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref62
+#' @usage data(ref62)
+#' @format A data frame with 89 rows and 3 variables
+NULL
+
+#' ESSplex SE QS example data for inhibition analysis.
+#' 
+#' A slimmed dataset containing data from
+#' inhibition experiment.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name set7
+#' @usage data(set7)
+#' @format A data frame with 883 rows and 7 variables
+NULL
+
+#' ESSplex SE QS example data for inhibition analysis.
+#' 
+#' A slimmed dataset containing the reference profile for the
+#' samples in set7.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name ref7
+#' @usage data(ref7)
+#' @format A data frame with 35 rows and 4 variables
+NULL
+

@@ -1,10 +1,14 @@
 ################################################################################
 # TODO LIST
-# TODO: Implement word boundaries (filterProfile).
+# TODO: ...
 
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.09.2016: Implemented word boundaries (filterProfile).
+# 06.09.2016: Fixed implementation of updated filterProfile function.
+# 29.08.2016: Implemented updated filterProfile function.
+# 19.08.2016: Fixed bug resulting in wrong number of observed allele copies.
 # 15.08.2016: Rewritten to use data.table for efficiency and new metrics.
 # 29.06.2016: Added option to remove sex markers and quality sensor.
 # 25.01.2016: Fixed save attribute saves dataset.
@@ -55,6 +59,7 @@
 #' @param kit character, required if sex.rm=TRUE or qs.rm=TRUE to define the kit.
 #' @param ignore.case logical TRUE ignores case in sample name matching.
 #' @param exact logical TRUE for exact sample name matching.
+#' @param word logical TRUE to add word boundaries to sample name matching.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame with with at least columns 'Sample.Name', 'TPH', and 'Peaks'.
@@ -75,7 +80,7 @@
 
 calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=NULL,
                             sex.rm=FALSE, qs.rm=FALSE, kit=NULL, ignore.case=TRUE,
-                            exact=FALSE, debug=FALSE){
+                            exact=FALSE, word=FALSE, debug=FALSE){
 
   # Parameters that are changed by the function must be saved first.
   attr_data <- substitute(data)
@@ -160,139 +165,7 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
     message("The column 'Height' was converted to numeric.")
     
   }
-    
-  # Remove sex markers. 
-  if(sex.rm){
-
-    # Check if kit is provided.    
-    if(is.null(kit)){
-      
-      message("No kit defined. Attempt to auto detect:")
-      
-      kit <-detectKit(data)[1]
-      
-      message("Using kit=", kit)
-      
-      # Check kit.  
-      if(is.na(kit)){
-        stop("No matching kit was found in the kit definition file.")
-      }
-      
-    }
-    
-    message("Removing sex markers defined in kit: ", kit, ".")
-    
-    # Get sex markers.    
-    sexMarkers <- getKit(kit = kit, what = "Sex.Marker")
-    
-    if(debug){
-      print("Sex markers:")
-      print(sexMarkers)
-    }
-    
-    message("Removing sex markers from dataset:")
-    # Loop through and remove all sex markers.
-    for(i in seq(along = sexMarkers)){
-      
-      tmp1 <- nrow(data)
-      
-      data <- data[data$Marker != sexMarkers[i],]
-      
-      tmp2 <- nrow(data)
-      
-      message("Removed ", tmp1 - tmp2,
-              " rows with Marker=", sexMarkers[i], ".")
-      
-    }
-    
-    if(!is.null(ref)){
-      
-      # Loop through and remove all quality sensors.
-      message("Removing sex markers from reference dataset:")
-      # Loop through and remove all sex markers.
-      for(i in seq(along = sexMarkers)){
-        
-        tmp1 <- nrow(ref)
-        
-        ref <- ref[ref$Marker != sexMarkers[i],]
-        
-        tmp2 <- nrow(ref)
-        
-        message("Removed ", tmp1 - tmp2,
-                " rows with Marker=", sexMarkers[i], ".")
-        
-      }
-      
-    }
-    
-  }
-    
-  # Remove quality sensors. 
-  if(qs.rm){
-
-    # Check if kit is provided.    
-    if(is.null(kit)){
-      
-      message("No kit defined. Attempt to auto detect:")
-      
-      kit <-detectKit(data)[1]
-      
-      message("Using kit=", kit)
-      
-      # Check kit.  
-      if(is.na(kit)){
-        stop("No matching kit was found in the kit definition file.")
-      }
-      
-    }
-    
-    message("Removing quality sensors defined in kit: ", kit, ".")
-    
-    # Get quality sensors.
-    qsMarkers <- getKit(kit = kit, what = "Quality.Sensor")
-    
-    if(debug){
-      print("Quality sensors:")
-      print(qsMarkers)
-    }
-    
-    # Loop through and remove all quality sensors.
-    message("Removing quality sensors from dataset:")
-    for(i in seq(along = qsMarkers)){
-      
-      tmp1 <- nrow(data)
-      
-      data <- data[data$Marker != qsMarkers[i],]
-      
-      tmp2 <- nrow(data)
-      
-      message("Removed ", tmp1 - tmp2,
-              " rows with Marker=", qsMarkers[i], ".")
-      
-    }
-    
-    if(!is.null(ref)){
-      
-      # Loop through and remove all quality sensors.
-      message("Removing quality sensors from reference dataset:")
-      for(i in seq(along = qsMarkers)){
-        
-        tmp1 <- nrow(ref)
-        
-        ref <- ref[ref$Marker != qsMarkers[i],]
-        
-        tmp2 <- nrow(ref)
-        
-        message("Removed ", tmp1 - tmp2,
-                " rows with Marker=", qsMarkers[i], ".")
-        
-      }
-      
-    }
-    
-  }
-    
-    
+  
   if(!is.null(exclude)){
     message("Removing excluded alleles from dataset:")
     
@@ -311,6 +184,23 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
   # Check if reference dataset was provided.
   if(!is.null(ref)){
     
+    # Filter dataset.
+    message("Extracting known alleles from dataset...")
+    data <- filterProfile(data = data, ref = ref,
+                          add.missing.loci = FALSE, keep.na = FALSE, invert = FALSE, 
+                          ignore.case = ignore.case, exact = exact, word = word,
+                          sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug)
+    
+    # Remove sex markers and quality sensors from reference dataset.
+    if(sex.rm || qs.rm){
+      
+      message("Removing gender markers and/or quality sensors from reference dataset...")
+      ref <- filterProfile(data = ref, filter.allele = FALSE,
+                           sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+                           debug = debug)
+      
+    }
+    
     # Check if missing alleles (Y markers in female profiles.)
     if(any(is.na(ref$Allele))){
       # Remove any row with Allele=NA.
@@ -321,12 +211,7 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
       message("Removed ", tmp1 - tmp2, " rows with Allele=NA in reference dataset.")
       
     }
-    
-    # Extract known alleles.
-    data <- filterProfile(data = data, ref = ref, keep.na = FALSE, add.missing.loci=FALSE,
-                          ignore.case = ignore.case, exact = exact)
-    message("Known alleles extracted from dataset.")
-    
+
     if(!"Copies" %in% names(ref)){
       # Add 
       ref <- calculateCopies(data = ref)
@@ -336,14 +221,24 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
     
     # Convert to data.table and calculate number of allele copies and expected peaks.
     DTref <- data.table(ref)
-    DTref[, N.Alleles:=sum(Copies), by=list(Sample.Name)]
     DTref[, Expected:=.N, by=list(Sample.Name)]
     
     # Add to dataset.
     data <- addData(data = data, new.data = DTref,
-                    by.col = "Sample.Name", what = c("N.Alleles","Expected"),
+                    by.col = "Sample.Name", then.by.col = "Marker", what = c("Copies","Expected"),
                     exact = exact, debug = debug)
     message("Expected number of alleles added to dataset.")
+    
+  } else {
+    
+    message("Reference dataset not provided.")
+    
+    # Filter quality sensors and sex markers.
+    data <- filterProfile(data = data, ref = NULL,
+                          add.missing.loci = FALSE, keep.na = FALSE, invert = FALSE, 
+                          ignore.case = ignore.case, exact = exact, word = word,
+                          sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+                          filter.allele = FALSE, debug = debug)
     
   }
     
@@ -360,16 +255,29 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
     
     # Calculate number of observed peaks for each sample.
     DT[, Peaks:=sum(!is.na(Height)), by=list(Sample.Name)]
+
+    if("Copies" %in% names(DT)){
+
+      # Calculate number of observed peaks for each sample.
+      DT[, N.Alleles:=sum(Copies[!is.na(Height)]), by=list(Sample.Name)]
+
+    } else {
+
+      message("A column 'Copies' was not found in 'data'.")
+      message("Number of observed allele copies cannot be calculated")
+      message("Provide a reference dataset to enable calculation of 'N.Alleles'.")
+      
+    }
     
     if("N.Alleles" %in% names(DT)){
-      
+
       # Calculate average peak height for each sample.
       DT[, H:=TPH/N.Alleles, by=list(Sample.Name)]
-      
+
     } else {
       
       message("A column 'N.Alleles' was not found in 'data'.")
-      message("Average peak height will not be calculated.")
+      message("Average peak height cannot be calculated.")
       message("Provide a reference dataset to enable calculation of 'H'.")
       
     }
@@ -382,8 +290,8 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
     } else {
       
       message("A column 'Expected' was not found in 'data'.")
-      message("Profile proportion will not be calculated.")
-      message("Provide a reference dataset to enable calculation of profile proportion.")
+      message("Profile proportion cannot be calculated.")
+      message("Provide a reference dataset to enable calculation of 'Expected'.")
       
     }
     
@@ -401,7 +309,9 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
       # Calculate number of observed peaks for each sample.
       DT[, Peaks:=sum(!is.na(Height)), by=list(Sample.Name)]
       
-      
+      # Calculate number of observed peaks for each sample.
+      DT[, N.Alleles:=sum(Copies[!is.na(Height)]), by=list(Sample.Name)]
+
       # Calculate total and average peak height, number of peaks,
       # and profile proportion for each sample.    
       res <- DT[, list(TPH=unique(TPH),
@@ -410,7 +320,7 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
                     Expected=unique(Expected),
                     Proportion=unique(Peaks)/unique(Expected)),
                 by=list(Sample.Name)]
-      
+
     } else {
       
       # Calculate total peak height and number of peaks for each sample.    
@@ -444,28 +354,36 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
   if(!is.null(na.replace)){
     # Check if NA:s and change to 'na.replace'.
 
-    if(any(is.na(res$TPH))){
+    if("TPH" %in% names(res)){
+      if(any(is.na(res$TPH))){
       n <- sum(is.na(res$TPH))
       res[is.na(res$TPH), ]$TPH <- na.replace
       message("Replaced ", n, " NA's in 'TPH' with '", na.replace, "'.")
+      }
     }
     
-    if(any(is.na(res$Peaks))){
+    if("Peaks" %in% names(res)){
+      if(any(is.na(res$Peaks))){
       n <- sum(is.na(res$Peaks))
       res[is.na(res$Peaks), ]$Peaks <- na.replace
       message("Replaced ", n, " NA's in 'Peaks' with '", na.replace, "'.")
+      }
     }
     
-    if(any(is.na(res$H))){
-      n <- sum(is.na(res$H))
-      res[is.na(res$H), ]$H <- na.replace
-      message("Replaced ", n, " NA's in 'H' with '", na.replace, "'.")
+    if("H" %in% names(res)){
+      if(any(is.na(res$H))){
+        n <- sum(is.na(res$H))
+        res[is.na(res$H), ]$H <- na.replace
+        message("Replaced ", n, " NA's in 'H' with '", na.replace, "'.")
+      }
     }
     
-    if(any(is.na(res$Proportion))){
+    if("Proportion" %in% names(res)){
+      if(any(is.na(res$Proportion))){
       n <- sum(is.na(res$Proportion))
       res[is.na(res$Proportion), ]$Proportion <- na.replace
       message("Replaced ", n, " NA's in 'Proportion' with '", na.replace, "'.")
+      }
     }
     
   }

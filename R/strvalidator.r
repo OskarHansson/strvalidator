@@ -2,7 +2,7 @@
 # TODO LIST
 # TODO: Object size not sorted correct (seem to sort as character)
 # TODO: Migrate to gWidgets2.
-# TODO: Save .importPath in ws for last used path (only in coming gWidgets2 ??)
+# TODO: Save .importPath in ws for last used path (only in gWidgets2 ??)
 # TODO: Multiple selection not working.
 # TODO: USe viwweports instead of grid.arrange in complex plots?
 # http://www.imachordata.com/extra-extra-get-your-gridextra/#comment-146
@@ -39,6 +39,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.09.2016: tableBalance_gui replaced by tableHb_gui.
+# 29.08.2016: calculateBalance_gui replaced by calculateHb_gui.
 # 15.08.2016: Removed calculateHeterozygous, added calculateCopies in the 'Edit' tab.
 # 04.08.2016: Added button to plot contamination in the 'Result' tab.
 # 27.06.2016: Added button to create new project in the 'Workspace' tab.
@@ -57,8 +59,6 @@
 # 01.06.2015: Added 'Calculate' and 'Plot' (AT6) button in 'AT' tab.
 # 24.05.2015: Added 'Columns' button in 'Tools' tab.
 # 04.05.2015: Added 'AT' tab.
-# 01.01.2015: Fixed error in 'Workspace' tab when no selection and 'Delete' is pressed.
-# 19.12.2014: Added 'EPG' button in 'Tools' tab.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -1655,14 +1655,14 @@ strvalidator <- function(debug=FALSE){
                                                     border=TRUE,
                                                     container = balance_g2) 
   
-  balance_g2[1,2] <- glabel(text="Calculate intra/inter locus balance for a dataset (reference required).",
+  balance_g2[1,2] <- glabel(text="Calculate intra-locus balance.",
                             container=balance_g2)
   
   
   addHandlerChanged(balance_g2_calc_1_btn, handler = function(h, ...) {
     
     # Open GUI.
-    calculateBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    calculateHb_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   
@@ -1671,7 +1671,7 @@ strvalidator <- function(debug=FALSE){
                                                     border=TRUE,
                                                     container = balance_g2) 
   
-  balance_g2[2,2] <- glabel(text="Calculate inter locus balance for a dataset (no reference required).",
+  balance_g2[2,2] <- glabel(text="Calculate inter-locus balance.",
                             container=balance_g2)
   
   
@@ -1710,7 +1710,7 @@ strvalidator <- function(debug=FALSE){
   addHandlerChanged(balance_table_btn, handler = function(h, ...) {
     
     # Open GUI.
-    tableBalance_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
+    tableHb_gui(env=.strvalidator_env, savegui=.save_gui, debug=debug, parent=w)
     
   } )
   

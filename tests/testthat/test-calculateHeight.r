@@ -6,6 +6,7 @@ context("calculateHeight")
 
 ################################################################################
 # CHANGE LOG
+# 19.08.2016: Uppdated as a consequence of a bug fix.
 # 15.08.2016: Updated to match re-written function. Added additional tests.
 # 12.10.2014: Added test for NA in Allele column (test 14 and 15).
 # 10.09.2014: Added test for parameter 'exclude' (test 12 and 13).
@@ -200,7 +201,6 @@ test_that("calculateHeight", {
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Heterozygous)))
   expect_false(any(is.na(res$Height)))
   expect_false(any(is.na(res$TPH)))
   expect_false(any(is.na(res$Peaks)))
@@ -208,7 +208,6 @@ test_that("calculateHeight", {
   # Check result.
   expect_that(res$Sample.Name, equals(df1$Sample.Name))
   expect_that(res$Marker, equals(df1$Marker))
-  expect_that(res$Heterozygous, equals(df1$Heterozygous))
   expect_that(res$Height, equals(as.numeric(df1$Height)))
   expect_that(unique(res$TPH), equals(32088))
   expect_that(unique(res$Peaks), equals(19))
@@ -240,7 +239,6 @@ test_that("calculateHeight", {
   # Check result.
   expect_that(res$Sample.Name, equals(df2$Sample.Name))
   expect_that(res$Marker, equals(df2$Marker))
-  expect_that(res$Heterozygous, equals(df2$Heterozygous))
   expect_that(res$Height, equals(as.numeric(df2$Height)))
   expect_that(unique(res$TPH)[1], equals(32088))
   expect_that(unique(res$TPH)[2], equals(30103))
@@ -267,7 +265,6 @@ test_that("calculateHeight", {
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Heterozygous)))
   expect_true(any(is.na(res$Height)))
   expect_false(any(is.na(res$TPH)))
   expect_false(any(is.na(res$Peaks)))
@@ -275,7 +272,6 @@ test_that("calculateHeight", {
   # Check result.
   expect_that(res$Sample.Name, equals(df3$Sample.Name))
   expect_that(res$Marker, equals(df3$Marker))
-  expect_that(res$Heterozygous, equals(df3$Heterozygous))
   expect_that(res$Height, equals(as.numeric(df3$Height)))
   expect_that(unique(res$TPH)[1], equals(32088))
   expect_that(unique(res$TPH)[2], equals(0))
@@ -303,7 +299,6 @@ test_that("calculateHeight", {
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Heterozygous)))
   expect_true(any(is.na(res$Height)))
   expect_false(any(is.na(res$TPH)))
   expect_false(any(is.na(res$Peaks)))
@@ -311,7 +306,6 @@ test_that("calculateHeight", {
   # Check result.
   expect_that(res$Sample.Name, equals(df3$Sample.Name))
   expect_that(res$Marker, equals(df3$Marker))
-  expect_that(res$Heterozygous, equals(df3$Heterozygous))
   expect_that(res$Height, equals(as.numeric(df3$Height)))
   expect_that(unique(res$TPH)[1], equals(32088))
   expect_that(unique(res$TPH)[2], equals(0))
@@ -383,7 +377,6 @@ test_that("calculateHeight", {
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Heterozygous)))
   expect_false(any(is.na(res$Height)))
   expect_false(any(is.na(res$Allele)))
   expect_false(any(is.na(res$TPH)))
@@ -392,7 +385,6 @@ test_that("calculateHeight", {
   # Check result.
   expect_that(res$Sample.Name, equals(df4$Sample.Name[c(-7, -8, -14)]))
   expect_that(res$Marker, equals(df4$Marker[c(-7, -8, -14)]))
-  expect_that(res$Heterozygous, equals(df4$Heterozygous[c(-7, -8, -14)]))
   expect_that(res$Height, equals(as.numeric(df4$Height[c(-7, -8, -14)])))
   expect_that(unique(res$TPH), equals(24648))
   expect_that(unique(res$Peaks), equals(16))
@@ -439,7 +431,6 @@ test_that("calculateHeight", {
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
-  expect_false(any(is.na(res$Heterozygous)))
   expect_true(any(is.na(res$Height)))
   expect_true(any(is.na(res$Allele)))
   expect_false(any(is.na(res$TPH)))
@@ -448,7 +439,6 @@ test_that("calculateHeight", {
   # Check result.
   expect_that(res$Sample.Name, equals(df5$Sample.Name[c(-7, -8, -14)]))
   expect_that(res$Marker, equals(df5$Marker[c(-7, -8, -14)]))
-  expect_that(res$Heterozygous, equals(df5$Heterozygous[c(-7, -8, -14)]))
   expect_that(res$Height, equals(as.numeric(df5$Height[c(-7, -8, -14)])))
   expect_that(unique(res$TPH), equals(23431))
   expect_that(unique(res$Peaks), equals(15))
@@ -512,7 +502,7 @@ test_that("calculateHeight", {
   
   # Check result.
   expect_that(res$TPH, equals(30620))
-  expect_that(round(res$H, 3), equals(1531))
+  expect_that(round(res$H, 3), equals(1701.111))
   expect_that(res$Peaks, equals(16))
   expect_that(res$Expected, equals(17))
   expect_that(round(res$Proportion,3), equals(0.941))
@@ -589,7 +579,7 @@ test_that("calculateHeight", {
   
   # Check result.
   expect_that(unique(res$TPH), equals(30620))
-  expect_that(unique(round(res$H, 3)), equals(1531))
+  expect_that(unique(round(res$H, 3)), equals(1701.111))
   expect_that(unique(res$Peaks), equals(16))
   expect_that(unique(res$Expected), equals(17))
   expect_that(unique(round(res$Proportion,3)), equals(0.941))
@@ -623,7 +613,7 @@ test_that("calculateHeight", {
   
   # Check result.
   expect_that(unique(res$TPH), equals(23431))
-  expect_that(unique(round(res$H, 3)), equals(1301.722))
+  expect_that(unique(round(res$H, 3)), equals(1464.438))
   expect_that(unique(res$Peaks), equals(15))
   expect_that(unique(res$Expected), equals(16))
   expect_that(unique(round(res$Proportion,3)), equals(0.938))

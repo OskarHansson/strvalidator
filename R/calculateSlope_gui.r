@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.09.2016: Implemented the 'word' option.
 # 24.04.2016: First version.
 
 #' @title Calculate Profile Slope
@@ -256,9 +257,7 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   
   f1_word_chk <- gcheckbox(text="Add word boundaries", checked = FALSE,
                            container = f1)
-  tooltip(f1_word_chk) <- "Not currently implemented."
-  enabled(f1_word_chk) <- FALSE
-  
+
   f1_exact_chk <- gcheckbox(text="Exact matching", checked = FALSE,
                             container = f1)
   
@@ -322,7 +321,7 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       datanew <- calculateSlope(data=val_data, ref=val_ref, conf=val_conf,
                                 kit=val_kit,
                                 ignore.case=val_ignore, exact=val_exact,
-                                debug=debug)
+                                word=val_word, debug=debug)
       
       # Add attributes to result.
       attr(datanew, which="calculateSlope_gui, data") <- val_name_data

@@ -40,7 +40,7 @@
 #' to produce the data. If length(kit) != number of groups, kit[1] will be
 #' used for all groups.
 #' @param debug logical indicating printing debug information.
-#' @param ... additional arguments for \code{\link{filterProfile}} function
+#' @param ... additional arguments to the \code{\link{filterProfile}} function
 #' 
 #' @return data.frame with with columns 'Sample.Name', 'Kit', 'Group', 'Slope',
 #' 'Error', 'Peaks', 'Lower', and 'Upper'.

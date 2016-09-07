@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.09.2016: Updated to include new filterProfile options.
 # 28.04.2016: 'Save as' textbox expandable.
 # 15.12.2015: Added attributes to result.
 # 15.12.2015: Added option 'exact' sample name matching.
@@ -23,8 +24,6 @@
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 24.05.2013: Improved error message for missing columns.
 # 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: .result removed, added save as group.
-# 25.04.2013: First version.
 
 #' @title Filter Profile
 #'
@@ -211,7 +210,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
     val_ref <- .gRef
     val_ignore <- svalue(f1_ignore_case_chk)
     val_exact <- svalue(f1_exact_chk)
-    val_word <- FALSE
+    val_word <- svalue(f1_word_chk)
     
     if (!is.null(.gData) || !is.null(.gRef)){
       
@@ -258,38 +257,47 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
 
   # FRAME 1 ###################################################################
   
-  f1 <- gframe(text = "Options",
-               horizontal=FALSE,
-               spacing = 5,
-               container = gv) 
-
-  f1_invert_chk <- gcheckbox(text="Invert (remove peaks matching reference)",
-                                       checked = FALSE,
-                                       container = f1)
+  f1 <- gframe(text = "Options", horizontal=FALSE, spacing = 5, container = gv)
   
-  f1_add_missing_loci_chk <- gcheckbox(text="Add missing loci",
-                                    checked = TRUE,
-                                    container = f1)
-  
-  f1_keep_na_chk <- gcheckbox(text="Keep loci/sample even if no matching allele",
-                           checked = TRUE,
-                           container = f1)
-  
-  f1_ignore_case_chk <- gcheckbox(text="Ignore case ",
-                           checked = TRUE,
-                           container = f1)
-  
-  f1_exact_chk <- gcheckbox(text="Exact matching ",
-                                  checked = FALSE,
-                                  container = f1)
+  glabel(text = "Filter options:", anchor = c(-1 ,0), container = f1)
   
   f1_options <- c("Filter by reference dataset",
                   "Filter by kit bins (allelic ladder)")
   
-  f1_filter_opt <- gradio(items=f1_options,
-                          selected=1,
-                          horizontal=FALSE,
-                          container=f1)
+  f1_filter_opt <- gradio(items = f1_options, selected = 1,
+                          horizontal = FALSE, container = f1)
+  
+  f1_sex_chk <- gcheckbox(text = "Remove sex markers",
+                          checked = FALSE, container = f1)
+  tooltip(f1_sex_chk) <- "Removes sex markers defined in the selected kit."
+  
+  f1_qs_chk <- gcheckbox(text = "Remove quality sensors",
+                         checked = FALSE, container = f1)
+  tooltip(f1_qs_chk) <- "Removes quality sensors defined in the selected kit."
+  
+  f1_invert_chk <- gcheckbox(text = "Invert (remove peaks matching reference)",
+                             checked = FALSE, container = f1)
+  
+  f1_add_missing_loci_chk <- gcheckbox(text = "Add missing loci",
+                                       checked = TRUE, container = f1)
+  tooltip(f1_add_missing_loci_chk) <- "This option will be slower."
+                                       
+  f1_keep_na_chk <- gcheckbox(text = "Keep loci/sample even if no matching allele",
+                              checked = TRUE, container = f1)
+  
+  glabel(text = "Sample name matching:", anchor = c(-1 ,0), container = f1)
+  
+  f1_ignore_case_chk <- gcheckbox(text="Ignore case ",
+                           checked = TRUE, container = f1)
+  tooltip(f1_ignore_case_chk) <- "'A' will match 'A', 'B-a.2', and 'A2'"
+  
+  f1_exact_chk <- gcheckbox(text="Exact matching ",
+                            checked = FALSE, container = f1)
+  tooltip(f1_exact_chk) <- "'A' will match 'A' but not 'B-A.2', 'A 2', or 'A2'"
+  
+  f1_word_chk <- gcheckbox(text="Add word boundaries ",
+                           checked = FALSE, container = f1)
+  tooltip(f1_word_chk) <- "'A' will match 'A', 'B-A.2', and 'A 2' but not 'A2'"
   
   # HANDLERS ------------------------------------------------------------------
   
@@ -299,7 +307,13 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
     
   } )  
   
-
+  addHandlerChanged(f1_exact_chk, handler = function (h, ...) {
+    
+    .refreshOptions()
+    
+  } )  
+  
+  
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as",
@@ -329,11 +343,14 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
     val_keep_na <- svalue(f1_keep_na_chk)
     val_ignore_case <- svalue(f1_ignore_case_chk)
     val_exact <- svalue(f1_exact_chk)
+    val_word <- svalue(f1_word_chk)
     val_name <- svalue(f2_save_edt)
     val_filter <- svalue(f1_filter_opt, index=TRUE)
     val_kit <- svalue(g0_kit_drp)
     val_exclude <- svalue(g0_kit_chk)
-
+    val_sex <- svalue(f1_sex_chk)
+    val_qs <- svalue(f1_qs_chk)
+    
     # Check if filter by kit bins.
     if(val_filter == 2){
       
@@ -359,7 +376,10 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                                keep.na = val_keep_na,
                                ignore.case = val_ignore_case,
                                exact = val_exact,
+                               word = val_word,
                                invert = val_invert,
+                               sex.rm = val_sex,
+                               qs.rm = val_qs,
                                debug = debug)
 
       # Add attributes.
@@ -369,8 +389,11 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       attr(datanew, which="filterProfile_gui, keep.na") <- val_keep_na
       attr(datanew, which="filterProfile_gui, ignore.case") <- val_ignore_case
       attr(datanew, which="filterProfile_gui, exact") <- val_exact
+      attr(datanew, which="filterProfile_gui, word") <- val_word
       attr(datanew, which="filterProfile_gui, invert") <- val_invert
-
+      attr(datanew, which="filterProfile_gui, sex") <- val_sex
+      attr(datanew, which="filterProfile_gui, qs") <- val_qs
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       
@@ -399,6 +422,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   .refreshOptions <- function(){
 
     val_opt <- svalue(f1_filter_opt, index=TRUE)
+    val_exact <- svalue(f1_exact_chk)
     
     if(val_opt == 1){
       
@@ -419,6 +443,17 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       enabled(g0_kit_lbl) <- TRUE
       enabled(g0_kit_drp) <- TRUE
       enabled(g0_kit_chk) <- TRUE
+      
+    }
+    
+    # Disable 'word' if 'exact' is TRUE.
+    if(val_exact){
+      
+      enabled(f1_word_chk) <- FALSE
+      
+    } else {
+      
+      enabled(f1_word_chk) <- TRUE
       
     }
     
@@ -463,8 +498,17 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       if(exists(".strvalidator_filterProfile_gui_exact", envir=env, inherits = FALSE)){
         svalue(f1_exact_chk) <- get(".strvalidator_filterProfile_gui_exact", envir=env)
       }
+      if(exists(".strvalidator_filterProfile_gui_word", envir=env, inherits = FALSE)){
+        svalue(f1_word_chk) <- get(".strvalidator_filterProfile_gui_word", envir=env)
+      }
       if(exists(".strvalidator_filterProfile_gui_by", envir=env, inherits = FALSE)){
         svalue(f1_filter_opt) <- get(".strvalidator_filterProfile_gui_by", envir=env)
+      }
+      if(exists(".strvalidator_filterProfile_gui_sex", envir=env, inherits = FALSE)){
+        svalue(f1_sex_chk) <- get(".strvalidator_filterProfile_gui_sex", envir=env)
+      }
+      if(exists(".strvalidator_filterProfile_gui_qs", envir=env, inherits = FALSE)){
+        svalue(f1_qs_chk) <- get(".strvalidator_filterProfile_gui_qs", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -484,7 +528,10 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       assign(x=".strvalidator_filterProfile_gui_keep_na", value=svalue(f1_keep_na_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_ignore_case", value=svalue(f1_ignore_case_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_exact", value=svalue(f1_exact_chk), envir=env)
+      assign(x=".strvalidator_filterProfile_gui_word", value=svalue(f1_word_chk), envir=env)
       assign(x=".strvalidator_filterProfile_gui_by", value=svalue(f1_filter_opt), envir=env)
+      assign(x=".strvalidator_filterProfile_gui_sex", value=svalue(f1_sex_chk), envir=env)
+      assign(x=".strvalidator_filterProfile_gui_qs", value=svalue(f1_qs_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -506,8 +553,17 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       if(exists(".strvalidator_filterProfile_gui_exact", envir=env, inherits = FALSE)){
         remove(".strvalidator_filterProfile_gui_exact", envir = env)
       }
+      if(exists(".strvalidator_filterProfile_gui_word", envir=env, inherits = FALSE)){
+        remove(".strvalidator_filterProfile_gui_word", envir = env)
+      }
       if(exists(".strvalidator_filterProfile_gui_by", envir=env, inherits = FALSE)){
         remove(".strvalidator_filterProfile_gui_by", envir = env)
+      }
+      if(exists(".strvalidator_filterProfile_gui_sex", envir=env, inherits = FALSE)){
+        remove(".strvalidator_filterProfile_gui_sex", envir = env)
+      }
+      if(exists(".strvalidator_filterProfile_gui_qs", envir=env, inherits = FALSE)){
+        remove(".strvalidator_filterProfile_gui_qs", envir = env)
       }
       
       if(debug){

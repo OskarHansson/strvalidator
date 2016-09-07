@@ -7,6 +7,7 @@ context("calculateLb")
 
 ################################################################################
 # CHANGE LOG
+# 29.08.2016: Added  kit = "SGMplus" for performance.
 # 01.03.2016: Upgraded to work with version 1.6.0.9002.
 # 26.12.2015: First version.
 # 
@@ -35,7 +36,7 @@ test_that("calculateLb", {
   
   # Analyse dataframe.
   res <- calculateLb(data = set2, ref = NULL, option = "prop", by.dye = TRUE,
-                     ol.rm = FALSE, sex.rm = FALSE, na = NULL,
+                     ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
 
   # Check return class.  
@@ -118,7 +119,7 @@ test_that("calculateLb", {
   # one locus dropout.
   
   res <- calculateLb(data = set2, ref = NULL, option = "prop", by.dye = FALSE,
-                     ol.rm = FALSE, sex.rm = FALSE, na = NULL,
+                     ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Check return class.  
@@ -201,7 +202,7 @@ test_that("calculateLb", {
   # one locus dropout.
   
   res <- calculateLb(data = set2, ref = NULL, option = "norm", by.dye = TRUE,
-                     ol.rm = FALSE, sex.rm = FALSE, na=NULL,
+                     ol.rm = FALSE, sex.rm = FALSE, na=NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Check return class.  
@@ -284,7 +285,7 @@ test_that("calculateLb", {
   # one locus dropout.
   
   res <- calculateLb(data = set2, ref = NULL, option = "norm", by.dye = FALSE,
-                     ol.rm = FALSE, sex.rm = FALSE, na=NULL,
+                     ol.rm = FALSE, sex.rm = FALSE, na=NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Check return class.  
@@ -367,7 +368,7 @@ test_that("calculateLb", {
   # one locus dropout.
   
   res <- calculateLb(data = set2, ref = NULL, option = "cent", by.dye = TRUE,
-                     ol.rm = FALSE, sex.rm = FALSE, na=NULL,
+                     ol.rm = FALSE, sex.rm = FALSE, na=NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Check return class.  
@@ -450,7 +451,7 @@ test_that("calculateLb", {
   # one locus dropout.
   
   res <- calculateLb(data = set2, ref = NULL, option = "cent", by.dye = FALSE,
-                     ol.rm = FALSE, sex.rm = FALSE, na=NULL,
+                     ol.rm = FALSE, sex.rm = FALSE, na=NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Check return class.  
@@ -533,7 +534,7 @@ test_that("calculateLb", {
 
   # Analyse dataframe.
   res <- calculateLb(data = set1, ref = NULL, option = "prop", by.dye = TRUE,
-                     ol.rm = FALSE, sex.rm = FALSE, na = NULL,
+                     ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
 
   # Check return class.  
@@ -605,7 +606,7 @@ test_that("calculateLb", {
   
   # Analyse dataframe.
   res <- calculateLb(data = set1, ref = NULL, option = "prop", by.dye = TRUE,
-                     ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                     ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Check return class.  
@@ -677,10 +678,10 @@ test_that("calculateLb", {
   
   # Analyse dataframe.
   res <- calculateLb(data = set1, ref = NULL, option = "prop", by.dye = TRUE,
-                     ol.rm = TRUE, sex.rm = TRUE, na = NULL,
+                     ol.rm = TRUE, sex.rm = TRUE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
-  # Check return class.  
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
   
   # Check that expected columns exist.  
@@ -746,7 +747,7 @@ test_that("calculateLb", {
   
   # Analyse dataframe.
   res <- calculateLb(data = set1, ref = ref1, option = "prop", by.dye = TRUE,
-                     ol.rm = FALSE, sex.rm = FALSE, na = NULL,
+                     ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
 
   # Check return class.  
@@ -818,7 +819,7 @@ test_that("calculateLb", {
   
   # Analyse dataframe.
   res <- calculateLb(data = set1, ref = ref1, option = "prop", by.dye = TRUE,
-                     ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                     ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Check return class.  
@@ -890,7 +891,7 @@ test_that("calculateLb", {
   
   # Analyse dataframe.
   res <- calculateLb(data = set1, ref = ref1, option = "prop", by.dye = TRUE,
-                     ol.rm = TRUE, sex.rm = TRUE, na = NULL,
+                     ol.rm = TRUE, sex.rm = TRUE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Check return class.  
@@ -965,22 +966,22 @@ test_that("calculateLb", {
   
   # This work since ref is provided (data is filtered and missing markers added).
   res <- calculateLb(data = setMissing, ref = ref2, option = "prop", by.dye = TRUE,
-                     ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                     ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
 
   # Same as above but global Lb.
   res <- calculateLb(data = setMissing, ref = ref2, option = "prop", by.dye = FALSE,
-                     ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                     ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # This work in version >=1.6.0.9002 since the missing marker is detected and added.
   res <- calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = TRUE,
-                     ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                     ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Same as above but global Lb (this work in version >=1.6.0.9002).
   res <- calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = FALSE,
-                          ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                          ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                           ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   
@@ -995,22 +996,22 @@ test_that("calculateLb", {
   
   # This work since ref is provided (data is filtered and missing markers added).
   res <- calculateLb(data = setMissing, ref = ref2, option = "prop", by.dye = TRUE,
-                     ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                     ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Same as above but global Lb.
   res <- calculateLb(data = setMissing, ref = ref2, option = "prop", by.dye = FALSE,
-                     ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                     ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                      ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # This work in version >=1.6.0.9002 since the missing marker is detected and added.
   res <- calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = TRUE,
-                          ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                          ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                           ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   # Same as above but global Lb (this work in version >=1.6.0.9002).
   res <- calculateLb(data = setMissing, ref = NULL, option = "prop", by.dye = FALSE,
-                          ol.rm = TRUE, sex.rm = FALSE, na = NULL,
+                          ol.rm = TRUE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
                           ignore.case = TRUE, word = FALSE, exact = FALSE)
   
   
