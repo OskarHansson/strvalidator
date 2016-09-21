@@ -6,6 +6,8 @@ context("calculateHeight")
 
 ################################################################################
 # CHANGE LOG
+# 16.09.2016: Uppdated with test 21-22 for complete negative samples, updated test 16.
+# 15.09.2016: Uppdated with test 20 for homozygous double notation.
 # 19.08.2016: Uppdated as a consequence of a bug fix.
 # 15.08.2016: Updated to match re-written function. Added additional tests.
 # 12.10.2014: Added test for NA in Allele column (test 14 and 15).
@@ -67,6 +69,9 @@ test_that("calculateHeight", {
   
   # Create reference dataset.
   ref4 <- df4[df4$Allele!="OL",]
+
+  # Create reference dataset with double notation for homozygotes.
+  ref5 <- rbind(ref4[1:7,], ref4[7:12,], ref4[12:15,], ref4[15:17,])
   
   # Introduce an NA allele.
   df5 <- df4
@@ -80,8 +85,7 @@ test_that("calculateHeight", {
   
   # One result and one negative sample.
   df7 <- rbind(df4,df6)
-  
-  
+
   # TEST 01 -------------------------------------------------------------------
   # Test that analysis of one sample works.
   
@@ -517,7 +521,8 @@ test_that("calculateHeight", {
   expect_that(class(res), matches(class(data.frame())))
   
   # Check that an empty dataset was returned.  
-  expect_true(nrow(res)==0)
+  # Updated 16.09.2016. No longer remove NA samples.
+  expect_false(nrow(res)==0)
 
   # TEST 17 -------------------------------------------------------------------
   # Test that analysis of a dataset with 1 result and 1 negative sample work.
@@ -618,5 +623,103 @@ test_that("calculateHeight", {
   expect_that(unique(res$Expected), equals(16))
   expect_that(unique(round(res$Proportion,3)), equals(0.938))
   
+  # TEST 20 -------------------------------------------------------------------
+  # Test that analysis of one sample works,
+  # with double notation for homozygotes in reference.
+  
+  # Analyse dataframe.
+  res <- calculateHeight(data=df4, ref=ref5, na=NULL, add=FALSE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("TPH" %in% names(res))
+  expect_true("H" %in% names(res))
+  expect_true("Peaks" %in% names(res))
+  expect_true("Expected" %in% names(res))
+  expect_true("Proportion" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$TPH)))
+  expect_false(any(is.na(res$H)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_false(any(is.na(res$Expected)))
+  expect_false(any(is.na(res$Proportion)))
+  
+  # Check result.
+  expect_that(res$TPH, equals(31837))
+  expect_that(round(res$H, 3), equals(1591.85))
+  expect_that(res$Peaks, equals(17))
+  expect_that(res$Expected, equals(17))
+  expect_that(res$Proportion, equals(1))
+  
+  # TEST 21 -------------------------------------------------------------------
+  # Test that analysis of a dataset with only a negative samples work,
+  # with reference and replacement of NA.
+  
+  # Analyse dataframe.
+  res <- calculateHeight(data=df6, ref=ref4, na=0, add=FALSE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("TPH" %in% names(res))
+  expect_true("H" %in% names(res))
+  expect_true("Peaks" %in% names(res))
+  expect_true("Expected" %in% names(res))
+  expect_true("Proportion" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$TPH)))
+  expect_false(any(is.na(res$H)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_false(any(is.na(res$Expected)))
+  expect_false(any(is.na(res$Proportion)))
+  
+  # Check result.
+  expect_that(res$TPH, equals(0))
+  expect_that(res$H, equals(0))
+  expect_that(res$Peaks, equals(0))
+  expect_that(res$Expected, equals(17))
+  expect_that(res$Proportion, equals(0))
+  
+  # TEST 22 -------------------------------------------------------------------
+  # Test that analysis of a dataset with only a negative samples work,
+  # with reference and replacement of NA.
+  
+  # Analyse dataframe.
+  res <- calculateHeight(data=df6, ref=ref4, na=NULL, add=FALSE)
+  
+  # Check return class.  
+  expect_that(class(res), matches(class(data.frame())))
+  
+  # Check that expected columns exist.  
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("TPH" %in% names(res))
+  expect_true("H" %in% names(res))
+  expect_true("Peaks" %in% names(res))
+  expect_true("Expected" %in% names(res))
+  expect_true("Proportion" %in% names(res))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$TPH)))
+  expect_true(any(is.na(res$H)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_false(any(is.na(res$Expected)))
+  expect_false(any(is.na(res$Proportion)))
+  
+  # Check result.
+  expect_that(res$TPH, equals(0))
+  expect_that(res$H, equals(NaN))
+  expect_that(res$Peaks, equals(0))
+  expect_that(res$Expected, equals(17))
+  expect_that(res$Proportion, equals(0))
   
 })

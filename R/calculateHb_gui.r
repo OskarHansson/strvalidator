@@ -120,7 +120,7 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
                                             "samples.")
       
       # Suggest a name for the result.
-      svalue(f4_save_edt) <- paste(val_obj, "_balance", sep = "")
+      svalue(f4_save_edt) <- paste(val_obj, "_hb", sep = "")
       
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)

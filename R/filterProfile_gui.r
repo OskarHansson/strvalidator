@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.09.2016: Updated to pass 'kit' option. Dropdown always active.
 # 07.09.2016: Updated to include new filterProfile options.
 # 28.04.2016: 'Save as' textbox expandable.
 # 15.12.2015: Added attributes to result.
@@ -23,7 +24,6 @@
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 24.05.2013: Improved error message for missing columns.
-# 17.05.2013: listDataFrames() -> listObjects()
 
 #' @title Filter Profile
 #'
@@ -380,6 +380,7 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                                invert = val_invert,
                                sex.rm = val_sex,
                                qs.rm = val_qs,
+                               kit = val_kit,
                                debug = debug)
 
       # Add attributes.
@@ -430,8 +431,6 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       enabled(g0_refset_drp) <- TRUE
       enabled(g0_check_btn) <- TRUE
       
-      enabled(g0_kit_lbl) <- FALSE
-      enabled(g0_kit_drp) <- FALSE
       enabled(g0_kit_chk) <- FALSE
       
     } else if(val_opt == 2){
@@ -440,8 +439,6 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       enabled(g0_refset_drp) <- FALSE
       enabled(g0_check_btn) <- FALSE
       
-      enabled(g0_kit_lbl) <- TRUE
-      enabled(g0_kit_drp) <- TRUE
       enabled(g0_kit_chk) <- TRUE
       
     }

@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.09.2016: Fixed dataset saved to attributes.
 # 28.08.2016: First version.
 
 #' @title Calculate Heterozygote Balance
@@ -54,6 +55,7 @@ calculateHb <- function(data, ref, hb=1, kit=NULL, sex.rm=FALSE, qs.rm=FALSE,
   
   # Parameters that are changed by the function must be saved first.
   attr_data <- substitute(data)
+  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -247,17 +249,17 @@ calculateHb <- function(data, ref, hb=1, kit=NULL, sex.rm=FALSE, qs.rm=FALSE,
   res <- data.frame(DT2)
   
   # Add attributes to result.
+  attr(res, which="kit") <- kit
   attr(res, which="calculateHb, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="calculateHb, call") <- match.call()
   attr(res, which="calculateHb, date") <- date()
   attr(res, which="calculateHb, data") <- attr_data
-  attr(res, which="calculateHb, ref") <- substitute(ref)
+  attr(res, which="calculateHb, ref") <- attr_ref
   attr(res, which="calculateHb, hb") <- hb
   attr(res, which="calculateHb, ignore.case") <- ignore.case
   attr(res, which="calculateHb, exact") <- exact
   attr(res, which="calculateHb, word") <- word
-  attr(res, which="calculateHb, kit") <- kit
-  
+
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

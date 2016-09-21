@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 12.09.2016: Removed 'Lb' as a required column.
 # 07.09.2016: Re-named to tableHb.
 # 07.09.2016: Updated to use output from new function calculateHb.
 # 06.01.2016: Added attributes to result.
@@ -112,7 +113,7 @@ tableHb_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     val_obj <- svalue(f0g0_dataset_drp)
     
     # Check if suitable.
-    requiredCol <- c("Marker","Hb", "Lb")
+    requiredCol <- c("Marker","Hb")
     ok <- checkDataset(name=val_obj, reqcol=requiredCol,
                        env=env, parent=w, debug=debug)
     

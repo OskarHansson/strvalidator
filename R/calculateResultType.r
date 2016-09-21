@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
 # TODO: use string constants instead of hard coded.
+# TODO: add reference dataset for true complete profiles.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.09.2016: Added attributes to result.
 # 28.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 22.01.2014: Fixed bug by adding check that 'Height' is numeric and convert.
@@ -52,6 +54,9 @@ calculateResultType <- function(data, kit=NULL, add.missing.marker=TRUE,
                                 threshold=NULL, mixture.limits=NULL,
                                 partial.limits=NULL, subset.name=NA,
                                 marker.subset=NULL, debug=FALSE){
+  
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -277,6 +282,19 @@ calculateResultType <- function(data, kit=NULL, add.missing.marker=TRUE,
 	# Assign factors.
 	res$Type <- factor(res$Type, levels = factorLabels)
 	res$Subtype <- factor(res$Subtype, levels = factorLabelsSub)
+	
+	# Add attributes to result.
+	attr(res, which="kit") <- kit
+	attr(res, which="calculateResultType, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+	attr(res, which="calculateResultType, call") <- match.call()
+	attr(res, which="calculateResultType, date") <- date()
+	attr(res, which="calculateResultType, data") <- attr_data
+	attr(res, which="calculateResultType, add.missing.marker") <- add.missing.marker
+	attr(res, which="calculateResultType, threshold") <- threshold
+	attr(res, which="calculateResultType, mixture.limits") <- mixture.limits
+	attr(res, which="calculateResultType, partial.limits") <- partial.limits
+	attr(res, which="calculateResultType, subset.name") <- subset.name
+	attr(res, which="calculateResultType, marker.subset") <- marker.subset
 
   if(debug){
     print("head(res):")

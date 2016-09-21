@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.09.2016: Fixed factor levels in group drop-down after 18.09 change.
 # 27.06.2016: Fixed 'bins' not saved.
 # 16.06.2016: Implemented log option and number of bins.
 # 19.05.2016: Fixed update of drop-down and information when selecting a new dataset.
@@ -827,7 +828,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     }
     
     # Get data frames in global workspace.
-    groups <- unique(.gData$Group)
+    groups <- unique(as.character(.gData$Group))
     columns <- names(.gData)
     
     if(!is.null(groups)){

@@ -1704,7 +1704,7 @@ strvalidator <- function(debug=FALSE){
                                                   border=TRUE,
                                                   container = balance_g2) 
   
-  balance_g2[4,2] <- glabel(text="Summarize balance data in a table.",
+  balance_g2[4,2] <- glabel(text="Summarize intra-locus balance data in a table.",
                             container=balance_g2)
   
   addHandlerChanged(balance_table_btn, handler = function(h, ...) {

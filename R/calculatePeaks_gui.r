@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.09.2016: Added attributes to result.
+# 18.09.2016: Changed labels, added tooltips, changed one widget.
 # 29.04.2016: 'Save as' textbox expandable.
 # 27.08.2015: Updated text for option to calculate per marker.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -121,6 +123,7 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
       
       # Reset components.
       .gData <<- NULL
+      .gDataName <<- NULL
       svalue(g0_dataset_drp, index=TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -137,24 +140,26 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
                container = gv) 
 
   f1_no_ol_chk <- gcheckbox(text="Exclude off-ladder peaks (OL alleles).",
-                           checked = FALSE,
-                           container = f1)
+                           checked = FALSE, container = f1)
   
-  f1_per_marker_chk <- gcheckbox(text="Count peaks per marker (default is per sample).",
-                            checked = FALSE,
-                            container = f1)
+  f1_count_by_opt <- gradio(items=c("Count peaks by sample",
+                                    "Count peaks by marker."),
+                            selected = 1, container = f1)
   
   glabel(text="Define group labels (separate by comma):",
          container=f1, anchor=c(-1 ,0))
   f1_labels_edt <- gedit(text = "No contamination,Drop-in contamination,Gross contamination",
-                         width = 60,
-                         container = f1)
+                         width = 60, container = f1)
+  tooltip(f1_labels_edt) <- paste("Number labels must be one more than",
+                                "the number of cut-off points.",
+                                "The last group is defined by > than the last cut-off point.")
   
-  glabel(text="Define maximum number of peaks for each group (separate by comma):",
+  glabel(text="Define cut-off points (<=) for the groups (separate by comma):",
          container=f1, anchor=c(-1 ,0))
-  f1_bins_edt <- gedit(text = "0,2,3",
-                       width = 60,
-                       container = f1)
+  f1_bins_edt <- gedit(text = "0,2", width = 60, container = f1)
+  tooltip(f1_bins_edt) <- paste("Number of cut-off points must be one less than",
+                                "the number of group labels.",
+                                "The last group is defined by > than the last cut-off point.")
 
   # FRAME 2 ###################################################################
   
@@ -178,8 +183,9 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
     
     # Get values.
     val_data <- .gData
+    val_name_data <- .gDataName
     val_no_ol <- svalue(f1_no_ol_chk)
-    val_per_marker <- svalue(f1_per_marker_chk)
+    val_per_marker <- ifelse(svalue(f1_count_by_opt, index=TRUE)==1,FALSE,TRUE)
     val_labels <- svalue(f1_labels_edt)
     val_bins <- svalue(f1_bins_edt)
     val_name <- svalue(f2_save_edt)
@@ -187,6 +193,10 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
     # countPeaks require a vectors.
     val_labels <- unlist(strsplit(val_labels, ",", fixed = TRUE))
     val_bins <- as.numeric(unlist(strsplit(val_bins, ",", fixed = TRUE)))
+    
+    if(length(val_labels) == 0){
+      val_labels <- NULL
+    }
     
     if(!is.null(val_data)){
       
@@ -197,10 +207,17 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
       datanew <- calculatePeaks(data=val_data,
                                 bins=val_bins,
                                 labels=val_labels,
-                                nool=val_no_ol,
-                                permarker=val_per_marker,
+                                ol.rm=val_no_ol,
+                                by.marker=val_per_marker,
                                 debug=debug)
       
+      # Add attributes.
+      attr(datanew, which="calculatePeaks_gui, data") <- val_name_data
+      attr(datanew, which="calculatePeaks_gui, bins") <- val_bins
+      attr(datanew, which="calculatePeaks_gui, labels") <- val_labels
+      attr(datanew, which="calculatePeaks_gui, ol.rm") <- val_no_ol
+      attr(datanew, which="calculatePeaks_gui, by.marker") <- val_per_marker
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       
@@ -259,8 +276,8 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
       if(exists(".strvalidator_calculatePeaks_gui_bins", envir=env, inherits = FALSE)){
         svalue(f1_bins_edt) <- get(".strvalidator_calculatePeaks_gui_bins", envir=env)
       }
-      if(exists(".strvalidator_calculatePeaks_gui_permarker", envir=env, inherits = FALSE)){
-        svalue(f1_per_marker_chk) <- get(".strvalidator_calculatePeaks_gui_permarker", envir=env)
+      if(exists(".strvalidator_calculatePeaks_gui_countby", envir=env, inherits = FALSE)){
+        svalue(f1_count_by_opt) <- get(".strvalidator_calculatePeaks_gui_countby", envir=env)
       }
       if(debug){
         print("Saved settings loaded!")
@@ -278,7 +295,7 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
       assign(x=".strvalidator_calculatePeaks_gui_nool", value=svalue(f1_no_ol_chk), envir=env)
       assign(x=".strvalidator_calculatePeaks_gui_labels", value=svalue(f1_labels_edt), envir=env)
       assign(x=".strvalidator_calculatePeaks_gui_bins", value=svalue(f1_bins_edt), envir=env)
-      assign(x=".strvalidator_calculatePeaks_gui_permarker", value=svalue(f1_per_marker_chk), envir=env)
+      assign(x=".strvalidator_calculatePeaks_gui_countby", value=svalue(f1_count_by_opt), envir=env)
             
     } else { # or remove all saved values if false.
       
@@ -294,8 +311,8 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
       if(exists(".strvalidator_calculatePeaks_gui_bins", envir=env, inherits = FALSE)){
         remove(".strvalidator_calculatePeaks_gui_bins", envir = env)
       }
-      if(exists(".strvalidator_calculatePeaks_gui_permarker", envir=env, inherits = FALSE)){
-        remove(".strvalidator_calculatePeaks_gui_permarker", envir = env)
+      if(exists(".strvalidator_calculatePeaks_gui_countby", envir=env, inherits = FALSE)){
+        remove(".strvalidator_calculatePeaks_gui_countby", envir = env)
       }
       
       if(debug){

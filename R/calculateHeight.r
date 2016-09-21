@@ -5,6 +5,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.09.2016: Fixed attribute word not saved.
+# 16.09.2016: Change keep.na=FALSE to keep.na=TRUE for filterProfile.
+# 14.09.2016: Fixed error when homozygotes are given with double notation in ref.
 # 06.09.2016: Implemented word boundaries (filterProfile).
 # 06.09.2016: Fixed implementation of updated filterProfile function.
 # 29.08.2016: Implemented updated filterProfile function.
@@ -84,7 +87,8 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
 
   # Parameters that are changed by the function must be saved first.
   attr_data <- substitute(data)
-
+  attr_ref <- substitute(ref)
+  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
@@ -187,7 +191,7 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
     # Filter dataset.
     message("Extracting known alleles from dataset...")
     data <- filterProfile(data = data, ref = ref,
-                          add.missing.loci = FALSE, keep.na = FALSE, invert = FALSE, 
+                          add.missing.loci = FALSE, keep.na = TRUE, invert = FALSE, 
                           ignore.case = ignore.case, exact = exact, word = word,
                           sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug)
     
@@ -221,12 +225,17 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
     
     # Convert to data.table and calculate number of allele copies and expected peaks.
     DTref <- data.table(ref)
+    # This code is required to handle homozygotes with double notation.
+    DTref <- DTref[, list(Copies=unique(Copies)),
+                   by=list(Sample.Name, Marker, Allele)]
+    # Calculate then number of expected peaks.
     DTref[, Expected:=.N, by=list(Sample.Name)]
     
     # Add to dataset.
     data <- addData(data = data, new.data = DTref,
-                    by.col = "Sample.Name", then.by.col = "Marker", what = c("Copies","Expected"),
-                    exact = exact, debug = debug)
+                    by.col = "Sample.Name", then.by.col = "Marker",
+                    what = c("Copies","Expected"), exact = exact,
+                    debug = debug)
     message("Expected number of alleles added to dataset.")
     
   } else {
@@ -235,7 +244,7 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
     
     # Filter quality sensors and sex markers.
     data <- filterProfile(data = data, ref = NULL,
-                          add.missing.loci = FALSE, keep.na = FALSE, invert = FALSE, 
+                          add.missing.loci = FALSE, keep.na = TRUE, invert = FALSE, 
                           ignore.case = ignore.case, exact = exact, word = word,
                           sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
                           filter.allele = FALSE, debug = debug)
@@ -394,6 +403,7 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
 	attr(res, which="calculateHeight, call") <- match.call()
 	attr(res, which="calculateHeight, date") <- date()
 	attr(res, which="calculateHeight, data") <- attr_data
+	attr(res, which="calculateHeight, ref") <- attr_ref
 	attr(res, which="calculateHeight, na.replace") <- na.replace
 	attr(res, which="calculateHeight, add") <- add
 	attr(res, which="calculateHeight, exclude") <- exclude
@@ -401,6 +411,7 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
 	attr(res, which="calculateHeight, qs.rm") <- qs.rm
 	attr(res, which="calculateHeight, ignore.case") <- ignore.case
 	attr(res, which="calculateHeight, exact") <- exact
+	attr(res, which="calculateHeight, word") <- word
 	
 	# Return result.
 	return(res)

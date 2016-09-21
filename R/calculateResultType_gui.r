@@ -4,6 +4,7 @@
 
 ###############################################################################
 # CHANGE LOG (last 20 changes)
+# 18.09.2016: Added attributes to result.
 # 29.04.2016: 'Save as' textbox expandable.
 # 28.08.2015: Added importFrom.
 # 04.06.2015: Changed button label 'Calculate result type' to 'Calculate'.
@@ -40,6 +41,7 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
   
   # Global variables.
   .gData <- NULL
+  .gDataName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -127,6 +129,7 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Load or change components.
       .gData <<- get(val_obj, envir=env)
+      .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste("", samples, "samples")
       svalue(f2_save_edt) <- paste(val_obj, "_type", sep="")
@@ -140,6 +143,7 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gData <<- NULL
+      .gDataName <<- NULL
       svalue(g0_dataset_drp, index=TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -203,6 +207,8 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
   
   addHandlerChanged(calculate_btn, handler = function(h, ...) {
     
+    val_data <- .gData
+    val_name_data <- .gDataName
     val_threshold <- as.numeric(svalue(f1_rfu_edt))
     val_mix <- svalue(f1_mix_edt)
     val_par <- svalue(f1_par_edt)
@@ -286,13 +292,13 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
       print(val_kit)
     }
     
-    if(!is.null(.gData)){
+    if(!is.null(val_data)){
       
       # Change button.
       svalue(calculate_btn) <- "Processing..."
       enabled(calculate_btn) <- FALSE
   
-      datanew <- calculateResultType(data=.gData,
+      datanew <- calculateResultType(data=val_data,
                                      kit=val_kit,
                                      add.missing.marker=val_add,
                                      threshold=val_threshold,
@@ -302,6 +308,16 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
                                      marker.subset=val_marker,
                                      debug=debug)
       
+      # Add attributes.
+      attr(datanew, which="kit") <- val_kit
+      attr(datanew, which="calculateResultType_gui, data") <- val_name_data
+      attr(datanew, which="calculateResultType_gui, add.missing.marker") <- val_add
+      attr(datanew, which="calculateResultType_gui, threshold") <- val_threshold
+      attr(datanew, which="calculateResultType_gui, mixture.limits") <- val_mix
+      attr(datanew, which="calculateResultType_gui, partial.limits") <- val_par
+      attr(datanew, which="calculateResultType_gui, subset.name") <- val_subkit
+      attr(datanew, which="calculateResultType_gui, marker.subset") <- val_marker
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

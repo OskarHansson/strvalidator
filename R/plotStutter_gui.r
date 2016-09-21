@@ -75,7 +75,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   }
   
   # Main window.
-  w <- gwindow(title="Plot stutter proportions", visible=FALSE)
+  w <- gwindow(title="Plot stutter ratios", visible=FALSE)
   
   # Runs when window is closed.
   addHandlerDestroy(w, handler = function (h, ...) {

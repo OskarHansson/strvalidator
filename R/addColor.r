@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.09.2016: Fixed attribute saved dataset, and kit now saved correctly.
 # 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
 # 17.12.2014: Fixed error NA Dye for e.g. Yfiler Plus (added 'toupper' in 'match' calls).
@@ -63,6 +64,9 @@
 addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
                      ignore.case=FALSE, debug=FALSE){
   
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
@@ -368,11 +372,11 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
   }
   
   # Add attributes to result.
+  attr(data, which="kit") <- kit
   attr(data, which="addColor, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(data, which="addColor, call") <- match.call()
   attr(data, which="addColor, date") <- date()
-  attr(data, which="addColor, data") <- substitute(data)
-  attr(data, which="addColor, kit") <- kit
+  attr(data, which="addColor, data") <- attr_data
   attr(data, which="addColor, have") <- have
   attr(data, which="addColor, need") <- need
   attr(data, which="addColor, overwrite") <- overwrite

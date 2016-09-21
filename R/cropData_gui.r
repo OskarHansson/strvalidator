@@ -442,7 +442,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
         }
         
       }
-      
+
       if(debug){
         print("After action: .gData dim, str, head, tail:")
         print(dim(.gData))

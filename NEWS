@@ -1,11 +1,52 @@
+Version 1.7.9006
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - addColor
+  Fixed dataset saved to attributes.
+  Fixed attribute 'kit' saved with wrong name.
+  - calculateDropout
+  Fixed dataset saved to attributes.
+  Implemented new filterProfile function to remove sex markers and quality sensors.
+  - calculateHb
+  Fixed dataset saved to attributes.
+  - calculateHeight
+  Fixed parameter 'word' not saved to attributes.
+  Fixed error when homozygotes are given as double notation in reference dataset.
+  - calculatePeaks
+  Rewritten for efficiency using the data.table package.
+  Added factors to Group for correct order when creating plot.
+  - calculatePeaks_gui
+  Changed some labels, added tooltips, changed one widget.
+  - filterProfile
+  Now retains information in 'File.Name' and 'File.Time' when adding markers.
+  Fixed attribute 'kit' saved with wrong name.
+  - filterProfile_gui
+  Kit dropdown always active and now passes 'kit' to command line function.
+  - plotDistribution_gui
+  Fixed factor levels in 'Group' drop-down after.
+  - tableHb_gui
+  Removed 'Lb' as a required column.
+* Added attributes for the following functions:
+  - calculateResultType / calculateResultType_gui
+  - calculatePeaks_gui
+  - calculatePeaks
+* New tests
+  - test-calculateHeight
+  Uppdated with tests for complete negative samples.
+  Uppdated with test for homozygous double notation.
+  
 Version 1.7.0.9005
 ------------------------------------------------------------------------------
 * New functions
   - calculateHb, which replaces calculateBalance.
   - calculateHb_gui, which replaces calculateBalance_gui.
+  - tableHb, which replaces tableHb.
+  - tableHb_gui, which replaces tableHb_gui.
 * Removed functions
   - calculateBalance
   - calculateBalance_gui
+  - tableBalance
+  - tableBalance_gui
 * Bug fixes and improvements with the most significant listed below:
   - calculateBalance_gui
   Added missing argument to attribute list (per.dye).

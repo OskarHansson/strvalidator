@@ -294,8 +294,7 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
 
       # Fit a poisson distribution (estimate lambda parameter)
       maxpeaks <- max(DTsample$Peaks)
-      parms <- fitdistr(DTsample$Peaks, "poisson")
-#      parms <- MASS::fitdistr(DTsample$Peaks, "poisson")
+      parms <- MASS::fitdistr(DTsample$Peaks, "poisson")
       lambda <- parms$estimate
       sd_x <- as.numeric(parms$sd)
       model <- paste("Pois(", signif(lambda, 3), "), sd=", signif(sd_x, 3), sep="")

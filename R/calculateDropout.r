@@ -8,6 +8,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.09.2016: Fixed dataset saved to attributes.
+# 15.09.2016: Implemented new filterProfile function to remove sex markers and qs.
 # 29.06.2016: Added option to remove sex markers and quality sensor.
 # 09.01.2016: Added more attributes to result.
 # 07.12.2015: Fixed reference sample name subsetting bug.
@@ -119,6 +121,10 @@
 calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"),
                              ignore.case=TRUE, sex.rm=FALSE, qs.rm=TRUE,
                              kit=NULL, debug=FALSE){
+
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -238,92 +244,19 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
   }
 
   # PREPARE -------------------------------------------------------------------
-  
-  # Remove sex markers.
-  if(sex.rm){
-    
-    message("Removing sex markers defined in kit: ", kit)
-    
-    # Get sex markers.    
-    sexMarkers <- getKit(kit = kit, what = "Sex.Marker")
-    
-    if(debug){
-      print("Sex markers:")
-      print(sexMarkers)
-    }
-    
-    # Loop through and remove all sex markers in data.
-    message("Removing sex markers in 'data':")
-    for(i in seq(along = sexMarkers)){
-      
-      tmp1 <- nrow(data)
-      
-      data <- data[data$Marker != sexMarkers[i],]
-      
-      tmp2 <- nrow(data)
-      
-      message("Removed ", tmp1 - tmp2, " rows with marker ", sexMarkers[i])
-      
-    }
-    
-    # Loop through and remove all sex markers in ref.
-    message("Removing sex markers in 'ref':")
-    for(i in seq(along = sexMarkers)){
-      
-      tmp1 <- nrow(ref)
-      
-      ref <- ref[ref$Marker != sexMarkers[i],]
-      
-      tmp2 <- nrow(ref)
-      
-      message("Removed ", tmp1 - tmp2, " rows with marker ", sexMarkers[i])
-      
-    }
 
-  }
-  
-  # Remove quality sensors. 
-  if(qs.rm){
-
-    message("Removing quality sensors defined in kit: ", kit, ".")
+  # Remove sex markers and quality sensors from dataset.
+  if(sex.rm || qs.rm){
     
-    # Get quality sensors.
-    qsMarkers <- getKit(kit = kit, what = "Quality.Sensor")
+    message("Removing gender markers and/or quality sensors from dataset...")
+    data <- filterProfile(data = data, filter.allele = FALSE,
+                         sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+                         debug = debug)
     
-    if(debug){
-      print("Quality sensors:")
-      print(qsMarkers)
-    }
-    
-    # Loop through and remove all quality sensors in data.
-    message("Removing quality sensors in 'data':")
-    for(i in seq(along = qsMarkers)){
-      
-      tmp1 <- nrow(data)
-      
-      data <- data[data$Marker != qsMarkers[i],]
-      
-      tmp2 <- nrow(data)
-      
-      message("Removed ", tmp1 - tmp2,
-              " rows with quality sensor ", qsMarkers[i], ".")
-      
-    }
-
-    # Loop through and remove all quality sensors in ref.
-    message("Removing quality sensors in 'ref':")
-    for(i in seq(along = qsMarkers)){
-      
-      tmp1 <- nrow(ref)
-      
-      ref <- ref[ref$Marker != qsMarkers[i],]
-      
-      tmp2 <- nrow(ref)
-      
-      message("Removed ", tmp1 - tmp2,
-              " rows with quality sensor ", qsMarkers[i], ".")
-      
-    }
+    message("Removing gender markers and/or quality sensors from reference dataset...")
+    ref <- filterProfile(data = ref, filter.allele = FALSE,
+                         sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+                         debug = debug)
     
   }
 
@@ -1036,8 +969,8 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
   attr(dataDrop, which="calculateDropout, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(dataDrop, which="calculateDropout, call") <- match.call()
   attr(dataDrop, which="calculateDropout, date") <- date()
-  attr(dataDrop, which="calculateDropout, data") <- substitute(data)
-  attr(dataDrop, which="calculateDropout, ref") <- substitute(ref)
+  attr(dataDrop, which="calculateDropout, data") <- attr_data
+  attr(dataDrop, which="calculateDropout, ref") <- attr_ref
   attr(dataDrop, which="calculateDropout, threshold") <- threshold
   attr(dataDrop, which="calculateDropout, method") <- method
   attr(dataDrop, which="calculateDropout, ignore.case") <- ignore.case

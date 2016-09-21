@@ -412,7 +412,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
                           debug=debug)
         
         message("Average peak height added to result.")
-        
+
       }
       
       # Save data.

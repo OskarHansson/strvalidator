@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.09.2016: Now retains information in 'File.Name' and 'File.Time' when add markers.
+# 18.09.2016: Fixed attribute kit not save correct.
 # 06.09.2016: Added check for conflicting options filter.alleles and add.missing.loci.
 # 28.08.2016: Added option to use word boundaries for sample name matching.
 # 28.08.2016: Added options to remove sex markers and quality sensors.
@@ -73,7 +75,11 @@ filterProfile <- function(data, ref=NULL, add.missing.loci=FALSE, keep.na=FALSE,
                           ignore.case=TRUE, exact=FALSE, word=FALSE,
                           invert=FALSE, sex.rm=FALSE, qs.rm=FALSE, kit=NULL,
                           filter.allele=TRUE, debug=FALSE){
-
+  
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
+  attr_ref <- substitute(ref)
+  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("data:")
@@ -579,6 +585,27 @@ filterProfile <- function(data, ref=NULL, add.missing.loci=FALSE, keep.na=FALSE,
               message("Missing marker ", refMarkers[m],
                       " added for sample ", dataSampleNames[s])
               
+              
+              # Attempt to fill additional information required by other functions.
+              additionalColumns <- intersect(names(currentData),c("File.Name","File.Time"))
+
+              # Add missing values.              
+              for(a in seq(along=additionalColumns)){
+                
+                addValue <- unique(currentData[additionalColumns[a]])
+
+                if(length(addValue) > 1){
+                  message("Multiple candidates for missing information in column, ",
+                          additionalColumns[a])
+                  message("Using first candidate to fill data.frame: ",
+                          paste(addValue, collapse = ", "))
+                }
+                
+                # Add missing value.
+                tmpDf[additionalColumns[a]] <- addValue[1]
+                
+              }
+
             } else {
               
               # Filter alleles and add to selection.
@@ -609,6 +636,26 @@ filterProfile <- function(data, ref=NULL, add.missing.loci=FALSE, keep.na=FALSE,
                   print(paste("NA kept for marker", refMarkers[m]))
                 }
                 
+                # Attempt to fill additional information required by other functions.
+                additionalColumns <- intersect(names(currentData),c("File.Name","File.Time"))
+                
+                # Add missing values.              
+                for(a in seq(along=additionalColumns)){
+                  
+                  addValue <- unique(currentData[additionalColumns[a]])
+
+                  if(length(addValue) > 1){
+                    message("Multiple candidates for missing information in column, ",
+                            additionalColumns[a])
+                    message("Using first candidate to fill data.frame: ",
+                            paste(addValue, collapse = ", "))
+                  }
+                  
+                  # Add missing value.
+                  tmpDf[additionalColumns[a]] <- addValue[1]
+                  
+                }
+
               }
               
             }
@@ -667,11 +714,12 @@ filterProfile <- function(data, ref=NULL, add.missing.loci=FALSE, keep.na=FALSE,
   }
   
   # Add attributes to result.
+  attr(res, which="kit") <- kit
   attr(res, which="filterProfile, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
   attr(res, which="filterProfile, call") <- match.call()
   attr(res, which="filterProfile, date") <- date()
-  attr(res, which="filterProfile, data") <- substitute(data)
-  attr(res, which="filterProfile, ref") <- substitute(ref)
+  attr(res, which="filterProfile, data") <- attr_data
+  attr(res, which="filterProfile, ref") <- attr_ref
   attr(res, which="filterProfile, add.missing.loci") <- add.missing.loci
   attr(res, which="filterProfile, keep.na") <- keep.na
   attr(res, which="filterProfile, ignore.case") <- ignore.case
@@ -680,7 +728,6 @@ filterProfile <- function(data, ref=NULL, add.missing.loci=FALSE, keep.na=FALSE,
   attr(res, which="filterProfile, invert") <- invert
   attr(res, which="filterProfile, sex.rm") <- sex.rm
   attr(res, which="filterProfile, qs.rm") <- qs.rm
-  attr(res, which="filterProfile, kit") <- kit
   attr(res, which="filterProfile, filter.allele") <- filter.allele
   
   # RETURN --------------------------------------------------------------------
