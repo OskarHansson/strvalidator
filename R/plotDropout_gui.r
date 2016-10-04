@@ -2,7 +2,7 @@
 # TODO LIST
 # TODO: Custom colors.
 # TODO: Just one plot button, and a dropdown to select column to sort by. Ascend/descen+numeric/character
-# TODO: ...
+# TODO: New plots Dotplot(H) and Dotplot(Ph).
 
 ################################################################################
 # CHANGE LOG (last 20 changes)

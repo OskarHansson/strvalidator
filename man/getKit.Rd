@@ -34,7 +34,7 @@ marker color, marker repeat unit size (bp), minimum marker size,
 maximum marker, marker offset (bp), flag for sex markers (TRUE/FALSE).
 
 If no matching kit or kit index is found NA is returned.
-If 'NULL' or '0' a vector of available kits is printed and NA returned.
+If kit='NULL' or '0' a vector of available kits is printed and NA returned.
 }
 \examples{
 # Show all information stored for kit with short name 'ESX17'.

@@ -85,7 +85,7 @@ print(res)
 }
 \references{
 Torben Tvedebrink et.al.,
- Performance of two 17 locus forensic identi???cation STR kits-Applied
+ Performance of two 17 locus forensic identification STR kits-Applied
  Biosystems's AmpFlSTR NGMSElect and Promega's PowerPlex ESI17 kits,
  Forensic Science International: Genetics, Volume 6, Issue 5, September 2012,
  Pages 523-531, ISSN 1872-4973, 10.1016/j.fsigen.2011.12.006.

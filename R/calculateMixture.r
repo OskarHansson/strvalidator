@@ -2,9 +2,11 @@
 # TODO LIST
 # TODO: Option to use a minimum RFU for dropped out alleles?
 # TODO: Quite complicated code, rewrite using matrix calculations?
+# TODO: Implement ignore.case etc.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 30.09.2016: Fixed a sample name mathcing bug (now really works as check subsetting in gui).
 # 29.08.2014: Added check for uniqueness between reference datasets.
 # 28.08.2014: Fixed bug in drop-out of minor in If 3: AA:AB | (A-B)/(A+B). 
 # 06.07.2014: First version.
@@ -145,7 +147,7 @@ calculateMixture <- function(data, ref1, ref2, ol.rm=TRUE,
   # Check height.
   if(!is.numeric(data$Height)){
     data$Height <- as.numeric(data$Height)
-    message("'height' converted to numeric.")
+    message("'Height' converted to numeric.")
   }
   
   # Result counter.
@@ -202,11 +204,11 @@ calculateMixture <- function(data, ref1, ref2, ol.rm=TRUE,
   # Loop over unique reference sample names.
   for (r in seq(1:smpl)) {
 
+    # Create combined regex name.
+    combRegex <- paste(".*", sampleNamesRef1[r], ".*", sampleNamesRef2[r], ".*", sep="")
     # Select current mixture samples.
-    selRef1 <- grepl(sampleNamesRef1[r], data$Sample.Name, fixed=TRUE)
-    selRef2 <- grepl(sampleNamesRef2[r], data$Sample.Name, fixed=TRUE)
-    selection <- selRef1 & selRef2
-    
+    selection <- grepl(combRegex, data$Sample.Name)
+
     # Enter loop only if matching samples.
     if(any(selection)){
       

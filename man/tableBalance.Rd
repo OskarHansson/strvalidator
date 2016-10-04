@@ -7,7 +7,8 @@
 tableBalance(data, scope = "locus", quant = 0.05)
 }
 \arguments{
-\item{data}{data frame from a balance analysis by \code{calculateBalance}.}
+\item{data}{data frame from a balance analysis by \code{calculateHb}
+and \code{calculateLb}.}
 
 \item{scope}{string, summarize 'global' or 'locus'.}
 
@@ -17,16 +18,14 @@ tableBalance(data, scope = "locus", quant = 0.05)
 data.frame with summarized result.
 }
 \description{
-Summarize balance analysis data in table format.
+Summarize Hb or Lb analysis data in table format.
 }
 \details{
-Summarize the balance analysis in table format with different scope.
+Summarize the Hb or Lb analysis in table format with different scope.
 (locus, or global). Returns a dataframe with columns for marker name
-'Marker', number of allele ratios 'Hb.n', the minimum observed allele ratio
-'Hb.Min', the mean allele ratio 'Hb.Mean', its standard deviation 'Hb.Stdv',
-the XXth percentile 'Hb.Perc.XX', number of locus ratios 'Lb.n',
-the minimum observed locus ratio 'Lb.Min', the mean locus ratio 'Lb.Mean',
-its standard deviation 'Lb.Stdv', and the XXth percentile 'Lb.Perc.XX'.
+'Marker', number of allele ratios 'Xb.n', the minimum observed allele ratio
+'Xb.Min', the mean allele ratio 'Xb.Mean', its standard deviation 'Xb.Stdv',
+the XXth percentile 'Xb.Perc.XX'
 For more details see \code{min}, \code{mean}, \code{sd}, \code{quantile}.
 }
 

@@ -4,8 +4,10 @@
 \alias{filterProfile}
 \title{Filter Profile}
 \usage{
-filterProfile(data, ref, add.missing.loci = FALSE, keep.na = FALSE,
-  ignore.case = TRUE, exact = FALSE, invert = FALSE, debug = FALSE)
+filterProfile(data, ref = NULL, add.missing.loci = FALSE, keep.na = FALSE,
+  ignore.case = TRUE, exact = FALSE, word = FALSE, invert = FALSE,
+  sex.rm = FALSE, qs.rm = FALSE, kit = NULL, filter.allele = TRUE,
+  debug = FALSE)
 }
 \arguments{
 \item{data}{data frame with genotype data in 'slim' format.}
@@ -22,7 +24,19 @@ TRUE keep loci/sample even if no matching allele.}
 
 \item{exact}{logical TRUE use exact matching of sample names.}
 
+\item{word}{logical TRUE adds word boundaries when matching sample names.}
+
 \item{invert}{logical TRUE filter peaks NOT matching the reference.}
+
+\item{sex.rm}{logical TRUE removes sex markers defined by 'kit'.}
+
+\item{qs.rm}{logical TRUE removes quality sensors defined by 'kit'.}
+
+\item{kit}{character string defining the kit used.
+If NULL autodetection will be attempted.}
+
+\item{filter.allele}{logical TRUE filter known alleles. FALSE increase the
+performance if only sex markers or quality sensors shold be removed.}
 
 \item{debug}{logical indicating printing debug information.}
 }
@@ -37,7 +51,8 @@ Filters out the peaks matching (or not matching) specified known profiles
 from typing data containing 'noise' such as stutters.
 If 'ref' does not contain a 'Sample.Name' column it will be used
 as reference for all samples in 'data'. The 'invert' option filters out
-peaks NOT matching the reference (e.g. drop-in peaks).
+peaks NOT matching the reference (e.g. drop-in peaks). Sex markers and 
+quality sensors can be removed.
 NB! add.missing.loci overrides keep.na.
 Returns data where allele names match/not match 'ref' allele names.
 Required columns are: 'Sample.Name', 'Marker', and 'Allele'.

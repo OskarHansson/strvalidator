@@ -4,16 +4,19 @@
 \alias{calculateHeight}
 \title{Calculate Peak Height.}
 \usage{
-calculateHeight(data, na = NULL, add = TRUE, exclude = NULL,
-  sex.rm = FALSE, qs.rm = FALSE, kit = NULL, debug = FALSE)
+calculateHeight(data, ref = NULL, na.replace = NULL, add = TRUE,
+  exclude = NULL, sex.rm = FALSE, qs.rm = FALSE, kit = NULL,
+  ignore.case = TRUE, exact = FALSE, word = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{data.frame with at least columns 'Sample.Name' and 'Height'.}
 
-\item{na}{replaces NA values.}
+\item{ref}{data.frame with at least columns 'Sample.Name' and 'Allele'.}
 
-\item{add}{logical default is TRUE which will add/overwrite columns
-'H', 'TPH', and 'Peaks' in the provided 'data'.}
+\item{na.replace}{replaces NA values in the final result.}
+
+\item{add}{logical default is TRUE which will add or overwrite columns
+'TPH', 'Peaks', 'H', and 'Proportion' in the provided 'data'.}
 
 \item{exclude}{character vector (case sensitive) e.g. "OL" excludes rows with
 "OL" in the 'Allele' column.}
@@ -24,6 +27,12 @@ calculateHeight(data, na = NULL, add = TRUE, exclude = NULL,
 
 \item{kit}{character, required if sex.rm=TRUE or qs.rm=TRUE to define the kit.}
 
+\item{ignore.case}{logical TRUE ignores case in sample name matching.}
+
+\item{exact}{logical TRUE for exact sample name matching.}
+
+\item{word}{logical TRUE to add word boundaries to sample name matching.}
+
 \item{debug}{logical indicating printing debug information.}
 }
 \value{
@@ -33,14 +42,21 @@ data.frame with with at least columns 'Sample.Name', 'TPH', and 'Peaks'.
 Calculate peak height metrics for samples.
 }
 \details{
-Calculates the average peak height (H) and/or the total peak height (TPH) for each sample.
-To enable calculation of H the sample data must contain a column "Heterozygous",
-where 1 = heterozygous loci, and 0 = homozygous loci as known from the reference sample.
-Calculates H according to the formula:
+Calculates the total peak height (TPH), and number of observed peaks (Peaks),
+for each sample by default. If a reference dataset is provided average peak
+height (H), and profile proportion (Proportion) are calculated.
+
+H is calculated according to the formula:
 \eqn{H = sum(peak heights)/(n[het] + 2n[hom]}
 Where:
 n[het] = number of observed heterozygous alleles
 n[hom] = number of observed homozygous alleles
+
+Tip: If it is known that all expected peaks are observed and no unexpected
+peaks are present, the dataset can be used as a reference for itself.
+
+Note: If a reference dataset is provided the known alleles will be extracted
+from the dataset.
 }
 \references{
 Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,

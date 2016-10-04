@@ -1,5 +1,29 @@
-Version 1.7.9006
+Version 1.8.0
 ------------------------------------------------------------------------------
+* New built in datasets intended for tutorials and tests:
+  - Fusion example data for dropout analysis (Thanks to Dixie Peters).
+  set6 (dataset)
+  ref61 (Marker order is different from set6. Includes a Y marker with NA.)
+  ref62 (Marker order is same as set6. Includes a Y marker with NA.)
+  - ESSplex SE QS example data for inhibition analysis.
+  set7 (dataset)
+  ref7 (reference dataset)
+* New functions
+  - plotContamination_gui
+  - calculateCopies
+  - calculateCopies_gui
+  - calculateHb
+  - calculateHb_gui
+  - tableHb
+  - tableHb_gui
+* Removed functions
+  - calculateBalance
+  - calculateBalance_gui
+* Replaced functions:
+  - calculateHeterozygous -> calculateCopies (faster and more functions)
+  - calculateHeterozygous_gui -> calculateCopies_gui (faster and more functions)
+  - calculateBalance -> calculateHb (faster and more robust)
+  - calculateBalance_gui -> calculateHb_gui (faster and more robust)
 * Bug fixes and improvements with the most significant listed below:
   - addColor
   Fixed dataset saved to attributes.
@@ -20,53 +44,28 @@ Version 1.7.9006
   - filterProfile
   Now retains information in 'File.Name' and 'File.Time' when adding markers.
   Fixed attribute 'kit' saved with wrong name.
+  New options to filter sex markers and quality sensors.
   - filterProfile_gui
   Kit dropdown always active and now passes 'kit' to command line function.
-  - plotDistribution_gui
-  Fixed factor levels in 'Group' drop-down after.
-  - tableHb_gui
-  Removed 'Lb' as a required column.
-* Added attributes for the following functions:
-  - calculateResultType / calculateResultType_gui
-  - calculatePeaks_gui
-  - calculatePeaks
-* New tests
-  - test-calculateHeight
-  Uppdated with tests for complete negative samples.
-  Uppdated with test for homozygous double notation.
-  
-Version 1.7.0.9005
-------------------------------------------------------------------------------
-* New functions
-  - calculateHb, which replaces calculateBalance.
-  - calculateHb_gui, which replaces calculateBalance_gui.
-  - tableHb, which replaces tableHb.
-  - tableHb_gui, which replaces tableHb_gui.
-* Removed functions
-  - calculateBalance
-  - calculateBalance_gui
-  - tableBalance
-  - tableBalance_gui
-* Bug fixes and improvements with the most significant listed below:
-  - calculateBalance_gui
-  Added missing argument to attribute list (per.dye).
-  - filterProfile / filterProfile_gui
   New options to filter sex markers and quality sensors.
   - calculateLb
   Implemented the new filterProfile.
+  Fixed 'data' saved as attribute.
   - calculateHeight
   Implemented the new filterProfile, with word boundary option.
+  - plotDistribution_gui
+  Fixed factor levels in 'Group' drop-down after change in calculatePeaks.
+  - tableHb_gui
+  Removed 'Lb' as a required column.
+  - calculateConcordance / calculateConcordance_gui
+  Added option 'list.all' to return missing samples in the result.
   - calculateSlope / calculateSlope_gui
   Implemented the new filterProfile, with word boundary option.
-
-
-Version 1.7.0.9004
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
   - calculateHeight_gui
   Completely rewritten using data.table for better performance.
   Calculates total peak height (TPH) and number of peaks (Peaks) by default.
   Given a reference dataset, average peak height (H) and profile proportion (Proportion) are calculated.
+  Fixed options 'sex.rm' and 'qs.rm' not saved.
   - addData
   Now handles empty dataset by returning unchanged.
   Fixed detection and conversion of data.table.
@@ -75,39 +74,27 @@ Version 1.7.0.9004
   - calculateLb_gui
   Implemented the new calculateHeight.
   - calculateBalance_gui
+  Added missing argument to attribute list (per.dye).
   Implemented the new calculateHeight.
   - calculateAT6
   Implemented the new calculateHeight.
-* Replaced functions:
-  -calculateHeterozygous/_gui -> calculateCopies/_gui (faster and more functions)
-
-
-Version 1.7.0.9003
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
   - maskAT
   Fixed error if NA in reference profiles (Y markers in female profiles).
-
-Version 1.7.0.9002
-------------------------------------------------------------------------------
-* New function
-  - plotContamination_gui
-  
-Version 1.7.0.9001
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - calculateConcordance / calculateConcordance_gui
-  Added option 'list.all' to return missing samples in the result.
+  - tableBalance / tableBalance_gui
+  Rewritten to use data.table for increased efficiency.
+  Now calculates summary statistics for both Hb and Lb data.
+  - calculateMixture
+  Fixed name matching bug. Now works as shown in check subsetting.
+* Added attributes for the following functions:
+  - calculateResultType / calculateResultType_gui
+  - calculatePeaks_gui
+  - calculatePeaks
+* New tests
+  - test-calculateHeight
+  Uppdated with tests for complete negative samples.
+  Uppdated with test for homozygous double notation.
   - test-calculateConcordance
-  Added test 04 to test option 'list.all'.
-
-Version 1.7.0.9000
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - calculateLb
-  Fixed 'data' saved as attribute.
-  - calculateHeight_gui
-  Fixed options 'sex.rm' and 'qs.rm' not saved.
+  Added test for option 'list.all'.
 
 Version 1.7.0
 ------------------------------------------------------------------------------

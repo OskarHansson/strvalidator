@@ -23,7 +23,7 @@ used for all groups.}
 
 \item{debug}{logical indicating printing debug information.}
 
-\item{...}{additional arguments for \code{\link{filterProfile}} function}
+\item{...}{additional arguments to the \code{\link{filterProfile}} function}
 }
 \value{
 data.frame with with columns 'Sample.Name', 'Kit', 'Group', 'Slope',

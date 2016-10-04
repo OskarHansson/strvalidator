@@ -4,23 +4,25 @@
 \alias{calculatePeaks}
 \title{Calculate Peaks}
 \usage{
-calculatePeaks(data, bins = c(0, 2, 3), labels = c("No contamination",
-  "Drop-in contamination", "Gross contamination"), nool = FALSE,
-  permarker = FALSE, debug = FALSE)
+calculatePeaks(data, bins = c(0, 2, 3), labels = NULL, ol.rm = FALSE,
+  by.marker = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{data frame containing at least the columns
 'Sample.Name' and 'Height'.}
 
-\item{bins}{numeric vector containing the maximum number of peaks required
-for a sample to get a specific label.}
+\item{bins}{numeric vector containing the cut-off points defined as
+maximum number of peaks for all but the last label, which is anything
+above final cut-off. Must be sorted in ascending order.}
 
-\item{labels}{character vector defining the group labels (if any).}
+\item{labels}{character vector defining the group labels.
+Length must be equal to number of bins + one label for anything above the
+final cut-off.}
 
-\item{nool}{logical if TRUE, off-ladder alleles 'OL' peaks will be discarded.
+\item{ol.rm}{logical if TRUE, off-ladder alleles 'OL' peaks will be discarded.
 if FALSE, all peaks will be included in the calculations.}
 
-\item{permarker}{logical if TRUE, peaks will counted per marker.
+\item{by.marker}{logical if TRUE, peaks will counted per marker.
 if FALSE, peaks will counted per sample.}
 
 \item{debug}{logical indicating printing debug information.}
@@ -33,9 +35,9 @@ Calculates the number of peaks in samples.
 }
 \details{
 Count the number of peaks in a sample profile based on values in the 
-'Height' column. Each sample can be labelled according to custom labels
-defined by the number of peaks. Peaks can be counted per sample or per
-marker per sample.
+'Height' column. Each sample is labelled according to custom labels
+defined by the number of peaks. Peaks can be counted by sample or by
+marker within a sample.
 There is an option to discard off-ladder peaks ('OL').
 The default purpose for this function is to categorize contamination in
 negative controls, but it can be used to simply calculating the number of
@@ -46,9 +48,9 @@ NB! A column 'Group' for the sample group will be created.
  If present it will be overwritten.
 NB! A column 'Id' will be created by combining the content in the
  'Sample.Name' and 'File' column (if available).
- The unique entries in the 'Id' column will be the definition of a sample.
+ The unique entries in the 'Id' column will be the definition of a unique sample.
  If 'File' is present this allows for identical sample names in different
- batches (files) to be identified as different samples.
+ batches (files) to be identified as unique samples.
  If 'Id' is present it will be overwritten.
 }
 

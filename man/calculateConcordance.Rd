@@ -5,7 +5,8 @@
 \title{Calculate Concordance.}
 \usage{
 calculateConcordance(data, kit.name = NA, no.marker = "NO MARKER",
-  no.sample = "NO SAMPLE", delimeter = ",", debug = FALSE)
+  no.sample = "NO SAMPLE", delimeter = ",", list.all = FALSE,
+  debug = FALSE)
 }
 \arguments{
 \item{data}{list of data frames in 'slim' format with at least columns
@@ -21,6 +22,8 @@ they will be numbered.}
 
 \item{delimeter}{character to separate the alleles in a genotype.
 Default is comma e.g '12,16'.}
+
+\item{list.all}{logical TRUE to return missing samples.}
 
 \item{debug}{logical indicating printing debug information.}
 }

@@ -12,7 +12,7 @@ calculateSpike(data, threshold = NULL, tolerance = 2, kit = NULL,
 
 \item{threshold}{numeric number of peaks of similar size in different dye
 channels to pass as a possible spike (NULL = number of dye channels
-minus one to allow for on unlabelled peak).}
+minus one to allow for one unlabelled peak).}
 
 \item{tolerance}{numeric tolerance for Size. For the quick and dirty
 rounding method e.g. 1.5 rounds Size to +/- 0.75 bp. For the slower but

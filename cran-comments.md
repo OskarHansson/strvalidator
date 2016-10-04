@@ -1,15 +1,6 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* Removed the 'revdep' folder that was created by running 'revdep_check' after the CRAN check.
-* The package passed a new CRAN check.
-
-* There is an ERROR on the CRAN Package Check Results page for flavour 'r-release-osx-x86_64-mavericks'.
-I don't know how to fix this and have no access to an OSX system.
-
 ## Test environments
-* local Windows 7 (64-bit) install, R 3.3.1, RStudio 0.99.902
-* win-builder: devel 2016-06-30 r70858
+* local Windows 7 (64-bit) install, R 3.3.1, RStudio 0.99.903
+* win-builder: R Under development (unstable) (2016-10-02 r71437)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
@@ -23,8 +14,10 @@ Maintainer: 'Oskar Hansson <oskar.hansson@fhi.no>'
   STR (4:60, 18:13)
   SWGDAM (22:6)
 
-Response: Abbreviations are spelled out.
+OSKAR: Abbreviations are spelled out.
 
 ## Downstream dependencies
 I have also run R CMD check on downstream dependencies of strvalidator:
-There are currently only one dependent package. It passed the check.
+There are currently only one dependent package.
+The package pcrsim needed minor updates and version 1.0.1 will be submitted.
+Version 1.0.1 passed the check.
