@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Disable button 'Save as object' for complex plots.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.10.2016: Added '(data point)' to y title when mean is from data points.
 # 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom grid unit.c, gridExtra arrangeGrob, and ggplot2.
 # 11.11.2015: Added more themes.
@@ -786,7 +787,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
           
           mainTitle <- "Allele data point range for allelic ladders"
           
-          yTitle <- "Deviation from mean"
+          yTitle <- "Deviation from mean (data point)"
           
           if(val_axis == "Mean"){
             xTitle <- "Mean scan number in data points"

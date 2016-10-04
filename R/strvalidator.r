@@ -6,6 +6,12 @@
 # TODO: Multiple selection not working.
 # TODO: USe viwweports instead of grid.arrange in complex plots?
 # http://www.imachordata.com/extra-extra-get-your-gridextra/#comment-146
+# TODO: Bug in 'save description': if project A is open in the 'workspace' and
+# description is changed in 'Projects' and the project is save from the ws
+# the variable holding the description will be overwritten by an empty/previous value.
+# (must check which project is open and update both?)
+# TODO: Open projects folder does not update 'projects' list (to empty) if no
+# R files in selected folder.
 
 # IMPORTANT: To manually run R CMD check in RStudio all packages must be installed in
 # both the 32 and 64 bit version. Make sure it is possible to start manually
