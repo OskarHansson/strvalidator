@@ -1,11 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: Option to remove old datasets
-# TODO: Option to use rbind.fill to combine datasets when columns are not identical.
-#       Drawback: can increase the risk of people messing up their data...
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.10.2016: Changed to rbind.fill
+# 10.10.2016: Check for column names no longer require identical order.
 # 28.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 29.07.2014: Changed name concatenate_gui -> combine_gui.
@@ -22,8 +22,10 @@
 #' GUI for combining two datasets.
 #'
 #' @details
-#' Simple GUI to combine two datasets using the \code{\link{rbind}} function.
-#' NB! Datasets must have identical column names.
+#' Simple GUI to combine two datasets using the \code{\link{rbind.fill}}
+#' function.
+#' NB! Datasets must have identical column names but not necessarily
+#' in the same order.
 #' 
 #' @param env environment in wich to search for data frames.
 #' @param debug logical indicating printing debug information.
@@ -32,6 +34,7 @@
 #' @export
 #' 
 #' @importFrom utils help
+#' @importFrom plyr rbind.fill
 #' 
 #' @return TRUE
 
@@ -199,11 +202,11 @@ combine_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
   
   addHandlerChanged(combine_btn, handler = function(h, ...) {
     
-    colOk <- all(names(.gData1) == names(.gData2))
+    colOk <- all(names(.gData1) %in% names(.gData2))
     
     if (colOk){
       
-      datanew <- rbind(.gData1,.gData2)
+      datanew <- plyr::rbind.fill(.gData1,.gData2)
       val_name <- svalue(f2_name)
       
       # Save data.

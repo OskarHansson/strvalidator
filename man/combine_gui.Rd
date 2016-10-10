@@ -20,7 +20,9 @@ TRUE
 GUI for combining two datasets.
 }
 \details{
-Simple GUI to combine two datasets using the \code{\link{rbind}} function.
-NB! Datasets must have identical column names.
+Simple GUI to combine two datasets using the \code{\link{rbind.fill}}
+function.
+NB! Datasets must have identical column names but not necessarily
+in the same order.
 }
 

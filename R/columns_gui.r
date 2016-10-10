@@ -1,6 +1,6 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Separate action and save with buttons "Execute" and "Save" to allow multiple actions.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
