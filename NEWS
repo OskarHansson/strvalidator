@@ -1,3 +1,12 @@
+Version 1.8.0.9001
+------------------------------------------------------------------------------
+
+* Bug fixes and improvements with the most significant listed below:
+  - plotDistribution_gui
+  Added controls for x and y axis range.
+  No longer required to select a group if column Group is present.
+
+
 Version 1.8.0.9000
 ------------------------------------------------------------------------------
 
