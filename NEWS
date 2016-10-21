@@ -1,3 +1,10 @@
+Version 1.8.0.9002
+------------------------------------------------------------------------------
+
+* Bug fixes and improvements with the most significant listed below:
+  - calculateAT6
+  Fixes "Error in calculateHeight: 'kit' can't be NULL if sex.rm=TRUE
+  
 Version 1.8.0.9001
 ------------------------------------------------------------------------------
 

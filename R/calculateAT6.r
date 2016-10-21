@@ -1,12 +1,14 @@
 ################################################################################
 # TODO LIST
 # TODO: Calculate per dye channel.
+# TODO: Implement 'kit' and use that for arguments sex.rm and qs.rm.
 
 # NOTE: Column names used for calculations with data.table is declared
 # in globals.R to avoid NOTES in R CMD CHECK.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 21.10.2016: calculateHeterozygous sex.rm and qs.rm set to FALSE.
 # 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
 # 30.11.2015: Added 'NB!' in the description.
 # 30.11.2015: Remove rows with NA. Added 'what' parameter to 'addData'.
@@ -44,6 +46,7 @@
 #' this manner need to be calculated for each color and for all preparations
 #' (i.e., different injections, sample preparation volumes, post-PCR cleanup,
 #' etc.).
+#' NB! Quality sensors must be removed prior to analysis.
 #' 
 #' @param data data.frame containing at least columns 'Sample.Name', 'Marker',
 #'  'Allele', and 'Height'.
@@ -176,8 +179,8 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
 
   # Calculate the average peak height.
   dfHeight <- calculateHeight(data = data, ref = ref, na.replace = 0,
-                              add = FALSE, exclude = NULL, sex.rm = TRUE,
-                              qs.rm = TRUE, kit = NULL,
+                              add = FALSE, exclude = NULL, sex.rm = FALSE,
+                              qs.rm = FALSE, kit = NULL,
                               ignore.case = ignore.case,
                               exact = FALSE, debug=debug)
   
