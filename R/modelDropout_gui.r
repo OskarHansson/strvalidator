@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.11.2016: Added reference.
 # 16.06.2016: 'Save as' textbox expandable.
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
@@ -25,8 +26,6 @@
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
 # 16.01.2014: Changed according to new column names in 'calculateDropout' res.
 # 13.11.2013: Implemented 'Hosmer-Lemeshow test'.
-# 13.11.2013: Nicer code for multiple input choices to model + bug in limit x/y.
-# 06.11.2013: Fixed prediction interval for log.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -55,7 +54,7 @@
 #' 
 #' Using the scored drop-out events and the peak heights of the surviving
 #' alleles the probability of drop-out can be modelled by logistic regression
-#' as described in Appendix B the first reference.
+#' as described in Appendix B in reference [1].
 #' P(dropout|H) = B0 + B1*H, where 'H' is the peak height or log(peak height).
 #' This produces a plot with the predicted probabilities for a range of peak heights.
 #' There are options to print the model parameters, mark the stochastic
@@ -66,12 +65,11 @@
 #' greater than the specified threshold limit, at the conservative peak height,
 #' is less than a specified value (e.g. 1-0.95=0.05). By default the gender
 #' marker is excluded from the dataset used for modelling, and the peak height
-#' is used as explanatory variable. The average peak height 'H' can be used
-#' instead of the allele/locus peak height. Optionally, the logarithm of the peak
-#' height can be used. To evaluate the goodness of fit for the logistic
-#' regression the Hosmer-Lemeshow test is used. A value below 0.05 indicates
-#' a poor fit. Alternatives to the logistic regression method are discussed in
-#' reference 4 and 5. [13,32].
+#' is used as explanatory variable. The logarithm of the average peak height 'H'
+#' can be used instead of the allele/locus peak height [3]. To evaluate the
+#' goodness of fit for the logistic regression the Hosmer-Lemeshow test is
+#' used [4]. A value below 0.05 indicates a poor fit. Alternatives to the
+#' logistic regression method are discussed in reference [5] and [6].
 #' 
 #' Explanation of the result:
 #' Dropout - all alleles are scored according to the limit of detection threshold (LDT).
@@ -93,7 +91,7 @@
 #' @param parent widget to get focus when finished.
 #' 
 #' @references
-#' Peter Gill et.al.,
+#' [1] Peter Gill et.al.,
 #'  DNA commission of the International Society of Forensic Genetics:
 #'  Recommendations on the evaluation of STR typing results that may
 #'  include drop-out and/or drop-in using probabilistic methods,
@@ -101,28 +99,34 @@
 #'  Pages 679-688, ISSN 1872-4973, 10.1016/j.fsigen.2012.06.002.
 #' \url{http://www.sciencedirect.com/science/article/pii/S1872497312001354}
 #' @references
-#' Peter Gill, Roberto Puch-Solis, James Curran,
+#' [2] Peter Gill, Roberto Puch-Solis, James Curran,
 #'  The low-template-DNA (stochastic) threshold-Its determination relative to
 #'  risk analysis for national DNA databases,
 #'  Forensic Science International: Genetics, Volume 3, Issue 2, March 2009,
 #'  Pages 104-111, ISSN 1872-4973, 10.1016/j.fsigen.2008.11.009.
 #' \url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
 #' @references
-#' H. DW Jr., S. Lemeshow, Applied Logistic Regression, John Wiley & Sons, 2004.
+#' [3] Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
+#'  Estimating the probability of allelic drop-out of STR alleles in forensic genetics,
+#'  Forensic Science International: Genetetics, Volume 3, Issue 4, September 2009,
+#'  Pages 222-226, ISSN 1872-4973, 10.1016/j.fsigen.2009.02.002.
+#'  \url{http://www.sciencedirect.com/science/article/pii/S1872497309000398}
 #' @references
-#' A.A. Westen, L.J.W. Grol, J. Harteveld, A.S. Matai, P. de Knijff, T. Sijen,
+#' [4] H. DW Jr., S. Lemeshow, Applied Logistic Regression, John Wiley & Sons, 2004.
+#' @references
+#' [5] A.A. Westen, L.J.W. Grol, J. Harteveld, A.S. Matai, P. de Knijff, T. Sijen,
 #'  Assessment of the stochastic threshold, back- and forward stutter filters
 #'  and low template techniques for NGM,
 #'  Forensic Science International: Genetetics, Volume 6, Issue 6 December 2012,
 #'  Pages 708-715, ISSN 1872-4973, 10.1016/j.fsigen.2012.05.001.
 #'  \url{http://www.sciencedirect.com/science/article/pii/S1872497312001172}
 #' @references
-#' R. Puch-Solis, A.J. Kirkham, P. Gill, J. Read, S. Watson, D. Drew,
+#' [6] R. Puch-Solis, A.J. Kirkham, P. Gill, J. Read, S. Watson, D. Drew,
 #'  Practical determination of the low template DNA threshold,
 #'  Forensic Science International: Genetetics, Volume 5, Issue 5, November 2011,
 #'  Pages 422-427, ISSN 1872-4973, 10.1016/j.fsigen.2010.09.001.
 #'  \url{http://www.sciencedirect.com/science/article/pii/S1872497310001511}
-#' 
+#'  
 #' @return TRUE
 #' 
 #' @export

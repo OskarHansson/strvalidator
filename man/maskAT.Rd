@@ -57,4 +57,3 @@ added to its own 'Dye' column, known fragments of the internal lane standard
 \seealso{
 \code{\link{calculateAT}}
 }
-

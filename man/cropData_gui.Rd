@@ -35,4 +35,3 @@ If data type is numeric any string will become a numeric 'NA'.
 \seealso{
 \code{\link{trim_gui}}, \code{\link{editData_gui}}, \code{\link{combine_gui}}
 }
-

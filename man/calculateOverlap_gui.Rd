@@ -36,4 +36,3 @@ while a non neighbour dye get its overlap reduced (to e.g. 10%).
 \seealso{
 \code{\link{calculateOverlap}}
 }
-

@@ -37,4 +37,3 @@ Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
 \seealso{
 \code{\link{calculateHeight}}
 }
-

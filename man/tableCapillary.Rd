@@ -27,4 +27,3 @@ injection, plate row, or instrument. Returns a dataframe with number of
 observations, min, max, median, mean, standard deviation, and the 25th
 and 75th percentile.
 }
-

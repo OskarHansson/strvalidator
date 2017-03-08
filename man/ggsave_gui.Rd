@@ -34,4 +34,3 @@ Simple GUI wrapper for ggsave.
 \seealso{
 \code{\link{ggsave}}
 }
-

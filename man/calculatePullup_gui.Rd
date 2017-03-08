@@ -29,4 +29,3 @@ providing a graphical user interface.
 \seealso{
 \code{\link{calculatePullup}}, \code{\link{checkSubset}}
 }
-

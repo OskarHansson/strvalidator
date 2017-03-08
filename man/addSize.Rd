@@ -32,4 +32,3 @@ option return NA for alleles not in bin. The calculate option handles
 all named alleles including micro variants (e.g. '9.3').
 Handles 'X' and 'Y' by replacing them with '1' and '2'.
 }
-

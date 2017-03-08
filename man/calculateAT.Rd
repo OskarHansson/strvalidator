@@ -89,4 +89,3 @@ J. Bregu et.al.,
 \seealso{
 \code{\link{maskAT}}, \code{\link{checkSubset}}
 }
-

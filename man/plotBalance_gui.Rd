@@ -35,4 +35,3 @@ The resulting plot can be saved as either a plot object or as an image.
 \seealso{
 \url{http://docs.ggplot2.org/current/} for details on plot settings.
 }
-

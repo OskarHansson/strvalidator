@@ -22,4 +22,3 @@ Reads GeneMapper Panels files.
 Reads useful information from Panels files and save it as a data.frame.
 }
 \keyword{internal}
-

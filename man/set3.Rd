@@ -10,4 +10,3 @@ Data from dilution experiment for dropout analysis.
 Text file with exported GeneMapper genotypes table.
 }
 \keyword{datasets}
-

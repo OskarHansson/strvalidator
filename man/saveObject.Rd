@@ -37,4 +37,3 @@ is not provided (NULL). The 'suggest' provides a suggested name for the
 object to re-name.
 }
 \keyword{internal}
-

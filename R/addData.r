@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.02.2017: Fixed data saved as attributes (new.data).
 # 15.08.2016: Fixed check for data.table.
 # 12.08.2016: Handles empty dataset by returning unchanged.
 # 09.07.2016: Added check for data.table and conversion to data.frame.
@@ -57,7 +58,8 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
   
   # Parameters that are changed by the function must be saved first.
   attr_data <- substitute(data)
-
+  attr_newdata <- substitute(new.data)
+  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
@@ -259,7 +261,7 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
   attr(data, which="addData, call") <- match.call()
   attr(data, which="addData, date") <- date()
   attr(data, which="addData, data") <- attr_data
-  attr(data, which="addData, new.data") <- substitute(new.data)
+  attr(data, which="addData, new.data") <- attr_newdata
   attr(data, which="addData, by.col") <- by.col
   attr(data, which="addData, then.by.col") <- then.by.col
   attr(data, which="addData, exact") <- exact

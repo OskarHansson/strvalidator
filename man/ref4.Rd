@@ -15,4 +15,3 @@ Reference 'F2' has single entries for homozygotes.
 Reference 'bc' has douoble entries for homozygotes, and lower case sample name.
 }
 \keyword{datasets}
-

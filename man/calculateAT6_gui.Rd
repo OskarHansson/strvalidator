@@ -29,4 +29,3 @@ Scores dropouts for a dataset.
 \code{\link{calculateAT6}}, \code{\link{calculateAT}},
  \code{\link{calculateAT_gui}}, \code{\link{checkSubset}}
 }
-

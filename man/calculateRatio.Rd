@@ -61,4 +61,3 @@ calculateRatio(data=set2, numerator=NULL, denominator="AMEL")
 calculateRatio(data=set2, numerator=c("AMEL","TH01"), denominator=NULL)
 calculateRatio(data=set2, numerator=NULL, denominator=NULL)
 }
-

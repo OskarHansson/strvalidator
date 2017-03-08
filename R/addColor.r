@@ -1,6 +1,6 @@
 ################################################################################
 # TODO LIST
-# TODO: ...
+# TODO: Re-write to simplify and for efficiency.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
@@ -27,7 +27,7 @@
 #' files or with strings (Color) in 'panels' files.
 #' For visualisation in R the R color names are used (R.Color).
 #' The function can add new color schemes matched to the existing, or
-#' it can convert a vector containing on scheme to another. 
+#' it can convert a vector containing one scheme to another. 
 #' 
 #' @param data data frame or vector.
 #' @param kit string representing the forensic STR kit used.

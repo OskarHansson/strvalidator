@@ -37,4 +37,3 @@ identified using the function \code{\link{calculateAllele}}. The output
 should then be provided to the 'artefact'. Alternatively known artefacts
 can be provided using the 'marker' and 'allele' arguments.
 }
-

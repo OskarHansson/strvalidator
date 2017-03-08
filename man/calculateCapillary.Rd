@@ -32,4 +32,3 @@ Calculates the ILS inter capillary balance.
 Calculates the inter capillary balance for the internal lane standard (ILS).
 Require information from both the 'samples.table' and the 'plot.table'.
 }
-

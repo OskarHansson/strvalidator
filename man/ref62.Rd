@@ -15,4 +15,3 @@ NB! Marker order is same as set6.
 NB! Reference R has a Y marker with NA.
 }
 \keyword{datasets}
-

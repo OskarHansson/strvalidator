@@ -29,4 +29,3 @@ user interface to it.
 \seealso{
 \code{\link{addMarker}}
 }
-

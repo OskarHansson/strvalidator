@@ -26,4 +26,3 @@ the corresponding kit or index is returned.
 If an attribute does not exist the function looks at the markers
 in the dataset and returns the most likely kit(s).
 }
-

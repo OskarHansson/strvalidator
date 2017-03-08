@@ -41,4 +41,3 @@ profiles, while 'observed' can be used for any samples to count the number
 of peaks. Sample names must be unique. The result is per marker but repeated
 for each row of that marker. Data in 'fat' format is auto slimmed.
 }
-

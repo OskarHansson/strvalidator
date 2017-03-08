@@ -57,4 +57,3 @@ NB! add.missing.loci overrides keep.na.
 Returns data where allele names match/not match 'ref' allele names.
 Required columns are: 'Sample.Name', 'Marker', and 'Allele'.
 }
-

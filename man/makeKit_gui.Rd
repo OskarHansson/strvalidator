@@ -33,4 +33,3 @@ The gender marker of each kits is auto detected but can be changed manually.
 \seealso{
 \code{\link{readBinsFile}}, \code{\link{readPanelsFile}}, \code{\link{combineBinsAndPanels}}
 }
-

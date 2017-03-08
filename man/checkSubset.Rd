@@ -34,4 +34,3 @@ Prints the result to the R-prompt.
 \seealso{
 \code{\link{grep}}
 }
-

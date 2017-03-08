@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.03.2017: Removed dead web page references.
+# 01.11.2016: 'Probability' on y axis changed to 'Density'.
 # 11.10.2016: Added controls for x and y axis range.
 # 11.10.2016: No longer required to select a group if column Group is present.
 # 19.09.2016: Fixed factor levels in group drop-down after change in calculatePeaks.
@@ -22,8 +24,6 @@
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 11.05.2014: Fixed boxplot bug, box not drawn.
-# 08.05.2014: Implemented 'checkDataset'.
-# 23.02.2014: No column required.
 
 #' @title Plot Distribution
 #'
@@ -35,7 +35,6 @@
 #' a group (in column 'Group' if any), finally select a column to plot the distribution of.
 #' It is possible to overlay a boxplot and to plot logarithms.
 #' Various smoothing kernels and bandwidths can be specified.
-#' More info on kernels and bandwidth: \url{http://www.inside-r.org/r-doc/stats/density}
 #' The bandwidth or the number of bins can be specified for the histogram.
 #' Automatic plot titles can be replaced by custom titles.
 #' A name for the result is automatiaclly suggested.
@@ -55,7 +54,7 @@
 #' 
 #' @return TRUE
 #' 
-#' @seealso \code{\link{log}}
+#' @seealso \code{\link{log}}, \code{\link{geom_density}}
 
 
 plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
@@ -627,14 +626,14 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
           mainTitle <- paste("Cumulative density function (",
                              nb, " observations)", sep="")
           
-          yTitle <- "Proportion"
+          yTitle <- "Density"
           
         } else if(how=="pdf"){
           
           mainTitle <- paste("Probability density function (",
                              nb, " observations)", sep="")
           
-          yTitle <- "Proportion"
+          yTitle <- "Density"
           
         } else if(how=="histogram"){
           
@@ -688,7 +687,6 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
         }
         
         gp <- ggplot(data=val_data, aes_string(x=val_column))
-        # More info on kernels and bandwidth: http://www.inside-r.org/r-doc/stats/density
         gp <- gp + geom_density(aes_string(x=val_column), kernel=val_kernel, adjust=val_adjustbw)
         
       } else if(how == "histogram"){

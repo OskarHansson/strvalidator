@@ -115,7 +115,7 @@
 #' @examples
 #' data(set4)
 #' data(ref4)
-#' drop <- calculateDropout(data=set4, ref=ref4, ignore.case=TRUE)
+#' drop <- calculateDropout(data=set4, ref=ref4, kit="ESX17", ignore.case=TRUE)
 
 
 calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"),
@@ -238,7 +238,7 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
 
   # Check kit.  
   if(!is.null(kit)){
-    if(is.na(getKit(kit = kit))){
+    if(is.null(nrow(getKit(kit = kit)))){
       stop("'kit' was not found in the kit definition file.")
     }
   }

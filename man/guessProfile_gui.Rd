@@ -29,4 +29,3 @@ a graphical user interface to it.
 \seealso{
 \code{\link{guessProfile}}, \code{\link{checkSubset}}
 }
-

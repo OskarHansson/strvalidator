@@ -63,4 +63,3 @@ Off-ladder alleles can be plotted if 'Size' is provided.
 There are various options to customise the plot scale and labels.
 It is also possible to plot 'distributions' of peak heights as boxplots.
 }
-

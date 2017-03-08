@@ -13,4 +13,3 @@ A dataset containing ESX17 genotyping result for 8 replicates
 of the positive control sample, a negative control and ladder.
 }
 \keyword{datasets}
-

@@ -13,4 +13,3 @@ A slimmed dataset containing SGM Plus genotyping result for 2 replicates
 of 'sampleA'.
 }
 \keyword{datasets}
-

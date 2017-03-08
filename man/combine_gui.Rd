@@ -25,4 +25,3 @@ function.
 NB! Datasets must have identical column names but not necessarily
 in the same order.
 }
-

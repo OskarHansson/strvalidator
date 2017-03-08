@@ -29,4 +29,3 @@ providing a graphical user interface to it.
 \seealso{
 \code{\link{calculateCopies}}
 }
-

@@ -52,6 +52,7 @@ to determine the AT. However, it should be noted that the ATs derived in
 this manner need to be calculated for each color and for all preparations
 (i.e., different injections, sample preparation volumes, post-PCR cleanup,
 etc.).
+NB! Quality sensors must be removed prior to analysis.
 }
 \references{
 J. Bregu et.al.,
@@ -64,4 +65,3 @@ J. Bregu et.al.,
 \code{\link{calculateAT6_gui}}, \code{\link{calculateAT}},
  \code{\link{calculateAT_gui}}, \code{\link{lm}}
 }
-

@@ -29,4 +29,3 @@ a graphical user interface.
 \seealso{
 \code{\link{calculateCapillary}}
 }
-

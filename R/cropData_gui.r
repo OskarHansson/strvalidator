@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.01.2017: Added attributes to result.
+# 06.01.2017: New options "containing", "not containing" and fixed list ref.
 # 02.05.2016: 'Save as' textbox expandable.
 # 08.10.2015: Option to remove NA (earlier NA was automatically removed).
 # 08.10.2015: Fixed Info not updated when selecting a column.
@@ -258,7 +260,8 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
   f2_items <- c("above", "above or equal to",
                 "below", "below or equal to",
                 "equal to", "not equal to",
-                "is NA", "is not NA")
+                "is NA", "is not NA",
+                "containing", "not containing")
   
   f2g1[1,2] <- f2g1_operator_drp <- gdroplist(items=f2_items, container=f2g1)
 
@@ -374,13 +377,13 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
 
       if(val_na_rm){
         # Remove all rows with NA in target column.
-        .gData <<- .gData[!is.na(.gData[val_column]), ]
+        .gData <<- .gData[!is.na(.gData[[val_column]]), ]
       }
       
       if(val_operator == 1){  # above
         
         if(val_task == 1){  # crop
-          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] > val_target, ]
+          .gData <<- .gData[is.na(.gData[[val_column]]) | !.gData[val_column] > val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] > val_target] <<- val_new
         }
@@ -388,7 +391,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       } else if (val_operator == 2){  # above or equal to
 
         if(val_task == 1){  # crop
-          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] >= val_target, ]
+          .gData <<- .gData[is.na(.gData[[val_column]]) | !.gData[val_column] >= val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] >= val_target] <<- val_new
         }
@@ -396,7 +399,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       } else if (val_operator == 3){  # below
       
         if(val_task == 1){  # crop
-          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] < val_target, ]
+          .gData <<- .gData[is.na(.gData[[val_column]]) | !.gData[val_column] < val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] < val_target] <<- val_new
         }
@@ -404,7 +407,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       } else if (val_operator == 4){  # below or equal to
         
         if(val_task == 1){  # crop
-          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] <= val_target, ]
+          .gData <<- .gData[is.na(.gData[[val_column]]) | !.gData[val_column] <= val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] <= val_target] <<- val_new
         }
@@ -412,7 +415,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       } else if (val_operator == 5){  # equal to
         
         if(val_task == 1){  # crop
-          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] == val_target, ]
+          .gData <<- .gData[is.na(.gData[[val_column]]) | !.gData[val_column] == val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] == val_target] <<- val_new
         }
@@ -420,7 +423,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       } else if (val_operator == 6){  # not equal to
         
         if(val_task == 1){  # crop
-          .gData <<- .gData[is.na(.gData[val_column]) | !.gData[val_column] != val_target, ]
+          .gData <<- .gData[is.na(.gData[[val_column]]) | !.gData[val_column] != val_target, ]
         } else {  # replace
           .gData[val_column][.gData[val_column] != val_target] <<- val_new
         }
@@ -428,20 +431,55 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       } else if (val_operator == 7){  # is NA
         
         if(val_task == 1){  # crop
-          .gData <<- .gData[!is.na(.gData[val_column]), ]
+          .gData <<- .gData[!is.na(.gData[[val_column]]), ]
         } else {  # replace
-          .gData[val_column][is.na(.gData[val_column])] <<- val_new
+          .gData[val_column][is.na(.gData[[val_column]])] <<- val_new
         }
         
       } else if (val_operator == 8){  # is not NA
         
         if(val_task == 1){  # crop
-          .gData <<- .gData[is.na(.gData[val_column]), ]
+          .gData <<- .gData[is.na(.gData[[val_column]]), ]
         } else {  # replace
-          .gData[val_column][!is.na(.gData[val_column])] <<- val_new
+          .gData[val_column][!is.na(.gData[[val_column]])] <<- val_new
+        }
+        
+      } else if (val_operator == 9){  # containing
+        
+        if(val_task == 1){  # crop
+          sel <- is.na(.gData[[val_column]]) | !grepl(val_target, .gData[[val_column]], fixed = TRUE)
+          .gData <<- .gData[sel, ]
+        } else {  # replace
+          sel <- is.na(.gData[[val_column]]) | !grepl(val_target, .gData[[val_column]], fixed = TRUE)
+          .gData[val_column][sel, ] <<- val_new
+        }
+        
+      } else if (val_operator == 10){  # not containing
+        
+        if(val_task == 1){  # crop
+          sel <- is.na(.gData[[val_column]]) | grepl(val_target, .gData[[val_column]], fixed = TRUE)
+          .gData <<- .gData[sel, ]
+        } else {  # replace
+          sel <- is.na(.gData[[val_column]]) | grepl(val_target, .gData[[val_column]], fixed = TRUE)
+          .gData[val_column][sel, ] <<- val_new
         }
         
       }
+      
+      # Add attributes to result.
+      attr(.gData, which="cropData_gui, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+      attr(.gData, which="cropData_gui, date") <- date()
+      attr(.gData, which="cropData_gui, data") <- .gDataName
+      attr(.gData, which="cropData_gui, column") <-  val_column
+      attr(.gData, which="cropData_gui, na") <- val_na_rm
+      attr(.gData, which="cropData_gui, task") <- val_task
+      attr(.gData, which="cropData_gui, operator") <- val_operator
+      attr(.gData, which="cropData_gui, target") <-  val_target
+      attr(.gData, which="cropData_gui, value") <- val_new
+      attr(.gData, which="cropData_gui, type") <- val_type
+      .gData <<- .gData
+      
+      
 
       if(debug){
         print("After action: .gData dim, str, head, tail:")

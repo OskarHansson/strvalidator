@@ -36,4 +36,3 @@ A penalty matrix can be supplied to reduce the effect by spectral distance,
 meaning that overlap with the neighbouring dye can be counted in full (100%)
 while a non neighbour dye get its overlap reduced (to e.g. 10%).
 }
-

@@ -31,4 +31,3 @@ Simplifies the use of the \code{\link{calculateAT}} and
 \code{\link{calculateAT}}, \code{\link{maskAT}},
  \code{\link{checkSubset}}
 }
-

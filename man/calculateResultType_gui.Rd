@@ -29,4 +29,3 @@ graphical user interface.
 \seealso{
 \code{\link{calculateResultType}}
 }
-

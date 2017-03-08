@@ -34,4 +34,3 @@ is a string vector by default, or a single string of column names separated
 by a string 'concatenate' (see 'collapse' in \code{paste} for details).
 There is an option to limit multiple names to those with a number suffix.
 }
-

@@ -164,7 +164,7 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
                                    selected = 1,
                                    editable = FALSE,
                                    container = g0)
-  tooltip(g0_ref_drp) <- "Known alleles will be extracted from data"
+  tooltip(g0_ref_drp) <- "If provided, known alleles will be extracted from data"
   
   g0[2,3] <- g0_ref_samples_lbl <- glabel(text=" 0 references", container=g0)
   

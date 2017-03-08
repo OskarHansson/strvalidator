@@ -30,4 +30,3 @@ Internal helper function.
 Takes a data frame as input and return it after converting known numeric
 columns to numeric.
 }
-

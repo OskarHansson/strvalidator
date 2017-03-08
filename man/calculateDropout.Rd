@@ -79,7 +79,7 @@ separate column.
 \examples{
 data(set4)
 data(ref4)
-drop <- calculateDropout(data=set4, ref=ref4, ignore.case=TRUE)
+drop <- calculateDropout(data=set4, ref=ref4, kit="ESX17", ignore.case=TRUE)
 }
 \references{
 Peter Gill et.al.,
@@ -97,4 +97,3 @@ Peter Gill, Roberto Puch-Solis, James Curran,
  Pages 104-111, ISSN 1872-4973, 10.1016/j.fsigen.2008.11.009.
 \url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
 }
-

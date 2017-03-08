@@ -34,4 +34,3 @@ which gives an offset of 98-36 = 62 bp.
 Microvariants are handled by taking the decimal part multiplied with 10
 and adding this to the number of base pair e.g. 9.3 = 4*9 + 0.3*10 = 39 bp.
 }
-

@@ -29,4 +29,3 @@ in multiple allelic ladders.
 Requires a 'slimmed' and 'filtered' data frame.
 For more details see \code{min}, \code{max}, \code{mean}, \code{sd}, \code{quantile}.
 }
-

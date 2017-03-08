@@ -32,4 +32,3 @@ to identify drop-ins.
 \seealso{
 \code{\link{filterProfile}}, \code{\link{checkSubset}}
 }
-

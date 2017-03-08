@@ -40,4 +40,3 @@ NB! The function removes NA's and OL's prior to analysis.
 \seealso{
 \code{\link{data.table}}
 }
-

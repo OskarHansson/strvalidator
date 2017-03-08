@@ -1,13 +1,13 @@
 ## Test environments
-* local Windows 7 (64-bit) install, R 3.3.1, RStudio 0.99.903
-* win-builder: R Under development (unstable) (2016-10-02 r71437)
+* local Windows 7 (64-bit) install, R 3.3.3, RStudio 1.0.136
+* win-builder: R Under development (unstable) (2017-03-06 r72315)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
 There was 1 NOTE:
 
-Maintainer: 'Oskar Hansson <oskar.hansson@fhi.no>'
+(New) maintainer: 'Oskar Hansson <oskhan@ous-hf.no>'
 
 * Possibly mis-spelled words in DESCRIPTION:
   ENFSI (20:68)
@@ -19,5 +19,4 @@ OSKAR: Abbreviations are spelled out.
 ## Downstream dependencies
 I have also run R CMD check on downstream dependencies of strvalidator:
 There are currently only one dependent package.
-The package pcrsim needed minor updates and version 1.0.1 will be submitted.
-Version 1.0.1 passed the check.
+pcrsim version 1.0.1 passed the check.

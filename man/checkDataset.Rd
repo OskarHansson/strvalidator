@@ -34,4 +34,3 @@ Internal function to check a data.frame before analysis.
 Check that the object exist, there are rows, the required columns exist,
 if data.frame is 'fat', and if invalid strings exist. Show error message if not.
 }
-

@@ -28,4 +28,3 @@ Summarize the Hb or Lb analysis in table format with different scope.
 the XXth percentile 'Xb.Perc.XX'
 For more details see \code{min}, \code{mean}, \code{sd}, \code{quantile}.
 }
-

@@ -26,4 +26,3 @@ Sort markers and dye as they appear in the EPG.
 Change the order of factor levels for 'Marker' and 'Dye' according to 'kit'.
 Levels in data must be identical with kit information.
 }
-

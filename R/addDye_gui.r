@@ -1,9 +1,10 @@
 ################################################################################
 # TODO LIST
-# TODO: Make a full addColor_gui (not only for Dye)?
+# TODO: ...
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.02.2017: New options to add color, r.color, and marker order.
 # 27.06.2016: Added expand=TRUE to save as field.
 # 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
@@ -29,10 +30,15 @@
 #' GUI wrapper to the \code{\link{addColor}} function.
 #'
 #' @details
-#' Convenience GUI for the use of \code{\link{addColor}} to add 'Dye' to a dataset.
+#' Convenience GUI for the use of \code{\link{addColor}} and
+#' \code{\link{addOrder}} to add 'Dye', 'Color', 'R.Color', and marker 'Order'
+#' to a dataset.
 #' 'Dye' is the one letter abbreviations for the fluorophores commonly used
-#' to label primers in forensic STR typing kits (e.g. R=Red, B=Blue).
-#' NB! If column 'Color' and 'Dye' is present they will be overwritten.
+#' to label primers in forensic STR typing kits (e.g. R and Y),
+#' 'Color' is the corresponding color name (e.g. red and yellow),
+#' 'R.Color' is the plot color used in R (e.g. red and black).
+#' 'Order' is the marker order in the selected kit.
+#' NB! Existing columns will be overwritten.
 #' 
 #' @param env environment in wich to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
@@ -136,7 +142,7 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
       .gKit <<- detectKit(.gData, index=TRUE)
       svalue(kit_drp, index=TRUE) <- .gKit
-      svalue(f2_save_edt) <- paste(.gDataName, "_dye", sep="")
+      svalue(f2_save_edt) <- paste(.gDataName, sep="")
       
       if(debug){
         print("Detected kit index")
@@ -172,7 +178,19 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
 
   f1_ignore_chk <- gcheckbox(text="Ignore case in marker name.",
                              checked=FALSE, container=f1)
+
+  f1_dye_chk <- gcheckbox(text="Add dye information.",
+                             checked=TRUE, container=f1)
+
+  f1_color_chk <- gcheckbox(text="Add color information.",
+                          checked=FALSE, container=f1)
   
+  f1_r_chk <- gcheckbox(text="Add R color information.",
+                          checked=FALSE, container=f1)
+  
+  f1_order_chk <- gcheckbox(text="Add marker order.",
+                          checked=FALSE, container=f1)
+
   # FRAME 2 ###################################################################
   
   f2 <- gframe(text = "Save as", horizontal=TRUE, spacing = 5, container = gv) 
@@ -199,6 +217,22 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
     val_data_name <- .gDataName
     val_name <- svalue(f2_save_edt)
     val_ignore <- svalue(f1_ignore_chk)
+    val_dye <- svalue(f1_dye_chk)
+    val_color <- svalue(f1_color_chk)
+    val_r <- svalue(f1_r_chk)
+    val_order <- svalue(f1_order_chk)
+
+    # Initialise what information is needed from the addColor function.    
+    need <- NULL
+    if(val_dye){
+      need <- c(need, "Dye")
+    }
+    if(val_color){
+      need <- c(need, "Color")
+    }
+    if(val_r){
+      need <- c(need, "R.Color")
+    }
     
     if(debug){
       print(".gData")
@@ -207,20 +241,48 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       print(val_kit)
       print("val_ignore")
       print(val_ignore)
+      print("val_dye")
+      print(val_dye)
+      print("val_color")
+      print(val_color)
+      print("val_r")
+      print(val_r)
+      print("val_order")
+      print(val_order)
     }
 
     # Change button.
     svalue(add_btn) <- "Processing..."
     enabled(add_btn) <- FALSE
     
-    datanew <- addColor(data=val_data, kit=val_kit, need="Dye",
-                        overwrite=TRUE, ignore.case=val_ignore, debug=debug)
+    if(!is.null(need)){
+      
+      message("Adding the following color information: ",
+              paste(need, collapse = ", "))
+      
+      val_data <- addColor(data = val_data, kit = val_kit, need = need,
+                          overwrite = TRUE, ignore.case = val_ignore,
+                          debug = debug)
+      
+    }
+    
+    if(val_order){
+      
+      val_data <- addOrder(data = val_data, kit = val_kit, overwrite = TRUE,
+                           ignore.case=val_ignore, debug=debug)
+      
+    }
     
     # Add attributes.
+    datanew <- val_data
     attr(datanew, which="addDye_gui, data") <- val_data_name
     attr(datanew, which="addDye_gui, kit") <- val_kit
     attr(datanew, which="addDye_gui, ignore.case") <- val_ignore
-
+    attr(datanew, which="addDye_gui, dye") <- val_dye
+    attr(datanew, which="addDye_gui, color") <- val_color
+    attr(datanew, which="addDye_gui, r.color") <- val_r
+    attr(datanew, which="addDye_gui, order") <- val_order
+    
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
     
@@ -258,6 +320,18 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       if(exists(".strvalidator_addDye_gui_ignore", envir=env, inherits = FALSE)){
         svalue(f1_ignore_chk) <- get(".strvalidator_addDye_gui_ignore", envir=env)
       }
+      if(exists(".strvalidator_addDye_gui_dye", envir=env, inherits = FALSE)){
+        svalue(f1_dye_chk) <- get(".strvalidator_addDye_gui_dye", envir=env)
+      }
+      if(exists(".strvalidator_addDye_gui_color", envir=env, inherits = FALSE)){
+        svalue(f1_color_chk) <- get(".strvalidator_addDye_gui_color", envir=env)
+      }
+      if(exists(".strvalidator_addDye_gui_r", envir=env, inherits = FALSE)){
+        svalue(f1_r_chk) <- get(".strvalidator_addDye_gui_r", envir=env)
+      }
+      if(exists(".strvalidator_addDye_gui_order", envir=env, inherits = FALSE)){
+        svalue(f1_order_chk) <- get(".strvalidator_addDye_gui_order", envir=env)
+      }
       
       if(debug){
         print("Saved settings loaded!")
@@ -273,6 +347,10 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       
       assign(x=".strvalidator_addDye_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_addDye_gui_ignore", value=svalue(f1_ignore_chk), envir=env)
+      assign(x=".strvalidator_addDye_gui_dye", value=svalue(f1_dye_chk), envir=env)
+      assign(x=".strvalidator_addDye_gui_color", value=svalue(f1_color_chk), envir=env)
+      assign(x=".strvalidator_addDye_gui_r", value=svalue(f1_r_chk), envir=env)
+      assign(x=".strvalidator_addDye_gui_order", value=svalue(f1_order_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -281,6 +359,18 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       }
       if(exists(".strvalidator_addDye_gui_ignore", envir=env, inherits = FALSE)){
         remove(".strvalidator_addDye_gui_ignore", envir = env)
+      }
+      if(exists(".strvalidator_addDye_gui_dye", envir=env, inherits = FALSE)){
+        remove(".strvalidator_addDye_gui_dye", envir = env)
+      }
+      if(exists(".strvalidator_addDye_gui_color", envir=env, inherits = FALSE)){
+        remove(".strvalidator_addDye_gui_color", envir = env)
+      }
+      if(exists(".strvalidator_addDye_gui_r", envir=env, inherits = FALSE)){
+        remove(".strvalidator_addDye_gui_r", envir = env)
+      }
+      if(exists(".strvalidator_addDye_gui_order", envir=env, inherits = FALSE)){
+        remove(".strvalidator_addDye_gui_order", envir = env)
       }
       
       if(debug){

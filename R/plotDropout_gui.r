@@ -925,7 +925,6 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         # Plot dropouts per locus.
         
         # NA heights.
-        # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
         n0 <- nrow(.gData)
         .gData <- .gData[!is.na(.gData$Height),]
         n1 <- nrow(.gData)
@@ -935,7 +934,6 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                       sep=""))
         
         # NA Dropouts.
-        # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
         n0 <- nrow(.gData)
         .gData <- .gData[!is.na(.gData$Dropout),]
         n1 <- nrow(.gData)

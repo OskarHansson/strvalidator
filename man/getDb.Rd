@@ -30,4 +30,3 @@ It returns the specified allele frequency database.
 getDb()
 }
 \keyword{internal}
-

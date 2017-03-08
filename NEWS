@@ -1,27 +1,30 @@
-Version 1.8.0.9002
+Version 1.9.0
 ------------------------------------------------------------------------------
 
+* New functions
+  - addOrder (implemented in addDye_gui)
 * Bug fixes and improvements with the most significant listed below:
+  - addDye_gui
+  New options to add marker 'Dye', 'Color', 'R.Color', and 'Order'.
+  - addData
+  Fixed data saved as attribute (new.data)
+  - plotStutter_gui
+  Added option to drop unused levels.
+  - plotDistribution_gui
+  Changed y axis title from 'Probability' to 'Density'.
+  - modelDropout_gui
+  Added reference "Estimating the probability of allelic drop-out...".
+  - cropData_gui
+  New options "containing", "not containing".
+  Added attributes to result.
   - calculateAT6
   Fixes "Error in calculateHeight: 'kit' can't be NULL if sex.rm=TRUE
-  
-Version 1.8.0.9001
-------------------------------------------------------------------------------
-
-* Bug fixes and improvements with the most significant listed below:
   - plotDistribution_gui
   Added controls for x and y axis range.
   No longer required to select a group if column Group is present.
-
-
-Version 1.8.0.9000
-------------------------------------------------------------------------------
-
-* Bug fixes and improvements with the most significant listed below:
   - combine_gui
   Changed to rbind.fill to handle filling in missing columns.
   Check for column names no longer require identical order.
-
 
 Version 1.8.0
 ------------------------------------------------------------------------------

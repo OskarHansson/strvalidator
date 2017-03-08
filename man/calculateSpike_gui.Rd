@@ -29,4 +29,3 @@ by providing a graphical user interface.
 \seealso{
 \code{\link{calculateSpike}}
 }
-

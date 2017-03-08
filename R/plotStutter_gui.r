@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.01.2017: Added option to drop unused levels.
 # 10.05.2016: 'Save as' textbox expandable.
 # 10.05.2016: Fixed some plot error and included check for missing values.
 # 10.05.2016: New method '.enablePlotButtons' and called when changing plot options.
@@ -23,9 +24,6 @@
 # 14.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
 # 23.02.2014: Fixed different y max for complex plot, when supposed to be fixed.
 # 23.02.2014: Fixed shape for 'complex' plots.
-# 13.02.2014: Implemented theme.
-# 20.01.2014: Implemented ggsave with workaround for complex plots.
-# 30.11.2013: Added info on number of samples.
 
 #' @title Plot Stutter
 #'
@@ -225,9 +223,13 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                                          selected = 1,
                                          container = f1g2)
   
-  f1_drop_chk <- gcheckbox(text="Drop sex markers",
-                           checked=TRUE,
-                           container=f1)
+  f1_drop_chk <- gcheckbox(text = "Drop sex markers",
+                           checked = TRUE,
+                           container = f1)
+  
+  f1_levels_chk <- gcheckbox(text = "Drop markers with no data",
+                           checked = FALSE,
+                           container = f1)
   
   addHandlerChanged(f1_drop_chk, handler = function(h, ...) {
     
@@ -419,6 +421,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     val_kit <- svalue(kit_drp)
     val_theme <- svalue(f1_theme_drp)
     val_drop <- svalue(f1_drop_chk)
+    val_levels <- svalue(f1_levels_chk)
     
     # Declare variables.
     ymax <- NULL  # For complex plots.
@@ -541,7 +544,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       # Check for facet error caused by all NA's.
       tmp <- dt[, list(Sum=sum(Ratio)), by=Marker]
       if(any(tmp$Sum==0) || !all(levels(dt$Marker) %in% unique(dt$Marker))){
-        message("Empty facets detected! If this leads to plot error try another scale for axes.")
+        message("Empty facets detected!",
+                "If this leads to plot error try another scale for axes,",
+                "or drop markers with no data.")
       }
       
       # Plotting alleles for observed stutters per marker.
@@ -584,7 +589,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                             position=position_jitter(height = 0, width=val_jitter)) 
 
       # Facet and keep all levels.
-      gp <- gp + facet_grid("Dye ~ Marker", drop = FALSE)
+      gp <- gp + facet_grid("Dye ~ Marker", drop = val_levels)
 
       # Restrict y axis.
       if(!is.na(val_ymin) && !is.na(val_ymax)){
@@ -625,8 +630,8 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
         }
         # NB! 'facet_wrap' does not seem to support strings.
         #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-        gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol=val_ncol,
-                              drop=FALSE, scales=val_scales)
+        gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol = val_ncol,
+                              drop = val_levels, scales = val_scales)
         
         # Restrict y axis.
         if(!is.na(val_ymin) && !is.na(val_ymax)){
@@ -758,7 +763,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
           gp <- gp + scale_colour_manual(values = val_palette)
           
           # Facet plot and keep all levels (in current dye). 
-          gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales, drop = FALSE) # Keep dye labels.
+          gp <- gp + facet_grid("Dye ~ Marker", scales=val_scales, drop = val_levels) # Keep dye labels.
           #gp <- gp + facet_grid("~ Marker", scales=val_scales, drop = FALSE) # No dye labels.
           
           # Set margin around each plot. Note: top, right, bottom, left.
@@ -934,6 +939,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       if(exists(".strvalidator_plotStutter_gui_sex", envir=env, inherits = FALSE)){
         svalue(f1_drop_chk) <- get(".strvalidator_plotStutter_gui_sex", envir=env)
       }
+      if(exists(".strvalidator_plotStutter_gui_levels", envir=env, inherits = FALSE)){
+        svalue(f1_levels_chk) <- get(".strvalidator_plotStutter_gui_levels", envir=env)
+      }
       
       if(debug){
         print("Saved settings loaded!")
@@ -966,6 +974,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       assign(x=".strvalidator_plotStutter_gui_xlabel_justv", value=svalue(vjust_spb), envir=env)
       assign(x=".strvalidator_plotStutter_gui_theme", value=svalue(f1_theme_drp), envir=env)
       assign(x=".strvalidator_plotStutter_gui_sex", value=svalue(f1_drop_chk), envir=env)
+      assign(x=".strvalidator_plotStutter_gui_levels", value=svalue(f1_levels_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -1025,6 +1034,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       if(exists(".strvalidator_plotStutter_gui_sex", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotStutter_gui_sex", envir = env)
+      }
+      if(exists(".strvalidator_plotStutter_gui_levels", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotStutter_gui_levels", envir = env)
       }
       
       if(debug){

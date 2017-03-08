@@ -32,4 +32,3 @@ Small frequencies can be limited to the estimate 5/2N.
 \seealso{
 \code{\link{calculateOL}}
 }
-

@@ -32,4 +32,3 @@ using this command:
 would result in this data frame (NB! 'Data.Point' is dropped):
  Sample.Name|Marker|Allele|Size
 }
-

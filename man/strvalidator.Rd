@@ -30,4 +30,3 @@ of functions.
 strvalidator()
 }
 }
-

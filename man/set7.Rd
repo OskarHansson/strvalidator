@@ -13,4 +13,3 @@ A slimmed dataset containing data from
 inhibition experiment.
 }
 \keyword{datasets}
-

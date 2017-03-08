@@ -25,4 +25,3 @@ Makes 3 data points from each peak size for plotting a polygon representing a pe
 Factors in other columns might get converted to factor level.
 }
 \keyword{internal}
-

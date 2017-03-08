@@ -26,4 +26,3 @@ Alleles in the dataset is replaced with random alleles sampled from the allele d
 If 'Size' is in the dataset it will be replaced by an estimated size.
 If 'Data.Point' is present it will be removed.
 }
-

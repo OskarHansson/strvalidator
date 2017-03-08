@@ -22,4 +22,3 @@ Reads GeneMapper 'Bins' files.
 Reads useful information from 'Bins' files and save it as a data.frame.
 }
 \keyword{internal}
-

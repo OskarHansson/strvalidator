@@ -33,4 +33,3 @@ named sample in each file (batch). To enable multiple identically named
 samples in one file, the sample names can be prefixed with the lane or well
 number before importing them to STR-validator.
 }
-

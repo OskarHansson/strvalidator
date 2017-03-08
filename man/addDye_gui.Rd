@@ -23,12 +23,16 @@ TRUE
 GUI wrapper to the \code{\link{addColor}} function.
 }
 \details{
-Convenience GUI for the use of \code{\link{addColor}} to add 'Dye' to a dataset.
+Convenience GUI for the use of \code{\link{addColor}} and
+\code{\link{addOrder}} to add 'Dye', 'Color', 'R.Color', and marker 'Order'
+to a dataset.
 'Dye' is the one letter abbreviations for the fluorophores commonly used
-to label primers in forensic STR typing kits (e.g. R=Red, B=Blue).
-NB! If column 'Color' and 'Dye' is present they will be overwritten.
+to label primers in forensic STR typing kits (e.g. R and Y),
+'Color' is the corresponding color name (e.g. red and yellow),
+'R.Color' is the plot color used in R (e.g. red and black).
+'Order' is the marker order in the selected kit.
+NB! Existing columns will be overwritten.
 }
 \seealso{
 \code{\link{addColor}}
 }
-

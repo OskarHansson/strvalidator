@@ -53,4 +53,3 @@ be exported as '.txt' and ggplot objects as '.png'.
 .RData applies to all supported object types.
 }
 \keyword{internal}
-

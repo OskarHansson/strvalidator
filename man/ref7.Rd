@@ -13,4 +13,3 @@ A slimmed dataset containing the reference profile for the
 samples in set7.
 }
 \keyword{datasets}
-

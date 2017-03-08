@@ -66,4 +66,3 @@ Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
 \url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
 }
-

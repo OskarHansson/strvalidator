@@ -28,4 +28,3 @@ Scores dropouts for a dataset.
 \seealso{
 \code{\link{calculateDropout}}, \code{\link{checkSubset}}
 }
-

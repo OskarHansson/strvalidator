@@ -12,4 +12,3 @@ data(ref2)
 A slimmed reference dataset containing an arbitrary SGMPlus DNA profile.
 }
 \keyword{datasets}
-

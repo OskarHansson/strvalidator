@@ -27,4 +27,3 @@ Create an overview of the size range for markers in different kits.
 It is possible to select multiple kits, specify titles, font size, distance
 between two kits, distance between dye channels, and the transparency of dyes.
 }
-

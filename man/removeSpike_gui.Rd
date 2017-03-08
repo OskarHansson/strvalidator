@@ -26,4 +26,3 @@ GUI wrapper for the \code{\link{removeSpike}} function.
 Simplifies the use of the \code{\link{removeSpike}} function by providing a
  graphical user interface to it.
 }
-

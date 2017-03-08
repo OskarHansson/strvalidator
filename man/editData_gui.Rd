@@ -35,4 +35,3 @@ save as a new dataframe.
 \seealso{
 \code{\link{trim_gui}}, \code{\link{cropData_gui}}, \code{\link{combine_gui}}
 }
-

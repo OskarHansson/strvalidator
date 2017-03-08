@@ -52,4 +52,3 @@ There are three levels of allowed overlap (interference).
 2 = stutter-allele interference: calculate the ratio for a stutter even if
  the stutter and its allele overlap with the analysis range of another allele.
 }
-

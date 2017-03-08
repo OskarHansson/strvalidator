@@ -40,4 +40,3 @@ If kit='NULL' or '0' a vector of available kits is printed and NA returned.
 # Show all information stored for kit with short name 'ESX17'.
 getKit("ESX17")
 }
-

@@ -26,4 +26,3 @@ GUI wrapper for the \code{\link{calculateAllele}} function.
 Simplifies the use of the \code{\link{calculateAllele}} function by providing a
  graphical user interface to it.
 }
-

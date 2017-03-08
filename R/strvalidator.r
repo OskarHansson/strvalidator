@@ -18,7 +18,9 @@
 # (GTK+ must be installed by clicking 'OK' on the message box).
 
 # See http://r-pkgs.had.co.nz/release.html for advice on release.
-# IMPORTANT: Use build_win() to test on current R and R-dev 'library(devtools)'.
+# IMPORTANT: Use devtools::build_win() to test on current R and R-dev.
+# IMPORTANT: Use devtools::revdep_check() to check reverse dependencies
+# (Does not work - gui related error).
 # IMPORTANT: Use devtools::release() to submitt to CRAN.
 # NB! The error below indicates some problem with the test server (try again later).
 # Error in curl::curl_fetch_memory(url, handle = h) : Timeout was reached

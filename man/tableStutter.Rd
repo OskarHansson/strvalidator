@@ -27,4 +27,3 @@ number of stutters 'n.stutters', mean ratio 'Mean', standard deviation 'Stdv',
 the XXth percentile 'Perc.XX', and the maximum observed ratio 'Max'.
 For more details see \code{mean}, \code{sd}, \code{quantile}, \code{max}.
 }
-

@@ -30,4 +30,3 @@ Counts the number of peaks in samples and markers with option to
 \seealso{
 \code{\link{calculatePeaks}}
 }
-

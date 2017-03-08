@@ -53,4 +53,3 @@ NB! A column 'Id' will be created by combining the content in the
  batches (files) to be identified as unique samples.
  If 'Id' is present it will be overwritten.
 }
-

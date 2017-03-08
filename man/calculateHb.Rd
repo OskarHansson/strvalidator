@@ -51,4 +51,3 @@ data(set2)
 # Calculate average balances.
 calculateHb(data=set2, ref=ref2)
 }
-

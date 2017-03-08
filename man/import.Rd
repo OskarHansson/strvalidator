@@ -73,4 +73,3 @@ See \code{\link{list.files}} and \code{\link{read.table}} for additional details
 \seealso{
 \code{\link{trim}}, \code{\link{slim}}, \code{\link{list.files}}, \code{\link{read.table}}
 }
-

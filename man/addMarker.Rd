@@ -29,4 +29,3 @@ the specified marker vector. Use \code{\link{sortMarker}} to sort the markers
 according to a specified kit.
 Required columns are: 'Sample.Name'.
 }
-

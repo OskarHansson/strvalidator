@@ -38,4 +38,3 @@ data(set2)
 # Filter out probable profile with criteria at least 70\% Hb.
 guessProfile(data=set2, ratio=0.7)
 }
-

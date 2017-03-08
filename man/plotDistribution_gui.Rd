@@ -28,13 +28,11 @@ probability density function, or count. First select a dataset, then select
 a group (in column 'Group' if any), finally select a column to plot the distribution of.
 It is possible to overlay a boxplot and to plot logarithms.
 Various smoothing kernels and bandwidths can be specified.
-More info on kernels and bandwidth: \url{http://www.inside-r.org/r-doc/stats/density}
 The bandwidth or the number of bins can be specified for the histogram.
 Automatic plot titles can be replaced by custom titles.
 A name for the result is automatiaclly suggested.
 The resulting plot can be saved as either a plot object or as an image.
 }
 \seealso{
-\code{\link{log}}
+\code{\link{log}}, \code{\link{geom_density}}
 }
-

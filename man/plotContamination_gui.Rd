@@ -35,4 +35,3 @@ Duncan Taylor et.al.,
  Pages 6-19, ISSN 1872-4973, 10.1016/j.fsigen.2015.09.011.
 \url{http://www.sciencedirect.com/science/article/pii/S1872497315300739}
 }
-

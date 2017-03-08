@@ -30,4 +30,3 @@ database is used to calculate the risk per marker and in total for the given
 kit(s). Virtual alleles can be excluded from the calculation.
 Small frequencies can be limited to the estimate 5/2N.
 }
-

@@ -43,4 +43,3 @@ An integer or vector passed to 'partial.limits' define subtypes of 'Partial' "> 
 A string with marker names separated by pipe (|) passed to 'marker.subset' and
  a string 'subset.name' defines a subtype of 'Partial' "Complete [subset.name]".
 }
-

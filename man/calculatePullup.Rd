@@ -56,4 +56,3 @@ All known peaks included in the analysis are by default written to the
 result even if they did not cause any pull-up. These rows can be discarded
 from the result.
 }
-

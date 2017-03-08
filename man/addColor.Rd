@@ -41,7 +41,7 @@ dye. The dyes are represented with single letters (Dye) in exported result
 files or with strings (Color) in 'panels' files.
 For visualisation in R the R color names are used (R.Color).
 The function can add new color schemes matched to the existing, or
-it can convert a vector containing on scheme to another.
+it can convert a vector containing one scheme to another.
 }
 \examples{
 # Get marker and colors for SGM Plus.
@@ -53,4 +53,3 @@ dfAll <- addColor(data=df)
 # Convert a dye vector to R colors
 addColor(data=c("R","G","Y","B"), have="dye", need="r.color")
 }
-

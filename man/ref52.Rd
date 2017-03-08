@@ -13,4 +13,3 @@ A slimmed dataset containing the reference profile for the minor
 component  in set5.
 }
 \keyword{datasets}
-

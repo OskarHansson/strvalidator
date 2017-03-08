@@ -48,4 +48,3 @@ separated by rounding e.g. 200.5 and 200.6 becomes 200 and 201 respectively.
 \seealso{
 \code{\link{data.table}}
 }
-

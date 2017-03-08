@@ -13,4 +13,3 @@ A slimmed dataset containing data from
 mixture experiment for Mx analysis.
 }
 \keyword{datasets}
-

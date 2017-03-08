@@ -49,4 +49,3 @@ Look for samples in column named 'Sample.Name', 'Sample.File.Name', or
 the first column containing the string 'Sample' in mentioned order
 (not case sensitive). Remove unwanted columns.
 }
-

@@ -1,7 +1,7 @@
 #' @title Process Control and Internal Validation of Forensic STR Kits
 #' @docType package
 #' @name strvalidator-package
-#' @author Oskar Hansson \email{oskar.hansson@@fhi.no}
+#' @author Oskar Hansson \email{oskhan@@ous-hf.no}
 #' @keywords package
 #' @description STR-validator is a free and open source R-package intended for
 #' process control and internal validation of forensic STR DNA typing kit.
@@ -43,7 +43,7 @@
 #' 
 #' @references
 #' Recommended Minimum Criteria for the Validation of Various Aspects of the DNA Profiling Process
-#' \url{http://www.enfsi.eu/sites/default/files/documents/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf}
+#' \url{http://enfsi.eu/wp-content/uploads/2016/09/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf}
 #' Validation Guidelines for Forensic DNA Analysis Methods (2012)
 #' \url{http://media.wix.com/ugd/4344b0_cbc27d16dcb64fd88cb36ab2a2a25e4c.pdf}
 #' 
@@ -117,7 +117,6 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name set3
-#' @method set3 <- import(import.file=system.file("extdata", "set3.txt", package = "strvalidator"))
 #' @format ASCII text file
 NULL
 
@@ -129,7 +128,6 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name ref3
-#' @method ref3 <- import(import.file=system.file("extdata", "ref3.txt", package = "strvalidator"))
 #' @format ASCII text file
 NULL
 

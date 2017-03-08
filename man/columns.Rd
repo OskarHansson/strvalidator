@@ -59,4 +59,3 @@ set2 <- columns(data=set2, operator="&", fixed="1234", target="Batch")
 \seealso{
 \link{substr}
 }
-

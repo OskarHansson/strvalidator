@@ -43,14 +43,13 @@ Please report bugs to:\cr
 The source code and collaborative community is hosted at GitHub:\cr
 \url{https://github.com/OskarHansson/strvalidator}\cr\cr
 }
-\author{
-Oskar Hansson \email{oskar.hansson@fhi.no}
-}
 \references{
 Recommended Minimum Criteria for the Validation of Various Aspects of the DNA Profiling Process
-\url{http://www.enfsi.eu/sites/default/files/documents/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf}
+\url{http://enfsi.eu/wp-content/uploads/2016/09/minimum_validation_guidelines_in_dna_profiling_-_v2010_0.pdf}
 Validation Guidelines for Forensic DNA Analysis Methods (2012)
 \url{http://media.wix.com/ugd/4344b0_cbc27d16dcb64fd88cb36ab2a2a25e4c.pdf}
 }
+\author{
+Oskar Hansson \email{oskhan@ous-hf.no}
+}
 \keyword{package}
-
