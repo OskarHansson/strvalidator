@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.07.2017: Fixed changed arguments for 'delete'.
+# 13.07.2017: Fixed issue with button handlers.
+# 07.07.2017: Removed argument 'border' for 'gbutton'
 # 04.07.2016: Fixed bug removing space within marker names.
 # 04.07.2016: Added support for quality sensors.
 # 29.08.2015: Added importFrom.
@@ -77,7 +80,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                                  dec = ".", fill = TRUE,
                                  stringsAsFactors=FALSE)
     } else {
-      gmessage(message="The kit file was not found",
+      gmessage(msg="The kit file was not found",
                title="File not found",
                icon = "error",
                parent = w) 
@@ -145,7 +148,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     
      # Clear.
      if(!is.null(.f3g1)){
-       delete(obj=.f3g1, widget=f3)
+       delete(obj = f3, child = .f3g1)
      }
 
     if(val_obj == 1){
@@ -219,7 +222,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
         
       } else {
         
-        gmessage(message="The kit file was not found",
+        gmessage(msg="The kit file was not found",
                  title="File not found",
                  icon = "error",
                  parent = w) 
@@ -310,7 +313,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       
     } else {
 
-      gmessage(message="One or several files was not found",
+      gmessage(msg="One or several files was not found",
                title="File not found",
                icon = "error",
                parent = w) 
@@ -353,7 +356,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     
     # Clear (does not work as expected).
     if(!is.null(.f3g1)){
-      delete(obj=.f3g1, widget=f3)
+      delete(obj = f3, child = .f3g1)
     }
     
     # Add container.
@@ -458,7 +461,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   f4_name_edt <- gedit(expand=TRUE, container=f4)
   enabled(f4_name_edt) <- FALSE
   
-  f4_save_btn <- gbutton(text="Save", border=TRUE, expand=FALSE, container=f4)
+  f4_save_btn <- gbutton(text="Save", expand=FALSE, container=f4)
   
   
   addHandlerChanged(f4_opt, handler = function (h, ...) {
@@ -491,7 +494,7 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     
   } )  
   
-  addHandlerChanged(f4_save_btn, handler = function (h, ...) {
+  addHandlerClicked(f4_save_btn, handler = function (h, ...) {
     
     # Get variables.
     val_name <- svalue(f4_name_edt)
@@ -564,7 +567,9 @@ makeKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
         if(!any(exist)){
           
           # Change button.
+          blockHandlers(f4_save_btn)
           svalue(f4_save_btn) <- "Saving..."
+          unblockHandlers(f4_save_btn)
           enabled(f4_save_btn) <- FALSE
           
           for(p in seq(along=panel)){

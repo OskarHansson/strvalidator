@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 26.07.2017: Added expand=TRUE to save name text field.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 10.10.2016: Changed to rbind.fill
 # 10.10.2016: Check for column names no longer require identical order.
 # 28.08.2015: Added importFrom.
@@ -102,12 +106,13 @@ combine_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
   
   f0g0[1,1] <- glabel(text="Select dataset 1:", container=f0g0)
   
-  f0g0[1,2] <- f0g0_data1_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- f0g0_data1_drp <- gcombobox(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              obj.class="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f0g0)
+                                         container = f0g0,
+                                         ellipsize = "none")
   
   f0g0[1,3] <- f0g0_data1_col_lbl <- glabel(text=" 0 columns",
                                               container=f0g0)
@@ -142,12 +147,13 @@ combine_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
 
   f0g0[2,1] <- glabel(text="Select dataset 2:", container=f0g0)
   
-  f0g0[2,2] <- f0g0_data2_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[2,2] <- f0g0_data2_drp <- gcombobox(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              obj.class="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f0g0)
+                                         container = f0g0,
+                                         ellipsize = "none")
   
   f0g0[2,3] <- f0g0_data2_col_lbl <- glabel(text=" 0 columns",
                                               container=f0g0)
@@ -188,7 +194,7 @@ combine_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
                container = gv) 
   
   glabel(text="Save as:", container=f2)
-  f2_name <- gedit(text="", width=40, container=f2)
+  f2_name <- gedit(text="", expand=TRUE, container=f2)
   
   # BUTTON ####################################################################
 
@@ -196,9 +202,7 @@ combine_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
     print("BUTTON")
   }  
   
-  combine_btn <- gbutton(text="Combine",
-                      border=TRUE,
-                      container=gv)
+  combine_btn <- gbutton(text="Combine", container=gv)
   
   addHandlerChanged(combine_btn, handler = function(h, ...) {
     
@@ -222,7 +226,7 @@ combine_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
       
     } else {
       
-      gmessage(message="Datasets must have identical columns!",
+      gmessage(msg="Datasets must have identical columns!",
                title="Error",
                icon = "error")      
       

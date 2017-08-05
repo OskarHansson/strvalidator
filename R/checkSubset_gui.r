@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 16.12.2015: Implemented option to type a reference sample name.
 # 15.12.2015: Implemented 'exact' option.
 # 04.12.2015: Removed 'Marker' from required columns.
@@ -105,12 +108,13 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   f0g1[1,1] <- glabel(text="Select dataset:", container=f0g1)
   
-  f0g1[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
-                                                 listObjects(env=env,
-                                                             obj.class="data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g1)
+  f0g1[1,2] <- dataset_drp <- gcombobox(items=c("<Select dataset>",
+                                                listObjects(env=env,
+                                                            obj.class="data.frame")),
+                                        selected = 1,
+                                        editable = FALSE,
+                                        container = f0g1,
+                                        ellipsize = "none")
   
   f0g1[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
                                               container=f0g1)
@@ -143,12 +147,13 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
 
   f0g1[2,1] <- glabel(text="Select reference set:", container=f0g1)
   
-  f0g1[2,2] <- dataset_ref_drp <- gdroplist(items=c("<Select dataset>",
+  f0g1[2,2] <- dataset_ref_drp <- gcombobox(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              obj.class="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f0g1)
+                                         container = f0g1,
+                                         ellipsize = "none")
   
   f0g1[2,3] <- dataset_ref_lbl <- glabel(text=" 0 reference samples",
                                               container=f0g1)
@@ -209,9 +214,7 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
     print("BUTTON")
   }  
   
-  check_btn <- gbutton(text="Subset",
-                      border=TRUE,
-                      container=gv)
+  check_btn <- gbutton(text="Subset", container=gv)
   
   addHandlerChanged(check_btn, handler = function(h, ...) {
     
@@ -250,7 +253,7 @@ checkSubset_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set or type a reference name",
                title="Error",
                icon = "error")      

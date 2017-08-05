@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 02.05.2016: First version.
 
 
@@ -91,12 +94,13 @@ removeArtefact_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
 
   f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
 
-  f0g0[1,2] <- f0g0_data_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- f0g0_data_drp <- gcombobox(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              obj.class="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f0g0)
+                                         container = f0g0,
+                                         ellipsize = "none")
 
   f0g0[1,3] <- f0g0_data_col_lbl <- glabel(text=" 0 rows",
                                               container=f0g0)
@@ -132,12 +136,13 @@ removeArtefact_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
 
   f0g0[2,1] <- glabel(text="Select artefact list:", container=f0g0)
   
-  f0g0[2,2] <- f0g0_spike_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[2,2] <- f0g0_spike_drp <- gcombobox(items=c("<Select dataset>",
                                                    listObjects(env=env,
                                                                obj.class="data.frame")),
                                            selected = 1,
                                            editable = FALSE,
-                                           container = f0g0)
+                                           container = f0g0,
+                                           ellipsize = "none")
   
   f0g0[2,3] <- f0g0_spike_col_lbl <- glabel(text=" 0 rows",
                                            container=f0g0)
@@ -198,7 +203,7 @@ removeArtefact_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
     print("BUTTON")
   }
 
-  remove_btn <- gbutton(text="Remove", border=TRUE, container=gv)
+  remove_btn <- gbutton(text="Remove", container=gv)
 
   addHandlerChanged(remove_btn, handler = function(h, ...) {
 
@@ -236,7 +241,7 @@ removeArtefact_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
 
     } else {
 
-      gmessage(message="Select a datasets!",
+      gmessage(msg="Select a datasets!",
                title="Error",
                icon = "error")
 

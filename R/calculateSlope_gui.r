@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 06.09.2016: Implemented the 'word' option.
 # 24.04.2016: First version.
 
@@ -88,12 +92,13 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   
   f0g0[1,1] <- glabel(text = "Select dataset:", container = f0g0)
   
-  f0g0[1,2] <- f0_dataset_drp <- gdroplist(items = c("<Select dataset>",
+  f0g0[1,2] <- f0_dataset_drp <- gcombobox(items = c("<Select dataset>",
                                                    listObjects(env = env,
                                                                obj.class = "data.frame")), 
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f0g0)
+                                         container = f0g0,
+                                         ellipsize = "none")
   
   f0g0[1,3] <- f0_samples_lbl <- glabel(text = " 0 samples", container = f0g0)
   
@@ -135,12 +140,13 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   
   f0g0[2,1] <- glabel(text="Select reference dataset:", container=f0g0)
   
-  f0g0[2,2] <- f0_refset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[2,2] <- f0_refset_drp <- gcombobox(items=c("<Select dataset>",
                                                   listObjects(env=env,
                                                               obj.class="data.frame")), 
                                           selected = 1,
                                           editable = FALSE,
-                                          container = f0g0) 
+                                          container = f0g0,
+                                          ellipsize = "none") 
   
   f0g0[2,3] <- f0_ref_lbl <- glabel(text=" 0 references", container=f0g0)
   
@@ -178,9 +184,7 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     print("CHECK")
   }  
   
-  f0g0[3,2] <- f0_check_btn <- gbutton(text="Check subsetting",
-                                       border=TRUE,
-                                       container=f0g0)
+  f0g0[3,2] <- f0_check_btn <- gbutton(text="Check subsetting", container=f0g0)
   
   addHandlerChanged(f0_check_btn, handler = function(h, ...) {
     
@@ -212,7 +216,7 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      
@@ -244,8 +248,9 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
                                         container = f1g1)
   tooltip(f1_auto_chk) <- "Must be checked for multiple kits."
   
-  f1g1[3,2] <- f1_kit_drp <- gdroplist(items = getKit(), selected = 1,
-                                       editable = FALSE, container = f1g1)
+  f1g1[3,2] <- f1_kit_drp <- gcombobox(items = getKit(), selected = 1,
+                                       editable = FALSE, container = f1g1,
+                                       ellipsize = "none")
   tooltip(f1_kit_drp) <- "Not needed if 'Size' is provided in the dataset."
   
   #----------------------------------------------------------------------------
@@ -290,9 +295,9 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   
   # BUTTON ####################################################################
   
-  calculate_btn <- gbutton(text = "Calculate", border = TRUE, container = gv)
+  calculate_btn <- gbutton(text = "Calculate", container = gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     # Get values.
     val_data <- .gData
@@ -310,7 +315,9 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if(!is.null(val_data)){
 
       # Change button.
+      blockHandlers(calculate_btn)
       svalue(calculate_btn) <- "Processing..."
+      unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
       # Check if automatic kit detection.

@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 29.04.2016: 'Save as' textbox expandable.
 # 25.04.2016: First version.
 
@@ -94,7 +98,7 @@ plotSlope_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
   
   glabel(text="Select dataset:", container=f0)
   
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
@@ -181,7 +185,7 @@ plotSlope_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
   items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
                    "theme_light()","theme_dark()","theme_minimal()",
                    "theme_classic()","theme_void()")
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+  f1g2[1,2] <- f1_theme_drp <- gcombobox(items = items_theme,
                                          selected = 1,
                                          container = f1g2)
   
@@ -193,9 +197,7 @@ plotSlope_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_sample_btn <- gbutton(text="Slope vs. Sample",
-                                           border=TRUE,
-                                           container=grid7) 
+  grid7[1,1] <- plot_sample_btn <- gbutton(text="Slope vs. Sample", container=grid7) 
   
   addHandlerChanged(plot_sample_btn, handler = function(h, ...) {
     
@@ -234,20 +236,18 @@ plotSlope_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
   
   f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5) 
+  f5_save_btn <- gbutton(text = "Save as object", container = f5) 
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                           border=TRUE,
-                           container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -255,7 +255,9 @@ plotSlope_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -277,6 +279,9 @@ plotSlope_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
                      horizontal=FALSE,
                      container = f1)
 
+  # Start collapsed.
+  visible(e4) <- FALSE
+  
   grid4 <- glayout(container = e4)
 
   grid4[1,1] <- glabel(text="Text size (pts):", container=grid4)
@@ -383,7 +388,7 @@ plotSlope_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

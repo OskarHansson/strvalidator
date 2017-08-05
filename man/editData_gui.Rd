@@ -16,7 +16,8 @@ editData_gui(env = parent.frame(), savegui = NULL, data = NULL,
 
 \item{name}{character string with the name of the provided dataset.}
 
-\item{edit}{logical TRUE for enable edit .}
+\item{edit}{logical TRUE to enable edit (uses \code{\link{gdf}}), FALSE to
+view and enable sorting by clicking a column header (uses \code{\link{gtable}}).}
 
 \item{debug}{logical indicating printing debug information.}
 
@@ -29,8 +30,12 @@ TRUE
 GUI to edit and view data frames.
 }
 \details{
-Select a data frame from the dropdown and view/edit. Optionally
-save as a new dataframe.
+Select a data frame from the dropdown to view or edit a dataset.
+It is possible to save as a new dataframe. To enable sorting by clicking the
+column headers the view mode must be used (i.e. edit = FALSE). There is an
+option to limit the number of rows shown that can be used to preview large
+datasets that may otherwise cause performance problems. Attributes of the
+dataset can be views in a separate window.
 }
 \seealso{
 \code{\link{trim_gui}}, \code{\link{cropData_gui}}, \code{\link{combine_gui}}

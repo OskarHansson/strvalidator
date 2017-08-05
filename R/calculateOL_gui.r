@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
@@ -136,8 +140,8 @@ calculateOL_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE, parent
   
   f1_db_names <- getDb()
   
-  f1_db_drp <- gdroplist(items=f1_db_names, fill=FALSE,
-                         selected = 1, container=f1)
+  f1_db_drp <- gcombobox(items=f1_db_names, fill=FALSE,
+                         selected = 1, container=f1, ellipsize = "none")
 
   f1_virtual_chk <- gcheckbox(text="Include virtual bins in analysis",
                               checked=TRUE,
@@ -167,11 +171,9 @@ calculateOL_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE, parent
   # BUTTON ####################################################################
   
   
-  analyse_btn <- gbutton(text="Analyse",
-                         border=TRUE,
-                         container=gv)
+  analyse_btn <- gbutton(text="Analyse", container=gv)
   
-  addHandlerChanged(analyse_btn, handler = function(h, ...) {
+  addHandlerClicked(analyse_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     val_kits <- svalue(kit_checkbox_group)
@@ -184,7 +186,9 @@ calculateOL_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE, parent
     if(length(val_kits) >0){
     
       # Change button.
+      blockHandlers(analyse_btn)
       svalue(analyse_btn) <- "Processing..."
+      unblockHandlers(analyse_btn)
       enabled(analyse_btn) <- FALSE
       
       # Get kits.

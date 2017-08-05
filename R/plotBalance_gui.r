@@ -7,6 +7,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 10.05.2016: 'Save as' textbox expandable.
 # 06.01.2016: Fixed theme methods not found and added more themes.
 # 04.01.2016: Fixed error object 'val_ncol' not found when val_wrap=1.
@@ -23,10 +28,6 @@
 # 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
-# 07.05.2014: Implemented new column 'TPH' for X-axis when plot Lb.
-# 06.05.2014: Implemented 'checkDataset'.
-# 05.05.2014: Fixed 'drop gender' and 'plot log' settings not saved.
-# 02.05.2014: Fixed bug when 'drop gender marker=TRUE' and no defined marker.
 
 #' @title Plot Balance
 #'
@@ -124,21 +125,23 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   glabel(text="Select dataset:", container=f0)
 
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   f0_samples_lbl <- glabel(text=" (0 samples)", container=f0)
 
   glabel(text=" and the kit used:", container=f0)
 
-  kit_drp <- gdroplist(items=getKit(), 
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0) 
+  kit_drp <- gcombobox(items=getKit(),
+                       selected = 1,
+                       editable = FALSE,
+                       container = f0,
+                       ellipsize = "none") 
 
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -228,9 +231,10 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
                    "theme_light()","theme_dark()","theme_minimal()",
                    "theme_classic()","theme_void()")
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+  f1g2[1,2] <- f1_theme_drp <- gcombobox(items = items_theme,
                                          selected = 1,
-                                         container = f1g2)
+                                         container = f1g2,
+                                         ellipsize = "none")
 
   f1_drop_chk <- gcheckbox(text="Drop sex markers", checked=FALSE, container=f1)
   
@@ -250,33 +254,19 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_hb_btn <- gbutton(text="Hb vs. Height",
-                                           border=TRUE,
-                                           container=grid7) 
+  grid7[1,1] <- plot_hb_btn <- gbutton(text="Hb vs. Height", container=grid7) 
   
-  grid7[1,2] <- plot_hb_d_btn <- gbutton(text="Hb vs. Delta",
-                                       border=TRUE,
-                                       container=grid7) 
+  grid7[1,2] <- plot_hb_d_btn <- gbutton(text="Hb vs. Delta", container=grid7) 
   
-  grid7[1,3] <- plot_hb_h_btn <- gbutton(text="Hb vs. 'H'",
-                                       border=TRUE,
-                                       container=grid7) 
+  grid7[1,3] <- plot_hb_h_btn <- gbutton(text="Hb vs. 'H'", container=grid7) 
   
-  grid7[1,4] <- plot_hb_m_btn <- gbutton(text="Hb vs. Marker",
-                                         border=TRUE,
-                                         container=grid7) 
+  grid7[1,4] <- plot_hb_m_btn <- gbutton(text="Hb vs. Marker", container=grid7) 
   
-  grid7[1,5] <- plot_lb_btn <- gbutton(text="Lb vs. Height",
-                                       border=TRUE,
-                                       container=grid7) 
+  grid7[1,5] <- plot_lb_btn <- gbutton(text="Lb vs. Height", container=grid7) 
 
-  grid7[1,6] <- plot_lb_h_btn <- gbutton(text="Lb vs. 'H'",
-                                       border=TRUE,
-                                       container=grid7) 
+  grid7[1,6] <- plot_lb_h_btn <- gbutton(text="Lb vs. 'H'", container=grid7) 
   
-  grid7[1,7] <- plot_lb_m_btn <- gbutton(text="Lb vs. Marker",
-                                         border=TRUE,
-                                         container=grid7) 
+  grid7[1,7] <- plot_lb_m_btn <- gbutton(text="Lb vs. Marker", container=grid7) 
   
   addHandlerChanged(plot_hb_btn, handler = function(h, ...) {
     
@@ -471,20 +461,18 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5) 
+  f5_save_btn <- gbutton(text = "Save as object", container = f5) 
 
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                               border=TRUE,
-                               container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
 
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -492,7 +480,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
 
@@ -512,6 +502,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                horizontal=FALSE,
                container = f1)
   
+  # Start collapsed.
+  visible(e2) <- FALSE
+
   grid2 <- glayout(container = e2)
   
   grid2[1,1] <- glabel(text="Shape:", container=grid2)
@@ -532,6 +525,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   e3 <- gexpandgroup(text="Axes",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e3) <- FALSE
   
   grid3 <- glayout(container = e3, spacing = 1)
 
@@ -556,6 +552,9 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   e4 <- gexpandgroup(text="X labels",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e4) <- FALSE
   
   grid4 <- glayout(container = e4)
   
@@ -1273,7 +1272,7 @@ plotBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

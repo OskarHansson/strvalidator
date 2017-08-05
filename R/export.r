@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 21.07.2017: Function now exported.
 # 29.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 24.07.2014: Fixed 'NA' bug when recycling names.
@@ -44,11 +45,11 @@
 #' data.frame with columns 'Object', 'Name', and 'New.Name' with objects
 #' that were not exported.
 #' 
+#' @export
+#' 
 #' @importFrom utils write.table
 #' @importFrom grDevices png dev.off
 #' @importFrom graphics plot
-#' 
-#' @keywords internal
 #' 
 
 export <- function(object, name=NA, use.object.name=is.na(name),

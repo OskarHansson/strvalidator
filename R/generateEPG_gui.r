@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 31.12.2015: New options 'wrap' and 'at'. 'type' replaced by 'boxplot'. 
 # 29.08.2015: Added importFrom.
 # 09.01.2015: Enable 'generate' after selection of new sample.
@@ -95,24 +99,27 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   dfs <- c("<Select a dataset>", listObjects(env=env, obj.class="data.frame"))
 
-  g0[1,2] <- g0_data_drp <- gdroplist(items=dfs, 
+  g0[1,2] <- g0_data_drp <- gcombobox(items=dfs, 
                                       selected = 1,
                                       editable = FALSE,
-                                      container = g0)
+                                      container = g0,
+                                      ellipsize = "none")
   
   g0[1,3] <- g0_data_samples_lbl <- glabel(text=" (0 samples)", container=g0)
   
   g0[1,4] <- glabel(text=" and the kit used:", container=g0)
   
-  g0[1,5] <- kit_drp <- gdroplist(items=getKit(), selected = 1,
-                                  editable = FALSE, container = g0) 
+  g0[1,5] <- kit_drp <- gcombobox(items=getKit(), selected = 1,
+                                  editable = FALSE, container = g0,
+                                  ellipsize = "none") 
   
   # Sample --------------------------------------------------------------------
   
   g0[2,1] <- glabel(text="Select sample:", container=g0)
   
-  g0[2,2] <- g0_sample_drp <- gdroplist(items=.noSample, selected = 1,
-                                        editable = FALSE, container = g0)
+  g0[2,2] <- g0_sample_drp <- gcombobox(items=.noSample, selected = 1,
+                                        editable = FALSE, container = g0,
+                                        ellipsize = "none")
   
   # Handlers ------------------------------------------------------------------
   
@@ -271,20 +278,18 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   f5_save_edt <- gedit(text="", container=f5)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5) 
+  f5_save_btn <- gbutton(text = "Save as object", container = f5) 
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                           border=TRUE,
-                           container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
   addHandlerChanged(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -292,7 +297,9 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -310,11 +317,9 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   # BUTTON ####################################################################
   
   
-  plot_epg_btn <- gbutton(text=.buttonDefault,
-                        border=TRUE,
-                        container=gv)
+  plot_epg_btn <- gbutton(text=.buttonDefault, container=gv)
   
-  addHandlerChanged(plot_epg_btn, handler = function(h, ...) {
+  addHandlerClicked(plot_epg_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     val_sample <- svalue(g0_sample_drp)
@@ -343,7 +348,9 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       }
       
       # Change button.
+      blockHandlers(plot_epg_btn)
       svalue(plot_epg_btn) <- "Processing..."
+      unblockHandlers(plot_epg_btn)
       enabled(plot_epg_btn) <- FALSE
       
       gp <- generateEPG(data = val_data, kit = val_kit, title = val_title,
@@ -359,7 +366,9 @@ generateEPG_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       .gPlot <<- gp
 
       # Change button.
+      blockHandlers(plot_epg_btn)
       svalue(plot_epg_btn) <- .buttonDefault
+      unblockHandlers(plot_epg_btn)
       enabled(plot_epg_btn) <- TRUE
       
       

@@ -4,6 +4,12 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.07.2017: Removed unused argument 'spacing' from 'gexpandgroup'.
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 06.03.2017: Removed dead web page references.
 # 01.11.2016: 'Probability' on y axis changed to 'Density'.
 # 11.10.2016: Added controls for x and y axis range.
@@ -20,10 +26,6 @@
 # 29.08.2015: Added importFrom.
 # 11.06.2015: Fixed title for histogram plot.
 # 09.06.2015: Fixed 'overlay boxplot' not saved.
-# 04.05.2015: Added 'Histogram'.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 11.05.2014: Fixed boxplot bug, box not drawn.
 
 #' @title Plot Distribution
 #'
@@ -125,23 +127,26 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
   
-  f0g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- dataset_drp <- gcombobox(items=c("<Select dataset>",
                                                 listObjects(env=env,
                                                             obj.class="data.frame")),
                                         selected = 1,
                                         editable = FALSE,
-                                        container = f0g0) 
+                                        container = f0g0,
+                                        ellipsize = "none") 
   
   f0g0[1,3] <- f0_samples_lbl <- glabel(text=" (0 rows)", container=f0g0)
   
   f0g0[2,1] <- glabel(text="Select group:", container=f0g0)
-  f0g0[2,2] <- f0_group_drp <- gdroplist(items=.defaultGroup,
-                                         selected = 1, container=f0g0)
+  f0g0[2,2] <- f0_group_drp <- gcombobox(items=.defaultGroup,
+                                         selected = 1, container=f0g0,
+                                         ellipsize = "none")
   f0g0[2,3] <- f0_rows_lbl <- glabel(text=" (0 rows)", container=f0g0)
   
   f0g0[3,1] <- glabel(text="Select column:", container=f0g0)
-  f0g0[3,2] <- f0_column_drp <- gdroplist(items=.defaultColumn,
-                                          selected = 1, container=f0g0)
+  f0g0[3,2] <- f0_column_drp <- gcombobox(items=.defaultColumn,
+                                          selected = 1, container=f0g0,
+                                          ellipsize = "none")
   
   
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
@@ -252,9 +257,10 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
                    "theme_light()","theme_dark()","theme_minimal()",
                    "theme_classic()","theme_void()")
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+  f1g2[1,2] <- f1_theme_drp <- gcombobox(items = items_theme,
                                          selected = 1,
-                                         container = f1g2)
+                                         container = f1g2,
+                                         ellipsize = "none")
 
   # Boxplot.  
   f1g3 <- glayout(container = f1, spacing = 1)
@@ -284,26 +290,33 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     
   } )
   
-  f1e2 <- gexpandgroup(text = "Distribution function", horizontal=FALSE,
-                       spacing = 5, container = f1) 
+  f1e2 <- gexpandgroup(text = "Distribution function",
+                       horizontal = FALSE, container = f1) 
   
+  # Start collapsed.
+  visible(f1e2) <- FALSE
+
   f1g4 <- glayout(container = f1e2, spacing = 1)
   
   f1_kernel <- c("gaussian", "rectangular", "triangular", "epanechnikov",
                  "biweight", "cosine","optcosine") 
   f1g4[1,1] <- glabel(text="Smoothing kernel:", container=f1g4)
-  f1g4[1,2] <- f1_kernel_drp <- gdroplist(items=f1_kernel,
-                                          selected = 1, container=f1g4)
+  f1g4[1,2] <- f1_kernel_drp <- gcombobox(items=f1_kernel,
+                                          selected = 1, container=f1g4,
+                                          ellipsize = "none")
   
   f1_adjust <- c(4,2,1,0.5,0.25) 
   f1g4[2,1] <- glabel(text="Adjust bandwidth:", container=f1g4)
   f1g4[2,2] <- f1_adjustbw_cbo <- gcombobox(items=f1_adjust,
                                             selected = 3, editable = TRUE,
-                                            container=f1g4)
+                                            container=f1g4, ellipsize = "none")
   
-  f1e3 <- gexpandgroup(text = "Histogram", horizontal=FALSE,
-                       spacing = 5, container = f1) 
+  f1e3 <- gexpandgroup(text = "Histogram", 
+                       horizontal = FALSE, container = f1) 
   
+  # Start collapsed.
+  visible(f1e3) <- FALSE
+
   f1g5 <- glayout(container = f1e3, spacing = 1)
   
   f1g5[1,1] <- glabel(text="Adjust binwidth:", container=f1g5)
@@ -331,8 +344,11 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   } )
   
 
-  f1e4 <- gexpandgroup(text="Axes", horizontal=FALSE, container = f1)
+  f1e4 <- gexpandgroup(text = "Axes", horizontal = FALSE, container = f1)
   
+  # Start collapsed.
+  visible(f1e4) <- FALSE
+
 #  f1g6 <- gframe(text = "", horizontal = FALSE, container = f1e4)
   
   glabel(text="NB! Must provide both min and max value.",
@@ -355,7 +371,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   f7g7 <- glayout(container = f7)
   
-  f7g7[1,1] <- f7_ecdf_btn <- gbutton(text="CDF", border=TRUE, container=f7g7) 
+  f7g7[1,1] <- f7_ecdf_btn <- gbutton(text="CDF", container=f7g7) 
   
   addHandlerChanged(f7_ecdf_btn, handler = function(h, ...) {
     
@@ -363,7 +379,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     
     if(val_column == .defaultColumn){
       
-      gmessage(message="A data column must be specified!",
+      gmessage(msg="A data column must be specified!",
                title="Error",
                icon = "error")      
       
@@ -377,7 +393,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     
   } )
   
-  f7g7[1,2] <- f7_pdf_btn <- gbutton(text="PDF", border=TRUE, container=f7g7) 
+  f7g7[1,2] <- f7_pdf_btn <- gbutton(text="PDF", container=f7g7) 
   
   addHandlerChanged(f7_pdf_btn, handler = function(h, ...) {
     
@@ -385,7 +401,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     
     if(val_column == .defaultColumn){
       
-      gmessage(message="A data column must be specified!",
+      gmessage(msg="A data column must be specified!",
                title="Error",
                icon = "error")      
       
@@ -399,7 +415,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     
   } )
   
-  f7g7[1,3] <- f7_histogram_btn <- gbutton(text="Histogram", border=TRUE, container=f7g7) 
+  f7g7[1,3] <- f7_histogram_btn <- gbutton(text="Histogram", container=f7g7) 
   
   addHandlerChanged(f7_histogram_btn, handler = function(h, ...) {
     
@@ -407,7 +423,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     
     if(val_column == .defaultColumn){
       
-      gmessage(message="A data column must be specified!",
+      gmessage(msg="A data column must be specified!",
                title="Error",
                icon = "error")      
       
@@ -432,20 +448,18 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   f5_save_edt <- gedit(text = "", container = f5, expand = TRUE)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5) 
+  f5_save_btn <- gbutton(text = "Save as object", container = f5) 
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                           border=TRUE,
-                           container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -453,7 +467,9 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -842,7 +858,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

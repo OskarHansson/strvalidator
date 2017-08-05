@@ -5,6 +5,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 10.05.2016: Implemented check for missing values.
 # 10.05.2016: 'Save as' textbox expandable.
 # 10.05.2016: New method '.enablePlotButtons' and called when changing plot options.
@@ -107,21 +112,23 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   
   glabel(text="Select dataset:", container=f0)
   
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   f0_samples_lbl <- glabel(text=" (0 samples)", container=f0)
   
   glabel(text=" and the kit used:", container=f0)
   
-  kit_drp <- gdroplist(items=getKit(), 
+  kit_drp <- gcombobox(items=getKit(), 
                        selected = 1,
                        editable = FALSE,
-                       container = f0) 
+                       container = f0,
+                       ellipsize = "none") 
   
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -209,9 +216,10 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
                    "theme_light()","theme_dark()","theme_minimal()",
                    "theme_classic()","theme_void()")
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+  f1g2[1,2] <- f1_theme_drp <- gcombobox(items = items_theme,
                                          selected = 1,
-                                         container = f1g2)
+                                         container = f1g2,
+                                         ellipsize = "none")
   
   f1_drop_chk <- gcheckbox(text="Drop sex markers",
                            checked=TRUE,
@@ -232,12 +240,10 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_height_btn <- gbutton(text="Ratio vs. Height",
-                                           border=TRUE,
+  grid7[1,1] <- plot_height_btn <- gbutton(text="Ratio vs. Height", 
                                            container=grid7) 
   
-  grid7[1,2] <- plot_allele_btn <- gbutton(text="Ratio vs. Allele",
-                                           border=TRUE,
+  grid7[1,2] <- plot_allele_btn <- gbutton(text="Ratio vs. Allele", 
                                            container=grid7) 
   
   addHandlerChanged(plot_height_btn, handler = function(h, ...) {
@@ -307,20 +313,18 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   
   f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5) 
+  f5_save_btn <- gbutton(text = "Save as object", container = f5) 
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                           border=TRUE,
-                           container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -328,7 +332,9 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -347,6 +353,9 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   e2 <- gexpandgroup(text="Data points",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e2) <- FALSE
   
   grid2 <- glayout(container = e2)
   
@@ -368,6 +377,9 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   e3 <- gexpandgroup(text="Axes",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e3) <- FALSE
   
   grid3 <- glayout(container = e3, spacing = 1)
   
@@ -400,6 +412,9 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
   e4 <- gexpandgroup(text="X labels",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e4) <- FALSE
   
   grid4 <- glayout(container = e4)
   
@@ -845,7 +860,7 @@ plotPullup_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

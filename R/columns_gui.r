@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 09.05.2016: Added attributes to result.
 # 09.05.2016: 'Save as' textbox expandable.
 # 22.12.2015: Removed colum check to enable no selected column etc.
@@ -94,12 +97,13 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
   
-  f0g0[1,2] <- f0g0_data_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- f0g0_data_drp <- gcombobox(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              obj.class="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f0g0)
+                                         container = f0g0,
+                                         ellipsize = "none")
   
   f0g0[1,3] <- f0g0_data_col_lbl <- glabel(text=" 0 columns",
                                               container=f0g0)
@@ -145,15 +149,17 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   f1g1[1,1] <- glabel(text="Select column 1:", container=f1g1)
   
-  f1g1[1,2] <- f1g1_col1_drp <- gdroplist(items=c(.columnDropDefault),
-                                           editable = FALSE,
-                                           container = f1g1)
+  f1g1[1,2] <- f1g1_col1_drp <- gcombobox(items=c(.columnDropDefault),
+                                          editable = FALSE,
+                                          container = f1g1,
+                                          ellipsize = "none")
   
   f1g1[2,1] <- glabel(text="Select column 2:", container=f1g1)
   
-  f1g1[2,2] <- f1g1_col2_drp <- gdroplist(items=c(.columnDropDefault),
-                                           editable = FALSE,
-                                           container = f1g1)
+  f1g1[2,2] <- f1g1_col2_drp <- gcombobox(items=c(.columnDropDefault),
+                                          editable = FALSE,
+                                          container = f1g1,
+                                          ellipsize = "none")
 
   addHandlerChanged(f1g1_col1_drp, handler = function (h, ...) {
     
@@ -208,8 +214,9 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   f3g1[3,1] <- glabel(text="Action:", container=f3g1)
   
   action_items <- c("&","+","*","-", "/", "substr")
-  f3g1[3,2] <- f3g1_action_drp <- gdroplist(items=action_items, selected=1,
-                                              editable=FALSE, container=f3g1)
+  f3g1[3,2] <- f3g1_action_drp <- gcombobox(items=action_items, selected=1,
+                                            editable=FALSE, container=f3g1,
+                                            ellipsize = "none")
 
   f3g1[4,1] <- glabel(text="Start position:", container=f3g1)
   
@@ -242,9 +249,7 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     print("BUTTON")
   }  
   
-  combine_btn <- gbutton(text="Execute",
-                      border=TRUE,
-                      container=gv)
+  combine_btn <- gbutton(text="Execute", container=gv)
   
   addHandlerChanged(combine_btn, handler = function(h, ...) {
     

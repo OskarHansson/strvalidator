@@ -5,6 +5,12 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.07.2017: Fixed issue with infinite loop for the 'model' button.
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 18.11.2016: Added reference.
 # 16.06.2016: 'Save as' textbox expandable.
 # 11.11.2015: Added importFrom ggplot2.
@@ -20,12 +26,6 @@
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 28.06.2014: Changed notation on plot to be more correct.
 # 08.05.2014: Implemented 'checkDataset'.
-# 18.02.2014: Implemented conserative T estimate.
-# 18.02.2014: Removed erroneously implemented prediction interval for T.
-# 27.01.2014: Fixed bug not checking required columns upon selection of dataset.
-# 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
-# 16.01.2014: Changed according to new column names in 'calculateDropout' res.
-# 13.11.2013: Implemented 'Hosmer-Lemeshow test'.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -197,19 +197,21 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   glabel(text="Select dataset:", container=f0)
   
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   glabel(text=" and the kit used:", container=f0)
   
-  kit_drp <- gdroplist(items=getKit(), 
+  kit_drp <- gcombobox(items=getKit(), 
                        selected = 1,
                        editable = FALSE,
-                       container = f0) 
+                       container = f0,
+                       ellipsize = "none") 
 
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -356,19 +358,28 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   f7g1 <- glayout(container = f7)
   
-  f7g1[1,1] <- f7_plot_drop_btn <- gbutton(text="Plot predicted drop-out probability",
-                                           border=TRUE,
+  f7g1[1,1] <- f7_plot_drop_btn <- gbutton(text="Plot predicted drop-out probability", 
                                            container=f7g1) 
   
   
   addHandlerChanged(f7_plot_drop_btn, handler = function(h, ...) {
     
     if(!is.null(.gData)){
+      
       enabled(f7_plot_drop_btn) <- FALSE
+      
+      blockHandlers(f7_plot_drop_btn)
       svalue(f7_plot_drop_btn) <- "Processing..."
+      unblockHandlers(f7_plot_drop_btn)
+
       .plotDrop()
+      
+      blockHandlers(f7_plot_drop_btn)
       svalue(f7_plot_drop_btn) <- "Plot predicted drop-out probability"
+      unblockHandlers(f7_plot_drop_btn)
+      
       enabled(f7_plot_drop_btn) <- TRUE
+      
     } else {
       message <- paste("Select a drop-out dataset")
       
@@ -391,20 +402,18 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   f5_save_edt <- gedit(text = "", expand = TRUE, container = f5)
 
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border = TRUE,
-                         container = f5)
+  f5_save_btn <- gbutton(text = "Save as object", container = f5)
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                               border=TRUE,
-                               container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
   addHandlerChanged(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -412,7 +421,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -434,6 +445,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   e1 <- gexpandgroup(text="Drop-out prediction and threshold",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e1) <- FALSE
   
   # FRAME 1 -------------------------------------------------------------------
   # DROPOUT THRESHOLD
@@ -458,15 +472,17 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   glabel("Line type", container = e1f1g3)
   
-  e1f1_t_linetype_drp <- gdroplist(items=e1_linetypes,
-                                     selected=2,
-                                     container = e1f1g3)
+  e1f1_t_linetype_drp <- gcombobox(items=e1_linetypes,
+                                   selected=2,
+                                   container = e1f1g3,
+                                   ellipsize = "none")
   
   glabel("Line colour", container = e1f1g3) 
   
-  e1f1_t_linecolor_drp <- gdroplist(items=palette(),
+  e1f1_t_linecolor_drp <- gcombobox(items=palette(),
                                 selected=2,
-                                container = e1f1g3)
+                                container = e1f1g3,
+                                ellipsize = "none")
   
   # Group 4.
   e1f1g4 <- ggroup(horizontal = TRUE, spacing = 5,  container = e1f1)
@@ -511,16 +527,20 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                                                      container=e1f2g3)
   
   glabel("Fill colour", container = e1f2g3) 
-  e1f2_interval_drp <- gdroplist(items=palette(),
-                                             selected=2,
-                                             container = e1f2g3)
+  e1f2_interval_drp <- gcombobox(items=palette(),
+                                 selected=2,
+                                 container = e1f2g3,
+                                 ellipsize = "none")
   
   # EXPAND 2 ##################################################################
   
   e2 <- gexpandgroup(text="Data points",
                      horizontal=FALSE,
                      container = f1)
-  
+
+  # Start collapsed.
+  visible(e2) <- FALSE
+
   e2f1 <- gframe(text = "", horizontal = FALSE, container = e2) 
   
   e2g1 <- glayout(container = e2f1)
@@ -548,6 +568,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                      horizontal=FALSE,
                      container = f1)
   
+  # Start collapsed.
+  visible(e3) <- FALSE
+  
   e3f1 <- gframe(text = "", horizontal = FALSE, container = e3) 
 
   glabel(text="NB! Must provide both min and max value.",
@@ -567,6 +590,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   e4 <- gexpandgroup(text="X labels",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e4) <- FALSE
   
   e4f1 <- gframe(text = "", horizontal = FALSE, container = e4) 
 
@@ -1077,7 +1103,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

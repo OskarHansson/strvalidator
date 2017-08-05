@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 10.05.2016: Added new option 'limit' to remove high ratios from the result.
 # 10.05.2016: Added attributes to result.
 # 10.05.2016: 'Save as' textbox expandable.
@@ -113,10 +117,11 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
   
   dfs <- c("<Select a dataset>", listObjects(env=env, obj.class="data.frame"))
   
-  g0[1,2] <- g0_data_drp <- gdroplist(items=dfs, 
+  g0[1,2] <- g0_data_drp <- gcombobox(items=dfs, 
                                       selected = 1,
                                       editable = FALSE,
-                                      container = g0)
+                                      container = g0,
+                                      ellipsize = "none")
   g0[1,3] <- g0_data_samples_lbl <- glabel(text=" 0 samples", container=g0)
   
   addHandlerChanged(g0_data_drp, handler = function (h, ...) {
@@ -164,10 +169,11 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
   g0[2,1] <- glabel(text="Select reference dataset:", container=g0)
   
   # NB! dfs defined in previous section.
-  g0[2,2] <- g0_ref_drp <- gdroplist(items=dfs, 
+  g0[2,2] <- g0_ref_drp <- gcombobox(items=dfs, 
                                      selected = 1,
                                      editable = FALSE,
-                                     container = g0)
+                                     container = g0,
+                                     ellipsize = "none")
   
   g0[2,3] <- g0_ref_samples_lbl <- glabel(text=" 0 references", container=g0)
   
@@ -206,9 +212,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
     print("CHECK")
   }  
   
-  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting",
-                                     border=TRUE,
-                                     container=g0)
+  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting", container=g0)
   
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
     
@@ -238,7 +242,7 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      
@@ -304,8 +308,8 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
 
   glabel(text=" Kit attribute:", container=f4)
   
-  f4_kit_drp <- gdroplist(items=getKit(), selected = 1,
-                          editable = FALSE, container = f4) 
+  f4_kit_drp <- gcombobox(items=getKit(), selected = 1,
+                          editable = FALSE, container = f4, ellipsize = "none") 
   
   # BUTTON ####################################################################
 
@@ -313,11 +317,9 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
     print("BUTTON")
   }  
   
-  calculate_btn <- gbutton(text="Calculate",
-                      border=TRUE,
-                      container=gv)
+  calculate_btn <- gbutton(text="Calculate", container=gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     # Get values.
     val_data <- .gData
@@ -363,7 +365,9 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
       if(!any(is.na(.gData$Dye))){
         
         # Change button.
+        blockHandlers(calculate_btn)
         svalue(calculate_btn) <- "Processing..."
+        unblockHandlers(calculate_btn)
         enabled(calculate_btn) <- FALSE
         
         datanew <- calculatePullup(data=val_data,

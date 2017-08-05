@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 16.06.2016: 'Save as' textbox expandable.
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
@@ -100,12 +105,13 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   glabel(text="Select dataset:", container=f0)
 
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   f0_samples_lbl <- glabel(text=" (0 rows)", container=f0)
 
@@ -197,17 +203,11 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_dot_btn <- gbutton(text="Dotplot",
-                                           border=TRUE,
-                                           container=grid7) 
+  grid7[1,1] <- plot_dot_btn <- gbutton(text="Dotplot", container=grid7) 
   
-  grid7[1,2] <- plot_box_btn <- gbutton(text="Boxplot",
-                                       border=TRUE,
-                                       container=grid7) 
+  grid7[1,2] <- plot_box_btn <- gbutton(text="Boxplot", container=grid7) 
   
-  grid7[1,3] <- plot_dst_btn <- gbutton(text="Distribution",
-                                        border=TRUE,
-                                        container=grid7) 
+  grid7[1,3] <- plot_dst_btn <- gbutton(text="Distribution", container=grid7) 
   
   addHandlerChanged(plot_dot_btn, handler = function(h, ...) {
     
@@ -301,20 +301,18 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   f5_save_edt <- gedit(text = "", expand = TRUE, container = f5)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5) 
+  f5_save_btn <- gbutton(text = "Save as object", container = f5) 
 
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                         border=TRUE,
-                         container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
 
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -322,7 +320,9 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
 
@@ -342,6 +342,9 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                horizontal=FALSE,
                container = f1)
   
+  # Start collapsed.
+  visible(e2) <- FALSE
+  
   grid2 <- glayout(container = e2)
   
   grid2[1,1] <- glabel(text="Shape:", container=grid2)
@@ -359,6 +362,9 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   e3 <- gexpandgroup(text="Axes",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e3) <- FALSE
   
   grid3 <- glayout(container = e3, spacing = 1)
 
@@ -559,7 +565,7 @@ plotCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
 
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

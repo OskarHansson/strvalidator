@@ -1,3 +1,32 @@
+Version 1.9.0.9000
+------------------------------------------------------------------------------
+
+* The package now use gWidgets2 instead of gWidgets (changes in all "_gui" functions).
+  - Improved GUI speed by 10-100% (https://github.com/jverzani/gWidgets2).
+* Bug fixes and improvements with the most significant listed below:
+  - strvalidator (the main GUI)
+  Button 'Delete' in tab 'Workspace' now support multiple selections.
+  Across all tabs the 'Edit' button was changed to 'View'.
+  The 'Edit' button is available in the 'Tools' tab.
+  - import
+  Prefix now works as intended (previously worked as 'contain').
+  - import_gui
+  Implemented last used directory as default
+  Partly changed layout.
+  - export_gui
+  Implemented last used directory as default.
+  Now closes after export.
+  - ggsave_gui
+  Implemented last used directory.
+  Minor GUI improvements.
+  - tableBalance_gui
+  Added 'kit' attribute to result.
+  - tableStutter / tableStutter_gui
+  Added attributes to result.
+* Exported functions (previously internal)
+  - export
+  - export_gui
+
 Version 1.9.0
 ------------------------------------------------------------------------------
 

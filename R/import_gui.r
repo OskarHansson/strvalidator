@@ -1,10 +1,16 @@
 ################################################################################
 # TODO LIST
-# TODO: Check folder DOES NOT WORK BECAUSE \ IS ESCAPE CHARACTER.
 # TODO: Update when 'import' is changed to use 'fread'.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.07.2017: Added label "Selected for import".
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 11.07.2017: Changed part of layout and Implemented last directory as default.
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 15.12.2015: Removed "0" from the default 'na.strings'.
 # 04.12.2015: Implemented new parameter 'na.strings'.
 # 05.10.2015: Added attributes.
@@ -19,7 +25,6 @@
 # 18.07.2013: Check before overwrite object.
 # 15.07.2013: Added save GUI settings.
 # 11.06.2013: Fixed 'exists' added 'inherits=FALSE'. Added parameter 'debug'.
-# 16.04.2013: Added object name check.
 
 #' @title Import Data
 #'
@@ -50,23 +55,17 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
-  
+
   # Define variables.
-  defaultDir <- "Select a directory..."
-  defaultFile <- "Select a file..."
+  .default_file_dir <- NA
+  .default_file_name <- NA
+  .default_dir <- NA
   
+  .selectedFile <- NULL
+  .selectedFolder <- NULL
+  .batchImport <- TRUE
   
-  # Add new parameter , settings=FALSE  
-  #  # Load settings.
-  #   if(settings){
-  #     if(exists(".strvalidator_import_gui_file")){
-  #       defaultFile <- .strvalidator_import_gui_file
-  #     }
-  #     if(exists(".strvalidator_import_gui_dir")){
-  #       defaultDir <- .strvalidator_import_gui_dir
-  #     }
-  #     
-  #   }
+  .selectedLabel <- "Selected for import: "
   
   # Main window.  
   w <- gwindow(title="Import from files", 
@@ -109,34 +108,85 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   })
   
   # GUI #######################################################################
+
+  # Button for single file import.
+  select_file <- gbutton(text="Select file", container=gv)
+  tooltip(select_file) <- "Import of a single file into one dataset."
   
-  options <- c("Import multiple files from a directory into one dataset", 
-               "Import a single file")
-  
-  import_opt <- gradio(items=options, selected=2,
-                       horizontal=FALSE, container=gv)
-  
-  addHandlerChanged(import_opt, handler = function (h, ...) {
+  addHandlerClicked(select_file, handler = function(h, ...) {
+
+    # Set batch import flag.
+    .batchImport <<- FALSE
     
-    .refresh()
+    # Check if last location is available.
+    if(!is.na(.default_file_dir) && !is.na(.default_file_name)){
+      m_file_dir <- .default_file_dir
+      message("Last used file directory: ", m_file_dir)
+      m_filename <- .default_file_name
+      message("Last used file name: ", m_filename)
+    } else {
+      m_file_dir <- getwd()
+      m_filename <- NULL
+      message("Could not access last used import directory.")
+      message("Using current working directory: ", getwd())
+    }
+
+    # Open file selector.
+    .selectedFile <<- gfile(text = "Select a file...", type = "open",
+                            initial.filename = m_filename,
+                            initial.dir = m_file_dir)
+    
+    # Save last used filename and directory.
+    if(length(.selectedFile) > 0){
+      
+      .default_file_name <<- basename(.selectedFile)
+      .default_file_dir <<- dirname(.selectedFile)
+      
+    }
+
+    # Update current selection.
+    svalue(selected_lbl) <- paste0(c(.selectedLabel, .selectedFile))
     
   })
   
-  import_file <- gfilebrowse(text=defaultFile,
-                             initial.filename = defaultFile, # Not implemented in current version?
-                             type="open",
-                             quote = FALSE,
-                             container=gv)
+  # Button for multiple files import.
+  select_folder <- gbutton(text="Select folder", container=gv)
+  tooltip(select_folder) <- "Batch import of multiple files into one dataset."
   
+  addHandlerClicked(select_folder, handler = function(h, ...) {
+    
+    # Set import from folder flag.
+    .batchImport <<- TRUE
+    
+    # Check if last location is available.
+    if(!is.na(.default_dir)){
+      m_dir <- .default_dir
+      message("Last used batch directory: ", m_dir)
+    } else {
+      m_dir <- getwd()
+      message("Could not access last used import directory.")
+      message("Using current working directory: ", getwd())
+    }
+
+    # Open folder selector.
+    .selectedFolder <<- gfile(text = "Select a folder...", type = "selectdir",
+                            initial.dir = m_dir)
+
+    # Save last used directory.
+    if(length(.selectedFolder) > 0){
+      
+      .default_dir <<- .selectedFolder
+      
+    }
+
+    # Update current selection.
+    svalue(selected_lbl) <- paste0(c(.selectedLabel, .selectedFolder))
+    
+  })
   
-  import_folder <- gfilebrowse(text=defaultDir, 
-                               initial.dir = defaultDir, # Not implemented in current version?
-                               type="selectdir",
-                               quote = FALSE,
-                               container=gv)
-  
-  enabled(import_folder) <- FALSE
-  
+  # Selected status label.
+  selected_lbl <- glabel(text = .selectedLabel, container = gv, anchor=c(-1 ,0))
+
   # OPTIONS -------------------------------------------------------------------
   
   opt_frm <- gframe(text="Options", pos=0, horizontal=FALSE, container=gv)
@@ -148,8 +198,9 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
                             container=opt_frm)
   
   glabel(text="Delimiter:", container=opt_frm, anchor=c(-1 ,0))
-  opt_sep_drp <- gdroplist(items=c("TAB","SPACE","COMMA","SEMICOLON"),
-                           selected=1, editable=FALSE, container=opt_frm)
+  opt_sep_drp <- gcombobox(items=c("TAB","SPACE","COMMA","SEMICOLON"),
+                           selected=1, editable=FALSE, container=opt_frm,
+                           ellipsize = "none")
   
   glabel(text="NA strings (separated by comma):",
          container=opt_frm, anchor=c(-1 ,0))
@@ -179,7 +230,8 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   multi_frm <- gexpandgroup(text="Multiple files options",
                             horizontal=FALSE, container=gv)
   
-  enabled(multi_frm) <- FALSE
+  # Start collapsed.
+  visible(multi_frm) <- FALSE
   
   multi_case_chk <- gcheckbox(text="Ignore case", checked = TRUE,
                               container=multi_frm)
@@ -201,6 +253,8 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   trim_frm <- gexpandgroup(text="Trim options",
                            horizontal=FALSE, container=gv)
   
+  visible(trim_frm) <- FALSE
+  
   glabel(text="Trim samples containing the word (separate by pipe |):",
          container=trim_frm, anchor=c(-1 ,0))
   
@@ -214,6 +268,8 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   
   slim_frm <- gexpandgroup(text="Slim options",
                            horizontal=FALSE, container=gv)
+  
+  visible(slim_frm) <- FALSE
   
   slim_fix_chk <- gcheckbox(text="Keep all fixed (keep a row even if no data)",
                             checked=TRUE, container=slim_frm)
@@ -229,19 +285,19 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   
   # IMPORT --------------------------------------------------------------------
   
-  import_btn <- gbutton(text="Import", border=TRUE, container=gv)
+  import_btn <- gbutton(text="Import", container=gv)
   
   
-  addHandlerChanged(import_btn, handler = function(h, ...) {
+  addHandlerClicked(import_btn, handler = function(h, ...) {
     
     # Get values.
-    file_val <- svalue(import_file)
-    folder_val <- svalue(import_folder)
+    file_val <- .selectedFile
+    folder_val <- .selectedFolder
     ignore_val <- svalue(multi_case_chk)
     prefix_val <- svalue(multi_pre_edt)
     suffix_val <- svalue(multi_suf_edt)
     extension_val <- svalue(multi_ext_edt)
-    folder_opt_val <- if(svalue(import_opt, index=TRUE)==1){TRUE}else{FALSE}
+    folder_opt_val <- .batchImport
     val_name <- svalue(import_edt)
     get_file_val <- svalue(opt_file_chk)
     get_time_val <- svalue(opt_time_chk)
@@ -279,18 +335,6 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       ok <- FALSE
       
     }
-    
-    #     # TODO: DOES NOT WORK BECAUSE \ IS ESCAPE CHARACTER.
-    #     # Check that folder exist.
-    #     if(!file.exists(folder_val)){
-    # 
-    #       ok <- FALSE
-    #       
-    #       gmessage("The provided folder does not exist or is not accessible.",
-    #                title="Error", icon="error", parent=w)
-    #       
-    #     }
-    
     
     # Check if ok to import data to 'env'.
     if(ok){
@@ -348,7 +392,9 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       }
       
       # Change button.
+      blockHandlers(import_btn)
       svalue(import_btn) <- "Processing..."
+      unblockHandlers(import_btn)
       enabled(import_btn) <- FALSE
       
       # Call function.
@@ -373,13 +419,15 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       if(length(datanew) == 0){
         
         # Show warning.
-        gmessage(message="Dataset empty!\nCheck your file filter.",
+        gmessage(msg="Dataset empty!\nCheck your file filter.",
                  title="Error",
                  icon = "error",
                  parent = w)
         
         # Change button.
+        blockHandlers(import_btn)
         svalue(import_btn) <- "Import"
+        unblockHandlers(import_btn)
         enabled(import_btn) <- TRUE
         
       } else {
@@ -422,7 +470,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
     # Get values.
     val_trim <- svalue(opt_trim_chk)
     val_slim <- svalue(opt_slim_chk)
-    folder_opt_val <- if(svalue(import_opt, index=TRUE)==1){TRUE}else{FALSE}
+    folder_opt_val <- .batchImport
     
     
     if(val_trim){
@@ -437,16 +485,6 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       enabled(slim_fix_chk) <- TRUE
     } else {
       enabled(slim_fix_chk) <- FALSE
-    }
-    
-    if(folder_opt_val){
-      enabled(multi_frm) <- TRUE
-      enabled(import_folder) <- TRUE
-      enabled(import_file) <- FALSE
-    } else {
-      enabled(multi_frm) <- FALSE
-      enabled(import_folder) <- FALSE
-      enabled(import_file) <- TRUE
     }
     
   }
@@ -475,8 +513,14 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
     
     # Then load settings if true.
     if(svalue(savegui_chk)){
-      if(exists(".strvalidator_import_gui_import_opt", envir=env, inherits = FALSE)){
-        svalue(import_opt) <- get(".strvalidator_import_gui_import_opt", envir=env)
+      if(exists(".strvalidator_import_gui_last_dir", envir=env, inherits = FALSE)){
+        .default_dir <<- get(".strvalidator_import_gui_last_dir", envir=env)
+      }
+      if(exists(".strvalidator_import_gui_last_file_dir", envir=env, inherits = FALSE)){
+        .default_file_dir <<- get(".strvalidator_import_gui_last_file_dir", envir=env)
+      }
+      if(exists(".strvalidator_import_gui_last_file_name", envir=env, inherits = FALSE)){
+        .default_file_name <<- get(".strvalidator_import_gui_last_file_name", envir=env)
       }
       if(exists(".strvalidator_import_gui_file", envir=env, inherits = FALSE)){
         svalue(opt_file_chk) <- get(".strvalidator_import_gui_file", envir=env)
@@ -520,6 +564,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       if(debug){
         print("Saved settings loaded!")
       }
+      
     }
     
   }
@@ -530,7 +575,9 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
     if(svalue(savegui_chk)){
       
       assign(x=".strvalidator_import_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".strvalidator_import_gui_import_opt", value=svalue(import_opt), envir=env)
+      assign(x=".strvalidator_import_gui_last_dir", value=.default_dir, envir=env)
+      assign(x=".strvalidator_import_gui_last_file_dir", value=.default_file_dir, envir=env)
+      assign(x=".strvalidator_import_gui_last_file_name", value=.default_file_name, envir=env)
       assign(x=".strvalidator_import_gui_file", value=svalue(opt_file_chk), envir=env)
       assign(x=".strvalidator_import_gui_time", value=svalue(opt_time_chk), envir=env)
       assign(x=".strvalidator_import_gui_sep", value=svalue(opt_sep_drp), envir=env)
@@ -550,8 +597,14 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       if(exists(".strvalidator_import_gui_savegui", envir=env, inherits = FALSE)){
         remove(".strvalidator_import_gui_savegui", envir = env)
       }
-      if(exists(".strvalidator_import_gui_import_opt", envir=env, inherits = FALSE)){
-        remove(".strvalidator_import_gui_import_opt", envir = env)
+      if(exists(".strvalidator_import_gui_last_dir", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_last_dir", envir = env)
+      }
+      if(exists(".strvalidator_import_gui_last_file_dir", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_last_file_dir", envir = env)
+      }
+      if(exists(".strvalidator_import_gui_last_file_name", envir=env, inherits = FALSE)){
+        remove(".strvalidator_import_gui_last_file_name", envir = env)
       }
       if(exists(".strvalidator_import_gui_file", envir=env, inherits = FALSE)){
         remove(".strvalidator_import_gui_file", envir = env)

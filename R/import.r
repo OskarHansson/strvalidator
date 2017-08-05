@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.08.2017: Prefix now works as intended (contains -> prefix).
 # 09.01.2016: Added more attributes to result.
 # 15.12.2015: Removed "0" from the default 'na.strings'.
 # 04.12.2015: Added parameter 'na.strings'.
@@ -25,8 +26,6 @@
 # 13.01.2014: Fixed bug when no matching files in folder.
 # 10.12.2013: Changed names on parameters 'resultFiles' -> 'file.name'
 #              and 'resultFolder' -> 'folder.name'.
-# 12.11.2013: Changed 'rbind' to 'rbind.fill' from package 'plyr'.
-# 13.06.2013: Added parameter 'debug'. Fixed regexbug when importing from folder.
 
 #' @title Import Data
 #'
@@ -142,7 +141,7 @@ import <- function (folder = TRUE, extension="txt",
       # Create file filter.
       fileFilter <- paste(".*", sep="")
       if (!is.na(prefix) && nchar(prefix) > 0) {
-        fileFilter <- paste(prefix, fileFilter, sep="") 
+        fileFilter <- paste("^", prefix, fileFilter, sep="") 
         if(debug){
           print("prefix added:")
           print(fileFilter)

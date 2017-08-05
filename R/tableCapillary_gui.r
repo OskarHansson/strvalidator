@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 16.06.2016: 'Save as' textbox expandable.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -95,12 +99,13 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
   
   f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
   
-  f0g0[1,2] <- f0g0_dataset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- f0g0_dataset_drp <- gcombobox(items=c("<Select dataset>",
                                                      listObjects(env=env,
                                                                  obj.class="data.frame")),
                                              selected = 1,
                                              editable = FALSE,
-                                             container = f0g0)
+                                             container = f0g0,
+                                             ellipsize = "none")
   
   f0g0[1,3] <- f0g0_samples_lbl <- glabel(text=" 0 rows",
                                               container=f0g0)
@@ -182,11 +187,9 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
     print("BUTTON")
   }  
   
-  run_btn <- gbutton(text="Make table",
-                      border=TRUE,
-                      container=gv)
+  run_btn <- gbutton(text="Make table", container=gv)
   
-  addHandlerChanged(run_btn, handler = function(h, ...) {
+  addHandlerClicked(run_btn, handler = function(h, ...) {
     
     # Get values.
     val_data <- .gData
@@ -209,7 +212,9 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
     if (!is.null(.gData)){
       
       # Change button.
+      blockHandlers(run_btn)
       svalue(run_btn) <- "Processing..."
+      unblockHandlers(run_btn)
       enabled(run_btn) <- FALSE
       
       datanew <- tableCapillary(data=val_data,
@@ -229,7 +234,7 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      

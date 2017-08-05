@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG
+# 26.07.2017: Added expand=TRUE to save name text field.
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
@@ -98,12 +103,13 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
   
-  f0g0[1,2] <- f0g0_dataset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- f0g0_dataset_drp <- gcombobox(items=c("<Select dataset>",
                                                  listObjects(env=env,
                                                              obj.class="data.frame")),
                                          selected = 1,
                                          editable = FALSE,
-                                         container = f0g0)
+                                         container = f0g0,
+                                         ellipsize = "none")
   
   f0g0[1,3] <- f0g0_samples_lbl <- glabel(text=" 0 samples",
                                               container=f0g0)
@@ -173,7 +179,7 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", width=25, container=f2)
+  f2_save_edt <- gedit(text="", width=25, expand=TRUE, container=f2)
 
   # BUTTON ####################################################################
 
@@ -181,11 +187,9 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     print("BUTTON")
   }  
   
-  check_btn <- gbutton(text="Guess",
-                      border=TRUE,
-                      container=gv)
+  check_btn <- gbutton(text="Guess", container=gv)
   
-  addHandlerChanged(check_btn, handler = function(h, ...) {
+  addHandlerClicked(check_btn, handler = function(h, ...) {
     
     # Get values.
     val_data <- .gData
@@ -202,7 +206,9 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     if (!is.null(.gData)){
       
       # Change button.
+      blockHandlers(check_btn)
       svalue(check_btn) <- "Processing..."
+      unblockHandlers(check_btn)
       enabled(check_btn) <- FALSE
       
       datanew <- guessProfile(data=val_data,
@@ -225,7 +231,7 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      

@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 28.06.2015: Changed confidence interval level to match one-sided critical t-value.
@@ -92,12 +97,13 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   
   glabel(text="Select dataset:", container=f0)
 
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   f0_samples_lbl <- glabel(text=" (0 samples)", container=f0)
   
@@ -176,9 +182,10 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
 
   f1g2 <- glayout(container = f1)
   f1g2[1,1] <- glabel(text="Plot theme:", anchor=c(-1 ,0), container=f1g2)
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items=c("theme_grey()","theme_bw()"),
+  f1g2[1,2] <- f1_theme_drp <- gcombobox(items=c("theme_grey()","theme_bw()"),
                                          selected=1,
-                                         container = f1g2)
+                                         container = f1g2,
+                                         ellipsize = "none")
   
   # FRAME 7 ###################################################################
   
@@ -188,9 +195,7 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_at6_btn <- gbutton(text="Plot AT6",
-                                           border=TRUE,
-                                           container=grid7) 
+  grid7[1,1] <- plot_at6_btn <- gbutton(text="Plot AT6", container=grid7) 
   
   addHandlerChanged(plot_at6_btn, handler = function(h, ...) {
     
@@ -211,20 +216,18 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   
   f5_save_edt <- gedit(text="", container=f5)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5)
+  f5_save_btn <- gbutton(text = "Save as object", container = f5)
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                               border=TRUE,
-                               container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -232,7 +235,9 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -252,6 +257,9 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
                horizontal=FALSE,
                container = f1)
   
+  # Start collapsed.
+  visible(e2) <- FALSE
+
   grid2 <- glayout(container = e2)
   
   grid2[1,1] <- glabel(text="Shape:", container=grid2)
@@ -272,6 +280,9 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   e3 <- gexpandgroup(text="Axes",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e3) <- FALSE
   
   grid3 <- glayout(container = e3, spacing = 1)
   
@@ -296,6 +307,9 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
   e4 <- gexpandgroup(text="X labels",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e4) <- FALSE
   
   grid4 <- glayout(container = e4)
   
@@ -495,7 +509,7 @@ plotAT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

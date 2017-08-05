@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 10.01.2017: Added option to drop unused levels.
 # 10.05.2016: 'Save as' textbox expandable.
 # 10.05.2016: Fixed some plot error and included check for missing values.
@@ -19,11 +24,6 @@
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 05.05.2014: Fixed same color scale for all sub plots in complex plots.
-# 14.04.2014: Fixed different y max for complex plot, when supposed to be fixed.
-# 14.04.2014: Fixed now handle no observation in an entire dye channel.
-# 14.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
-# 23.02.2014: Fixed different y max for complex plot, when supposed to be fixed.
-# 23.02.2014: Fixed shape for 'complex' plots.
 
 #' @title Plot Stutter
 #'
@@ -120,21 +120,23 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   glabel(text="Select dataset:", container=f0)
 
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   f0_samples_lbl <- glabel(text=" (0 samples)", container=f0)
   
   glabel(text=" and the kit used:", container=f0)
 
-  kit_drp <- gdroplist(items=getKit(), 
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0) 
+  kit_drp <- gcombobox(items=getKit(),
+                       selected = 1,
+                       editable = FALSE,
+                       container = f0,
+                       ellipsize = "none") 
 
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -219,9 +221,10 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
                    "theme_light()","theme_dark()","theme_minimal()",
                    "theme_classic()","theme_void()")
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+  f1g2[1,2] <- f1_theme_drp <- gcombobox(items = items_theme,
                                          selected = 1,
-                                         container = f1g2)
+                                         container = f1g2,
+                                         ellipsize = "none")
   
   f1_drop_chk <- gcheckbox(text = "Drop sex markers",
                            checked = TRUE,
@@ -246,13 +249,10 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_allele_btn <- gbutton(text="Ratio vs. Allele",
-                                           border=TRUE,
+  grid7[1,1] <- plot_allele_btn <- gbutton(text="Ratio vs. Allele", 
                                            container=grid7) 
   
-  grid7[1,2] <- plot_height_btn <- gbutton(text="Ratio vs. Height",
-                                           border=TRUE,
-                                           container=grid7) 
+  grid7[1,2] <- plot_height_btn <- gbutton(text="Ratio vs. Height", container=grid7) 
   
   addHandlerChanged(plot_allele_btn, handler = function(h, ...) {
     
@@ -281,20 +281,18 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5)
+  f5_save_btn <- gbutton(text = "Save as object", container = f5)
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                               border=TRUE,
-                               container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -302,7 +300,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -321,6 +321,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   e2 <- gexpandgroup(text="Data points",
                horizontal=FALSE,
                container = f1)
+
+  # Start collapsed.
+  visible(e2) <- FALSE
   
   grid2 <- glayout(container = e2)
   
@@ -342,6 +345,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   e3 <- gexpandgroup(text="Axes",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e3) <- FALSE
   
   grid3 <- glayout(container = e3, spacing = 1)
   
@@ -374,6 +380,9 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   e4 <- gexpandgroup(text="X labels",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e4) <- FALSE
   
   grid4 <- glayout(container = e4)
   
@@ -838,7 +847,7 @@ plotStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

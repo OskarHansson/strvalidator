@@ -5,6 +5,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 27.06.2016: Added expand=TRUE to save as field.
 # 09.01.2016: Added more attributes to result.
 # 28.08.2015: Added importFrom
@@ -98,12 +102,13 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
   
   f0g1[1,1] <- glabel(text="Select dataset:", container=f0g1)
   
-  f0g1[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
-                                                 listObjects(env=env,
-                                                             obj.class="data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g1)
+  f0g1[1,2] <- dataset_drp <- gcombobox(items=c("<Select dataset>",
+                                                listObjects(env=env,
+                                                            obj.class="data.frame")),
+                                        selected = 1,
+                                        editable = FALSE,
+                                        container = f0g1,
+                                        ellipsize = "none")
   
   f0g1[1,3] <- dataset_samples_lbl <- glabel(text=" 0 samples",
                                               container=f0g1)
@@ -152,10 +157,11 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
   
   f0g1[2,1] <- glabel(text="Kit:", container=f0g1)
   
-  kit_drp <- gdroplist(items=getKit(),
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0g1)
+  kit_drp <- gcombobox(items=getKit(),
+                       selected = 1,
+                       editable = FALSE,
+                       container = f0g1,
+                       ellipsize = "none")
   
   f0g1[2,2] <- kit_drp
   
@@ -188,11 +194,9 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
     print("BUTTON")
   }  
   
-  add_btn <- gbutton(text="Add marker",
-                      border=TRUE,
-                      container=gv)
+  add_btn <- gbutton(text="Add marker", container=gv)
   
-  addHandlerChanged(add_btn, handler = function(h, ...) {
+  addHandlerClicked(add_btn, handler = function(h, ...) {
     
     # Get values.
     val_kit <- svalue(kit_drp)
@@ -209,7 +213,9 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
     }
 
     # Change button.
+    blockHandlers(add_btn)
     svalue(add_btn) <- "Processing..."
+    unblockHandlers(add_btn)
     enabled(add_btn) <- FALSE
     
     datanew <- addMarker(data=val_data,

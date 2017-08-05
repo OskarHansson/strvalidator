@@ -4,6 +4,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Added temporary fix for issue #93: https://github.com/jverzani/gWidgets2/issues/93#issue-241974596
+# 07.07.2017: Removed argument 'border' for 'gbutton'
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -158,11 +161,9 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_btn <- gbutton(text="Plot",
-                                       border=TRUE,
-                                       container=grid7) 
+  grid7[1,1] <- plot_btn <- gbutton(text="Plot", container=grid7) 
   
-  addHandlerChanged(plot_btn, handler = function(h, ...) {
+  addHandlerClicked(plot_btn, handler = function(h, ...) {
     
     val_name <- svalue(plot_btn)
     val_kits <- svalue(kit_checkbox_group)
@@ -173,14 +174,18 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     }
     
     # Change button.
+    blockHandlers(plot_btn)
     svalue(plot_btn) <- "Processing..."
+    unblockHandlers(plot_btn)
     enabled(plot_btn) <- FALSE
     
     # Plot data.
     .plotKit(selectedKits=val_kits)
     
     # Change button.
+    blockHandlers(plot_btn)
     svalue(plot_btn) <- "Plot"
+    unblockHandlers(plot_btn)
     enabled(plot_btn) <- TRUE
     
   } )
@@ -196,20 +201,18 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   f5_save_edt <- gedit(text="_ggplot", container=f5)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5)
+  f5_save_btn <- gbutton(text = "Save as object", container = f5)
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                               border=TRUE,
-                               container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -217,7 +220,9 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -356,7 +361,7 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

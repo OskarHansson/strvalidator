@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 04.08.2016: First version.
 
 #' @title Plot Contamination
@@ -98,12 +102,13 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
   
   glabel(text="Select dataset:", container=f0)
   
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   f0_samples_lbl <- glabel(text=" (0 samples)", container=f0)
   
@@ -184,9 +189,10 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
   items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
                    "theme_light()","theme_dark()","theme_minimal()",
                    "theme_classic()","theme_void()")
-  f1g2[1,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+  f1g2[1,2] <- f1_theme_drp <- gcombobox(items = items_theme,
                                          selected = 1,
-                                         container = f1g2)
+                                         container = f1g2,
+                                         ellipsize = "none")
   
   # FRAME 7 ###################################################################
   
@@ -196,9 +202,7 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- plot_poiss_btn <- gbutton(text="Plot",
-                                           border=TRUE,
-                                           container=grid7)
+  grid7[1,1] <- plot_poiss_btn <- gbutton(text="Plot", container=grid7)
   tooltip(plot_poiss_btn) <- "Plot observed and expected contamination rate"
   
   addHandlerChanged(plot_poiss_btn, handler = function(h, ...) {
@@ -220,20 +224,18 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
   
   f5_save_edt <- gedit(text="", container=f5)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5)
+  f5_save_btn <- gbutton(text = "Save as object", container = f5)
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                           border=TRUE,
-                           container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -241,7 +243,9 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -358,7 +362,7 @@ plotContamination_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE,
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

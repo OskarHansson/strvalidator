@@ -52,4 +52,3 @@ of class data.frames or ggplot are supported. data.frame objects will
 be exported as '.txt' and ggplot objects as '.png'.
 .RData applies to all supported object types.
 }
-\keyword{internal}

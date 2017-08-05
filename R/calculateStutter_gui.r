@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 28.04.2016: 'Save as' textbox expandable.
 # 26.10.2015: Added attributes.
 # 28.08.2015: Added importFrom.
@@ -20,11 +24,6 @@
 # 17.07.2013: Added check subsetting.
 # 11.06.2013: Fixed wrong interference passed to 'calculateStutter' (-1).
 # 11.06.2013: 'val_replace' and 'val_by' set to NULL if length = 0.
-# 04.06.2013: Fixed bug in 'missingCol'.
-# 30.05.2013: Added replace 'false' stutters.
-# 29.05.2013: Added subset check.
-# 28.05.2013: Added warning for additive effects.
-# 24.05.2013: Improved error message for missing columns.
 
 #' @title Calculate Stutter
 #'
@@ -111,12 +110,13 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
   
-  f0g0[1,2] <- f0_dataset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[1,2] <- f0_dataset_drp <- gcombobox(items=c("<Select dataset>",
                                               listObjects(env=env,
                                                           obj.class="data.frame")), 
                                       selected = 1,
                                       editable = FALSE,
-                                      container = f0g0)
+                                      container = f0g0,
+                                      ellipsize = "none")
   
   f0g0[1,3] <- f0_samples_lbl <- glabel(text=" 0 samples", container=f0g0)
   
@@ -155,12 +155,13 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   f0g0[2,1] <- glabel(text="Select reference dataset:", container=f0g0)
   
-  f0g0[2,2] <- f0_refset_drp <- gdroplist(items=c("<Select dataset>",
+  f0g0[2,2] <- f0_refset_drp <- gcombobox(items=c("<Select dataset>",
                                              listObjects(env=env,
                                                          obj.class="data.frame")), 
                                      selected = 1,
                                      editable = FALSE,
-                                     container = f0g0) 
+                                     container = f0g0,
+                                     ellipsize = "none") 
   
   f0g0[2,3] <- f0_ref_lbl <- glabel(text=" 0 references", container=f0g0)
   
@@ -197,9 +198,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     print("CHECK")
   }  
   
-  f0g0[3,2] <- f0_check_btn <- gbutton(text="Check subsetting",
-                                  border=TRUE,
-                                  container=f0g0)
+  f0g0[3,2] <- f0_check_btn <- gbutton(text="Check subsetting", container=f0g0)
   
   addHandlerChanged(f0_check_btn, handler = function(h, ...) {
     
@@ -227,7 +226,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      
@@ -314,8 +313,8 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   
   glabel(text=" Kit attribute:", container=f2)
   
-  f2_kit_drp <- gdroplist(items=getKit(), selected = 1,
-                          editable = FALSE, container = f2) 
+  f2_kit_drp <- gcombobox(items=getKit(), selected = 1,
+                          editable = FALSE, container = f2, ellipsize = "none") 
   
 
   # BUTTON ####################################################################
@@ -324,11 +323,9 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     print("BUTTON")
   }  
   
-  calculate_btn <- gbutton(text="Calculate",
-                      border=TRUE,
-                      container=gv)
+  calculate_btn <- gbutton(text="Calculate", container=gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     # Get values.
     val_back <- svalue(f1g1_range_b_spb)
@@ -373,7 +370,9 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       }
       
       # Change button.
+      blockHandlers(calculate_btn)
       svalue(calculate_btn) <- "Processing..."
+      unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
       
       # Calculate stutter.

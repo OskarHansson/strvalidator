@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 04.10.2016: Added '(data point)' to y title when mean is from data points.
 # 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom grid unit.c, gridExtra arrangeGrob, and ggplot2.
@@ -113,19 +118,21 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   glabel(text="Select dataset:", container=f0)
   
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   glabel(text=" and the kit used:", container=f0)
   
-  kit_drp <- gdroplist(items=getKit(), 
+  kit_drp <- gcombobox(items=getKit(), 
                        selected = 1,
                        editable = FALSE,
-                       container = f0) 
+                       container = f0,
+                       ellipsize = "none") 
   
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -220,9 +227,10 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   items_theme <- c("theme_grey()","theme_bw()","theme_linedraw()",
                    "theme_light()","theme_dark()","theme_minimal()",
                    "theme_classic()","theme_void()")
-  f1g2[2,2] <- f1_theme_drp <- gdroplist(items = items_theme,
+  f1g2[2,2] <- f1_theme_drp <- gcombobox(items = items_theme,
                                          selected = 1,
-                                         container = f1g2)
+                                         container = f1g2,
+                                         ellipsize = "none")
   
   
   # FRAME 7 ###################################################################
@@ -233,17 +241,11 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   grid7 <- glayout(container = f7)
   
-  grid7[1,1] <- f7_size_btn <- gbutton(text="Size",
-                                           border=TRUE,
-                                           container=grid7) 
+  grid7[1,1] <- f7_size_btn <- gbutton(text="Size", container=grid7) 
   
-  grid7[1,2] <- f7_height_btn <- gbutton(text="Height",
-                                         border=TRUE,
-                                         container=grid7) 
+  grid7[1,2] <- f7_height_btn <- gbutton(text="Height", container=grid7) 
 
-  grid7[1,3] <- f7_data_btn <- gbutton(text="Data point",
-                                         border=TRUE,
-                                         container=grid7) 
+  grid7[1,3] <- f7_data_btn <- gbutton(text="Data point", container=grid7) 
 
   addHandlerChanged(f7_size_btn, handler = function(h, ...) {
 
@@ -343,17 +345,11 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   grid8 <- glayout(container = f8)
   
-  grid8[1,1] <- f8_size_btn <- gbutton(text="Size",
-                                         border=TRUE,
-                                         container=grid8) 
+  grid8[1,1] <- f8_size_btn <- gbutton(text="Size", container=grid8) 
   
-  grid8[1,2] <- f8_height_btn <- gbutton(text="Height",
-                                           border=TRUE,
-                                           container=grid8) 
+  grid8[1,2] <- f8_height_btn <- gbutton(text="Height", container=grid8) 
   
-  grid8[1,3] <- f8_data_btn <- gbutton(text="Data point",
-                                         border=TRUE,
-                                         container=grid8) 
+  grid8[1,3] <- f8_data_btn <- gbutton(text="Data point", container=grid8) 
   
   addHandlerChanged(f8_size_btn, handler = function(h, ...) {
 
@@ -456,20 +452,18 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   f5_save_edt <- gedit(text="", container=f5)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5)
+  f5_save_btn <- gbutton(text = "Save as object", container = f5)
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                               border=TRUE,
-                               container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -477,7 +471,9 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -496,7 +492,10 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   e2 <- gexpandgroup(text="Data points",
                      horizontal=FALSE,
                      container = f1)
-  
+
+  # Start collapsed.
+  visible(e2) <- FALSE
+
   grid2 <- glayout(container = e2)
   
   grid2[1,1] <- glabel(text="Shape:", container=grid2)
@@ -510,15 +509,19 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                                          container=grid2)
   
   grid2[1,5] <- glabel(text="Colour:", container=grid2)
-  grid2[1,6] <- colour_drp <- gdroplist(items=c("white",palette()),
+  grid2[1,6] <- colour_drp <- gcombobox(items=c("white",palette()),
                                     selected=2,
-                                    container = grid2)
+                                    container = grid2,
+                                    ellipsize = "none")
   
   # FRAME 3 ###################################################################
   
   e3 <- gexpandgroup(text="Axes",
                      horizontal=FALSE,
                      container = f1)
+
+  # Start collapsed.
+  visible(e3) <- FALSE
   
   grid3 <- glayout(container = e3, spacing = 1)
   
@@ -544,6 +547,9 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                      horizontal=FALSE,
                      container = f1)
   
+  # Start collapsed.
+  visible(e4) <- FALSE
+
   grid4 <- glayout(container = e4)
   
   grid4[1,1] <- glabel(text="Text size (pts):", container=grid4)
@@ -1059,7 +1065,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

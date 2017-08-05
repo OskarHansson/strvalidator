@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 16.06.2016: 'Save as' textbox expandable.
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
@@ -99,10 +103,11 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
   
   dfs <- c("<Select a dataset>", listObjects(env=env, obj.class="data.frame"))
   
-  g0[1,2] <- g0_data_drp <- gdroplist(items=dfs, 
+  g0[1,2] <- g0_data_drp <- gcombobox(items=dfs, 
                            selected = 1,
                            editable = FALSE,
-                           container = g0)
+                           container = g0,
+                           ellipsize = "none")
   g0[1,3] <- g0_data_samples_lbl <- glabel(text=" 0 samples", container=g0)
   
   addHandlerChanged(g0_data_drp, handler = function (h, ...) {
@@ -140,10 +145,11 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
   g0[2,1] <- glabel(text="Sample Plot Sizing Table:", container=g0)
 
   # NB! dfs defined in previous section.
-  g0[2,2] <- g0_ref_drp <- gdroplist(items=dfs, 
+  g0[2,2] <- g0_ref_drp <- gcombobox(items=dfs, 
                                    selected = 1,
                                    editable = FALSE,
-                                   container = g0)
+                                   container = g0,
+                                   ellipsize = "none")
   
   g0[2,3] <- g0_ref_samples_lbl <- glabel(text=" 0 sample files", container=g0)
   
@@ -205,11 +211,9 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text="Calculate",
-                      border=TRUE,
-                      container=gv)
+  calculate_btn <- gbutton(text="Calculate", container=gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     # Get values.
     val_samples <- .gSamples
@@ -235,7 +239,9 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
     if(!is.null(.gSamples) & !is.null(.gPlot)){
       
       # Change button.
+      blockHandlers(calculate_btn)
       svalue(calculate_btn) <- "Processing..."
+      unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
       
       datanew <- calculateCapillary(samples.table=val_samples,

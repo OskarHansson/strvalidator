@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 16.06.2016: 'Save as' textbox expandable.
 # 22.12.2015: First version.
 
@@ -109,10 +113,11 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
   
   dfs <- c(.datasetDropDefault, listObjects(env=env, obj.class="data.frame"))
   
-  g0[1,2] <- g0_data_drp <- gdroplist(items=dfs, 
+  g0[1,2] <- g0_data_drp <- gcombobox(items=dfs, 
                            selected = 1,
                            editable = FALSE,
-                           container = g0)
+                           container = g0,
+                           ellipsize = "none")
   g0[1,3] <- g0_data_samples_lbl <- glabel(text=" 0 samples", container=g0)
   
   addHandlerChanged(g0_data_drp, handler = function (h, ...) {
@@ -164,10 +169,11 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
   g0[2,1] <- glabel(text="Select reference dataset:", container=g0)
 
   # NB! dfs defined in previous section.
-  g0[2,2] <- g0_ref_drp <- gdroplist(items=dfs, 
+  g0[2,2] <- g0_ref_drp <- gcombobox(items=dfs, 
                                    selected = 1,
                                    editable = FALSE,
-                                   container = g0)
+                                   container = g0,
+                                   ellipsize = "none")
   
   g0[2,3] <- g0_ref_samples_lbl <- glabel(text=" 0 references", container=g0)
   
@@ -206,9 +212,7 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
     print("CHECK")
   }  
   
-  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting",
-                                  border=TRUE,
-                                  container=g0)
+  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting", container=g0)
   
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
     
@@ -238,7 +242,7 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      
@@ -273,15 +277,18 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
   f1g1 <- glayout(container = f1)
   
   f1g1[1,1] <- glabel(text = "Select numerator markers:", container = f1g1)
-  f1g1[1,2] <- f1_numerator_drp <- gdroplist(items = .markerDropDefault, container=f1g1)
+  f1g1[1,2] <- f1_numerator_drp <- gcombobox(items = .markerDropDefault,
+                                             container=f1g1, ellipsize = "none")
   f1g1[2,1:2] <- f1_numerator_edt <- gedit(text="", container=f1g1)
   
   f1g1[3,1] <- glabel(text = "Select denominator markers:", container = f1g1)
-  f1g1[3,2] <- f1_denominator_drp <- gdroplist(items = .markerDropDefault, container=f1g1)
+  f1g1[3,2] <- f1_denominator_drp <- gcombobox(items = .markerDropDefault, 
+                                               container=f1g1, ellipsize = "none")
   f1g1[4,1:2] <- f1_denominator_edt <- gedit(text="", container=f1g1)
   
   f1g1[5,1] <- glabel(text = "Group by column:", container = f1g1)
-  f1g1[5,2] <- f1_group_drp <- gdroplist(items = .groupDropDefault, container=f1g1)
+  f1g1[5,2] <- f1_group_drp <- gcombobox(items = .groupDropDefault,
+                                         container=f1g1, ellipsize = "none")
   
   addHandlerChanged(f1_numerator_drp, handler = function (h, ...) {
     
@@ -353,11 +360,9 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
     print("BUTTON")
   }  
   
-  calculate_btn <- gbutton(text="Calculate",
-                      border=TRUE,
-                      container=gv)
+  calculate_btn <- gbutton(text="Calculate", container=gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     # Get values.
     val_data <- .gData
@@ -430,7 +435,9 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
       
   
       # Change button.
+      blockHandlers(calculate_btn)
       svalue(calculate_btn) <- "Processing..."
+      unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
       
       datanew <- calculateRatio(data = val_data, ref = val_ref,

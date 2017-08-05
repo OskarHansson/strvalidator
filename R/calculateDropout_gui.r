@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
 # 29.06.2016: Added option to remove sex markers and quality sensor.
 # 16.06.2016: 'Save as' textbox expandable.
@@ -21,10 +25,6 @@
 # 27.10.2013: Fixed option 'ignore case' not passed to 'check subset'.
 # 19.10.2013: Added support for arguments 'allele' and 'threshold'.
 # 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
-# 18.07.2013: Check before overwrite object.
-# 11.07.2013: Added save GUI settings.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 04.06.2013: Fixed bug in 'missingCol'.
 
 #' @title Calculate Dropout Events
 #'
@@ -109,12 +109,13 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[1,1] <- glabel(text="Select dataset:", container=g0)
 
-  g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
+  g0[1,2] <- dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = g0)
+                           container = g0,
+                           ellipsize = "none")
   
   g0[1,3] <- g0_samples_lbl <- glabel(text=" 0 samples", container=g0)
   
@@ -158,12 +159,13 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[2,1] <- glabel(text="Select reference dataset:", container=g0)
   
-  g0[2,2] <- refset_drp <- gdroplist(items=c("<Select dataset>",
+  g0[2,2] <- refset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = g0) 
+                           container = g0,
+                           ellipsize = "none") 
   
   g0[2,3] <- g0_ref_lbl <- glabel(text=" 0 references", container=g0)
   
@@ -200,9 +202,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     print("CHECK")
   }  
   
-  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting",
-                       border=TRUE,
-                       container=g0)
+  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting", container=g0)
   
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
     
@@ -231,7 +231,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      
@@ -244,8 +244,9 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[4,1] <- glabel(text="Select the kit used:", container=g0)
   
-  g0[4,2] <- kit_drp <- gdroplist(items = getKit(), selected = 1,
-                                  editable = FALSE, container = g0) 
+  g0[4,2] <- kit_drp <- gcombobox(items = getKit(), selected = 1,
+                                  editable = FALSE, container = g0,
+                                  ellipsize = "none") 
 
   # FRAME 1 ###################################################################
   
@@ -302,11 +303,9 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   # BUTTON ####################################################################
   
   
-  dropout_btn <- gbutton(text="Calculate dropout",
-                        border=TRUE,
-                        container=gv)
+  dropout_btn <- gbutton(text="Calculate dropout", container=gv)
   
-  addHandlerChanged(dropout_btn, handler = function(h, ...) {
+  addHandlerClicked(dropout_btn, handler = function(h, ...) {
     
     val_data <- .gData
     val_ref <- .gRef
@@ -367,7 +366,9 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     if(!is.null(val_data) & !is.null(val_ref)){
       
       # Change button.
+      blockHandlers(dropout_btn)
       svalue(dropout_btn) <- "Processing..."
+      unblockHandlers(dropout_btn)
       enabled(dropout_btn) <- FALSE
   
       datanew <- calculateDropout(data=val_data,

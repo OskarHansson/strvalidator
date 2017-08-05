@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 20.07.2016: Added attributes to result.
 # 20.07.2016: Added new option 'list.all' to include missing samples in result.
 # 28.08.2015: Added importFrom
@@ -102,17 +106,19 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
   
   f0_list <- c("<Select dataset>", listObjects(env=env, obj.class="data.frame"))
   
-  f0g0[1,2] <- dataset_drp <- gdroplist(items=f0_list, selected = 1,
-                                        editable = FALSE, container = f0g0) 
+  f0g0[1,2] <- dataset_drp <- gcombobox(items=f0_list, selected = 1,
+                                        editable = FALSE, container = f0g0,
+                                        ellipsize = "none") 
   
   f0g0[1,3] <- f0_samples_lbl <- glabel(text=" (0 samples)", container=f0g0)
   
   f0g0[2,1] <- glabel(text="Kit:", container=f0g0)
   
-  f0g0[2,2] <- kit_drp <- gdroplist(items=getKit(), selected = 1,
-                                    editable = FALSE, container = f0g0) 
+  f0g0[2,2] <- kit_drp <- gcombobox(items=getKit(), selected = 1,
+                                    editable = FALSE, container = f0g0,
+                                    ellipsize = "none") 
   
-  f0g0[3,1:3] <- f0_add_btn <- gbutton(text="Add", border=TRUE, container=f0g0)
+  f0g0[3,1:3] <- f0_add_btn <- gbutton(text="Add", container=f0g0)
 
   # HANDLERS ------------------------------------------------------------------
   
@@ -181,7 +187,7 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset",
                title="Error",
                icon = "error")      
@@ -263,11 +269,9 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
     print("BUTTON")
   }  
   
-  calculate_btn <- gbutton(text="Calculate",
-                      border=TRUE,
-                      container=gv)
+  calculate_btn <- gbutton(text="Calculate", container=gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     # Get values.
     val_datasets <- svalue(f3_dataset_edt)
@@ -330,7 +334,9 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
       }
       
       # Change button.
+      blockHandlers(calculate_btn)
       svalue(calculate_btn) <- "Processing..."
+      unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
       
       datanew <- calculateConcordance(data=val_list,

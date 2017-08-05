@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.07.2017: Fixed 'ymax' warning (removed) and label order (added 'rev'). 
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 29.04.2016: 'Save as' textbox expandable.
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
@@ -106,12 +111,13 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
   
   glabel(text="Select dataset:", container=f0)
 
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   f0_samples_lbl <- glabel(text=" (0 samples)", container=f0)
 
@@ -198,10 +204,11 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
   
   grid3 <- glayout(container = f1, spacing = 1)
   grid3[1,1] <- glabel(text="Colour palette:", container=grid3)
-  grid3[1,2] <- f1_palette_drp <- gdroplist(items=.palette,
+  grid3[1,2] <- f1_palette_drp <- gcombobox(items=.palette,
                                             selected = 1,
                                             editable = FALSE,
-                                            container = grid3)
+                                            container = grid3,
+                                            ellipsize = "none")
   
   grid4 <- glayout(container = f1, spacing = 1)
   grid4[1,1] <- f1_print_chk <- gcheckbox(text="Print values as bar labels", checked=TRUE, container=grid4)
@@ -214,7 +221,7 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
   
   # FRAME 7 ###################################################################
   
-  plot_btn <- gbutton(text="Plot", border=TRUE, container=gv) 
+  plot_btn <- gbutton(text="Plot", container=gv) 
   
   addHandlerChanged(plot_btn, handler = function(h, ...) {
     
@@ -236,20 +243,18 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
   
   f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5) 
+  f5_save_btn <- gbutton(text = "Save as object", container = f5) 
 
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                         border=TRUE,
-                         container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
 
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -257,7 +262,9 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
 
@@ -319,7 +326,7 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
         print("Before plot: str(.gData)")
         print(str(.gData))
       }
-
+      
       # Get number of samples.
       numberOfSamples <- nrow(.gData)
       
@@ -357,25 +364,37 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
       # Add titles.
       gp <- gp + labs(title=mainTitle, x=xTitle, y=yTitle, fill=NULL)
       
-      # Print value labels on bars.
-      .gData$Pos <- NA 
+      # Check if labels should be added.
       if(val_print){
-        
-        # Calculate position for labels.
+
+        # Add columns cumulative sum and position.
+        .gData$Cum <- NA
+        .gData$Pos <- NA
+
+        # Get unique result types.        
         type <- unique(.gData$Type)
+        
+        # Loop over result types.
         for(t in seq(along=type)){
-          .gData[.gData$Type == type[t], ]$Pos <- 
-            cumsum(.gData[.gData$Type == type[t], ]$freq)
+          
+          # Calculate the cumulative sum.
+          .gData[.gData$Type == type[t], ]$Cum <- 
+            rev(cumsum(rev(.gData[.gData$Type == type[t], ]$freq)))
+          
         }
-        .gData$Pos <- .gData$Pos - (.gData$freq / 2)
+        
+        # Calculate the position for labels.        
+        .gData$Pos <- .gData$Cum - (.gData$freq / 2)
+
         if(debug){
           print(.gData)
         }
 
         # Add labels.
          gp <- gp + geom_text(data=.gData,aes_string(x="Type", y="Pos",
-                                  ymax="Pos", label="lab", 
-                                  hjust=0.5, vjust=0), size=val_lab_size)
+                                                     label="lab",
+                                                     hjust=0.5, vjust=0),
+                              size=val_lab_size)
       }
       
       # plot.
@@ -390,7 +409,7 @@ plotResultType_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
         
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

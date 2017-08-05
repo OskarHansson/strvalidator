@@ -6,6 +6,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed expanded 'gexpandgroup'.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 29.04.2016: 'Save as' textbox expandable.
 # 29.04.2016: Removed unints from automatic titles.
 # 21.04.2016: Added new option 'Round to digits' (x-tick labels).
@@ -22,11 +27,6 @@
 # 05.11.2013: Fixed not possible to limit both y/x axes.
 # 04.11.2013: Added edcf plot.
 # 01.11.2013: Added 'override titles' option.
-# 23.10.2013: Added save as image.
-# 20.10.2013: Added plot by sample name. Fixed x-label font size not changing.
-# 18.09.2013: Updated to support new 'addColor' function, replacing 'addDye'.
-# 17.09.2013: Added missing plot by concentration.
-# 18.07.2013: Check before overwrite object.
 
 #' @title Plot Drop-out Events
 #'
@@ -120,19 +120,21 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   glabel(text="Select dataset:", container=f0)
 
-  dataset_drp <- gdroplist(items=c("<Select dataset>",
+  dataset_drp <- gcombobox(items=c("<Select dataset>",
                                    listObjects(env=env,
                                                obj.class="data.frame")), 
                            selected = 1,
                            editable = FALSE,
-                           container = f0) 
+                           container = f0,
+                           ellipsize = "none") 
   
   glabel(text=" and the kit used:", container=f0)
 
-  kit_drp <- gdroplist(items=getKit(), 
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0) 
+  kit_drp <- gcombobox(items=getKit(),
+                       selected = 1,
+                       editable = FALSE,
+                       container = f0,
+                       ellipsize = "none") 
 
   addHandlerChanged(dataset_drp, handler = function (h, ...) {
     
@@ -218,21 +220,13 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                horizontal=TRUE,
                container = gv) 
   
-  f7_plot_h_btn <- gbutton(text="Average peak height",
-                        border=TRUE,
-                        container=f7) 
+  f7_plot_h_btn <- gbutton(text="Average peak height", container=f7) 
 
-  f7_plot_amount_btn <- gbutton(text="Amount",
-                             border=TRUE,
-                             container=f7) 
+  f7_plot_amount_btn <- gbutton(text="Amount", container=f7) 
 
-  f7_plot_conc_btn <- gbutton(text="Concentration",
-                           border=TRUE,
-                           container=f7) 
+  f7_plot_conc_btn <- gbutton(text="Concentration", container=f7) 
 
-  f7_plot_sample_btn <- gbutton(text="Sample",
-                             border=TRUE,
-                             container=f7) 
+  f7_plot_sample_btn <- gbutton(text="Sample", container=f7) 
   
   addHandlerChanged(f7_plot_h_btn, handler = function(h, ...) {
 
@@ -360,17 +354,13 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                horizontal=TRUE,
                container = gv) 
   
-  f8_plot_ecdf_btn <- gbutton(text="ecdp",
-                              border=TRUE,
-                              container=f8)
+  f8_plot_ecdf_btn <- gbutton(text="ecdp", container=f8)
   
   f8_hom_chk <- gcheckbox(text="Plot homozygous peaks.",
                           checked=FALSE,
                           container=f8)
   
-  f8_plot_dot_btn <- gbutton(text="Dotplot",
-                              border=TRUE,
-                              container=f8)
+  f8_plot_dot_btn <- gbutton(text="Dotplot", container=f8)
   
   addHandlerChanged(f8_plot_ecdf_btn, handler = function(h, ...) {
     
@@ -443,20 +433,18 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   
   f5_save_edt <- gedit(text="", container=f5, expand = TRUE)
   
-  f5_save_btn <- gbutton(text = "Save as object",
-                         border=TRUE,
-                         container = f5)
+  f5_save_btn <- gbutton(text = "Save as object", container = f5)
   
-  f5_ggsave_btn <- gbutton(text = "Save as image",
-                               border=TRUE,
-                               container = f5) 
+  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5) 
   
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
+  addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     
     val_name <- svalue(f5_save_edt)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Processing..."
+    unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
     
     # Save data.
@@ -464,7 +452,9 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                parent=w, env=env, debug=debug)
     
     # Change button.
+    blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
+    unblockHandlers(f5_save_btn)
     
   } )
   
@@ -486,6 +476,9 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
                      horizontal=FALSE,
                      container = f1)
   
+  # Start collapsed.
+  visible(e3) <- FALSE
+
   grid3 <- glayout(container = e3, spacing = 1)
   
   grid3[1,1:2] <- glabel(text="Limit Y axis (min-max)", container=grid3)
@@ -501,6 +494,9 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
   e4 <- gexpandgroup(text="X labels",
                      horizontal=FALSE,
                      container = f1)
+  
+  # Start collapsed.
+  visible(e4) <- FALSE
   
   grid4 <- glayout(container = e4)
 
@@ -1051,7 +1047,7 @@ plotDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       

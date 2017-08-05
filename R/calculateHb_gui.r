@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 29.08.2016: First version.
 
 #' @title Calculate Heterozygote Balance
@@ -96,8 +100,9 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
   dfs <- c("<Select a dataset>",
            listObjects(env = env, obj.class = "data.frame"))
   
-  g0[1,2] <- g0_data_drp <- gdroplist(items = dfs, selected = 1,
-                                       editable = FALSE, container = g0)
+  g0[1,2] <- g0_data_drp <- gcombobox(items = dfs, selected = 1,
+                                      editable = FALSE, container = g0,
+                                      ellipsize = "none")
   
   g0[1,3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
   
@@ -144,8 +149,9 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
   g0[2,1] <- glabel(text = "Select reference dataset:", container = g0)
 
   # NB! dfs defined in previous section.
-  g0[2,2] <- g0_ref_drp <- gdroplist(items = dfs, selected = 1,
-                                     editable = FALSE, container = g0)
+  g0[2,2] <- g0_ref_drp <- gcombobox(items = dfs, selected = 1,
+                                     editable = FALSE, container = g0,
+                                     ellipsize = "none")
   
   g0[2,3] <- g0_ref_samples_lbl <- glabel(text = " 0 references",
                                           container = g0)
@@ -179,8 +185,7 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
   
   # CHECK ---------------------------------------------------------------------
   
-  g0[3,2] <- g0_check_btn <- gbutton(text = "Check subsetting",
-                                     border = TRUE, container = g0)
+  g0[3,2] <- g0_check_btn <- gbutton(text = "Check subsetting", container = g0)
   
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
     
@@ -236,8 +241,8 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
                   "Low molecular weight / high molecular weight",
                   "Smaller peak / larger peak")
   
-  f1_method_drp <- gdroplist(items = f1_methods, selected = 1,
-                             expand = FALSE, container = f1)
+  f1_method_drp <- gcombobox(items = f1_methods, selected = 1,
+                             expand = FALSE, container = f1, ellipsize = "none")
   
   glabel(text = "Sample name matching:", anchor = c(-1 ,0), container = f1)
   
@@ -267,15 +272,15 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text = " Kit attribute:", container = f4)
   
-  f4_kit_drp <- gdroplist(items = getKit(), selected = 1,
-                          editable = FALSE, container = f4) 
+  f4_kit_drp <- gcombobox(items = getKit(), selected = 1,
+                          editable = FALSE, container = f4, ellipsize = "none") 
   
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = "Calculate", border = TRUE, container = gv)
+  calculate_btn <- gbutton(text = "Calculate", container = gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     # Get values.
     val_data <- .gData
@@ -294,7 +299,9 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
     if(!is.null(val_data) & !is.null(val_ref)){
 
       # Change button.
+      blockHandlers(calculate_btn)
       svalue(calculate_btn) <- "Processing..."
+      unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
       
       datanew <- calculateHb(data = val_data, ref = val_ref, hb = val_hb,

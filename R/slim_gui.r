@@ -4,6 +4,11 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
+# 07.07.2017: Replaced gWidgets:: with gWidgets2::
 # 24.06.2016: 'Save as' textbox expandable.
 # 06.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
@@ -19,11 +24,6 @@
 # 06.06.2013: Set initial table height to 200.
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 24.05.2013: Suggestions for columns to fix/stack is provided.
-# 24.05.2013: Improved error message for missing columns.
-# 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: .result removed, added save as group.
-# 25.04.2013: Add selection of dataset in gui. Removed parameter 'data'.
-# 25.04.2013: New parameter 'debug'.
 
 #' @title Slim Data Frames
 #'
@@ -131,12 +131,13 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
   
   f0g0[1,1] <- glabel(text="Select dataset:", container=f0g0)
   
-  f0g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
-                                                 listObjects(env=env,
-                                                             obj.class="data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g0)
+  f0g0[1,2] <- dataset_drp <- gcombobox(items=c("<Select dataset>",
+                                                listObjects(env=env,
+                                                            obj.class="data.frame")),
+                                        selected = 1,
+                                        editable = FALSE,
+                                        container = f0g0,
+                                        ellipsize = "none")
   
   f0g0[1,3] <- f0_samples_lbl <- glabel(text=" 0 samples,", container=f0g0)
   f0g0[1,4] <- f0_columns_lbl <- glabel(text=" 0 columns,", container=f0g0)
@@ -218,7 +219,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
                    width = 40,
                    container=fix_f)
   
-  fix_tbl <- gWidgets::gtable(items=names(.gData), 
+  fix_tbl <- gWidgets2::gtable(items=names(.gData), 
                     container=fix_f,
                     expand=TRUE)
   
@@ -267,7 +268,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
                      width = 40,
                      container=stack_f)
   
-  stack_tbl <- gWidgets::gtable(items=names(.gData),
+  stack_tbl <- gWidgets2::gtable(items=names(.gData),
                       container=stack_f,
                       expand=TRUE)
   
@@ -330,11 +331,9 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
     print("BUTTON")
   }  
   
-  slim_btn <- gbutton(text="Slim dataset",
-                      border=TRUE,
-                      container=g2)
+  slim_btn <- gbutton(text="Slim dataset", container=g2)
   
-  addHandlerChanged(slim_btn, handler = function(h, ...) {
+  addHandlerClicked(slim_btn, handler = function(h, ...) {
     
     # Get new dataset name.
     val_name <- svalue(f2_save_edt)
@@ -364,7 +363,9 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       }
   
       # Change button.
+      blockHandlers(slim_btn)
       svalue(slim_btn) <- "Processing..."
+      unblockHandlers(slim_btn)
       enabled(slim_btn) <- FALSE
       
       datanew <- slim(data=val_data, fix=fix_val, stack=stack_val,
@@ -407,7 +408,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
     delete(fix_f, fix_tbl)
     
     # ...creating a new table.
-    fix_tbl <<- gWidgets::gtable(items=names(.gData), 
+    fix_tbl <<- gWidgets2::gtable(items=names(.gData), 
                                  container=fix_f,
                                  expand=TRUE)
     
@@ -446,7 +447,7 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
     delete(stack_f, stack_tbl)
     
     # ...creating a new table.
-    stack_tbl <<- gWidgets::gtable(items=names(.gData), 
+    stack_tbl <<- gWidgets2::gtable(items=names(.gData), 
                                    container=stack_f,
                                    expand=TRUE)
     

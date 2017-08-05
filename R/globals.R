@@ -5,7 +5,7 @@
 
 ## Needed to avoid notes when using gWidgets.
 if (base::getRversion() >= "2.15.1") {
-  utils::globalVariables(c("gwindow","ggroup","glayout","glabel","gdroplist",
+  utils::globalVariables(c("gwindow","ggroup","glayout","glabel","gcombobox",
                            "addHandlerChanged","svalue","svalue<-","gmessage",
                            "gframe","gedit","gbutton","enabled<-","dispose",
                            "gradio","gcheckbox","visible","visible<-",

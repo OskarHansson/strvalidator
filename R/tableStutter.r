@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.08.2017: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 01.11.2013: Fixed quant parameter always 0.95 (hard-coded instead of variable).
 # 06.08.2013: Fixed data.frame bug giving 'TRUE' instead of 'NA'.
@@ -39,6 +40,9 @@
 
 
 tableStutter <- function(data, scope="stutter", quant=0.95){
+  
+  # Parameters that are changed by the function must be saved first.
+  attr_data <- substitute(data)
   
   # Column name for quantile.
   quantName <- paste("Perc",quant*100, sep=".")
@@ -121,6 +125,14 @@ tableStutter <- function(data, scope="stutter", quant=0.95){
     }
   }
   
+  # Add attributes to result.
+  attr(sTable, which="tableStutter, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
+  attr(sTable, which="tableStutter, call") <- match.call()
+  attr(sTable, which="tableStutter, date") <- date()
+  attr(sTable, which="tableStutter, data") <- attr_data
+  attr(sTable, which="tableStutter, scope") <- scope
+  attr(sTable, which="tableStutter, quant") <- quant
+
   return(sTable)
   
 }

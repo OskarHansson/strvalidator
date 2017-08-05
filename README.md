@@ -14,12 +14,12 @@ data. It allows exploration of the characteristics of DNA typing kits according
 to ENFSI and SWGDAM recommendations. This facilitates the implementation of 
 probabilistic interpretation of DNA results.
 
-STR-validator is written and maintained by Oskar Hansson, senior forensic
-scientist at the Norwegian Institute of Public Health (NIPH), Department of
-Forensic Biology. The work has received external funding from the European
+STR-validator was written and is maintained by Oskar Hansson, senior forensic
+scientist at Oslo University Hospital (OUS), Section for Forensic Genetics.
+The work initially received external funding from the European
 Union seventh Framework Programme (FP7/2007-2013) under grant agreement no
 285487 (EUROFORGEN-NoE) but development and maintenance is now performed as 
-a part of my position at NIPH, and on personal spare time.
+a part of my position at OUS, and on personal spare time.
 
 More information can be found at:
 https://sites.google.com/site/forensicapps/strvalidator

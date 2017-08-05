@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 25.04.2016: 'Save as' textbox expandable.
 # 30.11.2015: Added warning.
 # 28.08.2015: Added importFrom
@@ -95,12 +99,13 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[1,1] <- glabel(text="Select dataset:", container=g0)
   
-  g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select dataset>",
+  g0[1,2] <- dataset_drp <- gcombobox(items=c("<Select dataset>",
                                               listObjects(env=env,
                                                           obj.class="data.frame")), 
                                       selected = 1,
                                       editable = FALSE,
-                                      container = g0)
+                                      container = g0,
+                                      ellipsize = "none")
   
   g0[1,3] <- g0_samples_lbl <- glabel(text=" 0 samples", container=g0)
   
@@ -137,12 +142,13 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[2,1] <- glabel(text="Select reference dataset:", container=g0)
   
-  g0[2,2] <- refset_drp <- gdroplist(items=c("<Select dataset>",
+  g0[2,2] <- refset_drp <- gcombobox(items=c("<Select dataset>",
                                              listObjects(env=env,
                                                          obj.class="data.frame")), 
                                      selected = 1,
                                      editable = FALSE,
-                                     container = g0) 
+                                     container = g0,
+                                     ellipsize = "none") 
   
   g0[2,3] <- g0_ref_lbl <- glabel(text=" 0 references", container=g0)
   
@@ -179,9 +185,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
     print("CHECK")
   }  
   
-  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting",
-                                     border=TRUE,
-                                     container=g0)
+  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting", container=g0)
   
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
     
@@ -210,7 +214,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      
@@ -223,12 +227,13 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   
   g0[4,1] <- glabel(text="Select amount dataset:", container=g0)
   
-  g0[4,2] <- amset_drp <- gdroplist(items=c("<Select dataset>",
+  g0[4,2] <- amset_drp <- gcombobox(items=c("<Select dataset>",
                                             listObjects(env=env,
                                                         obj.class="data.frame")), 
                                     selected = 1,
                                     editable = FALSE,
-                                    container = g0) 
+                                    container = g0,
+                                    ellipsize = "none") 
   
   g0[4,3] <- g0_am_lbl <- glabel(text=" 0 samples", container=g0)
   
@@ -293,11 +298,9 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   
   # BUTTON ####################################################################
   
-  calculate_btn <- gbutton(text="Calculate",
-                           border=TRUE,
-                           container=gv)
+  calculate_btn <- gbutton(text="Calculate", container=gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     val_ignore_case <- svalue(f1_ignore_case_chk)
     val_weighted <- ifelse(svalue(f1_weighted_opt, index=TRUE)==1, FALSE, TRUE)
@@ -319,7 +322,9 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
     if(!is.null(.gData) & !is.null(.gRef)){
       
       # Change button.
+      blockHandlers(calculate_btn)
       svalue(calculate_btn) <- "Processing..."
+      unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
       
       datanew <- calculateAT6(data=.gData,

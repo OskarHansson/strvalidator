@@ -7,6 +7,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 27.06.2016: Added kit drop-down to fix hardcoded kit in mask plot.
 # 27.06.2016: Removed check for reference sample if masking is selected (no harm).
 # 16.06.2016: Fixed bug in plot sample masking range.
@@ -126,10 +130,11 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
   
   dfs <- c("<Select a dataset>", listObjects(env=env, obj.class="data.frame"))
   
-  g0[1,2] <- g0_data_drp <- gdroplist(items=dfs, 
+  g0[1,2] <- g0_data_drp <- gcombobox(items = dfs, 
                                       selected = 1,
                                       editable = FALSE,
-                                      container = g0)
+                                      container = g0,
+                                      ellipsize = "none")
   g0[1,3] <- g0_data_samples_lbl <- glabel(text=" 0 samples", container=g0)
   
   addHandlerChanged(g0_data_drp, handler = function (h, ...) {
@@ -184,10 +189,11 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
   g0[2,1] <- glabel(text="Select reference dataset:", container=g0)
   
   # NB! dfs defined in previous section.
-  g0[2,2] <- g0_ref_drp <- gdroplist(items=dfs, 
+  g0[2,2] <- g0_ref_drp <- gcombobox(items=dfs, 
                                      selected = 1,
                                      editable = FALSE,
-                                     container = g0)
+                                     container = g0,
+                                     ellipsize = "none")
   
   g0[2,3] <- g0_ref_samples_lbl <- glabel(text=" 0 references", container=g0)
   
@@ -225,9 +231,7 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     print("CHECK")
   }  
   
-  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting",
-                                     border=TRUE,
-                                     container=g0)
+  g0[3,2] <- g0_check_btn <- gbutton(text="Check subsetting", container=g0)
   
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
     
@@ -257,7 +261,7 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       
     } else {
       
-      gmessage(message="Data frame is NULL!\n\n
+      gmessage(msg="Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
                title="Error",
                icon = "error")      
@@ -271,10 +275,11 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
   g0[4,1] <- glabel(text="Select the kit used:", container=g0)
   
   # NB! dfs defined in previous section.
-  g0[4,2] <- g0_kit_drp <- gdroplist(items = getKit(), 
+  g0[4,2] <- g0_kit_drp <- gcombobox(items = getKit(), 
                                      selected = 1,
                                      editable = FALSE,
-                                     container = g0)
+                                     container = g0,
+                                     ellipsize = "none")
   tooltip(g0_kit_drp) <- "Only used to shad masked ranges in plot."
 
   # FRAME 1 ###################################################################
@@ -368,15 +373,14 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
                spacing = 5,
                container = gv) 
   
-  mask_btn <- gbutton(text="Prepare and mask", border=TRUE,
-                       container=f3)
+  mask_btn <- gbutton(text="Prepare and mask", container=f3)
   
-  f3_sample_drp <- gdroplist(items="<Select sample>", selected=1,
-                             editable=FALSE, container=f3)
+  f3_sample_drp <- gcombobox(items="<Select sample>", selected=1,
+                             editable=FALSE, container=f3, ellipsize = "none")
   
-  save_btn <- gbutton(text="Save plot", border=TRUE, container=f3)
+  save_btn <- gbutton(text="Save plot", container=f3)
   
-  addHandlerChanged(mask_btn, handler = function(h, ...) {
+  addHandlerClicked(mask_btn, handler = function(h, ...) {
     
     # Get values.
     val_data <- .gData
@@ -414,7 +418,9 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     }
     
     # Change button.
+    blockHandlers(mask_btn)
     svalue(mask_btn) <- "Processing..."
+    unblockHandlers(mask_btn)
     enabled(mask_btn) <- FALSE
     enabled(f3_sample_drp) <- FALSE
     
@@ -432,7 +438,9 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
                            debug=debug)
     
     # Change button.
+    blockHandlers(mask_btn)
     svalue(mask_btn) <- "Prepare and mask"
+    unblockHandlers(mask_btn)
     enabled(mask_btn) <- TRUE
     enabled(f3_sample_drp) <- TRUE
     
@@ -684,11 +692,9 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     print("BUTTON")
   }  
   
-  calculate_btn <- gbutton(text="Calculate",
-                           border=TRUE,
-                           container=gv)
+  calculate_btn <- gbutton(text="Calculate", container=gv)
   
-  addHandlerChanged(calculate_btn, handler = function(h, ...) {
+  addHandlerClicked(calculate_btn, handler = function(h, ...) {
     
     # Get values.
     if(is.null(.gDataPrep)){
@@ -753,7 +759,9 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
     if(!is.null(val_data)){
       
       # Change button.
+      blockHandlers(calculate_btn)
       svalue(calculate_btn) <- "Processing..."
+      unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
       
       datanew <- calculateAT(data=val_data,

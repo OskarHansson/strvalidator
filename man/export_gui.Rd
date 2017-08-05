@@ -4,10 +4,13 @@
 \alias{export_gui}
 \title{Export}
 \usage{
-export_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
+export_gui(obj = listObjects(env = env, obj.class = c("data.frame",
+  "ggplot")), env = parent.frame(), savegui = NULL, debug = FALSE,
   parent = NULL)
 }
 \arguments{
+\item{obj}{character vector with object names.}
+
 \item{env}{environment where the objects exist.
 Default is the current environment.}
 
@@ -24,8 +27,9 @@ TRUE
 GUI wrapper for the \code{\link{export}} function.
 }
 \details{
-Simplifies the use of the \code{\link{export}} function by providing a graphical 
-user interface to it.
+Simplifies the use of the \code{\link{export}} function by providing a 
+graphical user interface to it. Currently all available objects provided
+are selected by default.
 }
 \seealso{
 \code{\link{export}}

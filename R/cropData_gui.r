@@ -4,6 +4,10 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.07.2017: Fixed issue with button handlers.
+# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
+# 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 06.01.2017: Added attributes to result.
 # 06.01.2017: New options "containing", "not containing" and fixed list ref.
 # 02.05.2016: 'Save as' textbox expandable.
@@ -20,9 +24,6 @@
 # 26.09.2013: Fixed NA rows in resulting data frame.
 # 16.09.2013: Changed 'edit' to 'combobox' populated with unique values.
 # 06.08.2013: Added exclude NA.
-# 01.08.2013: GUI 'info' updates and bug fixes.
-# 18.07.2013: Check before overwrite object.
-# 17.07.2013: First version.
 
 #' @title Crop Or Replace
 #'
@@ -112,12 +113,13 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
   
   g0[1,1] <- glabel(text="Select dataset:", container=g0)
   
-  g0[1,2] <- dataset_drp <- gdroplist(items=c("<Select data frame>",
+  g0[1,2] <- dataset_drp <- gcombobox(items=c("<Select data frame>",
                                               listObjects(env=env,
                                                           obj.class="data.frame")), 
                                       selected = 1,
                                       editable = FALSE,
-                                      container = g0)
+                                      container = g0,
+                                      ellipsize = "none")
   
   g0[1,3] <- g0_samples_lbl <- glabel(text=" 0 samples,", container=g0)
   g0[1,4] <- g0_columns_lbl <- glabel(text=" 0 columns,", container=g0)
@@ -198,10 +200,11 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
   
   glabel(text="Select target column:", container=f1)
   
-  f1_column_drp <- gdroplist(items="<Select column>", 
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = f1)
+  f1_column_drp <- gcombobox(items="<Select column>",
+                             selected = 1,
+                             editable = FALSE,
+                             container = f1,
+                             ellipsize = "none")
   
   glabel(text=" Info:", container=f1)
   f1_min_lbl <- glabel(text=" Min:", container=f1)
@@ -263,14 +266,16 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
                 "is NA", "is not NA",
                 "containing", "not containing")
   
-  f2g1[1,2] <- f2g1_operator_drp <- gdroplist(items=f2_items, container=f2g1)
+  f2g1[1,2] <- f2g1_operator_drp <- gcombobox(items=f2_items, container=f2g1,
+                                              ellipsize = "none")
 
   # Note: <Target> is only to create width of the widget.
   #       It will be replaced when a target column is selected.
   f2g1[1,3] <- f2g1_target_cbo <- gcombobox(items="<Target value>",
                                             selected = 1,
                                             editable = TRUE,
-                                            container = f2g1)
+                                            container = f2g1,
+                                            ellipsize = "none")
   
   f2g1[1,4] <- f2g1_new_lbl <- glabel(text="with",
                                       visible=FALSE,
@@ -306,12 +311,10 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
   
   # BUTTON ####################################################################
   
-  apply_btn <- gbutton(text="Apply",
-                       border=TRUE,
-                       container = gv)
+  apply_btn <- gbutton(text="Apply", container = gv)
   
   
-  addHandlerChanged(apply_btn, handler = function(h, ...) {
+  addHandlerClicked(apply_btn, handler = function(h, ...) {
     
     val_column <- svalue(f1_column_drp)
     val_task <- svalue(f2g1_task_opt, index=TRUE)
@@ -361,9 +364,14 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
     }
     
     # Change button.
+    blockHandlers(apply_btn)
     svalue(apply_btn) <- "Processing..."
+    unblockHandlers(apply_btn)
     enabled(apply_btn) <- FALSE
+    
+    blockHandlers(f3_save_btn)
     svalue(f3_save_btn) <- "Save"
+    unblockHandlers(f3_save_btn)
     
     if(!is.null(.gData) && !is.null(.gData)){
 
@@ -491,14 +499,16 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
       
     } else {
       
-      gmessage(message="Data frame is NULL or NA!",
+      gmessage(msg="Data frame is NULL or NA!",
                title="Error",
                icon = "error")      
       
     }
     
     # Change button.
+    blockHandlers(apply_btn)
     svalue(apply_btn) <- "Apply"
+    unblockHandlers(apply_btn)
     enabled(apply_btn) <- TRUE
 
     # Update 'Save as'.
@@ -523,9 +533,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
   
   f3_save_edt <- gedit(text="", container=f3, expand = TRUE)
   
-  f3_save_btn <- gbutton(text = "Save",
-                         border=TRUE,
-                         container = f3) 
+  f3_save_btn <- gbutton(text = "Save", container = f3) 
   
   f3_samples_lbl <- glabel(text=" 0 samples,", container=f3)
   f3_columns_lbl <- glabel(text=" 0 columns,", container=f3)
@@ -548,7 +556,9 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
     
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
+    blockHandlers(f3_save_btn)
     svalue(f3_save_btn) <- "Saved!"
+    unblockHandlers(f3_save_btn)
     
   } )
   

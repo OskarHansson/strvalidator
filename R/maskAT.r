@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.07.2017: Reversed last change since grepl is case sensitive if fixed=TRUE.
+# 30.06.2017: Fixed matching when metacharacters exist in reference name.
 # 05.08.2016: Removed Allele rows with NA from reference dataset.
 # 20.05.2016: File name changed from blockAT.r to maskAT.r.
 # 20.05.2016: 'Block*' changed to 'mask*' throughout.
