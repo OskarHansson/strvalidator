@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -347,21 +348,22 @@ calculateConcordance_gui <- function(env=parent.frame(), savegui=NULL,
                                       list.all = val_all,
                                       debug=debug)
 
-      # Add attributes.
-      attr(datanew[[1]], which="calculateConcordance_gui, data") <- val_datasets
-      attr(datanew[[1]], which="calculateConcordance_gui, kit.name") <- val_kits
-      attr(datanew[[1]], which="calculateConcordance_gui, no.sample") <- val_nosample
-      attr(datanew[[1]], which="calculateConcordance_gui, no.marker") <- val_nomarker
-      attr(datanew[[1]], which="calculateConcordance_gui, delimeter") <- val_del
-      attr(datanew[[1]], which="calculateConcordance_gui, list.all") <- val_all
-
-      attr(datanew[[2]], which="calculateConcordance_gui, data") <- val_datasets
-      attr(datanew[[2]], which="calculateConcordance_gui, kit.name") <- val_kits
-      attr(datanew[[2]], which="calculateConcordance_gui, no.sample") <- val_nosample
-      attr(datanew[[2]], which="calculateConcordance_gui, no.marker") <- val_nomarker
-      attr(datanew[[2]], which="calculateConcordance_gui, delimeter") <- val_del
-      attr(datanew[[2]], which="calculateConcordance_gui, list.all") <- val_all
+      # Create key-value pairs to log.
+      keys <- list("data", "kit.name", "no.sample", "no.marker",
+                   "delimeter", "list.all")
       
+      values <- list(val_datasets, val_kits, val_nosample, val_nomarker, 
+                     val_del, val_all)
+      
+      # Update audit trail.
+      datanew[[1]] <- auditTrail(obj = datanew[[1]], key = keys, value = values,
+                                 label = "calculateConcordance_gui",
+                                 arguments = FALSE, package = "strvalidator")
+      
+      datanew[[2]] <- auditTrail(obj = datanew[[2]], key = keys, value = values,
+                                 label = "calculateConcordance_gui",
+                                 arguments = FALSE, package = "strvalidator")
+
       # Save data.
       saveObject(name=val_name1, object=datanew[[1]], parent=w, env=env)
       saveObject(name=val_name2, object=datanew[[2]], parent=w, env=env)

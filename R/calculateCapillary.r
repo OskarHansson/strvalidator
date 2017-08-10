@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 28.08.2015: Added importFrom
 # 15.12.2014: Changed parameter names to format: lower.case
 # 28.10.2013: First version.
@@ -358,6 +359,9 @@ calculateCapillary <- function(samples.table, plot.table, sq=0, run="", debug=FA
                     Comment=vecCom,
                     stringsAsFactors=FALSE)
   
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

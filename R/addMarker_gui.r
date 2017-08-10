@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -222,12 +223,19 @@ addMarker_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
                          marker=getKit(val_kit, what="Marker"),
                          ignore.case=val_ignore, debug=debug)
     
-    # Add attributes.
-    attr(datanew, which="addMarker_gui, data") <- val_data_name
-    attr(datanew, which="addMarker_gui, kit") <- val_kit
-    attr(datanew, which="addMarker_gui, ignore.case") <- val_ignore
-
+    # Add attributes to result.
+    attr(datanew, which="kit") <- val_kit
     
+    # Create key-value pairs to log.
+    keys <- list("data", "kit", "ignore.case")
+    
+    values <- list(val_data_name, val_kit, val_ignore)
+    
+    # Update audit trail.
+    datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                          label = "addMarker_gui", arguments = FALSE,
+                          package = "strvalidator")
+
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
     

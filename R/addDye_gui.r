@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -23,7 +24,6 @@
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Improved error message for missing columns.
 
 #' @title Add Dye Information
 #'
@@ -276,16 +276,24 @@ addDye_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
       
     }
     
-    # Add attributes.
+    # Save to new variable.
     datanew <- val_data
-    attr(datanew, which="addDye_gui, data") <- val_data_name
-    attr(datanew, which="addDye_gui, kit") <- val_kit
-    attr(datanew, which="addDye_gui, ignore.case") <- val_ignore
-    attr(datanew, which="addDye_gui, dye") <- val_dye
-    attr(datanew, which="addDye_gui, color") <- val_color
-    attr(datanew, which="addDye_gui, r.color") <- val_r
-    attr(datanew, which="addDye_gui, order") <- val_order
+
+    # Add attributes to result.
+    attr(datanew, which="kit") <- val_kit
+
+    # Create key-value pairs to log.
+    keys <- list("data", "kit", "ignore.case", "dye", "color",
+                 "r.color", "order")
     
+    values <- list(val_data_name, val_kit, val_ignore, val_dye, val_color,
+                   val_r, val_order)
+    
+    # Update audit trail.
+    datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                          label = "addDye_gui", arguments = FALSE,
+                          package = "strvalidator")
+
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
     

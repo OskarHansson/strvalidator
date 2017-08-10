@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 28.08.2015: Added importFrom
 # 21.01.2014: Added parameter 'limit'.
 # 17.01.2014: First version.
@@ -215,8 +216,12 @@ calculateOL <- function (kit, db, virtual=TRUE, limit=TRUE, debug=FALSE){
     
     # Combine result.
     res <- rbind(res, resKit)
-    
+
+        
   }
+  
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
   
   if(debug){
     print("res:")

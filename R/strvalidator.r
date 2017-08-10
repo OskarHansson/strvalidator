@@ -30,16 +30,6 @@
 # [optional]Increment ### on development versions.
 # NB! Write changes in NEWS for x.yy.z.9### versions, but move changes to NEWS under x.yy.z upon release official version.
 
-# Attributes:
-# Put these in 'base functions':
-# attr(dataDrop, which="[function], strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-# attr(dataDrop, which="[function], call") <- match.call()
-# attr(at.rank, which="[function], date") <- date()
-# Add additional attributes as:
-# attr(datanew, which="[function], [attribute]") <- parameter
-# Except for 'global' parameters used by other functions:
-# attr(datanew, which="kit") <- kit
-
 # NOTE:
 # NOTE: Can't import data frame named 'drop'
 # NOTE: Buttons named 'Plot' will show up 'plot'.

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -205,12 +206,16 @@ calculateCopies_gui <- function(env=parent.frame(), savegui=NULL,
                                  copies = val_cop, heterozygous = val_het,
                                  debug = debug)
 
-      # Add attributes.
-      attr(datanew, which = "calculateCopies_gui, data") <- val_data_name
-      attr(datanew, which = "calculateCopies_gui, observed") <- val_obs
-      attr(datanew, which = "calculateCopies_gui, copies") <- val_cop
-      attr(datanew, which = "calculateCopies_gui, heterozygous") <- val_het
-
+      # Create key-value pairs to log.
+      keys <- list("data", "observed", "copies", "heterozygous")
+      
+      values <- list(val_data_name, val_obs, val_cop, val_het)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateCopies_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
       

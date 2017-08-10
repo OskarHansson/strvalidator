@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -136,6 +137,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       
       # Reset components.
       .gData <<- NULL
+      .gDataName <<- NULL
       svalue(g0_dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -185,6 +187,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     
     # Get values.
     val_data <- .gData
+    val_name_data <- .gDataName
     val_threshold <- svalue(f1_threshold_spn)
     val_tolerance <- svalue(f1_tolerance_spn)
     val_kit <- svalue(kit_drp)
@@ -207,12 +210,20 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
                                 debug=debug)
       
       # Add attributes to result.
-      attr(datanew, which="calculateSpike_gui, data") <- svalue(g0_dataset_drp)
-      attr(datanew, which="calculateSpike_gui, threshold") <- val_threshold
-      attr(datanew, which="calculateSpike_gui, tolerance") <- val_tolerance
-      attr(datanew, which="calculateSpike_gui, quick") <- val_quick
-      attr(datanew, which="calculateSpike_gui, kit") <- val_kit
-
+      attr(datanew, which="kit") <- val_kit
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "threshold", "tolerance", 
+                   "quick", "kit")
+      
+      values <- list(val_name_data, val_threshold, val_tolerance, 
+                     val_quick, val_kit)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateSpike_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
       

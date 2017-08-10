@@ -6,6 +6,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 30.09.2016: Fixed a sample name mathcing bug (now really works as check subsetting in gui).
 # 29.08.2014: Added check for uniqueness between reference datasets.
 # 28.08.2014: Fixed bug in drop-out of minor in If 3: AA:AB | (A-B)/(A+B). 
@@ -492,6 +493,9 @@ calculateMixture <- function(data, ref1, ref2, ol.rm=TRUE,
                     Profile=resProfile,
                     Dropin=resDropin,
                     stringsAsFactors=FALSE)
+  
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

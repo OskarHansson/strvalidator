@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 29.08.2015: Added importFrom.
 # 23.02.2014: Added option 'ol.rm'.
 # 20.04.2013: first version.
@@ -193,10 +194,16 @@ guessProfile <- function(data, ratio=0.6, height=50,
     }
   }
   
+  # Extract profiles.
+  data <- data[keepRows, ]
+  
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }
   
-  return(data[keepRows, ])
+  return(data)
   
 }

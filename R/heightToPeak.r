@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 07.08.2017: Added audit trail.
 # 21.04.2016: Fixed error when no peaks in sample.
 # 09.01.2016: Added more attributes to result.
 # 30.11.2015: More efficient implementation. Added attributes.
@@ -14,7 +15,7 @@
 #' @title Height To Peak.
 #'
 #' @description
-#' Internal helper function to convert a peak into a plottable polygon.
+#' Helper function to convert a peak into a plottable polygon.
 #'
 #' @details
 #' Converts a single height and size value to a plottable 0-height-0 triangle/peak value.
@@ -23,15 +24,14 @@
 #' 
 #' @param data data frame containing at least columns 'Height' and 'Size'.
 #' @param width numeric specifying the width of the peak in bp.
-#' @param keep.na logical, TRUE keep empty markers.
+#' @param keep.na logical. TRUE to keep empty markers.
+#' @param debug logical. TRUE prints debug information.
 #' 
 #' @return data.frame with new values.
 #' 
 #' @export
 #' 
 #' @importFrom utils str
-#' 
-#' @keywords internal
 
 heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
   
@@ -118,13 +118,8 @@ heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
     
   }
   
-  # Add attributes to result.
-  attr(data, which="heightToPeak, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="heightToPeak, call") <- match.call()
-  attr(data, which="heightToPeak, date") <- date()
-  attr(data, which="heightToPeak, data") <- substitute(data)
-  attr(data, which="heightToPeak, width") <- width
-  attr(data, which="heightToPeak, keep.na") <- keep.na
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

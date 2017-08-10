@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG
+# 07.08.2017: Added audit trail.
 # 26.07.2017: Added expand=TRUE to save name text field.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -23,7 +24,6 @@
 # 21.05.2013: Fixed name on save as.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
-# 04.05.2013: First version.
 
 
 #' @title Guess Profile
@@ -50,6 +50,7 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
   
   # Global variables.
   .gData <- NULL
+  .gDataName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -127,6 +128,7 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       
       # Load or change components.
       .gData <<- get(val_obj, envir=env)
+      .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
       svalue(f2_save_edt) <- paste(val_obj, "_profile", sep="")
@@ -135,6 +137,7 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
 
       # Reset components.
       .gData <<- data.frame(No.Data=NA)
+      .gDataName <<- NULL
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
       svalue(f0g0_dataset_drp, index=TRUE) <- 1
@@ -193,6 +196,7 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     
     # Get values.
     val_data <- .gData
+    val_name_data <- .gDataName
     val_ratio <- as.numeric(svalue(f1g1_ratio_spb))
     val_height <- as.numeric(svalue(f1g1_height_edt))
     val_NA <- svalue(f1g1_na_chk)
@@ -218,6 +222,16 @@ guessProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                               ol.rm=val_OL,
                               debug=debug)
       
+      # Create key-value pairs to log.
+      keys <- list("data", "ratio", "height", "na.rm", "ol.rm")
+      
+      values <- list(val_name_data, val_ratio, val_height, val_NA, val_OL)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "guessProfile_gui", arguments = FALSE,
+                            package = "strvalidator")
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

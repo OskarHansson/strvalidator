@@ -19,7 +19,7 @@ addMarker(data, marker, ignore.case = FALSE, debug = FALSE)
 data.frame.
 }
 \description{
-Add missing markers to a dataset given a kit.
+Add missing markers to a dataset given a set of markers.
 }
 \details{
 Given a dataset or a vector with sample names the function loops through

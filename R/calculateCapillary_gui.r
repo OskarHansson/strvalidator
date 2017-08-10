@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -42,7 +43,9 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
   
   # Global variables.
   .gSamples <- NULL
+  .gSamplesName <- NULL
   .gPlot <- NULL
+  .gPlotName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -124,6 +127,7 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
       # Load or change components.
       
       .gSamples <<- get(val_obj, envir=env)
+      .gSamplesName <<- val_obj
       svalue(g0_data_samples_lbl) <- paste(length(unique(.gSamples$Sample.Name)),
                                         "samples.")
       svalue(f4_save_edt) <- paste(val_obj, "_cap", sep="")
@@ -132,6 +136,7 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gSamples <<- NULL
+      .gSamplesName <<- NULL
       svalue(g0_data_drp, index=TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
       svalue(f4_save_edt) <- ""
@@ -166,6 +171,7 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
       # Load or change components.
       
       .gPlot <<- get(val_obj, envir=env)
+      .gPlotName <<- val_obj
       svalue(g0_ref_samples_lbl) <- paste(length(unique(.gPlot$Sample.File.Name)),
                                           "sample files.")
         
@@ -173,6 +179,7 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gPlot <<- NULL
+      .gPlotName <<- NULL
       svalue(g0_ref_drp, index=TRUE) <- 1
       svalue(g0_ref_samples_lbl) <- " 0 sample files"
       
@@ -217,7 +224,9 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
     
     # Get values.
     val_samples <- .gSamples
+    val_name_samples <- .gSamplesName
     val_plot <- .gPlot
+    val_name_plot <- .gPlotName
     val_sq <- as.numeric(svalue(f1_sq_spb))
     val_run <- svalue(f1_run_edt)
     val_name <- svalue(f4_save_edt)
@@ -249,6 +258,16 @@ calculateCapillary_gui <- function(env=parent.frame(), savegui=NULL,
                                     sq=val_sq,
                                     run=val_run,
                                     debug=debug)
+      
+      # Create key-value pairs to log.
+      keys <- list("sample.table", "plot.table", "sq", "run")
+      
+      values <- list(val_name_samples, val_name_plot, val_sq, val_run)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateCapillary_gui", arguments = FALSE,
+                            package = "strvalidator")
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

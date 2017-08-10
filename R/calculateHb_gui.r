@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -285,6 +286,8 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
+    val_name_data <- svalue(g0_data_drp)
+    val_name_ref <- svalue(g0_ref_drp)
     val_sex <- svalue(f1_sex_chk)
     val_qs <- svalue(f1_qs_chk)
     val_hb <- svalue(f1_method_drp, index=TRUE)
@@ -309,18 +312,21 @@ calculateHb_gui <- function(env=parent.frame(), savegui=NULL,
                              ignore.case = val_ignore, exact = val_exact,
                              word = val_word, debug = debug)
       
-      # Add attributes.
+      # Add attributes to result.
       attr(datanew, which="kit") <- val_kit
-      attr(datanew, which="calculateHb_gui, data") <- svalue(g0_data_drp)
-      attr(datanew, which="calculateHb_gui, ref") <- svalue(g0_ref_drp)
-      attr(datanew, which="calculateHb_gui, sex.rm") <- val_sex
-      attr(datanew, which="calculateHb_gui, qs.rm") <- val_qs
-      attr(datanew, which="calculateHb_gui, hb") <- val_hb
-      attr(datanew, which="calculateHb_gui, ignore.case") <- val_ignore
-      attr(datanew, which="calculateHb_gui, word") <- val_word
-      attr(datanew, which="calculateHb_gui, exact") <- val_exact
-      attr(datanew, which="calculateHb_gui, calculate.h") <- val_h
       
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "sex.rm", "qs.rm", "hb",
+                   "kit", "ignore.case", "word", "exact", "calculate.h")
+      
+      values <- list(val_name_data, val_name_ref, val_sex, val_qs, val_hb,
+                     val_kit, val_ignore, val_word, val_exact, val_h)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateHb_gui", arguments = FALSE,
+                            package = "strvalidator")
+
       # Calculate and add average peak height.
       if(val_h){
         

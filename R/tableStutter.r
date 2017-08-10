@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 01.08.2017: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 01.11.2013: Fixed quant parameter always 0.95 (hard-coded instead of variable).
@@ -125,13 +126,8 @@ tableStutter <- function(data, scope="stutter", quant=0.95){
     }
   }
   
-  # Add attributes to result.
-  attr(sTable, which="tableStutter, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(sTable, which="tableStutter, call") <- match.call()
-  attr(sTable, which="tableStutter, date") <- date()
-  attr(sTable, which="tableStutter, data") <- attr_data
-  attr(sTable, which="tableStutter, scope") <- scope
-  attr(sTable, which="tableStutter, quant") <- quant
+  # Update audit trail.
+  sTable <- auditTrail(obj = sTable, f.call = match.call(), package = "strvalidator")
 
   return(sTable)
   

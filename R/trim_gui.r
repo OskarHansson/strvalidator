@@ -5,6 +5,7 @@
 # NB! Can't handle Sample.Names as factors?
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -24,8 +25,6 @@
 # 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
 # 06.08.2013: Added rows and columns to info.
 # 18.07.2013: Check before overwrite object.
-# 16.07.2013: Added save GUI settings.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 
 #' @title Trim Data
 #'
@@ -434,18 +433,20 @@ trim_gui <- function(env=parent.frame(), savegui=NULL,
                    word=word_val, ignore.case=case_val, invert.s=sample_opt_val, invert.c=column_opt_val,
                    rm.na.col=na_val, rm.empty.col=empty_val, missing=na_edt_val, debug=debug)
       
-      # Add attributes.
-      attr(datanew, which="trim_gui, data") <- val_data_name
-      attr(datanew, which="trim_gui, samples") <- sample_val
-      attr(datanew, which="trim_gui, columns") <- column_val
-      attr(datanew, which="trim_gui, word") <- word_val
-      attr(datanew, which="trim_gui, ignore.case") <- case_val
-      attr(datanew, which="trim_gui, invert.s") <- sample_opt_val
-      attr(datanew, which="trim_gui, invert.c") <- column_opt_val
-      attr(datanew, which="trim_gui, rm.na.col") <- na_val
-      attr(datanew, which="trim_gui, rm.empty.col") <- empty_val
-      attr(datanew, which="trim_gui, missing") <- na_edt_val
+      # Create key-value pairs to log.
+      keys <- list("data", "samples", "columns", "word", "ignore.case",
+                   "invert.s", "invert.c", "rm.na.col", "rm.empty.col",
+                   "missing")
       
+      values <- list(val_data_name, sample_val, column_val, word_val, case_val,
+                     sample_opt_val, column_opt_val, na_val, empty_val,
+                     na_edt_val)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "trim_gui", arguments = FALSE,
+                            package = "strvalidator")
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

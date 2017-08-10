@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 06.02.2017: Fixed data saved as attributes (new.data).
 # 15.08.2016: Fixed check for data.table.
 # 12.08.2016: Handles empty dataset by returning unchanged.
@@ -256,17 +257,8 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
     }
   }
   
-  # Add attributes to result.
-  attr(data, which="addData, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="addData, call") <- match.call()
-  attr(data, which="addData, date") <- date()
-  attr(data, which="addData, data") <- attr_data
-  attr(data, which="addData, new.data") <- attr_newdata
-  attr(data, which="addData, by.col") <- by.col
-  attr(data, which="addData, then.by.col") <- then.by.col
-  attr(data, which="addData, exact") <- exact
-  attr(data, which="addData, ignore.case") <- ignore.case
-  attr(data, which="addData, what") <- what
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
 
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

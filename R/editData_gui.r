@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 17.07.2017: Fixed "Error in if (nchar(text) > 0) set_value(text) : argument is of length zero"
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -25,7 +26,6 @@
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
-# 02.12.2013: Added parameter 'name' for selection of 'data' in drop menu.
 
 #' @title Edit or View Data Frames
 #'
@@ -294,6 +294,10 @@ editData_gui <- function(env=parent.frame(), savegui=NULL, data=NULL,
       unblockHandlers(save_btn)
       enabled(save_btn) <- FALSE
       
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, label = "editData_gui",
+                            arguments = FALSE, package = "strvalidator")
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env, debug=debug)
       

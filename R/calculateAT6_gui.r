@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -42,6 +43,9 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
   .gData <- NULL
   .gRef <- NULL
   .gAm <- NULL
+  .gNameData <- NULL
+  .gNameRef <- NULL
+  .gNameAm <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -122,6 +126,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
       # Load or change components.
       
       .gData <<- get(val_obj, envir=env)
+      .gNameData <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste("", samples, "samples")
       
@@ -132,6 +137,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gData <<- NULL
+      .gNameData <<- NULL
       svalue(dataset_drp, index=TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -165,6 +171,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
       # Load or change components.
       
       .gRef <<- get(val_obj, envir=env)
+      .gNameRef <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
       svalue(g0_ref_lbl) <- paste("", ref, "references")
       
@@ -172,6 +179,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gRef <<- NULL
+      .gNameRef <<- NULL
       svalue(refset_drp, index=TRUE) <- 1
       svalue(g0_ref_lbl) <- " 0 references"
       
@@ -250,6 +258,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
       # Load or change components.
       
       .gAm <<- get(val_obj, envir=env)
+      .gNameAm <<- val_obj
       am <- length(unique(.gAm$Sample.Name))
       svalue(g0_am_lbl) <- paste("", am, "samples")
       
@@ -257,6 +266,7 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gAm <<- NULL
+      .gNameAm <<- NULL
       svalue(amset_drp, index=TRUE) <- 1
       svalue(g0_am_lbl) <- " 0 samples"
       
@@ -306,6 +316,9 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
     val_weighted <- ifelse(svalue(f1_weighted_opt, index=TRUE)==1, FALSE, TRUE)
     val_alpha <- svalue(f1_alpha_spn)
     val_name <- svalue(f2_save_edt)
+    val_name_data <- .gNameData
+    val_name_ref <- .gNameRef
+    val_name_amount <- .gNameAm
     
     if(debug){
       print("GUI options:")
@@ -334,6 +347,18 @@ calculateAT6_gui <- function(env=parent.frame(), savegui=NULL,
                               alpha=val_alpha,
                               ignore.case=val_ignore_case,
                               debug=debug)
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "amount", 
+                   "weighted", "alpha", "ignore.case")
+      
+      values <- list(val_name_data, val_name_ref, val_name_amount,
+                     val_weighted, val_alpha, val_ignore_case)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateAT6_gui", arguments = FALSE,
+                            package = "strvalidator")
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

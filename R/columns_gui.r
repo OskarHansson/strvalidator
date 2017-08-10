@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.08.2017: Fixed column dropdowns lose selection after selecting dataset.
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
@@ -125,7 +127,9 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       svalue(f2_name) <- paste(.gDataName, "new", sep="_")
       
       f1g1_col1_drp[] <- c(.columnDropDefault, names(.gData))
+      svalue(f1g1_col1_drp, index = TRUE) <- 1
       f1g1_col2_drp[] <- c(.columnDropDefault, names(.gData))
+      svalue(f1g1_col2_drp, index = TRUE) <- 1
       
     } else {
       
@@ -135,8 +139,10 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       svalue(f2_name) <- ""
       
       f1g1_col1_drp[] <- c(.columnDropDefault)
+      svalue(f1g1_col1_drp, index = TRUE) <- 1
       f1g1_col2_drp[] <- c(.columnDropDefault)
-
+      svalue(f1g1_col2_drp, index = TRUE) <- 1
+      
     }
     
   } )
@@ -277,16 +283,18 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                        target=val_target, start=val_start, stop=val_stop,
                        debug=debug)
     
-    # Add attributes.
-    attr(datanew, which="columns_gui, data") <- val_data_name
-    attr(datanew, which="columns_gui, col1") <- val_col1
-    attr(datanew, which="columns_gui, col2") <- val_col2
-    attr(datanew, which="columns_gui, action") <- val_action
-    attr(datanew, which="columns_gui, target") <- val_target
-    attr(datanew, which="columns_gui, fixed") <- val_fixed
-    attr(datanew, which="columns_gui, start") <- val_start
-    attr(datanew, which="columns_gui, stop") <- val_stop
+    # Create key-value pairs to log.
+    keys <- list("data", "col1", "col2", "action", "target",
+                 "fixed", "start", "stop")
     
+    values <- list(val_data_name, val_col1, val_col2, val_action, val_target,
+                   val_fixed, val_start, val_stop)
+    
+    # Update audit trail.
+    datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                          label = "columns_gui", arguments = FALSE,
+                          package = "strvalidator")
+
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)
       

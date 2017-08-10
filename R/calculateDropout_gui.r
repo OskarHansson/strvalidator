@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -23,8 +24,6 @@
 # 13.11.2013: Removed 'allele' argument in call.
 # 07.11.2013: Fixed suggested LDT (as.numeric)
 # 27.10.2013: Fixed option 'ignore case' not passed to 'check subset'.
-# 19.10.2013: Added support for arguments 'allele' and 'threshold'.
-# 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
 
 #' @title Calculate Dropout Events
 #'
@@ -309,6 +308,8 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
     
     val_data <- .gData
     val_ref <- .gRef
+    val_name_data <- svalue(dataset_drp)
+    val_name_ref <- svalue(refset_drp)
     val_ignore_case <- svalue(f1_ignore_case_chk)
     val_h <- svalue(f1_h_chk)
     val_threshold <- as.numeric(svalue(f1g1_ldt_edt))
@@ -383,14 +384,18 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Add attributes to result.
       attr(datanew, which="kit") <- val_kit
-      attr(datanew, which="calculateDropout_gui, data") <- svalue(dataset_drp)
-      attr(datanew, which="calculateDropout_gui, ref") <- svalue(refset_drp)
-      attr(datanew, which="calculateDropout_gui, threshold") <- val_threshold
-      attr(datanew, which="calculateDropout_gui, method") <- val_method
-      attr(datanew, which="calculateDropout_gui, ignore.case") <- val_ignore_case
-      attr(datanew, which="calculateDropout_gui, sex.rm") <- val_sex
-      attr(datanew, which="calculateDropout_gui, qs.rm") <- val_qs
-      attr(datanew, which="calculateDropout_gui, calculate.h") <- val_h
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "threshold", "method",
+                   "ignore.case", "sex.rm", "qs.rm", "kit", "calculate.h")
+      
+      values <- list(val_name_data, val_name_ref, val_threshold, val_method,
+                     val_ignore_case, val_sex, val_qs, val_kit, val_h)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateDropout_gui", arguments = FALSE,
+                            package = "strvalidator")
       
       # Calculate and add average peak height.
       if(val_h){

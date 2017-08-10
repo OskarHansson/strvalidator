@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -233,10 +234,18 @@ addSize_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     datanew <- addSize(data=val_data, kit=val_kitinfo,
                        bins=val_bins, debug=debug)
 
-    # Add attributes.
-    attr(datanew, which="addSize_gui, data") <- val_data_name
-    attr(datanew, which="addSize_gui, kit") <- val_kit
-    attr(datanew, which="addSize_gui, bins") <- val_bins
+    # Add attributes to result.
+    attr(datanew, which="kit") <- val_kit
+    
+    # Create key-value pairs to log.
+    keys <- list("data", "kit", "bins")
+    
+    values <- list(val_data_name, val_kit, val_bins)
+    
+    # Update audit trail.
+    datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                          label = "addSize_gui", arguments = FALSE,
+                          package = "strvalidator")
 
     # Save data.
     saveObject(name=val_name, object=datanew, parent=w, env=env)

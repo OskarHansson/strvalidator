@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 01.08.2017: Added kit attribute to result.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -219,12 +220,19 @@ tableBalance_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                               quant=val_ratio,
                               scope=val_scope)
       
-      # Add attributes.
+      # Add attributes to result.
       attr(datanew, which="kit") <- val_kit
-      attr(datanew, which="tableBalance_gui, data") <- val_data_name
-      attr(datanew, which="tableBalance_gui, ratio") <- val_ratio
-      attr(datanew, which="tableBalance_gui, scope") <- val_scope
 
+      # Create key-value pairs to log.
+      keys <- list("data", "ratio", "scope")
+      
+      values <- list(val_data_name, val_ratio, val_scope)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "tableBalance_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

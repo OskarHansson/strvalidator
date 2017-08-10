@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -703,6 +704,8 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       val_data <- .gDataPrep
     }
     val_ref <- .gRef
+    val_name_data <- svalue(g0_data_drp)
+    val_name_ref <- svalue(g0_ref_drp)
     val_ignore <- svalue(f1_ignore_chk)
     val_word <- svalue(f1_word_chk)
     val_mask_h <- svalue(f1_mask_h_chk)
@@ -781,47 +784,29 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
                              debug=debug)
       
 
-      # Add attributes.
-      attr(datanew[[1]], which="calculateAT_gui, data") <- svalue(g0_data_drp)
-      attr(datanew[[1]], which="calculateAT_gui, ref") <- svalue(g0_ref_drp)
-      attr(datanew[[1]], which="calculateAT_gui, k") <- val_k
-      attr(datanew[[1]], which="calculateAT_gui, rank.t") <- val_t
-      attr(datanew[[1]], which="calculateAT_gui, alpha") <- val_a
-      attr(datanew[[1]], which="calculateAT_gui, mask.height") <- val_mask_h
-      attr(datanew[[1]], which="calculateAT_gui, height") <- val_height
-      attr(datanew[[1]], which="calculateAT_gui, mask") <- val_mask
-      attr(datanew[[1]], which="calculateAT_gui, range.sample") <- val_range
-      attr(datanew[[1]], which="calculateAT_gui, mask.ils") <- val_mask_ils
-      attr(datanew[[1]], which="calculateAT_gui, range.ils") <- val_range_ils
-      attr(datanew[[1]], which="calculateAT_gui, per.dye") <- val_mask_d
-      attr(datanew[[1]], which="calculateAT_gui, ignore.case") <- val_ignore
-      attr(datanew[[1]], which="calculateAT_gui, word") <- val_word
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "k", "rank.t", "alpha",
+                   "mask.height", "height", "mask", "range.sample",
+                   "mask.ils", "range.ils", "per.dye", "ignore.case",
+                   "word")
       
-      attr(datanew[[2]], which="calculateAT_gui, data") <- svalue(g0_data_drp)
-      attr(datanew[[2]], which="calculateAT_gui, ref") <- svalue(g0_ref_drp)
-      attr(datanew[[2]], which="calculateAT_gui, rank.t") <- val_t
-      attr(datanew[[2]], which="calculateAT_gui, mask.height") <- val_mask_h
-      attr(datanew[[2]], which="calculateAT_gui, height") <- val_height
-      attr(datanew[[2]], which="calculateAT_gui, mask") <- val_mask
-      attr(datanew[[2]], which="calculateAT_gui, range.sample") <- val_range
-      attr(datanew[[2]], which="calculateAT_gui, mask.ils") <- val_mask_ils
-      attr(datanew[[2]], which="calculateAT_gui, range.ils") <- val_range_ils
-      attr(datanew[[2]], which="calculateAT_gui, per.dye") <- val_mask_d
-      attr(datanew[[2]], which="calculateAT_gui, ignore.case") <- val_ignore
-      attr(datanew[[2]], which="calculateAT_gui, word") <- val_word
+      values <- list(val_name_data, val_name_ref, val_k, val_t,
+                     val_a, val_mask_h, val_height, val_mask, val_range, 
+                     val_mask_ils, val_range_ils, val_mask_d, val_ignore,
+                     val_word)
+      
+      # Update audit trail.
+      datanew[[1]] <- auditTrail(obj = datanew[[1]], key = keys, value = values,
+                                label = "calculateAT_gui", arguments = FALSE,
+                                package = "strvalidator")
 
-      attr(datanew[[3]], which="calculateAT_gui, data") <- svalue(g0_data_drp)
-      attr(datanew[[3]], which="calculateAT_gui, ref") <- svalue(g0_ref_drp)
-      attr(datanew[[3]], which="calculateAT_gui, rank.t") <- val_t
-      attr(datanew[[3]], which="calculateAT_gui, mask.height") <- val_mask_h
-      attr(datanew[[3]], which="calculateAT_gui, height") <- val_height
-      attr(datanew[[3]], which="calculateAT_gui, mask") <- val_mask
-      attr(datanew[[3]], which="calculateAT_gui, range.sample") <- val_range
-      attr(datanew[[3]], which="calculateAT_gui, mask.ils") <- val_mask_ils
-      attr(datanew[[3]], which="calculateAT_gui, range.ils") <- val_range_ils
-      attr(datanew[[3]], which="calculateAT_gui, per.dye") <- val_mask_d
-      attr(datanew[[3]], which="calculateAT_gui, ignore.case") <- val_ignore
-      attr(datanew[[3]], which="calculateAT_gui, word") <- val_word
+      datanew[[2]] <- auditTrail(obj = datanew[[2]], key = keys, value = values,
+                                 label = "calculateAT_gui", arguments = FALSE,
+                                 package = "strvalidator")
+      
+      datanew[[3]] <- auditTrail(obj = datanew[[3]], key = keys, value = values,
+                                 label = "calculateAT_gui", arguments = FALSE,
+                                 package = "strvalidator")
       
       # Save data.
       saveObject(name=val_name1, object=datanew[[1]], parent=w, env=env)

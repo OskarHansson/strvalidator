@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 05.08.2016: Fixed wrong variable 'res' -> 'data'.
 # 04.08.2016: Added attributes.
 # 20.07.2016: First version
@@ -151,15 +152,9 @@ calculateCopies <- function(data, observed=FALSE, copies=TRUE,
 
   }
 
-  # Add attributes to result.
-  attr(data, which="calculateCopies, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="calculateCopies, call") <- match.call()
-  attr(data, which="calculateCopies, date") <- date()
-  attr(data, which="calculateCopies, data") <- attr_data
-  attr(data, which="calculateCopies, observed") <- observed
-  attr(data, which="calculateCopies, copies") <- copies
-  attr(data, which="calculateCopies, heterozygous") <- heterozygous
-
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+  
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

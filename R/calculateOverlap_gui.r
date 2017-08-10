@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -378,6 +379,18 @@ calculateOverlap_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE, p
                               penalty=val_penalty,
                               virtual=val_virtual,
                              debug=debug)
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "db", "penalty", "virtual")
+      
+      values <- list(val_kits, val_db_selected, val_penalty, val_virtual)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateOverlap_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
+      
   
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

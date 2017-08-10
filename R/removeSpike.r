@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 28.04.2016: First version.
 
 #' @title Remove Spikes
@@ -196,13 +197,8 @@ removeSpike <- function(data, spike, invert=FALSE, debug=FALSE){
   # Remove column
   res$Remove <- NULL
   
-  # Add attributes to result.
-  attr(res, which="removeSpike, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="removeSpike, call") <- match.call()
-  attr(res, which="removeSpike, date") <- date()
-  attr(res, which="removeSpike, data") <- attr_data
-  attr(res, which="removeSpike, ref") <- attr_spike
-  attr(res, which="removeSpike, invert") <- invert
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
   
   # RETURN --------------------------------------------------------------------
   

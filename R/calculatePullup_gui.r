@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -381,18 +382,20 @@ calculatePullup_gui <- function(env=parent.frame(), savegui=NULL,
                                    limit=val_limit,
                                    debug=debug)
         
-        # Add attributes.
+        # Add attributes to result.
         attr(datanew, which="kit") <- val_kit
-        attr(datanew, which="calculatePullup_gui, data") <- val_name_data
-        attr(datanew, which="calculatePullup_gui, ref") <- val_name_ref
-        attr(datanew, which="calculatePullup_gui, pullup.range") <- val_pullup
-        attr(datanew, which="calculatePullup_gui, block.range") <- val_block
-        attr(datanew, which="calculatePullup_gui, ol.rm") <- val_ol
-        attr(datanew, which="calculatePullup_gui, ignore.case") <- val_ignore
-        attr(datanew, which="calculatePullup_gui, word") <- val_word
-        attr(datanew, which="calculatePullup_gui, discard") <- val_discard
-        attr(datanew, which="calculatePullup_gui, limit") <- val_limit
         
+        # Create key-value pairs to log.
+        keys <- list("data", "ref", "pullup.range", "block.range", "ol.rm",
+                     "ignore.case", "word", "discard", "limit")
+        
+        values <- list(val_name_data, val_name_ref, val_pullup, val_block, val_ol,
+                       val_ignore, val_word, val_discard, val_limit)
+        
+        # Update audit trail.
+        datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                              label = "calculatePullup_gui", arguments = FALSE,
+                              package = "strvalidator")
         
         # Save data.
         saveObject(name=val_name, object=datanew, parent=w, env=env)

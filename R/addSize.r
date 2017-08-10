@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 26.04.2016: Fixed message returning string + 'TRUE'.
 # 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
@@ -225,14 +226,11 @@ addSize <- function(data, kit=NA, bins=TRUE, ignore.case=FALSE, debug=FALSE){
   }
   
   # Add attributes to result.
-  attr(data, which="slim, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="slim, call") <- match.call()
-  attr(data, which="slim, date") <- date()
-  attr(data, which="slim, data") <- substitute(data)
-  attr(data, which="slim, kit") <- substitute(kit)
-  attr(data, which="slim, bins") <- bins
-  attr(data, which="slim, ignore.case") <- ignore.case
-
+  attr(data, which="kit") <- kit
+  
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+  
   return(data)
   
 }

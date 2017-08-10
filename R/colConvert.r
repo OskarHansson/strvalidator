@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 06.10.2015: First version.
 
 #' @title Convert Columns
@@ -51,9 +52,8 @@ colConvert <- function(data, columns="Height|Size|Data.Point",
     
   }
   
-  # Add attributes.
-  attr(data, which="colConvert, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="colConvert, call") <- match.call()
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
 
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

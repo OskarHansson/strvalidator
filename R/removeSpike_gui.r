@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
@@ -217,11 +218,16 @@ removeSpike_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, paren
       datanew <- removeSpike(data = val_data, spike = val_spike,
                              invert = val_invert, debug=debug)
       
-      # Add attributes.
-      attr(datanew, which="removeSpike_gui, data") <- .gDataName
-      attr(datanew, which="removeSpike_gui, spike") <- .gSpikeName
-      attr(datanew, which="removeSpike_gui, invert") <- val_invert
-
+      # Create key-value pairs to log.
+      keys <- list("data", "spike", "invert")
+      
+      values <- list(val_name_data, val_name_spike, val_invert)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "removeSpike_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
 

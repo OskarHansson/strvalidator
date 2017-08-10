@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 26.07.2017: Added expand=TRUE to save name text field.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -207,12 +208,25 @@ combine_gui <- function(env=parent.frame(), debug=FALSE, parent=NULL){
   addHandlerChanged(combine_btn, handler = function(h, ...) {
     
     colOk <- all(names(.gData1) %in% names(.gData2))
+    val_data_1 <- .gData1Name
+    val_data_2 <- .gData2Name
+    val_name <- svalue(f2_name)
     
     if (colOk){
-      
+
+      # Combine the datasets.      
       datanew <- plyr::rbind.fill(.gData1,.gData2)
-      val_name <- svalue(f2_name)
       
+      # Create key-value pairs to log.
+      keys <- list("data1", "data2")
+      
+      values <- list(val_data_1, val_data_2)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "combine_gui", arguments = FALSE,
+                            package = "strvalidator")
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

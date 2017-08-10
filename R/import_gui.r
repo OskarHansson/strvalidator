@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 17.07.2017: Added label "Selected for import".
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed expanded 'gexpandgroup'.
@@ -23,8 +24,6 @@
 # 10.12.2013: Updated with new parameter names in function 'import'.
 # 12.11.2013: Pass debug to function.
 # 18.07.2013: Check before overwrite object.
-# 15.07.2013: Added save GUI settings.
-# 11.06.2013: Fixed 'exists' added 'inherits=FALSE'. Added parameter 'debug'.
 
 #' @title Import Data
 #'
@@ -310,6 +309,7 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
     slim_fix_val <- svalue(slim_fix_chk)
     
     # Assign a delimiter character.
+    val_delimiter <- NA
     if(del_val == 1){
       val_delimiter <- "\t"   
     } else if(del_val == 2){
@@ -432,24 +432,21 @@ import_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NUL
         
       } else {
         
-        # Add attributes.
-        attr(datanew, which="import_gui, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-        attr(datanew, which="import_gui, folder") <- folder_opt_val
-        attr(datanew, which="import_gui, extension") <- extension_val
-        attr(datanew, which="import_gui, suffix") <- suffix_val
-        attr(datanew, which="import_gui, prefix") <- prefix_val
-        attr(datanew, which="import_gui, import.file") <- file_val
-        attr(datanew, which="import_gui, folder.name") <- folder_val
-        attr(datanew, which="import_gui, file.name") <- get_file_val
-        attr(datanew, which="import_gui, time.stamp") <- get_time_val
-        attr(datanew, which="import_gui, ignore.case") <- ignore_val
-        attr(datanew, which="import_gui, auto.trim") <- trim_val
-        attr(datanew, which="import_gui, trim.samples") <- trim_what_val
-        attr(datanew, which="import_gui, trim.invert") <- trim_invert_val
-        attr(datanew, which="import_gui, auto.slim") <- slim_val
-        attr(datanew, which="import_gui, slim.na") <- slim_fix_val
-        attr(datanew, which="import_gui, separator") <- val_delimiter
-        attr(datanew, which="import_gui, na.strings") <- val_na
+        # Create key-value pairs to log.
+        keys <- list("folder", "extension", "suffix", "prefix",
+                     "import.file", "folder.name", "file.name", "time.stamp",
+                     "ignore.case", "auto.trim", "trim.samples", "trim.invert",
+                     "auto.slim", "slim.na", "separator", "na.strings")
+        
+        values <- list(folder_opt_val, extension_val, suffix_val, prefix_val,
+                       file_val, folder_val, get_file_val, get_time_val,
+                       ignore_val, trim_val, trim_what_val, trim_invert_val,
+                       slim_val, slim_fix_val, val_delimiter, val_na)
+        
+        # Update audit trail.
+        datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                              label = "import_gui", arguments = FALSE,
+                              package = "strvalidator")
         
         # Save data.
         saveObject(name=val_name, object=datanew, parent=w, env=env)

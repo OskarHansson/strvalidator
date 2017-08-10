@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 01.08.2017: Added attributes to result.
 # 31.07.2017: Save name text field added expand=TRUE.
 # 13.07.2017: Fixed issue with button handlers.
@@ -23,8 +24,6 @@
 # 24.05.2013: Improved error message for missing columns.
 # 21.05.2013: Fixed name on save as.
 # 17.05.2013: listDataFrames() -> listObjects()
-# 09.05.2013: .result removed, added save as group.
-
 
 #' @title Table Stutter
 #'
@@ -209,7 +208,7 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL,
     # Get values.
     val_data <- .gData
     val_data_name <- .gDataName
-    val_ratio <- as.numeric(svalue(f1g1_quant_spb))
+    val_quant <- as.numeric(svalue(f1g1_quant_spb))
     val_scope <- svalue(f1g1_scope_opt)
     val_name <- svalue(f2_save_edt)
     val_kit <-  attr(x=.gData, which="kit", exact = TRUE)
@@ -223,15 +222,22 @@ tableStutter_gui <- function(env=parent.frame(), savegui=NULL,
       enabled(run_btn) <- FALSE
       
       datanew <- tableStutter(data=val_data,
-                   quant=val_ratio,
+                   quant=val_quant,
                    scope=val_scope)
       
-      # Add attributes.
+      # Add attributes to result.
       attr(datanew, which="kit") <- val_kit
-      attr(datanew, which="tableStutter_gui, data") <- val_data_name
-      attr(datanew, which="tableStutter_gui, quant") <- val_ratio
-      attr(datanew, which="tableStutter_gui, scope") <- val_scope
-
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "quant", "scope")
+      
+      values <- list(val_data_name, val_quant, val_scope)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "tableStutter_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

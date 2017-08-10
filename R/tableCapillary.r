@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 29.08.2015: Added importFrom.
 # 10.08.2014: Added scope=RUN.
 # 29.10.2013: First version.
@@ -269,6 +270,9 @@ tableCapillary <- function(data, scope="cap", debug=FALSE){
   } else {
     stop("Sort table by =", scope, "not supported!")
   }
+  
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

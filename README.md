@@ -8,7 +8,9 @@ GeneMapper software, without extensive knowledge about R. It provides
 functions to import, view, edit, and export data. After analysis the results,
 generated plots, heat-maps, and data can be saved in a project for easy access.
 Currently, analysis modules for stutter, balance, dropout, mixture, concordance,
-typing result, precision, pull-up, and analytical thresholds are available. In addition there are functions to analyse the GeneMapper bins- and panels files. EPG like plots can be generate from data. STR-validator can greatly increase the speed of 
+typing result, precision, pull-up, and analytical thresholds are available.
+In addition there are functions to analyse the GeneMapper bins- and panels files.
+EPG like plots can be generate from data. STR-validator can greatly increase the speed of 
 validation by reducing the time and effort needed to analyse the validation
 data. It allows exploration of the characteristics of DNA typing kits according
 to ENFSI and SWGDAM recommendations. This facilitates the implementation of 

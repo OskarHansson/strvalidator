@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
@@ -222,12 +223,16 @@ removeArtefact_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
                              na.rm = val_na, threshold = val_threshold,
                              debug=debug)
       
-      # Add attributes.
-      attr(datanew, which="removeArtefact_gui, data") <- .gDataName
-      attr(datanew, which="removeArtefact_gui, artefact") <- .gArtefactName
-      attr(datanew, which="removeArtefact_gui, na.rm") <- val_na
-      attr(datanew, which="removeArtefact_gui, threshold") <- val_threshold
-
+      # Create key-value pairs to log.
+      keys <- list("data", "artefact", "na.rm", "threshold")
+      
+      values <- list(val_name_data, val_name_spike, val_na, val_threshold)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "removeArtefact_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
 

@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 18.09.2016: Fixed attribute word not saved.
 # 16.09.2016: Change keep.na=FALSE to keep.na=TRUE for filterProfile.
 # 14.09.2016: Fixed error when homozygotes are given with double notation in ref.
@@ -24,9 +25,6 @@
 # 04.03.2014: Fixed bug when no NA and NA!=NULL.
 # 25.02.2014: Option to add directly to dataset.
 # 25.02.2014: Option to replace NAs.
-# 13.04.2013: Rewrote the function to work with 'slim' data.
-# 11.04.2013: Changed 'Z' to 'Heterozygous' (het/hom now indicated by 1/0,
-#             but changed to 2 in function)
 
 #' @title Calculate Peak Height.
 #'
@@ -399,19 +397,9 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
 	
 	# Add attributes to result.
 	attr(res, which="kit") <- kit
-	attr(res, which="calculateHeight, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-	attr(res, which="calculateHeight, call") <- match.call()
-	attr(res, which="calculateHeight, date") <- date()
-	attr(res, which="calculateHeight, data") <- attr_data
-	attr(res, which="calculateHeight, ref") <- attr_ref
-	attr(res, which="calculateHeight, na.replace") <- na.replace
-	attr(res, which="calculateHeight, add") <- add
-	attr(res, which="calculateHeight, exclude") <- exclude
-	attr(res, which="calculateHeight, sex.rm") <- sex.rm
-	attr(res, which="calculateHeight, qs.rm") <- qs.rm
-	attr(res, which="calculateHeight, ignore.case") <- ignore.case
-	attr(res, which="calculateHeight, exact") <- exact
-	attr(res, which="calculateHeight, word") <- word
+	
+	# Update audit trail.
+	res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 	
 	# Return result.
 	return(res)

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -353,15 +354,18 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
                          what=val_what,
                          ignore.case=val_ignore)
       
-      # Add attributes.
-      attr(datanew, which="addData_gui, data") <- val_destination
-      attr(datanew, which="addData_gui, new.data") <- val_source
-      attr(datanew, which="addData_gui, exact") <- val_exact
-      attr(datanew, which="addData_gui, by.col") <- val_key
-      attr(datanew, which="addData_gui, then.by.col") <- val_key2
-      attr(datanew, which="addData_gui, what") <- val_what
-      attr(datanew, which="addData_gui, ignore.case") <- val_ignore
-
+      # Create key-value pairs to log.
+      keys <- list("data", "new.data", "exact", "by.col", "then.by.col",
+                   "what", "ignore.case")
+      
+      values <- list(val_destination, val_source, val_exact, val_key, val_key2,
+                     val_what, val_ignore)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "addData_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

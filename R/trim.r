@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 09.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
 # 25.05.2015: Corrected parameter description.
@@ -333,21 +334,9 @@ trim <- function(data, samples=NULL, columns=NULL,
     names(data) <- colNames
   }
 	
-	# Add attributes to result.
-	attr(data, which="trim, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-	attr(data, which="trim, call") <- match.call()
-	attr(data, which="trim, date") <- date()
-	attr(data, which="trim, data") <- attr_data
-	attr(data, which="trim, samples") <- samples
-	attr(data, which="trim, columns") <- attr_columns
-	attr(data, which="trim, word") <- word
-	attr(data, which="trim, ignore.case") <- ignore.case
-	attr(data, which="trim, invert.s") <- invert.s
-	attr(data, which="trim, invert.c") <- invert.c
-	attr(data, which="trim, rm.na.col") <- rm.na.col
-	attr(data, which="trim, rm.empty.col") <- rm.empty.col
-	attr(data, which="trim, missing") <- missing
+	# Update audit trail.
+	data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
 	
-  return(data)
+	return(data)
 	
 }

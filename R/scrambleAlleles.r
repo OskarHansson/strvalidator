@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 02.01.2016: First version.
 
 #' @title Scramble Alleles
@@ -147,6 +148,9 @@ scrambleAlleles <- function(data, db="ESX 17 Hill"){
     data$Size[data$Allele == "OL"] <- tmpSize[data$Allele == "OL"]
     
   }
+  
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
   
   return (data)
     

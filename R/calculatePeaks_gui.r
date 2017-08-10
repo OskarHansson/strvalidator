@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -216,13 +217,18 @@ calculatePeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
                                 by.marker=val_per_marker,
                                 debug=debug)
       
-      # Add attributes.
-      attr(datanew, which="calculatePeaks_gui, data") <- val_name_data
-      attr(datanew, which="calculatePeaks_gui, bins") <- val_bins
-      attr(datanew, which="calculatePeaks_gui, labels") <- val_labels
-      attr(datanew, which="calculatePeaks_gui, ol.rm") <- val_no_ol
-      attr(datanew, which="calculatePeaks_gui, by.marker") <- val_per_marker
-
+      # Create key-value pairs to log.
+      keys <- list("data", "bins", "labels", "ol.rm", 
+                   "by.marker")
+      
+      values <- list(val_name_data, val_bins, val_labels, val_no_ol, 
+                     val_per_marker)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculatePeaks_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

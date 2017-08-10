@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
+# 06.08.2017: Fixed warning "if (!is.na(need)):the condition has length > 1".
 # 18.09.2016: Fixed attribute saved dataset, and kit now saved correctly.
 # 09.01.2016: Added attributes to result.
 # 28.08.2015: Added importFrom
@@ -225,7 +227,7 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
     }
     
     # Convert to upper case.
-    if(!is.na(need)){
+    if(!is.na(need[1])){
       need <- toupper(need)
     } else {
       need <- colorSchemes
@@ -373,15 +375,10 @@ addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
   
   # Add attributes to result.
   attr(data, which="kit") <- kit
-  attr(data, which="addColor, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="addColor, call") <- match.call()
-  attr(data, which="addColor, date") <- date()
-  attr(data, which="addColor, data") <- attr_data
-  attr(data, which="addColor, have") <- have
-  attr(data, which="addColor, need") <- need
-  attr(data, which="addColor, overwrite") <- overwrite
-  attr(data, which="addColor, ignore.case") <- ignore.case
   
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+
   if(debug){
     print("Return")
     print(str(data))

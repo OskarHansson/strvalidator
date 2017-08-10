@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 20.07.2016: Added attributes to result.
 # 20.07.2016: Added new option 'list.all' to include missing samples in result.
 # 28.08.2015: Added importFrom
@@ -268,16 +269,8 @@ calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
     
   }
   
-  # Add attributes to result.
-  attr(res1, which="calculateConcordance, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res1, which="calculateConcordance, call") <- match.call()
-  attr(res1, which="calculateConcordance, date") <- date()
-  attr(res1, which="calculateConcordance, data") <- attr_data
-  attr(res1, which="calculateConcordance, kit.name") <- kit.name
-  attr(res1, which="calculateConcordance, no.marker") <- no.marker
-  attr(res1, which="calculateConcordance, no.sample") <- no.sample
-  attr(res1, which="calculateConcordance, delimeter") <- delimeter
-  attr(res1, which="calculateConcordance, list.all") <- list.all
+  # Update audit trail.
+  res1 <- auditTrail(obj = res1, f.call = match.call(), package = "strvalidator")
 
   # CALCULATE -----------------------------------------------------------------
   # 2) A pair-wise comparison.
@@ -361,18 +354,9 @@ calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
                      Concordance=concordanceRate,
                      stringsAsFactors=FALSE)
   
-  # Add attributes to result.
-  attr(res2, which="calculateConcordance, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res2, which="calculateConcordance, call") <- match.call()
-  attr(res2, which="calculateConcordance, date") <- date()
-  attr(res2, which="calculateConcordance, data") <- attr_data
-  attr(res2, which="calculateConcordance, kit.name") <- kit.name
-  attr(res2, which="calculateConcordance, no.marker") <- no.marker
-  attr(res2, which="calculateConcordance, no.sample") <- no.sample
-  attr(res2, which="calculateConcordance, delimeter") <- delimeter
-  attr(res2, which="calculateConcordance, list.all") <- list.all
+  # Update audit trail.
+  res2 <- auditTrail(obj = res2, f.call = match.call(), package = "strvalidator")
 
-  
   # Return list of the two dataframes.
   res <- list(res1, res2)
   

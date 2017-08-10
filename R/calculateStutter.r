@@ -15,6 +15,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 17.01.2016: Fixed save attribute saves dataset.
 # 09.01.2016: Added more attributes to result.
 # 26.10.2015: Added attributes.
@@ -647,17 +648,9 @@ calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
     }
   }
   
-  # Add attributes to result.
-  attr(stutterRatio, which="calculateStutter, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(stutterRatio, which="calculateStutter, call") <- match.call()
-  attr(stutterRatio, which="calculateStutter, date") <- date()
-  attr(stutterRatio, which="calculateStutter, data") <- attr_data
-  attr(stutterRatio, which="calculateStutter, ref") <- attr_ref
-  attr(stutterRatio, which="calculateStutter, back") <- back
-  attr(stutterRatio, which="calculateStutter, forward") <- forward
-  attr(stutterRatio, which="calculateStutter, interference") <- interference
-  attr(stutterRatio, which="calculateStutter, replace.val") <- replace.val
-  attr(stutterRatio, which="calculateStutter, by.val") <- by.val
+  # Update audit trail.
+  stutterRatio <- auditTrail(obj = stutterRatio, f.call = match.call(),
+                             package = "strvalidator")
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

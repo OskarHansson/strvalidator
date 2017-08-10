@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 05.08.2017: Prefix now works as intended (contains -> prefix).
 # 09.01.2016: Added more attributes to result.
 # 15.12.2015: Removed "0" from the default 'na.strings'.
@@ -24,8 +25,6 @@
 # 15.01.2014: Added message to show progress.
 # 13.01.2014: Added parameter 'na.strings = c("NA","")' to 'read.table'.
 # 13.01.2014: Fixed bug when no matching files in folder.
-# 10.12.2013: Changed names on parameters 'resultFiles' -> 'file.name'
-#              and 'resultFolder' -> 'folder.name'.
 
 #' @title Import Data
 #'
@@ -269,29 +268,12 @@ import <- function (folder = TRUE, extension="txt",
     
   }
 
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+
   # Convert common known numeric columns.
   res <- colConvert(data=res)
-    
-  # Add attributes.
-  attr(res, which="import, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="import, call") <- match.call()
-  attr(res, which="import, date") <- date()
-  attr(res, which="import, folder") <- folder
-  attr(res, which="import, extension") <- extension
-  attr(res, which="import, suffix") <- suffix
-  attr(res, which="import, prefix") <- prefix
-  attr(res, which="import, import.file") <- import.file
-  attr(res, which="import, folder.name") <- folder.name
-  attr(res, which="import, file.name") <- time.stamp
-  attr(res, which="import, separator") <- separator
-  attr(res, which="import, ignore.case") <- ignore.case
-  attr(res, which="import, auto.trim") <- auto.trim
-  attr(res, which="import, trim.samples") <- trim.samples
-  attr(res, which="import, trim.invert") <- trim.invert
-  attr(res, which="import, auto.slim") <- auto.slim
-  attr(res, which="import, slim.na") <- slim.na
-  attr(res, which="import, na.strings") <- na.strings
-
+  
   return(res)
   
 }

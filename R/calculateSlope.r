@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 11.05.2016: Changed from 'Peaks' to 'Peaks - 2' degrees of freedom.
 # 25.04.2016: First version.
 
@@ -261,14 +262,11 @@ calculateSlope <-  function(data, ref, conf = 0.975, kit = NULL, debug=FALSE, ..
   res <- as.data.frame(DT)
   
   # Add attributes to result.
-  attr(res, which="calculateSlope, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="calculateSlope, call") <- match.call()
-  attr(res, which="calculateSlope, date") <- date()
-  attr(res, which="calculateSlope, data") <- attr_data
-  attr(res, which="calculateSlope, ref") <- attr_ref
-  attr(res, which="calculateSlope, conf") <- conf
-  attr(res, which="calculateSlope, kit") <- paste(kit, collapse = ", ")
+  attr(data, which="kit") <- kit
   
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+
   return(res)
   
 }

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
@@ -214,12 +215,19 @@ calculateAllele_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
       datanew <- calculateAllele(data = val_data, threshold = val_threshold,
                                  sex.rm = val_sex, kit = val_kit, debug=debug)
       
-      # Add attributes.
-      attr(datanew, which="calculateAllele_gui, data") <- .gDataName
-      attr(datanew, which="calculateAllele_gui, threshold") <- val_threshold
-      attr(datanew, which="calculateAllele_gui, sex") <- val_sex
-      attr(datanew, which="calculateAllele_gui, kit") <- val_kit
+      # Add attributes to result.
+      attr(datanew, which="kit") <- val_kit
       
+      # Create key-value pairs to log.
+      keys <- list("data", "threshold", "sex", "kit")
+      
+      values <- list(val_name_data, val_threshold, val_sex, val_kit)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateAllele_gui", arguments = FALSE,
+                            package = "strvalidator")
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
 

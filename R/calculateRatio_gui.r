@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -447,17 +448,20 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
                                 ignore.case = val_ignore, word = val_word,
                                 exact = val_exact, debug = debug)
       
-      # Add attributes.
-      attr(datanew, which="calculateRatio_gui, data") <- val_name_data
-      attr(datanew, which="calculateRatio_gui, ref") <- val_name_ref
-      attr(datanew, which="calculateRatio_gui, numerator") <- val_numerator
-      attr(datanew, which="calculateRatio_gui, denominator") <- val_denominator
-      attr(datanew, which="calculateRatio_gui, group") <- val_group
-      attr(datanew, which="calculateRatio_gui, ol") <- val_ol
-      attr(datanew, which="calculateRatio_gui, ignore.case") <- val_ignore
-      attr(datanew, which="calculateRatio_gui, word") <- val_word
-      attr(datanew, which="calculateRatio_gui, exact") <- val_exact
-
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "numerator",
+                   "denominator", "group", "ol", "ignore.case", "word",
+                   "exact")
+      
+      values <- list(val_name_data, val_name_ref, val_numerator, 
+                     val_denominator, val_group, val_ol, val_ignore, val_word,
+                     val_exact)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateRatio_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

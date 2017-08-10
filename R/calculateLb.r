@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 06.09.2016: Fixed implementation of filterProfile function.
 # 29.08.2016: Implemented updated filterProfile function.
 # 13.07.2016: Fixed 'data' save as attribute.
@@ -428,25 +429,14 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     
   }
     
-  # Add attributes to result.
-  attr(res, which="calculateLb, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="calculateLb, call") <- match.call()
-  attr(res, which="calculateLb, date") <- date()
-  attr(res, which="calculateLb, data") <- attr_data
-  attr(res, which="calculateLb, ref") <- attr_ref
-  attr(res, which="calculateLb, option") <- option
-  attr(res, which="calculateLb, by.dye") <- by.dye
-  attr(res, which="calculateLb, ol.rm") <- ol.rm
-  attr(res, which="calculateLb, sex.rm") <- sex.rm
-  attr(res, which="calculateLb, qs.rm") <- qs.rm
-  attr(res, which="calculateLb, ignore.case") <- ignore.case
-  attr(res, which="calculateLb, word") <- word
-  attr(res, which="calculateLb, exact") <- exact
-  attr(res, which="calculateLb, na") <- na
-  attr(res, which="calculateLb, kit") <- kit
-
-  # Convert to data.table.  
+  # Convert to data.frame.
   res <- as.data.frame(res)
+
+  # Add attributes to result.
+  attr(res, which="kit") <- kit
+  
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

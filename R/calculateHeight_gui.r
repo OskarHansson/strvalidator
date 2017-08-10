@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -23,7 +24,6 @@
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Improved error message for missing columns.
 
 
 #' @title Calculate Peak Height
@@ -374,16 +374,21 @@ calculateHeight_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, p
                                  ignore.case=val_ignore, exact=val_exact,
                                  debug=debug)
 
-      # Add attributes.
+      # Add attributes to result.
       attr(datanew, which="kit") <- val_kit
-      attr(datanew, which="calculateHeight_gui, data") <- val_data_name
-      attr(datanew, which="calculateHeight_gui, na") <- val_na
-      attr(datanew, which="calculateHeight_gui, add") <- val_add
-      attr(datanew, which="calculateHeight_gui, exclude") <- val_ex
-      attr(datanew, which="calculateHeight_gui, sex.rm") <- val_sex
-      attr(datanew, which="calculateHeight_gui, qs.rm") <- val_qs
-      attr(datanew, which="calculateHeight_gui, ignore.case") <- val_ignore
-      attr(datanew, which="calculateHeight_gui, exact") <- val_exact
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "na.replace", "add", "sex.rm",
+                   "qs.rm", "kit", "exclude", "ignore.case", "exact")
+      
+      values <- list(val_data_name, val_ref_name, val_na, val_add, val_sex,
+                     val_qs, val_kit, val_ex, val_ignore, val_exact)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateHeight_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -23,7 +24,6 @@
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 06.06.2013: Set initial table height to 200.
 # 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Suggestions for columns to fix/stack is provided.
 
 #' @title Slim Data Frames
 #'
@@ -371,12 +371,16 @@ slim_gui <- function(env=parent.frame(), savegui=NULL,
       datanew <- slim(data=val_data, fix=fix_val, stack=stack_val,
                       keep.na=keep_val, debug=debug)
       
-      # Add attributes.
-      attr(datanew, which="slim_gui, data") <- val_data_name
-      attr(datanew, which="slim_gui, fix") <- fix_val
-      attr(datanew, which="slim_gui, stack") <- stack_val
-      attr(datanew, which="slim_gui, keep.na") <- keep_val
-
+      # Create key-value pairs to log.
+      keys <- list("data", "fix", "stack", "keep.na")
+      
+      values <- list(val_data_name, fix_val, stack_val, keep_val)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "slim_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 28.04.2016: First version.
 
 #' @title Remove Artefacts
@@ -200,20 +201,11 @@ removeArtefact <- function(data, artefact=NULL, marker=NULL, allele=NULL,
     
   }
   
-  
-  # Add attributes to result.
-  attr(data, which="removeArtefact, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="removeArtefact, call") <- match.call()
-  attr(data, which="removeArtefact, date") <- date()
-  attr(data, which="removeArtefact, data") <- attr_data
-  attr(data, which="removeArtefact, artefact") <- attr_artefact
-  attr(data, which="removeArtefact, marker") <- marker
-  attr(data, which="removeArtefact, allele") <- allele
-  attr(data, which="removeArtefact, threshold") <- threshold
-  attr(data, which="removeArtefact, na.rm") <- na.rm
-  
   # RETURN --------------------------------------------------------------------
   
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

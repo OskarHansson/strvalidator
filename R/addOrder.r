@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 08.02.2017: First version.
 
 #' @title Add Marker Order.
@@ -123,13 +124,10 @@ addOrder <- function(data, kit=NULL, overwrite=FALSE, ignore.case=FALSE,
     
     # Add attributes to result.
     attr(data, which="kit") <- kit
-    attr(data, which="addOrder, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-    attr(data, which="addOrder, call") <- match.call()
-    attr(data, which="addOrder, date") <- date()
-    attr(data, which="addOrder, data") <- attr_data
-    attr(data, which="addOrder, overwrite") <- overwrite
-    attr(data, which="addOrder, ignore.case") <- ignore.case
     
+    # Update audit trail.
+    data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+
   }
 
   if(debug){

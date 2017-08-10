@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 21.10.2016: calculateHeterozygous sex.rm and qs.rm set to FALSE.
 # 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
 # 30.11.2015: Added 'NB!' in the description.
@@ -298,6 +299,9 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
     print("tail(res)")
     print(tail(res))
   }
+  
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

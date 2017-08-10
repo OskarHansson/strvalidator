@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 18.09.2016: Fixed dataset saved to attributes.
 # 15.09.2016: Implemented new filterProfile function to remove sex markers and qs.
 # 29.06.2016: Added option to remove sex markers and quality sensor.
@@ -28,9 +29,6 @@
 # 13.11.2013: Concurrently score both Random, Allele1, and Allele2.
 # 07.11.2013: Fixed dropout check for homozygous loci in 'Hybrid' method.
 # 24.10.2013: Implemented the 'hybrid' version for testing.
-# 21.10.2013: Fixed 'Rfu' storing height when below threshold and other bugs. 
-# 20.10.2013: Fixed dropout always scoring for 'Model'. 
-# 17.10.2013: New parameter threshold, and corrections complying with ref. 2012. 
 
 #' @title Calculate Drop-out Events
 #'
@@ -966,16 +964,9 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
     
   # Add attributes to result.
   attr(dataDrop, which="kit") <- kit
-  attr(dataDrop, which="calculateDropout, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(dataDrop, which="calculateDropout, call") <- match.call()
-  attr(dataDrop, which="calculateDropout, date") <- date()
-  attr(dataDrop, which="calculateDropout, data") <- attr_data
-  attr(dataDrop, which="calculateDropout, ref") <- attr_ref
-  attr(dataDrop, which="calculateDropout, threshold") <- threshold
-  attr(dataDrop, which="calculateDropout, method") <- method
-  attr(dataDrop, which="calculateDropout, ignore.case") <- ignore.case
-  attr(dataDrop, which="calculateDropout, sex") <- sex.rm
-  attr(dataDrop, which="calculateDropout, qs") <- qs.rm
+  
+  # Update audit trail.
+  dataDrop <- auditTrail(obj = dataDrop, f.call = match.call(), package = "strvalidator")
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

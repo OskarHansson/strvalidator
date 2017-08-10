@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 24.09.2016: Re-written to use data.table. Now handles both Lb and Hb.
 # 24.09.2016: Re-named to tableBalance.
 # 07.09.2016: Re-named to tableHb.
@@ -123,14 +124,9 @@ tableBalance <- function(data, scope="locus", quant=0.05){
   # Convert to data.frame.
   res <- as.data.frame(DT)
   
-  # Add attributes to result.
-  attr(res, which="tableBalance, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="tableBalance, call") <- match.call()
-  attr(res, which="tableBalance, date") <- date()
-  attr(res, which="tableBalance, data") <- substitute(data)
-  attr(res, which="tableBalance, scope") <-  scope
-  attr(res, which="tableBalance, quant") <- quant
-
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  
   return(res)
   
 }

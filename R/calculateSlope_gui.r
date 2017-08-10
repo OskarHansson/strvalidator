@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -330,15 +331,17 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
                                 ignore.case=val_ignore, exact=val_exact,
                                 word=val_word, debug=debug)
       
-      # Add attributes to result.
-      attr(datanew, which="calculateSlope_gui, data") <- val_name_data
-      attr(datanew, which="calculateSlope_gui, ref") <- val_name_ref
-      attr(datanew, which="calculateSlope_gui, conf") <- val_conf
-      attr(datanew, which="calculateSlope_gui, kit") <- val_kit
-      attr(datanew, which="calculateSlope_gui, auto") <- val_auto
-      attr(datanew, which="calculateSlope_gui, ignore.case") <- val_ignore
-      attr(datanew, which="calculateSlope_gui, word") <- val_word
-      attr(datanew, which="calculateSlope_gui, exact") <- val_exact
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "conf", "kit", "auto",
+                   "ignore.case", "word", "exact")
+      
+      values <- list(val_name_data, val_name_ref, val_conf, val_kit, val_auto,
+                     val_ignore, val_word, val_exact)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateSlope_gui", arguments = FALSE,
+                            package = "strvalidator")
       
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)

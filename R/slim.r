@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 09.01.2016: Added more attributes to result.
 # 06.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
@@ -223,15 +224,9 @@ slim <- function(data, fix=NULL, stack=NULL,
         res[,i] <- as.character(listRes[[i]])
       }
       
-      # Add attributes to result.
-      attr(res, which="slim, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-      attr(res, which="slim, call") <- match.call()
-      attr(res, which="slim, date") <- date()
-      attr(res, which="slim, data") <- substitute(data)
-      attr(res, which="slim, fix") <- fix
-      attr(res, which="slim, keep.na") <- keep.na
-      attr(res, which="slim, stack") <- stack
-
+      # Update audit trail.
+      res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+      
       if(debug){
         print(head(res))
         print(str(res))

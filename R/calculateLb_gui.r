@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -465,21 +466,23 @@ calculateLb_gui <- function(env=parent.frame(), savegui=NULL,
                                exact = val_exact,
                                debug=debug)
         
-        # Add attributes.
+        # Add attributes to result.
         attr(datanew, which="kit") <- val_kit
-        attr(datanew, which="calculateLb_gui, data") <- .gDataName
-        attr(datanew, which="calculateLb_gui, ref") <- .gRefName
-        attr(datanew, which="calculateLb_gui, option") <- val_option
-        attr(datanew, which="calculateLb_gui, by.dye") <- val_dye
-        attr(datanew, which="calculateLb_gui, ol.rm") <- val_ol
-        attr(datanew, which="calculateLb_gui, sex.rm") <- val_sex
-        attr(datanew, which="calculateLb_gui, qs.rm") <- val_qs
-        attr(datanew, which="calculateLb_gui, na") <- val_na
-        attr(datanew, which="calculateLb_gui, ignore.case") <- val_ignore
-        attr(datanew, which="calculateLb_gui, word") <- val_word
-        attr(datanew, which="calculateLb_gui, exact") <- val_exact
-        attr(datanew, which="calculateLb_gui, calculate.h") <- val_h
         
+        # Create key-value pairs to log.
+        keys <- list("data", "ref", "option", "by.dye",
+                     "ol.rm", "sex.rm", "qs.rm", "na", "kit", "ignore.case",
+                     "word", "exact", "calculate.h")
+        
+        values <- list(val_data_name, val_ref_name, val_option, val_dye, 
+                       val_ol, val_sex, val_qs, val_na, val_kit, val_ignore,
+                       val_word, val_exact, val_h)
+        
+        # Update audit trail.
+        datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                              label = "calculateLb_gui", arguments = FALSE,
+                              package = "strvalidator")
+
         # Calculate and add average peak height.
         if(val_h){
           

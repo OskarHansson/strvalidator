@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 20.07.2017: Reversed last change since grepl is case sensitive if fixed=TRUE.
 # 30.06.2017: Fixed matching when metacharacters exist in reference name.
 # 05.08.2016: Removed Allele rows with NA from reference dataset.
@@ -460,6 +461,9 @@ maskAT <- function(data, ref=NULL, mask.height=TRUE, height=500,
   
   # Mark masked data points.
   data$Masked <- data$S.Mask | data$I.Mask | data$H.Mask
+  
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
 
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

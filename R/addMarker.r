@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 09.01.2016: Added more attributes to result.
 # 28.08.2015: Added importFrom
 # 15.12.2014: Changed parameter names to format: lower.case
@@ -15,7 +16,7 @@
 #' @title Add Missing Markers.
 #'
 #' @description
-#' Add missing markers to a dataset given a kit.
+#' Add missing markers to a dataset given a set of markers.
 #'
 #' @details
 #' Given a dataset or a vector with sample names the function loops through
@@ -145,13 +146,9 @@ addMarker <- function(data, marker, ignore.case=FALSE, debug=FALSE){
   
   # RETURN --------------------------------------------------------------------
   
-  # Add attributes to result.
-  attr(res, which="addMarker, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="addMarker, call") <- match.call()
-  attr(res, which="addMarker, date") <- date()
-  attr(res, which="addMarker, data") <- substitute(data)
-  attr(res, which="addMarker, marker") <- marker
-  attr(res, which="addMarker, ignore.case") <- ignore.case
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  
 
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

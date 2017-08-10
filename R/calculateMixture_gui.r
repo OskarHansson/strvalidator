@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -44,6 +45,9 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
   .gData <- NULL
   .gRef1 <- NULL
   .gRef2 <- NULL
+  .gNameData <- NULL
+  .gNameRef1 <- NULL
+  .gNameRef2 <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -134,6 +138,7 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
       
       # get dataset.
       .gData <<- get(val_obj, envir=env)
+      .gNameData <<- val_obj
       svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
                                            "samples.")
       svalue(f4_save_edt) <- paste(val_obj, "_mixture", sep="")
@@ -142,6 +147,7 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gData <<- NULL
+      .gNameData <<- NULL
       svalue(g0_data_drp, index=TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
       svalue(f4_save_edt) <- ""
@@ -177,6 +183,7 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
       # Load or change components.
       
       .gRef1 <<- get(val_obj, envir=env)
+      .gNameRef1 <<- val_obj
       svalue(g0_ref1_samples_lbl) <- paste(length(unique(.gRef1$Sample.Name)),
                                           "samples.")
       
@@ -184,6 +191,7 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gRef1 <<- NULL
+      .gNameRef1 <<- NULL
       svalue(g0_ref1_drp, index=TRUE) <- 1
       svalue(g0_ref1_samples_lbl) <- " 0 references"
       
@@ -217,6 +225,7 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
       # Load or change components.
       
       .gRef2 <<- get(val_obj, envir=env)
+      .gNameRef2 <<- val_obj
       svalue(g0_ref2_samples_lbl) <- paste(length(unique(.gRef2$Sample.Name)),
                                           "samples.")
       
@@ -224,6 +233,7 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Reset components.
       .gRef2 <<- NULL
+      .gNameRef2 <<- NULL
       svalue(g0_ref2_drp, index=TRUE) <- 1
       svalue(g0_ref2_samples_lbl) <- " 0 references"
       
@@ -334,6 +344,9 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
     val_data <- .gData
     val_ref1 <- .gRef1
     val_ref2 <- .gRef2
+    val_name_data <- .gNameData
+    val_name_ref1 <- .gNameRef1
+    val_name_ref2 <- .gNameRef2
     val_name <- svalue(f4_save_edt)
     val_ol <- svalue(f1_ol_chk)
     val_drop <- svalue(f1_drop_chk)
@@ -369,6 +382,19 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
                                   ol.rm=val_ol,
                                   ignore.dropout=val_drop,
                                   debug=debug)
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "ref1", "ref2",
+                   "ol.rm", "ignore.dropout")
+      
+      values <- list(val_name_data, val_name_ref1, val_name_ref2,
+                     val_ol, val_drop)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateMixture_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 09.05.2016: Added attributes to result.
 # 09.05.2016: Added action 'substr' to extract a substring.
 # 22.12.2015: Added option to add new column by setting col1=NA.
@@ -192,19 +193,9 @@ columns <- function(data, col1=NA, col2=NA, operator="&",
   
   # Add new values to data frame.
   data[target] <- valueNew
-  
-  # Add attributes to result.
-  attr(data, which="columns, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="columns, call") <- match.call()
-  attr(data, which="columns, date") <- date()
-  attr(data, which="columns, data") <- attr_data
-  attr(data, which="columns, col1") <- col1
-  attr(data, which="columns, col2") <- col2
-  attr(data, which="columns, operator") <- operator
-  attr(data, which="columns, fixed") <- fixed
-  attr(data, which="columns, target") <- target
-  attr(data, which="columns, start") <- start
-  attr(data, which="columns, stop") <- stop
+
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

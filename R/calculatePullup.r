@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 10.05.2016: Added new option 'limit' to remove high ratios from the result.
 # 10.05.2016: Saved attributes to result.
 # 10.05.2016: Remove NA's in reference Allele column prior to analysis.
@@ -441,20 +442,9 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
     message("Removed ", n1 - n2, " rows with ratio >", limit, ".")
   }
   
-  # Add attributes to result.
-  attr(res, which="calculatePullup, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="calculatePullup, call") <- match.call()
-  attr(res, which="calculatePullup, date") <- date()
-  attr(res, which="calculatePullup, data") <- attr_data
-  attr(res, which="calculatePullup, ref") <- attr_ref
-  attr(res, which="calculatePullup, pullup.range") <- pullup.range
-  attr(res, which="calculatePullup, block.range") <- block.range
-  attr(res, which="calculatePullup, ol.rm") <- ol.rm
-  attr(res, which="calculatePullup, ignore.case") <- ignore.case
-  attr(res, which="calculatePullup, word") <- word
-  attr(res, which="calculatePullup, discard") <- discard
-  attr(res, which="calculatePullup, limit") <- limit
-  
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

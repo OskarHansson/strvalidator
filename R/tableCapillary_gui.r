@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -193,6 +194,7 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
     
     # Get values.
     val_data <- .gData
+    val_name_data <- .gDataName
     val_scope <- svalue(f1g1_scope_opt)
     val_name <- svalue(f2_save_edt)
 
@@ -220,6 +222,16 @@ tableCapillary_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pa
       datanew <- tableCapillary(data=val_data,
                                 scope=val_scope,
                                 debug=debug)
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "scope")
+      
+      values <- list(val_name_data, val_scope)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "tableCapillary_gui", arguments = FALSE,
+                            package = "strvalidator")
       
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

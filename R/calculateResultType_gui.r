@@ -4,6 +4,7 @@
 
 ###############################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -315,16 +316,21 @@ calculateResultType_gui <- function(env=parent.frame(), savegui=NULL,
                                      marker.subset=val_marker,
                                      debug=debug)
       
-      # Add attributes.
+      # Add attributes to result.
       attr(datanew, which="kit") <- val_kit
-      attr(datanew, which="calculateResultType_gui, data") <- val_name_data
-      attr(datanew, which="calculateResultType_gui, add.missing.marker") <- val_add
-      attr(datanew, which="calculateResultType_gui, threshold") <- val_threshold
-      attr(datanew, which="calculateResultType_gui, mixture.limits") <- val_mix
-      attr(datanew, which="calculateResultType_gui, partial.limits") <- val_par
-      attr(datanew, which="calculateResultType_gui, subset.name") <- val_subkit
-      attr(datanew, which="calculateResultType_gui, marker.subset") <- val_marker
-
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "add.missing.marker", "threshold", "mixture.limits",
+                   "partial.limits", "subset.name", "marker.subset")
+      
+      values <- list(val_name_data, val_add, val_threshold, val_mix,
+                     val_par, val_subkit, val_marker)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateResultType_gui",
+                            arguments = FALSE, package = "strvalidator")
+      
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

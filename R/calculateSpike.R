@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 27.06.2016: Added: @importFrom stats dist
 # 19.05.2016: Implemented more accurat method and parameter 'quick'.
 # 18.05.2016: Now removes false positives (multiple peaks in same dye).
@@ -246,16 +247,11 @@ calculateSpike <- function(data, threshold=NULL, tolerance=2, kit=NULL,
   res <- as.data.frame(res)
 
   # Add attributes to result.
-  attr(res, which="calculateSpike, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="calculateSpike, call") <- match.call()
-  attr(res, which="calculateSpike, date") <- date()
-  attr(res, which="calculateSpike, data") <- attr_data
-  attr(res, which="calculateSpike, threshold") <- threshold
-  attr(res, which="calculateSpike, tolerance") <- tolerance
-  attr(res, which="calculateSpike, quick") <- quick
-  attr(res, which="calculateSpike, kit") <- attr_kit
+  attr(res, which="kit") <- attr_kit
   
-
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

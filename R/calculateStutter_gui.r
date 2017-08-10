@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -23,7 +24,6 @@
 # 17.07.2013: 'false' allele checkboxes replaced by gdf table.
 # 17.07.2013: Added check subsetting.
 # 11.06.2013: Fixed wrong interference passed to 'calculateStutter' (-1).
-# 11.06.2013: 'val_replace' and 'val_by' set to NULL if length = 0.
 
 #' @title Calculate Stutter
 #'
@@ -53,6 +53,8 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
+  .gDataName <- NULL
+  .gRefName <- NULL
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))
@@ -133,6 +135,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       
       # Load or change components.
       .gData <<- get(val_obj, envir=env)
+      .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(f0_samples_lbl) <- paste("", samples, "samples")
       svalue(f2_save_edt) <- paste(val_obj, "_stutter", sep="")
@@ -145,6 +148,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
 
       # Reset components.
       .gData <<- NULL
+      .gDataName <<- NULL
       svalue(f0_dataset_drp, index=TRUE) <- 1
       svalue(f0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
@@ -178,6 +182,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       
       # Load or change components.
       .gRef <<- get(val_obj, envir=env)
+      .gRefName <<- val_obj
       refs <- length(unique(.gRef$Sample.Name))
       svalue(f0_ref_lbl) <- paste("", refs, "references")
         
@@ -185,6 +190,7 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       
       # Reset components.
       .gRef <<- NULL
+      .gRefName <<- NULL
       svalue(f0_refset_drp, index=TRUE) <- 1
       svalue(f0_ref_lbl) <- " 0 references"
       
@@ -333,6 +339,8 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     val_interference <- svalue(interference_opt, index=TRUE) - 1 # NB! range [0-2]
     val_data <- .gData
     val_ref <- .gRef
+    val_name_data <- .gDataName
+    val_name_ref <- .gRefName
     val_name <- svalue(f2_save_edt)
     val_replace_df <- f3_default_gdf[]
     val_chk <- val_replace_df$Replace
@@ -383,15 +391,20 @@ calculateStutter_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
                                   by.val=val_by,
                                   debug=debug)
       
-      # Add attributes.
+      # Add attributes to result.
       attr(datanew, which="kit") <- val_kit
-      attr(datanew, which="calculateStutter_gui, data") <- svalue(f0_dataset_drp)
-      attr(datanew, which="calculateStutter_gui, ref") <- svalue(f0_refset_drp)
-      attr(datanew, which="calculateStutter_gui, back") <- val_back
-      attr(datanew, which="calculateStutter_gui, forward") <- val_forward
-      attr(datanew, which="calculateStutter_gui, interference") <- val_interference
-      attr(datanew, which="calculateStutter_gui, replace.val") <- val_replace
-      attr(datanew, which="calculateStutter_gui, by.val") <- val_by
+      
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "back", "forward",
+                   "interference", "replace.val", "by.val")
+      
+      values <- list(val_name_data, val_name_ref, val_back, val_forward,
+                     val_interference, val_replace, val_by)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "calculateStutter_gui", arguments = FALSE,
+                            package = "strvalidator")
 
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)

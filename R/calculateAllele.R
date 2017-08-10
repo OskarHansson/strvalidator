@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 02.05.2016: Added parameters 'sex.rm' and 'kit'.
 # 02.05.2016: Implemented calculation of proportion and frequency.
 # 29.04.2016: Added more attributes.
@@ -225,13 +226,10 @@ calculateAllele <- function(data, threshold=NULL, sex.rm=FALSE, kit=NULL,
   res <- as.data.frame(res)
   
   # Add attributes to result.
-  attr(res, which="calculateAllele, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(res, which="calculateAllele, call") <- match.call()
-  attr(res, which="calculateAllele, date") <- date()
-  attr(res, which="calculateAllele, data") <- attr_data
-  attr(res, which="calculateAllele, threshold") <- threshold
-  attr(res, which="calculateAllele, sex.rm") <- sex.rm
-  attr(res, which="calculateAllele, kit") <- kit
+  attr(res, which="kit") <- kit
+  
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 23.05.2016: Changed name on some result columns.
 # 22.05.2016: Added masked data to result for manual investigation.
 # 20.05.2016: 'Blocked' changed to 'masked' throughout.
@@ -444,25 +445,9 @@ calculateAT <- function(data, ref=NULL, mask.height=TRUE, height=500,
   # Add number of samples.
   at.sample.dye$Total.Samples <-  nSamples
   
-  # Add attributes.
-  attr(at.sample.dye, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(at.sample.dye, which="calculateAT, call") <- match.call()
-  attr(at.sample.dye, which="calculateAT, date") <- date()
-  attr(at.sample.dye, which="calculateAT, data") <- attr_data
-  attr(at.sample.dye, which="calculateAT, ref") <- attr_ref
-  attr(at.sample.dye, which="calculateAT, mask.height") <- mask.height
-  attr(at.sample.dye, which="calculateAT, height") <- height
-  attr(at.sample.dye, which="calculateAT, mask.sample") <- mask.sample
-  attr(at.sample.dye, which="calculateAT, per.dye") <- per.dye
-  attr(at.sample.dye, which="calculateAT, range.sample") <- range.sample
-  attr(at.sample.dye, which="calculateAT, mask.ils") <- mask.ils
-  attr(at.sample.dye, which="calculateAT, range.ils") <- range.ils
-  attr(at.sample.dye, which="calculateAT, k") <- k
-  attr(at.sample.dye, which="calculateAT, rank.t") <- rank.t
-  attr(at.sample.dye, which="calculateAT, alpha") <- alpha
-  attr(at.sample.dye, which="calculateAT, ignore.case") <- ignore.case
-  attr(at.sample.dye, which="calculateAT, word") <- word
-  attr(at.sample.dye, which="calculateAT, debug") <- debug
+  # Update audit trail.
+  at.sample.dye <- auditTrail(obj = at.sample.dye, f.call = match.call(),
+                              package = "strvalidator")
   
   # Convert back to data.frame.
   res1 <- data.frame(at.sample.dye)
@@ -475,25 +460,9 @@ calculateAT <- function(data, ref=NULL, mask.height=TRUE, height=500,
                         Rank=unique(percentileRank(sort(dt$Height))),
                         Observations=as.numeric(table(dt$Height)))
   
-  # Add attributes.
-  attr(at.rank, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(at.rank, which="calculateAT, call") <- match.call()
-  attr(at.rank, which="calculateAT, date") <- date()
-  attr(at.rank, which="calculateAT, data") <- attr_data
-  attr(at.rank, which="calculateAT, ref") <- attr_ref
-  attr(at.rank, which="calculateAT, mask.height") <- mask.height
-  attr(at.rank, which="calculateAT, height") <- height
-  attr(at.rank, which="calculateAT, mask.sample") <- mask.sample
-  attr(at.rank, which="calculateAT, per.dye") <- per.dye
-  attr(at.rank, which="calculateAT, range.sample") <- range.sample
-  attr(at.rank, which="calculateAT, mask.ils") <- mask.ils
-  attr(at.rank, which="calculateAT, range.ils") <- range.ils
-  attr(at.rank, which="calculateAT, k") <- k
-  attr(at.rank, which="calculateAT, rank.t") <- rank.t
-  attr(at.rank, which="calculateAT, alpha") <- alpha
-  attr(at.rank, which="calculateAT, ignore.case") <- ignore.case
-  attr(at.rank, which="calculateAT, word") <- word
-  attr(at.rank, which="calculateAT, debug") <- debug
+  # Update audit trail.
+  at.rank <- auditTrail(obj = at.rank, f.call = match.call(), 
+                        package = "strvalidator")
   
   # Convert back to data frame.
   res2 <- data.frame(at.rank)
@@ -501,25 +470,9 @@ calculateAT <- function(data, ref=NULL, mask.height=TRUE, height=500,
   
   # Masked data ---------------------------------------------------------------
 
-  # Add attributes.
-  attr(data, which="calculateAT, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-  attr(data, which="calculateAT, call") <- match.call()
-  attr(data, which="calculateAT, date") <- date()
-  attr(data, which="calculateAT, data") <- attr_data
-  attr(data, which="calculateAT, ref") <- attr_ref
-  attr(data, which="calculateAT, mask.height") <- mask.height
-  attr(data, which="calculateAT, height") <- height
-  attr(data, which="calculateAT, mask.sample") <- mask.sample
-  attr(data, which="calculateAT, per.dye") <- per.dye
-  attr(data, which="calculateAT, range.sample") <- range.sample
-  attr(data, which="calculateAT, mask.ils") <- mask.ils
-  attr(data, which="calculateAT, range.ils") <- range.ils
-  attr(data, which="calculateAT, k") <- k
-  attr(data, which="calculateAT, rank.t") <- rank.t
-  attr(data, which="calculateAT, alpha") <- alpha
-  attr(data, which="calculateAT, ignore.case") <- ignore.case
-  attr(data, which="calculateAT, word") <- word
-  attr(data, which="calculateAT, debug") <- debug
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), 
+                     package = "strvalidator")
   
   # Convert back to data.frame.
   res3 <- data.frame(data)

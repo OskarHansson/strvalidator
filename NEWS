@@ -1,8 +1,11 @@
-Version 1.9.0.9000
+Version 2.0.0
 ------------------------------------------------------------------------------
 
 * The package now use gWidgets2 instead of gWidgets (changes in all "_gui" functions).
   - Improved GUI speed by 10-100% (https://github.com/jverzani/gWidgets2).
+* Improved audit trail logging.
+  - New function auditTrail used internally to log audit trail from functions.
+  - Extensive logging, now handles multiple runs of the same function.
 * Bug fixes and improvements with the most significant listed below:
   - strvalidator (the main GUI)
   Button 'Delete' in tab 'Workspace' now support multiple selections.

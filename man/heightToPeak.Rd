@@ -11,17 +11,18 @@ heightToPeak(data, width = 1, keep.na = TRUE, debug = FALSE)
 
 \item{width}{numeric specifying the width of the peak in bp.}
 
-\item{keep.na}{logical, TRUE keep empty markers.}
+\item{keep.na}{logical. TRUE to keep empty markers.}
+
+\item{debug}{logical. TRUE prints debug information.}
 }
 \value{
 data.frame with new values.
 }
 \description{
-Internal helper function to convert a peak into a plottable polygon.
+Helper function to convert a peak into a plottable polygon.
 }
 \details{
 Converts a single height and size value to a plottable 0-height-0 triangle/peak value.
 Makes 3 data points from each peak size for plotting a polygon representing a peak.
 Factors in other columns might get converted to factor level.
 }
-\keyword{internal}

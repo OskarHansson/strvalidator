@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -23,7 +24,6 @@
 # 27.09.2013: Added option to specify data type and warning for dropout dataset.
 # 26.09.2013: Fixed NA rows in resulting data frame.
 # 16.09.2013: Changed 'edit' to 'combobox' populated with unique values.
-# 06.08.2013: Added exclude NA.
 
 #' @title Crop Or Replace
 #'
@@ -474,20 +474,20 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
         
       }
       
-      # Add attributes to result.
-      attr(.gData, which="cropData_gui, strvalidator") <- as.character(utils::packageVersion("strvalidator"))
-      attr(.gData, which="cropData_gui, date") <- date()
-      attr(.gData, which="cropData_gui, data") <- .gDataName
-      attr(.gData, which="cropData_gui, column") <-  val_column
-      attr(.gData, which="cropData_gui, na") <- val_na_rm
-      attr(.gData, which="cropData_gui, task") <- val_task
-      attr(.gData, which="cropData_gui, operator") <- val_operator
-      attr(.gData, which="cropData_gui, target") <-  val_target
-      attr(.gData, which="cropData_gui, value") <- val_new
-      attr(.gData, which="cropData_gui, type") <- val_type
+      # Create key-value pairs to log.
+      keys <- list("data", "column", "na", "task", "operator",
+                   "target", "value", "type")
+      
+      values <- list(.gDataName, val_column, val_na_rm, val_task, val_operator,
+                     val_target, val_new, val_type)
+      
+      # Update audit trail.
+      .gData <- auditTrail(obj = .gData, key = keys, value = values,
+                            label = "cropData_gui", arguments = FALSE,
+                            package = "strvalidator")
+      
+      # Update the current dataset to perform possible additional tasks.
       .gData <<- .gData
-      
-      
 
       if(debug){
         print("After action: .gData dim, str, head, tail:")

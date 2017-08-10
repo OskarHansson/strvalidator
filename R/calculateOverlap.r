@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.08.2017: Added audit trail.
 # 28.08.2015: Added importFrom
 # 06.01.2014: Fixed factor/character bug when using frequency database.
 # 30.11.2013: Specified package for function in 'plyr' -> 'plyr::rbind.fill'
@@ -412,6 +413,10 @@ calculateOverlap <- function (data, db=NULL, penalty=NULL, virtual=TRUE, debug=F
     dfRes <- plyr::rbind.fill(dfRes, dfKit)
      
    } # Kit loop ends!
+
+  # Update audit trail.
+  dfRes <- auditTrail(obj = dfRes, f.call = match.call(), package = "strvalidator")
+  
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))

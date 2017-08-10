@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -23,7 +24,6 @@
 # 15.12.2013: Fixed filter by kit bins.
 # 09.12.2013: Added 'filter by' option.
 # 09.12.2013: Added check subset button.
-# 18.07.2013: Check before overwrite object.
 
 #' @title Filter Profile
 #'
@@ -384,18 +384,23 @@ filterProfile_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
                                kit = val_kit,
                                debug = debug)
 
-      # Add attributes.
-      attr(datanew, which="filterProfile_gui, data") <- val_name_data
-      attr(datanew, which="filterProfile_gui, ref") <- val_name_ref
-      attr(datanew, which="filterProfile_gui, add.missing.loci") <- val_add_missing_loci
-      attr(datanew, which="filterProfile_gui, keep.na") <- val_keep_na
-      attr(datanew, which="filterProfile_gui, ignore.case") <- val_ignore_case
-      attr(datanew, which="filterProfile_gui, exact") <- val_exact
-      attr(datanew, which="filterProfile_gui, word") <- val_word
-      attr(datanew, which="filterProfile_gui, invert") <- val_invert
-      attr(datanew, which="filterProfile_gui, sex") <- val_sex
-      attr(datanew, which="filterProfile_gui, qs") <- val_qs
+      # Add attributes to result.
+      attr(datanew, which="kit") <- val_kit
       
+      # Create key-value pairs to log.
+      keys <- list("data", "ref", "add.missing.loci",
+                   "keep.na", "ignore.case", "exact", "word",
+                   "invert", "sex", "qs", "kit")
+      
+      values <- list(val_name_data, val_name_ref, val_add_missing_loci,
+                     val_keep_na, val_ignore_case, val_exact, val_word,
+                     val_invert, val_sex, val_qs, val_kit)
+      
+      # Update audit trail.
+      datanew <- auditTrail(obj = datanew, key = keys, value = values,
+                            label = "filterProfile_gui", arguments = FALSE,
+                            package = "strvalidator")
+
       # Save data.
       saveObject(name=val_name, object=datanew, parent=w, env=env)
       

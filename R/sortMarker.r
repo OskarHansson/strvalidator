@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 02.12.2013: Fixed not sorting 'Dye' levels, and add missing dye levels.
 # 27.11.2013: Fixed check of kit now case insensitive.
@@ -159,7 +160,13 @@ sortMarker <- function(data, kit, add.missing.levels = FALSE, debug=FALSE){
   }
 
   # RETURN --------------------------------------------------------------------
-  
+
+	# Add attributes to result.
+	attr(data, which="kit") <- kit
+	
+	# Update audit trail.
+	data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+	
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
   }

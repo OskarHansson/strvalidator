@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.08.2017: Added audit trail.
 # 29.08.2015: Added importFrom.
 # 06.02.2014: Fixed bug when only one column in 'key'.
 # 06.02.2014: Changed name calculatePrecision -> tablePrecision
@@ -171,6 +172,9 @@ tablePrecision <- function(data, key=c("Marker","Allele"), target=c("Size"),
   for(c in match(statHead, names(res))){
     res[ , c] <- as.numeric(res[ , c] )
   }
+  
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
   
   if(debug){
     print(paste("EXIT:", match.call()[[1]]))
