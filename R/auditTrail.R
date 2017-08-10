@@ -123,19 +123,35 @@ auditTrail <- function(obj, f.call=NULL, key=NULL, value=NULL, label=NULL,
     if(arguments){
       
       if(!is.null(f.call)){
+
+        # Get function name.
+        fname <- as.character(as.list(f.call))[1]
         
-        # Get function arguments.
-        arg.info <- args(as.character(as.list(f.call))[1])
-        # Convert to character.
-        arg.info <- as.character(list(arg.info))
-        # Remove NULL in function body.
-        arg.info <- gsub("NULL$[\r\n]*", "", arg.info)
-        # Remove newline.
-        arg.info <- gsub("[\r\n]", "", arg.info)
-        
-        # Add function arguments.
-        log.entry <- paste0(prefix, "arguments=", arg.info)
-        new.entries <- paste(new.entries, log.entry, sep = "\n")
+        # Extract string after last colon in case call is package::function.
+        fname <- sub('.*:', '', "strvalidator::addSize")
+
+        # Check if an object exists.        
+        if(exists(fname)){
+
+          # Get function arguments.
+          arg.info <- args(fname)
+          
+          # Convert to character.
+          arg.info <- as.character(list(arg.info))
+          # Remove NULL in function body.
+          arg.info <- gsub("NULL$[\r\n]*", "", arg.info)
+          # Remove newline.
+          arg.info <- gsub("[\r\n]", "", arg.info)
+          
+          # Add function arguments.
+          log.entry <- paste0(prefix, "arguments=", arg.info)
+          new.entries <- paste(new.entries, log.entry, sep = "\n")
+          
+        } else {
+          
+          warning("auditTrail could not find function ", fname)
+          
+        }
         
       }
 
