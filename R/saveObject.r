@@ -27,7 +27,7 @@
 #' @param object object to save.
 #' @param parent object specifying the parent GUI object to center the message box.
 #' @param suggest character string for a suggested name for the object to save/re-name.
-#' @param env environment in wich to save and search for existing objects.
+#' @param env environment in which to save and search for existing objects.
 #' @param remove character string for a named object to remove (e.g. the original object if re-naming).
 #' @param debug logical indicating printing debug information.
 #' 

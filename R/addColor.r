@@ -24,10 +24,10 @@
 #' Add color information 'Color', 'Dye' or 'R Color'.
 #'
 #' @details
-#' Primers in forensic STR typing kits are labelled with a fluorescent
+#' Primers in forensic STR typing kits are labeled with a fluorescent
 #' dye. The dyes are represented with single letters (Dye) in exported result
 #' files or with strings (Color) in 'panels' files.
-#' For visualisation in R the R color names are used (R.Color).
+#' For visualization in R the R color names are used (R.Color).
 #' The function can add new color schemes matched to the existing, or
 #' it can convert a vector containing one scheme to another. 
 #' 

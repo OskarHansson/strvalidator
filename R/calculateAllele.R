@@ -16,14 +16,14 @@
 #' Calculates summary statistics for alleles per marker over the entire dataset.
 #'
 #' @details Creates a table of the alleles in the dataset sorted by number of
-#' observations.For each allele the porportion of total observations is
+#' observations.For each allele the proportion of total observations is
 #' calculated. Using a threshold this can be used to separate likely artefacts
 #' from likely drop-in peaks. In addition the observed allele frequency is
 #' calculated. If columns 'Height' and/or 'Size' are available summary
 #' statistics is calculated. 
 #' NB! The function removes NA's and OL's prior to analysis.
 #' 
-#' @param data data.frame including colums 'Marker' and 'Allele', and
+#' @param data data.frame including columns 'Marker' and 'Allele', and
 #'  optionally 'Height' and 'Size'.
 #' @param threshold numeric if not NULL only peak heights above 'threshold'
 #'  will be considered.

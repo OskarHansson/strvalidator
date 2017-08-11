@@ -52,7 +52,7 @@
 #' 
 #' Explanation of the methods:
 #' Dropout - all alleles are scored according to LDT. This is pure observations
-#' and is not used for modelling.
+#' and is not used for modeling.
 #' MethodX - a random reference allele is selected and drop-out is scored in
 #' relation to the the partner allele.
 #' Method1 - the low molecular weight allele is selected and drop-out is
@@ -87,7 +87,7 @@
 #' Rfu: height of surviving allele.
 #' Heterozygous: 1 for heterozygous and 0 for homozygous.
 #' And any of the following containing the response (or explanatory) variable used
-#' for modelling by logistic regression in function \code{modelDropout}:
+#' for modeling by logistic regression in function \code{modelDropout}:
 #' 'MethodX', 'Method1', 'Method2', 'MethodL' and 'MethodL.Ph'.
 #' 
 #' @export
@@ -378,7 +378,7 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
         # Count the number of observed alleles.
         observed <- length(matchedAlleles)
         
-        # Score dropout for modelling -----------------------------------------
+        # Score dropout for modeling -----------------------------------------
         
         # Reset variables.
         methodXTmp <- NULL

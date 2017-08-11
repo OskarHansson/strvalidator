@@ -22,7 +22,7 @@
 #' 
 #' @param data a data frame containing at least 'Sample.Name', 'Marker', 'Allele', Height'.
 #' @param ratio numeric giving the peak height ratio threshold.
-#' @param height numeric giving the minumum peak height.
+#' @param height numeric giving the minimum peak height.
 #' @param na.rm logical indicating if rows with no peak should be discarded.
 #' @param ol.rm logical indicating if off-ladder alleles should be discarded.
 #' @param debug logical indicating printing debug information.

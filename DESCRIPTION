@@ -3,7 +3,7 @@ Package: strvalidator
 Type: Package
 Title: Process Control and Internal Validation of Forensic STR Kits
 Version: 2.0.0
-Date: 2017-08-10
+Date: 2017-08-11
 Author: Oskar Hansson
 Maintainer: Oskar Hansson <oskhan@ous-hf.no>
 URL: https://sites.google.com/site/forensicapps/strvalidator
@@ -29,7 +29,7 @@ Suggests:
     ResourceSelection,
     testthat
 Description: An open source platform for validation and process control.
-    Tools to analyse data from internal validation of forensic short tandem
+    Tools to analyze data from internal validation of forensic short tandem
     repeat (STR) kits are provided. The tools are developed to provide
     the necessary data to conform with guidelines for internal validation
     issued by the European Network of Forensic Science Institutes (ENFSI)

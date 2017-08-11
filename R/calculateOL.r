@@ -9,12 +9,12 @@
 # 21.01.2014: Added parameter 'limit'.
 # 17.01.2014: First version.
 
-#' @title Analyse Off-ladder Alleles
+#' @title Analyze Off-ladder Alleles
 #'
 #' @description
-#' Analyse the risk for off-ladder alleles.
+#' Analyze the risk for off-ladder alleles.
 #'
-#' @details By analysing the allelic ladders the risk for getting off-ladder
+#' @details By analyzing the allelic ladders the risk for getting off-ladder
 #' (OL) alleles are calculated. The frequencies from a provided population
 #' database is used to calculate the risk per marker and in total for the given
 #' kit(s). Virtual alleles can be excluded from the calculation.
@@ -119,13 +119,13 @@ calculateOL <- function (kit, db, virtual=TRUE, limit=TRUE, debug=FALSE){
     
   }
   
-  # Analyse -------------------------------------------------------------------
+  # Analyze -------------------------------------------------------------------
   
   # Loop over all kits.
   for(k in seq(along=kitNames)){
     
     if(debug){
-      print("Analysing risk for off-ladder with kit:")
+      print("Analyzing risk for off-ladder with kit:")
       print(kitNames[k])
     }
     

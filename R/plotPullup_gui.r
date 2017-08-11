@@ -26,12 +26,12 @@
 #' @description
 #' GUI simplifying the creation of plots from pull-up data.
 #'
-#' @details Select a dataset to plot and the typing kit used (if not autodetected).
+#' @details Select a dataset to plot and the typing kit used (if not automatically detected).
 #' Plot pull-up peak ratio versus the peak height of the known allele
 #' Automatic plot titles can be replaced by custom titles.
-#' Sex markers can be excluded. A name for the result is automatiaclly suggested.
+#' Sex markers can be excluded. A name for the result is automatically suggested.
 #' The resulting plot can be saved as either a plot object or as an image.
-#' @param env environment in wich to search for data frames and save result.
+#' @param env environment in which to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.

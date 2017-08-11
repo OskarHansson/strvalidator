@@ -11,15 +11,15 @@
 #' generated plots, heat-maps, and data can be saved in a project for easy access.
 #' Currently, analysis modules for stutter, balance, dropout, mixture, concordance,
 #' typing result, precision, pull-up, and analytical thresholds are available. 
-#' In addition there are functions to analyse the GeneMapper bins- and panels files.
+#' In addition there are functions to analyze the GeneMapper bins- and panels files.
 #' EPG like plots can be generate from data. STR-validator can greatly increase the speed of
-#' validation by reducing the time and effort needed to analyse the validation
+#' validation by reducing the time and effort needed to analyze the validation
 #' data. It allows exploration of the characteristics of DNA typing kits according
 #' to ENFSI and SWGDAM recommendations. This facilitates the implementation of
 #' probabilistic interpretation of DNA results.
 #' 
 #' STR-validator was written and is maintained by Oskar Hansson, senior forensic
-#' scientist at Oslo University Hospital (OUS), Section for Forensic Genetics.
+#' scientist at Oslo University Hospital (OUS), Section for Forensic Biology.
 #' The work initially received external funding from the European
 #' Union seventh Framework Programme (FP7/2007-2013) under grant agreement no
 #' 285487 (EUROFORGEN-NoE) but development and maintenance is now performed as 
@@ -32,7 +32,7 @@
 #' functions.\cr\cr
 #' 
 #' Created and maintained by:\cr
-#' Oskar Hansson, Department of Forensic Biology (NIPH, Norway)\cr\cr
+#' Oskar Hansson, Section for Forensic Biology (OUS, Norway)\cr\cr
 #' 
 #' More information can be found at:\cr
 #' \url{https://sites.google.com/site/forensicapps/strvalidator}\cr\cr
@@ -57,7 +57,7 @@ NULL
 
 #' ESX17 Positive Control Profile
 #' 
-#' A dataset in 'GeneMaper' format containing the DNA profile of
+#' A dataset in 'GeneMapper' format containing the DNA profile of
 #' the ESX17 positive control sample with homozygotes as one entry.
 #' 
 #' @docType data
@@ -80,7 +80,7 @@ NULL
 
 #' ESX17 Positive Control Profile
 #' 
-#' A dataset in 'GeneMaper' format containing the DNA profile of
+#' A dataset in 'GeneMapper' format containing the DNA profile of
 #' the ESX17 positive control sample with homozygotes as two entries.
 #' 
 #' @docType data
@@ -153,9 +153,9 @@ NULL
 #' ESX17 example data for dropout analysis.
 #' 
 #' A slimmed dataset containing reference profiles for source samples in set4.
-#' Reference 'A2' has douoble entries for homozygotes.
+#' Reference 'A2' has double entries for homozygotes.
 #' Reference 'F2' has single entries for homozygotes.
-#' Reference 'bc' has douoble entries for homozygotes, and lower case sample name. 
+#' Reference 'bc' has double entries for homozygotes, and lower case sample name. 
 #' 
 #' @docType data
 #' @keywords datasets

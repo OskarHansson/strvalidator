@@ -18,7 +18,7 @@
 # 29.09.2013: First version.
 
 
-#' @title Analyse Off-ladder Alleles
+#' @title Analyze Off-ladder Alleles
 #'
 #' @description
 #' GUI wrapper for the \code{\link{calculateOL}} function.
@@ -29,7 +29,7 @@
 #' kit(s). Virtual alleles can be excluded from the calculation.
 #' Small frequencies can be limited to the estimate 5/2N.
 #' 
-#' @param env environment in wich to search for data frames and save result.
+#' @param env environment in which to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.

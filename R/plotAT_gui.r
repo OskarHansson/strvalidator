@@ -21,9 +21,9 @@
 #'
 #' @details Select data to plot in the drop-down menu. Plot regression data
 #' Automatic plot titles can be replaced by custom titles.
-#' A name for the result is automatiaclly suggested.
+#' A name for the result is automatically suggested.
 #' The resulting plot can be saved as either a plot object or as an image.
-#' @param env environment in wich to search for data frames.
+#' @param env environment in which to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.

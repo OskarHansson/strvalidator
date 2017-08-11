@@ -24,7 +24,7 @@
 #' Calculates the inter-locus balance.
 #'
 #' @details The inter-locus balance (Lb), or profile balance, can be calculated
-#' as a proportion of the whole, normalised, or as centred quantities (as in
+#' as a proportion of the whole, normalized, or as centred quantities (as in
 #' the reference but using the mean total marker peak height instead of H).
 #' Lb can be calculated globally across the complete profile or within each dye
 #' channel. All markers must be present in each sample. Data can be unfiltered
@@ -46,7 +46,7 @@
 #' @param ref data.frame containing at least 'Sample.Name', 'Marker', 'Allele'.
 #' If provided alleles matching 'ref' will be extracted from 'data'
 #' (see \code{\link{filterProfile}}).
-#' @param option character: 'prop' for proportional Lb, 'norm' for normalised
+#' @param option character: 'prop' for proportional Lb, 'norm' for normalized
 #' LB, and 'cent' for centred Lb.
 #' @param by.dye logical. Default is FALSE for global Lb, if TRUE Lb is calculated
 #' within each dye channel.
@@ -59,7 +59,7 @@
 #' @param na numeric. Numeric to replace NA values e.g. locus dropout can be 
 #' given a peak height equal to the limit of detection threshold, or zero.
 #' Default is NULL indicating that NA will be treated as missing values.
-#' @param kit character providing the kit name. Attempt to autodetect if NULL.
+#' @param kit character providing the kit name. Attempt to auto detect if NULL.
 #' @param ignore.case logical indicating if sample matching should ignore case.
 #' Only used if 'ref' is provided and 'data' is filtered.
 #' @param word logical indicating if word boundaries should be added before sample matching.
@@ -389,7 +389,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       # Calculate maximum total peak height per sample and dye.
       res[,MTPH:=max(TPH), by=list(Sample.Name, Dye)]
       
-      # Calculate normalised locus proportion.
+      # Calculate normalized locus proportion.
       res[,Lb:=TPH/MTPH, by=list(Sample.Name, Dye, Marker)]
       
     } else {
@@ -397,7 +397,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       # Calculate maximum total peak height per sample.
       res[,MTPH:=max(TPH), by=list(Sample.Name)]
       
-      # Calculate normalised locus proportion.
+      # Calculate normalized locus proportion.
       res[,Lb:=TPH/MTPH, by=list(Sample.Name, Marker)]
       
     }

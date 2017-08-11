@@ -30,7 +30,7 @@
 #'  OR an atomic vector e.g. a single sample name string.
 #' @param console logical, if TRUE result is printed to R console,
 #' if FALSE a string is returned. 
-#' @param ignore.case logical, if TRUE case insesitive matching is used.
+#' @param ignore.case logical, if TRUE case insensitive matching is used.
 #' @param word logical, if TRUE only word matching (regex).
 #' @param exact logical, if TRUE only exact match.
 #' @param debug logical indicating printing debug information.

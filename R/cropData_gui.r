@@ -6,7 +6,7 @@
 # CHANGE LOG (last 20 changes)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 13.07.2017: Fixed narrow drop-down with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 06.01.2017: Added attributes to result.
@@ -30,16 +30,16 @@
 #' @description
 #' GUI simplifying cropping and replacing values in data frames.
 #'
-#' @details Select a data frame from the dropdown and a target column.
+#' @details Select a data frame from the drop-down and a target column.
 #' To remove rows with 'NA' check the appropriate box.
 #' Select to discard or replace values and additional options.
 #' Click button to 'Apply' changes.
 #' Multiple actions can be performed on one dataset before saving as
 #' a new dataframe.
-#' NB! Check that data type is correct before click apply to avoid strange behaviour.
+#' NB! Check that data type is correct before click apply to avoid strange behavior.
 #' If data type is numeric any string will become a numeric 'NA'.
 #' 
-#' @param env environment in wich to search for data frames.
+#' @param env environment in which to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
@@ -567,7 +567,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
   .refresh_column_drp <- function(){
     
     if(debug){
-      print("Refresh column dropdown")
+      print("Refresh column drop-down")
     }
     
     # Get data frames in global workspace.
@@ -585,7 +585,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
     }
     
     if(debug){
-      print("Column dropdown refreshed!")
+      print("Column drop-down refreshed!")
     }
   }
   

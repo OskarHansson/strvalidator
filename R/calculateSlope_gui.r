@@ -19,7 +19,7 @@
 #'
 #' @details Simplifies the use of the \code{\link{calculateSlope}} function
 #' by providing a graphical user interface.
-#' @param env environment in wich to search for data frames.
+#' @param env environment in which to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
