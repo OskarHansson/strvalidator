@@ -2,13 +2,13 @@
 % Please edit documentation in R/calculateOL_gui.r
 \name{calculateOL_gui}
 \alias{calculateOL_gui}
-\title{Analyse Off-ladder Alleles}
+\title{Analyze Off-ladder Alleles}
 \usage{
 calculateOL_gui(env = parent.frame(), savegui = NULL, debug = TRUE,
   parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames and save result.}
+\item{env}{environment in which to search for data frames and save result.}
 
 \item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 

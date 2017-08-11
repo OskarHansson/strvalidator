@@ -8,7 +8,7 @@ cropData_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
   parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames.}
+\item{env}{environment in which to search for data frames.}
 
 \item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 
@@ -23,13 +23,13 @@ TRUE
 GUI simplifying cropping and replacing values in data frames.
 }
 \details{
-Select a data frame from the dropdown and a target column.
+Select a data frame from the drop-down and a target column.
 To remove rows with 'NA' check the appropriate box.
 Select to discard or replace values and additional options.
 Click button to 'Apply' changes.
 Multiple actions can be performed on one dataset before saving as
 a new dataframe.
-NB! Check that data type is correct before click apply to avoid strange behaviour.
+NB! Check that data type is correct before click apply to avoid strange behavior.
 If data type is numeric any string will become a numeric 'NA'.
 }
 \seealso{

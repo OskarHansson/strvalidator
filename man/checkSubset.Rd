@@ -16,7 +16,7 @@ OR an atomic vector e.g. a single sample name string.}
 \item{console}{logical, if TRUE result is printed to R console,
 if FALSE a string is returned.}
 
-\item{ignore.case}{logical, if TRUE case insesitive matching is used.}
+\item{ignore.case}{logical, if TRUE case insensitive matching is used.}
 
 \item{word}{logical, if TRUE only word matching (regex).}
 

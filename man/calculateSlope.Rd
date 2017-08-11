@@ -35,10 +35,10 @@ Calculate profile slope for samples.
 \details{
 Calculates the profile slope for each sample. The slope is calculated as a
 linear model specified by the response (natural logarithm of peak height) by
-the term size (in basepair). If 'Size' is not present in the dataset, one or
+the term size (in base pair). If 'Size' is not present in the dataset, one or
 multiple kit names can be given as argument 'kit'. The specified kits will
 be used to estimate the size of each allele. If 'kit' is NULL the kit(s)
-will be autodetected, and the 'Size' will be calculated.
+will be automatically detected, and the 'Size' will be calculated.
 
 The column 'Group' can be used to separate datasets to be compared, and if
 so 'kit' must be a vector of equal length as the number of groups, and in

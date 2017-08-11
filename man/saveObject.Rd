@@ -17,7 +17,7 @@ If NULL a dialogue asks for a name.}
 
 \item{suggest}{character string for a suggested name for the object to save/re-name.}
 
-\item{env}{environment in wich to save and search for existing objects.}
+\item{env}{environment in which to save and search for existing objects.}
 
 \item{remove}{character string for a named object to remove (e.g. the original object if re-naming).}
 

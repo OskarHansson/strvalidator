@@ -55,9 +55,9 @@
 #' @param sex.rm logical TRUE removes sex markers defined by 'kit'.
 #' @param qs.rm logical TRUE removes quality sensors defined by 'kit'.
 #' @param kit character string defining the kit used.
-#' If NULL autodetection will be attempted.
+#' If NULL automatic detection will be attempted.
 #' @param filter.allele logical TRUE filter known alleles. FALSE increase the
-#' performance if only sex markers or quality sensors shold be removed.
+#' performance if only sex markers or quality sensors should be removed.
 #' @param debug logical indicating printing debug information.
 #' 
 #' 

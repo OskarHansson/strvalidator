@@ -35,7 +35,7 @@ Calculates the number of peaks in samples.
 }
 \details{
 Count the number of peaks in a sample profile based on values in the 
-'Height' column. Each sample is labelled according to custom labels
+'Height' column. Each sample is labeled according to custom labels
 defined by the number of peaks. Peaks can be counted by sample or by
 marker within a sample.
 There is an option to discard off-ladder peaks ('OL').

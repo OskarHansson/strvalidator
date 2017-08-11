@@ -21,7 +21,7 @@
 #' Take an environment as argument and optionally an object class.
 #' Returns a list of objects of the specified class in the environment.
 #' 
-#' @param env environment in wich to search for objects.
+#' @param env environment in which to search for objects.
 #' @param obj.class character string or vector specifying the object class.
 #' @param debug logical indicating printing debug information.
 #' 

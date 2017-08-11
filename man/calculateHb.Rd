@@ -18,7 +18,7 @@ calculateHb(data, ref, hb = 1, kit = NULL, sex.rm = FALSE,
 \item{hb}{numerical, definition of heterozygote balance. Default is hb=1. 
 hb=1: HMW/LMW, hb=2: LMW/HMW, hb=3; min(Ph)/max(Ph).}
 
-\item{kit}{character defining the kit used. If NULL autodetection is attempted.}
+\item{kit}{character defining the kit used. If NULL automatic detection is attempted.}
 
 \item{sex.rm}{logical TRUE removes sex markers defined by 'kit'.}
 

@@ -39,8 +39,8 @@
 #'  Sample.Name|Marker|Allele|Size
 #' 
 #' @param data data.frame.
-#' @param fix vector of strings with colum names to keep fixed.
-#' @param stack vector of strings with colum names to slim.
+#' @param fix vector of strings with column names to keep fixed.
+#' @param stack vector of strings with column names to slim.
 #' @param keep.na logical, keep a row even if no data.
 #' @param debug logical indicating printing debug information.
 #' 

@@ -39,7 +39,7 @@
 #' (2) by reference to the high molecular weight allele (Method2),
 #' (3) by reference to a random allele (MethodX), and
 #' (4) by reference to the locus (MethodL).
-#' Options 1-3 are recommended by the DNA commision (see reference),
+#' Options 1-3 are recommended by the DNA commission (see reference),
 #' while option 4 is included for experimental purposes.
 #' Options 1-3 may discard many dropout events while option 4 catches all
 #' drop-out events. On the other hand options 1-3 can score events below
@@ -53,7 +53,7 @@
 #' separate column.
 #' 
 #' Using the scored drop-out events and the peak heights of the surviving
-#' alleles the probability of drop-out can be modelled by logistic regression
+#' alleles the probability of drop-out can be modeled by logistic regression
 #' as described in Appendix B in reference [1].
 #' P(dropout|H) = B0 + B1*H, where 'H' is the peak height or log(peak height).
 #' This produces a plot with the predicted probabilities for a range of peak heights.
@@ -64,7 +64,7 @@
 #' from the prediction interval: the risk of observing a drop-out probability
 #' greater than the specified threshold limit, at the conservative peak height,
 #' is less than a specified value (e.g. 1-0.95=0.05). By default the gender
-#' marker is excluded from the dataset used for modelling, and the peak height
+#' marker is excluded from the dataset used for modeling, and the peak height
 #' is used as explanatory variable. The logarithm of the average peak height 'H'
 #' can be used instead of the allele/locus peak height [3]. To evaluate the
 #' goodness of fit for the logistic regression the Hosmer-Lemeshow test is
@@ -73,7 +73,7 @@
 #' 
 #' Explanation of the result:
 #' Dropout - all alleles are scored according to the limit of detection threshold (LDT).
-#' This is the observations and is not used for modelling.
+#' This is the observations and is not used for modeling.
 #' Rfu - peak height of the surviving allele.
 #' MethodX - a random reference allele is selected and drop-out is scored in
 #' relation to the the partner allele.
@@ -82,10 +82,10 @@
 #' Method2 - the high molecular weight allele is selected and drop-out is
 #' scored if the low molecular weight allele is missing.
 #' MethodL - drop-out is scored per locus i.e. drop-out if any allele is missing.
-#' MethodL.Ph - peak height of the surviving allele if one allele has droped out,
+#' MethodL.Ph - peak height of the surviving allele if one allele has dropped out,
 #' or the average peak height if no drop-out.
 #' 
-#' @param env environment in wich to search for data frames and save result.
+#' @param env environment in which to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
@@ -108,7 +108,7 @@
 #' @references
 #' [3] Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
 #'  Estimating the probability of allelic drop-out of STR alleles in forensic genetics,
-#'  Forensic Science International: Genetetics, Volume 3, Issue 4, September 2009,
+#'  Forensic Science International: Genetics, Volume 3, Issue 4, September 2009,
 #'  Pages 222-226, ISSN 1872-4973, 10.1016/j.fsigen.2009.02.002.
 #'  \url{http://www.sciencedirect.com/science/article/pii/S1872497309000398}
 #' @references
@@ -793,7 +793,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     xplot <- seq(val_pred_xmin, val_pred_xmax)
     predRange <- data.frame(Exp=xplot)
     
-    # Create data for modelling.
+    # Create data for modeling.
     modData <- obsData
     # Convert to log values.
     if(logModel){
@@ -1126,7 +1126,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       enabled(f7_plot_drop_btn) <- TRUE
       svalue(f7_plot_drop_btn) <- "Plot predicted drop-out probability"
 
-      # Check available modelling columns.
+      # Check available modeling columns.
       if(val_h){
         requiredCol <- c("H")
         if(!all(requiredCol %in% colnames(.gData))){
@@ -1134,7 +1134,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
         }
       }
         
-      # Check available modelling columns and enable/select.
+      # Check available modeling columns and enable/select.
       if(val_col == 1){
         
         requiredCol <- c("MethodX")
@@ -1180,7 +1180,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
         message <- paste("Dataset is ok for drop-out analysis.\n",
                         "However, additional columns are required for this analysis:\n",
                          paste(missingCol, collapse="\n"),
-                         "\n\nPlease try modelling using another scoring method.",
+                         "\n\nPlease try modeling using another scoring method.",
                          sep="")
         
         gmessage(message, title="message",

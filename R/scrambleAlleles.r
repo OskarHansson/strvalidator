@@ -10,7 +10,7 @@
 #' @title Scramble Alleles
 #'
 #' @description
-#' Scrambles alleles in a dataset to anonymise the profile.
+#' Scrambles alleles in a dataset to anonymize the profile.
 #'
 #' @details
 #' Internal helper function to create example data.
@@ -22,7 +22,7 @@
 #' If 'Data.Point' is present it will be removed.
 #' 
 #' @param data data.frame with columns 'Sample.Name', 'Marker', and 'Allele'.
-#' @param db character defining the allele frequecy database to be used.
+#' @param db character defining the allele frequency database to be used.
 #' 
 #' @export
 #' 

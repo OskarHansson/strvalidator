@@ -8,7 +8,7 @@ plotResultType_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
   parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames and save result.}
+\item{env}{environment in which to search for data frames and save result.}
 
 \item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 
@@ -23,11 +23,11 @@ TRUE
 GUI simplifying the creation of plots from result type data.
 }
 \details{
-Plot result type data. It is possible to customise titles and font
+Plot result type data. It is possible to customize titles and font
 size. Data can be plotted as as frequency or proportion. The values can be
 printed on the plot with custom number of decimals. There are several 
-colour palettes to chose from. 
+color palettes to chose from. 
 Automatic plot titles can be replaced by custom titles.
-A name for the result is automatiaclly suggested.
+A name for the result is automatically suggested.
 The resulting plot can be saved as either a plot object or as an image.
 }

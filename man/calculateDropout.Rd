@@ -37,7 +37,7 @@ Dropout: 0 indicate no dropout, 1 indicate allele dropout, and 2 indicate locus 
 Rfu: height of surviving allele.
 Heterozygous: 1 for heterozygous and 0 for homozygous.
 And any of the following containing the response (or explanatory) variable used
-for modelling by logistic regression in function \code{modelDropout}:
+for modeling by logistic regression in function \code{modelDropout}:
 'MethodX', 'Method1', 'Method2', 'MethodL' and 'MethodL.Ph'.
 }
 \description{
@@ -60,7 +60,7 @@ consider the whole locus and score drop-out if any allele is missing.
 
 Explanation of the methods:
 Dropout - all alleles are scored according to LDT. This is pure observations
-and is not used for modelling.
+and is not used for modeling.
 MethodX - a random reference allele is selected and drop-out is scored in
 relation to the the partner allele.
 Method1 - the low molecular weight allele is selected and drop-out is

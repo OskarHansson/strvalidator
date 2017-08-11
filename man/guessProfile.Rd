@@ -12,7 +12,7 @@ guessProfile(data, ratio = 0.6, height = 50, na.rm = FALSE,
 
 \item{ratio}{numeric giving the peak height ratio threshold.}
 
-\item{height}{numeric giving the minumum peak height.}
+\item{height}{numeric giving the minimum peak height.}
 
 \item{na.rm}{logical indicating if rows with no peak should be discarded.}
 

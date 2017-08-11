@@ -21,7 +21,7 @@
 #' GUI wrapper for the \code{\link{calculateAT6}} function.
 #'
 #' @details Scores dropouts for a dataset.
-#' @param env environment in wich to search for data frames and save result.
+#' @param env environment in which to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.

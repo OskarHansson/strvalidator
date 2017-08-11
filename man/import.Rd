@@ -44,8 +44,7 @@ to multiple file import option.}
 
 \item{trim.samples}{character vector with sample names to trim.}
 
-\item{trim.invert}{logical indicating if samples should be keept (TRUE) or
-removed (FALSE).}
+\item{trim.invert}{logical to keep (TRUE) or remove (FALSE) samples.}
 
 \item{auto.slim}{logical indicating if dataset should be slimmed.}
 

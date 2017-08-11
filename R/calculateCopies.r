@@ -37,7 +37,7 @@
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return data.frame the original data frame with optional columns 'Observed',
-#' 'Copies', and 'Heterozyous'.
+#' 'Copies', and 'Heterozygous'.
 #' 
 #' @export
 #' 

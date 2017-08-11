@@ -29,7 +29,7 @@
 #'  'Sample.Name', 'Marker', 'Allele'.
 #' @param hb numerical, definition of heterozygote balance. Default is hb=1. 
 #'  hb=1: HMW/LMW, hb=2: LMW/HMW, hb=3; min(Ph)/max(Ph).
-#' @param kit character defining the kit used. If NULL autodetection is attempted.
+#' @param kit character defining the kit used. If NULL automatic detection is attempted.
 #' @param ignore.case logical indicating if sample matching should ignore case.
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param exact logical indicating if exact sample matching should be used.

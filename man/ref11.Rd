@@ -9,7 +9,7 @@
 data(ref11)
 }
 \description{
-A dataset in 'GeneMaper' format containing the DNA profile of
+A dataset in 'GeneMapper' format containing the DNA profile of
 the ESX17 positive control sample with homozygotes as two entries.
 }
 \keyword{datasets}

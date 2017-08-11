@@ -26,13 +26,13 @@ data.frame with columns 'Kit', 'Color', [dyes], 'Sum', and 'Score'.
 Analyses the bins overlap between colors.
 }
 \details{
-By analysing the bins overlap between dye channels a measure of
+By analyzing the bins overlap between dye channels a measure of
 the risk for spectral pull-up artefacts can be obtain. The default result
 is a matrix with the total bins overlap in number of base pairs. If an allele
 frequency database is provided the overlap at each bin is multiplied with the
 frequency of the corresponding allele. If no frequence exist for that allele
 a frequency of 5/2N will be used. X and Y alleles is given the frequency 1.
 A penalty matrix can be supplied to reduce the effect by spectral distance, 
-meaning that overlap with the neighbouring dye can be counted in full (100%)
-while a non neighbour dye get its overlap reduced (to e.g. 10%).
+meaning that overlap with the neighboring dye can be counted in full (100%)
+while a non neighbor dye get its overlap reduced (to e.g. 10%).
 }

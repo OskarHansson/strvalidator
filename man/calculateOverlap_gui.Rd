@@ -8,7 +8,7 @@ calculateOverlap_gui(env = parent.frame(), savegui = NULL, debug = TRUE,
   parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames and save result.}
+\item{env}{environment in which to search for data frames and save result.}
 
 \item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 
@@ -30,8 +30,8 @@ frequency database is provided the overlap at each bin is multiplied with the
 frequency of the corresponding allele. If no frequence exist for that allele
 a frequency of 5/2N will be used. X and Y alleles is given the frequency 1.
 A scoring matrix can be supplied to reduce the effect by spectral distance, 
-meaning that overlap with the neighbouring dye can be counted in full (100%)
-while a non neighbour dye get its overlap reduced (to e.g. 10%).
+meaning that overlap with the neighboring dye can be counted in full (100%)
+while a non neighbor dye get its overlap reduced (to e.g. 10%).
 }
 \seealso{
 \code{\link{calculateOverlap}}

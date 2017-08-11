@@ -8,7 +8,7 @@ guessProfile_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
   parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames.}
+\item{env}{environment in which to search for data frames.}
 
 \item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 

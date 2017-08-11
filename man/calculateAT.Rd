@@ -59,20 +59,20 @@ Calculate analytical thresholds estimates.
 }
 \details{
 Calculate the analytical threshold (AT) according to method 1, 2, and 4 as
-recommended in the reference by analysing the background signal (noise).
+recommended in the reference by analyzing the background signal (noise).
 In addition method 7, a log-normal version of method 1 has been implemented.
 Method 1: The average signal + 'k' * the standard deviation.
 Method 2: The percentile rank method. The percentage of noise peaks below 'rank.t'.
 Method 4: Utilize the mean and standard deviation and the critical value obtained 
 from the t-distribution for confidence interval 'alpha' (one-sided) and observed
-peaks analysed (i.e. not masked) minus one as degrees of freedom, and the number
+peaks analyzed (i.e. not masked) minus one as degrees of freedom, and the number
 of samples.
 Method 7: The average natural logarithm of the signal + k * the standard deviation.
 
 If samples containing DNA are used, a range around the allelic peaks can be masked
 from the analysis to discard peaks higher than the noise. Masking can be within
 each dye or across all dye channels.
-Similarily a range around the peaks of the internal lane standard (ILS) can be 
+Similarly a range around the peaks of the internal lane standard (ILS) can be 
 masked across all dye channels. Which can bleed-through in week samples
 (i.e. negative controls)
 The mean, standard deviation, and number of peaks are calculated per dye per sample,

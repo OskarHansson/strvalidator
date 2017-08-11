@@ -42,7 +42,7 @@
 #' @param kit string or integer to specify the kit.
 #' @param what string to specify which information to return. Default is 'NA' which return all info.
 #' Not case sensitive.
-#' @param show.messages logical, default TRUE for printing messages to the R promt.
+#' @param show.messages logical, default TRUE for printing messages to the R prompt.
 #' @param .kit.info data frame, run function on a data frame instead of the kits.txt file.
 #' @param debug logical indicating printing debug information.
 #' 

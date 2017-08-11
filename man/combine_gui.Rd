@@ -7,7 +7,7 @@
 combine_gui(env = parent.frame(), debug = FALSE, parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames.}
+\item{env}{environment in which to search for data frames.}
 
 \item{debug}{logical indicating printing debug information.}
 

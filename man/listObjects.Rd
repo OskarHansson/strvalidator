@@ -7,7 +7,7 @@
 listObjects(env = parent.frame(), obj.class = NULL, debug = FALSE)
 }
 \arguments{
-\item{env}{environment in wich to search for objects.}
+\item{env}{environment in which to search for objects.}
 
 \item{obj.class}{character string or vector specifying the object class.}
 

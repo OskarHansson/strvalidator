@@ -19,10 +19,10 @@ heightToPeak(data, width = 1, keep.na = TRUE, debug = FALSE)
 data.frame with new values.
 }
 \description{
-Helper function to convert a peak into a plottable polygon.
+Helper function to convert a peak into a plotable polygon.
 }
 \details{
-Converts a single height and size value to a plottable 0-height-0 triangle/peak value.
+Converts a single height and size value to a plotable 0-height-0 triangle/peak value.
 Makes 3 data points from each peak size for plotting a polygon representing a peak.
 Factors in other columns might get converted to factor level.
 }

@@ -36,7 +36,7 @@
 #'  
 #' @param data a data frame containing at least the column 'Sample.Name'.
 #' @param kit character string or integer defining the kit.
-#' @param add.missing.marker logical, defualt is TRUE which adds missing markers.
+#' @param add.missing.marker logical, default is TRUE which adds missing markers.
 #' @param threshold integer indicating the dropout threshold.
 #' @param mixture.limits integer or vector indicating subtypes of 'Mixture'.
 #' @param partial.limits integer or vector indicating subtypes of 'Partial'.

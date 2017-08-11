@@ -29,10 +29,10 @@
 #' frequency of the corresponding allele. If no frequence exist for that allele
 #' a frequency of 5/2N will be used. X and Y alleles is given the frequency 1.
 #' A scoring matrix can be supplied to reduce the effect by spectral distance, 
-#' meaning that overlap with the neighbouring dye can be counted in full (100%)
-#' while a non neighbour dye get its overlap reduced (to e.g. 10%).
+#' meaning that overlap with the neighboring dye can be counted in full (100%)
+#' while a non neighbor dye get its overlap reduced (to e.g. 10%).
 #' 
-#' @param env environment in wich to search for data frames and save result.
+#' @param env environment in which to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
@@ -262,7 +262,7 @@ calculateOverlap_gui <- function(env=parent.frame(), savegui=NULL, debug=TRUE, p
                spacing = 5,
                container = gv)
   
-  glabel(text="Define penalty by the distance between dye channels  (1st neighbour to 5th neighbour)",
+  glabel(text="Define penalty by the distance between dye channels  (1st neighbor to 5th neighbor)",
                container=f2)
 
   f2g1 <- ggroup(horizontal=TRUE,

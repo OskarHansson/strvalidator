@@ -23,14 +23,14 @@
 #' method is faster because it uses the data.table package. The accurate method
 #' is slower because it uses nested loops - the first through each sample to
 #' calculate the distance between all peaks, and the second loops through the
-#' distance matrix to identifiy which peaks lies within the tolerance.
+#' distance matrix to identify which peaks lies within the tolerance.
 #' NB! The quick method may not catch all spikes since two peaks can be
 #' separated by rounding e.g. 200.5 and 200.6 becomes 200 and 201 respectively.
 #' 
-#' @param data data.frame with including colums 'Sample.Name', 'Marker', 'Size'.
+#' @param data data.frame with including columns 'Sample.Name', 'Marker', 'Size'.
 #' @param threshold numeric number of peaks of similar size in different dye
 #' channels to pass as a possible spike (NULL = number of dye channels
-#' minus one to allow for one unlabelled peak).
+#' minus one to allow for one unlabeled peak).
 #' @param tolerance numeric tolerance for Size. For the quick and dirty
 #' rounding method e.g. 1.5 rounds Size to +/- 0.75 bp. For the slower but
 #' more accurate method the value is the maximum allowed difference between
@@ -114,7 +114,7 @@ calculateSpike <- function(data, threshold=NULL, tolerance=2, kit=NULL,
   
   if(is.null(threshold)){
 
-    # Default to number of dyes minus one to allow for one unlabelled spike.
+    # Default to number of dyes minus one to allow for one unlabeled spike.
     threshold <- length(kitDyes) - 1
     message(paste("Using default spike threshold:", threshold))
     

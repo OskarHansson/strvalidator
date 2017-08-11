@@ -32,7 +32,7 @@
 #' NB! Datasets must have identical column names but not necessarily
 #' in the same order.
 #' 
-#' @param env environment in wich to search for data frames.
+#' @param env environment in which to search for data frames.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #' 

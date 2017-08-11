@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculateOL.r
 \name{calculateOL}
 \alias{calculateOL}
-\title{Analyse Off-ladder Alleles}
+\title{Analyze Off-ladder Alleles}
 \usage{
 calculateOL(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE)
 }
@@ -21,10 +21,10 @@ calculateOL(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE)
 data.frame with columns 'Kit', 'Marker', 'Database', 'Risk', and 'Total'.
 }
 \description{
-Analyse the risk for off-ladder alleles.
+Analyze the risk for off-ladder alleles.
 }
 \details{
-By analysing the allelic ladders the risk for getting off-ladder
+By analyzing the allelic ladders the risk for getting off-ladder
 (OL) alleles are calculated. The frequencies from a provided population
 database is used to calculate the risk per marker and in total for the given
 kit(s). Virtual alleles can be excluded from the calculation.

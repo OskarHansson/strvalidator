@@ -9,9 +9,9 @@ slim(data, fix = NULL, stack = NULL, keep.na = TRUE, debug = FALSE)
 \arguments{
 \item{data}{data.frame.}
 
-\item{fix}{vector of strings with colum names to keep fixed.}
+\item{fix}{vector of strings with column names to keep fixed.}
 
-\item{stack}{vector of strings with colum names to slim.}
+\item{stack}{vector of strings with column names to slim.}
 
 \item{keep.na}{logical, keep a row even if no data.}
 

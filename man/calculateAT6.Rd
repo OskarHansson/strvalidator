@@ -34,7 +34,7 @@ Calculate analytical thresholds estimate using linear regression.
 }
 \details{
 Calculate the analytical threshold (AT) according to method 6 as
-outlined in the reference. In short serial dilutions are analysed
+outlined in the reference. In short serial dilutions are analyzed
 and the average peak height is calculated. Linear regression or
 Weighted linear regression with amount of DNA as the predictor for
 the peak height is performed.

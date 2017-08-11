@@ -13,15 +13,15 @@ functions to import, view, edit, and export data. After analysis the results,
 generated plots, heat-maps, and data can be saved in a project for easy access.
 Currently, analysis modules for stutter, balance, dropout, mixture, concordance,
 typing result, precision, pull-up, and analytical thresholds are available. 
-In addition there are functions to analyse the GeneMapper bins- and panels files.
+In addition there are functions to analyze the GeneMapper bins- and panels files.
 EPG like plots can be generate from data. STR-validator can greatly increase the speed of
-validation by reducing the time and effort needed to analyse the validation
+validation by reducing the time and effort needed to analyze the validation
 data. It allows exploration of the characteristics of DNA typing kits according
 to ENFSI and SWGDAM recommendations. This facilitates the implementation of
 probabilistic interpretation of DNA results.
 
 STR-validator was written and is maintained by Oskar Hansson, senior forensic
-scientist at Oslo University Hospital (OUS), Section for Forensic Genetics.
+scientist at Oslo University Hospital (OUS), Section for Forensic Biology.
 The work initially received external funding from the European
 Union seventh Framework Programme (FP7/2007-2013) under grant agreement no
 285487 (EUROFORGEN-NoE) but development and maintenance is now performed as 
@@ -34,7 +34,7 @@ Click \code{Index} at the bottom of the page to see a complete list of
 functions.\cr\cr
 
 Created and maintained by:\cr
-Oskar Hansson, Department of Forensic Biology (NIPH, Norway)\cr\cr
+Oskar Hansson, Section for Forensic Biology (OUS, Norway)\cr\cr
 
 More information can be found at:\cr
 \url{https://sites.google.com/site/forensicapps/strvalidator}\cr\cr

@@ -61,7 +61,7 @@ Mixture proportion is calculated in accordance with:
 \references{
 Bright, Jo-Anne, Jnana Turkington, and John Buckleton.
 "Examination of the Variability in Mixed DNA Profile Parameters for the
- IdentifilerTM Multiplex."
+ Identifiler Multiplex."
  Forensic Science International: Genetics 4, no. 2 (February 2010): 111-14.
  doi:10.1016/j.fsigen.2009.07.002.
 \url{http://dx.doi.org/10.1016/j.fsigen.2009.07.002}

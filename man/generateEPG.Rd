@@ -53,13 +53,13 @@ To get a common x scale set scale="free_y" and limit.x=TRUE.}
 ggplot object.
 }
 \description{
-Visualises an EPG from DNA profiling data.
+Visualizes an EPG from DNA profiling data.
 }
 \details{
 Generates a electropherogram like plot from 'data' and 'kit'.
 If 'Size' is not present it is estimated from kit information and allele values.
 If 'Height' is not present a default of 1000 RFU is used.
 Off-ladder alleles can be plotted if 'Size' is provided.
-There are various options to customise the plot scale and labels.
+There are various options to customize the plot scale and labels.
 It is also possible to plot 'distributions' of peak heights as boxplots.
 }

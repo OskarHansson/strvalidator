@@ -13,7 +13,7 @@ getKit(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NULL,
 \item{what}{string to specify which information to return. Default is 'NA' which return all info.
 Not case sensitive.}
 
-\item{show.messages}{logical, default TRUE for printing messages to the R promt.}
+\item{show.messages}{logical, default TRUE for printing messages to the R prompt.}
 
 \item{.kit.info}{data frame, run function on a data frame instead of the kits.txt file.}
 

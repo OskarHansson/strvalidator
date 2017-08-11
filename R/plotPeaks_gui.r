@@ -23,13 +23,13 @@
 #' @description
 #' GUI simplifying the creation of plots from result type data.
 #'
-#' @details Plot result type data. It is possible to customise titles and font
+#' @details Plot result type data. It is possible to customize titles and font
 #' size. Data can be plotted as as frequency or proportion. The values can be
 #' printed on the plot with custom number of decimals. There are several 
-#' colour palettes to chose from. 
-#' A name for the result is automatiaclly suggested.
+#' color palettes to chose from. 
+#' A name for the result is automatically suggested.
 #' The resulting plot can be saved as either a plot object or as an image.
-#' @param env environment in wich to search for data frames and save result.
+#' @param env environment in which to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
@@ -200,7 +200,7 @@ plotPeaks_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=
   grid2[1,2] <- f1_base_size_edt <- gedit(text="18", width=4, container=grid2)
   
   grid3 <- glayout(container = f1, spacing = 1)
-  grid3[1,1] <- glabel(text="Colour palette:", container=grid3)
+  grid3[1,1] <- glabel(text="Color palette:", container=grid3)
   grid3[1,2] <- f1_palette_drp <- gcombobox(items=.palette,
                                             selected = 1,
                                             editable = FALSE,

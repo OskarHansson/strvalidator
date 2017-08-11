@@ -13,7 +13,7 @@ calculateResultType(data, kit = NULL, add.missing.marker = TRUE,
 
 \item{kit}{character string or integer defining the kit.}
 
-\item{add.missing.marker}{logical, defualt is TRUE which adds missing markers.}
+\item{add.missing.marker}{logical, default is TRUE which adds missing markers.}
 
 \item{threshold}{integer indicating the dropout threshold.}
 

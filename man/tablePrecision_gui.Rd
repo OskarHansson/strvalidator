@@ -8,7 +8,7 @@ tablePrecision_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
   parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames and save result.}
+\item{env}{environment in which to search for data frames and save result.}
 
 \item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 

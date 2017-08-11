@@ -8,7 +8,7 @@ plotStutter_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
   parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames.}
+\item{env}{environment in which to search for data frames.}
 
 \item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 
@@ -26,7 +26,7 @@ GUI simplifying the creation of plots from stutter data.
 Select data to plot in the drop-down menu. Check that the correct
 kit has been detected. Plot stutter data by parent allele or by peak height. 
 Automatic plot titles can be replaced by custom titles.
-A name for the result is automatiaclly suggested.
+A name for the result is automatically suggested.
 The resulting plot can be saved as either a plot object or as an image.
 }
 \seealso{

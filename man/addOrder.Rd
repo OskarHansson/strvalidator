@@ -11,7 +11,7 @@ addOrder(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
 \item{data}{data frame or vector.}
 
 \item{kit}{string representing the forensic STR kit used.
-Default is NULL and autodetection of kit will be attempted.}
+Default is NULL and automatic detection of kit will be attempted.}
 
 \item{overwrite}{logical if TRUE and column exist it will be overwritten.}
 

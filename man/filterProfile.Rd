@@ -33,10 +33,10 @@ TRUE keep loci/sample even if no matching allele.}
 \item{qs.rm}{logical TRUE removes quality sensors defined by 'kit'.}
 
 \item{kit}{character string defining the kit used.
-If NULL autodetection will be attempted.}
+If NULL automatic detection will be attempted.}
 
 \item{filter.allele}{logical TRUE filter known alleles. FALSE increase the
-performance if only sex markers or quality sensors shold be removed.}
+performance if only sex markers or quality sensors should be removed.}
 
 \item{debug}{logical indicating printing debug information.}
 }

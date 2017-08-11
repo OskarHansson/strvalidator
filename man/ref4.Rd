@@ -10,8 +10,8 @@ data(ref4)
 }
 \description{
 A slimmed dataset containing reference profiles for source samples in set4.
-Reference 'A2' has douoble entries for homozygotes.
+Reference 'A2' has double entries for homozygotes.
 Reference 'F2' has single entries for homozygotes.
-Reference 'bc' has douoble entries for homozygotes, and lower case sample name.
+Reference 'bc' has double entries for homozygotes, and lower case sample name.
 }
 \keyword{datasets}

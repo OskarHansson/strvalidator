@@ -41,7 +41,7 @@
 #' and a defined analysis range around the true allele.
 #' 
 #' NB! Off-ladder alleles ('OL') is NOT included in the analysis.
-#' NB! Labelled pull-ups or artefacts within stutter range IS included
+#' NB! Labeled pull-ups or artefacts within stutter range IS included
 #'  in the analysis. 
 #' 
 #' There are three levels of allowed overlap (interference).

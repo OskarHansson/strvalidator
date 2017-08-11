@@ -25,7 +25,7 @@ used to indicate heterozygotes with 1 and homozygotes with 0.}
 }
 \value{
 data.frame the original data frame with optional columns 'Observed',
-'Copies', and 'Heterozyous'.
+'Copies', and 'Heterozygous'.
 }
 \description{
 Calculates the number of alleles in each marker.

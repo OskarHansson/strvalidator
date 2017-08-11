@@ -8,7 +8,7 @@ editData_gui(env = parent.frame(), savegui = NULL, data = NULL,
   name = NULL, edit = TRUE, debug = FALSE, parent = NULL)
 }
 \arguments{
-\item{env}{environment in wich to search for data frames.}
+\item{env}{environment in which to search for data frames.}
 
 \item{savegui}{logical indicating if GUI settings should be saved in the environment.}
 
@@ -30,7 +30,7 @@ TRUE
 GUI to edit and view data frames.
 }
 \details{
-Select a data frame from the dropdown to view or edit a dataset.
+Select a data frame from the drop-down to view or edit a dataset.
 It is possible to save as a new dataframe. To enable sorting by clicking the
 column headers the view mode must be used (i.e. edit = FALSE). There is an
 option to limit the number of rows shown that can be used to preview large

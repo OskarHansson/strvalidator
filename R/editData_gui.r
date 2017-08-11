@@ -8,7 +8,7 @@
 # 07.08.2017: Added audit trail.
 # 17.07.2017: Fixed "Error in if (nchar(text) > 0) set_value(text) : argument is of length zero"
 # 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
+# 13.07.2017: Fixed narrow drop-down with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 07.07.2017: Replaced gWidgets:: with gWidgets2::
@@ -32,13 +32,13 @@
 #' @description
 #' GUI to edit and view data frames.
 #'
-#' @details Select a data frame from the dropdown to view or edit a dataset.
+#' @details Select a data frame from the drop-down to view or edit a dataset.
 #' It is possible to save as a new dataframe. To enable sorting by clicking the
 #' column headers the view mode must be used (i.e. edit = FALSE). There is an
 #' option to limit the number of rows shown that can be used to preview large
 #' datasets that may otherwise cause performance problems. Attributes of the
 #' dataset can be views in a separate window.
-#' @param env environment in wich to search for data frames.
+#' @param env environment in which to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param data data.frame for instant viewing.
 #' @param name character string with the name of the provided dataset.

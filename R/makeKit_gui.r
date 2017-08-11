@@ -32,7 +32,7 @@
 #' edit the short and full name of existing kits or removing kits.
 #' The gender marker of each kits is auto detected but can be changed manually.
 #' #' NB! Short name must be unique.
-#' @param env environment in wich to search for data frames.
+#' @param env environment in which to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' [Not currently used]
 #' @param debug logical indicating printing debug information.

@@ -16,7 +16,7 @@ calculateLb(data, ref = NULL, option = "prop", by.dye = FALSE,
 If provided alleles matching 'ref' will be extracted from 'data'
 (see \code{\link{filterProfile}}).}
 
-\item{option}{character: 'prop' for proportional Lb, 'norm' for normalised
+\item{option}{character: 'prop' for proportional Lb, 'norm' for normalized
 LB, and 'cent' for centred Lb.}
 
 \item{by.dye}{logical. Default is FALSE for global Lb, if TRUE Lb is calculated
@@ -35,7 +35,7 @@ will be removed.}
 given a peak height equal to the limit of detection threshold, or zero.
 Default is NULL indicating that NA will be treated as missing values.}
 
-\item{kit}{character providing the kit name. Attempt to autodetect if NULL.}
+\item{kit}{character providing the kit name. Attempt to auto detect if NULL.}
 
 \item{ignore.case}{logical indicating if sample matching should ignore case.
 Only used if 'ref' is provided and 'data' is filtered.}
@@ -57,7 +57,7 @@ Calculates the inter-locus balance.
 }
 \details{
 The inter-locus balance (Lb), or profile balance, can be calculated
-as a proportion of the whole, normalised, or as centred quantities (as in
+as a proportion of the whole, normalized, or as centred quantities (as in
 the reference but using the mean total marker peak height instead of H).
 Lb can be calculated globally across the complete profile or within each dye
 channel. All markers must be present in each sample. Data can be unfiltered

@@ -60,8 +60,7 @@
 #' to multiple file import option.
 #' @param auto.trim logical indicating if dataset should be trimmed.
 #' @param trim.samples character vector with sample names to trim.
-#' @param trim.invert logical indicating if samples should be keept (TRUE) or
-#'  removed (FALSE).
+#' @param trim.invert logical to keep (TRUE) or remove (FALSE) samples.
 #' @param auto.slim logical indicating if dataset should be slimmed.
 #' @param slim.na logical indicating if rows without data should remain.
 #' @param na.strings character vector with strings to be replaced by NA.
