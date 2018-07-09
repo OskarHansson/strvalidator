@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -143,7 +144,12 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
       f1_numerator_drp[,] <- unique(c(.markerDropDefault, .gData$Marker))
       f1_denominator_drp[,] <- unique(c(.markerDropDefault, .gData$Marker))
       f1_group_drp[,] <- unique(c(.groupDropDefault, names(.gData)))
-
+      
+      # Select default value.
+      svalue(f1_numerator_drp, index=TRUE) <- 1
+      svalue(f1_denominator_drp, index=TRUE) <- 1
+      svalue(f1_group_drp, index=TRUE) <- 1
+      
       # Suggest a name for the result.
       svalue(f4_save_edt) <- paste(val_obj, "_ratio", sep="")
       
@@ -160,6 +166,11 @@ calculateRatio_gui <- function(env=parent.frame(), savegui=NULL,
       f1_numerator_drp[,] <- .markerDropDefault
       f1_denominator_drp[,] <- .markerDropDefault
       f1_group_drp[,] <- .groupDropDefault
+      
+      # Select default value.
+      svalue(f1_numerator_drp, index=TRUE) <- 1
+      svalue(f1_denominator_drp, index=TRUE) <- 1
+      svalue(f1_group_drp, index=TRUE) <- 1
       
     }
     
