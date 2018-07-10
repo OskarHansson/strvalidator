@@ -1,10 +1,12 @@
-Version 2.0.0.9002
+Version 2.0.0.9003
 ------------------------------------------------------------------------------
 
 * Bug fixes and improvements with the most significant listed below:
   - calculateRatio_gui
   Fixed dropdown gets blank when dataset is selected.
   - addData_gui
+  Fixed dropdown gets blank when dataset is selected.
+  - cropData_gui
   Fixed dropdown gets blank when dataset is selected.
   
 
