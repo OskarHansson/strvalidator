@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.07.2018: Fixed error replacing NA's.
 # 10.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -442,7 +443,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
         if(val_task == 1){  # crop
           .gData <<- .gData[!is.na(.gData[[val_column]]), ]
         } else {  # replace
-          .gData[val_column][is.na(.gData[[val_column]])] <<- val_new
+          .gData[val_column][is.na(.gData[val_column])] <<- val_new
         }
         
       } else if (val_operator == 8){  # is not NA
@@ -450,7 +451,7 @@ cropData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=N
         if(val_task == 1){  # crop
           .gData <<- .gData[is.na(.gData[[val_column]]), ]
         } else {  # replace
-          .gData[val_column][!is.na(.gData[[val_column]])] <<- val_new
+          .gData[val_column][!is.na(.gData[val_column])] <<- val_new
         }
         
       } else if (val_operator == 9){  # containing
