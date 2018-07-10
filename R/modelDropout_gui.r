@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.07.2018: Converts dependent and explanatory values to numeric if necessary.
 # 18.07.2017: Fixed issue with infinite loop for the 'model' button.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed expanded 'gexpandgroup'.
@@ -25,7 +26,6 @@
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 28.06.2014: Changed notation on plot to be more correct.
-# 08.05.2014: Implemented 'checkDataset'.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -725,6 +725,16 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     if(val_h){
       # Use average peak height.
       obsData$Exp <- .gData$H
+    }
+    
+    # Check if numeric.
+    if(!is.numeric(obsData$Dep)){
+      obsData$Dep <- as.numeric(obsData$Dep)
+      message("Dependent variable converted to numeric.")
+    }
+    if(!is.numeric(obsData$Exp)){
+      obsData$Exp <- as.numeric(obsData$Exp)
+      message("Exploratory variable converted to numeric.")
     }
     
     # Clean -------------------------------------------------------------------
