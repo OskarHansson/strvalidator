@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -137,19 +138,34 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       samples <- length(unique(.gDataDest$Sample.Name))
       svalue(g0_samples_lbl) <- paste(" ", samples, "samples")
       svalue(f2_save_edt) <- paste(.gDataDestName, "_new", sep="")
+      
+      # Update dropdown menues.
       f1_key_drp[] <- c(.gDefaultDrp,
                         intersect(.gDataDestColumns,.gDataSourceColumns))
       f1_key2_drp[] <- c(.gDefaultDrp,
                         intersect(.gDataDestColumns,.gDataSourceColumns))
       
+      # Select default value.
+      svalue(f1_key_drp, index=TRUE) <- 1
+      svalue(f1_key2_drp, index=TRUE) <- 1
+      
+      
     } else {
       
+      # Reset components.
       .gDataDest <<- NULL
       svalue(dataset_drp, index=TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
+      
+      # Update dropdown menues.
       f1_key_drp[] <- .gDefaultDrp
       f1_key2_drp[] <- .gDefaultDrp
+      
+      # Select default value.
+      svalue(f1_key_drp, index=TRUE) <- 1
+      svalue(f1_key2_drp, index=TRUE) <- 1
+      
     }
     
   } )  
@@ -182,6 +198,7 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       ref <- length(unique(.gDataSource$Sample.Name))
       svalue(g0_ref_lbl) <- paste(" ", ref, "samples")
       
+      # Update dropdown menues.
       f1_key_drp[] <- c(.gDefaultDrp,
                         intersect(.gDataDestColumns,.gDataSourceColumns))
         
@@ -190,15 +207,27 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       
       f1_col_drp[] <- c(.gDefaultDrp, .gDataSourceColumns)
       
+      # Select default value.
+      svalue(f1_key_drp, index=TRUE) <- 1
+      svalue(f1_key2_drp, index=TRUE) <- 1
+      svalue(f1_col_drp, index=TRUE) <- 1
+      
     } else {
       
       .gDataSource <<- NULL
       svalue(refset_drp, index=TRUE) <- 1
       svalue(g0_ref_lbl) <- " 0 samples"
+      
+      # Update dropdown menues.
       f1_key_drp[] <- .gDefaultDrp
       f1_key2_drp[] <- .gDefaultDrp
       f1_col_drp[] <- .gDefaultDrp
-      
+
+      # Select default value.
+      svalue(f1_key_drp, index=TRUE) <- 1
+      svalue(f1_key2_drp, index=TRUE) <- 1
+      svalue(f1_col_drp, index=TRUE) <- 1
+
     }
     
   } )  
