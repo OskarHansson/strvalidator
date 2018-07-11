@@ -1,4 +1,4 @@
-Version 2.0.0.9005
+Version 2.0.0.9006
 ------------------------------------------------------------------------------
 
 * Bug fixes and improvements with the most significant listed below:
@@ -6,11 +6,15 @@ Version 2.0.0.9005
   Fixed dropdown gets blank when dataset is selected.
   - addData_gui
   Fixed dropdown gets blank when dataset is selected.
+  Made 'Save as' textbox expandable.
   - cropData_gui
   Fixed dropdown gets blank when dataset is selected.
   Fixed error replacing NA's.
   - modelDropout_gui
   Converts dependent and explanatory values to numeric if necessary.
+  - columns_gui
+  Fixed field 'Fixed value' not always disabled when it should.
+
 
   
 

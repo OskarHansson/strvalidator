@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.07.2018: Fixed field 'Fixed value' not always disabled when it should.
 # 10.08.2017: Fixed column dropdowns lose selection after selecting dataset.
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -42,6 +43,7 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
+  .columnActionDefault <- "<Select action>"
   .columnDropDefault <- "<Select column>"
   
   if(debug){
@@ -186,20 +188,21 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   } )
   
   addHandlerChanged(f1g1_col2_drp, handler = function (h, ...) {
-    
-    val_col <- svalue(f1g1_col2_drp)
-    
-    # Check if column exist.
-    ok <- val_col %in% names(.gData)
 
-    if(length(ok)>0){
-      # Enable widgets.
-      if(ok){
-        enabled(f3g1_val_edt) <- FALSE
-      } else {
-        enabled(f3g1_val_edt) <- TRUE
+    if(svalue(f1g1_col2_drp) %in% names(.gData)) {
+      # If an existing colum gets selected.
+
+      if(svalue(f3g1_action_drp) %in% "substr"){
+        # Check if 'substr' is selected.
+        
+        # Reset action dropdown.
+        svalue(f3g1_action_drp, index=TRUE) <- 1
+        
       }
+      
     }
+    
+    .updateGui()
     
   } )
   
@@ -219,7 +222,7 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   f3g1[3,1] <- glabel(text="Action:", container=f3g1)
   
-  action_items <- c("&","+","*","-", "/", "substr")
+  action_items <- c(.columnActionDefault, "&", "+", "*", "-", "/", "substr")
   f3g1[3,2] <- f3g1_action_drp <- gcombobox(items=action_items, selected=1,
                                             editable=FALSE, container=f3g1,
                                             ellipsize = "none")
@@ -235,6 +238,13 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
 
   addHandlerChanged(f3g1_action_drp, handler = function (h, ...) {
     
+    if(svalue(f3g1_action_drp) %in% "substr"){
+      
+      # Reset column 2 if 'substr' is selected.
+      svalue(f1g1_col2_drp, index=TRUE) <- 1
+
+    }
+
     .updateGui()
 
   } )
@@ -312,18 +322,30 @@ columns_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   .updateGui <- function(){
     
-    val_action <- svalue(f3g1_action_drp)
+    substr_selected <- svalue(f3g1_action_drp) %in% "substr"
+    no_action <- svalue(f3g1_action_drp) %in% .columnActionDefault
+    second_col_selected <- svalue(f1g1_col2_drp) %in% names(.gData)
     
-    if(val_action %in% "substr"){
+    if(substr_selected || second_col_selected ){
       enabled(f3g1_val_edt) <- FALSE
+    } else {
+      enabled(f3g1_val_edt) <- TRUE
+    }
+
+    if(substr_selected){
       enabled(f3g1_start_edt) <- TRUE
       enabled(f3g1_stop_edt) <- TRUE
     } else {
-      enabled(f3g1_val_edt) <- TRUE
       enabled(f3g1_start_edt) <- FALSE
       enabled(f3g1_stop_edt) <- FALSE
     }
-
+    
+    if(no_action){
+      enabled(combine_btn) <- FALSE
+    } else {
+      enabled(combine_btn) <- TRUE
+    }
+    
   }
   
   .loadSavedSettings <- function(){

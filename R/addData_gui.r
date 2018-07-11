@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.07.2018: 'Save as' textbox expandable.
 # 10.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -309,7 +310,7 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text="", container=f2)
+  f2_save_edt <- gedit(text="", container=f2, expand = TRUE)
 
   # BUTTON ####################################################################
   
