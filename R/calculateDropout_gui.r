@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.07.2018: 'Save as' textbox expandable.
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -23,7 +24,6 @@
 # 16.01.2014: Adding 'option' for drop-out scoring method.
 # 13.11.2013: Removed 'allele' argument in call.
 # 07.11.2013: Fixed suggested LDT (as.numeric)
-# 27.10.2013: Fixed option 'ignore case' not passed to 'check subset'.
 
 #' @title Calculate Dropout Events
 #'
@@ -297,7 +297,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f2)
   
-  f2_save_edt <- gedit(text = "", expad = TRUE, container = f2)
+  f2_save_edt <- gedit(text = "", expad = TRUE, container = f2, expand = TRUE)
 
   # BUTTON ####################################################################
   
@@ -411,7 +411,7 @@ calculateDropout_gui <- function(env=parent.frame(), savegui=NULL,
         
         message("Average peak height calculated.")
 
-        # Add heterozygote indicator to dataset.
+        # Add average peak height to dataset.
         datanew <- addData(data=datanew, new.data=dfH,
                           by.col="Sample.Name", then.by.col=NULL,
                           exact=TRUE, ignore.case=val_ignore_case,
