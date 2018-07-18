@@ -20,7 +20,8 @@ if (base::getRversion() >= "2.15.1") {
 ## calculateAllele, calculateAT, calculateAT_gui, calculateAT6,
 ## calculateAT6_gui, plotBalance_gui, calculateLb, calculateRatio,
 ## generateEPG, calculateSlope, calculateAllele, plotStutter_gui,
-## calculateCopies, calculateHeight, plotContamination, calculateHb
+## calculateCopies, calculateHeight, plotContamination, calculateHb,
+## plotGroups_gui
 if (base::getRversion() >= "2.15.1") {
   utils::globalVariables(c("Height","Masked","Sample.File.Name","Dye",
                            "Hb","Marker","Lb", "H", "Amount", "Size",
@@ -30,5 +31,5 @@ if (base::getRversion() >= "2.15.1") {
                            "Allele.Proportion", "Sum.Peaks", "Allele.Frequency",
                            "Ratio", "Observed", "N.Alleles", "Copies",
                            "Expected", "Proportion", "Samples", "Delta",
-                           "HMW", "LMW", "Small", "Large"))
+                           "HMW", "LMW", "Small", "Large", "Axis", "By", "N"))
 }
