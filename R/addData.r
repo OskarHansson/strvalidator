@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.07.2018: Changed 'warning' to 'message' for better visibility.
 # 06.08.2017: Added audit trail.
 # 06.02.2017: Fixed data saved as attributes (new.data).
 # 15.08.2016: Fixed check for data.table.
@@ -163,9 +164,8 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
                 # Add new data.
                 data[selectedData , colNamesNew[c]] <- uniqueNewData
               } else {
-                warning(paste("Ambiguous data could not be added at key",
-                              keys[k]),
-                        call. = TRUE)
+                message(paste("Ambiguous data could not be added at key", 
+                              keys[k]))
               }
             }
           }
@@ -245,9 +245,8 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
                   data[selectedData2 , colNamesNew[c2]] <- uniqueNewData
                   
                 } else {
-                  warning(paste("Ambiguous data could not be added at key",
-                                keys[k],"sub key:", keys2[k2]),
-                       call. = TRUE)
+                  message(paste("Ambiguous data could not be added at key",
+                                keys[k],"sub key:", keys2[k2]))
                 }
               }
             }

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.07.2018: Minor changes to some labels (clarity).
 # 11.07.2018: 'Save as' textbox expandable.
 # 10.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 06.08.2017: Added audit trail.
@@ -23,7 +24,6 @@
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 17.05.2013: listDataFrames() -> listObjects()
 # 09.05.2013: .result removed, added save as group.
-# 25.04.2013: First version.
 
 #' @title Add Data
 #'
@@ -248,21 +248,23 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   
   enabled(f1_ignore_chk) <- !svalue(f1_exact_chk)
   
-  glabel(text="Select key column:", container = f1, anchor=c(-1 ,0))
+  glabel(text="Select primary key column:", container = f1, anchor=c(-1 ,0))
   f1_key_drp <- gcombobox(items=.gDefaultDrp,
                           selected = 1,
                           editable = FALSE,
                           container = f1,
                           ellipsize = "none")
   
-  glabel(text="Select second key column:", container = f1, anchor=c(-1 ,0))
+  glabel(text="Select secondary key column (optional):", container = f1,
+         anchor=c(-1 ,0))
   f1_key2_drp <- gcombobox(items=.gDefaultDrp,
                           selected = 1,
                           editable = FALSE,
                           container = f1,
                           ellipsize = "none")
 
-  glabel(text="Select columns to add to the new dataset:", container = f1, anchor=c(-1 ,0))
+  glabel(text="Select columns to add to the new dataset:", container = f1,
+         anchor=c(-1 ,0))
   f1_col_drp <- gcombobox(items=.gDefaultDrp,
                            selected = 1,
                            editable = FALSE,
