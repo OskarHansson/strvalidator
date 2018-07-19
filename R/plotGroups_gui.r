@@ -371,7 +371,7 @@ plotGroups_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent
       dt <- data.table(df)
       
       # Flatten data (NB! requires single value on all rows collapsed).
-      dt <- dt[ , .(Group = unique(Group), Axis = unique(Axis)), by = By]
+      dt <- dt[ , list(Group = unique(Group), Axis = unique(Axis)), by = By]
 
       # Convert to numeric.
       if(!is.numeric(dt$Axis)){
