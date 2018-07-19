@@ -164,8 +164,8 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
                 # Add new data.
                 data[selectedData , colNamesNew[c]] <- uniqueNewData
               } else {
-                message(paste("Ambiguous data could not be added at key", 
-                              keys[k]))
+                message("Ambiguous data could not be added at key ", 
+                        keys[k], ".")
               }
             }
           }
@@ -245,8 +245,8 @@ addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
                   data[selectedData2 , colNamesNew[c2]] <- uniqueNewData
                   
                 } else {
-                  message(paste("Ambiguous data could not be added at key",
-                                keys[k],"sub key:", keys2[k2]))
+                  message("Ambiguous data could not be added at key ", keys[k],
+                          " sub key: ", keys2[k2], ".")
                 }
               }
             }
