@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.07.2018: Fixed dropdown gets blank when dataset is selected.
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -849,11 +850,13 @@ calculateAT_gui <- function(env=parent.frame(), savegui=NULL,
       
       # Populate drop list.
       f3_sample_drp[] <- c("<Select sample>", samples)
+      svalue(f3_sample_drp, index = TRUE) <- 1
       
     } else {
       
       # Populate drop list.
       f3_sample_drp[] <- c("<Select sample>")
+      svalue(f3_sample_drp, index = TRUE) <- 1
       
     }
     

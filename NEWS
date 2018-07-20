@@ -1,4 +1,4 @@
-Version 2.0.0.9009
+Version 2.0.0.9010
 ------------------------------------------------------------------------------
 
 * New functions
@@ -27,6 +27,11 @@ Version 2.0.0.9009
   Fixed field 'Fixed value' not always disabled when it should.
   - calculateDropout_gui
   Made 'Save as' textbox expandable.
+  - plotDistribution_gui
+  Fixed dropdown gets blank when dataset is selected.
+  - calculateAT_gui
+  Fixed dropdown gets blank when dataset is selected.
+  
   
 
 

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 20.07.2017: Removed unused argument 'spacing' from 'gexpandgroup'.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed expanded 'gexpandgroup'.
@@ -906,12 +907,13 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
     groups <- unique(as.character(.gData$Group))
     columns <- names(.gData)
     
-    if(!is.null(groups)){
+    if(length(groups) > 0){
       
       blockHandler(f0_group_drp)
       
       # Populate drop list.
       f0_group_drp[] <- c(.defaultGroup, groups)
+      svalue(f0_group_drp, index = TRUE) <- 1
       
       unblockHandler(f0_group_drp)
       
@@ -934,6 +936,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       
       # Populate drop list.
       f0_column_drp[] <- c(.defaultColumn, columns)
+      svalue(f0_column_drp, index = TRUE) <- 1
       
       unblockHandler(f0_column_drp)
 
@@ -944,7 +947,7 @@ plotDistribution_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, 
       # Reset drop list and select first item.
       f0_column_drp[] <- c(.defaultColumn)
       svalue(f0_column_drp, index = TRUE) <- 1
-      
+
       unblockHandler(f0_column_drp)
 
     }
