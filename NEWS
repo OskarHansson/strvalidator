@@ -1,4 +1,4 @@
-Version 2.0.0.9010
+Version 2.0.0.9011
 ------------------------------------------------------------------------------
 
 * New functions
@@ -31,11 +31,11 @@ Version 2.0.0.9010
   Fixed dropdown gets blank when dataset is selected.
   - calculateAT_gui
   Fixed dropdown gets blank when dataset is selected.
-  
-  
+  - tablePrecision_gui
+  Made 'Save as' textbox expandable.
+  - plotPrecision_gui
+  Made 'Save as' textbox expandable.
 
-
-  
 
 Version 2.0.0
 ------------------------------------------------------------------------------

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.07.2018: Made 'Save as' textbox expandable.
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -436,7 +437,7 @@ tablePrecision_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f4)
   
-  f4_save_edt <- gedit(text="", container=f4)
+  f4_save_edt <- gedit(text="", expand = TRUE, container=f4)
   
   # BUTTON ####################################################################
   

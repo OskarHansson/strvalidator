@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.07.2018: Made 'Save as' textbox expandable.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed expanded 'gexpandgroup'.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -23,7 +24,6 @@
 # 06.02.2014: Implemented new dot/box plot and plot all data (not only min/max)
 # 22.01.2014: Fixed bug, different y-axis max value for complex plots.
 # 20.01.2014: Implemented ggsave with workaround for complex plots.
-# 07.12.2013: First version.
 
 #' @title Plot Precision
 #'
@@ -450,7 +450,7 @@ plotPrecision_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   
   glabel(text="Name for result:", container=f5)
   
-  f5_save_edt <- gedit(text="", container=f5)
+  f5_save_edt <- gedit(text="", expand = TRUE, container=f5)
   
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
   
