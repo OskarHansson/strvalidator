@@ -1,4 +1,4 @@
-Version 2.0.0.9011
+Version 2.0.0.9012
 ------------------------------------------------------------------------------
 
 * New functions
@@ -35,6 +35,13 @@ Version 2.0.0.9011
   Made 'Save as' textbox expandable.
   - plotPrecision_gui
   Made 'Save as' textbox expandable.
+  - export_gui
+  Fixed initial export error and improved error message.
+  - modelDropout_gui
+  Added option to dump model data for manual inspection and verification.
+  Changed default P(D) to 0.01 (previous 0.05).
+  - plotKit_gui
+  Fixed x title and size not saved.
 
 
 Version 2.0.0

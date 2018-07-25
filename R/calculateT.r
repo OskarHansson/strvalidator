@@ -1,3 +1,11 @@
+################################################################################
+# TODO LIST
+# TODO: ...
+
+################################################################################
+# CHANGE LOG (last 20 changes)
+# 17.07.2018: First version.
+
 #' @title Calculate Stochastic Threshold
 #'
 #' @description
@@ -119,7 +127,7 @@ calculateT <- function(data, log.model=FALSE, p.dropout=0.01, pred.int=0.95, deb
   n_drop <- length(data$Exp[data$Dep==1])
   n_obs <- length(data$Exp[data$Dep==0])
   
-  message("Observations (explanary variable) n=", n_total)
+  message("Observations (explanatory variable) n=", n_total)
   message("Observed values min=", val_pred_xmin, " and max=", val_pred_xmax)
   message("Observations with dropout n=", n_drop)
   message("Observations without dropout n=", n_obs)

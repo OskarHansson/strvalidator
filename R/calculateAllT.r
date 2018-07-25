@@ -1,3 +1,12 @@
+################################################################################
+# TODO LIST
+# TODO: ...
+
+################################################################################
+# CHANGE LOG (last 20 changes)
+# 25.07.2018: Added rm.sex option passed to .clean function, and added model message.
+# 17.07.2018: First version.
+
 #' @title Calculate Stochastic Thresholds
 #'
 #' @description
@@ -34,6 +43,7 @@
 #' @param p.dropout numeric accepted risk of dropout at the stochastic threshold. Default=0.01.
 #' @param p.conservative numeric accepted risk that the actual probability of 
 #' dropout is >p.dropout at the conservative estimate. Default=0.05.
+#' @param rm.sex logical default=TRUE removes sex markers defined for the given \code{kit}.
 #' @param debug logical indicating printing debug information.
 #' 
 #' @return TRUE
@@ -46,7 +56,7 @@
 #'  \code{\link{modelDropout_gui}}, \code{\link{plotDropout_gui}}
 
 
-calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, debug=FALSE){
+calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, rm.sex=TRUE, debug=FALSE){
 
   # CHECK DATA ----------------------------------------------------------------
   
@@ -119,17 +129,18 @@ calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, debug=
     message(paste(nrow(data), " rows.", sep = ""))
     
     # Remove homozygous loci
-    if("Heterozygous" %in% names(data)){
+    if(any(data$Heterozygous == 1, na.rm = TRUE)){
       n0 <- nrow(data)
-      data <- data[!is.na(data$Dep) & data$Heterozygous == 1, ]
+      data <- data[is.na(data$Heterozygous) | data$Heterozygous == 1, ]
       n1 <- nrow(data)
       message(paste(n1, " rows after removing ", n0 - n1, " homozygous rows.", sep = ""))
     }
     
-    # Remove locus droput.
-    if("Dep" %in% names(data)){
+    # Remove locus droput. NB! Only for MethodL, other methods can use data below LDT.
+    # Therefore we cannot use the 'Dropout' column.
+    if(any(data$Dep == 2, na.rm = TRUE)){
       n0 <- nrow(data)
-      data <- data[!is.na(data$Dep) & data$Dep != 2, ]
+      data <- data[is.na(data$Dep) | data$Dep != 2, ]
       n1 <- nrow(data)
       message(paste(n1, " rows after removing ", n0 - n1, " locus drop-out rows.", sep = ""))
     }
@@ -139,7 +150,7 @@ calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, debug=
       n0 <- nrow(data)
       sexMarkers <- getKit(kit=kit, what="Sex.Marker")
       for(m in seq(along=sexMarkers)){
-        data <- data[!is.na(data$Dep) & data$Marker != sexMarkers[m], ]
+        data <- data[data$Marker != sexMarkers[m], ]
       }
       n1 <- nrow(data)
       message(paste(n1, " rows after removing ", n0 - n1, " sex marker rows.", sep = ""))
@@ -215,28 +226,32 @@ calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, debug=
   # Random.
   data$Dep <- data$MethodX
   data$Exp <- data$Height
-  res <- calculateT(data = .clean(data), log.model = FALSE, 
+  message("Calculating Random (Ph)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 1, title = "Random (Ph)", res = res)
   
   # LMW
   data$Dep <- data$Method1
   data$Exp <- data$Height
-  res <- calculateT(data = .clean(data), log.model = FALSE, 
+  message("Calculating LMW (Ph)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 2, title = "LMW (Ph)", res = res)
   
   # HMW
   data$Dep <- data$Method2
   data$Exp <- data$Height
-  res <- calculateT(data = .clean(data), log.model = FALSE, 
+  message("Calculating HMW (Ph)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 3, title = "HMW (Ph)", res = res)
   
   # Locus
   data$Dep <- data$MethodL
   data$Exp <- data$MethodL.Ph
-  res <- calculateT(data = .clean(data), log.model = FALSE, 
+  message("Calculating Locus (Ph)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 4, title = "Locus (Ph)", res = res)
   
@@ -245,28 +260,32 @@ calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, debug=
   # Random.
   data$Dep <- data$MethodX
   data$Exp <- data$H
-  res <- calculateT(data = .clean(data), log.model = FALSE, 
+  message("Calculating Random (H)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 5, title = "Random (H)", res = res)
   
   # LMW
   data$Dep <- data$Method1
   data$Exp <- data$H
-  res <- calculateT(data = .clean(data), log.model = FALSE, 
+  message("Calculating LMW (H)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 6, title = "LMW (H)", res = res)
   
   # HMW
   data$Dep <- data$Method2
   data$Exp <- data$H
-  res <- calculateT(data = .clean(data), log.model = FALSE, 
+  message("Calculating HMW (H)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 7, title = "HMW (H)", res = res)
   
   # Locus
   data$Dep <- data$MethodL
   data$Exp <- data$H
-  res <- calculateT(data = .clean(data), log.model = FALSE, 
+  message("Calculating Locus (H)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 8, title = "Locus (H)", res = res)
   
@@ -275,28 +294,32 @@ calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, debug=
   # Random.
   data$Dep <- data$MethodX
   data$Exp <- data$Height
-  res <- calculateT(data = .clean(data), log.model = TRUE, 
+  message("Calculating Random log(Ph)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 9, title = "Random log(Ph)", res = res)
   
   # LMW
   data$Dep <- data$Method1
   data$Exp <- data$Height
-  res <- calculateT(data = .clean(data), log.model = TRUE, 
+  message("Calculating LMW log(Ph)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 10, title = "LMW log(Ph)", res = res)
   
   # HMW
   data$Dep <- data$Method2
   data$Exp <- data$Height
-  res <- calculateT(data = .clean(data), log.model = TRUE, 
+  message("Calculating HMW log(Ph)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 11, title = "HMW log(Ph)", res = res)
   
   # Locus
   data$Dep <- data$MethodL
   data$Exp <- data$MethodL.Ph
-  res <- calculateT(data = .clean(data), log.model = TRUE, 
+  message("Calculating Locus log(Ph)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 12, title = "Locus log(Ph)", res = res)
   
@@ -305,28 +328,32 @@ calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, debug=
   # Random.
   data$Dep <- data$MethodX
   data$Exp <- data$H
-  res <- calculateT(data = .clean(data), log.model = TRUE,
+  message("Calculating Random log(H)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 13, title = "Random log(H)", res = res)
   
   # LMW
   data$Dep <- data$Method1
   data$Exp <- data$H
-  res <- calculateT(data = .clean(data), log.model = TRUE, 
+  message("Calculating LMW log(H)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 14, title = "LMW log(H)", res = res)
   
   # HMW
   data$Dep <- data$Method2
   data$Exp <- data$H
-  res <- calculateT(data = .clean(data), log.model = TRUE, 
+  message("Calculating HMW log(H)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 15, title = "HMW log(H)", res = res)
   
   # Locus
   data$Dep <- data$MethodL
   data$Exp <- data$H
-  res <- calculateT(data = .clean(data), log.model = TRUE, 
+  message("Calculating Locus log(H)...")
+  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE, 
                     p.dropout = p.dropout, pred.int = 1 - p.conservative)
   df <- .store(df = df, index = 16, title = "Locus log(H)", res = res)
   

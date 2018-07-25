@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.07.2018: Fixed x title and size not saved.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Added temporary fix for issue #93: https://github.com/jverzani/gWidgets2/issues/93#issue-241974596
 # 07.07.2017: Removed argument 'border' for 'gbutton'
@@ -401,6 +402,12 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       if(exists(".strvalidator_plotKit_gui_title_size", envir=env, inherits = FALSE)){
         svalue(title_size_edt) <- get(".strvalidator_plotKit_gui_title_size", envir=env)
       }
+      if(exists(".strvalidator_plotKit_gui_x_title", envir=env, inherits = FALSE)){
+        svalue(x_title_edt) <- get(".strvalidator_plotKit_gui_x_title", envir=env)
+      }
+      if(exists(".strvalidator_plotKit_gui_title_size", envir=env, inherits = FALSE)){
+        svalue(x_title_size_edt) <- get(".strvalidator_plotKit_gui_x_title_size", envir=env)
+      }
       if(exists(".strvalidator_plotKit_gui_kit_size", envir=env, inherits = FALSE)){
         svalue(kit_size_edt) <- get(".strvalidator_plotKit_gui_kit_size", envir=env)
       }
@@ -432,6 +439,8 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       assign(x=".strvalidator_plotKit_gui_savegui", value=svalue(savegui_chk), envir=env)
       assign(x=".strvalidator_plotKit_gui_title", value=svalue(title_edt), envir=env)
       assign(x=".strvalidator_plotKit_gui_title_size", value=svalue(title_size_edt), envir=env)
+      assign(x=".strvalidator_plotKit_gui_x_title", value=svalue(x_title_edt), envir=env)
+      assign(x=".strvalidator_plotKit_gui_x_title_size", value=svalue(x_title_size_edt), envir=env)
       assign(x=".strvalidator_plotKit_gui_kit_size", value=svalue(kit_size_edt), envir=env)
       assign(x=".strvalidator_plotKit_gui_kit_spacing", value=svalue(kit_spacing_spb), envir=env)
       assign(x=".strvalidator_plotKit_gui_marker_size", value=svalue(marker_size_edt), envir=env)
@@ -448,6 +457,12 @@ plotKit_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
       }
       if(exists(".strvalidator_plotKit_gui_title_size", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotKit_gui_title_size", envir = env)
+      }
+      if(exists(".strvalidator_plotKit_gui_x_title", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotKit_gui_x_title", envir = env)
+      }
+      if(exists(".strvalidator_plotKit_gui_x_title_size", envir=env, inherits = FALSE)){
+        remove(".strvalidator_plotKit_gui_x_title_size", envir = env)
       }
       if(exists(".strvalidator_plotKit_gui_kit_size", envir=env, inherits = FALSE)){
         remove(".strvalidator_plotKit_gui_kit_size", envir = env)

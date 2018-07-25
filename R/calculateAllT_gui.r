@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.07.2018: Added option to remove sex markers.
 # 17.07.2018: First version.
 
 #' @title Calculate Stochastic Thresholds
@@ -163,6 +164,9 @@ calculateAllT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
   f1_p_conservative <- gspinbutton(from = 0, to = 1, by = 0.01,
                               value = 0.05, container = f1g2)
 
+  f1_sex_chk <- gcheckbox(text="Remove sex markers", checked = TRUE,
+                          container = f1)
+  
   addHandlerChanged(f1_p_dropout, handler = function(h, ...) {
 
     label_p <- svalue(f1_p_dropout)
@@ -196,6 +200,7 @@ calculateAllT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
     val_name <- svalue(f2_save_edt)
     val_p <- svalue(f1_p_dropout)
     val_pcons <- svalue(f1_p_conservative)
+    val_sex <- svalue(f1_sex_chk)
 
     if(debug){
       print("val_data")
@@ -206,6 +211,8 @@ calculateAllT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       print(val_p)
       print("val_pcons")
       print(val_pcons)
+      print("val_sex")
+      print(val_sex)
     }
 
     # Change button.
@@ -216,16 +223,17 @@ calculateAllT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
 
     # Calculate stochastic thresholds. 
     datanew <- calculateAllT(data = val_data, kit = val_kit, p.dropout = val_p,
-                             p.conservative = val_pcons, debug = debug)
+                             p.conservative = val_pcons, rm.sex = val_sex,
+                             debug = debug)
     
     
     # Add attributes to result.
     attr(datanew, which="kit") <- val_kit
 
     # Create key-value pairs to log.
-    keys <- list("data", "kit", "p.dropout", "p.conservative")
+    keys <- list("data", "kit", "p.dropout", "p.conservative", "rm.sex")
     
-    values <- list(val_data_name, val_kit, val_p, val_pcons)
+    values <- list(val_data_name, val_kit, val_p, val_pcons, val_sex)
     
     # Update audit trail.
     datanew <- auditTrail(obj = datanew, key = keys, value = values,
@@ -272,7 +280,10 @@ calculateAllT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       if(exists(".strvalidator_calculateAllT_gui_pcons", envir = env, inherits = FALSE)){
         svalue(f1_p_conservative) <- get(".strvalidator_calculateAllT_gui_pcons", envir = env)
       }
-
+      if(exists(".strvalidator_calculateAllT_gui_sex", envir = env, inherits = FALSE)){
+        svalue(f1_sex_chk) <- get(".strvalidator_calculateAllT_gui_sex", envir = env)
+      }
+      
       if(debug){
         print("Saved settings loaded!")
       }
@@ -288,7 +299,8 @@ calculateAllT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       assign(x = ".strvalidator_calculateAllT_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateAllT_gui_pdrop", value = svalue(f1_p_dropout), envir = env)
       assign(x = ".strvalidator_calculateAllT_gui_pcons", value = svalue(f1_p_conservative), envir = env)
-
+      assign(x = ".strvalidator_calculateAllT_gui_sex", value = svalue(f1_sex_chk), envir = env)
+      
     } else { # or remove all saved values if false.
       
       if(exists(".strvalidator_calculateAllT_gui_savegui", envir = env, inherits = FALSE)){
@@ -300,7 +312,10 @@ calculateAllT_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, par
       if(exists(".strvalidator_calculateAllT_gui_pcons", envir = env, inherits = FALSE)){
         remove(".strvalidator_calculateAllT_gui_pcons", envir = env)
       }
-
+      if(exists(".strvalidator_calculateAllT_gui_sex", envir = env, inherits = FALSE)){
+        remove(".strvalidator_calculateAllT_gui_sex", envir = env)
+      }
+      
       if(debug){
         print("Settings cleared!")
       }

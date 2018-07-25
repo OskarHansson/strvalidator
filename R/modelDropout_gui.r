@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.07.2018: Added option to dump model data. Changed default P(D) to 0.01.
 # 10.07.2018: Converts dependent and explanatory values to numeric if necessary.
 # 18.07.2017: Fixed issue with infinite loop for the 'model' button.
 # 13.07.2017: Fixed issue with button handlers.
@@ -25,7 +26,6 @@
 # 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
-# 28.06.2014: Changed notation on plot to be more correct.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -44,7 +44,8 @@
 #' Options 1-3 may discard many dropout events while option 4 catches all
 #' drop-out events. On the other hand options 1-3 can score events below
 #' the LDT, while option 4 cannot, making accurate predictions possible
-#' below the LDT.
+#' below the LDT. This is also why the number of observed drop-out events
+#' may differ between model plots and heatmap, scatterplot, and ecdf. 
 #' 
 #' Method X/1/2 records the peak height of the partner allele to be used as
 #' the explanatory variable in the logistic regression. The locus method L also
@@ -338,6 +339,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                                  checked = FALSE,
                                  container = f1)
   
+  f1_dump_chk <- gcheckbox(text="Dump model input", checked = FALSE,
+                           container = f1)
+
   addHandlerChanged(f1_column_opt, handler = function(h, ...) {
     
     .checkColumns()
@@ -462,7 +466,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
                                                container = e1f1g2)
 
   e1f1_risk_spn <- gspinbutton (from=0, to=1, by=0.001,
-                                                 value=0.05,
+                                                 value=0.01,
                                                  container=e1f1g2)
   
   # Group 3.
@@ -655,6 +659,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     val_interval_col <- svalue(e1f2_interval_drp)
     val_interval_alpha <- svalue(e1f2_interval_spb)
     val_h <- svalue(f1_h_chk)
+    val_dump <- svalue(f1_dump_chk)
     
     # Calculate values.
     val_pi_alpha <- 1 - val_predint
@@ -690,6 +695,8 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       print(val_hjust)
       print("val_size")
       print(val_size)
+      print("val_dump")
+      print(val_dump)
       print("Before cleaning:")
       print(str(.gData))
     }
@@ -750,7 +757,8 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       message(paste(n1, " rows after removing ", n0-n1, " homozygous rows.", sep=""))
     }
     
-    # Remove locus droput.
+    # Remove locus droput. NB! Only for MethodL, other methods can use data below LDT.
+    # Therefore we cannot use the 'Dropout' column.
     if("Dep" %in% names(obsData)){
       n0 <- nrow(obsData)
       obsData <- obsData[obsData$Dep != 2, ]
@@ -805,6 +813,15 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     
     # Create data for modeling.
     modData <- obsData
+    
+    # Dump model input data.
+    if(val_dump){
+      sel_col_names <- c("Sample.Name", "Marker", "Allele", "TPH", "H", "Peaks",
+                         "Expected", "Proportion", "Dep", "Exp")
+      selected <- names(modData) %in% sel_col_names
+      saveObject(name="model_data_dump", object=modData[ , selected], parent=w, env=env)
+    }
+
     # Convert to log values.
     if(logModel){
       modData$Exp <- log(obsData$Exp)
@@ -814,7 +831,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
     # Perform logistic regression on the selected column.
     dropoutModel <- glm(Dep~Exp, family=binomial("logit"), data=modData)
     sumfit <- summary(dropoutModel)
-    
+
     # Calculate model score.
     hosOk <- FALSE
     if(requireNamespace("ResourceSelection", quietly = TRUE)){
@@ -1320,6 +1337,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       if(exists(".strvalidator_modelDropout_gui_h", envir=env, inherits = FALSE)){
         svalue(f1_h_chk) <- get(".strvalidator_modelDropout_gui_h", envir=env)
       }
+      if(exists(".strvalidator_modelDropout_gui_dump", envir=env, inherits = FALSE)){
+        svalue(f1_dump_chk) <- get(".strvalidator_modelDropout_gui_dump", envir=env)
+      }
       
       if(debug){
         print("Saved settings loaded!")
@@ -1364,6 +1384,7 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       assign(x=".strvalidator_modelDropout_gui_xlabel_justh", value=svalue(e4g1_hjust_spb), envir=env)
       assign(x=".strvalidator_modelDropout_gui_xlabel_justv", value=svalue(e4g1_vjust_spb), envir=env)
       assign(x=".strvalidator_modelDropout_gui_h", value=svalue(f1_h_chk), envir=env)
+      assign(x=".strvalidator_modelDropout_gui_dump", value=svalue(f1_dump_chk), envir=env)
       
     } else { # or remove all saved values if false.
       
@@ -1459,6 +1480,9 @@ modelDropout_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, pare
       }
       if(exists(".strvalidator_modelDropout_gui_h", envir=env, inherits = FALSE)){
         remove(".strvalidator_modelDropout_gui_h", envir = env)
+      }
+      if(exists(".strvalidator_modelDropout_gui_dump", envir=env, inherits = FALSE)){
+        remove(".strvalidator_modelDropout_gui_dump", envir = env)
       }
       
       if(debug){

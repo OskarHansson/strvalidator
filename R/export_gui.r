@@ -1,9 +1,11 @@
 ################################################################################
 # TODO LIST
-# TODO: Fix: Error in if (nchar(val_path) == 0) { : argument is of length zero
+# TODO: https://stackoverflow.com/questions/45231928/initiate-gfilebrowse-with-a-valid-path-gwidgets2
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.07.2018: Added instruction in error message.
+# 24.07.2018: Fixed: Error in if (nchar(val_path) == 0) { : argument is of length zero
 # 21.07.2017: Function now exported. Fixed number of selected objects.
 # 19.07.2017: Now closes after export.
 # 18.07.2017: Fixed button infinite loop issue.
@@ -186,9 +188,8 @@ export_gui <- function(obj=listObjects(env=env, obj.class=c("data.frame","ggplot
   
   glabel(text="File path:", container=f4, anchor=c(-1 ,0))
 
-  # TODO:  
-  # NB! text = getwd() does not always work (e.g. when 'Documents' are localized):
-  # Error in if (nchar(val_path) == 0) { : argument is of length zero
+  # NB! text = getwd() does not always work (e.g. when 'Documents' are localized).
+  # https://stackoverflow.com/questions/45231928/initiate-gfilebrowse-with-a-valid-path-gwidgets2
   # Unable to find a solution other then using the "Open" button to browse...
   f4_save_brw <- gfilebrowse(text = getwd(), quote = FALSE, type = "selectdir",
                              initial.dir = getwd(), expand = TRUE, container = f4)
@@ -267,7 +268,7 @@ export_gui <- function(obj=listObjects(env=env, obj.class=c("data.frame","ggplot
     }
 
     # Check path.
-    if(nchar(val_path) == 0){
+    if(length(val_path) == 0){
       val_path <- NA
     }
 
@@ -381,7 +382,9 @@ export_gui <- function(obj=listObjects(env=env, obj.class=c("data.frame","ggplot
     } else {
       
       gmessage(msg=paste("At least one object must be selected.",
-                             "\nFile name and path must be provided."),
+                         "\nFile name and path must be provided.",
+                         "\n\nThis error may also occur the first time the function is used.",
+                         "\nPlease locate the folder using the 'Open' button."),
                title="Error",
                parent=w,
                icon = "error")      
