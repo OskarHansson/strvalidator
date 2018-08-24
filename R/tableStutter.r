@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 01.08.2017: Added attributes to result.
 # 29.08.2015: Added importFrom.
@@ -41,9 +42,6 @@
 
 
 tableStutter <- function(data, scope="stutter", quant=0.95){
-  
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
   
   # Column name for quantile.
   quantName <- paste("Perc",quant*100, sep=".")

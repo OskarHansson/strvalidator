@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 10.05.2016: Added new option 'limit' to remove high ratios from the result.
 # 10.05.2016: Saved attributes to result.
@@ -59,10 +60,6 @@
 calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
                             ol.rm=FALSE, ignore.case=TRUE, word=FALSE,
                             discard=FALSE, limit=1, debug=FALSE){
-
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))

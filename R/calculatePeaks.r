@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 18.09.2016: Implemented data.table and added attributes, and factors to result.
 # 28.08.2015: Added importFrom.
@@ -61,9 +62,6 @@
 calculatePeaks <- function(data, bins=c(0,2,3), labels=NULL,
                            ol.rm=FALSE, by.marker=FALSE, debug=FALSE){
   
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("data:")

@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 09.01.2016: Added more attributes to result.
 # 22.12.2015: First version.
@@ -62,10 +63,6 @@
 calculateRatio <- function(data, ref=NULL, numerator=NULL, denominator=NULL, group=NULL,
                            ol.rm = TRUE, ignore.case=TRUE, word=FALSE, exact=FALSE, debug=FALSE){
 
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
-  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")

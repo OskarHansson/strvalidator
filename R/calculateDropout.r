@@ -8,6 +8,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 18.09.2016: Fixed dataset saved to attributes.
 # 15.09.2016: Implemented new filterProfile function to remove sex markers and qs.
@@ -28,7 +29,6 @@
 # 02.12.2013: Changed name 'Hybrid'/'Hybrid.Ph' to 'ModelL'/'ModelL.Ph'.
 # 13.11.2013: Concurrently score both Random, Allele1, and Allele2.
 # 07.11.2013: Fixed dropout check for homozygous loci in 'Hybrid' method.
-# 24.10.2013: Implemented the 'hybrid' version for testing.
 
 #' @title Calculate Drop-out Events
 #'
@@ -120,10 +120,6 @@ calculateDropout <- function(data, ref, threshold=NULL, method=c("1","2","X","L"
                              ignore.case=TRUE, sex.rm=FALSE, qs.rm=TRUE,
                              kit=NULL, debug=FALSE){
 
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
-  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }

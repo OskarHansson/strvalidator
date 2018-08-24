@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 09.01.2016: Added attributes to result.
 # 29.08.2015: Added importFrom.
@@ -62,10 +63,6 @@ trim <- function(data, samples=NULL, columns=NULL,
 	word=FALSE, ignore.case=TRUE, invert.s=FALSE, invert.c=FALSE,
 	rm.na.col=TRUE, rm.empty.col=TRUE, missing=NA, debug=FALSE){
 
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_columns <- columns
-  
   # Variables.
   colNames <- columns
   

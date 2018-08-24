@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 02.05.2016: Added parameters 'sex.rm' and 'kit'.
 # 02.05.2016: Implemented calculation of proportion and frequency.
@@ -46,9 +47,6 @@
 calculateAllele <- function(data, threshold=NULL, sex.rm=FALSE, kit=NULL,
                             debug=FALSE){
   
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("str(data):")

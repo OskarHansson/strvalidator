@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 06.09.2016: Fixed implementation of filterProfile function.
 # 29.08.2016: Implemented updated filterProfile function.
@@ -97,10 +98,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
                         ol.rm = TRUE, sex.rm = FALSE, qs.rm = FALSE,
                         na = NULL, kit = NULL, ignore.case = TRUE,
                         word = FALSE, exact = FALSE, debug = FALSE){
-  
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 27.06.2016: Added: @importFrom stats dist
 # 19.05.2016: Implemented more accurat method and parameter 'quick'.
@@ -54,7 +55,6 @@ calculateSpike <- function(data, threshold=NULL, tolerance=2, kit=NULL,
                            quick=FALSE, debug=FALSE){
   
   # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
   attr_kit <- substitute(kit)
 
   if(debug){

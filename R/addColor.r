@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 06.08.2017: Fixed warning "if (!is.na(need)):the condition has length > 1".
 # 18.09.2016: Fixed attribute saved dataset, and kit now saved correctly.
@@ -66,9 +67,6 @@
 addColor <- function(data, kit=NA, have=NA, need=NA, overwrite=FALSE,
                      ignore.case=FALSE, debug=FALSE){
   
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }

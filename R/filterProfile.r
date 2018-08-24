@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 18.09.2016: Now retains information in 'File.Name' and 'File.Time' when add markers.
 # 18.09.2016: Fixed attribute kit not save correct.
@@ -24,7 +25,6 @@
 #             for all samples in 'data'.
 # 06.06.2013: Fixed bug in checking for 'fat' data.
 # 03.06.2013: Fixed bug discarding NA loci when add.missing.loci=TRUE.
-# 28.04.2013: Fixed "NA" bug (NA worked but not "NA").
 
 #' @title Filter Profile
 #'
@@ -73,10 +73,6 @@ filterProfile <- function(data, ref=NULL, add.missing.loci=FALSE, keep.na=FALSE,
                           ignore.case=TRUE, exact=FALSE, word=FALSE,
                           invert=FALSE, sex.rm=FALSE, qs.rm=FALSE, kit=NULL,
                           filter.allele=TRUE, debug=FALSE){
-  
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))

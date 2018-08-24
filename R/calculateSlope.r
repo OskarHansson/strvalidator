@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 11.05.2016: Changed from 'Peaks' to 'Peaks - 2' degrees of freedom.
 # 25.04.2016: First version.
@@ -52,10 +53,6 @@
 #' @export
 
 calculateSlope <-  function(data, ref, conf = 0.975, kit = NULL, debug=FALSE, ...){
-
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
 
   if(debug){
     print(paste("IN:", match.call()[[1]]))

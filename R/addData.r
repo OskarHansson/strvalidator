@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 19.07.2018: Changed 'warning' to 'message' for better visibility.
 # 06.08.2017: Added audit trail.
 # 06.02.2017: Fixed data saved as attributes (new.data).
@@ -57,10 +58,6 @@
 
 addData <- function(data, new.data, by.col, then.by.col=NULL, exact=TRUE,
                     ignore.case=TRUE, what=NULL, debug=FALSE){
-  
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_newdata <- substitute(new.data)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))

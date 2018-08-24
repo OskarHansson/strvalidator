@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 28.04.2016: First version.
 
@@ -39,10 +40,6 @@
 removeArtefact <- function(data, artefact=NULL, marker=NULL, allele=NULL,
                            threshold=NULL, na.rm=FALSE, debug=FALSE){
   
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_artefact <- substitute(artefact)
-
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("data:")

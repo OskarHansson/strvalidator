@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 18.09.2016: Fixed dataset saved to attributes.
 # 28.08.2016: First version.
@@ -53,10 +54,6 @@
 calculateHb <- function(data, ref, hb=1, kit=NULL, sex.rm=FALSE, qs.rm=FALSE,
                              ignore.case=TRUE, exact=FALSE, word=FALSE,
                              debug=FALSE){
-  
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))

@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 20.07.2016: Added attributes to result.
 # 20.07.2016: Added new option 'list.all' to include missing samples in result.
@@ -49,9 +50,6 @@ calculateConcordance <- function(data, kit.name=NA, no.marker="NO MARKER",
                                  no.sample="NO SAMPLE",
                                  delimeter=",", list.all=FALSE, debug=FALSE){
   
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")

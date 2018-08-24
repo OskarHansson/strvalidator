@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 18.09.2016: Fixed attribute word not saved.
 # 16.09.2016: Change keep.na=FALSE to keep.na=TRUE for filterProfile.
@@ -83,10 +84,6 @@ calculateHeight <- function(data, ref=NULL, na.replace=NULL, add=TRUE, exclude=N
                             sex.rm=FALSE, qs.rm=FALSE, kit=NULL, ignore.case=TRUE,
                             exact=FALSE, word=FALSE, debug=FALSE){
 
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
-  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }

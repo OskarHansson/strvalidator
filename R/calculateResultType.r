@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 18.09.2016: Added attributes to result.
 # 28.08.2015: Added importFrom.
@@ -56,9 +57,6 @@ calculateResultType <- function(data, kit=NULL, add.missing.marker=TRUE,
                                 partial.limits=NULL, subset.name=NA,
                                 marker.subset=NULL, debug=FALSE){
   
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-
   if(debug){
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")

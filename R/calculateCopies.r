@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 05.08.2016: Fixed wrong variable 'res' -> 'data'.
 # 04.08.2016: Added attributes.
@@ -47,9 +48,6 @@
 calculateCopies <- function(data, observed=FALSE, copies=TRUE,
                             heterozygous=FALSE, debug=FALSE){
 
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }

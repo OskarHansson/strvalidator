@@ -7,6 +7,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 23.05.2016: Changed name on some result columns.
 # 22.05.2016: Added masked data to result for manual investigation.
@@ -99,10 +100,6 @@ calculateAT <- function(data, ref=NULL, mask.height=TRUE, height=500,
                         mask.ils=TRUE, range.ils=10,
                         k=3, rank.t=0.99, alpha=0.01,
                         ignore.case=TRUE, word=FALSE, debug=FALSE){
-  
-  # Parameters that may change in the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
   
   if(debug){
     print(paste("IN:", match.call()[[1]]))

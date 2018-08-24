@@ -15,6 +15,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 17.01.2016: Fixed save attribute saves dataset.
 # 09.01.2016: Added more attributes to result.
@@ -76,10 +77,6 @@
 calculateStutter <- function(data, ref, back=2, forward=1, interference=0,
                              replace.val=NULL, by.val=NULL, debug=FALSE){
 
-  # Parameters that are changed by the function must be saved first.
-  attr_data <- substitute(data)
-  attr_ref <- substitute(ref)
-  
   if(debug){
     print(paste("IN:", match.call()[[1]]))
   }
