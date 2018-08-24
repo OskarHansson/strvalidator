@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Added audit trail.
 # 25.07.2018: Added rm.sex option passed to .clean function, and added model message.
 # 17.07.2018: First version.
 
@@ -366,6 +367,9 @@ calculateAllT <- function(data, kit, p.dropout=0.01, p.conservative=0.05, rm.sex
   df[,6] <- round(x = as.numeric(df[,6]),digits = 4)
   df[,7] <- round(x = as.numeric(df[,7]),digits = 0)
   df[,8] <- round(x = as.numeric(df[,8]),digits = 0)
+  
+  # Update audit trail.
+  df <- auditTrail(obj = df, f.call = match.call(), package = "strvalidator")
   
   return(df)
   

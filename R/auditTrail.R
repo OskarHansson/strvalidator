@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.08.2018: Added argument for logging R-version.
 # 05.08.2017: First version.
 
 #' @title Log Audit Trail.
@@ -28,6 +29,7 @@
 #' @param exact logical for exact matching of attribute name.
 #' @param remove logical. If \code{TRUE} the 'audit trail' attribute is removed.
 #' @param package character to log the package version.
+#' @param rversion logical to log the R version.
 #' 
 #' @return object with added or updated attribute 'audit trail'.
 #' 
@@ -53,7 +55,8 @@
 #' cat(attr(myData, "audit trail"))
 
 auditTrail <- function(obj, f.call=NULL, key=NULL, value=NULL, label=NULL,
-                       arguments=TRUE, exact=TRUE, remove=FALSE, package=NULL){
+                       arguments=TRUE, exact=TRUE, remove=FALSE, package=NULL,
+                       rversion=TRUE){
 
   if(length(key) != length(value)){
     stop("Arguments 'key' and 'value' must have equal length.")
@@ -106,6 +109,15 @@ auditTrail <- function(obj, f.call=NULL, key=NULL, value=NULL, label=NULL,
       
     }
 
+    # Check option to store R version.
+    if(rversion){
+      
+      # Add current R version.
+      log.entry <- paste0(prefix, R.version.string)
+      new.entries <- paste(new.entries, log.entry, sep = "\n")
+      
+    }
+    
     # Check option to store package version.
     if(!is.null(package)){
       

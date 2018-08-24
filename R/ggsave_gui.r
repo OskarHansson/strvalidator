@@ -5,6 +5,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.07.2018: Added instruction in error message.
+# 25.07.2018: Fixed: Error in if (nchar(val_path) == 0) { : argument is of length zero
 # 17.07.2017: Minor GUI improvements.
 # 17.07.2017: Added store path, and block/unblock when button text is changed.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -392,10 +394,10 @@ ggsave_gui <- function(ggplot=NULL, name="", env=parent.frame(),
     }
     
     # Check path.
-    if(nchar(val_path) == 0){
+    if(length(val_path) == 0){
       val_path <- NA
     }
-    
+
     if(debug){
       print("val_name")
       print(val_name)
@@ -546,7 +548,9 @@ ggsave_gui <- function(ggplot=NULL, name="", env=parent.frame(),
       
     } else {
       
-      gmessage(msg="Plot object, file name and path must be provided.",
+      gmessage(msg=paste("Plot object, file name and path must be provided.",
+               "\n\nThis error may also occur the first time the function is used.",
+               "\nPlease locate the folder using the 'Open' button."),
                title="Error",
                parent=w,
                icon = "error")      
