@@ -34,7 +34,8 @@ while option 4 is included for experimental purposes.
 Options 1-3 may discard many dropout events while option 4 catches all
 drop-out events. On the other hand options 1-3 can score events below
 the LDT, while option 4 cannot, making accurate predictions possible
-below the LDT.
+below the LDT. This is also why the number of observed drop-out events
+may differ between model plots and heatmap, scatterplot, and ecdf. 
 
 Method X/1/2 records the peak height of the partner allele to be used as
 the explanatory variable in the logistic regression. The locus method L also

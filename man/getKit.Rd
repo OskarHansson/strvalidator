@@ -4,8 +4,8 @@
 \alias{getKit}
 \title{Get Kit}
 \usage{
-getKit(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NULL,
-  debug = FALSE)
+getKit(kit = NULL, what = NA, show.messages = FALSE,
+  .kit.info = NULL, debug = FALSE)
 }
 \arguments{
 \item{kit}{string or integer to specify the kit.}

@@ -11,7 +11,7 @@ context("calculateAllT")
 # require(strvalidator)
 # require(testthat)
 # test_dir("inst/tests/")
-# test_file("tests/testthat/test-calculateLb.r")
+# test_file("tests/testthat/test-calculateAllT.r")
 # test_dir("tests/testthat")
 
 test_that("calculateAllT", {

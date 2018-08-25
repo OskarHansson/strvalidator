@@ -4,8 +4,8 @@
 \alias{calculateOverlap_gui}
 \title{Calculate Bins Overlap}
 \usage{
-calculateOverlap_gui(env = parent.frame(), savegui = NULL, debug = TRUE,
-  parent = NULL)
+calculateOverlap_gui(env = parent.frame(), savegui = NULL,
+  debug = TRUE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

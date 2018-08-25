@@ -4,8 +4,8 @@
 \alias{calculateAllele_gui}
 \title{Calculate Allele}
 \usage{
-calculateAllele_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+calculateAllele_gui(env = parent.frame(), savegui = NULL,
+  debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

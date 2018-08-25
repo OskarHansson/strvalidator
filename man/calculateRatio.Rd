@@ -4,9 +4,9 @@
 \alias{calculateRatio}
 \title{Calculate Ratio}
 \usage{
-calculateRatio(data, ref = NULL, numerator = NULL, denominator = NULL,
-  group = NULL, ol.rm = TRUE, ignore.case = TRUE, word = FALSE,
-  exact = FALSE, debug = FALSE)
+calculateRatio(data, ref = NULL, numerator = NULL,
+  denominator = NULL, group = NULL, ol.rm = TRUE,
+  ignore.case = TRUE, word = FALSE, exact = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{a data frame containing at least

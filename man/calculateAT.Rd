@@ -6,8 +6,8 @@
 \usage{
 calculateAT(data, ref = NULL, mask.height = TRUE, height = 500,
   mask.sample = TRUE, per.dye = TRUE, range.sample = 20,
-  mask.ils = TRUE, range.ils = 10, k = 3, rank.t = 0.99, alpha = 0.01,
-  ignore.case = TRUE, word = FALSE, debug = FALSE)
+  mask.ils = TRUE, range.ils = 10, k = 3, rank.t = 0.99,
+  alpha = 0.01, ignore.case = TRUE, word = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{a data frame containing at least 'Dye.Sample.Peak',

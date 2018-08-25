@@ -4,8 +4,9 @@
 \alias{auditTrail}
 \title{Log Audit Trail.}
 \usage{
-auditTrail(obj, f.call = NULL, key = NULL, value = NULL, label = NULL,
-  arguments = TRUE, exact = TRUE, remove = FALSE, package = NULL)
+auditTrail(obj, f.call = NULL, key = NULL, value = NULL,
+  label = NULL, arguments = TRUE, exact = TRUE, remove = FALSE,
+  package = NULL, rversion = TRUE)
 }
 \arguments{
 \item{obj}{object to add or update the audit trail.}
@@ -25,6 +26,8 @@ auditTrail(obj, f.call = NULL, key = NULL, value = NULL, label = NULL,
 \item{remove}{logical. If \code{TRUE} the 'audit trail' attribute is removed.}
 
 \item{package}{character to log the package version.}
+
+\item{rversion}{logical to log the R version.}
 }
 \value{
 object with added or updated attribute 'audit trail'.

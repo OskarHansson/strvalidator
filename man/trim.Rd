@@ -6,7 +6,8 @@
 \usage{
 trim(data, samples = NULL, columns = NULL, word = FALSE,
   ignore.case = TRUE, invert.s = FALSE, invert.c = FALSE,
-  rm.na.col = TRUE, rm.empty.col = TRUE, missing = NA, debug = FALSE)
+  rm.na.col = TRUE, rm.empty.col = TRUE, missing = NA,
+  debug = FALSE)
 }
 \arguments{
 \item{data}{data.frame with genotype data.}

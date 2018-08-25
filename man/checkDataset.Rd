@@ -5,8 +5,8 @@
 \title{Check Dataset}
 \usage{
 checkDataset(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
-  string = NULL, stringcol = NULL, env = parent.frame(), parent = NULL,
-  debug = FALSE)
+  string = NULL, stringcol = NULL, env = parent.frame(),
+  parent = NULL, debug = FALSE)
 }
 \arguments{
 \item{name}{character name of data.frame.}

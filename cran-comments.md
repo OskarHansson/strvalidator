@@ -1,6 +1,6 @@
 ## Test environments
-* local Windows 10 (64-bit) install, R 3.4.1, RStudio 1.0.153
-* win-builder: R Under development (unstable) (2017-08-10 r73083)
+* local Windows 10 (64-bit) install, R 3.5.1, RStudio 1.1.456
+* win-builder: R Under development (unstable) (2018-08-22 r75177)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 

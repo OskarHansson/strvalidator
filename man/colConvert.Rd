@@ -4,8 +4,8 @@
 \alias{colConvert}
 \title{Convert Columns}
 \usage{
-colConvert(data, columns = "Height|Size|Data.Point", ignore.case = TRUE,
-  fixed = FALSE, debug = FALSE)
+colConvert(data, columns = "Height|Size|Data.Point",
+  ignore.case = TRUE, fixed = FALSE, debug = FALSE)
 }
 \arguments{
 \item{data}{data.frame.}

@@ -1,4 +1,4 @@
-Version 2.0.0.9013
+Version 2.1.0
 ------------------------------------------------------------------------------
 
 * New functions
@@ -12,31 +12,10 @@ Version 2.0.0.9013
 * Bug fixes and improvements with the most significant listed below:
   - auditTrail
   Now logs R version.
-  - calculateRatio_gui
-  Fixed dropdown gets blank when dataset is selected.
-  - addData
-  Changed 'warning' to 'message' for visibility.
-  - addData_gui
-  Fixed dropdown gets blank when dataset is selected.
-  Made 'Save as' textbox expandable.
-  Minor changes to labels (clarity).
   - cropData_gui
-  Fixed dropdown gets blank when dataset is selected.
   Fixed error replacing NA's.
   - modelDropout_gui
   Converts dependent and explanatory values to numeric if necessary.
-  - columns_gui
-  Fixed field 'Fixed value' not always disabled when it should.
-  - calculateDropout_gui
-  Made 'Save as' textbox expandable.
-  - plotDistribution_gui
-  Fixed dropdown gets blank when dataset is selected.
-  - calculateAT_gui
-  Fixed dropdown gets blank when dataset is selected.
-  - tablePrecision_gui
-  Made 'Save as' textbox expandable.
-  - plotPrecision_gui
-  Made 'Save as' textbox expandable.
   - export_gui
   Fixed initial export error and improved error message.
   - modelDropout_gui

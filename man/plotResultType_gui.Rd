@@ -4,8 +4,8 @@
 \alias{plotResultType_gui}
 \title{Plot Result Type}
 \usage{
-plotResultType_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+plotResultType_gui(env = parent.frame(), savegui = NULL,
+  debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

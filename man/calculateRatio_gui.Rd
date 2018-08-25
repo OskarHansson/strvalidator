@@ -4,8 +4,8 @@
 \alias{calculateRatio_gui}
 \title{Calculate Ratio}
 \usage{
-calculateRatio_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+calculateRatio_gui(env = parent.frame(), savegui = NULL,
+  debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

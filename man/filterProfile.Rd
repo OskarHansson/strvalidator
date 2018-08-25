@@ -4,10 +4,10 @@
 \alias{filterProfile}
 \title{Filter Profile}
 \usage{
-filterProfile(data, ref = NULL, add.missing.loci = FALSE, keep.na = FALSE,
-  ignore.case = TRUE, exact = FALSE, word = FALSE, invert = FALSE,
-  sex.rm = FALSE, qs.rm = FALSE, kit = NULL, filter.allele = TRUE,
-  debug = FALSE)
+filterProfile(data, ref = NULL, add.missing.loci = FALSE,
+  keep.na = FALSE, ignore.case = TRUE, exact = FALSE, word = FALSE,
+  invert = FALSE, sex.rm = FALSE, qs.rm = FALSE, kit = NULL,
+  filter.allele = TRUE, debug = FALSE)
 }
 \arguments{
 \item{data}{data frame with genotype data in 'slim' format.}

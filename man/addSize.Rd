@@ -4,7 +4,8 @@
 \alias{addSize}
 \title{Add Size Information.}
 \usage{
-addSize(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FALSE)
+addSize(data, kit = NA, bins = TRUE, ignore.case = FALSE,
+  debug = FALSE)
 }
 \arguments{
 \item{data}{data.frame with at least columns 'Marker' and 'Allele'.}

@@ -5,10 +5,10 @@
 \title{Generate EPG}
 \usage{
 generateEPG(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
-  peaks = TRUE, collapse = TRUE, silent = FALSE, ignore.case = TRUE,
-  at = 0, scale = "free", limit.x = TRUE, label.size = 3,
-  label.angle = 0, label.vjust = 1, label.hjust = 0.5, expand = 0.1,
-  debug = FALSE)
+  peaks = TRUE, collapse = TRUE, silent = FALSE,
+  ignore.case = TRUE, at = 0, scale = "free", limit.x = TRUE,
+  label.size = 3, label.angle = 0, label.vjust = 1,
+  label.hjust = 0.5, expand = 0.1, debug = FALSE)
 }
 \arguments{
 \item{data}{data frame containing at least columns 'Sample.Name', 'Allele', and 'Marker'.}
