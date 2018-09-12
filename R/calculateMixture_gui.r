@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 12.09.2018: 'Save as' textbox expandable.
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -328,7 +329,7 @@ calculateMixture_gui <- function(env=parent.frame(), savegui=NULL,
   
   glabel(text="Name for result:", container=f4)
   
-  f4_save_edt <- gedit(text="", container=f4)
+  f4_save_edt <- gedit(text="", expand = TRUE, container=f4)
   
   # BUTTON ####################################################################
 
