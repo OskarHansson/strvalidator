@@ -7,7 +7,7 @@ context("calculateStutter")
 ################################################################################
 # CHANGE LOG
 # dd.mm.yyyy: ...
-# 
+#
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-calculateStutter.r")
 # test_dir("tests/testthat")
@@ -19,25 +19,25 @@ test_that("calculateStutter", {
   data(ref4)
 
   # Get sample A2.1.
-  setA1 <- set4[set4$Sample.Name == "03-A2.1",]
-  
+  setA1 <- set4[set4$Sample.Name == "03-A2.1", ]
+
   # TEST 01 -------------------------------------------------------------------
 
   # Warn that 'Height' is not numeric.
   # expect_that(calculateStutter(data=setA1, ref=ref4), gives_warning())
-  
+
   # TEST 02 -------------------------------------------------------------------
   # 1 Back, 0 Forward, No interference.
-  
-  # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=1, forward=0, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
 
-  # Check return class.  
+  # Analyse dataframe.
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 1, forward = 0, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -45,7 +45,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0264))
   expect_that(round(res$Ratio[2], 4), equals(0.0889))
@@ -99,19 +99,19 @@ test_that("calculateStutter", {
   expect_that(res$Type[23], equals(-1))
   expect_that(res$Type[24], equals(-0.8))
   expect_that(res$Type[25], equals(-1))
-  
+
   # TEST 03 -------------------------------------------------------------------
   # 1 Back, 1 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=1, forward=1, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 1, forward = 1, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -119,7 +119,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0264))
   expect_that(round(res$Ratio[2], 4), equals(0.0889))
@@ -159,7 +159,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[36], 4), equals(0.0046))
   expect_that(round(res$Ratio[37], 4), equals(0.1376))
   expect_that(round(res$Ratio[38], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-1))
   expect_that(res$Type[2], equals(-1))
@@ -202,16 +202,16 @@ test_that("calculateStutter", {
 
   # TEST 04 -------------------------------------------------------------------
   # 1 Back, 2 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=1, forward=2, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 1, forward = 2, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -219,7 +219,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0264))
   expect_that(round(res$Ratio[2], 4), equals(0.0889))
@@ -256,7 +256,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[33], 4), equals(0.0046))
   expect_that(round(res$Ratio[34], 4), equals(0.1376))
   expect_that(round(res$Ratio[35], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-1))
   expect_that(res$Type[2], equals(-1))
@@ -293,19 +293,19 @@ test_that("calculateStutter", {
   expect_that(res$Type[33], equals(1))
   expect_that(res$Type[34], equals(-1))
   expect_that(res$Type[35], equals(1))
-  
+
   # TEST 04 -------------------------------------------------------------------
   # 1 Back, 3 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=1, forward=3, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 1, forward = 3, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -313,7 +313,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0264))
   expect_that(round(res$Ratio[2], 4), equals(0.0889))
@@ -346,7 +346,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[29], 4), equals(0.0046))
   expect_that(round(res$Ratio[30], 4), equals(0.1376))
   expect_that(round(res$Ratio[31], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-1))
   expect_that(res$Type[2], equals(-1))
@@ -379,19 +379,19 @@ test_that("calculateStutter", {
   expect_that(res$Type[29], equals(1))
   expect_that(res$Type[30], equals(-1))
   expect_that(res$Type[31], equals(1))
-  
+
   # TEST 05 -------------------------------------------------------------------
   # 2 Back, 0 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=2, forward=0, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 2, forward = 0, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -399,7 +399,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -438,7 +438,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[35], 4), equals(0.0493))
   expect_that(round(res$Ratio[36], 4), equals(0.0099))
   expect_that(round(res$Ratio[37], 4), equals(0.1376))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -477,19 +477,19 @@ test_that("calculateStutter", {
   expect_that(res$Type[35], equals(-0.8))
   expect_that(res$Type[36], equals(-2))
   expect_that(res$Type[37], equals(-1))
-  
+
   # TEST 06 -------------------------------------------------------------------
   # 2 Back, 1 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=2, forward=1, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 2, forward = 1, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -497,7 +497,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -541,7 +541,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[40], 4), equals(0.0099))
   expect_that(round(res$Ratio[41], 4), equals(0.1376))
   expect_that(round(res$Ratio[42], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -585,19 +585,19 @@ test_that("calculateStutter", {
   expect_that(res$Type[40], equals(-2))
   expect_that(res$Type[41], equals(-1))
   expect_that(res$Type[42], equals(1))
-  
+
   # TEST 07 -------------------------------------------------------------------
   # 2 Back, 2 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=2, forward=2, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 2, forward = 2, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -605,7 +605,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -642,7 +642,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[33], 4), equals(0.0099))
   expect_that(round(res$Ratio[34], 4), equals(0.1376))
   expect_that(round(res$Ratio[35], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -679,20 +679,20 @@ test_that("calculateStutter", {
   expect_that(res$Type[33], equals(-2))
   expect_that(res$Type[34], equals(-1))
   expect_that(res$Type[35], equals(1))
-  
-  
+
+
   # TEST 08 -------------------------------------------------------------------
   # 2 Back, 3 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=2, forward=3, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 2, forward = 3, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -700,7 +700,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -729,7 +729,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[25], 4), equals(0.0099))
   expect_that(round(res$Ratio[26], 4), equals(0.1376))
   expect_that(round(res$Ratio[27], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -758,19 +758,19 @@ test_that("calculateStutter", {
   expect_that(res$Type[25], equals(-2))
   expect_that(res$Type[26], equals(-1))
   expect_that(res$Type[27], equals(1))
-  
+
   # TEST 09 -------------------------------------------------------------------
   # 3 Back, 0 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=3, forward=0, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 3, forward = 0, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -778,7 +778,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -815,7 +815,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[33], 4), equals(0.0493))
   expect_that(round(res$Ratio[34], 4), equals(0.0099))
   expect_that(round(res$Ratio[35], 4), equals(0.1376))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -852,19 +852,19 @@ test_that("calculateStutter", {
   expect_that(res$Type[33], equals(-0.8))
   expect_that(res$Type[34], equals(-2))
   expect_that(res$Type[35], equals(-1))
-  
+
   # TEST 10 -------------------------------------------------------------------
   # 3 Back, 1 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=3, forward=1, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 3, forward = 1, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -872,7 +872,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -910,7 +910,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[34], 4), equals(0.0099))
   expect_that(round(res$Ratio[35], 4), equals(0.1376))
   expect_that(round(res$Ratio[36], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -948,19 +948,19 @@ test_that("calculateStutter", {
   expect_that(res$Type[34], equals(-2))
   expect_that(res$Type[35], equals(-1))
   expect_that(res$Type[36], equals(1))
-  
+
   # TEST 11 -------------------------------------------------------------------
   # 3 Back, 2 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=3, forward=2, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 3, forward = 2, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -968,7 +968,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -999,7 +999,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[27], 4), equals(0.0099))
   expect_that(round(res$Ratio[28], 4), equals(0.1376))
   expect_that(round(res$Ratio[29], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -1030,20 +1030,20 @@ test_that("calculateStutter", {
   expect_that(res$Type[27], equals(-2))
   expect_that(res$Type[28], equals(-1))
   expect_that(res$Type[29], equals(1))
-  
-  
+
+
   # TEST 12 -------------------------------------------------------------------
   # 3 Back, 3 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=3, forward=3, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 3, forward = 3, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1051,7 +1051,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -1074,7 +1074,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[19], 4), equals(0.0099))
   expect_that(round(res$Ratio[20], 4), equals(0.1376))
   expect_that(round(res$Ratio[21], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -1097,20 +1097,20 @@ test_that("calculateStutter", {
   expect_that(res$Type[19], equals(-2))
   expect_that(res$Type[20], equals(-1))
   expect_that(res$Type[21], equals(1))
-  
-  
+
+
   # TEST 13 -------------------------------------------------------------------
   # 0 Back, 1 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=0, forward=1, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 0, forward = 1, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1118,7 +1118,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0185))
   expect_that(round(res$Ratio[2], 4), equals(0.0142))
@@ -1137,7 +1137,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[15], 4), equals(0.0967))
   expect_that(round(res$Ratio[16], 4), equals(0.0046))
   expect_that(round(res$Ratio[17], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(1))
   expect_that(res$Type[2], equals(1))
@@ -1156,20 +1156,20 @@ test_that("calculateStutter", {
   expect_that(res$Type[15], equals(1))
   expect_that(res$Type[16], equals(1))
   expect_that(res$Type[17], equals(1))
-  
-  
+
+
   # TEST 14 -------------------------------------------------------------------
   # 0 Back, 2 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=0, forward=2, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 0, forward = 2, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1177,7 +1177,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0185))
   expect_that(round(res$Ratio[2], 4), equals(0.0927))
@@ -1203,7 +1203,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[22], 4), equals(0.0053))
   expect_that(round(res$Ratio[23], 4), equals(0.0046))
   expect_that(round(res$Ratio[24], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(1))
   expect_that(res$Type[2], equals(2))
@@ -1229,20 +1229,20 @@ test_that("calculateStutter", {
   expect_that(res$Type[22], equals(1.2))
   expect_that(res$Type[23], equals(1))
   expect_that(res$Type[24], equals(1))
-  
-  
+
+
   # TEST 15 -------------------------------------------------------------------
   # 0 Back, 3 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=0, forward=3, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 0, forward = 3, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1250,7 +1250,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0185))
   expect_that(round(res$Ratio[2], 4), equals(0.0927))
@@ -1276,7 +1276,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[22], 4), equals(0.0053))
   expect_that(round(res$Ratio[23], 4), equals(0.0046))
   expect_that(round(res$Ratio[24], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(1))
   expect_that(res$Type[2], equals(2))
@@ -1302,20 +1302,20 @@ test_that("calculateStutter", {
   expect_that(res$Type[22], equals(1.2))
   expect_that(res$Type[23], equals(1))
   expect_that(res$Type[24], equals(1))
-  
-  
+
+
   # TEST 16 -------------------------------------------------------------------
   # 2 Back, 1 Forward, stutter interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=2, forward=1, interference=1,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 2, forward = 1, interference = 1,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1323,7 +1323,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0074))
   expect_that(round(res$Ratio[2], 4), equals(0.0742))
@@ -1392,7 +1392,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[65], 4), equals(0.0099))
   expect_that(round(res$Ratio[66], 4), equals(0.1376))
   expect_that(round(res$Ratio[67], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -1461,20 +1461,20 @@ test_that("calculateStutter", {
   expect_that(res$Type[65], equals(-2))
   expect_that(res$Type[66], equals(-1))
   expect_that(res$Type[67], equals(1))
-  
-  
+
+
   # TEST 17 -------------------------------------------------------------------
   # 2 Back, 1 Forward, allele interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=2, forward=1, interference=2,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 2, forward = 1, interference = 2,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1482,7 +1482,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0074))
   expect_that(round(res$Ratio[2], 4), equals(0.0742))
@@ -1555,7 +1555,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[69], 4), equals(0.0099))
   expect_that(round(res$Ratio[70], 4), equals(0.1376))
   expect_that(round(res$Ratio[71], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -1629,20 +1629,20 @@ test_that("calculateStutter", {
   expect_that(res$Type[70], equals(-1))
   expect_that(res$Type[71], equals(1))
 
-  
+
   # TEST 18 -------------------------------------------------------------------
   # Test replacment of 'false' stutters.
   # 2 Back, 1 Forward, No interference.
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=ref4,
-                          back=2, forward=1, interference=0,
-                          replace.val=c(-1.8, -0.8), by.val=c(-1.2, -0.2), debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = ref4,
+                          back = 2, forward = 1, interference = 0,
+                          replace.val = c(-1.8, -0.8), by.val = c(-1.2, -0.2), debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1650,7 +1650,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -1694,7 +1694,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[40], 4), equals(0.0099))
   expect_that(round(res$Ratio[41], 4), equals(0.1376))
   expect_that(round(res$Ratio[42], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -1738,23 +1738,23 @@ test_that("calculateStutter", {
   expect_that(res$Type[40], equals(-2))
   expect_that(res$Type[41], equals(-1))
   expect_that(res$Type[42], equals(1))
-  
+
 
   # TEST 19 -------------------------------------------------------------------
   # Test single entries for homozygotes.
   # 2 Back, 1 Forward, No interference.
-  
-  refSingle <- ref4[!rownames(ref4) %in% c(2,6), ]
-  
+
+  refSingle <- ref4[!rownames(ref4) %in% c(2, 6), ]
+
   # Analyse dataframe.
-  res <- calculateStutter(data=setA1, ref=refSingle,
-                          back=2, forward=1, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
-  # Check return class.  
+  res <- calculateStutter(data = setA1, ref = refSingle,
+                          back = 2, forward = 1, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1762,7 +1762,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -1806,7 +1806,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[40], 4), equals(0.0099))
   expect_that(round(res$Ratio[41], 4), equals(0.1376))
   expect_that(round(res$Ratio[42], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -1850,26 +1850,26 @@ test_that("calculateStutter", {
   expect_that(res$Type[40], equals(-2))
   expect_that(res$Type[41], equals(-1))
   expect_that(res$Type[42], equals(1))
-  
-  
+
+
   # TEST 20 -------------------------------------------------------------------
   # Test single entries for homozygotes.
   # 2 Back, 1 Forward, No interference.
-  
+
   set4Missing <- set4[set4$Sample.Name != "07-A2.5", ]
-  
+
   # Analyse dataframe.
-  res <- calculateStutter(data=set4Missing, ref=ref4,
-                          back=2, forward=1, interference=0,
-                          replace.val=NULL, by.val=NULL, debug=FALSE)
-  
+  res <- calculateStutter(data = set4Missing, ref = ref4,
+                          back = 2, forward = 1, interference = 0,
+                          replace.val = NULL, by.val = NULL, debug = FALSE)
+
   # write.table(x=res,"clipboard",sep="\t",row.names=FALSE,col.names=TRUE)
-  
-  
-  # Check return class.  
+
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Allele))
   expect_false(is.null(res$HeightA))
@@ -1877,7 +1877,7 @@ test_that("calculateStutter", {
   expect_false(is.null(res$HeightS))
   expect_false(is.null(res$Ratio))
   expect_false(is.null(res$Type))
-  
+
   # Check result: Ratio.
   expect_that(round(res$Ratio[1], 4), equals(0.0035))
   expect_that(round(res$Ratio[2], 4), equals(0.0264))
@@ -1921,7 +1921,7 @@ test_that("calculateStutter", {
   expect_that(round(res$Ratio[40], 4), equals(0.0099))
   expect_that(round(res$Ratio[41], 4), equals(0.1376))
   expect_that(round(res$Ratio[42], 4), equals(0.007))
-  
+
   # Check result: Type.
   expect_that(res$Type[1], equals(-2))
   expect_that(res$Type[2], equals(-1))
@@ -1965,7 +1965,7 @@ test_that("calculateStutter", {
   expect_that(res$Type[40], equals(-2))
   expect_that(res$Type[41], equals(-1))
   expect_that(res$Type[42], equals(1))
-  
-  
-  
+
+
+
 })

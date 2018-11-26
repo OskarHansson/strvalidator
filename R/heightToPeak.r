@@ -21,21 +21,21 @@
 #' Converts a single height and size value to a plotable 0-height-0 triangle/peak value.
 #' Makes 3 data points from each peak size for plotting a polygon representing a peak.
 #' Factors in other columns might get converted to factor level.
-#' 
+#'
 #' @param data data frame containing at least columns 'Height' and 'Size'.
 #' @param width numeric specifying the width of the peak in bp.
 #' @param keep.na logical. TRUE to keep empty markers.
 #' @param debug logical. TRUE prints debug information.
-#' 
+#'
 #' @return data.frame with new values.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @importFrom utils str
 
-heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
-  
-  if(debug){
+heightToPeak <- function(data, width = 1, keep.na = TRUE, debug = FALSE) {
+
+  if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
     print(str(data))
@@ -46,82 +46,82 @@ heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
     print("keep.na:")
     print(keep.na)
   }
-  
+
   # CHECK ARGUMENTS -----------------------------------------------------------
-  
-  if(!is.data.frame(data)){
+
+  if (!is.data.frame(data)) {
     stop("'data' must be a data frame.",
          call. = TRUE)
   }
-  
-  if(!any(grepl("Height",names(data)))){
+
+  if (!any(grepl("Height", names(data)))) {
     stop("Data frame 'data' must contain a column 'Height'.",
          call. = TRUE)
   }
-  
-  if(!any(grepl("Size",names(data)))){
+
+  if (!any(grepl("Size", names(data)))) {
     stop("Data frame 'data' must contain a column 'Size'.",
          call. = TRUE)
   }
-  
-  if(!is.numeric(width)){
+
+  if (!is.numeric(width)) {
     stop("Peak width 'width' must be a numeric value.",
          call. = TRUE)
   }
-  
-  if(!is.logical(keep.na)){
+
+  if (!is.logical(keep.na)) {
     stop("'keep.na' must be a logical value.",
          call. = TRUE)
   }
-  
-  if("Size" %in% names(data)){
-    if(!is.numeric(data$Size)){
+
+  if ("Size" %in% names(data)) {
+    if (!is.numeric(data$Size)) {
       data$Size <- as.numeric(data$Size)
       message("'Size' must be numeric. Data converted!")
     }
   }
-  
+
   # FUNCTION ------------------------------------------------------------------
-  
-  if(!keep.na){
+
+  if (!keep.na) {
     # Remove all rows with no height.
-    data <- data[!is.na(data$Height),]
-  } else if (keep.na){
+    data <- data[!is.na(data$Height), ]
+  } else if (keep.na) {
     # Replace all NAs with 0s.
     data$Height[is.na(data$Height)] <- 0
   }
-  
+
   # Calculate coordinates for plotting peaks ----------------------------------
-  
+
   # Size should be: [size-x], [size], [size+x].
   nb <- length(data$Size)
-  
-  if(nb > 0){
+
+  if (nb > 0) {
 
     vsize <- vector(mode = "numeric", length = nb * 3)
-    vsize[seq(1, nb * 3, 3)] <- data$Size - width/2
+    vsize[seq(1, nb * 3, 3)] <- data$Size - width / 2
     vsize[seq(2, nb * 3, 3)] <- data$Size
-    vsize[seq(3, nb * 3, 3)] <- data$Size + width/2
-    
+    vsize[seq(3, nb * 3, 3)] <- data$Size + width / 2
+
     # Height should be: 0, [height], 0.
     vheight <- vector(mode = "numeric", length = nb * 3)
     vheight[seq(1, nb * 3, 3)] <- 0
     vheight[seq(2, nb * 3, 3)] <- data$Height
     vheight[seq(3, nb * 3, 3)] <- 0
-    
+
     # Stretch data frame 3 times (repeat each row).
-    data <- data[rep(seq_len(nrow(data)), each=3),]
-    
-    # Add new data.  
+    data <- data[rep(seq_len(nrow(data)), each = 3), ]
+
+    # Add new data.
     data$Size <- vsize
     data$Height <- vheight
-    
+
   }
-  
+
   # Update audit trail.
   data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
-  
-  if(debug){
+
+  if (debug) {
     print(paste("EXIT:", match.call()[[1]]))
     print("data:")
     print(str(data))
@@ -130,5 +130,5 @@ heightToPeak <- function(data, width=1, keep.na=TRUE, debug=FALSE){
   }
 
   return(data)
-  
+
 }

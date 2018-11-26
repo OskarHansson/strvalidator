@@ -48,7 +48,7 @@
 #' (i.e., different injections, sample preparation volumes, post-PCR cleanup,
 #' etc.).
 #' NB! Quality sensors must be removed prior to analysis.
-#' 
+#'
 #' @param data data.frame containing at least columns 'Sample.Name', 'Marker',
 #'  'Allele', and 'Height'.
 #' @param ref data.frame containing at least columns 'Sample.Name', 'Marker',
@@ -59,31 +59,31 @@
 #' @param alpha numeric [0,1] significance level for the t-statistic.
 #' @param ignore.case logical to indicate if sample matching should ignore case.
 #' @param debug logical to indicate if debug information should be printed.
-#' 
+#'
 #' @return data.frame with columns 'Amount', 'Height', 'Sd', 'Weight', 'N',
 #'  'Alpha', 'Lower', 'Intercept', and 'AT6'.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @importFrom stats sd qt lm
 #' @importFrom utils str head tail
-#' 
+#'
 #' @seealso \code{\link{calculateAT6_gui}}, \code{\link{calculateAT}},
 #'  \code{\link{calculateAT_gui}}, \code{\link{lm}}
-#' 
+#'
 #' @references
 #'  J. Bregu et.al.,
 #'   Analytical thresholds and sensitivity: establishing RFU thresholds for
 #'   forensic DNA analysis, J. Forensic Sci. 58 (1) (2013) 120-129,
 #'   ISSN 1556-4029, DOI: 10.1111/1556-4029.12008.
 #' \url{http://onlinelibrary.wiley.com/doi/10.1111/1556-4029.12008/abstract}
-#' 
-#' 
+#'
+#'
 
-calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
-                        ignore.case=TRUE, debug=FALSE){
-  
-  if(debug){
+calculateAT6 <- function(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05,
+                        ignore.case = TRUE, debug = FALSE) {
+
+  if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
     print("data")
@@ -99,83 +99,83 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
     print("ignore.case")
     print(ignore.case)
   }
-  
+
   # Check data ----------------------------------------------------------------
-  
-  if(!"Sample.Name" %in% names(data)){
+
+  if (!"Sample.Name" %in% names(data)) {
     stop("'data' must contain a column 'Sample.Name'")
   }
 
-  if(!"Marker" %in% names(data)){
+  if (!"Marker" %in% names(data)) {
     stop("'data' must contain a column 'Marker'")
   }
-  
-  if(!"Allele" %in% names(data)){
+
+  if (!"Allele" %in% names(data)) {
     stop("'data' must contain a column 'Allele'")
   }
-  
-  if(!"Height" %in% names(data)){
+
+  if (!"Height" %in% names(data)) {
     stop("'data' must contain a column 'Height'")
   }
 
-  if(is.null(amount)){
-    if(!"Amount" %in% names(data)){
+  if (is.null(amount)) {
+    if (!"Amount" %in% names(data)) {
       stop("'data' must contain a column 'Amount'")
     }
   } else {
-    if(!"Sample.Name" %in% names(amount)){
+    if (!"Sample.Name" %in% names(amount)) {
       stop("'amount' must contain a column 'Sample.Name'")
     }
-    if(!"Amount" %in% names(amount)){
+    if (!"Amount" %in% names(amount)) {
       stop("'amount' must contain a column 'Amount'")
     }
   }
-  
-  # Check if slim format.  
-  if(sum(grepl("Allele", names(data))) > 1){
-    stop("'data' must be in 'slim' format",
-         call. = TRUE)
-  }
-  
-  if(sum(grepl("Height", names(data))) > 1){
+
+  # Check if slim format.
+  if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
          call. = TRUE)
   }
 
-  if(!"Sample.Name" %in% names(ref)){
+  if (sum(grepl("Height", names(data))) > 1) {
+    stop("'data' must be in 'slim' format",
+         call. = TRUE)
+  }
+
+  if (!"Sample.Name" %in% names(ref)) {
     stop("'ref' must contain a column 'Sample.Name'")
   }
-  
-  if(!"Marker" %in% names(ref)){
+
+  if (!"Marker" %in% names(ref)) {
     stop("'ref' must contain a column 'Marker'")
   }
-  
-  if(!"Allele" %in% names(ref)){
+
+  if (!"Allele" %in% names(ref)) {
     stop("'ref' must contain a column 'Allele'")
   }
-  
-  # Check if slim format.  
-  if(sum(grepl("Allele", names(ref))) > 1){
+
+  # Check if slim format.
+  if (sum(grepl("Allele", names(ref))) > 1) {
     stop("'ref' must be in 'slim' format",
          call. = TRUE)
   }
-    
-  # Check parameters.  
-  if(!is.logical(weighted)){
+
+  # Check parameters.
+  if (!is.logical(weighted)) {
     stop("'weighted' must be logical",
          call. = TRUE)
   }
 
-  if(!is.numeric(alpha) | alpha < 0 | alpha > 1){
+  if (!is.numeric(alpha) | alpha < 0 | alpha > 1) {
     stop("'alpha' must be numeric [0,1]",
          call. = TRUE)
   }
-  
-  if(!is.logical(ignore.case)){
+
+  if (!is.logical(ignore.case)) {
     stop("'ignore.case' must be logical",
          call. = TRUE)
   }
-  
+
   # Prepare -------------------------------------------------------------------
 
   # Calculate the average peak height.
@@ -183,68 +183,68 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
                               add = FALSE, exclude = NULL, sex.rm = FALSE,
                               qs.rm = FALSE, kit = NULL,
                               ignore.case = ignore.case,
-                              exact = FALSE, debug=debug)
-  
-  
+                              exact = FALSE, debug = debug)
+
+
   # Add amount to data.
-  if(is.null(amount)){
-    dfHeight <- addData(data=dfHeight, new.data=data, by.col="Sample.Name",
-                        then.by.col=NULL, exact=TRUE, ignore.case=ignore.case,
-                        what="Amount", debug=debug)
+  if (is.null(amount)) {
+    dfHeight <- addData(data = dfHeight, new.data = data, by.col = "Sample.Name",
+                        then.by.col = NULL, exact = TRUE, ignore.case = ignore.case,
+                        what = "Amount", debug = debug)
     message("Amount added to 'data'.")
   } else {
-    dfHeight <- addData(data=dfHeight, new.data=amount, by.col="Sample.Name",
-                        then.by.col=NULL, exact=TRUE, ignore.case=ignore.case,
-                        what="Amount", debug=debug)
+    dfHeight <- addData(data = dfHeight, new.data = amount, by.col = "Sample.Name",
+                        then.by.col = NULL, exact = TRUE, ignore.case = ignore.case,
+                        what = "Amount", debug = debug)
     message("Amount added to 'data'.")
   }
-  
+
   message("Processed data to be used in regression:")
   print(dfHeight)
-  
+
   # Convert -------------------------------------------------------------------
 
   # Convert to numeric.
-  if(!is.numeric(dfHeight$H)){
-    dfHeight$H <-  as.numeric(dfHeight$H)
+  if (!is.numeric(dfHeight$H)) {
+    dfHeight$H <- as.numeric(dfHeight$H)
     message("'H' must be numeric. 'data' converted!")
   }
-  
+
   # Convert to numeric.
-  if(!is.numeric(dfHeight$Amount)){
-    dfHeight$Amount <-  as.numeric(dfHeight$Amount)
+  if (!is.numeric(dfHeight$Amount)) {
+    dfHeight$Amount <- as.numeric(dfHeight$Amount)
     message("'Amount' must be numeric. 'data' converted!")
   }
 
-  # Remove NA rows.  
-  if(any(is.na(dfHeight$Amount))){
+  # Remove NA rows.
+  if (any(is.na(dfHeight$Amount))) {
     dfHeight <- dfHeight[!is.na(dfHeight$Amount), ]
     message("Removed rows where Amount=NA.")
   }
 
   # Analyse -------------------------------------------------------------------
-  
+
   # Convert to data.table.
   dt <- data.table::data.table(dfHeight)
-  
+
   # Calculate the standard deviation per amount.
-  dfSd <- dt[, list(H=mean(H), Sd=sd(H)), by=Amount]
-  
+  dfSd <- dt[, list(H = mean(H), Sd = sd(H)), by = Amount]
+
   # Get number of data points.
   n <- nrow(dfSd)
 
-  if(weighted){
-    
+  if (weighted) {
+
     # Calculate weights.
-    weight <- 1/dfSd$Sd^2
-    
+    weight <- 1 / dfSd$Sd^2
+
     # Perform weighted linear regression.
-    fit <- lm(dfSd$H ~ dfSd$Amount, weights=weight)
-    
+    fit <- lm(dfSd$H ~ dfSd$Amount, weights = weight)
+
     # Extract estimates and standard error of the regression.
     coeff <- c(summary(fit)$coef[1:2], summary(fit)$sigma)
-    
-    if(debug){
+
+    if (debug) {
       print("coeff:")
       print(coeff)
       print("Intercept:")
@@ -254,23 +254,23 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
       print("Std.Error:")
       print(coeff[3])
     }
-    
+
     # Create result data frame.
-    res <- data.frame(Amount=dfSd$Amount, Height=dfSd$H, Sd=dfSd$Sd, Weight=weight, N=n, Alpha=alpha,
-                     Lower=as.numeric(coeff[1] - qt(alpha, n-1, lower.tail=FALSE) * coeff[3]),
-                     Intercept=as.numeric(coeff[1]),
-                     AT6=as.numeric(coeff[1] + qt(alpha, n-1, lower.tail=FALSE) * coeff[3]),
-                     Std.Error=coeff[3], Slope=coeff[2])
-    
+    res <- data.frame(Amount = dfSd$Amount, Height = dfSd$H, Sd = dfSd$Sd, Weight = weight, N = n, Alpha = alpha,
+                     Lower = as.numeric(coeff[1] - qt(alpha, n - 1, lower.tail = FALSE) * coeff[3]),
+                     Intercept = as.numeric(coeff[1]),
+                     AT6 = as.numeric(coeff[1] + qt(alpha, n - 1, lower.tail = FALSE) * coeff[3]),
+                     Std.Error = coeff[3], Slope = coeff[2])
+
   } else {
-    
+
     # Perform linear regression.
     fit <- lm(dfSd$H ~ dfSd$Amount)
 
     # Extract estimates and standard error of the regression.
     coeff <- c(summary(fit)$coef[1:2], summary(fit)$sigma)
-    
-    if(debug){
+
+    if (debug) {
       print("coeff:")
       print(coeff)
       print("Intercept:")
@@ -280,18 +280,18 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
       print("Std.Error:")
       print(coeff[3])
     }
-    
+
     # Create result data frame.
-    res <- data.frame(Amount=dfSd$Amount, Height=dfSd$H, Sd=dfSd$Sd, Weight=NA, N=n, Alpha=alpha,
-                     Lower=as.numeric(coeff[1] - qt(alpha, n-1, lower.tail=FALSE) * coeff[3]),
-                     Intercept=as.numeric(coeff[1]),
-                     AT6=as.numeric(coeff[1] + qt(alpha, n-1, lower.tail=FALSE) * coeff[3]),
-                     Std.Error=coeff[3], Slope=coeff[2])
-    
-    
+    res <- data.frame(Amount = dfSd$Amount, Height = dfSd$H, Sd = dfSd$Sd, Weight = NA, N = n, Alpha = alpha,
+                     Lower = as.numeric(coeff[1] - qt(alpha, n - 1, lower.tail = FALSE) * coeff[3]),
+                     Intercept = as.numeric(coeff[1]),
+                     AT6 = as.numeric(coeff[1] + qt(alpha, n - 1, lower.tail = FALSE) * coeff[3]),
+                     Std.Error = coeff[3], Slope = coeff[2])
+
+
   }
 
-  if(debug){
+  if (debug) {
     print("str(res)")
     print(str(res))
     print("head(res)")
@@ -299,15 +299,15 @@ calculateAT6 <- function(data, ref, amount=NULL, weighted=TRUE, alpha=0.05,
     print("tail(res)")
     print(tail(res))
   }
-  
+
   # Update audit trail.
   res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 
-  if(debug){
+  if (debug) {
     print(paste("EXIT:", match.call()[[1]]))
   }
-  
+
   # Return result.
   return(res)
-  
+
 }

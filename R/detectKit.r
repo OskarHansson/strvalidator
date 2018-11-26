@@ -28,187 +28,187 @@
 #' the corresponding kit or index is returned.
 #' If an attribute does not exist the function looks at the markers
 #' in the dataset and returns the most likely kit(s).
-#' 
+#'
 #' @param data data frame with column 'Marker' or vector with marker names.
 #' @param index logical, returns kit index if TRUE or short name if FALSE.
 #' @param debug logical, prints debug information if TRUE.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @return integer or string indicating the detected kit.
-#' 
+#'
 
-detectKit <- function(data, index=FALSE, debug=FALSE){
+detectKit <- function(data, index = FALSE, debug = FALSE) {
 
-  if(is.data.frame(data)){
-    if(!'Marker' %in% colnames(data)){
+  if (is.data.frame(data)) {
+    if (!'Marker' %in% colnames(data)) {
       stop("Data frame must contain a column 'Marker'")
     }
-  } else if(is.vector(data)){
-    if(!is.character(data)){
+  } else if (is.vector(data)) {
+    if (!is.character(data)) {
       stop("Vector must be a character vector with marker names")
     }
   }
-  
+
   # Get kit from data ---------------------------------------------------------
-  
+
   # Get kit attribute.
-  attribute <- attr(x=data, which="kit", exact = TRUE)
+  attribute <- attr(x = data, which = "kit", exact = TRUE)
 
   # Check if the attribute was found.
-  if(!is.null(attribute)){
-    
-    if(!index){
+  if (!is.null(attribute)) {
+
+    if (!index) {
       # Get kit name.
-      detectedKit <- getKit(attribute, what="Short.Name")
+      detectedKit <- getKit(attribute, what = "Short.Name")
     } else {
       # Get kit index.
-      detectedKit <- getKit(attribute, what="Index")
+      detectedKit <- getKit(attribute, what = "Index")
     }
-    
+
     # Check if a match was returned.
-    if(!is.na(detectedKit)){
+    if (!is.na(detectedKit)) {
 
       # Write message.
       message(paste("Found matching attribute 'kit':",
                     detectedKit, "(attr =", attribute, ")"))
-      
-      if(debug){
+
+      if (debug) {
         print("Attribute:")
         print(attribute)
         print("Detected kit:")
         print(detectedKit)
       }
-      
+
       return(detectedKit)
-      
+
     }
-    
+
   }
-  
+
   # Get markers from data -----------------------------------------------------
-  
-  if(is.data.frame(data)){
+
+  if (is.data.frame(data)) {
 
     # Get unique markers.
     markers <- unique(data$Marker)
-    
-  } else if(is.vector(data)){
-    
+
+  } else if (is.vector(data)) {
+
     # Get unique markers.
     markers <- unique(data)
-    
+
   } else {
-    
+
     stop("'data' must be a data.frame or character vector.")
-    
+
   }
 
-  # Check if any NA in markers.  
-  if(any(is.na(markers))){
+  # Check if any NA in markers.
+  if (any(is.na(markers))) {
     markers <- markers[!is.na(markers)]
     message("Removed NA from markers.")
   }
 
   # Get markers from kit ------------------------------------------------------
-  
+
   # Get available kits.
   kits <- getKit()
 
   kitMarkers <- list()
   score <- vector()
   detectedKit <- vector()
-  
+
   # Get markers for available kits.
-  for(k in seq(along=kits)){
-    
-    kitMarkers[[k]] <- getKit(kits[k], what="Marker")
-      
+  for (k in seq(along = kits)) {
+
+    kitMarkers[[k]] <- getKit(kits[k], what = "Marker")
+
   }
-  
-  if(debug){
+
+  if (debug) {
     print("Kit markers:")
     print(kitMarkers)
     print("Data markers:")
     print(markers)
   }
-  
+
   # Detect kit ----------------------------------------------------------------
 
   # First score 'data' in relation to kit (to account for missing markers).
-  for(k in seq(along=kitMarkers)){
-    
+  for (k in seq(along = kitMarkers)) {
+
     score[k] <- sum(markers %in% kitMarkers[[k]])
     score[k] <- score[k] / length(kitMarkers[[k]])
-    
+
   }
 
   # Get kit index.
-  bestFit <- max(score, na.rm=TRUE)
+  bestFit <- max(score, na.rm = TRUE)
   detectedKit <- which(score %in% bestFit)
 
   # Get number of candidate kit.
   candidates <- length(detectedKit)
 
-  if(debug){
+  if (debug) {
     print("Number of matching markers:")
     print(score)
     print("Detected kit:")
     print(detectedKit)
   }
-  
+
   # Store last match.
   prevDetected <- detectedKit
-  
+
   # Use 'detectedKit' in the following trials to resolve the kit further.
   #######################################################################
 
   # Check if more than one.
-  if(candidates > 1){
+  if (candidates > 1) {
 
-    if(debug){
+    if (debug) {
       print("Multiple kits with equal score!")
       print("Trying to resolve by closest match of marker order.")
     }
-    
+
     # Try to distinguish based on marker order.
     kitScore <- vector()
 
     # Loop over all candidate kits.
-    for(c in seq(along=detectedKit)){
-      
+    for (c in seq(along = detectedKit)) {
+
       # Get first kit marker string.
-      kitString <- paste(kitMarkers[[detectedKit[c]]], collapse="")
+      kitString <- paste(kitMarkers[[detectedKit[c]]], collapse = "")
 
       # Initiate variables.
       score <- vector()
       matchStart <- 0
       matchEnd <- 0
       prevPos <- 0
-      
+
       # Loop over markers in data.
-      for(m in seq(along=markers)){
-        
+      for (m in seq(along = markers)) {
+
         # Search for substring.
-        match <- regexpr(pattern=markers[m], text=kitString,
+        match <- regexpr(pattern = markers[m], text = kitString,
                          ignore.case = FALSE, perl = FALSE,
                          fixed = TRUE, useBytes = FALSE)
-        
-        if(match < 0){
+
+        if (match < 0) {
 
           # No match. Exit.
-          score <- NA 
+          score <- NA
           break
-          
+
         } else {
-          
+
           # Get first matching character position.
           matchStart <- match
-          
+
           # Get match length
-          matchEnd <- match + attr(match,'match.length')
-          
-          if(matchStart < prevPos){
+          matchEnd <- match + attr(match, 'match.length')
+
+          if (matchStart < prevPos) {
             # Back matching, penalise.
             score[m] <- -1
           } else {
@@ -217,25 +217,25 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
           }
 
         }
-        
+
         # Remember last matching position.
         prevPos <- matchEnd
-        
+
       }
-      
+
       # Sum match score of current kit.
-      kitScore[c]<- sum(score)
-      
+      kitScore[c] <- sum(score)
+
     }
-    
+
     # Get kit index.
-    bestFit <- suppressWarnings(max(kitScore, na.rm=TRUE))
+    bestFit <- suppressWarnings(max(kitScore, na.rm = TRUE))
     kitIndex <- which(kitScore %in% bestFit)
-    
+
     # Get detected kits.
     detectedKit <- detectedKit[kitIndex]
 
-    if(debug){
+    if (debug) {
         print("Marker position matching:")
         print(kitScore)
         print("Detected kit:")
@@ -246,186 +246,186 @@ detectKit <- function(data, index=FALSE, debug=FALSE){
 
   # Get number of candidate kit.
   candidates <- length(detectedKit)
-  
-  if(candidates == 0){
+
+  if (candidates == 0) {
 
     # Revert to previous matches.
     detectedKit <- prevDetected
-    
-    if(debug){
+
+    if (debug) {
       print("No match with this method!")
       print("Revert to previous match:")
       print(detectedKit)
     }
-    
+
   } else {
-    
+
     # Store last match.
     prevDetected <- detectedKit
-    
+
   } ###########################################################################
-    
-# THIS STRATEGY DOES NOT PERFORM WELL IF MARKERS ARE NOT IN ORDER (e.g. no sex marker).  
-#  
+
+# THIS STRATEGY DOES NOT PERFORM WELL IF MARKERS ARE NOT IN ORDER (e.g. no sex marker).
+#
 #   # Check if more than one.
 #   if(candidates > 1){
-# 
+#
 #     if(debug){
 #       print("Multiple kits with equal score!")
 #       print("Trying to resolve by marker order.")
 #     }
-#     
+#
 #     # Try to distinguish based on marker order.
 #     posMatch <- vector()
 #     markers<-unique(data$Marker)
-# 
+#
 #     # Loop over all candidate kits.
 #     for(c in seq(along=detectedKit)){
-# 
+#
 #       # Get kit markers and vector lengths.
 #       tmpKit <- kitMarkers[[detectedKit[c]]]
 #       lenKit <- length(tmpKit)
 #       lenMarkers <- length(markers)
-# 
+#
 #       # Make equal length. 'as.character' to get rid of levels.
 #       tmpKit <- as.character(tmpKit[1:min(lenKit, lenMarkers)])
 #       tmpMarker <- as.character(markers[1:min(lenKit, lenMarkers)])
-# 
+#
 #       if(debug){
 #         print("Data markers:")
 #         print(tmpMarker)
 #         print(paste("Kit", c, "markers:"))
 #         print(tmpKit)
 #       }
-#       
+#
 #       # Sum number of markers in matching position.
 #       posMatch[c]<- sum(tmpKit == tmpMarker)
-#       
+#
 #     }
-# 
+#
 #     # Get kit index.
 #     bestFit <- max(posMatch)
 #     kitIndex <- which(posMatch %in% bestFit)
 #     detectedKit <- detectedKit[kitIndex]
-# 
+#
 #     if(debug){
 #       print("Number of markers in matching position:")
 #       print(posMatch)
 #       print("Detected kit:")
 #       print(detectedKit)
 #     }
-#     
+#
 #   } #--------------------------------------------------------------------------
-# 
+#
 #     # Get number of candidate kit.
 #     candidates <- length(detectedKit)
-#     
+#
 #     if(candidates == 0){
-#       
+#
 #       # Revert to previous matches.
 #       detectedKit <- prevDetected
-#       
+#
 #       if(debug){
 #         print("No match with this method!")
 #         print("Revert to previous match:")
 #         print(detectedKit)
 #       }
-#       
+#
 #     } else {
-#       
+#
 #       # Store last match.
 #       prevDetected <- detectedKit
-#       
+#
 #     } ###########################################################################
 
-  
-  
+
+
 # THIS STRATEGY DOES NOT PERFORM WELL IF MARKERS ARE NOT IN ORDER.
-#  
+#
 #   # Check if more than one.
 #   if(candidates > 1){
-#     
+#
 #     if(debug){
 #       print("Still multiple kits with equal score!")
 #       print("Trying to resolve by sub string matching.")
 #     }
-#     
+#
 #     # Try to distinguish based on sub string matching.
 #     posMatch <- vector()
 #     markerString <- paste(unique(data$Marker), collapse="")
-#     
+#
 #     # Loop over all candidate kits.
 #     for(c in seq(along=detectedKit)){
-#       
+#
 #       kitString <- paste(kitMarkers[[detectedKit[c]]], collapse="")
-#       
+#
 #       if(debug){
 #         print("Data marker string:")
 #         print(markerString)
 #         print(paste("Kit", c, "marker string:"))
 #         print(kitString)
 #       }
-# 
+#
 #       # Search for substring.
 #       posMatch[c]<- grepl(markerString, kitString, fixed=TRUE)
-#       
+#
 #     }
-#     
+#
 #     # Get kit index.
 #     bestFit <- TRUE
 #     kitIndex <- which(posMatch %in% bestFit)
-#     
+#
 #     detectedKit <- detectedKit[kitIndex]
-#     
+#
 #     if(debug){
 #       print("Sub string matched:")
 #       print(posMatch)
 #       print("Detected kit:")
 #       print(detectedKit)
 #     }
-#       
+#
 #   } #--------------------------------------------------------------------------
-# 
+#
 #     # Get number of candidate kit.
 #     candidates <- length(detectedKit)
-#     
+#
 #     if(candidates == 0){
-#       
+#
 #       # Revert to previous matches.
 #       detectedKit <- prevDetected
-#       
+#
 #       if(debug){
 #         print("No match with this method!")
 #         print("Revert to previous match:")
 #         print(detectedKit)
 #       }
-#       
+#
 #     } else {
-#       
+#
 #       # Store last match.
 #       prevDetected <- detectedKit
-#       
+#
 #     } ###########################################################################
 
-  if(candidates > 1){
-    
+  if (candidates > 1) {
+
     message("Could not resolve kit. Multiple candidates returned.")
-    
+
   }
-  
-  if(!index){
+
+  if (!index) {
     # Get kit name.
-    detectedKit <- getKit(detectedKit, what="Short.Name")
+    detectedKit <- getKit(detectedKit, what = "Short.Name")
   }
 
   # Write message.
-  message(paste("Detected kit(s):", paste(detectedKit, collapse=", ")))
+  message(paste("Detected kit(s):", paste(detectedKit, collapse = ", ")))
 
-  if(debug){
+  if (debug) {
     print("Detected kit:")
     print(detectedKit)
   }
-  
+
   return(detectedKit)
-  
+
 }

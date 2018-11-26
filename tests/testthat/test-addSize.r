@@ -9,7 +9,7 @@ context("addSize")
 # 26.08.2014: Added test for scrampled markers (test 05 and test 06) [Issue#5].
 # 07.05.2014: Added test for 'ESX17' (test 03 and test 04).
 # 02.03.2014: First tests for 'addSize'.
-# 
+#
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-addSize.r")
 # test_dir("tests/testthat")
@@ -20,43 +20,43 @@ test_that("addSize", {
   data(set2)
 
   # Correct marker order.
-  scrampled <- rbind(set2[7:8,],set2[1:6,], set2[9:16,])
-  
+  scrampled <- rbind(set2[7:8, ], set2[1:6, ], set2[9:16, ])
+
   # Get kit information for 'bins=TRUE'.
-  kitBins <- getKit("SGMPlus", what="Size")
-  
+  kitBins <- getKit("SGMPlus", what = "Size")
+
   # Get kit information for 'bins=FALSE'.
-  kitCalc <- getKit("SGMPlus", what="Offset")
-  
+  kitCalc <- getKit("SGMPlus", what = "Offset")
+
   # Get test data.
   data(ref4)
   # Extract one sample.
-  ref4 <- ref4[ref4$Sample.Name=="A2",]
-  
+  ref4 <- ref4[ref4$Sample.Name == "A2", ]
+
   # Get kit information for 'bins=TRUE'.
-  kitBins2 <- getKit("ESX17", what="Size")
-  
+  kitBins2 <- getKit("ESX17", what = "Size")
+
   # Get kit information for 'bins=FALSE'.
-  kitCalc2 <- getKit("ESX17", what="Offset")
-  
-  
+  kitCalc2 <- getKit("ESX17", what = "Offset")
+
+
   # TEST 01 -------------------------------------------------------------------
   # Test adding size using bins=TRUE.
-  
+
   # Analyse dataframe.
-  res <- addSize(data=set2, kit=kitBins, bins=TRUE)
-  
-  # Check return class.  
+  res <- addSize(data = set2, kit = kitBins, bins = TRUE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
 
-  # Check that expected columns exist.  
+  # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
   expect_true("Marker" %in% names(res))
   expect_true("Allele" %in% names(res))
   expect_true("Height" %in% names(res))
   expect_true("Dye" %in% names(res))
   expect_true("Size" %in% names(res))
-  
+
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
@@ -64,7 +64,7 @@ test_that("addSize", {
   expect_true(any(is.na(res$Height)))
   expect_false(any(is.na(res$Dye)))
   expect_true(any(is.na(res$Size)))
-  
+
   # Check result.
   expect_that(res$Size[1], equals(126))
   expect_that(res$Size[2], equals(138))
@@ -98,24 +98,24 @@ test_that("addSize", {
   expect_that(res$Size[30], equals(173))
   expect_that(res$Size[31], equals(189))
   expect_that(res$Size[32], equals(as.numeric(NA)))
-  
+
   # TEST 02 -------------------------------------------------------------------
   # Test adding size using bins=FALSE.
-  
+
   # Analyse dataframe.
-  res <- addSize(data=set2, kit=kitCalc, bins=FALSE)
-  
-  # Check return class.  
+  res <- addSize(data = set2, kit = kitCalc, bins = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
   expect_true("Marker" %in% names(res))
   expect_true("Allele" %in% names(res))
   expect_true("Height" %in% names(res))
   expect_true("Dye" %in% names(res))
   expect_true("Size" %in% names(res))
-  
+
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
@@ -123,7 +123,7 @@ test_that("addSize", {
   expect_true(any(is.na(res$Height)))
   expect_false(any(is.na(res$Dye)))
   expect_true(any(is.na(res$Size)))
-  
+
   # Check result.
   expect_that(res$Size[1], equals(126))
   expect_that(res$Size[2], equals(138))
@@ -157,28 +157,28 @@ test_that("addSize", {
   expect_that(res$Size[30], equals(173))
   expect_that(res$Size[31], equals(189))
   expect_that(res$Size[32], equals(as.numeric(NA)))
-  
+
   # TEST 03 -------------------------------------------------------------------
   # Test adding size using bins=TRUE.
-  
+
   # Analyse dataframe.
-  res <- addSize(data=ref4, kit=kitBins2, bins=TRUE)
-  
-  # Check return class.  
+  res <- addSize(data = ref4, kit = kitBins2, bins = TRUE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
   expect_true("Marker" %in% names(res))
   expect_true("Allele" %in% names(res))
   expect_true("Size" %in% names(res))
-  
+
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
   expect_false(any(is.na(res$Allele)))
   expect_false(any(is.na(res$Size)))
-  
+
   # Check result.
   expect_that(res$Size[1], equals(81.79))
   expect_that(res$Size[2], equals(81.79))
@@ -214,28 +214,28 @@ test_that("addSize", {
   expect_that(res$Size[32], equals(226.77))
   expect_that(res$Size[33], equals(321.53))
   expect_that(res$Size[34], equals(368.23))
-  
+
   # TEST 04 -------------------------------------------------------------------
   # Test adding size using bins=FALSE.
-  
+
   # Analyse dataframe.
-  res <- addSize(data=ref4, kit=kitCalc2, bins=FALSE)
-  
-  # Check return class.  
+  res <- addSize(data = ref4, kit = kitCalc2, bins = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
   expect_true("Marker" %in% names(res))
   expect_true("Allele" %in% names(res))
   expect_true("Size" %in% names(res))
-  
+
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
   expect_false(any(is.na(res$Allele)))
   expect_false(any(is.na(res$Size)))
-  
+
   # Check result.
   expect_that(res$Size[1], equals(82))
   expect_that(res$Size[2], equals(82))
@@ -271,24 +271,24 @@ test_that("addSize", {
   expect_that(res$Size[32], equals(227))
   expect_that(res$Size[33], equals(321))
   expect_that(res$Size[34], equals(367))
-  
+
   # TEST 05 -------------------------------------------------------------------
   # Test adding size when marker order is not correct and bins=TRUE.
 
   # Analyse dataframe.
-  res <- addSize(data=scrampled, kit=kitBins, bins=TRUE)
-  
-  # Check return class.  
+  res <- addSize(data = scrampled, kit = kitBins, bins = TRUE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
   expect_true("Marker" %in% names(res))
   expect_true("Allele" %in% names(res))
   expect_true("Height" %in% names(res))
   expect_true("Dye" %in% names(res))
   expect_true("Size" %in% names(res))
-  
+
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
@@ -296,7 +296,7 @@ test_that("addSize", {
   expect_false(any(is.na(res$Height)))
   expect_false(any(is.na(res$Dye)))
   expect_true(any(is.na(res$Size)))
-  
+
   # Check result.
   expect_that(res$Size[1], equals(107))
   expect_that(res$Size[2], equals(113))
@@ -314,24 +314,24 @@ test_that("addSize", {
   expect_that(res$Size[14], equals(173))
   expect_that(res$Size[15], equals(189))
   expect_that(res$Size[16], equals(247))
-  
+
   # TEST 06 -------------------------------------------------------------------
   # Test adding size when marker order is not correct and bins=FALSE.
-  
+
   # Analyse dataframe.
-  res <- addSize(data=scrampled, kit=kitCalc, bins=FALSE)
-  
-  # Check return class.  
+  res <- addSize(data = scrampled, kit = kitCalc, bins = FALSE)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
   expect_true("Marker" %in% names(res))
   expect_true("Allele" %in% names(res))
   expect_true("Height" %in% names(res))
   expect_true("Dye" %in% names(res))
   expect_true("Size" %in% names(res))
-  
+
   # Check for NA's.
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Marker)))
@@ -339,7 +339,7 @@ test_that("addSize", {
   expect_false(any(is.na(res$Height)))
   expect_false(any(is.na(res$Dye)))
   expect_false(any(is.na(res$Size)))
-  
+
   # Check result.
   expect_that(res$Size[1], equals(107))
   expect_that(res$Size[2], equals(116))
@@ -357,7 +357,7 @@ test_that("addSize", {
   expect_that(res$Size[14], equals(173))
   expect_that(res$Size[15], equals(189))
   expect_that(res$Size[16], equals(247))
-  
-  
-  
+
+
+
 })

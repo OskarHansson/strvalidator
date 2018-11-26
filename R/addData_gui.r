@@ -31,23 +31,23 @@
 #' GUI wrapper for \code{\link{addData}}.
 #'
 #' @details
-#' Simplifies the use of the \code{\link{addData}} function by providing a graphical 
+#' Simplifies the use of the \code{\link{addData}} function by providing a graphical
 #' user interface to it.
 #' @param env environment in which to search for data frames.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
-#' 
+#'
 #' @return TRUE
-#' 
+#'
 #' @export
-#' 
+#'
 #' @importFrom utils help
-#' 
+#'
 #' @seealso  \code{\link{addData}}
 
-addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NULL){
-  
+addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+
   # Global variables.
   .gDataDest <- NULL
   .gDataDestName <- NULL
@@ -55,272 +55,272 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
   .gDataSource <- NULL
   .gDataSourceColumns <- NULL
   .gDefaultDrp <- "<Select column>"
-  
-  if(debug){
+
+  if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
-  
-  # Main window.  
-  w <- gwindow(title="Add data", visible=FALSE)
-  
+
+  # Main window.
+  w <- gwindow(title = "Add data", visible = FALSE)
+
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function (h, ...) {
-    
+  addHandlerDestroy(w, handler = function(h, ...) {
+
     # Save GUI state.
     .saveSettings()
-    
+
     # Focus on parent window.
-    if(!is.null(parent)){
+    if (!is.null(parent)) {
       focus(parent)
     }
-    
+
   })
-  
-  gv <- ggroup(horizontal=FALSE,
-               spacing=8,
-               use.scrollwindow=FALSE,
+
+  gv <- ggroup(horizontal = FALSE,
+               spacing = 8,
+               use.scrollwindow = FALSE,
                container = w,
-               expand=TRUE) 
+               expand = TRUE)
 
   # Help button group.
-  gh <- ggroup(container = gv, expand=FALSE, fill="both")
-  
-  savegui_chk <- gcheckbox(text="Save GUI settings", checked=FALSE, container=gh)
-  
-  addSpring(gh)
-  
-  help_btn <- gbutton(text="Help", container=gh)
-  
-  addHandlerChanged(help_btn, handler = function(h, ...) {
-    
-    # Open help page for function.
-    print(help("addData_gui", help_type="html"))
-    
-  })
-  
-  # FRAME 0 ###################################################################
-  
-  f0 <- gframe(text = "Datasets",
-               horizontal=FALSE,
-               spacing = 5,
-               container = gv) 
-  
-  g0 <- glayout(container = f0, spacing = 1)
-  
-  # Datasets ------------------------------------------------------------------
-  
-  g0[1,1] <- glabel(text="Select destination dataset:", container=g0)
+  gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  g0[1,2] <- dataset_drp <- gcombobox(items=c("<Select dataset>",
-                                   listObjects(env=env,
-                                               obj.class="data.frame")), 
+  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+
+  addSpring(gh)
+
+  help_btn <- gbutton(text = "Help", container = gh)
+
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+
+    # Open help page for function.
+    print(help("addData_gui", help_type = "html"))
+
+  })
+
+  # FRAME 0 ###################################################################
+
+  f0 <- gframe(text = "Datasets",
+               horizontal = FALSE,
+               spacing = 5,
+               container = gv)
+
+  g0 <- glayout(container = f0, spacing = 1)
+
+  # Datasets ------------------------------------------------------------------
+
+  g0[1, 1] <- glabel(text = "Select destination dataset:", container = g0)
+
+  g0[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
+                                   listObjects(env = env,
+                                               obj.class = "data.frame")),
                            selected = 1,
                            editable = FALSE,
                            container = g0,
                            ellipsize = "none")
-  
-  g0[1,3] <- g0_samples_lbl <- glabel(text=" 0 samples", container=g0)
-  
-  addHandlerChanged(dataset_drp, handler = function (h, ...) {
-    
+
+  g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples", container = g0)
+
+  addHandlerChanged(dataset_drp, handler = function(h, ...) {
+
     val_obj <- svalue(dataset_drp)
-    
+
     # Check if suitable.
-    ok <- checkDataset(name=val_obj, reqcol=NULL,
-                       env=env, parent=w, debug=debug)
-    
-    if(ok){ 
+    ok <- checkDataset(name = val_obj, reqcol = NULL,
+                       env = env, parent = w, debug = debug)
+
+    if (ok) {
       # Load or change components.
 
-      .gDataDest <<- get(val_obj, envir=env)
+      .gDataDest <<- get(val_obj, envir = env)
       .gDataDestName <<- val_obj
       .gDataDestColumns <<- names(.gDataDest)
-      
+
       samples <- length(unique(.gDataDest$Sample.Name))
       svalue(g0_samples_lbl) <- paste(" ", samples, "samples")
-      svalue(f2_save_edt) <- paste(.gDataDestName, "_new", sep="")
-      
+      svalue(f2_save_edt) <- paste(.gDataDestName, "_new", sep = "")
+
       # Update dropdown menues.
       f1_key_drp[] <- c(.gDefaultDrp,
-                        intersect(.gDataDestColumns,.gDataSourceColumns))
+                        intersect(.gDataDestColumns, .gDataSourceColumns))
       f1_key2_drp[] <- c(.gDefaultDrp,
-                        intersect(.gDataDestColumns,.gDataSourceColumns))
-      
+                        intersect(.gDataDestColumns, .gDataSourceColumns))
+
       # Select default value.
-      svalue(f1_key_drp, index=TRUE) <- 1
-      svalue(f1_key2_drp, index=TRUE) <- 1
-      
-      
+      svalue(f1_key_drp, index = TRUE) <- 1
+      svalue(f1_key2_drp, index = TRUE) <- 1
+
+
     } else {
-      
+
       # Reset components.
       .gDataDest <<- NULL
-      svalue(dataset_drp, index=TRUE) <- 1
+      svalue(dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-      
+
       # Update dropdown menues.
       f1_key_drp[] <- .gDefaultDrp
       f1_key2_drp[] <- .gDefaultDrp
-      
+
       # Select default value.
-      svalue(f1_key_drp, index=TRUE) <- 1
-      svalue(f1_key2_drp, index=TRUE) <- 1
-      
+      svalue(f1_key_drp, index = TRUE) <- 1
+      svalue(f1_key2_drp, index = TRUE) <- 1
+
     }
-    
-  } )  
-  
-  g0[2,1] <- glabel(text="Select source dataset:", container=g0)
-  
-  g0[2,2] <- refset_drp <- gcombobox(items=c("<Select dataset>",
-                                   listObjects(env=env,
-                                               obj.class="data.frame")), 
+
+  })
+
+  g0[2, 1] <- glabel(text = "Select source dataset:", container = g0)
+
+  g0[2, 2] <- refset_drp <- gcombobox(items = c("<Select dataset>",
+                                   listObjects(env = env,
+                                               obj.class = "data.frame")),
                            selected = 1,
                            editable = FALSE,
                            container = g0,
-                           ellipsize = "none") 
-  
-  g0[2,3] <- g0_ref_lbl <- glabel(text=" 0 samples", container=g0)
-  
-  addHandlerChanged(refset_drp, handler = function (h, ...) {
-    
+                           ellipsize = "none")
+
+  g0[2, 3] <- g0_ref_lbl <- glabel(text = " 0 samples", container = g0)
+
+  addHandlerChanged(refset_drp, handler = function(h, ...) {
+
     val_obj <- svalue(refset_drp)
-    
+
     # Check if suitable.
-    ok <- checkDataset(name=val_obj, reqcol=NULL,
-                       env=env, parent=w, debug=debug)
-    
-    if(ok){
+    ok <- checkDataset(name = val_obj, reqcol = NULL,
+                       env = env, parent = w, debug = debug)
+
+    if (ok) {
       # Load or change components.
-      
-      .gDataSource <<- get(val_obj, envir=env)
+
+      .gDataSource <<- get(val_obj, envir = env)
       .gDataSourceColumns <<- names(.gDataSource)
       ref <- length(unique(.gDataSource$Sample.Name))
       svalue(g0_ref_lbl) <- paste(" ", ref, "samples")
-      
+
       # Update dropdown menues.
       f1_key_drp[] <- c(.gDefaultDrp,
-                        intersect(.gDataDestColumns,.gDataSourceColumns))
-        
+                        intersect(.gDataDestColumns, .gDataSourceColumns))
+
       f1_key2_drp[] <- c(.gDefaultDrp,
-                        intersect(.gDataDestColumns,.gDataSourceColumns))
-      
+                        intersect(.gDataDestColumns, .gDataSourceColumns))
+
       f1_col_drp[] <- c(.gDefaultDrp, .gDataSourceColumns)
-      
+
       # Select default value.
-      svalue(f1_key_drp, index=TRUE) <- 1
-      svalue(f1_key2_drp, index=TRUE) <- 1
-      svalue(f1_col_drp, index=TRUE) <- 1
-      
+      svalue(f1_key_drp, index = TRUE) <- 1
+      svalue(f1_key2_drp, index = TRUE) <- 1
+      svalue(f1_col_drp, index = TRUE) <- 1
+
     } else {
-      
+
       .gDataSource <<- NULL
-      svalue(refset_drp, index=TRUE) <- 1
+      svalue(refset_drp, index = TRUE) <- 1
       svalue(g0_ref_lbl) <- " 0 samples"
-      
+
       # Update dropdown menues.
       f1_key_drp[] <- .gDefaultDrp
       f1_key2_drp[] <- .gDefaultDrp
       f1_col_drp[] <- .gDefaultDrp
 
       # Select default value.
-      svalue(f1_key_drp, index=TRUE) <- 1
-      svalue(f1_key2_drp, index=TRUE) <- 1
-      svalue(f1_col_drp, index=TRUE) <- 1
+      svalue(f1_key_drp, index = TRUE) <- 1
+      svalue(f1_key2_drp, index = TRUE) <- 1
+      svalue(f1_col_drp, index = TRUE) <- 1
 
     }
-    
-  } )  
+
+  })
 
   # FRAME 1 ###################################################################
-  
+
   f1 <- gframe(text = "Options",
-               horizontal=FALSE,
+               horizontal = FALSE,
                spacing = 5,
-               container = gv) 
+               container = gv)
 
-  f1_exact_chk <- gcheckbox(text="Exact key matching",
+  f1_exact_chk <- gcheckbox(text = "Exact key matching",
                             checked = TRUE, container = f1)
-  
-  f1_ignore_chk <- gcheckbox(text="Ignore case",
+
+  f1_ignore_chk <- gcheckbox(text = "Ignore case",
                              checked = TRUE, container = f1)
-  
+
   enabled(f1_ignore_chk) <- !svalue(f1_exact_chk)
-  
-  glabel(text="Select primary key column:", container = f1, anchor=c(-1 ,0))
-  f1_key_drp <- gcombobox(items=.gDefaultDrp,
-                          selected = 1,
-                          editable = FALSE,
-                          container = f1,
-                          ellipsize = "none")
-  
-  glabel(text="Select secondary key column (optional):", container = f1,
-         anchor=c(-1 ,0))
-  f1_key2_drp <- gcombobox(items=.gDefaultDrp,
+
+  glabel(text = "Select primary key column:", container = f1, anchor = c(-1, 0))
+  f1_key_drp <- gcombobox(items = .gDefaultDrp,
                           selected = 1,
                           editable = FALSE,
                           container = f1,
                           ellipsize = "none")
 
-  glabel(text="Select columns to add to the new dataset:", container = f1,
-         anchor=c(-1 ,0))
-  f1_col_drp <- gcombobox(items=.gDefaultDrp,
+  glabel(text = "Select secondary key column (optional):", container = f1,
+         anchor = c(-1, 0))
+  f1_key2_drp <- gcombobox(items = .gDefaultDrp,
+                          selected = 1,
+                          editable = FALSE,
+                          container = f1,
+                          ellipsize = "none")
+
+  glabel(text = "Select columns to add to the new dataset:", container = f1,
+         anchor = c(-1, 0))
+  f1_col_drp <- gcombobox(items = .gDefaultDrp,
                            selected = 1,
                            editable = FALSE,
                            container = f1,
                           ellipsize = "none")
 
-  f1_col_edt <- gedit(text="", initial.msg="Default is all columns",
+  f1_col_edt <- gedit(text = "", initial.msg = "Default is all columns",
                       container = f1)
-  
+
   # HANDLERS ------------------------------------------------------------------
-  
-  addHandlerChanged(f1_exact_chk, handler = function (h, ...) {
-    
+
+  addHandlerChanged(f1_exact_chk, handler = function(h, ...) {
+
     val_obj <- svalue(f1_exact_chk)
-    
-    if(val_obj){
+
+    if (val_obj) {
       enabled(f1_ignore_chk) <- FALSE
     } else {
       enabled(f1_ignore_chk) <- TRUE
     }
-    
-  } )  
 
-  addHandlerChanged(f1_col_drp, handler = function (h, ...) {
-    
+  })
+
+  addHandlerChanged(f1_col_drp, handler = function(h, ...) {
+
     val_drp <- svalue(f1_col_drp)
     val_edt <- svalue(f1_col_edt)
-    
-    if(!is.null(val_drp) && val_drp!=.gDefaultDrp){
-      if(nchar(val_edt)==0){
+
+    if (!is.null(val_drp) && val_drp != .gDefaultDrp) {
+      if (nchar(val_edt) == 0) {
         svalue(f1_col_edt) <- val_drp
       } else {
-        svalue(f1_col_edt) <- paste(val_edt, val_drp, sep=",")
+        svalue(f1_col_edt) <- paste(val_edt, val_drp, sep = ",")
       }
     }
-    
-  } )  
-  
+
+  })
+
   # FRAME 2 ###################################################################
-  
+
   f2 <- gframe(text = "Save as",
-               horizontal=TRUE,
+               horizontal = TRUE,
                spacing = 5,
-               container = gv) 
-  
-  glabel(text="Name for result:", container=f2)
-  
-  f2_save_edt <- gedit(text="", container=f2, expand = TRUE)
+               container = gv)
+
+  glabel(text = "Name for result:", container = f2)
+
+  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE)
 
   # BUTTON ####################################################################
-  
-  
-  add_btn <- gbutton(text="Add new data", container=gv)
-  
+
+
+  add_btn <- gbutton(text = "Add new data", container = gv)
+
   addHandlerClicked(add_btn, handler = function(h, ...) {
-    
+
     # Get values.
     val_destination <- svalue(dataset_drp)
     val_source <- svalue(refset_drp)
@@ -330,31 +330,31 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     val_what <- svalue(f1_col_edt)
     val_ignore <- svalue(f1_ignore_chk)
     val_name <- svalue(f2_save_edt)
-    
+
     # Check if default.
-    if(val_key == .gDefaultDrp){
+    if (val_key == .gDefaultDrp) {
       val_key <- NULL
     }
-    if(val_key2 == .gDefaultDrp){
+    if (val_key2 == .gDefaultDrp) {
       val_key2 <- NULL
     }
 
-    # Prepare columns to add.    
-    if(nchar(val_what)==0){
-    
+    # Prepare columns to add.
+    if (nchar(val_what) == 0) {
+
       # Default is all columns.
       val_what <- NULL
-      
+
     } else {
-      
+
       # Create vector of column names to add.
       delimeters <- ",|, | |;|; |:|: "
       val_what <- strsplit(x = val_what, split = delimeters, fixed = FALSE)
       val_what <- unlist(val_what)
-      
+
     }
-    
-    if(debug){
+
+    if (debug) {
       print("val_exact")
       print(val_exact)
       print("val_key")
@@ -370,128 +370,128 @@ addData_gui <- function(env=parent.frame(), savegui=NULL, debug=FALSE, parent=NU
     }
 
     # Check dataset and first key (second key is optional)
-    if(!is.null(.gDataDest) & !is.null(.gDataSource) & !is.null(val_key)){
-      
+    if (!is.null(.gDataDest) & !is.null(.gDataSource) & !is.null(val_key)) {
+
       # Change button.
       blockHandlers(add_btn)
       svalue(add_btn) <- "Processing..."
       unblockHandlers(add_btn)
       enabled(add_btn) <- FALSE
-  
-      datanew <- addData(data=.gDataDest,
-                         new.data=.gDataSource,
-                         exact=val_exact,
-                         by.col=val_key,
-                         then.by.col=val_key2,
-                         what=val_what,
-                         ignore.case=val_ignore)
-      
+
+      datanew <- addData(data = .gDataDest,
+                         new.data = .gDataSource,
+                         exact = val_exact,
+                         by.col = val_key,
+                         then.by.col = val_key2,
+                         what = val_what,
+                         ignore.case = val_ignore)
+
       # Create key-value pairs to log.
       keys <- list("data", "new.data", "exact", "by.col", "then.by.col",
                    "what", "ignore.case")
-      
+
       values <- list(val_destination, val_source, val_exact, val_key, val_key2,
                      val_what, val_ignore)
-      
+
       # Update audit trail.
       datanew <- auditTrail(obj = datanew, key = keys, value = values,
                             label = "addData_gui", arguments = FALSE,
                             package = "strvalidator")
-      
+
       # Save data.
-      saveObject(name=val_name, object=datanew, parent=w, env=env)
-      
-      if(debug){
+      saveObject(name = val_name, object = datanew, parent = w, env = env)
+
+      if (debug) {
         print(datanew)
         print(paste("EXIT:", match.call()[[1]]))
       }
-      
+
       # Close GUI.
       dispose(w)
-    
+
     } else {
-      
+
       message <- "A destination and a source dataset have to be selected."
-      
-      gmessage(message, title="Datasets not selected",
+
+      gmessage(message, title = "Datasets not selected",
                icon = "error",
-               parent = w) 
-      
+               parent = w)
+
     }
-    
-  } )
+
+  })
 
   # INTERNAL FUNCTIONS ########################################################
-  
-  .loadSavedSettings <- function(){
+
+  .loadSavedSettings <- function() {
 
     # First check status of save flag.
-    if(!is.null(savegui)){
+    if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
       enabled(savegui_chk) <- FALSE
-      if(debug){
+      if (debug) {
         print("Save GUI status set!")
-      }  
+      }
     } else {
       # Load save flag.
-      if(exists(".addData_gui_savegui", envir=env, inherits = FALSE)){
-        svalue(savegui_chk) <- get(".addData_gui_savegui", envir=env)
+      if (exists(".addData_gui_savegui", envir = env, inherits = FALSE)) {
+        svalue(savegui_chk) <- get(".addData_gui_savegui", envir = env)
       }
-      if(debug){
+      if (debug) {
         print("Save GUI status loaded!")
-      }  
-    }
-    if(debug){
-      print(svalue(savegui_chk))
-    }  
-    
-    # Then load settings if true.
-    if(svalue(savegui_chk)){
-      if(exists(".addData_gui_exact", envir=env, inherits = FALSE)){
-        svalue(f1_exact_chk) <- get(".addData_gui_exact", envir=env)
       }
-      if(debug){
+    }
+    if (debug) {
+      print(svalue(savegui_chk))
+    }
+
+    # Then load settings if true.
+    if (svalue(savegui_chk)) {
+      if (exists(".addData_gui_exact", envir = env, inherits = FALSE)) {
+        svalue(f1_exact_chk) <- get(".addData_gui_exact", envir = env)
+      }
+      if (debug) {
         print("Saved settings loaded!")
       }
     }
-    
+
   }
-  
-  .saveSettings <- function(){
-    
+
+  .saveSettings <- function() {
+
     # Then save settings if true.
-    if(svalue(savegui_chk)){
-      
-      assign(x=".addData_gui_savegui", value=svalue(savegui_chk), envir=env)
-      assign(x=".addData_gui_exact", value=svalue(f1_exact_chk), envir=env)
-      
+    if (svalue(savegui_chk)) {
+
+      assign(x = ".addData_gui_savegui", value = svalue(savegui_chk), envir = env)
+      assign(x = ".addData_gui_exact", value = svalue(f1_exact_chk), envir = env)
+
     } else { # or remove all saved values if false.
-      
-      if(exists(".addData_gui_savegui", envir=env, inherits = FALSE)){
+
+      if (exists(".addData_gui_savegui", envir = env, inherits = FALSE)) {
         remove(".addData_gui_savegui", envir = env)
       }
-      if(exists(".addData_gui_exact", envir=env, inherits = FALSE)){
+      if (exists(".addData_gui_exact", envir = env, inherits = FALSE)) {
         remove(".addData_gui_exact", envir = env)
       }
-      
-      if(debug){
+
+      if (debug) {
         print("Settings cleared!")
       }
     }
-    
-    if(debug){
+
+    if (debug) {
       print("Settings saved!")
     }
-    
+
   }
-  
+
   # END GUI ###################################################################
-  
+
   # Load GUI settings.
   .loadSavedSettings()
-  
+
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-  
+
 }

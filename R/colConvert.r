@@ -15,7 +15,7 @@
 #' @details
 #' Takes a data frame as input and return it after converting known numeric
 #' columns to numeric.
-#' 
+#'
 #' @param data data.frame.
 #' @param columns character string containing a regular expression
 #'  (or character string for fixed = TRUE) to be matched in the given
@@ -23,16 +23,16 @@
 #' @param ignore.case logical TRUE to ignore case in matching.
 #' @param fixed logical TRUE if columns is a string to be matched as is.
 #' @param debug logical indicating printing debug information.
-#' 
+#'
 #' @return data.frame.
-#' 
+#'
 #' @export
-#' 
+#'
 
-colConvert <- function(data, columns="Height|Size|Data.Point",
-                       ignore.case=TRUE, fixed=FALSE, debug=FALSE){
+colConvert <- function(data, columns = "Height|Size|Data.Point",
+                       ignore.case = TRUE, fixed = FALSE, debug = FALSE) {
 
-  if(debug){
+  if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
     print("data")
@@ -40,22 +40,22 @@ colConvert <- function(data, columns="Height|Size|Data.Point",
     print("columns")
     print(columns)
   }
-  
+
   # Get all known numeric columns.
-  selected <- grep(columns, names(data), ignore.case=ignore.case, fixed=fixed) 
+  selected <- grep(columns, names(data), ignore.case = ignore.case, fixed = fixed)
 
   # Loop over all columns to change to numeric.
-  for(c in seq(along=selected)){
-    
+  for (c in seq(along = selected)) {
+
     # Convert to numeric (handles factors using as.character).
-    data[ , selected[c]] <- as.numeric(as.character(data[ , selected[c]]))
-    
+    data[, selected[c]] <- as.numeric(as.character(data[, selected[c]]))
+
   }
-  
+
   # Update audit trail.
   data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
 
-  if(debug){
+  if (debug) {
     print(paste("EXIT:", match.call()[[1]]))
   }
 

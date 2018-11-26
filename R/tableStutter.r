@@ -28,105 +28,105 @@
 #' number of stutters 'n.stutters', mean ratio 'Mean', standard deviation 'Stdv',
 #' the XXth percentile 'Perc.XX', and the maximum observed ratio 'Max'.
 #' For more details see \code{mean}, \code{sd}, \code{quantile}, \code{max}.
-#' 
+#'
 #' @param data data frame from a stutter analysis by \code{calculateStutter}.
 #' @param scope string, summarize 'global', by 'locus', or by 'stutter'.
 #' @param quant numeric, quantile to calculate.
-#' 
+#'
 #' @return data.frame with summarized result.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @importFrom stats sd quantile
-#' 
+#'
 
 
-tableStutter <- function(data, scope="stutter", quant=0.95){
-  
+tableStutter <- function(data, scope = "stutter", quant = 0.95) {
+
   # Column name for quantile.
-  quantName <- paste("Perc",quant*100, sep=".")
-  
+  quantName <- paste("Perc", quant * 100, sep = ".")
+
   # Create empty result data frame with NAs.
-  sTable <- data.frame(t(rep(NA,8)))
+  sTable <- data.frame(t(rep(NA, 8)))
   # Add column names.
-  colNames <- c("Marker", "Type", "n.alleles", "n.stutters", 
+  colNames <- c("Marker", "Type", "n.alleles", "n.stutters",
                        "Mean", "Stdv", quantName, "Max")
-  names(sTable ) <- colNames
-  
+  names(sTable) <- colNames
+
   # Remove all NAs
-  sTable  <- sTable [-1,]
-  
-  if(scope=="global") {
+  sTable <- sTable [-1, ]
+
+  if (scope == "global") {
     # Calculate a global average across all data.
-    sumAllele<-length(unique(data$Allele))
-    sumObs<-length(data$Ratio)
-    xbar<-mean(data$Ratio)
-    stdv<-sd(data$Ratio)
-    quantVal <- as.numeric(quantile(data$Ratio, quant)) 
+    sumAllele <- length(unique(data$Allele))
+    sumObs <- length(data$Ratio)
+    xbar <- mean(data$Ratio)
+    stdv <- sd(data$Ratio)
+    quantVal <- as.numeric(quantile(data$Ratio, quant))
     xmax <- max(data$Ratio)
-    tmp<-data.frame(Marker=as.character(NA), Type=as.numeric(NA),
-                    n.alleles=sumAllele, n.stutters=sumObs, 
-                    Mean=xbar, Stdv=stdv, Perc=quantVal, Max=xmax,
-                    stringsAsFactors=FALSE)
+    tmp <- data.frame(Marker = as.character(NA), Type = as.numeric(NA),
+                    n.alleles = sumAllele, n.stutters = sumObs,
+                    Mean = xbar, Stdv = stdv, Perc = quantVal, Max = xmax,
+                    stringsAsFactors = FALSE)
     names(tmp) <- colNames
-    sTable<-rbind(sTable,tmp)
-    
+    sTable <- rbind(sTable, tmp)
+
   } else {
-    
+
     # Get all markers.
     marker <- unique(data$Marker)
-    
+
     # Loop over all markers.
-    for(m in seq(along=marker)){
-      
-      # Subset marker.			
-      data.subset <- data[data$Marker==marker[m],]
-      
+    for (m in seq(along = marker)) {
+
+      # Subset marker.
+      data.subset <- data[data$Marker == marker[m], ]
+
       # Get types.
       type <- unique(data.subset$Type)
-      
-      if(scope=="stutter") {
+
+      if (scope == "stutter") {
         # Calculate an average per stutter type.
-        for(t in seq(along=type)){
-          
-          sumAllele <- length(unique(data.subset$Allele[data.subset$Type==type[t]]))
-          sumObs <- length(data.subset$Ratio[data.subset$Type==type[t]])
-          if(is.null(sumObs)){sumObs=NA}
-          xbar <- mean(data.subset$Ratio[data.subset$Type==type[t]])
-          stdv <- sd(data.subset$Ratio[data.subset$Type==type[t]])
-          quantVal <- as.numeric(quantile(data.subset$Ratio[data.subset$Type==type[t]], quant))
-          xmax <- max(data.subset$Ratio[data.subset$Type==type[t]])
-          tmp <- data.frame(Marker=marker[m], Type=type[t],
-                            n.alleles=sumAllele, n.stutters=sumObs, 
-                            Mean=xbar, Stdv=stdv, Perc=quantVal, Max=xmax,
-                            stringsAsFactors=FALSE)
+        for (t in seq(along = type)) {
+
+          sumAllele <- length(unique(data.subset$Allele[data.subset$Type == type[t]]))
+          sumObs <- length(data.subset$Ratio[data.subset$Type == type[t]])
+          if (is.null(sumObs)) {sumObs = NA}
+          xbar <- mean(data.subset$Ratio[data.subset$Type == type[t]])
+          stdv <- sd(data.subset$Ratio[data.subset$Type == type[t]])
+          quantVal <- as.numeric(quantile(data.subset$Ratio[data.subset$Type == type[t]], quant))
+          xmax <- max(data.subset$Ratio[data.subset$Type == type[t]])
+          tmp <- data.frame(Marker = marker[m], Type = type[t],
+                            n.alleles = sumAllele, n.stutters = sumObs,
+                            Mean = xbar, Stdv = stdv, Perc = quantVal, Max = xmax,
+                            stringsAsFactors = FALSE)
           names(tmp) <- colNames
-          sTable<-rbind(sTable,tmp)
+          sTable <- rbind(sTable, tmp)
         }
       }
-      if(scope=="locus") {
+      if (scope == "locus") {
         # Calculate an average per locus.
         sumAllele <- length(unique(data.subset$Allele))
         sumObs <- length(data.subset$Ratio)
-        if(is.null(sumObs)){sumObs=NA}
+        if (is.null(sumObs)) {sumObs = NA}
         xbar <- mean(data.subset$Ratio)
         stdv <- sd(data.subset$Ratio)
         quantVal <- as.numeric(quantile(data.subset$Ratio, quant))
         xmax <- max(data.subset$Ratio)
-        tmp<-data.frame(Marker=marker[m], Type=as.numeric(NA),
-                        n.alleles=sumAllele, n.stutters=sumObs, 
-                        Mean=xbar, Stdv=stdv, Perc=quantVal, Max=xmax,
-                        stringsAsFactors=FALSE)
+        tmp <- data.frame(Marker = marker[m], Type = as.numeric(NA),
+                        n.alleles = sumAllele, n.stutters = sumObs,
+                        Mean = xbar, Stdv = stdv, Perc = quantVal, Max = xmax,
+                        stringsAsFactors = FALSE)
         names(tmp) <- colNames
-        sTable <- rbind(sTable,tmp)
-        
+        sTable <- rbind(sTable, tmp)
+
       }
     }
   }
-  
+
   # Update audit trail.
   sTable <- auditTrail(obj = sTable, f.call = match.call(), package = "strvalidator")
 
   return(sTable)
-  
+
 }

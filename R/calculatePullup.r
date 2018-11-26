@@ -29,7 +29,7 @@
 #' All known peaks included in the analysis are by default written to the
 #' result even if they did not cause any pull-up. These rows can be discarded
 #' from the result.
-#' 
+#'
 #' @param data a data frame containing at least 'Sample.Name', 'Marker', 'Height',
 #' 'Allele', 'Dye', 'Data.Point' and 'Size'.
 #' @param ref a data frame containing at least
@@ -44,24 +44,24 @@
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param discard logical TRUE if known alleles with no detected pull-up should
 #'  be discarded from the result. Default is FALSE to include alleles not causing pull-up.
-#' @param limit numeric remove ratios > limit from the result. Default is 1 to remove 
+#' @param limit numeric remove ratios > limit from the result. Default is 1 to remove
 #' pull-up peaks that are higher than the source peak and hence likely not a real pull-up.
 #' @param debug logical indicating printing debug information.
-#' 
+#'
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Dye',
 #' 'Allele', 'Height', 'Size', 'Data.Point', 'P.Marker', 'P.Dye', 'P.Allele',
 #' 'P.Height', 'P.Size', 'P.Data.Point', 'Delta', 'Ratio'.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @importFrom utils head str tail
-#' 
+#'
 
-calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
-                            ol.rm=FALSE, ignore.case=TRUE, word=FALSE,
-                            discard=FALSE, limit=1, debug=FALSE){
+calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
+                            ol.rm = FALSE, ignore.case = TRUE, word = FALSE,
+                            discard = FALSE, limit = 1, debug = FALSE) {
 
-  if(debug){
+  if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
     print("data")
@@ -77,81 +77,81 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
     print("word")
     print(word)
   }
-  
+
   # Check data ----------------------------------------------------------------
 
-  if(is.null(data$Sample.Name)){
+  if (is.null(data$Sample.Name)) {
     stop("'Sample.Name' does not exist!")
   }
-  
-  if(is.null(data$Marker)){
+
+  if (is.null(data$Marker)) {
     stop("'Marker' does not exist!")
   }
-  
-  if(!any(grepl("Allele", names(data)))){
+
+  if (!any(grepl("Allele", names(data)))) {
     stop("'Allele' does not exist!")
   }
-  
-  if(!any(grepl("Height", names(data)))){
+
+  if (!any(grepl("Height", names(data)))) {
     stop("'Height' does not exist!")
   }
-  
-  # Check if slim format.  
-  if(sum(grepl("Allele", names(data))) > 1){
+
+  # Check if slim format.
+  if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
          call. = TRUE)
   }
-  
-  if(sum(grepl("Height", names(data))) > 1){
+
+  if (sum(grepl("Height", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
          call. = TRUE)
   }
-  
-  if(is.null(ref$Sample.Name)){
+
+  if (is.null(ref$Sample.Name)) {
     stop("'Sample.Name' does not exist in ref!")
   }
-  
-  if(is.null(ref$Marker)){
+
+  if (is.null(ref$Marker)) {
     stop("'Marker' does not exist in ref!")
   }
-  
-  if(!any(grepl("Allele", names(ref)))){
+
+  if (!any(grepl("Allele", names(ref)))) {
     stop("'Allele' does not exist in ref!")
   }
-  
-  # Check if slim format.  
-  if(sum(grepl("Allele", names(ref))) > 1){
+
+  # Check if slim format.
+  if (sum(grepl("Allele", names(ref))) > 1) {
     stop("'ref' must be in 'slim' format",
          call. = TRUE)
   }
-  
+
   # Check flags.
-  if(!is.logical(ol.rm)){
+  if (!is.logical(ol.rm)) {
     stop("'ol.rm' must be logical.", call. = TRUE)
   }
-  if(!is.logical(ignore.case)){
+  if (!is.logical(ignore.case)) {
     stop("'ignore.case' must be logical.", call. = TRUE)
   }
-  if(!is.logical(word)){
+  if (!is.logical(word)) {
     stop("'word' must be logical.", call. = TRUE)
   }
-  if(!is.logical(discard)){
+  if (!is.logical(discard)) {
     stop("'discard' must be logical.", call. = TRUE)
   }
 
-  # Check numeric.  
-  if(!is.numeric(pullup.range)){
+  # Check numeric.
+  if (!is.numeric(pullup.range)) {
     stop("'pullup.range' must be numeric.", call. = TRUE)
   }
-  if(!is.numeric(block.range)){
+  if (!is.numeric(block.range)) {
     stop("'block.range' must be numeric.", call. = TRUE)
   }
-  if(!is.numeric(limit)){
+  if (!is.numeric(limit)) {
     stop("'limit' must be numeric.", call. = TRUE)
   }
-  
+
   # Prepare -------------------------------------------------------------------
-  
+
   # Initialise vectors for result.
   pullMarker <- NULL
   pullDye <- NULL
@@ -168,41 +168,41 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
   knownPoint <- NULL
 
   # Convert to numeric.
-  if(!is.numeric(data$Data.Point)){
+  if (!is.numeric(data$Data.Point)) {
     data$Data.Point <- as.numeric(data$Data.Point)
-    message("Converted Data.Point to numeric.")  
+    message("Converted Data.Point to numeric.")
   }
-  
+
   # Remove NA's.
-  if(any(is.na(data$Data.Point))){
+  if (any(is.na(data$Data.Point))) {
     tmp1 <- nrow(data)
     data <- data[!is.na(data$Data.Point), ]
     tmp2 <- nrow(data)
-    message(paste("Removed", tmp1-tmp2, "rows with NA in column Data.Point"))
+    message(paste("Removed", tmp1 - tmp2, "rows with NA in column Data.Point"))
   }
 
   # Remove OL's.
-  if(ol.rm){
+  if (ol.rm) {
     tmp1 <- nrow(data)
-    data <- data[data$Allele!="OL", ]
+    data <- data[data$Allele != "OL", ]
     tmp2 <- nrow(data)
-    message(paste("Removed", tmp1-tmp2, "rows with OL in column Allele"))
+    message(paste("Removed", tmp1 - tmp2, "rows with OL in column Allele"))
   }
-  
-  # Remove NA's from the reference dataset.  
-  if(any(is.na(ref$Allele))){
+
+  # Remove NA's from the reference dataset.
+  if (any(is.na(ref$Allele))) {
     message(paste("The reference dataset cannot include missing alleles."))
     tmp1 <- nrow(ref)
     ref <- ref[!is.na(ref$Allele), ]
     tmp2 <- nrow(ref)
-    message(paste("Removed", tmp1-tmp2, "rows with NA in column Allele from dataset ref."))
+    message(paste("Removed", tmp1 - tmp2, "rows with NA in column Allele from dataset ref."))
   }
 
-  # Add Size column. 
-  if(!"Size" %in% names(data)){
+  # Add Size column.
+  if (!"Size" %in% names(data)) {
     data$Size <- NA
   }
-  
+
   # Add new columns for min and max data point for analysis window.
   data$Min <- NA
   data$Max <- NA
@@ -210,153 +210,153 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
   # Get known -----------------------------------------------------------------
 
   message("Identify analysis window around known alleles...")
-  
+
   # Find data points for reference alleles.
   refSample <- unique(ref$Sample.Name)
-  
+
   # Create match vector.
-  if(word){
+  if (word) {
     # Add word anchor.
-    grepNames <- paste("\\b", refSample, "\\b", sep="")
+    grepNames <- paste("\\b", refSample, "\\b", sep = "")
   } else {
     # Use reference sample names.
     grepNames <- refSample
   }
-  
-  # Loop over all reference names.  
-  for(r in seq(along=grepNames)){
-    
+
+  # Loop over all reference names.
+  for (r in seq(along = grepNames)) {
+
     # Select samples containing reference name.
-    selSample <- grepl(grepNames[r], data$Sample.Name, ignore.case=ignore.case)
-    
+    selSample <- grepl(grepNames[r], data$Sample.Name, ignore.case = ignore.case)
+
     # Get current reference markers.
-    marker <- unique(ref$Marker[ref$Sample.Name==grepNames[r]])
-    
+    marker <- unique(ref$Marker[ref$Sample.Name == grepNames[r]])
+
     # Get reference a
-    for(m in seq(along=marker)){
-      
+    for (m in seq(along = marker)) {
+
       # Select current marker.
-      selMarker <- data$Marker==marker[m]
-      
+      selMarker <- data$Marker == marker[m]
+
       # Get current reference alleles.
-      allele <- unique(ref$Allele[ref$Sample.Name==grepNames[r] & ref$Marker==marker[m]])
-      
-      for(a in seq(along=allele)){
-        
-        if(debug){
+      allele <- unique(ref$Allele[ref$Sample.Name == grepNames[r] & ref$Marker == marker[m]])
+
+      for (a in seq(along = allele)) {
+
+        if (debug) {
           # Show detailed progress.
           message("Sample: ", grepNames[r], ", Marker: ", marker[m], ", Allele: ", allele[a])
         }
-        
+
         # Select current allele.
-        selAllele <- data$Allele==allele[a]
-        
+        selAllele <- data$Allele == allele[a]
+
         # Make selection.
         selection <- selSample & selMarker & selAllele
-        
+
         # Mark as occupied with reference allele by setting min and max data point.
-        data[selection,"Min"] <- data[selection,"Data.Point"] - (pullup.range / 2)
-        data[selection,"Max"] <- data[selection,"Data.Point"] + (pullup.range / 2)
-        
+        data[selection, "Min"] <- data[selection, "Data.Point"] - (pullup.range / 2)
+        data[selection, "Max"] <- data[selection, "Data.Point"] + (pullup.range / 2)
+
       }
-      
+
     }
-    
+
   }
 
   # Analyse -------------------------------------------------------------------
-  
+
   # Get known profile for each sample.
-  dfKnown <- data[!is.na(data$Min),]
+  dfKnown <- data[!is.na(data$Min), ]
   # Add new column for masked alleles.
   dfKnown$Masked <- FALSE
-  
+
   # Get all except known peaks for each sample.
-  dfData <- data[is.na(data$Min),]
+  dfData <- data[is.na(data$Min), ]
   # Add new column for possible pull-up peaks.
   dfData$Masked <- FALSE
   dfData$Pull.Up <- FALSE
-  
+
   # Mark masked alleles per sample.
   sample <- unique(dfKnown$Sample.Name)
-  for(s in seq(along=sample)){
+  for (s in seq(along = sample)) {
 
     # Print progress.
     message(paste("Identify pull-up peaks for sample ",
-                  sample[s]," (", s, "of", length(sample), ")", sep=""))
-    
+                  sample[s], " (", s, "of", length(sample), ")", sep = ""))
+
     # Select start and end data point for current known profile.
-    selCurrentSample <- dfKnown$Sample.Name==sample[s] 
-    start <- dfKnown[selCurrentSample,]$Min
-    end <- dfKnown[selCurrentSample,]$Max
-  
+    selCurrentSample <- dfKnown$Sample.Name == sample[s]
+    start <- dfKnown[selCurrentSample, ]$Min
+    end <- dfKnown[selCurrentSample, ]$Max
+
     # Select data points for current sample profile.
-    selCurrentData <- dfData$Sample.Name==sample[s]
-    peaks <- dfData[selCurrentData,]$Data.Point
-    
+    selCurrentData <- dfData$Sample.Name == sample[s]
+    peaks <- dfData[selCurrentData, ]$Data.Point
+
     # Loop over all elements.
-    for(e in seq(along=start)){
-      
+    for (e in seq(along = start)) {
+
       # Create a sequence of data points to search for pull-up within.
-      seqVec <- seq(start[e],end[e])
+      seqVec <- seq(start[e], end[e])
 
       # Create a sequence of data points to check for known allele overlap.
-      blockVec <- seq(start[e] - (block.range/2),end[e] + (block.range/2))
-      
+      blockVec <- seq(start[e] - (block.range / 2), end[e] + (block.range / 2))
+
       # Check if any overlap in block range.
       maskedMin <- start %in% blockVec
       maskedMax <- end %in% blockVec
       # Search for pull-up within analysis window.
       matchPoints <- peaks %in% seqVec
-      
+
       # Check if any overlapping allele.
-      if(sum(maskedMin) > 1 || sum(maskedMax) > 1){
-        
+      if (sum(maskedMin) > 1 || sum(maskedMax) > 1) {
+
         # Marked as masked alleles.
-        dfKnown[selCurrentSample,][(maskedMin | maskedMax),]$Masked <- TRUE
-        
+        dfKnown[selCurrentSample, ][(maskedMin | maskedMax), ]$Masked <- TRUE
+
         # Check if any peaks in range.
-        if(any(matchPoints)){
-          
+        if (any(matchPoints)) {
+
           # Marked as masked i.e. not analysed.
-          dfData[selCurrentData,][matchPoints,]$Masked <- TRUE
-          
+          dfData[selCurrentData, ][matchPoints, ]$Masked <- TRUE
+
         }
 
       } else {
         # Not masked and we will search for possible pull-up peaks.
-      
+
         pullTmp <- NULL
-        
+
         # Check if any peaks in range.
-        if(any(matchPoints)){
-          
+        if (any(matchPoints)) {
+
           # Mark as possible pull-up.
-          dfData[selCurrentData,][matchPoints,]$Pull.Up <- TRUE
-  
+          dfData[selCurrentData, ][matchPoints, ]$Pull.Up <- TRUE
+
           # Current matches.
-          pullTmp <- dfData[selCurrentData,][matchPoints,]
-          
+          pullTmp <- dfData[selCurrentData, ][matchPoints, ]
+
         }
-        
+
         # Current known allele.
-        knownTmp <- dfKnown[selCurrentSample & dfKnown$Min == start[e],]
-        
+        knownTmp <- dfKnown[selCurrentSample & dfKnown$Min == start[e], ]
+
         # Check that it is only one row.
-        if(nrow(knownTmp) == 1){
+        if (nrow(knownTmp) == 1) {
 
           # Check if overlap has been found.
-          if(!is.null(pullTmp)){
+          if (!is.null(pullTmp)) {
             # Remove overlap in same dye as known.
-            pullTmp <- pullTmp[pullTmp$Dye!=knownTmp$Dye,]
+            pullTmp <- pullTmp[pullTmp$Dye != knownTmp$Dye, ]
           }
 
           # Get number of pull-up peaks.
           len <- nrow(pullTmp)
-          
+
           # Check if possible pull-up peaks.
-          if(!is.null(pullTmp) && len > 0){
-            
+          if (!is.null(pullTmp) && len > 0) {
+
             # Current matches.
             pullMarker <- c(pullMarker, pullTmp$Marker)
             pullDye <- c(pullDye, pullTmp$Dye)
@@ -364,7 +364,7 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
             pullHeight <- c(pullHeight, as.numeric(pullTmp$Height))
             pullSize <- c(pullSize, as.numeric(pullTmp$Size))
             pullPoint <- c(pullPoint, as.numeric(pullTmp$Data.Point))
-            
+
           } else {
 
             # Fill with NA's.
@@ -374,15 +374,15 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
             pullHeight <- c(pullHeight, as.numeric(NA))
             pullSize <- c(pullSize, as.numeric(NA))
             pullPoint <- c(pullPoint, as.numeric(NA))
-            
+
           }
 
           # Check value of len...
-          if(is.null(len) || len==0){
+          if (is.null(len) || len == 0) {
             # Must be at least 1 to store one line per allele in the result.
             len <- 1
           }
-          
+
           # Extract known peak information.
           knownSample <- c(knownSample, rep(knownTmp$Sample.Name, len))
           knownMarker <- c(knownMarker, rep(knownTmp$Marker, len))
@@ -391,38 +391,38 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
           knownHeight <- c(knownHeight, rep(as.numeric(knownTmp$Height), len))
           knownSize <- c(knownSize, rep(knownTmp$Size, len))
           knownPoint <- c(knownPoint, rep(knownTmp$Data.Point, len))
-          
-        } else if(nrow(knownTmp) > 1){
-          
+
+        } else if (nrow(knownTmp) > 1) {
+
           stop(paste("Multiple rows! Expected one!"))
           print(head(knownTmp))
-          
+
         }
-        
-        
-      } 
-      
+
+
+      }
+
     } # End sequence element loop.
-    
+
   }
-  
-  # Calculate additional metrics.  
+
+  # Calculate additional metrics.
   pullrate <- as.numeric(pullHeight) / as.numeric(knownHeight)
   pulldelta <- as.numeric(pullPoint) - as.numeric(knownPoint)
-  
-  if(debug){
+
+  if (debug) {
     print(head(dfKnown))
     print(tail(dfKnown))
   }
-  
-  res <- data.frame(Sample.Name=knownSample, Marker=knownMarker,Dye=knownDye,
-                    Allele=knownAllele, Height=knownHeight, Size=knownSize,
-                    Data.Point=knownPoint, P.Marker=pullMarker, P.Dye=pullDye,
-                    P.Allele=pullAllele, P.Height=pullHeight, P.Size=pullSize,
-                    P.Data.Point=pullPoint, Delta=pulldelta,
-                    Ratio=pullrate, stringsAsFactors=FALSE)
-  
-  if(discard){
+
+  res <- data.frame(Sample.Name = knownSample, Marker = knownMarker, Dye = knownDye,
+                    Allele = knownAllele, Height = knownHeight, Size = knownSize,
+                    Data.Point = knownPoint, P.Marker = pullMarker, P.Dye = pullDye,
+                    P.Allele = pullAllele, P.Height = pullHeight, P.Size = pullSize,
+                    P.Data.Point = pullPoint, Delta = pulldelta,
+                    Ratio = pullrate, stringsAsFactors = FALSE)
+
+  if (discard) {
     # Discard alleles with no pull-up peaks from the result table.
     res <- res[!is.na(res$Ratio), ]
     n1 <- nrow(res)
@@ -430,24 +430,24 @@ calculatePullup <- function(data, ref, pullup.range=6, block.range=12,
     n2 <- nrow(res)
     message("Removed ", n1 - n2, " alleles with no detected pull-up.")
   }
-  
-  if(limit){
+
+  if (limit) {
     # Limit ratios in the result table.
     n1 <- nrow(res)
     res <- res[res$Ratio <= limit | is.na(res$Ratio), ]
     n2 <- nrow(res)
     message("Removed ", n1 - n2, " rows with ratio >", limit, ".")
   }
-  
+
   # Update audit trail.
   res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 
-  if(debug){
+  if (debug) {
     print(paste("EXIT:", match.call()[[1]]))
   }
-  
+
   # Return result.
   return(res)
-  
-  
+
+
 }
