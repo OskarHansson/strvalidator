@@ -56,17 +56,20 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE, spacing = 15, use.scrollwindow = FALSE,
-               container = w, expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE, spacing = 15, use.scrollwindow = FALSE,
+    container = w, expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings",
-                           checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(
+    text = "Save GUI settings",
+    checked = FALSE, container = gh
+  )
 
   addSpring(gh)
 
@@ -76,38 +79,50 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     # Open help page for function.
     print(help("calculateAllT_gui", help_type = "html"))
-
   })
 
   # DATASET ###################################################################
 
-  f0 <- gframe(text = "Dataset and kit", horizontal = FALSE,
-               spacing = 5, container = gv)
+  f0 <- gframe(
+    text = "Dataset and kit", horizontal = FALSE,
+    spacing = 5, container = gv
+  )
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                listObjects(env = env,
-                                                            obj.class = "data.frame")),
-                                        selected = 1,
-                                        editable = FALSE,
-                                        container = f0g0,
-                                        ellipsize = "none")
+  f0g0[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[1, 3] <- dataset_samples_lbl <- glabel(text = " 0 samples",
-                                              container = f0g0)
+  f0g0[1, 3] <- dataset_samples_lbl <- glabel(
+    text = " 0 samples",
+    container = f0g0
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
-    requiredCol <- c("Sample.Name", "MethodX", "Method1", "Method2", "MethodL",
-                     "Height", "H", "MethodL.Ph")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    requiredCol <- c(
+      "Sample.Name", "MethodX", "Method1", "Method2", "MethodL",
+      "Height", "H", "MethodL.Ph"
+    )
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -124,7 +139,6 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         print("Detected kit index")
         print(.gKit)
       }
-
     } else {
 
       # Reset components.
@@ -132,47 +146,59 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-
     }
-
   })
 
   # KIT -----------------------------------------------------------------------
 
   f0g0[2, 1] <- glabel(text = "Kit:", container = f0g0)
 
-  kit_drp <- gcombobox(items = getKit(), selected = 1, editable = FALSE,
-                       container = f0g0, ellipsize = "none")
+  kit_drp <- gcombobox(
+    items = getKit(), selected = 1, editable = FALSE,
+    container = f0g0, ellipsize = "none"
+  )
 
   f0g0[2, 2] <- kit_drp
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE,
-               spacing = 5, container = gv)
+  f1 <- gframe(
+    text = "Options", horizontal = FALSE,
+    spacing = 5, container = gv
+  )
   f1g1 <- ggroup(container = f1, horizontal = TRUE)
   f1g2 <- ggroup(container = f1, horizontal = TRUE)
 
   glabel(text = "Calculate point estimates at P(dropout)=", container = f1g1)
-  f1_p_dropout <- gspinbutton(from = 0, to = 1, by = 0.01,
-                              value = 0.01, container = f1g1)
+  f1_p_dropout <- gspinbutton(
+    from = 0, to = 1, by = 0.01,
+    value = 0.01, container = f1g1
+  )
 
   label_init <- svalue(f1_p_dropout)
-  label_conservative <- glabel(text = paste(label_prefix, label_init,
-                                            label_suffix, sep = ""),
-                               container = f1g2)
-  f1_p_conservative <- gspinbutton(from = 0, to = 1, by = 0.01,
-                              value = 0.05, container = f1g2)
+  label_conservative <- glabel(
+    text = paste(label_prefix, label_init,
+      label_suffix,
+      sep = ""
+    ),
+    container = f1g2
+  )
+  f1_p_conservative <- gspinbutton(
+    from = 0, to = 1, by = 0.01,
+    value = 0.05, container = f1g2
+  )
 
-  f1_sex_chk <- gcheckbox(text = "Remove sex markers", checked = TRUE,
-                          container = f1)
+  f1_sex_chk <- gcheckbox(
+    text = "Remove sex markers", checked = TRUE,
+    container = f1
+  )
 
   addHandlerChanged(f1_p_dropout, handler = function(h, ...) {
-
     label_p <- svalue(f1_p_dropout)
     svalue(label_conservative) <- paste(label_prefix, label_p,
-                                        label_suffix, sep = "")
-
+      label_suffix,
+      sep = ""
+    )
   })
 
   # FRAME 2 ###################################################################
@@ -222,9 +248,11 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     enabled(calculate_btn) <- FALSE
 
     # Calculate stochastic thresholds.
-    datanew <- calculateAllT(data = val_data, kit = val_kit, p.dropout = val_p,
-                             p.conservative = val_pcons, rm.sex = val_sex,
-                             debug = debug)
+    datanew <- calculateAllT(
+      data = val_data, kit = val_kit, p.dropout = val_p,
+      p.conservative = val_pcons, rm.sex = val_sex,
+      debug = debug
+    )
 
 
     # Add attributes to result.
@@ -236,16 +264,17 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     values <- list(val_data_name, val_kit, val_p, val_pcons, val_sex)
 
     # Update audit trail.
-    datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                          label = "calculateAllT_gui", arguments = FALSE,
-                          package = "strvalidator")
+    datanew <- auditTrail(
+      obj = datanew, key = keys, value = values,
+      label = "calculateAllT_gui", arguments = FALSE,
+      package = "strvalidator"
+    )
 
     # Save data.
     saveObject(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
     dispose(w)
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -288,19 +317,16 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateAllT_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateAllT_gui_pdrop", value = svalue(f1_p_dropout), envir = env)
       assign(x = ".strvalidator_calculateAllT_gui_pcons", value = svalue(f1_p_conservative), envir = env)
       assign(x = ".strvalidator_calculateAllT_gui_sex", value = svalue(f1_sex_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateAllT_gui_savegui", envir = env, inherits = FALSE)) {
@@ -324,7 +350,6 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -335,5 +360,4 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

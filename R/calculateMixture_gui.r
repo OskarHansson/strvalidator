@@ -73,14 +73,15 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 5,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -95,7 +96,6 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Open help page for function.
     print(help("calculateMixture_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
@@ -104,10 +104,12 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 0")
   }
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
@@ -117,22 +119,25 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
   dfs <- c("<Select a dataset>", listObjects(env = env, obj.class = "data.frame"))
 
-  g0[1, 2] <- g0_data_drp <- gcombobox(items = dfs,
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = g0,
-                                      ellipsize = "none")
+  g0[1, 2] <- g0_data_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
   g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_data_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Allele",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Allele",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -140,10 +145,11 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       # get dataset.
       .gData <<- get(val_obj, envir = env)
       .gNameData <<- val_obj
-      svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
-                                           "samples.")
+      svalue(g0_data_samples_lbl) <- paste(
+        length(unique(.gData$Sample.Name)),
+        "samples."
+      )
       svalue(f4_save_edt) <- paste(val_obj, "_mixture", sep = "")
-
     } else {
 
       # Reset components.
@@ -152,9 +158,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(g0_data_drp, index = TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
       svalue(f4_save_edt) <- ""
-
     }
-
   })
 
   # Reference 1 ---------------------------------------------------------------
@@ -162,32 +166,36 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
   g0[2, 1] <- glabel(text = "Select reference dataset (major):", container = g0)
 
   # NB! dfs defined in previous section.
-  g0[2, 2] <- g0_ref1_drp <- gcombobox(items = dfs,
-                                     selected = 1,
-                                     editable = FALSE,
-                                     container = g0,
-                                     ellipsize = "none")
+  g0[2, 2] <- g0_ref1_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[2, 3] <- g0_ref1_samples_lbl <- glabel(text = " 0 references", container = g0)
 
   addHandlerChanged(g0_ref1_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_ref1_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Allele",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Allele",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
 
       .gRef1 <<- get(val_obj, envir = env)
       .gNameRef1 <<- val_obj
-      svalue(g0_ref1_samples_lbl) <- paste(length(unique(.gRef1$Sample.Name)),
-                                          "samples.")
-
+      svalue(g0_ref1_samples_lbl) <- paste(
+        length(unique(.gRef1$Sample.Name)),
+        "samples."
+      )
     } else {
 
       # Reset components.
@@ -195,7 +203,6 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       .gNameRef1 <<- NULL
       svalue(g0_ref1_drp, index = TRUE) <- 1
       svalue(g0_ref1_samples_lbl) <- " 0 references"
-
     }
   })
 
@@ -204,32 +211,36 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
   g0[3, 1] <- glabel(text = "Select reference dataset (minor):", container = g0)
 
   # NB! dfs defined in previous section.
-  g0[3, 2] <- g0_ref2_drp <- gcombobox(items = dfs,
-                                     selected = 1,
-                                     editable = FALSE,
-                                     container = g0,
-                                     ellipsize = "none")
+  g0[3, 2] <- g0_ref2_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[3, 3] <- g0_ref2_samples_lbl <- glabel(text = " 0 references", container = g0)
 
   addHandlerChanged(g0_ref2_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_ref2_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Allele",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Allele",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
 
       .gRef2 <<- get(val_obj, envir = env)
       .gNameRef2 <<- val_obj
-      svalue(g0_ref2_samples_lbl) <- paste(length(unique(.gRef2$Sample.Name)),
-                                          "samples.")
-
+      svalue(g0_ref2_samples_lbl) <- paste(
+        length(unique(.gRef2$Sample.Name)),
+        "samples."
+      )
     } else {
 
       # Reset components.
@@ -237,7 +248,6 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       .gNameRef2 <<- NULL
       svalue(g0_ref2_drp, index = TRUE) <- 1
       svalue(g0_ref2_samples_lbl) <- " 0 references"
-
     }
   })
 
@@ -260,15 +270,18 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     val_word <- FALSE
 
     if (!is.null(.gData) || !is.null(.gRef1) || !is.null(.gRef2)) {
-
-      chksubset_w <- gwindow(title = "Check subsetting",
-                             visible = FALSE, name = title,
-                             width = NULL, height = NULL, parent = w,
-                             handler = NULL, action = NULL)
+      chksubset_w <- gwindow(
+        title = "Check subsetting",
+        visible = FALSE, name = title,
+        width = NULL, height = NULL, parent = w,
+        handler = NULL, action = NULL
+      )
 
       # Create pattern.
       tmp <- paste(".*", unique(.gRef1$Sample.Name), ".*",
-                   unique(.gRef2$Sample.Name), ".*", sep = "")
+        unique(.gRef2$Sample.Name), ".*",
+        sep = ""
+      )
 
       # Save as dataframe.
       val_pattern <- data.frame(Sample.Name = tmp, stringsAsFactors = FALSE)
@@ -278,27 +291,29 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
         print(val_pattern)
       }
 
-      chksubset_txt <- checkSubset(data = val_data,
-                                   ref = val_pattern,
-                                   console = FALSE,
-                                   ignore.case = val_ignore,
-                                   word = val_word,
-                                   debug = debug)
+      chksubset_txt <- checkSubset(
+        data = val_data,
+        ref = val_pattern,
+        console = FALSE,
+        ignore.case = val_ignore,
+        word = val_word,
+        debug = debug
+      )
 
-      gtext(text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
-             wrap = FALSE, container = chksubset_w)
+      gtext(
+        text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
+        wrap = FALSE, container = chksubset_w
+      )
 
       visible(chksubset_w) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and two reference sets",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
 
@@ -310,11 +325,15 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
 
-  f1_ol_chk <- gcheckbox(text = "Remove off-ladder alleles (affects number of drop-in)",
-                         checked = TRUE, container = f1)
+  f1_ol_chk <- gcheckbox(
+    text = "Remove off-ladder alleles (affects number of drop-in)",
+    checked = TRUE, container = f1
+  )
 
-  f1_drop_chk <- gcheckbox(text = "Ignore drop-out (calculate Mx anyway)",
-                         checked = TRUE, container = f1)
+  f1_drop_chk <- gcheckbox(
+    text = "Ignore drop-out (calculate Mx anyway)",
+    checked = TRUE, container = f1
+  )
 
   # FRAME 4 ###################################################################
 
@@ -322,10 +341,12 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 4")
   }
 
-  f4 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f4 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f4)
 
@@ -377,24 +398,32 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateMixture(data = val_data,
-                                  ref1 = val_ref1,
-                                  ref2 = val_ref2,
-                                  ol.rm = val_ol,
-                                  ignore.dropout = val_drop,
-                                  debug = debug)
+      datanew <- calculateMixture(
+        data = val_data,
+        ref1 = val_ref1,
+        ref2 = val_ref2,
+        ol.rm = val_ol,
+        ignore.dropout = val_drop,
+        debug = debug
+      )
 
       # Create key-value pairs to log.
-      keys <- list("data", "ref1", "ref2",
-                   "ol.rm", "ignore.dropout")
+      keys <- list(
+        "data", "ref1", "ref2",
+        "ol.rm", "ignore.dropout"
+      )
 
-      values <- list(val_name_data, val_name_ref1, val_name_ref2,
-                     val_ol, val_drop)
+      values <- list(
+        val_name_data, val_name_ref1, val_name_ref2,
+        val_ol, val_drop
+      )
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateMixture_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateMixture_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
 
       # Save data.
@@ -408,17 +437,15 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "A dataset must be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -457,18 +484,15 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateMixture_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateMixture_gui_ol", value = svalue(f1_ol_chk), envir = env)
       assign(x = ".strvalidator_calculateMixture_gui_dropout", value = svalue(f1_drop_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateMixture_gui_savegui", envir = env, inherits = FALSE)) {
@@ -489,7 +513,6 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -500,5 +523,4 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

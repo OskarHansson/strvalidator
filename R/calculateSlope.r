@@ -53,7 +53,6 @@
 #' @export
 
 calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, ...) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data")
@@ -71,29 +70,34 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
   # Check dataset.
   if (!any(grepl("Sample.Name", names(data)))) {
     stop("'data' must contain a column 'Sample.Name'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!any(grepl("Allele", names(data)))) {
     stop("'data' must contain a column 'Allele'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check if slim format.
   if (sum(grepl("Allele", names(data)) > 1)) {
     stop("'data' must be in 'slim' format.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!any(grepl("Height", names(data)))) {
     stop("'data' must contain a column 'Height'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check if slim format.
   if (sum(grepl("Height", names(data)) > 1)) {
     stop("'data' must be in 'slim' format.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check if character data.
@@ -105,18 +109,21 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
   # Check dataset.
   if (!any(grepl("Sample.Name", names(ref)))) {
     stop("'ref' must contain a column 'Sample.Name'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!any(grepl("Allele", names(ref)))) {
     stop("'ref' must contain a column 'Allele'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check if slim format.
   if (sum(grepl("Allele", names(ref)) > 1)) {
     stop("'ref' must be in 'slim' format.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check if character data.
@@ -131,22 +138,21 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
 
   # Add group if not present.
   if (is.null(data$Group)) {
-
     data$Group <- "1"
-
   }
 
   # Get groups.
   group <- unique(data$Group)
 
   # Filter known profile.
-  data <- filterProfile(data = data, ref = ref,
-                        add.missing.loci = FALSE, keep.na = FALSE,
-                        debug = debug, ...)
+  data <- filterProfile(
+    data = data, ref = ref,
+    add.missing.loci = FALSE, keep.na = FALSE,
+    debug = debug, ...
+  )
 
   # Check if a size column exist.
   if (is.null(data$Size)) {
-
     message("'Size' not in dataset.")
 
     # Add a size column.
@@ -154,7 +160,6 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
 
     # Check if kit is specified.
     if (is.null(kit)) {
-
       message("'kit' not specified.")
 
       kit <- rep(NA, length(group))
@@ -163,20 +168,17 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
       for (g in seq(along = group)) {
 
         # Auto detect kit. If multiple matches, use the first.
-        kit[g] <- detectKit(data = data[data$Group == group[g], ],
-                            debug = debug)[1]
-
+        kit[g] <- detectKit(
+          data = data[data$Group == group[g], ],
+          debug = debug
+        )[1]
       }
-
     } else {
 
       # Check number of groups matches number of given kits.
       if (length(group) != length(kit)) {
-
         kit <- rep(kit[1], length(group))
-
       }
-
     }
 
     # Create a new dataframe to store result.
@@ -189,8 +191,10 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
       kitData <- getKit(kit = kit[g])
 
       # Add size in base pair.
-      data.tmp <- addSize(data = data[data$Group == group[g], ],
-                          kit = kitData, debug = debug)
+      data.tmp <- addSize(
+        data = data[data$Group == group[g], ],
+        kit = kitData, debug = debug
+      )
 
       # Add kit.
       data.tmp$Kit <- kit[g]
@@ -205,17 +209,14 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
       data.new <- rbind(data.new, data.tmp)
 
       message("Added size according to ", kit[g], " for group ", group[g], ".")
-
     }
 
     # Overwrite the old data.frame with the new.
     data <- data.new
-
   }
 
   # Check if NA in Size column.
   if (any(is.na(data$Size))) {
-
     row1 <- nrow(data)
 
     # Remove rows with no size.
@@ -224,12 +225,10 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
     row2 <- nrow(data)
 
     message("Removed ", row1 - row2, " rows with Size=NA")
-
   }
 
   # Check if 0 in Height column.
   if (any(data$Height == 0)) {
-
     row1 <- nrow(data)
 
     # Remove rows with zero height.
@@ -238,7 +237,6 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
     row2 <- nrow(data)
 
     message("Removed ", row1 - row2, " rows with Height=0")
-
   }
 
   # ANALYSE -------------------------------------------------------------------
@@ -247,9 +245,11 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
   DT <- data.table(data)
 
   # Calculate slope.
-  DT <- DT[, list(Slope = summary(lm(log(Height) ~ Size))$coefficients[2],
-                  Error = summary(lm(log(Height) ~ Size))$coefficients[4],
-                  Peaks = .N), by = list(Sample.Name, Group, Kit)]
+  DT <- DT[, list(
+    Slope = summary(lm(log(Height) ~ Size))$coefficients[2],
+    Error = summary(lm(log(Height) ~ Size))$coefficients[4],
+    Peaks = .N
+  ), by = list(Sample.Name, Group, Kit)]
 
   # Calculate confidence interval.
   DT[, Lower := Slope - Error * qt(conf, Peaks - 2), by = Sample.Name]
@@ -265,5 +265,4 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
   res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 
   return(res)
-
 }

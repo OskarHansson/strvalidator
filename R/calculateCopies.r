@@ -47,7 +47,6 @@
 
 calculateCopies <- function(data, observed = FALSE, copies = TRUE,
                             heterozygous = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -85,10 +84,11 @@ calculateCopies <- function(data, observed = FALSE, copies = TRUE,
     stackCol <- unlist(strsplit(stackCol, "|", fixed = TRUE))
 
     # Slim data.
-    data <- slim(data = data, fix = fixCol, stack = stackCol,
-                 keep.na = TRUE, debug = debug)
+    data <- slim(
+      data = data, fix = fixCol, stack = stackCol,
+      keep.na = TRUE, debug = debug
+    )
     message("Auto slim completed.")
-
   }
 
   # Check 'false' NA.
@@ -119,7 +119,6 @@ calculateCopies <- function(data, observed = FALSE, copies = TRUE,
     # Add indicator.
     data$Heterozygous[DT$Observed == 1] <- 0 # Change 1 -> 0
     data$Heterozygous[DT$Observed == 2] <- 1 # Change 2 -> 1
-
   }
 
   if (copies) {
@@ -136,18 +135,15 @@ calculateCopies <- function(data, observed = FALSE, copies = TRUE,
     # Add indicator.
     data$Copies[DT$Observed == 1] <- 2 # Change 1 -> 2
     data$Copies[DT$Observed == 2] <- 1 # Change 2 -> 1
-
   }
 
   if (observed) {
-
     if ("Observed" %in% names(data)) {
       message("Column 'Observed' already exist and will be overwritten.")
     }
 
     # Add number of unique alleles.
     data$Observed <- DT$Observed
-
   }
 
   # Update audit trail.
@@ -159,5 +155,4 @@ calculateCopies <- function(data, observed = FALSE, copies = TRUE,
 
   # Return data frame.
   return(data)
-
 }

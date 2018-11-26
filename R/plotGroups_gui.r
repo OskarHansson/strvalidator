@@ -43,8 +43,10 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   .gDataName <- NULL
   .groups <- NULL
   .gPlot <- NULL
-  .palette <- c("Set1", "Set2", "Set3", "Accent", "Dark2",
-                "Paired", "Pastel1", "Pastel2")
+  .palette <- c(
+    "Set1", "Set2", "Set3", "Accent", "Dark2",
+    "Paired", "Pastel1", "Pastel2"
+  )
   .defaultGroup <- "<Select group>"
   .defaultColumn <- "<Select column>"
   # Qualitative palette, do not imply magnitude differences between legend
@@ -69,17 +71,20 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE, spacing = 8, use.scrollwindow = FALSE,
-               container = w, expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE, spacing = 8, use.scrollwindow = FALSE,
+    container = w, expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE,
-                           container = gh)
+  savegui_chk <- gcheckbox(
+    text = "Save GUI settings", checked = FALSE,
+    container = gh
+  )
 
   addSpring(gh)
 
@@ -89,7 +94,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
     # Open help page for function.
     print(help("plotGroups_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
@@ -100,38 +104,51 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                  listObjects(env = env,
-                                                              obj.class = "data.frame")),
-                                        selected = 1, editable = FALSE,
-                                        container = f0g0, ellipsize = "none")
+  f0g0[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1, editable = FALSE,
+    container = f0g0, ellipsize = "none"
+  )
 
   f0g0[1, 3] <- f0_samples_lbl <- glabel(text = " (0 rows)", container = f0g0)
 
   f0g0[2, 1] <- glabel(text = "Select column to flat data by:", container = f0g0)
 
-  f0g0[2, 2] <- f0_flat_drp <- gcombobox(items = .defaultColumn, selected = 1,
-                                        container = f0g0, ellipsize = "none")
+  f0g0[2, 2] <- f0_flat_drp <- gcombobox(
+    items = .defaultColumn, selected = 1,
+    container = f0g0, ellipsize = "none"
+  )
 
   f0g0[3, 1] <- glabel(text = "Select column to group data by:", container = f0g0)
 
-  f0g0[3, 2] <- f0_group_drp <- gcombobox(items = .defaultGroup, selected = 1,
-                                         container = f0g0, ellipsize = "none")
+  f0g0[3, 2] <- f0_group_drp <- gcombobox(
+    items = .defaultGroup, selected = 1,
+    container = f0g0, ellipsize = "none"
+  )
 
   f0g0[4, 1] <- glabel(text = "Select column to plot data by:", container = f0g0)
 
-  f0g0[4, 2] <- f0_axis_drp <- gcombobox(items = .defaultColumn, selected = 1,
-                                        container = f0g0, ellipsize = "none")
+  f0g0[4, 2] <- f0_axis_drp <- gcombobox(
+    items = .defaultColumn, selected = 1,
+    container = f0g0, ellipsize = "none"
+  )
 
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- NULL
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -150,16 +167,13 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       # Enable buttons.
       enabled(plot_ecdf_btn) <- TRUE
-
     } else {
 
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(f0_samples_lbl) <- " (0 rows)"
-
     }
-
   })
 
   addHandlerChanged(f0_group_drp, handler = function(h, ...) {
@@ -172,16 +186,19 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
     # Update groups field.
     svalue(f1_labels_edt) <- paste(.groups, collapse = ",")
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options", horizontal = FALSE, spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
@@ -213,19 +230,25 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   f1g3 <- glayout(container = f1, spacing = 5, expand = TRUE)
 
   f1g3[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g3)
-  items_theme <- c("theme_grey()", "theme_bw()", "theme_linedraw()",
-                   "theme_light()", "theme_dark()", "theme_minimal()",
-                   "theme_classic()", "theme_void()")
-  f1g3[1, 2] <- f1_theme_drp <- gcombobox(items = items_theme, selected = 1,
-                                         container = f1g3, ellipsize = "none", expand = TRUE)
+  items_theme <- c(
+    "theme_grey()", "theme_bw()", "theme_linedraw()",
+    "theme_light()", "theme_dark()", "theme_minimal()",
+    "theme_classic()", "theme_void()"
+  )
+  f1g3[1, 2] <- f1_theme_drp <- gcombobox(
+    items = items_theme, selected = 1,
+    container = f1g3, ellipsize = "none", expand = TRUE
+  )
 
   f1e4 <- gexpandgroup(text = "Axes", horizontal = FALSE, container = f1)
 
   # Start collapsed.
   visible(f1e4) <- FALSE
 
-  glabel(text = "NB! Must provide both min and max value.",
-         anchor = c(-1, 0), container = f1e4)
+  glabel(
+    text = "NB! Must provide both min and max value.",
+    anchor = c(-1, 0), container = f1e4
+  )
 
   f1g6 <- glayout(container = f1e4, spacing = 1)
   f1g6[1, 1:2] <- glabel(text = "Limit Y axis (min-max)", container = f1g6)
@@ -238,27 +261,25 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # BUTTON ####################################################################
 
-  plot_ecdf_btn <- gbutton(text = "Empirical cumulative distribution function",
-                         container = gv)
+  plot_ecdf_btn <- gbutton(
+    text = "Empirical cumulative distribution function",
+    container = gv
+  )
 
   addHandlerChanged(plot_ecdf_btn, handler = function(h, ...) {
-
     val_column <- svalue(f0_axis_drp)
 
     if (val_column == .defaultColumn) {
-
-      gmessage(msg = "A data column must be specified!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "A data column must be specified!",
+        title = "Error",
+        icon = "error"
+      )
     } else {
-
       enabled(plot_ecdf_btn) <- FALSE
       .plot()
       enabled(plot_ecdf_btn) <- TRUE
-
     }
-
   })
 
   # FRAME 5 ###################################################################
@@ -274,7 +295,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -284,24 +304,25 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # FUNCTIONS #################################################################
@@ -350,7 +371,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
     # Check if data.
     if (!is.na(val_data) && !is.null(val_data)) {
-
       if (debug) {
         print("Input data:")
         print(str(val_data))
@@ -361,10 +381,12 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       nb <- nrow(val_data)
 
       # Create new data.farame from selected data.
-      df <- data.frame(Group = val_data[[val_group]],
-                       Axis = val_data[[val_axis]],
-                       By = val_data[[val_flatten]],
-                       stringsAsFactors = FALSE)
+      df <- data.frame(
+        Group = val_data[[val_group]],
+        Axis = val_data[[val_axis]],
+        By = val_data[[val_flatten]],
+        stringsAsFactors = FALSE
+      )
 
 
       # Convert to data.table.
@@ -388,7 +410,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
         message("Original group names: ", paste(val_names, collapse = ", "))
         message("New group names: ", paste(val_labels, collapse = ", "))
-
       }
 
       # Remove NA's
@@ -409,7 +430,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
         # Show message.
         message("Removed ", nb0 - nb, " NA rows (", val_group, ").")
-
       }
 
       # Remove NA's
@@ -430,7 +450,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
         # Show message.
         message("Removed ", nb0 - nb, " NA rows (", val_axis, ").")
-
       }
 
       # Calculate count for each group.
@@ -444,7 +463,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       # Create titles.
       if (val_titles) {
-
         message("Custom titles.")
 
         mainTitle <- val_title
@@ -452,19 +470,18 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
         xTitle <- val_x_title
 
         yTitle <- val_y_title
-
       } else {
-
         message("Default titles.")
 
         mainTitle <- paste("Empirical cumulative distribution function (",
-                           nb, " observations)", sep = "")
+          nb, " observations)",
+          sep = ""
+        )
 
         yTitle <- NULL
 
         xTitle <- val_axis
-
-     }
+      }
 
       # Create legend.
       df$Legend <- paste(df$Group, " (n=", df$N, ")", sep = "")
@@ -499,14 +516,14 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       # Check if any axis limits.
       if (any(!is.null(val_y), !is.null(val_x))) {
-
-        message("Zoom plot xmin/xmax,ymin/ymax:",
-                paste(val_x, collapse = "/"), ",",
-                paste(val_y, collapse = "/"))
+        message(
+          "Zoom plot xmin/xmax,ymin/ymax:",
+          paste(val_x, collapse = "/"), ",",
+          paste(val_y, collapse = "/")
+        )
 
         # Zoom in without dropping observations.
         gp <- gp + coord_cartesian(xlim = val_x, ylim = val_y)
-
       }
 
       # plot.
@@ -518,21 +535,18 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       # Change save button.
       svalue(f5_save_btn) <- "Save as object"
       enabled(f5_save_btn) <- TRUE
-
     } else {
-
-        gmessage(msg = "Data frame is NULL or NA!",
-                 title = "Error",
-                 icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
 
   .refresh_column_drp <- function() {
-
     if (debug) {
       print("Refresh group and axis dropdown")
     }
@@ -551,14 +565,12 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       f0_group_drp[] <- c(.defaultGroup, columns)
       f0_axis_drp[] <- c(.defaultColumn, columns)
       f0_flat_drp[] <- c(.defaultColumn, columns)
-
     } else {
 
       # Reset drop list and select first item.
       f0_group_drp[] <- c(.defaultGroup)
       f0_axis_drp[] <- c(.defaultColumn)
       f0_flat_drp[] <- c(.defaultColumn)
-
     }
 
     # Select helpful text.
@@ -570,7 +582,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     unblockHandler(f0_group_drp)
     unblockHandler(f0_axis_drp)
     unblockHandler(f0_flat_drp)
-
   }
 
   .loadSavedSettings <- function() {
@@ -617,21 +628,18 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotGroups_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotGroups_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
       assign(x = ".strvalidator_plotGroups_gui_title", value = svalue(f1_title_edt), envir = env)
       assign(x = ".strvalidator_plotGroups_gui_x_title", value = svalue(f1_xtitle_edt), envir = env)
       assign(x = ".strvalidator_plotGroups_gui_y_title", value = svalue(f1_ytitle_edt), envir = env)
       assign(x = ".strvalidator_plotGroups_gui_theme", value = svalue(f1_theme_drp), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotGroups_gui_savegui", envir = env, inherits = FALSE)) {
@@ -664,7 +672,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -675,5 +682,4 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

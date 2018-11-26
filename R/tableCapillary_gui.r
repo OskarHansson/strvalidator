@@ -63,15 +63,16 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 15,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -86,39 +87,49 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
     # Open help page for function.
     print(help("tableCapillary_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Datasets",
-                   horizontal = FALSE,
-                   spacing = 10,
-                   container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- f0g0_dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                     listObjects(env = env,
-                                                                 obj.class = "data.frame")),
-                                             selected = 1,
-                                             editable = FALSE,
-                                             container = f0g0,
-                                             ellipsize = "none")
+  f0g0[1, 2] <- f0g0_dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(text = " 0 rows",
-                                              container = f0g0)
+  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(
+    text = " 0 rows",
+    container = f0g0
+  )
 
   addHandlerChanged(f0g0_dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0g0_dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Instrument", "Capillary", "Injection", "Well", "Mean.Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -127,10 +138,10 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gDataName <<- val_obj
       svalue(f0g0_samples_lbl) <- paste(" ", nrow(.gData), "rows")
       svalue(f2_save_edt) <- paste(.gDataName,
-                                   "_table_",
-                                   svalue(f1g1_scope_opt),
-                                   sep = "")
-
+        "_table_",
+        svalue(f1g1_scope_opt),
+        sep = ""
+      )
     } else {
 
       # Reset components.
@@ -139,44 +150,49 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       svalue(f0g0_samples_lbl) <- " 0 rows"
       svalue(f2_save_edt) <- ""
       svalue(f0g0_dataset_drp, index = TRUE) <- 1
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-                   horizontal = FALSE,
-                   spacing = 20,
-                   container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 20,
+    container = gv
+  )
 
   f1g1 <- glayout(container = f1, spacing = 5)
 
   f1g1[1, 1] <- glabel(text = "Make table by:", container = f1g1)
 
-  f1g1[2, 1] <- f1g1_scope_opt <- gradio(items = c("capillary", "injection",
-                                                "plate row", "run",
-                                                "instrument"),
-                              selected = 1,
-                              horizontal = FALSE,
-                              container = f1g1)
+  f1g1[2, 1] <- f1g1_scope_opt <- gradio(
+    items = c(
+      "capillary", "injection",
+      "plate row", "run",
+      "instrument"
+    ),
+    selected = 1,
+    horizontal = FALSE,
+    container = f1g1
+  )
 
   addHandlerChanged(f1g1_scope_opt, handler = function(h, ...) {
-
     svalue(f2_save_edt) <- paste(.gDataName,
-                                 "_table_",
-                                 svalue(f1g1_scope_opt),
-                                 sep = "")
-
+      "_table_",
+      svalue(f1g1_scope_opt),
+      sep = ""
+    )
   })
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -219,9 +235,11 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       unblockHandlers(run_btn)
       enabled(run_btn) <- FALSE
 
-      datanew <- tableCapillary(data = val_data,
-                                scope = val_scope,
-                                debug = debug)
+      datanew <- tableCapillary(
+        data = val_data,
+        scope = val_scope,
+        debug = debug
+      )
 
       # Create key-value pairs to log.
       keys <- list("data", "scope")
@@ -229,9 +247,11 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       values <- list(val_name_data, val_scope)
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "tableCapillary_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "tableCapillary_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -243,16 +263,14 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
       # Close GUI.
       dispose(w)
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -288,17 +306,14 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_tableCapillary_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_tableCapillary_gui_scope", value = svalue(f1g1_scope_opt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_tableCapillary_gui_savegui", envir = env, inherits = FALSE)) {
@@ -316,7 +331,6 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -327,5 +341,4 @@ tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

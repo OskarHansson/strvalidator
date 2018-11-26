@@ -63,12 +63,14 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   # Check dataset columns.
   if (!any(grepl("Dep", names(data)))) {
     stop("'data' must contain a column 'Dep'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!any(grepl("Exp", names(data)))) {
     stop("'data' must contain a column 'Exp'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check logical arguments.
@@ -194,5 +196,4 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   res <- c(T = t_dropout, Tc = t_dropout_cons, p = hos$p.value, B0 = b0, B1 = b1, obs = n_obs, drop = n_drop)
 
   return(res)
-
 }

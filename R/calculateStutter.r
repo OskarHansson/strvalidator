@@ -76,7 +76,6 @@
 
 calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
                              replace.val = NULL, by.val = NULL, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -84,9 +83,11 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
   # Create an empty data frame to hold the result.
   stutterRatio <- data.frame(t(rep(NA, 8)))
   # Add column names.
-  names(stutterRatio) <- c("Sample.Name", "Marker", "Allele",
-                            "HeightA", "Stutter", "HeightS",
-                            "Ratio", "Type")
+  names(stutterRatio) <- c(
+    "Sample.Name", "Marker", "Allele",
+    "HeightA", "Stutter", "HeightS",
+    "Ratio", "Type"
+  )
   # Remove all NAs
   stutterRatio <- stutterRatio [-1, ]
 
@@ -95,43 +96,52 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
   # Check columns in dataset.
   if (!any(grepl("Sample.Name", names(data)))) {
     stop("'data' must contain a column 'Sample.Name'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!any(grepl("Marker", names(data)))) {
     stop("'data' must contain a column 'Marker'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!any(grepl("Allele", names(data)))) {
     stop("'data' must contain a column 'Allele'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!any(grepl("Height", names(data)))) {
     stop("'data' must contain a column 'Height'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check columns in reference dataset.
   if (!any(grepl("Sample.Name", names(ref)))) {
     stop("'ref' must contain a column 'Sample.Name'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!any(grepl("Marker", names(ref)))) {
     stop("'ref' must contain a column 'Marker'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!any(grepl("Allele", names(ref)))) {
     stop("'ref' must contain a column 'Allele'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check if slim format.
   if (sum(grepl("Allele", names(ref))) > 1) {
     stop("'ref' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Prepare -------------------------------------------------------------------
@@ -208,9 +218,9 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
 
         # Identify possible stutters for allele 1 and 2.
         sA1 <- alleleV[suppressWarnings(as.numeric(alleleV)) >= suppressWarnings(as.numeric(tA1)) - back &
-                         suppressWarnings(as.numeric(alleleV)) <= suppressWarnings(as.numeric(tA1)) + forward]
+          suppressWarnings(as.numeric(alleleV)) <= suppressWarnings(as.numeric(tA1)) + forward]
         sA2 <- alleleV[suppressWarnings(as.numeric(alleleV)) >= suppressWarnings(as.numeric(tA2)) - back &
-                         suppressWarnings(as.numeric(alleleV)) <= suppressWarnings(as.numeric(tA2)) + forward]
+          suppressWarnings(as.numeric(alleleV)) <= suppressWarnings(as.numeric(tA2)) + forward]
         sA1 <- sA1[!is.na(sA1)]
         sA2 <- sA2[!is.na(sA2)]
         # Check if true allele exist!
@@ -251,7 +261,6 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
         # Calculate stutter ratio.
         if (interference == 0) {
           if (bolA1) {
-
             if (debug) {
               print("No interference")
               print("True allele 1 in stutter array 1")
@@ -304,15 +313,16 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
               }
 
               # NB! 'Type' must be rounded, because floating point substraction.
-              currentAllele1 <- data.frame("Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
-                                           "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
-                                           "Ratio" = dfRatio, "Type" = round(dfType, 2))
+              currentAllele1 <- data.frame(
+                "Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
+                "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
+                "Ratio" = dfRatio, "Type" = round(dfType, 2)
+              )
 
               stutterRatio <- rbind(stutterRatio, currentAllele1)
             }
           }
           if (heterozygote && bolA2) {
-
             if (debug) {
               print("No interference")
               print("True allele 2 in stutter array 2")
@@ -364,17 +374,17 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
               }
 
               # NB! 'Type' must be rounded, because floating point substraction.
-              currentAllele2 <- data.frame("Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
-                                           "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
-                                           "Ratio" = dfRatio, "Type" = round(dfType, 2))
+              currentAllele2 <- data.frame(
+                "Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
+                "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
+                "Ratio" = dfRatio, "Type" = round(dfType, 2)
+              )
 
               stutterRatio <- rbind(stutterRatio, currentAllele2)
             }
           }
-
         } else if (interference == 1) {
           if (bolA1) {
-
             if (debug) {
               print("Stutter-stutter interference allowed")
               print("True allele 1 in stutter array 1")
@@ -427,15 +437,16 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
               }
 
               # NB! 'Type' must be rounded, because floating point substraction.
-              currentAllele1 <- data.frame("Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
-                                           "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
-                                           "Ratio" = dfRatio, "Type" = round(dfType, 2))
+              currentAllele1 <- data.frame(
+                "Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
+                "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
+                "Ratio" = dfRatio, "Type" = round(dfType, 2)
+              )
 
               stutterRatio <- rbind(stutterRatio, currentAllele1)
             }
           }
           if (heterozygote && bolA2) {
-
             if (debug) {
               print("Stutter-stutter interference allowed")
               print("True allele 2 in stutter array 2")
@@ -458,7 +469,6 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
             }
 
             if (length(srA2) > 0) {
-
               rp <- length(srA2)
               dfMarker <- rep(markerNames[m], rp)
               dfAllele <- rep(tA2, rp)
@@ -488,18 +498,17 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
               }
 
               # NB! 'Type' must be rounded, because floating point substraction.
-              currentAllele2 <- data.frame("Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
-                                           "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
-                                           "Ratio" = dfRatio, "Type" = round(dfType, 2))
+              currentAllele2 <- data.frame(
+                "Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
+                "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
+                "Ratio" = dfRatio, "Type" = round(dfType, 2)
+              )
 
               stutterRatio <- rbind(stutterRatio, currentAllele2)
             }
           }
-
-
         } else if (interference == 2) {
           if (bolA1) {
-
             if (debug) {
               print("Allele-stutter interference allowed")
               print("True allele 1 in stutter array 1")
@@ -522,7 +531,6 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
             }
 
             if (length(srA1) > 0) {
-
               rp <- length(srA1)
               dfMarker <- rep(markerNames[m], rp)
               dfAllele <- rep(tA1, rp)
@@ -553,15 +561,16 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
 
               # Create data frame.
               # NB! 'Type' must be rounded, because floating point substraction.
-              currentAllele1 <- data.frame("Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
-                                           "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
-                                           "Ratio" = dfRatio, "Type" = round(dfType, 2))
+              currentAllele1 <- data.frame(
+                "Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
+                "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
+                "Ratio" = dfRatio, "Type" = round(dfType, 2)
+              )
 
               stutterRatio <- rbind(stutterRatio, currentAllele1)
             }
           }
           if (heterozygote && bolA2) {
-
             if (debug) {
               print("Allele-stutter interference allowed")
               print("True allele 2 in stutter array 2")
@@ -584,7 +593,6 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
             }
 
             if (length(srA2) > 0) {
-
               rp <- length(srA2)
               dfMarker <- rep(markerNames[m], rp)
               dfAllele <- rep(tA2, rp)
@@ -615,15 +623,15 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
 
               # Create data frame.
               # NB! 'Type' must be rounded, because floating point substraction.
-              currentAllele2 <- data.frame("Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
-                                           "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
-                                           "Ratio" = dfRatio, "Type" = round(dfType, 2))
+              currentAllele2 <- data.frame(
+                "Sample.Name" = ssName[s], "Marker" = dfMarker, "Allele" = dfAllele,
+                "HeightA" = dfHeightA, "Stutter" = dfStutter, "HeightS" = dfHeightS,
+                "Ratio" = dfRatio, "Type" = round(dfType, 2)
+              )
 
               stutterRatio <- rbind(stutterRatio, currentAllele2)
             }
           }
-
-
         } else {
           print("Stutter not calculated for:")
           print(dataSubset[refSubset$Marker == markerNames[m], 1:5])
@@ -646,8 +654,10 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
   }
 
   # Update audit trail.
-  stutterRatio <- auditTrail(obj = stutterRatio, f.call = match.call(),
-                             package = "strvalidator")
+  stutterRatio <- auditTrail(
+    obj = stutterRatio, f.call = match.call(),
+    package = "strvalidator"
+  )
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

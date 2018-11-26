@@ -61,12 +61,13 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE, spacing = 8, use.scrollwindow = FALSE,
-               container = w, expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE, spacing = 8, use.scrollwindow = FALSE,
+    container = w, expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -81,15 +82,16 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Open help page for function.
     print(help("generateEPG_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset and kit",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset and kit",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
@@ -99,39 +101,46 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   dfs <- c("<Select a dataset>", listObjects(env = env, obj.class = "data.frame"))
 
-  g0[1, 2] <- g0_data_drp <- gcombobox(items = dfs,
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = g0,
-                                      ellipsize = "none")
+  g0[1, 2] <- g0_data_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " (0 samples)", container = g0)
 
   g0[1, 4] <- glabel(text = " and the kit used:", container = g0)
 
-  g0[1, 5] <- kit_drp <- gcombobox(items = getKit(), selected = 1,
-                                  editable = FALSE, container = g0,
-                                  ellipsize = "none")
+  g0[1, 5] <- kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = g0,
+    ellipsize = "none"
+  )
 
   # Sample --------------------------------------------------------------------
 
   g0[2, 1] <- glabel(text = "Select sample:", container = g0)
 
-  g0[2, 2] <- g0_sample_drp <- gcombobox(items = .noSample, selected = 1,
-                                        editable = FALSE, container = g0,
-                                        ellipsize = "none")
+  g0[2, 2] <- g0_sample_drp <- gcombobox(
+    items = .noSample, selected = 1,
+    editable = FALSE, container = g0,
+    ellipsize = "none"
+  )
 
   # Handlers ------------------------------------------------------------------
 
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_data_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -143,8 +152,10 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       svalue(g0_data_samples_lbl) <- paste(" (",
-                                           length(unique(.gData$Sample.Name)),
-                                           " samples)", sep = "")
+        length(unique(.gData$Sample.Name)),
+        " samples)",
+        sep = ""
+      )
 
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
@@ -156,11 +167,12 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Set dataset as proposed title.
       svalue(f1_title_edt) <- paste(val_obj, " (",
-                                    svalue(kit_drp), ")", sep = "")
+        svalue(kit_drp), ")",
+        sep = ""
+      )
 
       # Enable buttons.
       enabled(plot_epg_btn) <- TRUE
-
     } else {
 
       # Reset components.
@@ -168,9 +180,7 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       svalue(f5_save_edt) <- ""
       svalue(g0_data_drp, index = TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " (0 samples)"
-
     }
-
   })
 
   addHandlerChanged(g0_sample_drp, handler = function(h, ...) {
@@ -182,14 +192,14 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       if (val_sample != .noSample) {
         # Set sample name as proposed title.
         svalue(f1_title_edt) <- paste(val_sample, " (",
-                                      svalue(kit_drp), ")", sep = "")
+          svalue(kit_drp), ")",
+          sep = ""
+        )
 
         # Enable buttons.
         enabled(plot_epg_btn) <- TRUE
-
       }
     }
-
   })
 
   # FRAME 1 ###################################################################
@@ -203,76 +213,98 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f1g1 <- glayout(container = f1, spacing = 1)
 
   f1g1[1, 1] <- glabel(text = "Axis scales:   ", anchor = c(-1, 0), container = f1g1)
-  f1g1[2:3, 1] <- f1_scale_opt <- gradio(items = c("free", "free_y", "free_x"),
-                         selected = 2, horizontal = FALSE, container = f1g1)
+  f1g1[2:3, 1] <- f1_scale_opt <- gradio(
+    items = c("free", "free_y", "free_x"),
+    selected = 2, horizontal = FALSE, container = f1g1
+  )
 
   f1g1[1, 2] <- glabel(text = "Allele label text size:", container = f1g1)
-  f1g1[1, 3] <- f1_size_spb <- gspinbutton(from = 0, to = 10, by = 1, value = 2,
-                                          container = f1g1)
+  f1g1[1, 3] <- f1_size_spb <- gspinbutton(
+    from = 0, to = 10, by = 1, value = 2,
+    container = f1g1
+  )
 
   f1g1[1, 4] <- glabel(text = "Vertical justification:", container = f1g1)
-  f1g1[1, 5] <- f1_vjust_spb <- gspinbutton(from = 0, to = 1, by = 0.5, value = 1,
-                                           container = f1g1)
+  f1g1[1, 5] <- f1_vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.5, value = 1,
+    container = f1g1
+  )
 
   f1g1[2, 2] <- glabel(text = "Allele label angle:", container = f1g1)
-  f1g1[2, 3] <- f1_angle_spb <- gspinbutton(from = 0, to = 360, by = 15, value = 0,
-                                           container = f1g1)
+  f1g1[2, 3] <- f1_angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 15, value = 0,
+    container = f1g1
+  )
 
   f1g1[2, 4] <- glabel(text = "Horizontal justification:", container = f1g1)
-  f1g1[2, 5] <- f1_hjust_spb <- gspinbutton(from = 0, to = 1, by = 0.5, value = 0.5,
-                                           container = f1g1)
+  f1g1[2, 5] <- f1_hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.5, value = 0.5,
+    container = f1g1
+  )
 
   f1g1[3, 2] <- glabel(text = "Plot area expansion:", container = f1g1)
-  f1g1[3, 3] <- f1_expand_spb <- gspinbutton(from = 0, to = 1, by = 0.05, value = 0.10,
-                                           container = f1g1)
+  f1g1[3, 3] <- f1_expand_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.05, value = 0.10,
+    container = f1g1
+  )
 
   f1g1[3, 4] <- glabel(text = "Analytical threshold:", container = f1g1)
-  f1g1[3, 5] <- f1_at_spb <- gspinbutton(from = 0, to = 1000, by = 10, value = 0,
-                                        container = f1g1)
+  f1g1[3, 5] <- f1_at_spb <- gspinbutton(
+    from = 0, to = 1000, by = 10, value = 0,
+    container = f1g1
+  )
 
-  f1_ignore_chk <- gcheckbox(text = "Ignore case in marker names",
-                             checked = TRUE, container = f1)
+  f1_ignore_chk <- gcheckbox(
+    text = "Ignore case in marker names",
+    checked = TRUE, container = f1
+  )
 
-  f1_wrap_chk <- gcheckbox(text = "Wrap by dye and add marker ranges and allele names",
-                           checked = TRUE, container = f1)
+  f1_wrap_chk <- gcheckbox(
+    text = "Wrap by dye and add marker ranges and allele names",
+    checked = TRUE, container = f1
+  )
 
-  f1_fix_chk <- gcheckbox(text = "Fix x-axis to size range",
-                          checked = TRUE, container = f1)
+  f1_fix_chk <- gcheckbox(
+    text = "Fix x-axis to size range",
+    checked = TRUE, container = f1
+  )
 
-  f1_collapse_chk <- gcheckbox(text = "Collapse (add peak heights of identical alleles. Discards OL)",
-                               checked = TRUE, container = f1)
+  f1_collapse_chk <- gcheckbox(
+    text = "Collapse (add peak heights of identical alleles. Discards OL)",
+    checked = TRUE, container = f1
+  )
 
-  f1_box_chk <- gcheckbox(text = "Plot peak height distribution (boxplot)",
-                          checked = FALSE, container = f1)
+  f1_box_chk <- gcheckbox(
+    text = "Plot peak height distribution (boxplot)",
+    checked = FALSE, container = f1
+  )
 
-  f1_peaks_chk <- gcheckbox(text = "Plot mean peak height for distributions",
-                            checked = TRUE, container = f1)
+  f1_peaks_chk <- gcheckbox(
+    text = "Plot mean peak height for distributions",
+    checked = TRUE, container = f1
+  )
 
 
   addHandlerChanged(f1_collapse_chk, handler = function(h, ...) {
-
     val_collapse <- svalue(f1_collapse_chk)
 
     if (val_collapse) {
-
       enabled(f1_box_chk) <- TRUE
       enabled(f1_peaks_chk) <- TRUE
-
     } else {
-
       enabled(f1_box_chk) <- FALSE
       enabled(f1_peaks_chk) <- FALSE
-
     }
-
   })
 
   # FRAME 2 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -283,7 +315,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerChanged(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -293,24 +324,25 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
 
@@ -320,7 +352,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   plot_epg_btn <- gbutton(text = .buttonDefault, container = gv)
 
   addHandlerClicked(plot_epg_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
     val_sample <- svalue(g0_sample_drp)
     val_kit <- svalue(kit_drp)
@@ -341,7 +372,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     val_data <- .gData
 
     if (!is.null(val_data)) {
-
       if (val_sample != .noSample) {
         # Subset selected sample.
         val_data <- val_data[val_data$Sample.Name == val_sample, ]
@@ -353,14 +383,16 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       unblockHandlers(plot_epg_btn)
       enabled(plot_epg_btn) <- FALSE
 
-      gp <- generateEPG(data = val_data, kit = val_kit, title = val_title,
-                        wrap = val_wrap, boxplot = val_box, peaks = val_peaks,
-                        collapse = val_collapse, silent = FALSE,
-                        ignore.case = val_ignore, at = val_at,
-                        scale = val_scale, limit.x = val_fix,
-                        label.size = val_size, label.angle = val_angle,
-                        label.vjust = val_vjust, label.hjust = val_hjust,
-                        expand = val_expand, debug = debug)
+      gp <- generateEPG(
+        data = val_data, kit = val_kit, title = val_title,
+        wrap = val_wrap, boxplot = val_box, peaks = val_peaks,
+        collapse = val_collapse, silent = FALSE,
+        ignore.case = val_ignore, at = val_at,
+        scale = val_scale, limit.x = val_fix,
+        label.size = val_size, label.angle = val_angle,
+        label.vjust = val_vjust, label.hjust = val_hjust,
+        expand = val_expand, debug = debug
+      )
 
       # Store in global variable.
       .gPlot <<- gp
@@ -370,24 +402,20 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       svalue(plot_epg_btn) <- .buttonDefault
       unblockHandlers(plot_epg_btn)
       enabled(plot_epg_btn) <- TRUE
-
-
     } else {
-
       message <- "A dataset must be selected. Sample is optional."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
 
   .refresh_sample_drp <- function() {
-
     if (debug) {
       print("Refresh sample dropdown")
     }
@@ -396,7 +424,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     dfs <- unique(.gData$Sample.Name)
 
     if (!is.null(dfs)) {
-
       blockHandler(g0_sample_drp)
 
       # Populate drop list and select first item.
@@ -404,7 +431,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       svalue(g0_sample_drp, index = TRUE) <- 1
 
       unblockHandler(g0_sample_drp)
-
     }
 
     if (debug) {
@@ -479,14 +505,12 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_generateEPG_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_generateEPG_gui_size", value = svalue(f1_size_spb), envir = env)
       assign(x = ".strvalidator_generateEPG_gui_angle", value = svalue(f1_angle_spb), envir = env)
@@ -501,7 +525,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       assign(x = ".strvalidator_generateEPG_gui_box", value = svalue(f1_box_chk), envir = env)
       assign(x = ".strvalidator_generateEPG_gui_wrap", value = svalue(f1_wrap_chk), envir = env)
       assign(x = ".strvalidator_generateEPG_gui_at", value = svalue(f1_at_spb), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_generateEPG_gui_savegui", envir = env, inherits = FALSE)) {
@@ -555,7 +578,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -566,5 +588,4 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

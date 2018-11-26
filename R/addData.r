@@ -57,7 +57,6 @@
 #' print(z)
 addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
                     ignore.case = TRUE, what = NULL, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -123,9 +122,11 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
       selectedNewData <- new.data[, by.col] == keys[k]
     } else {
       selectedData <- grepl(keys[k], data[, by.col],
-                            ignore.case = ignore.case)
+        ignore.case = ignore.case
+      )
       selectedNewData <- grepl(keys[k], new.data[, by.col],
-                               ignore.case = ignore.case)
+        ignore.case = ignore.case
+      )
     }
 
     if (debug) {
@@ -136,12 +137,9 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
     }
 
     if (!is.null(selectedData)) {
-
       if (is.null(then.by.col)) {
-
         if (any(selectedData, na.rm = TRUE) && any(selectedNewData, na.rm = TRUE)) {
           for (c in seq(along = colNamesNew)) {
-
             dataLen <- length(data[selectedData, colNamesNew[c]])
             dataNewLen <- length(new.data[selectedNewData, colNamesNew[c]])
 
@@ -150,9 +148,7 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
               # Add new data.
               data[selectedData, colNamesNew[c]] <-
                 new.data[selectedNewData, colNamesNew[c]]
-
             } else {
-
               uniqueNewData <- unique(new.data[selectedNewData, colNamesNew[c]])
 
               # See if all the same value.
@@ -160,13 +156,14 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
                 # Add new data.
                 data[selectedData, colNamesNew[c]] <- uniqueNewData
               } else {
-                message("Ambiguous data could not be added at key ",
-                        keys[k], ".")
+                message(
+                  "Ambiguous data could not be added at key ",
+                  keys[k], "."
+                )
               }
             }
           }
         }
-
       } else {
 
         # Get unique identifiers.
@@ -194,9 +191,11 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
             selectedNewData2 <- new.data[, then.by.col] == keys2[k2] & selectedNewData
           } else {
             selectedData2 <- grepl(keys2[k2], data [, then.by.col],
-                                   ignore.case = ignore.case) & selectedData
+              ignore.case = ignore.case
+            ) & selectedData
             selectedNewData2 <- grepl(keys2[k2], new.data[, then.by.col],
-                                      ignore.case = ignore.case) & selectedNewData
+              ignore.case = ignore.case
+            ) & selectedNewData
           }
 
           if (debug) {
@@ -207,14 +206,11 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
           }
 
           if (any(selectedData2, na.rm = TRUE) && any(selectedNewData2, na.rm = TRUE)) {
-
             for (c2 in seq(along = colNamesNew)) {
-
               dataLen <- length(data[selectedData2, colNamesNew[c2]])
               dataNewLen <- length(new.data[selectedNewData2, colNamesNew[c2]])
 
               if (dataLen == dataNewLen) {
-
                 if (debug) {
                   print("SelectedData")
                   print(data[selectedData2, colNamesNew[c2]])
@@ -224,10 +220,8 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
 
                 # Add new data.
                 data[selectedData2, colNamesNew[c2]] <-
-                new.data[selectedNewData2, colNamesNew[c2]]
-
+                  new.data[selectedNewData2, colNamesNew[c2]]
               } else {
-
                 uniqueNewData <- unique(new.data[selectedNewData2, colNamesNew[c2]])
 
                 if (debug) {
@@ -239,10 +233,11 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
                 if (length(uniqueNewData) == 1) {
                   # Add new data.
                   data[selectedData2, colNamesNew[c2]] <- uniqueNewData
-
                 } else {
-                  message("Ambiguous data could not be added at key ", keys[k],
-                          " sub key: ", keys2[k2], ".")
+                  message(
+                    "Ambiguous data could not be added at key ", keys[k],
+                    " sub key: ", keys2[k2], "."
+                  )
                 }
               }
             }
@@ -260,5 +255,4 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
   }
 
   return(data)
-
 }

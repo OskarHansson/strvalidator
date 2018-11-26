@@ -30,9 +30,11 @@ test_that("calculateStutter", {
   # 1 Back, 0 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 1, forward = 0, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 1, forward = 0, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -104,9 +106,11 @@ test_that("calculateStutter", {
   # 1 Back, 1 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 1, forward = 1, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 1, forward = 1, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -204,9 +208,11 @@ test_that("calculateStutter", {
   # 1 Back, 2 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 1, forward = 2, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 1, forward = 2, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -298,9 +304,11 @@ test_that("calculateStutter", {
   # 1 Back, 3 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 1, forward = 3, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 1, forward = 3, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -384,9 +392,11 @@ test_that("calculateStutter", {
   # 2 Back, 0 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 2, forward = 0, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 2, forward = 0, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -482,9 +492,11 @@ test_that("calculateStutter", {
   # 2 Back, 1 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 2, forward = 1, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 2, forward = 1, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -590,9 +602,11 @@ test_that("calculateStutter", {
   # 2 Back, 2 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 2, forward = 2, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 2, forward = 2, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -685,9 +699,11 @@ test_that("calculateStutter", {
   # 2 Back, 3 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 2, forward = 3, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 2, forward = 3, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -763,9 +779,11 @@ test_that("calculateStutter", {
   # 3 Back, 0 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 3, forward = 0, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 3, forward = 0, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -857,9 +875,11 @@ test_that("calculateStutter", {
   # 3 Back, 1 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 3, forward = 1, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 3, forward = 1, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -953,9 +973,11 @@ test_that("calculateStutter", {
   # 3 Back, 2 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 3, forward = 2, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 3, forward = 2, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1036,9 +1058,11 @@ test_that("calculateStutter", {
   # 3 Back, 3 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 3, forward = 3, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 3, forward = 3, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1103,9 +1127,11 @@ test_that("calculateStutter", {
   # 0 Back, 1 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 0, forward = 1, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 0, forward = 1, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1162,9 +1188,11 @@ test_that("calculateStutter", {
   # 0 Back, 2 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 0, forward = 2, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 0, forward = 2, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1235,9 +1263,11 @@ test_that("calculateStutter", {
   # 0 Back, 3 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 0, forward = 3, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 0, forward = 3, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1308,9 +1338,11 @@ test_that("calculateStutter", {
   # 2 Back, 1 Forward, stutter interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 2, forward = 1, interference = 1,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 2, forward = 1, interference = 1,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1467,9 +1499,11 @@ test_that("calculateStutter", {
   # 2 Back, 1 Forward, allele interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 2, forward = 1, interference = 2,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 2, forward = 1, interference = 2,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1635,9 +1669,11 @@ test_that("calculateStutter", {
   # 2 Back, 1 Forward, No interference.
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = ref4,
-                          back = 2, forward = 1, interference = 0,
-                          replace.val = c(-1.8, -0.8), by.val = c(-1.2, -0.2), debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = ref4,
+    back = 2, forward = 1, interference = 0,
+    replace.val = c(-1.8, -0.8), by.val = c(-1.2, -0.2), debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1747,9 +1783,11 @@ test_that("calculateStutter", {
   refSingle <- ref4[!rownames(ref4) %in% c(2, 6), ]
 
   # Analyse dataframe.
-  res <- calculateStutter(data = setA1, ref = refSingle,
-                          back = 2, forward = 1, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = setA1, ref = refSingle,
+    back = 2, forward = 1, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -1859,9 +1897,11 @@ test_that("calculateStutter", {
   set4Missing <- set4[set4$Sample.Name != "07-A2.5", ]
 
   # Analyse dataframe.
-  res <- calculateStutter(data = set4Missing, ref = ref4,
-                          back = 2, forward = 1, interference = 0,
-                          replace.val = NULL, by.val = NULL, debug = FALSE)
+  res <- calculateStutter(
+    data = set4Missing, ref = ref4,
+    back = 2, forward = 1, interference = 0,
+    replace.val = NULL, by.val = NULL, debug = FALSE
+  )
 
   # write.table(x=res,"clipboard",sep="\t",row.names=FALSE,col.names=TRUE)
 
@@ -1965,7 +2005,4 @@ test_that("calculateStutter", {
   expect_that(res$Type[40], equals(-2))
   expect_that(res$Type[41], equals(-1))
   expect_that(res$Type[42], equals(1))
-
-
-
 })

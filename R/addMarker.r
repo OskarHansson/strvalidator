@@ -40,7 +40,6 @@
 #'
 
 addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -63,17 +62,19 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
     # Check dataset.
     if (!"Sample.Name" %in% names(data)) {
       stop("'data' must contain a column 'Sample.Name'",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
   } else if (is.vector(data)) {
     vectorFlag <- TRUE
   } else {
     stop("'data' must be a vector of sample names or a data.frame containing a column 'Sample.Name'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.vector(marker)) {
-      stop("'marker' must be a vector", call. = TRUE)
+    stop("'marker' must be a vector", call. = TRUE)
   }
 
   # PREPARE -------------------------------------------------------------------
@@ -114,34 +115,33 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
 
     # Loop over provided marker vector.
     for (m in seq(along = marker)) {
-
       if (!marker[m] %in% cMarker) {
         # Add missing marker to data set.
         missingMarkers <- c(missingMarkers, markerName[m])
       }
-
     }
 
     if (!is.null(missingMarkers)) {
 
       # Show progress.
       message(paste("Adding missing markers to sample (",
-                    s, " of ", length(sample), "): ", sample[s], sep = ""))
+        s, " of ", length(sample), "): ", sample[s],
+        sep = ""
+      ))
 
       # Add missing markers to current sample.
-      new <- plyr::rbind.fill(cSample, data.frame(Sample.Name = sample[s],
-                                            Marker = missingMarkers,
-                                            stringsAsFactors = FALSE))
+      new <- plyr::rbind.fill(cSample, data.frame(
+        Sample.Name = sample[s],
+        Marker = missingMarkers,
+        stringsAsFactors = FALSE
+      ))
       # Add to result.
       res <- plyr::rbind.fill(res, new)
-
     } else {
 
       # Add current sample to res.
       res <- rbind(res, cSample)
-
     }
-
   }
 
   # RETURN --------------------------------------------------------------------
@@ -155,5 +155,4 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
   }
 
   return(res)
-
 }

@@ -357,7 +357,4 @@ test_that("addSize", {
   expect_that(res$Size[14], equals(173))
   expect_that(res$Size[15], equals(189))
   expect_that(res$Size[16], equals(247))
-
-
-
 })

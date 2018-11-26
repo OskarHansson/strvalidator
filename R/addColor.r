@@ -64,7 +64,6 @@
 #' addColor(data = c("R", "G", "Y", "B"), have = "dye", need = "r.color")
 addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
                      ignore.case = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -113,42 +112,33 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
   # A vector with factors gives 'FALSE' for is.vector but dim always gives 'NULL'.
   if (is.vector(data) | is.null(dim(data))) {
-
     if (debug) {
       print("data is vector OR dim is NULL")
     }
 
     # Add color if not exist and kit is provided.
     if (any(is.na(have)) | any(is.na(need))) {
-
       warning("For vector conversion 'have' and 'need' must be provided!")
-
     } else {
-
       if (toupper(have) == "COLOR") {
-
         if (toupper(need) == "DYE") {
           data <- schemeDye[match(toupper(data), toupper(schemeColor))]
         }
         if (toupper(need) == "R.COLOR") {
           data <- schemeRColor[match(toupper(data), toupper(schemeColor))]
         }
-
       }
 
       if (toupper(have) == "DYE") {
-
         if (toupper(need) == "COLOR") {
           data <- schemeColor[match(toupper(data), toupper(schemeDye))]
         }
         if (toupper(need) == "R.COLOR") {
           data <- schemeRColor[match(toupper(data), toupper(schemeDye))]
         }
-
       }
 
       if (toupper(have) == "R.COLOR") {
-
         if (toupper(need) == "COLOR") {
           data <- schemeColor[match(toupper(data), toupper(schemeRColor))]
         }
@@ -156,13 +146,9 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
         if (toupper(need) == "DYE") {
           data <- schemeDye[match(toupper(data), toupper(schemeRColor))]
         }
-
       }
-
     }
-
   } else if (is.data.frame(data)) {
-
     if (debug) {
       print("data is data.frame")
     }
@@ -193,9 +179,7 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
             # Add new column and colors per marker.
             data$Color[toupper(data$Marker) == toupper(marker[m])] <- mColor[m]
-
           }
-
         } else {
 
           # Loop over all markers.
@@ -203,16 +187,12 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
             # Add new column and colors per marker.
             data$Color[data$Marker == marker[m]] <- mColor[m]
-
           }
-
         }
-
       }
 
       # Add to have.
       have <- "Color"
-
     }
 
     # Find existing colors and convert to upper case.
@@ -236,14 +216,11 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
     count <- 1
     repeat{
-
       if ("COLOR" %in% need) {
 
         # Check if exist.
         if ("COLOR" %in% toupper(names(data))) {
-
           message("A column 'Color' already exist in data frame!")
-
         } else {
 
           # Convert using Dye.
@@ -252,7 +229,6 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
               # Convert dye to color.
               data$Color <- schemeColor[match(toupper(data$Dye), toupper(schemeDye))]
-
             } else {
               warning("Can't find column 'Dye'!\n'Color' was not added!")
             }
@@ -264,7 +240,6 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
               # Convert dye to color.
               data$Color <- schemeColor[match(toupper(data$R.Color), toupper(schemeRColor))]
-
             } else {
               warning("Can't find column 'R.Color'!\n'Color' was not added!")
             }
@@ -273,16 +248,13 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
         # Remove from need.
         need <- need[need != "COLOR"]
-
       }
 
       if ("DYE" %in% need) {
 
         # Check if exist.
         if ("DYE" %in% toupper(names(data))) {
-
           message("A column 'Dye' already exist in data frame!")
-
         } else {
 
           # Convert using Color.
@@ -291,7 +263,6 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
               # Convert color to dye.
               data$Dye <- schemeDye[match(toupper(data$Color), toupper(schemeColor))]
-
             } else {
               warning("Can't find column 'Color'!\n'Dye' was not added!")
             }
@@ -303,7 +274,6 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
               # Convert R color to dye.
               data$Dye <- schemeDye[match(toupper(data$R.Color), toupper(schemeRColor))]
-
             } else {
               warning("Can't find column 'R.Color'!\n'Dye' was not added!")
             }
@@ -312,16 +282,13 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
         # Remove from need.
         need <- need[need != "DYE"]
-
       }
 
       if ("R.COLOR" %in% need) {
 
         # Check if exist.
         if ("R.COLOR" %in% toupper(names(data))) {
-
           message("A column 'R.Color' already exist in data frame!")
-
         } else {
 
           # Convert using Color.
@@ -330,7 +297,6 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
               # Convert color to R color.
               data$R.Color <- schemeRColor[match(toupper(data$Color), toupper(schemeColor))]
-
             } else {
               warning("Can't find column 'Color'!\n'R.Color' was not added!")
             }
@@ -342,7 +308,6 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
               # Convert dye to R color.
               data$R.Color <- schemeRColor[match(toupper(data$Dye), toupper(schemeDye))]
-
             } else {
               warning("Can't find column 'Dye'! \n'R.Color' was not added!")
             }
@@ -351,7 +316,6 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
         # Remove from need.
         need <- need[need != "R.COLOR"]
-
       }
 
       # Exit loop.
@@ -361,12 +325,9 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
 
       # Increase loop counter.
       count <- count + 1
-
     } # End repeat.
   } else {
-
     warning("Unsupported data type!\n No color was added!")
-
   }
 
   # Add attributes to result.
@@ -381,5 +342,4 @@ addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
   }
 
   return(data)
-
 }

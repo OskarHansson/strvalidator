@@ -26,13 +26,17 @@ test_that("tableBalance", {
   data(set1)
   data(ref1)
 
-  set1 <- slim(data = set1,
-               fix = c("Sample.Name", "Marker", "Dye"),
-               stack = c("Allele", "Height"))
+  set1 <- slim(
+    data = set1,
+    fix = c("Sample.Name", "Marker", "Dye"),
+    stack = c("Allele", "Height")
+  )
 
-  ref1 <- slim(data = ref1,
-               fix = c("Sample.Name", "Marker"),
-               stack = c("Allele"))
+  ref1 <- slim(
+    data = ref1,
+    fix = c("Sample.Name", "Marker"),
+    stack = c("Allele")
+  )
 
   # TEST 01 -------------------------------------------------------------------
 
@@ -118,25 +122,31 @@ test_that("tableBalance", {
   expect_that(res$Hb.n[1], equals(10))
 
   # Check result: Mean heterozygous balance.
-  expect_that(res$Hb.Mean[1], equals(mean(c(402 / 460, 215 / 225,
-                                            423 / 491, 198 / 241,
-                                            587 / 632, 312 / 326,
-                                            361 / 398, 195 / 206,
-                                            359 / 384, 179 / 183))))
+  expect_that(res$Hb.Mean[1], equals(mean(c(
+    402 / 460, 215 / 225,
+    423 / 491, 198 / 241,
+    587 / 632, 312 / 326,
+    361 / 398, 195 / 206,
+    359 / 384, 179 / 183
+  ))))
 
   # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Hb.Sd[1], equals(sd(c(402 / 460, 215 / 225,
-                                          423 / 491, 198 / 241,
-                                          587 / 632, 312 / 326,
-                                          361 / 398, 195 / 206,
-                                          359 / 384, 179 / 183))))
+  expect_that(res$Hb.Sd[1], equals(sd(c(
+    402 / 460, 215 / 225,
+    423 / 491, 198 / 241,
+    587 / 632, 312 / 326,
+    361 / 398, 195 / 206,
+    359 / 384, 179 / 183
+  ))))
 
   # Check result: 10 percentile for heterozygous balance.
-  expect_that(res$Hb.Perc.10[1], equals(as.numeric(quantile(c(402 / 460, 215 / 225,
-                                                              423 / 491, 198 / 241,
-                                                              587 / 632, 312 / 326,
-                                                              361 / 398, 195 / 206,
-                                                              359 / 384, 179 / 183), 0.10))))
+  expect_that(res$Hb.Perc.10[1], equals(as.numeric(quantile(c(
+    402 / 460, 215 / 225,
+    423 / 491, 198 / 241,
+    587 / 632, 312 / 326,
+    361 / 398, 195 / 206,
+    359 / 384, 179 / 183
+  ), 0.10))))
 
   # TEST 03 -------------------------------------------------------------------
 
@@ -261,5 +271,4 @@ test_that("tableBalance", {
   expect_that(res$Lb.Perc.50[15], equals(0.06942801))
   expect_that(res$Lb.Perc.50[16], equals(0.09111388))
   expect_that(res$Lb.Perc.50[17], equals(0.06878986))
-
 })

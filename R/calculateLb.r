@@ -96,7 +96,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
                         ol.rm = TRUE, sex.rm = FALSE, qs.rm = FALSE,
                         na = NULL, kit = NULL, ignore.case = TRUE,
                         word = FALSE, exact = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -143,11 +142,11 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   # Check if slim format.
   if (sum(grepl("Height", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.null(ref)) {
-
     if (is.null(ref$Sample.Name)) {
       stop("'Sample.Name' does not exist in ref!")
     }
@@ -163,7 +162,8 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     # Check if slim format.
     if (sum(grepl("Allele", names(ref))) > 1) {
       stop("'ref' must be in 'slim' format",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
   }
 
@@ -205,33 +205,28 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
   # NB! The kit must be known for some operations so it must come first.
   if (is.null(kit)) {
-
     message("'kit' not provided. Attempting automatic detection.")
 
     # Detect kit if not provided.
     kit <- detectKit(data = data, index = FALSE, debug = debug)[1]
 
     message(kit, " detected.")
-
   }
 
   # Check if calculation by dye and add dye if not available.
   if (by.dye) {
-
     if (is.null(data$Dye)) {
-
       message("Dye is required to calculate by dye. Adding dye according to 'kit'.")
 
-      data <- addColor(data = data, kit = kit, need = "Dye",
-                       ignore.case = ignore.case, overwrite = TRUE, debug = debug)
-
+      data <- addColor(
+        data = data, kit = kit, need = "Dye",
+        ignore.case = ignore.case, overwrite = TRUE, debug = debug
+      )
     }
-
   }
 
   # Remove off-ladder alleles.
   if (ol.rm) {
-
     tmp1 <- nrow(data)
 
     # Remove off-ladder alleles.
@@ -245,7 +240,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     DT <- data.table::data.table(data)
     tmp <- DT[, list(Marker = length(unique(Marker))), by = list(Sample.Name)]
     if (length(unique(tmp$Marker)) != 1) {
-
       message("Missing markers detected.")
 
       # Get kit markers.
@@ -256,31 +250,29 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
       # Check and fix dye.
       if (!is.null((data$Dye))) {
-
         if (any(is.na(data$Dye))) {
 
           # Fix broken dye.
-          data <- addColor(data = data, kit = kit, need = "Dye",
-                           ignore.case = ignore.case, overwrite = TRUE, debug = debug)
-
+          data <- addColor(
+            data = data, kit = kit, need = "Dye",
+            ignore.case = ignore.case, overwrite = TRUE, debug = debug
+          )
         }
-
       }
-
     }
-
   }
 
   # Filter data.
   if (!is.null(ref)) {
-
     message("Extracting known profiles and adding missing loci.")
 
     # Filter dataset.
-    data <- filterProfile(data = data, ref = ref,
-                          add.missing.loci = TRUE, keep.na = TRUE, invert = FALSE,
-                          ignore.case = ignore.case, exact = exact, word = word,
-                          sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug)
+    data <- filterProfile(
+      data = data, ref = ref,
+      add.missing.loci = TRUE, keep.na = TRUE, invert = FALSE,
+      ignore.case = ignore.case, exact = exact, word = word,
+      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug
+    )
 
     # Check if Dye exist.
     if (!is.null((data$Dye))) {
@@ -289,61 +281,53 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       if (any(is.na(data$Dye))) {
 
         # Fix broken dye.
-        data <- addColor(data = data, kit = kit, need = "Dye",
-                         ignore.case = ignore.case, overwrite = TRUE, debug = debug)
-
+        data <- addColor(
+          data = data, kit = kit, need = "Dye",
+          ignore.case = ignore.case, overwrite = TRUE, debug = debug
+        )
       }
-
     }
-
   } else {
-
     message("Reference dataset not provided.")
 
     # Filter dataset.
-    data <- filterProfile(data = data, ref = NULL, add.missing.loci = FALSE,
-                          keep.na = TRUE, invert = FALSE,
-                          ignore.case = ignore.case, exact = exact, word = word,
-                          sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
-                          filter.allele = FALSE, debug = debug)
-
+    data <- filterProfile(
+      data = data, ref = NULL, add.missing.loci = FALSE,
+      keep.na = TRUE, invert = FALSE,
+      ignore.case = ignore.case, exact = exact, word = word,
+      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+      filter.allele = FALSE, debug = debug
+    )
   }
 
   # Convert to numeric.
   if (!is.numeric((data$Height))) {
-
     data$Height <- as.numeric(data$Height)
 
     message("'Height' converted to numeric.")
-
   }
 
   # Replace missing values.
   if (!is.null(na)) {
-
     nas <- sum(is.na(data$Height))
 
     if (nas > 0) {
 
       # Replace missing values with specified value.
       data[is.na(data$Height), ]$Height <- na
-
     }
 
     message("Replaced ", nas, " Height = NA with ", na, ".")
-
   }
 
   # Check that each sample have all markers.
   DT <- data.table::data.table(data)
   tmp <- DT[, list(Marker = length(unique(Marker))), by = list(Sample.Name)]
   if (length(unique(tmp$Marker)) != 1) {
-
     message("Missing markers detected. Each samples must contain all markers.")
     message("The following samples are incomplete:")
     print(tmp[tmp$Marker != max(tmp$Marker), ])
     stop("Missing markers detected!")
-
   }
 
   # Analyse -------------------------------------------------------------------
@@ -355,10 +339,10 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
   # Calculate total locus peak height by sample and marker.
   res <- DT[, list(TPH = sum(Height), Peaks = .N, Dye = unique(Dye)),
-              by = list(Sample.Name, Marker)]
+    by = list(Sample.Name, Marker)
+  ]
 
   if (option == "prop") {
-
     if (by.dye) {
 
       # Calculate total profile peak height per sample and dye.
@@ -366,7 +350,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
       # Calculate locus proportion of total profile peak height.
       res[, Lb := TPH / TPPH, by = list(Sample.Name, Dye, Marker)]
-
     } else {
 
       # Calculate total profile peak height by sample.
@@ -374,11 +357,8 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
       # Calculate locus proportion of total profile peak height.
       res[, Lb := TPH / TPPH, by = list(Sample.Name, Marker)]
-
     }
-
   } else if (option == "norm") {
-
     if (by.dye) {
 
       # Calculate maximum total peak height per sample and dye.
@@ -386,7 +366,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
       # Calculate normalized locus proportion.
       res[, Lb := TPH / MTPH, by = list(Sample.Name, Dye, Marker)]
-
     } else {
 
       # Calculate maximum total peak height per sample.
@@ -394,12 +373,8 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
       # Calculate normalized locus proportion.
       res[, Lb := TPH / MTPH, by = list(Sample.Name, Marker)]
-
     }
-
-
   } else if (option == "cent") {
-
     if (by.dye) {
 
       # Calculate mean total peak height per sample and dye.
@@ -407,7 +382,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
       # Calculate centred locus quantity.
       res[, Lb := (TPH - MPH) / sqrt(MPH), by = list(Sample.Name, Dye, Marker)]
-
     } else {
 
       # Calculate mean total peak height per sample.
@@ -415,13 +389,9 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
       # Calculate centred locus quantity.
       res[, Lb := (TPH - MPH) / sqrt(MPH), by = list(Sample.Name, Marker)]
-
     }
-
   } else {
-
     stop("option = ", option, "not implemented!")
-
   }
 
   # Convert to data.frame.
@@ -439,5 +409,4 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
   # Return result.
   return(res)
-
 }

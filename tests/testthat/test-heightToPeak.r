@@ -55,8 +55,10 @@ test_that("heightToPeak", {
   # Wider peaks.
   name <- "TEST"
   peakw <- 2.5
-  mydf <- data.frame(Sample.Name = name, Size = c(100, 120, 130),
-                     Height = c(5000, NA, 4000), stringsAsFactors = FALSE)
+  mydf <- data.frame(
+    Sample.Name = name, Size = c(100, 120, 130),
+    Height = c(5000, NA, 4000), stringsAsFactors = FALSE
+  )
   res <- heightToPeak(data = mydf, width = peakw, keep.na = TRUE)
 
   # Check return class.
@@ -155,5 +157,4 @@ test_that("heightToPeak", {
   expect_false(any(is.na(res$Sample.Name)))
   expect_false(any(is.na(res$Size)))
   expect_false(any(is.na(res$Height)))
-
 })

@@ -58,15 +58,16 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-              spacing = 15,
-              use.scrollwindow = FALSE,
-              container = w,
-              expand = FALSE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = FALSE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -81,40 +82,50 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Open help page for function.
     print(help("removeSpike_gui", help_type = "html"))
-
   })
 
   # DATASET ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = FALSE,
-               spacing = 10,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- f0g0_data_drp <- gcombobox(items = c("<Select dataset>",
-                                                 listObjects(env = env,
-                                                             obj.class = "data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g0,
-                                         ellipsize = "none")
+  f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(text = " 0 rows",
-                                              container = f0g0)
+  f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
+    text = " 0 rows",
+    container = f0g0
+  )
 
   addHandlerChanged(f0g0_data_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0g0_data_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Size", "File.Name")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -124,39 +135,44 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       svalue(f0g0_data_col_lbl) <- paste(" ", nrow(.gData), " rows")
       svalue(f2_name) <- paste(.gDataName, "no_spikes", sep = "_")
-
     } else {
-
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(f0g0_data_col_lbl) <- " 0 rows"
       svalue(f2_name) <- ""
-
     }
-
   })
 
   f0g0[2, 1] <- glabel(text = "Select spike list:", container = f0g0)
 
-  f0g0[2, 2] <- f0g0_spike_drp <- gcombobox(items = c("<Select dataset>",
-                                                   listObjects(env = env,
-                                                               obj.class = "data.frame")),
-                                           selected = 1,
-                                           editable = FALSE,
-                                           container = f0g0,
-                                           ellipsize = "none")
+  f0g0[2, 2] <- f0g0_spike_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[2, 3] <- f0g0_spike_col_lbl <- glabel(text = " 0 samples",
-                                           container = f0g0)
+  f0g0[2, 3] <- f0g0_spike_col_lbl <- glabel(
+    text = " 0 samples",
+    container = f0g0
+  )
 
   addHandlerChanged(f0g0_spike_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0g0_spike_drp)
 
     # Check if suitable.
     requiredCol <- c("Allele", "Id", "Marker")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -164,33 +180,35 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gSpike <<- get(val_obj, envir = env)
       .gSpikeName <<- val_obj
 
-      svalue(f0g0_spike_col_lbl) <- paste(" ", length(unique(.gSpike$Id)),
-                                          " samples")
-
+      svalue(f0g0_spike_col_lbl) <- paste(
+        " ", length(unique(.gSpike$Id)),
+        " samples"
+      )
     } else {
-
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(f0g0_data_col_lbl) <- " 0 samples"
-
     }
-
   })
 
   # OPTIONS ###################################################################
 
   f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
 
-  f1_invert_chk <- gcheckbox(text = "Invert (remove all but spikes)",
-                             checked = FALSE, container = f1)
+  f1_invert_chk <- gcheckbox(
+    text = "Invert (remove all but spikes)",
+    checked = FALSE, container = f1
+  )
 
 
   # NAME ######################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Save as:", container = f2)
   f2_name <- gedit(text = "", width = 40, container = f2, expand = TRUE)
@@ -204,7 +222,6 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   remove_btn <- gbutton(text = "Remove", container = gv)
 
   addHandlerChanged(remove_btn, handler = function(h, ...) {
-
     val_data <- .gData
     val_spike <- .gSpike
     val_name_data <- .gDataName
@@ -213,10 +230,11 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     val_invert <- svalue(f1_invert_chk)
 
     if ((!is.na(val_data) && !is.null(val_data)) &
-        (!is.na(val_spike) && !is.null(val_spike))) {
-
-      datanew <- removeSpike(data = val_data, spike = val_spike,
-                             invert = val_invert, debug = debug)
+      (!is.na(val_spike) && !is.null(val_spike))) {
+      datanew <- removeSpike(
+        data = val_data, spike = val_spike,
+        invert = val_invert, debug = debug
+      )
 
       # Create key-value pairs to log.
       keys <- list("data", "spike", "invert")
@@ -224,9 +242,11 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       values <- list(val_name_data, val_name_spike, val_invert)
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "removeSpike_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "removeSpike_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -238,15 +258,13 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Close GUI.
       dispose(w)
-
     } else {
-
-      gmessage(msg = "Select a datasets!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Select a datasets!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -282,17 +300,14 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_removeSpike_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_removeSpike_gui_invert", value = svalue(f1_invert_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_removeSpike_gui_savegui", envir = env, inherits = FALSE)) {
@@ -310,7 +325,6 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -321,5 +335,4 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

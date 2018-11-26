@@ -31,7 +31,6 @@
 
 colConvert <- function(data, columns = "Height|Size|Data.Point",
                        ignore.case = TRUE, fixed = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -49,7 +48,6 @@ colConvert <- function(data, columns = "Height|Size|Data.Point",
 
     # Convert to numeric (handles factors using as.character).
     data[, selected[c]] <- as.numeric(as.character(data[, selected[c]]))
-
   }
 
   # Update audit trail.
@@ -60,5 +58,4 @@ colConvert <- function(data, columns = "Height|Size|Data.Point",
   }
 
   return(data)
-
 }

@@ -83,15 +83,16 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -106,43 +107,53 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     # Open help page for function.
     print(help("plotPrecision_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset and kit",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset and kit",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Select dataset:", container = f0)
 
-  dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0,
-                           ellipsize = "none")
+  dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   glabel(text = " and the kit used:", container = f0)
 
-  kit_drp <- gcombobox(items = getKit(),
-                       selected = 1,
-                       editable = FALSE,
-                       container = f0,
-                       ellipsize = "none")
+  kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       string = "OL", stringcol = "Allele",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      string = "OL", stringcol = "Allele",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -164,27 +175,28 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       enabled(f8_size_btn) <- TRUE
       enabled(f8_height_btn) <- TRUE
       enabled(f8_data_btn) <- TRUE
-
     } else {
 
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
@@ -200,44 +212,60 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   enabled(grid1) <- svalue(f1_titles_chk)
 
   grid1[1, 1] <- glabel(text = "Plot title:", container = grid1)
-  grid1[1, 2] <- title_edt <- gedit(text = "",
-                                   width = 40,
-                                   container = grid1)
+  grid1[1, 2] <- title_edt <- gedit(
+    text = "",
+    width = 40,
+    container = grid1
+  )
 
   grid1[2, 1] <- glabel(text = "X title:", container = grid1)
-  grid1[2, 2] <- x_title_edt <- gedit(text = "",
-                                     container = grid1)
+  grid1[2, 2] <- x_title_edt <- gedit(
+    text = "",
+    container = grid1
+  )
 
   grid1[3, 1] <- glabel(text = "Y title:", container = grid1)
-  grid1[3, 2] <- y_title_edt <- gedit(text = "",
-                                     container = grid1)
+  grid1[3, 2] <- y_title_edt <- gedit(
+    text = "",
+    container = grid1
+  )
 
-  f1_facet_chk <- gcheckbox(text = "Plot per marker",
-                              checked = TRUE,
-                              container = f1)
+  f1_facet_chk <- gcheckbox(
+    text = "Plot per marker",
+    checked = TRUE,
+    container = f1
+  )
 
   f1g2 <- glayout(container = f1)
   f1g2[1, 1] <- glabel(text = "X axis:", anchor = c(-1, 0), container = f1g2)
-  f1g2[1, 2] <- f1_axis_opt <- gradio(items = c("Mean", "Allele"),
-                                     selected = 2,
-                                     horizontal = TRUE,
-                                     container = f1g2)
+  f1g2[1, 2] <- f1_axis_opt <- gradio(
+    items = c("Mean", "Allele"),
+    selected = 2,
+    horizontal = TRUE,
+    container = f1g2
+  )
 
   f1g2[2, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
-  items_theme <- c("theme_grey()", "theme_bw()", "theme_linedraw()",
-                   "theme_light()", "theme_dark()", "theme_minimal()",
-                   "theme_classic()", "theme_void()")
-  f1g2[2, 2] <- f1_theme_drp <- gcombobox(items = items_theme,
-                                         selected = 1,
-                                         container = f1g2,
-                                         ellipsize = "none")
+  items_theme <- c(
+    "theme_grey()", "theme_bw()", "theme_linedraw()",
+    "theme_light()", "theme_dark()", "theme_minimal()",
+    "theme_classic()", "theme_void()"
+  )
+  f1g2[2, 2] <- f1_theme_drp <- gcombobox(
+    items = items_theme,
+    selected = 1,
+    container = f1g2,
+    ellipsize = "none"
+  )
 
 
   # FRAME 7 ###################################################################
 
-  f7 <- gframe(text = "Plot precision data as dotplot",
-               horizontal = FALSE,
-               container = gv)
+  f7 <- gframe(
+    text = "Plot precision data as dotplot",
+    horizontal = FALSE,
+    container = gv
+  )
 
   grid7 <- glayout(container = f7)
 
@@ -253,28 +281,27 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     requiredCol <- c("Marker", "Allele", "Size")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(f7_size_btn) <- FALSE
       .plot(what = "Size", how = "dotplot")
       enabled(f7_size_btn) <- TRUE
-
     }
 
     # Change save button.
     svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
-
   })
 
   addHandlerChanged(f7_height_btn, handler = function(h, ...) {
@@ -283,28 +310,27 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     requiredCol <- c("Marker", "Allele", "Height")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(f7_height_btn) <- FALSE
       .plot(what = "Height", how = "dotplot")
       enabled(f7_height_btn) <- TRUE
-
     }
 
     # Change save button.
     svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
-
   })
 
   addHandlerChanged(f7_data_btn, handler = function(h, ...) {
@@ -313,35 +339,36 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     requiredCol <- c("Marker", "Allele", "Data.Point")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(f7_data_btn) <- FALSE
       .plot(what = "Data.Point", how = "dotplot")
       enabled(f7_data_btn) <- TRUE
-
     }
 
     # Change save button.
     svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
-
   })
 
   # FRAME 8 ###################################################################
 
-  f8 <- gframe(text = "Plot precision data as boxplot",
-               horizontal = FALSE,
-               container = gv)
+  f8 <- gframe(
+    text = "Plot precision data as boxplot",
+    horizontal = FALSE,
+    container = gv
+  )
 
   grid8 <- glayout(container = f8)
 
@@ -357,28 +384,27 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     requiredCol <- c("Marker", "Allele", "Size")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(f8_size_btn) <- FALSE
       .plot(what = "Size", how = "boxplot")
       enabled(f8_size_btn) <- TRUE
-
     }
 
     # Change save button.
     svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
-
   })
 
   addHandlerChanged(f8_height_btn, handler = function(h, ...) {
@@ -387,28 +413,27 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     requiredCol <- c("Marker", "Allele", "Height")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(f8_height_btn) <- FALSE
       .plot(what = "Height", how = "boxplot")
       enabled(f8_height_btn) <- TRUE
-
     }
 
     # Change save button.
     svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
-
   })
 
   addHandlerChanged(f8_data_btn, handler = function(h, ...) {
@@ -417,36 +442,37 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     requiredCol <- c("Marker", "Allele", "Data.Point")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(f8_data_btn) <- FALSE
       .plot(what = "Data.Point", how = "boxplot")
       enabled(f8_data_btn) <- TRUE
-
     }
 
     # Change save button.
     svalue(f5_save_btn) <- "Save as object"
     enabled(f5_save_btn) <- TRUE
-
   })
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -457,7 +483,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -467,31 +492,34 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # ADVANCED OPTIONS ##########################################################
 
-  e2 <- gexpandgroup(text = "Data points",
-                     horizontal = FALSE,
-                     container = f1)
+  e2 <- gexpandgroup(
+    text = "Data points",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e2) <- FALSE
@@ -499,26 +527,34 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   grid2 <- glayout(container = e2)
 
   grid2[1, 1] <- glabel(text = "Shape:", container = grid2)
-  grid2[1, 2] <- shape_spb <- gspinbutton(from = 0, to = 25,
-                                         by = 1, value = 18,
-                                         container = grid2)
+  grid2[1, 2] <- shape_spb <- gspinbutton(
+    from = 0, to = 25,
+    by = 1, value = 18,
+    container = grid2
+  )
 
   grid2[1, 3] <- glabel(text = "Alpha:", container = grid2)
-  grid2[1, 4] <- alpha_spb <- gspinbutton(from = 0, to = 1,
-                                         by = 0.01, value = 0.60,
-                                         container = grid2)
+  grid2[1, 4] <- alpha_spb <- gspinbutton(
+    from = 0, to = 1,
+    by = 0.01, value = 0.60,
+    container = grid2
+  )
 
   grid2[1, 5] <- glabel(text = "Colour:", container = grid2)
-  grid2[1, 6] <- colour_drp <- gcombobox(items = c("white", palette()),
-                                    selected = 2,
-                                    container = grid2,
-                                    ellipsize = "none")
+  grid2[1, 6] <- colour_drp <- gcombobox(
+    items = c("white", palette()),
+    selected = 2,
+    container = grid2,
+    ellipsize = "none"
+  )
 
   # FRAME 3 ###################################################################
 
-  e3 <- gexpandgroup(text = "Axes",
-                     horizontal = FALSE,
-                     container = f1)
+  e3 <- gexpandgroup(
+    text = "Axes",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e3) <- FALSE
@@ -536,16 +572,20 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   grid3[1, 3] <- glabel(text = "    ", container = grid3) # Add some space.
 
   grid3[1, 4] <- glabel(text = "Scales:", container = grid3)
-  grid3[2:4, 4] <- scales_opt <- gradio(items = c("fixed", "free_x", "free_y", "free"),
-                                       selected = 2,
-                                       horizontal = FALSE,
-                                       container = grid3)
+  grid3[2:4, 4] <- scales_opt <- gradio(
+    items = c("fixed", "free_x", "free_y", "free"),
+    selected = 2,
+    horizontal = FALSE,
+    container = grid3
+  )
 
   # FRAME 4 ###################################################################
 
-  e4 <- gexpandgroup(text = "X labels",
-                     horizontal = FALSE,
-                     container = f1)
+  e4 <- gexpandgroup(
+    text = "X labels",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e4) <- FALSE
@@ -556,18 +596,24 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   grid4[1, 2] <- size_txt <- gedit(text = "8", width = 4, container = grid4)
 
   grid4[1, 3] <- glabel(text = "Angle:", container = grid4)
-  grid4[1, 4] <- angle_spb <- gspinbutton(from = 0, to = 360, by = 1,
-                                          value = 270,
-                                          container = grid4)
+  grid4[1, 4] <- angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 270,
+    container = grid4
+  )
 
   grid4[2, 1] <- glabel(text = "Justification (v/h):", container = grid4)
-  grid4[2, 2] <- vjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0.5,
-                                          container = grid4)
+  grid4[2, 2] <- vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = grid4
+  )
 
-  grid4[2, 3] <- hjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0,
-                                          container = grid4)
+  grid4[2, 3] <- hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0,
+    container = grid4
+  )
 
 
 
@@ -642,7 +688,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     }
 
     if (!is.null(val_data) && !is.na(val_data)) {
-
       if (debug) {
         print("BEFORE PLOTTING:")
         print("str(val_data)")
@@ -692,17 +737,18 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
           # Calculate mean and save in dataframe.
           val_data[selection, ][[what.mean]] <- mean(val_data[selection, ][[what]], na.rm = TRUE)
-
         }
       }
 
       # Calculate deviation.
       dev <- val_data[[what]] - val_data[[what.mean]]
-      val_data <- data.frame(Marker = val_data$Marker,
-                             Allele = val_data$Allele,
-                             Mean = val_data[[what.mean]],
-                             Deviation = dev,
-                             stringsAsFactors = FALSE)
+      val_data <- data.frame(
+        Marker = val_data$Marker,
+        Allele = val_data$Allele,
+        Mean = val_data[[what.mean]],
+        Deviation = dev,
+        stringsAsFactors = FALSE
+      )
 
       # Make sorted allele factors (use low values for X/Y).
       numericAlleles <- unique(val_data$Allele)
@@ -733,15 +779,19 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       # Call functions.
       # Add color information.
       if (!"Dye" %in% names(val_data)) {
-        val_data <- addColor(data = val_data, kit = val_kit,
-                             need = "Dye", debug = debug)
+        val_data <- addColor(
+          data = val_data, kit = val_kit,
+          need = "Dye", debug = debug
+        )
         message("'Dye' added to dataset!")
       }
 
       # Sort by marker in kit
-      val_data <- sortMarker(data = val_data,
-                             kit = val_kit,
-                             add.missing.levels = TRUE)
+      val_data <- sortMarker(
+        data = val_data,
+        kit = val_kit,
+        add.missing.levels = TRUE
+      )
 
 
       if (debug) {
@@ -760,9 +810,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         xTitle <- val_xtitle
         yTitle <- val_ytitle
       } else {
-
         if (what == "Size") {
-
           mainTitle <- "Allele size range for allelic ladders"
 
           yTitle <- "Deviation from mean (bp)"
@@ -774,9 +822,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
           } else {
             warning(paste("val_axis=", val_axis, "not implemented!"))
           }
-
         } else if (what == "Height") {
-
           mainTitle <- "Allele height range for allelic ladders"
 
           yTitle <- "Deviation from mean (RFU)"
@@ -788,9 +834,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
           } else {
             warning(paste("val_axis=", val_axis, "not implemented!"))
           }
-
         } else if (what == "Data.Point") {
-
           mainTitle <- "Allele data point range for allelic ladders"
 
           yTitle <- "Deviation from mean (data point)"
@@ -802,21 +846,17 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
           } else {
             warning(paste("val_axis=", val_axis, "not implemented!"))
           }
-
         } else {
-
           warning(paste("what=", what, "not implemented!"))
-
         }
-
       }
 
       # TODO: NB! although plotting min/max values are very tidy,
       #       it may not be very informative. Include as an option?
-#       # Create plot.
-#       gp <- ggplot(val_data, aes_string(x="Mean", y="Value", color="Deviation"),
-#                    shape=val_shape, alpha=val_alpha)
-#       gp <- gp + geom_point()
+      #       # Create plot.
+      #       gp <- ggplot(val_data, aes_string(x="Mean", y="Value", color="Deviation"),
+      #                    shape=val_shape, alpha=val_alpha)
+      #       gp <- gp + geom_point()
 
       # Create plot.
       if (how == "dotplot") {
@@ -824,20 +864,18 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         # Create dotplot.
         gp <- ggplot(val_data)
         gp <- gp + geom_point(aes_string(x = val_axis, y = "Deviation"),
-                              alpha = val_alpha, shape = val_shape, colour = val_colour)
+          alpha = val_alpha, shape = val_shape, colour = val_colour
+        )
         # gp <- gp + facet_wrap(~Marker) # TODO: is this needed?
-
       } else if (how == "boxplot") {
 
         # Create boxplot (per allele).
         gp <- ggplot(val_data)
         gp <- gp + geom_boxplot(aes_string(x = val_axis, y = "Deviation"),
-                                 alpha = val_alpha, shape = val_shape, fill = val_colour)
-
+          alpha = val_alpha, shape = val_shape, fill = val_colour
+        )
       } else {
-
         warning(paste("how=", how, "not implemented!"))
-
       }
 
       # Apply theme.
@@ -861,9 +899,10 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         gp <- gp + facet_grid("Dye ~ Marker")
         # NB! 'facet_wrap' does not seem to support strings.
         #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-        gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol = val_ncol,
-                              drop = FALSE, scales = val_scales)
-
+        gp <- gp + facet_wrap(as.formula(paste("~ Marker")),
+          ncol = val_ncol,
+          drop = FALSE, scales = val_scales
+        )
       }
 
       # Restrict y axis.
@@ -885,18 +924,22 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       gp <- gp + labs(title = mainTitle)
       gp <- gp + xlab(xTitle)
       gp <- gp + ylab(yTitle)
-      gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                hjust = val_hjust,
-                                                vjust = val_vjust,
-                                                size = val_size))
+      gp <- gp + theme(axis.text.x = element_text(
+        angle = val_angle,
+        hjust = val_hjust,
+        vjust = val_vjust,
+        size = val_size
+      ))
 
       # Check plot type.
       if (length(val_ncol) == 1) {
         # Simple plot, equal number of markers per dye.
 
         if (debug) {
-          print(paste("Simple plot, val_ncol:",
-                      paste(val_ncol, collapse = ", ")))
+          print(paste(
+            "Simple plot, val_ncol:",
+            paste(val_ncol, collapse = ", ")
+          ))
         }
 
         # Show plot.
@@ -905,13 +948,14 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         # Change save button.
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- TRUE
-
       } else if (length(val_ncol) > 1) {
         # Complex plot, unequal number of markers per dye.
 
         if (debug) {
-          print(paste("Complex plot, val_ncol:",
-                      paste(val_ncol, collapse = ", ")))
+          print(paste(
+            "Complex plot, val_ncol:",
+            paste(val_ncol, collapse = ", ")
+          ))
         }
 
         # With guide:
@@ -940,19 +984,25 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         # With guide:
         # Note: width(1.5 for y-title, and the rest for plots + guides)
         #       height(1.5 for plot title, equal for each plot, and 1.5 for x-title)
-#         g <- gtable::gtable(widths=grid::unit.c(grid::unit(1.5, "lines"),
-#                                                 grid::unit(1, "null"),
-#                                                 sum(guide$widths)),
-#                             heights = grid::unit(c(1.5,rep(1,noDyes),1.5),
-#                                                  c("line", rep("null", noDyes), "line")))
+        #         g <- gtable::gtable(widths=grid::unit.c(grid::unit(1.5, "lines"),
+        #                                                 grid::unit(1, "null"),
+        #                                                 sum(guide$widths)),
+        #                             heights = grid::unit(c(1.5,rep(1,noDyes),1.5),
+        #                                                  c("line", rep("null", noDyes), "line")))
 
         # Without guide:
         # Note: width(1.5 for y-title, and the rest for plots + margin)
         #       height(1.5 for plot title, equal for each plot, and 1.5 for x-title)
-        g <- gtable::gtable(widths = grid::unit.c(grid::unit(1.5, "lines"),
-                                                grid::unit(1, "null"), grid::unit(1.5, "lines")),
-                            heights = grid::unit(c(1.5, rep(1, noDyes), 1.5),
-                                                 c("line", rep("null", noDyes), "line")))
+        g <- gtable::gtable(
+          widths = grid::unit.c(
+            grid::unit(1.5, "lines"),
+            grid::unit(1, "null"), grid::unit(1.5, "lines")
+          ),
+          heights = grid::unit(
+            c(1.5, rep(1, noDyes), 1.5),
+            c("line", rep("null", noDyes), "line")
+          )
+        )
         # Add titles.
         g <- gtable::gtable_add_grob(g, grid::textGrob(mainTitle), t = 1, b = 1, l = 2, r = 2)
         g <- gtable::gtable_add_grob(g, grid::textGrob(xTitle), t = noRows, b = noRows, l = 2, r = 2)
@@ -975,19 +1025,17 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
             # Create a plot for the current subset.
             gp <- ggplot(subset(val_data, val_data$Dye == dyes[d]))
             gp <- gp + geom_point(aes_string(x = val_axis, y = "Deviation"),
-                                  alpha = val_alpha, shape = val_shape, colour = val_colour)
-
+              alpha = val_alpha, shape = val_shape, colour = val_colour
+            )
           } else if (how == "boxplot") {
 
             # Create a plot for the current subset.
             gp <- ggplot(subset(val_data, val_data$Dye == dyes[d]))
             gp <- gp + geom_boxplot(aes_string(x = val_axis, y = "Deviation"),
-                                    alpha = val_alpha, shape = val_shape, fill = val_colour)
-
+              alpha = val_alpha, shape = val_shape, fill = val_colour
+            )
           } else {
-
             warning(paste("how=", how, "not implemented!"))
-
           }
 
           if (debug) {
@@ -1026,10 +1074,12 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
           # Remove titles, axis labels and legend.
           gp <- gp + labs(title = element_blank())
           gp <- gp + theme(axis.title.x = element_blank())
-          gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                    hjust = val_hjust,
-                                                    vjust = val_vjust,
-                                                    size = val_size))
+          gp <- gp + theme(axis.text.x = element_text(
+            angle = val_angle,
+            hjust = val_hjust,
+            vjust = val_vjust,
+            size = val_size
+          ))
 
           gp <- gp + theme(axis.title.y = element_blank())
 
@@ -1037,8 +1087,8 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
           # Add plot panel to table object.
           g <- gtable::gtable_add_grob(g, ggplotGrob(gp),
-                                       t = (d + 1), b = (d + 1), l = 2, r = 2)
-
+            t = (d + 1), b = (d + 1), l = 2, r = 2
+          )
         }
 
         # Plot.
@@ -1053,7 +1103,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         # Change save button.
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- FALSE
-
       } else {
         # Not supported!
         stop(paste("Unsupported number of columns:", val_ncol))
@@ -1062,15 +1111,13 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
       # Store in global variable.
       .gPlot <<- gp
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
@@ -1158,14 +1205,12 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotPrecision_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_title", value = svalue(title_edt), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
@@ -1185,7 +1230,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       assign(x = ".strvalidator_plotPrecision_gui_xlabel_justv", value = svalue(vjust_spb), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_facet", value = svalue(f1_facet_chk), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_theme", value = svalue(f1_theme_drp), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotPrecision_gui_savegui", envir = env, inherits = FALSE)) {
@@ -1254,7 +1298,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -1265,5 +1308,4 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

@@ -81,15 +81,16 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -104,15 +105,16 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
     # Open help page for function.
     print(help("calculateHeight_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
@@ -120,24 +122,31 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                listObjects(env = env,
-                                                            obj.class = "data.frame")),
-                                        selected = 1, editable = FALSE,
-                                        container = f0g0,
-                                        ellipsize = "none")
+  f0g0[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1, editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
   f0g0[1, 3] <- f0g0_samples_lbl <- glabel(text = " 0 samples", container = f0g0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Height",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Height",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -154,7 +163,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       kitIndex <- detectKit(data = .gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
-
     } else {
 
       # Reset components.
@@ -163,30 +171,36 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-
     }
   })
 
   f0g0[2, 1] <- glabel(text = "Select reference:", container = f0g0)
 
-  f0g0[2, 2] <- refset_drp <- gcombobox(items = c("<Select dataset>",
-                                               listObjects(env = env,
-                                                           obj.class = "data.frame")),
-                                       selected = 1, editable = FALSE,
-                                       container = f0g0,
-                                       ellipsize = "none")
+  f0g0[2, 2] <- refset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1, editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
   f0g0[2, 3] <- f0g0_ref_lbl <- glabel(text = " 0 references", container = f0g0)
 
   addHandlerChanged(refset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(refset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Allele",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Allele",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -195,16 +209,13 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gRefName <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
       svalue(f0g0_ref_lbl) <- paste("", ref, "references")
-
     } else {
 
       # Reset components.
       .gRef <<- NULL
       svalue(refset_drp, index = TRUE) <- 1
       svalue(f0g0_ref_lbl) <- " 0 references"
-
     }
-
   })
 
   # CHECK ---------------------------------------------------------------------
@@ -221,104 +232,123 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     val_word <- FALSE
 
     if (!is.null(.gData) || !is.null(.gRef)) {
+      chksubset_w <- gwindow(
+        title = "Check subsetting",
+        visible = FALSE, name = title,
+        width = NULL, height = NULL, parent = w,
+        handler = NULL, action = NULL
+      )
 
-      chksubset_w <- gwindow(title = "Check subsetting",
-                             visible = FALSE, name = title,
-                             width = NULL, height = NULL, parent = w,
-                             handler = NULL, action = NULL)
+      chksubset_txt <- checkSubset(
+        data = val_data,
+        ref = val_ref,
+        console = FALSE,
+        ignore.case = val_ignore,
+        exact = val_exact,
+        word = val_word
+      )
 
-      chksubset_txt <- checkSubset(data = val_data,
-                                   ref = val_ref,
-                                   console = FALSE,
-                                   ignore.case = val_ignore,
-                                   exact = val_exact,
-                                   word = val_word)
-
-      gtext(text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
-             wrap = FALSE, container = chksubset_w)
+      gtext(
+        text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
+        wrap = FALSE, container = chksubset_w
+      )
 
       visible(chksubset_w) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # Kit -----------------------------------------------------------------------
 
   f0g0[4, 1] <- glabel(text = "Select the kit used:", container = f0g0)
 
-  f0g0[4, 2] <- kit_drp <- gcombobox(items = getKit(), selected = 1,
-                                  editable = FALSE, container = f0g0,
-                                  ellipsize = "none")
+  f0g0[4, 2] <- kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = f0g0,
+    ellipsize = "none"
+  )
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 10,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
   glabel(text = "Pre-processing:", anchor = c(-1, 0), container = f1)
 
-  f1_sex_chk <- gcheckbox(text = "Remove sex markers",
-                          checked = FALSE, container = f1)
+  f1_sex_chk <- gcheckbox(
+    text = "Remove sex markers",
+    checked = FALSE, container = f1
+  )
 
-  f1_qs_chk <- gcheckbox(text = "Remove quality sensors",
-                         checked = TRUE, container = f1)
+  f1_qs_chk <- gcheckbox(
+    text = "Remove quality sensors",
+    checked = TRUE, container = f1
+  )
 
-  f1_exclude_chk <- gcheckbox(text = "Exclude values in 'Allele' column",
-                              checked = TRUE, container = f1)
+  f1_exclude_chk <- gcheckbox(
+    text = "Exclude values in 'Allele' column",
+    checked = TRUE, container = f1
+  )
 
-  f1_exclude_lbl <- glabel(text = "Case sensitive values separated by comma:",
-                           anchor = c(-1, 0), container = f1)
+  f1_exclude_lbl <- glabel(
+    text = "Case sensitive values separated by comma:",
+    anchor = c(-1, 0), container = f1
+  )
 
   f1_exclude_edt <- gedit(text = "OL", container = f1)
 
   glabel(text = "Reference sample name matching:", anchor = c(-1, 0), container = f1)
 
-  f1_ignore_chk <- gcheckbox(text = "Ignore case in sample name matching",
-                             checked = TRUE, container = f1)
+  f1_ignore_chk <- gcheckbox(
+    text = "Ignore case in sample name matching",
+    checked = TRUE, container = f1
+  )
 
-  f1_exact_chk <- gcheckbox(text = "Exact sample name matching",
-                            checked = FALSE, container = f1)
+  f1_exact_chk <- gcheckbox(
+    text = "Exact sample name matching",
+    checked = FALSE, container = f1
+  )
 
   glabel(text = "Post-processing:", anchor = c(-1, 0), container = f1)
 
-  f1_replace_chk <- gcheckbox(text = "Replace NA in the result with 0",
-                              checked = TRUE, container = f1)
+  f1_replace_chk <- gcheckbox(
+    text = "Replace NA in the result with 0",
+    checked = TRUE, container = f1
+  )
 
-  f1_add_chk <- gcheckbox(text = "Add result to dataset",
-                          checked = TRUE, container = f1)
+  f1_add_chk <- gcheckbox(
+    text = "Add result to dataset",
+    checked = TRUE, container = f1
+  )
 
   addHandlerChanged(f1_exclude_chk, handler = function(h, ...) {
-
     if (svalue(f1_exclude_chk)) {
-
       enabled(f1_exclude_lbl) <- TRUE
       enabled(f1_exclude_edt) <- TRUE
-
     } else {
-
       enabled(f1_exclude_lbl) <- FALSE
       enabled(f1_exclude_edt) <- FALSE
-
     }
-
   })
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -330,7 +360,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   calculate_btn <- gbutton(text = "Calculate", container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     val_data <- .gData
     val_data_name <- .gDataName
     val_ref <- .gRef
@@ -368,26 +397,34 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateHeight(data = val_data, ref = val_ref, na.replace = val_na,
-                                 add = val_add, sex.rm = val_sex, qs.rm = val_qs,
-                                 kit = val_kit, exclude = val_ex,
-                                 ignore.case = val_ignore, exact = val_exact,
-                                 debug = debug)
+      datanew <- calculateHeight(
+        data = val_data, ref = val_ref, na.replace = val_na,
+        add = val_add, sex.rm = val_sex, qs.rm = val_qs,
+        kit = val_kit, exclude = val_ex,
+        ignore.case = val_ignore, exact = val_exact,
+        debug = debug
+      )
 
       # Add attributes to result.
       attr(datanew, which = "kit") <- val_kit
 
       # Create key-value pairs to log.
-      keys <- list("data", "ref", "na.replace", "add", "sex.rm",
-                   "qs.rm", "kit", "exclude", "ignore.case", "exact")
+      keys <- list(
+        "data", "ref", "na.replace", "add", "sex.rm",
+        "qs.rm", "kit", "exclude", "ignore.case", "exact"
+      )
 
-      values <- list(val_data_name, val_ref_name, val_na, val_add, val_sex,
-                     val_qs, val_kit, val_ex, val_ignore, val_exact)
+      values <- list(
+        val_data_name, val_ref_name, val_na, val_add, val_sex,
+        val_qs, val_kit, val_ex, val_ignore, val_exact
+      )
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateHeight_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateHeight_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
 
       # Save data.
@@ -400,17 +437,15 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "A dataset and a reference dataset have to be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   .loadSavedSettings <- function() {
@@ -465,14 +500,12 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateHeight_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateHeight_gui_sex", value = svalue(f1_sex_chk), envir = env)
       assign(x = ".strvalidator_calculateHeight_gui_qs", value = svalue(f1_qs_chk), envir = env)
@@ -482,7 +515,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       assign(x = ".strvalidator_calculateHeight_gui_add", value = svalue(f1_add_chk), envir = env)
       assign(x = ".strvalidator_calculateHeight_gui_exclude", value = svalue(f1_exclude_chk), envir = env)
       assign(x = ".strvalidator_calculateHeight_gui_exclude_edt", value = svalue(f1_exclude_edt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateHeight_gui_savegui", envir = env, inherits = FALSE)) {
@@ -521,7 +553,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -532,5 +563,4 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

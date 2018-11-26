@@ -49,7 +49,6 @@
 calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
                                  no.sample = "NO SAMPLE",
                                  delimeter = ",", list.all = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -71,22 +70,26 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
   for (d in seq(along = data)) {
     if (!"Sample.Name" %in% names(data[[d]])) {
       stop("All datasets in 'data' must contain a column 'Sample.Name'.",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
     # Check dataset.
     if (!"Marker" %in% names(data[[d]])) {
       stop("All datasets in 'data' must contain a column 'Marker'.",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
     # Check dataset.
     if (!"Allele" %in% names(data[[d]])) {
       stop("All datasets in 'data' must contain a column 'Allele'.",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
     # Check if slim format.
     if (sum(grepl("Allele", names(data[[d]]))) > 1) {
       stop("'data' must be in 'slim' format.",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
   }
 
@@ -95,29 +98,31 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
     # Create default names.
     kit.name <- paste("Kit", seq(along = data), sep = ".")
-
   } else if (length(kit.name) != length(data)) {
-
     stop("'kit.name' must be of equal length as number of datasets.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check parameter.
   if (!is.character(no.sample)) {
     stop("'no.sample' must be of type character.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check parameter.
   if (!is.character(no.marker)) {
     stop("'no.marker' must be of type character.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check parameter.
   if (!is.character(delimeter)) {
     stop("'delimeter' must be of type character.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # PREPARE -----------------------------------------------------------------
@@ -151,7 +156,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
     # Add pre-allocated vectors.
     sampleList[[d]] <- vector(mode = "logical", length = length(sampleNames))
     markerList[[d]] <- vector(mode = "logical", length = length(markerNames))
-
   }
 
   # CALCULATE -----------------------------------------------------------------
@@ -162,7 +166,9 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
     # Progress.
     message(paste("Calculate concordance for: ", sampleNames[s],
-                  " (", s, " of ", length(sampleNames), ").", sep = ""))
+      " (", s, " of ", length(sampleNames), ").",
+      sep = ""
+    ))
 
     # Loop over all marker names.
     for (m in seq(along = markerNames)) {
@@ -189,26 +195,20 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
         # Check if marker.
         if (!(markerList[[d]][m] & sampleList[[d]][s])) {
-
           if (!sampleList[[d]][s]) {
 
             # Sample does not exist.
             alleleSet[[d]] <- no.sample
-
           } else if (!markerList[[d]][m]) {
 
             # Marker does not exist.
             alleleSet[[d]] <- no.marker
-
           }
-
         } else {
 
           # Get current alleles from dataset.
           alleleSet[[d]] <- data[[d]][data[[d]]$Sample.Name == sampleNames[s] & data[[d]]$Marker == markerNames[m], "Allele"]
-
         }
-
       }
 
       if (list.all) {
@@ -217,14 +217,12 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
         # marker (but including missing sample).
         tmp <- alleleSet[alleleSet != no.marker]
         discordance <- !length(unique(tmp)) == 1
-
       } else {
 
         # Check for discordant results excluding differences caused by missing
         # sample or missing marker.
         tmp <- alleleSet[alleleSet != no.sample & alleleSet != no.marker]
         discordance <- !length(unique(tmp)) == 1
-
       }
 
       if (discordance) {
@@ -245,9 +243,7 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
         resAlleleList[[length(resAlleleList) + 1]] <- resAlleleVec
         resInfoList[[length(resInfoList) + 1]] <- resInfoVec
       }
-
     }
-
   }
 
 
@@ -259,12 +255,10 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
     # Make a data.frame:
     res1 <- data.frame(cbind(resInfoM, resAlleleM), stringsAsFactors = FALSE)
     names(res1) <- c("Sample.Name", "Marker", kit.name)
-
   } else {
 
     # Make a data.frame:
     res1 <- data.frame("NO DISCORDANCE", stringsAsFactors = FALSE)
-
   }
 
   # Update audit trail.
@@ -294,7 +288,9 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
     # Progress.
     message(paste("Compare ", compareKit[i],
-                  " (", i, " of ", nComb, ").", sep = ""))
+      " (", i, " of ", nComb, ").",
+      sep = ""
+    ))
 
     # Number of common samples.
     commonSamples[i] <- sum(sampleList[[iComb[1, i]]] & sampleList[[iComb[2, i]]])
@@ -329,10 +325,8 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
           # Compare alleles and count differences.
           sumDiscordances <- sumDiscordances + sum(!k1 %in% k2)
-
         }
       }
-
     }
 
     # Number of discrodances.
@@ -340,17 +334,18 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
     # Concordance rate.
     concordanceRate[i] <- 100 * (allelesTested[i] - discordantAlleles[i]) / allelesTested[i]
-
   }
 
   # Create dataframe.
-  res2 <- data.frame(Kits = compareKit,
-                     Samples = commonSamples,
-                     Loci = commonLoci,
-                     Alleles = allelesTested,
-                     Discordances = discordantAlleles,
-                     Concordance = concordanceRate,
-                     stringsAsFactors = FALSE)
+  res2 <- data.frame(
+    Kits = compareKit,
+    Samples = commonSamples,
+    Loci = commonLoci,
+    Alleles = allelesTested,
+    Discordances = discordantAlleles,
+    Concordance = concordanceRate,
+    stringsAsFactors = FALSE
+  )
 
   # Update audit trail.
   res2 <- auditTrail(obj = res2, f.call = match.call(), package = "strvalidator")
@@ -362,7 +357,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
     print(paste("EXIT:", match.call()[[1]]))
   }
 
-        # Return result.
-        return(res)
-
+  # Return result.
+  return(res)
 }

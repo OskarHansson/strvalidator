@@ -71,15 +71,16 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 15,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -94,39 +95,49 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Open help page for function.
     print(help("tableStutter_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Datasets",
-                   horizontal = FALSE,
-                   spacing = 10,
-                   container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- f0g0_dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                     listObjects(env = env,
-                                                                 obj.class = "data.frame")),
-                                             selected = 1,
-                                             editable = FALSE,
-                                             container = f0g0,
-                                             ellipsize = "none")
+  f0g0[1, 2] <- f0g0_dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(text = " 0 samples",
-                                              container = f0g0)
+  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(
+    text = " 0 samples",
+    container = f0g0
+  )
 
   addHandlerChanged(f0g0_dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0g0_dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Ratio", "Marker", "Allele", "Type")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -136,10 +147,10 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
       samples <- length(unique(.gData$Sample.Name))
       svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
       svalue(f2_save_edt) <- paste(.gDataName,
-                                   "_table_",
-                                   svalue(f1g1_scope_opt),
-                                   sep = "")
-
+        "_table_",
+        svalue(f1g1_scope_opt),
+        sep = ""
+      )
     } else {
 
       # Reset components.
@@ -148,48 +159,53 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
       svalue(f0g0_dataset_drp, index = TRUE) <- 1
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-                   horizontal = FALSE,
-                   spacing = 20,
-                   container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 20,
+    container = gv
+  )
 
   f1g1 <- glayout(container = f1, spacing = 5)
 
   f1g1[1, 1] <- glabel(text = "Calculate quantile", container = f1g1)
 
-  f1g1[1, 2] <- f1g1_quant_spb <- gspinbutton(from = 0, to = 1,
-                                            by = 0.01, value = 0.95,
-                                            container = f1g1)
+  f1g1[1, 2] <- f1g1_quant_spb <- gspinbutton(
+    from = 0, to = 1,
+    by = 0.01, value = 0.95,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "Summarize by", container = f1g1)
 
-  f1g1[3, 1] <- f1g1_scope_opt <- gradio(items = c("global", "locus", "stutter"),
-                              selected = 3,
-                              horizontal = FALSE,
-                              container = f1g1)
+  f1g1[3, 1] <- f1g1_scope_opt <- gradio(
+    items = c("global", "locus", "stutter"),
+    selected = 3,
+    horizontal = FALSE,
+    container = f1g1
+  )
 
   addHandlerChanged(f1g1_scope_opt, handler = function(h, ...) {
-
     svalue(f2_save_edt) <- paste(.gDataName,
-                                 "_table_",
-                                 svalue(f1g1_scope_opt),
-                                 sep = "")
-
+      "_table_",
+      svalue(f1g1_scope_opt),
+      sep = ""
+    )
   })
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -221,9 +237,11 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(run_btn)
       enabled(run_btn) <- FALSE
 
-      datanew <- tableStutter(data = val_data,
-                   quant = val_quant,
-                   scope = val_scope)
+      datanew <- tableStutter(
+        data = val_data,
+        quant = val_quant,
+        scope = val_scope
+      )
 
       # Add attributes to result.
       attr(datanew, which = "kit") <- val_kit
@@ -234,9 +252,11 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
       values <- list(val_data_name, val_quant, val_scope)
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "tableStutter_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "tableStutter_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -248,16 +268,14 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Close GUI.
       dispose(w)
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -296,18 +314,15 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_tableStutter_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_tableStutter_gui_quant", value = svalue(f1g1_quant_spb), envir = env)
       assign(x = ".strvalidator_tableStutter_gui_scope", value = svalue(f1g1_scope_opt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_tableStutter_gui_savegui", envir = env, inherits = FALSE)) {
@@ -328,7 +343,6 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -339,5 +353,4 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

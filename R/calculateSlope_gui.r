@@ -33,7 +33,6 @@
 #' @seealso \code{\link{calculateSlope}}
 
 calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   .gData <- NULL
   .gRef <- NULL
   .gDataName <- NULL
@@ -55,14 +54,15 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -77,15 +77,16 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
     # Open help page for function.
     print(help("calculateSlope_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
@@ -93,25 +94,32 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- f0_dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                   listObjects(env = env,
-                                                               obj.class = "data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g0,
-                                         ellipsize = "none")
+  f0g0[1, 2] <- f0_dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
   f0g0[1, 3] <- f0_samples_lbl <- glabel(text = " 0 samples", container = f0g0)
 
   addHandlerChanged(f0_dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0_dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Height",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Height",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -126,7 +134,6 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       kitIndex <- detectKit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(f1_kit_drp, index = TRUE) <- kitIndex
-
     } else {
 
       # Reset components.
@@ -134,31 +141,36 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       svalue(f0_dataset_drp, index = TRUE) <- 1
       svalue(f0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-
     }
-
   })
 
   f0g0[2, 1] <- glabel(text = "Select reference dataset:", container = f0g0)
 
-  f0g0[2, 2] <- f0_refset_drp <- gcombobox(items = c("<Select dataset>",
-                                                  listObjects(env = env,
-                                                              obj.class = "data.frame")),
-                                          selected = 1,
-                                          editable = FALSE,
-                                          container = f0g0,
-                                          ellipsize = "none")
+  f0g0[2, 2] <- f0_refset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
   f0g0[2, 3] <- f0_ref_lbl <- glabel(text = " 0 references", container = f0g0)
 
   addHandlerChanged(f0_refset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0_refset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -167,16 +179,13 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gRefName <<- val_obj
       refs <- length(unique(.gRef$Sample.Name))
       svalue(f0_ref_lbl) <- paste("", refs, "references")
-
     } else {
 
       # Reset components.
       .gRef <<- NULL
       svalue(f0_refset_drp, index = TRUE) <- 1
       svalue(f0_ref_lbl) <- " 0 references"
-
     }
-
   })
 
   # CHECK ---------------------------------------------------------------------
@@ -197,75 +206,98 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     val_exact <- svalue(f1_exact_chk)
 
     if (!is.null(.gData) || !is.null(.gRef)) {
+      chksubset_w <- gwindow(
+        title = "Check subsetting",
+        visible = FALSE, name = title,
+        width = NULL, height = NULL, parent = w,
+        handler = NULL, action = NULL
+      )
 
-      chksubset_w <- gwindow(title = "Check subsetting",
-                             visible = FALSE, name = title,
-                             width = NULL, height = NULL, parent = w,
-                             handler = NULL, action = NULL)
+      chksubset_txt <- checkSubset(
+        data = val_data,
+        ref = val_ref,
+        console = FALSE,
+        ignore.case = val_ignore,
+        word = val_word,
+        exact = val_exact
+      )
 
-      chksubset_txt <- checkSubset(data = val_data,
-                                   ref = val_ref,
-                                   console = FALSE,
-                                   ignore.case = val_ignore,
-                                   word = val_word,
-                                   exact = val_exact)
-
-      gtext(text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
-             wrap = FALSE, container = chksubset_w)
+      gtext(
+        text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
+        wrap = FALSE, container = chksubset_w
+      )
 
       visible(chksubset_w) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f1g1 <- glayout(container = f1, spacing = 1)
 
-  f1g1[1, 1] <- glabel(text = "Confidence limit:",
-                      container = f1g1)
-  f1g1[1, 2] <- f1_conf_spn <- gspinbutton(from = 0, to = 1, by = 0.005,
-                                          value = 0.975, container = f1g1)
+  f1g1[1, 1] <- glabel(
+    text = "Confidence limit:",
+    container = f1g1
+  )
+  f1g1[1, 2] <- f1_conf_spn <- gspinbutton(
+    from = 0, to = 1, by = 0.005,
+    value = 0.975, container = f1g1
+  )
 
   #----------------------------------------------------------------------------
 
-  f1g1[2, 1] <- glabel(text = "Kit to calculate size from:", anchor = c(-1, 0),
-                      container = f1g1)
+  f1g1[2, 1] <- glabel(
+    text = "Kit to calculate size from:", anchor = c(-1, 0),
+    container = f1g1
+  )
 
-  f1g1[3, 1] <- f1_auto_chk <- gcheckbox(text = "Autodetect", checked = FALSE,
-                                        container = f1g1)
+  f1g1[3, 1] <- f1_auto_chk <- gcheckbox(
+    text = "Autodetect", checked = FALSE,
+    container = f1g1
+  )
   tooltip(f1_auto_chk) <- "Must be checked for multiple kits."
 
-  f1g1[3, 2] <- f1_kit_drp <- gcombobox(items = getKit(), selected = 1,
-                                       editable = FALSE, container = f1g1,
-                                       ellipsize = "none")
+  f1g1[3, 2] <- f1_kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = f1g1,
+    ellipsize = "none"
+  )
   tooltip(f1_kit_drp) <- "Not needed if 'Size' is provided in the dataset."
 
   #----------------------------------------------------------------------------
-  glabel(text = "Reference sample name matching:", anchor = c(-1, 0),
-         container = f1)
+  glabel(
+    text = "Reference sample name matching:", anchor = c(-1, 0),
+    container = f1
+  )
 
-  f1_ignore_chk <- gcheckbox(text = "Ignore case", checked = TRUE,
-                             container = f1)
+  f1_ignore_chk <- gcheckbox(
+    text = "Ignore case", checked = TRUE,
+    container = f1
+  )
 
-  f1_word_chk <- gcheckbox(text = "Add word boundaries", checked = FALSE,
-                           container = f1)
+  f1_word_chk <- gcheckbox(
+    text = "Add word boundaries", checked = FALSE,
+    container = f1
+  )
 
-  f1_exact_chk <- gcheckbox(text = "Exact matching", checked = FALSE,
-                            container = f1)
+  f1_exact_chk <- gcheckbox(
+    text = "Exact matching", checked = FALSE,
+    container = f1
+  )
 
   # HANDLERS ------------------------------------------------------------------
 
@@ -275,15 +307,10 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     val_auto <- svalue(f1_auto_chk)
 
     if (val_auto) {
-
       enabled(f1_kit_drp) <- FALSE
-
     } else {
-
       enabled(f1_kit_drp) <- TRUE
-
     }
-
   })
 
   # FRAME 2 ###################################################################
@@ -326,22 +353,30 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
         val_kit <- NULL
       }
 
-      datanew <- calculateSlope(data = val_data, ref = val_ref, conf = val_conf,
-                                kit = val_kit,
-                                ignore.case = val_ignore, exact = val_exact,
-                                word = val_word, debug = debug)
+      datanew <- calculateSlope(
+        data = val_data, ref = val_ref, conf = val_conf,
+        kit = val_kit,
+        ignore.case = val_ignore, exact = val_exact,
+        word = val_word, debug = debug
+      )
 
       # Create key-value pairs to log.
-      keys <- list("data", "ref", "conf", "kit", "auto",
-                   "ignore.case", "word", "exact")
+      keys <- list(
+        "data", "ref", "conf", "kit", "auto",
+        "ignore.case", "word", "exact"
+      )
 
-      values <- list(val_name_data, val_name_ref, val_conf, val_kit, val_auto,
-                     val_ignore, val_word, val_exact)
+      values <- list(
+        val_name_data, val_name_ref, val_conf, val_kit, val_auto,
+        val_ignore, val_word, val_exact
+      )
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateSlope_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateSlope_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -353,17 +388,15 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "A dataset must be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -411,21 +444,18 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateSlope_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateSlope_gui_conf", value = svalue(f1_conf_spn), envir = env)
       assign(x = ".strvalidator_calculateSlope_gui_ignore", value = svalue(f1_ignore_chk), envir = env)
       assign(x = ".strvalidator_calculateSlope_gui_word", value = svalue(f1_word_chk), envir = env)
       assign(x = ".strvalidator_calculateSlope_gui_exact", value = svalue(f1_exact_chk), envir = env)
       assign(x = ".strvalidator_calculateSlope_gui_auto", value = svalue(f1_auto_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateSlope_gui_savegui", envir = env, inherits = FALSE)) {
@@ -455,7 +485,6 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -466,5 +495,4 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

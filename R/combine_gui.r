@@ -69,15 +69,16 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-              spacing = 15,
-              use.scrollwindow = FALSE,
-              container = w,
-              expand = FALSE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = FALSE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -92,39 +93,49 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
     # Open help page for function.
     print(help("combine_gui", help_type = "html"))
-
   })
 
   # DATASET ###################################################################
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = FALSE,
-               spacing = 10,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
   f0g0[1, 1] <- glabel(text = "Select dataset 1:", container = f0g0)
 
-  f0g0[1, 2] <- f0g0_data1_drp <- gcombobox(items = c("<Select dataset>",
-                                                 listObjects(env = env,
-                                                             obj.class = "data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g0,
-                                         ellipsize = "none")
+  f0g0[1, 2] <- f0g0_data1_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[1, 3] <- f0g0_data1_col_lbl <- glabel(text = " 0 columns",
-                                              container = f0g0)
+  f0g0[1, 3] <- f0g0_data1_col_lbl <- glabel(
+    text = " 0 columns",
+    container = f0g0
+  )
 
   addHandlerChanged(f0g0_data1_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0g0_data1_drp)
 
     # Check if suitable.
-    ok <- checkDataset(name = val_obj, reqcol = NULL,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = NULL,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -134,65 +145,66 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
       svalue(f0g0_data1_col_lbl) <- paste(" ", ncol(.gData1), " columns")
       svalue(f2_name) <- paste(.gData1Name, .gData2Name, sep = "_")
-
     } else {
-
       .gData1 <<- NULL
       .gData1Name <<- NULL
       svalue(f0g0_data1_col_lbl) <- " 0 columns"
       svalue(f2_name) <- ""
-
     }
-
   })
 
   f0g0[2, 1] <- glabel(text = "Select dataset 2:", container = f0g0)
 
-  f0g0[2, 2] <- f0g0_data2_drp <- gcombobox(items = c("<Select dataset>",
-                                                 listObjects(env = env,
-                                                             obj.class = "data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g0,
-                                         ellipsize = "none")
+  f0g0[2, 2] <- f0g0_data2_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[2, 3] <- f0g0_data2_col_lbl <- glabel(text = " 0 columns",
-                                              container = f0g0)
+  f0g0[2, 3] <- f0g0_data2_col_lbl <- glabel(
+    text = " 0 columns",
+    container = f0g0
+  )
 
   addHandlerChanged(f0g0_data2_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0g0_data2_drp)
 
     if (exists(val_obj, envir = env, inherits = FALSE)) {
-
       .gData2 <<- get(val_obj, envir = env)
       .gData2Name <<- val_obj
 
       svalue(f0g0_data2_col_lbl) <- paste(" ", ncol(.gData2), " columns")
       svalue(f2_name) <- paste(.gData1Name, .gData2Name, sep = "_")
-
     } else {
-
       .gData2 <<- NULL
       .gData1Name <<- NULL
       svalue(f0g0_data2_col_lbl) <- " 0 samples"
       svalue(f2_name) <- ""
-
     }
   })
 
   # FRAME 1 ###################################################################
-# # No options yet.
-#   f1 <- gframe("Options", horizontal=FALSE, container=gv)
-#
-#   f1g0 <- glayout(container = f1, expand=TRUE, fill="both")
+  # # No options yet.
+  #   f1 <- gframe("Options", horizontal=FALSE, container=gv)
+  #
+  #   f1g0 <- glayout(container = f1, expand=TRUE, fill="both")
 
   # NAME ######################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Save as:", container = f2)
   f2_name <- gedit(text = "", expand = TRUE, container = f2)
@@ -206,7 +218,6 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   combine_btn <- gbutton(text = "Combine", container = gv)
 
   addHandlerChanged(combine_btn, handler = function(h, ...) {
-
     colOk <- all(names(.gData1) %in% names(.gData2))
     val_data_1 <- .gData1Name
     val_data_2 <- .gData2Name
@@ -223,9 +234,11 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       values <- list(val_data_1, val_data_2)
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "combine_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "combine_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -237,19 +250,16 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
       # Close GUI.
       dispose(w)
-
     } else {
-
-      gmessage(msg = "Datasets must have identical columns!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Datasets must have identical columns!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

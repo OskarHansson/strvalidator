@@ -139,7 +139,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
   width = 1
 
   if (!collapse) {
-
     if (boxplot) {
       boxplot <- FALSE
       message("boxplot set to FALSE since collapse=FALSE")
@@ -149,7 +148,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
       peaks <- FALSE
       message("peaks set to FALSE since collapse=FALSE")
     }
-
   }
 
   # Add missing columns .......................................................
@@ -161,12 +159,10 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     data$Height <- 1000
 
     message("'Height' is missing. Using default!")
-
   }
 
   # Check NA's.
   if (any(is.na(data$Height))) {
-
     tmp1 <- nrow(data)
 
     # Remove rows with zero height.
@@ -175,12 +171,10 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     tmp2 <- nrow(data)
 
     message(tmp1 - tmp2, " peaks with Height = NA removed from data")
-
   }
 
   # Check height.
   if (any(data$Height == 0)) {
-
     tmp1 <- nrow(data)
 
     # Remove rows with zero height.
@@ -189,45 +183,42 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     tmp2 <- nrow(data)
 
     message(tmp1 - tmp2, " peaks with Height = 0 removed from data")
-
   }
 
   # Check if dye column exist.
   if (!"Dye" %in% names(data)) {
-
     message("'Dye' information not in 'data'.")
 
     # Add dye information.
     data <- addColor(data = data, kit = kit)
 
     message("Added 'Dye' information.")
-
   }
 
   # Check format ..............................................................
 
   if (!is.numeric(data$Height)) {
-
     data$Height <- as.numeric(data$Height)
-
   }
 
   # Check if 'fat' format.
   if (length(grep("Allele", names(data))) > 1) {
-
     message("'fat' data format detected.")
 
-    fixCol <- colNames(data = data, slim = TRUE, numbered = TRUE,
-                       concatenate = NULL, debug = debug)
+    fixCol <- colNames(
+      data = data, slim = TRUE, numbered = TRUE,
+      concatenate = NULL, debug = debug
+    )
 
-    stackCol <- colNames(data = data, slim = FALSE, numbered = TRUE,
-                         concatenate = NULL, debug = debug)
+    stackCol <- colNames(
+      data = data, slim = FALSE, numbered = TRUE,
+      concatenate = NULL, debug = debug
+    )
 
     # Slim data frame.
     data <- slim(data = data, fix = fixCol, stack = stackCol, debug = debug)
 
     message("data converted to 'slim' format.")
-
   }
 
   # Filter data ...............................................................
@@ -272,19 +263,16 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
       data$Size <- as.numeric(data$Size)
 
       message("'Size' must be numeric. 'data' converted!")
-
     }
 
     # Combine rounded 'Size' and 'Marker'.
     # This can preserve 'OL' peaks but may also result in two peaks for alleles.
     data$Id <- paste(round(data$Size, 0), data$Marker, sep = "")
-
   } else {
 
     # Combine 'Allele' and 'Marker'.
     # This will add all 'OL' in one marker even if originally at different size.
     data$Id <- paste(data$Allele, data$Marker, sep = "")
-
   }
 
   # Collapse ..................................................................
@@ -293,7 +281,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
   # Not collapsing will 'overplot' samples on top of each other
   # without adding peak heights.
   if (collapse) {
-
     message("Collapse dataset to mean peak heights over multiple samples.")
 
     # Convert to data.table for performance.
@@ -302,16 +289,20 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     # Calculate sum of peak heights for identical alleles in each sample.
     # to be used in boxplot.
     DT <- DT[, list(Height = sum(Height)),
-             by = list(Sample.Name, Marker, Dye, Allele, Id)]
+      by = list(Sample.Name, Marker, Dye, Allele, Id)
+    ]
 
     # Calculate mean peak height for each allele across all samples.
     # If plot peaks are true for boxplot.
     dataMean <- DT[, list(Sample.Name = "Mean", Height = mean(Height)),
-                   by = list(Marker, Dye, Allele, Id)]
+      by = list(Marker, Dye, Allele, Id)
+    ]
 
     # Add size.
-    dataMean <- addSize(data = dataMean, kit = getKit(kit = kit, what = "Offset"),
-                        bins = FALSE, ignore.case = ignore.case, debug = debug)
+    dataMean <- addSize(
+      data = dataMean, kit = getKit(kit = kit, what = "Offset"),
+      bins = FALSE, ignore.case = ignore.case, debug = debug
+    )
 
     # Remove NA rows.
     if (any(is.na(dataMean$Size))) {
@@ -325,28 +316,27 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
     # Check if distribution (boxplot).
     if (!boxplot) {
-
       message("Collapse dataset by adding peak heights for all profiles.")
 
       # Calculate sum of peak heights for identical alleles across all samples.
       DT <- DT[, list(Sample.Name = "Profile", Height = sum(Height)),
-               by = list(Marker, Dye, Allele, Id)]
-
+        by = list(Marker, Dye, Allele, Id)
+      ]
     } # end distribution.
 
     # Convert to data.frame to make sure strvalidator functions are working.
     data <- data.frame(DT)
-
   } # end collapse.
 
   # Check if size column exist.
   if (!"Size" %in% names(data)) {
-
     message("'Size' information not in 'data'.")
 
     # Add estimated size.
-    data <- addSize(data = data, kit = getKit(kit = kit, what = "Offset"),
-                    bins = FALSE, ignore.case = ignore.case)
+    data <- addSize(
+      data = data, kit = getKit(kit = kit, what = "Offset"),
+      bins = FALSE, ignore.case = ignore.case
+    )
 
     message("Added estimated 'Size' information.")
 
@@ -357,7 +347,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
       tmp2 <- nrow(data)
       message(tmp1 - tmp2, " rows with Size=NA removed.")
     }
-
   }
 
   # Check if numeric.
@@ -367,7 +356,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     data$Size <- as.numeric(data$Size)
 
     message("'Size' must be numeric. 'data' converted!")
-
   }
 
   # Sort 'Marker' and 'Dye' factors according 'kit'.
@@ -394,7 +382,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
   # Check if NA's in Size.
   if (any(is.na(alleleInfo$Size))) {
-
     tmp1 <- sum(is.na(alleleInfo$Size))
 
     message("NA's in allele info Size")
@@ -405,7 +392,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     tmp2 <- sum(is.na(alleleInfo$Size))
 
     message(tmp1 - tmp2, "NA's replaced by", min(kitInfo$Marker.Min))
-
   }
 
   # Create marker ranges ......................................................
@@ -430,23 +416,23 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
     # This means y max is equal for all dyes.
     mYmax <- rep(max(tmpYmax$Max), sum(mYtimes))
-
   } else {
 
     # Different y max for each dye.
     mYmax <- rep(tmpYmax$Max, mYtimes)
-
   }
 
   # Create annotation data frame for loci.
-  markerRanges <- data.frame(Dye = factor(mDye, levels = unique(mDye)), # Facet.
-                             Color = mDye, # Dye.
-                             Xmin = mXmin, # Marker lower range.
-                             Xmax = mXmax, # Marker upper range.
-                             Size = (mXmin + mXmax) / 2, # Midpoint of marker range.
-                             Height = mYmax, # Lower edge of marker range.
-                             Top = mYmax * 1.1, # Upper edge of marker range.
-                             Text = mText) # Marker names.
+  markerRanges <- data.frame(
+    Dye = factor(mDye, levels = unique(mDye)), # Facet.
+    Color = mDye, # Dye.
+    Xmin = mXmin, # Marker lower range.
+    Xmax = mXmax, # Marker upper range.
+    Size = (mXmin + mXmax) / 2, # Midpoint of marker range.
+    Height = mYmax, # Lower edge of marker range.
+    Top = mYmax * 1.1, # Upper edge of marker range.
+    Text = mText
+  ) # Marker names.
 
   # Create plot ...............................................................
 
@@ -458,21 +444,20 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
     # Plot height as peaks.
     gp <- gp + geom_polygon(aes_string(group = "Id", fill = "Dye"), data = dataPeaks)
-
   } else {
 
     # Plot boxplots for distributions.
     gp <- gp + geom_boxplot(aes_string(group = "Id", color = "Dye"),
-                            outlier.size = 1, data = data)
+      outlier.size = 1, data = data
+    )
 
     if (peaks) {
 
       # Plot mean peak height as peaks.
       gp <- gp + geom_polygon(aes_string(group = "Id", fill = "Dye"),
-                              data = dataMean)
-
+        data = dataMean
+      )
     }
-
   }
 
   # Add colours.
@@ -482,29 +467,35 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     # Add marker regions, names, and wrap by colour.
 
     # Add marker regions.
-    gp <- gp + geom_rect(aes_string(xmin = "Xmin", xmax = "Xmax",
-                                    ymin = "Height", ymax = "Top"),
-                         alpha = .2, data = markerRanges,
-                         fill = "blue", color = "red")
+    gp <- gp + geom_rect(aes_string(
+      xmin = "Xmin", xmax = "Xmax",
+      ymin = "Height", ymax = "Top"
+    ),
+    alpha = .2, data = markerRanges,
+    fill = "blue", color = "red"
+    )
 
     # Add marker names.
     gp <- gp + geom_text(aes_string(label = "Text", y = "Top"),
-                         data = markerRanges, size = 3, vjust = 1)
+      data = markerRanges, size = 3, vjust = 1
+    )
 
     # Add allele names.
     gp <- gp + geom_text(aes_string(label = "Allele", x = "Size", y = 0),
-                         data = alleleInfo, size = label.size,
-                         angle = label.angle, vjust = label.vjust,
-                         hjust = label.hjust)
+      data = alleleInfo, size = label.size,
+      angle = label.angle, vjust = label.vjust,
+      hjust = label.hjust
+    )
 
     # expand plot area (to avoid clipping).
     gp <- gp + scale_y_continuous(expand = c(expand, 0))
 
     # NB! 'facet_wrap' does not seem to support strings.
     #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-    gp <- gp + facet_wrap(as.formula(paste("~", "Dye")), ncol = 1,
-                          drop = FALSE, scales = scale)
-
+    gp <- gp + facet_wrap(as.formula(paste("~", "Dye")),
+      ncol = 1,
+      drop = FALSE, scales = scale
+    )
   }
 
   # Set limits.
@@ -534,5 +525,4 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
   # Return plot object.
   return(gp)
-
 }

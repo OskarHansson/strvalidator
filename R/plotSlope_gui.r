@@ -63,15 +63,16 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -86,35 +87,43 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
     # Open help page for function.
     print(help("plotSlope_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Select dataset:", container = f0)
 
-  dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0)
+  dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0
+  )
 
   f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Group", "Slope", "Lower", "Upper")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -127,12 +136,13 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       svalue(f0_samples_lbl) <- paste(" (",
-                                      length(unique(.gData$Sample.Name)),
-                                      " samples)", sep = "")
+        length(unique(.gData$Sample.Name)),
+        " samples)",
+        sep = ""
+      )
 
       # Enable buttons.
       enabled(plot_sample_btn) <- TRUE
-
     } else {
 
       # Reset components.
@@ -140,20 +150,22 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(f0_samples_lbl) <- " (0 samples)"
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
     val <- svalue(f1_titles_chk)
@@ -168,32 +180,44 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   enabled(f1g1) <- svalue(f1_titles_chk)
 
   f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- title_edt <- gedit(text = "",
-                                  width = 40,
-                                  container = f1g1)
+  f1g1[1, 2] <- title_edt <- gedit(
+    text = "",
+    width = 40,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- x_title_edt <- gedit(text = "",
-                                    container = f1g1)
+  f1g1[2, 2] <- x_title_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- y_title_edt <- gedit(text = "",
-                                    container = f1g1)
+  f1g1[3, 2] <- y_title_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g2 <- glayout(container = f1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
-  items_theme <- c("theme_grey()", "theme_bw()", "theme_linedraw()",
-                   "theme_light()", "theme_dark()", "theme_minimal()",
-                   "theme_classic()", "theme_void()")
-  f1g2[1, 2] <- f1_theme_drp <- gcombobox(items = items_theme,
-                                         selected = 1,
-                                         container = f1g2)
+  items_theme <- c(
+    "theme_grey()", "theme_bw()", "theme_linedraw()",
+    "theme_light()", "theme_dark()", "theme_minimal()",
+    "theme_classic()", "theme_void()"
+  )
+  f1g2[1, 2] <- f1_theme_drp <- gcombobox(
+    items = items_theme,
+    selected = 1,
+    container = f1g2
+  )
 
   # FRAME 7 ###################################################################
 
-  f7 <- gframe(text = "Plot slope data",
-               horizontal = FALSE,
-               container = gv)
+  f7 <- gframe(
+    text = "Plot slope data",
+    horizontal = FALSE,
+    container = gv
+  )
 
   grid7 <- glayout(container = f7)
 
@@ -205,32 +229,33 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     requiredCol <- c("Sample.Name", "Group", "Slope", "Lower", "Upper")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(plot_sample_btn) <- FALSE
       .plotSlope(what = "Sample")
       enabled(plot_sample_btn) <- TRUE
-
     }
-
   })
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -241,7 +266,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -251,33 +275,36 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # ADVANCED OPTIONS ##########################################################
 
   # FRAME 4 ###################################################################
 
-  e4 <- gexpandgroup(text = "X labels",
-                     horizontal = FALSE,
-                     container = f1)
+  e4 <- gexpandgroup(
+    text = "X labels",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e4) <- FALSE
@@ -288,18 +315,24 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   grid4[1, 2] <- e4_size_edt <- gedit(text = "8", width = 4, container = grid4)
 
   grid4[1, 3] <- glabel(text = "Angle:", container = grid4)
-  grid4[1, 4] <- e4_angle_spb <- gspinbutton(from = 0, to = 360, by = 1,
-                                             value = 0,
-                                             container = grid4)
+  grid4[1, 4] <- e4_angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 0,
+    container = grid4
+  )
 
   grid4[2, 1] <- glabel(text = "Justification (v/h):", container = grid4)
-  grid4[2, 2] <- e4_vjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                             value = 0.5,
-                                             container = grid4)
+  grid4[2, 2] <- e4_vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = grid4
+  )
 
-  grid4[2, 3] <- e4_hjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                             value = 0.5,
-                                             container = grid4)
+  grid4[2, 3] <- e4_hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = grid4
+  )
 
   # FUNCTIONS #################################################################
 
@@ -351,8 +384,10 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       }
 
       # Create plot with groups.
-      gp <- ggplot(data = .gData,
-                   aes_string(colour = "Group", y = "Slope", x = "Sample.Name"))
+      gp <- ggplot(
+        data = .gData,
+        aes_string(colour = "Group", y = "Slope", x = "Sample.Name")
+      )
 
       # Apply theme.
       gp <- gp + eval(parse(text = val_theme))
@@ -364,14 +399,18 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       limits <- aes_string(ymax = "Upper", ymin = "Lower")
 
       # Add error bars.
-      gp <- gp + geom_errorbar(limits, width = 0.2,
-                               position = position_dodge(width = 0.3))
+      gp <- gp + geom_errorbar(limits,
+        width = 0.2,
+        position = position_dodge(width = 0.3)
+      )
 
       # Add titles etc.
-      gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                hjust = val_hjust,
-                                                vjust = val_vjust,
-                                                size = val_size))
+      gp <- gp + theme(axis.text.x = element_text(
+        angle = val_angle,
+        hjust = val_hjust,
+        vjust = val_vjust,
+        size = val_size
+      ))
       gp <- gp + labs(title = maintitle)
       gp <- gp + xlab(xtitle)
       gp <- gp + ylab(ytitle)
@@ -385,15 +424,13 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
       # Store in global variable.
       .gPlot <<- gp
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
@@ -454,14 +491,12 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotSlope_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotSlope_gui_title", value = svalue(title_edt), envir = env)
       assign(x = ".strvalidator_plotSlope_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
@@ -472,7 +507,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       assign(x = ".strvalidator_plotSlope_gui_xlabel_justh", value = svalue(e4_hjust_spb), envir = env)
       assign(x = ".strvalidator_plotSlope_gui_xlabel_justv", value = svalue(e4_vjust_spb), envir = env)
       assign(x = ".strvalidator_plotSlope_gui_theme", value = svalue(f1_theme_drp), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotSlope_gui_savegui", envir = env, inherits = FALSE)) {
@@ -514,7 +548,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -525,5 +558,4 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

@@ -56,7 +56,6 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
                                 threshold = NULL, mixture.limits = NULL,
                                 partial.limits = NULL, subset.name = NA,
                                 marker.subset = NULL, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -79,32 +78,39 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
   # Check dataset.
   if (!any(grepl("Sample.Name", names(data)))) {
     stop("'data' must contain a column 'Sample.Name'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!any(grepl("Marker", names(data)))) {
     stop("'data' must contain a column 'Marker'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!any(grepl("Allele", names(data)))) {
     stop("'data' must contain a column 'Allele'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check if slim format.
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (add.missing.marker) {
     if (is.null(kit)) {
       stop("'kit' must be provided if 'add.missing.marker' is TRUE",
-           call. = TRUE)
+        call. = TRUE
+      )
     } else {
       if (is.na(getKit(kit = kit, what = "Short.Name"))) {
-        stop(paste("'kit' does not exist", "\nAvailable kits:",
-                   paste(getKit(), collapse = ", ")), call. = TRUE)
+        stop(paste(
+          "'kit' does not exist", "\nAvailable kits:",
+          paste(getKit(), collapse = ", ")
+        ), call. = TRUE)
       }
     }
   }
@@ -127,149 +133,147 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
   # create factors.
 
   # Get sample names.
-        sampleNames <- unique(data$Sample.Name)
+  sampleNames <- unique(data$Sample.Name)
 
-        # Create result data frame.
-        res <- data.frame(matrix(NA, length(sampleNames), 3))
-        # Add new column names.
-        names(res) <- paste(c("Sample.Name", "Type", "Subtype"))
+  # Create result data frame.
+  res <- data.frame(matrix(NA, length(sampleNames), 3))
+  # Add new column names.
+  names(res) <- paste(c("Sample.Name", "Type", "Subtype"))
 
-        # Loop over all samples.
-        for (s in seq(along = sampleNames)) {
+  # Loop over all samples.
+  for (s in seq(along = sampleNames)) {
 
-          # Show progress.
-          message(paste("Calculate result type for sample (",
-                  s, " of ", length(sampleNames), "): ", sampleNames[s], sep = ""))
+    # Show progress.
+    message(paste("Calculate result type for sample (",
+      s, " of ", length(sampleNames), "): ", sampleNames[s],
+      sep = ""
+    ))
 
-                # Get current sample.
-                sampleData <- data[data$Sample == sampleNames[s], ]
+    # Get current sample.
+    sampleData <- data[data$Sample == sampleNames[s], ]
 
     if (debug) {
-                  print("Current sample data:")
-                  print(sampleData)
-                }
+      print("Current sample data:")
+      print(sampleData)
+    }
 
-                # Check result type.
-                if (all(is.na(sampleData$Allele))) {
-                        # No result.
+    # Check result type.
+    if (all(is.na(sampleData$Allele))) {
+      # No result.
 
-                        res[s, ] <- c(sampleNames[s], "No result", "No result")
+      res[s, ] <- c(sampleNames[s], "No result", "No result")
+    } else if (max(table(sampleData$Marker)) > 2) {
+      # Mixture.
 
-                } else if (max(table(sampleData$Marker)) > 2) {
-                        # Mixture.
-
-                        markers <- length(unique(sampleData$Marker[!is.na(sampleData$Allele)]))
-                        if (!is.null(mixture.limits)) {
-                                for (t in rev(seq(along = mixture.limits))) {
-                                        if (markers <= mixture.limits[t]) {
-                                                subtype <- paste("<=", mixture.limits[t], "markers")
-                                        } else if (markers > mixture.limits[length(mixture.limits)]) {
-                                                subtype <- paste(">", mixture.limits[length(mixture.limits)], "markers")
-                                        }
-                                }
-                        } else {
-                                        subtype <- paste("Mixture")
-                        }
-                        res[s, ] <- c(sampleNames[s], "Mixture", subtype)
-
-                } else if (any(is.na(sampleData$Allele))) {
-                        # Partial profile.
-
-                        alleles <- sum(!is.na(sampleData$Allele))
-                        if (!is.null(partial.limits)) {
-                                for (t in rev(seq(along = partial.limits))) {
-                                        if (alleles <= partial.limits[t]) {
-                                                subtype <- paste("<=", partial.limits[t], "peaks")
-                                        } else if (alleles > partial.limits[length(partial.limits)]) {
-                                                subtype <- paste(">", partial.limits[length(partial.limits)], "peaks")
-                                        }
-                                }
-                        } else {
-                                        subtype <- paste("Partial")
-                        }
-                        res[s, ] <- c(sampleNames[s], "Partial", subtype)
-
-                        # Check for subset.
-                        if (!is.null(marker.subset)) {
-                                # Subset data.
-                                selectedMarkers <- grepl(marker.subset, sampleData$Marker)
-                                if (all(!is.na(sampleData$Allele[selectedMarkers]))) {
-                                        # Full subset profile.
-                                        res[s, ] <- c(sampleNames[s], "Partial", paste("Complete", subset.name))
-                                }
-                        }
-
-                } else if (!any(is.na(sampleData$Allele))) {
-                        # Complete profile.
-                        res[s, ] <- c(sampleNames[s], "Complete profile", "Complete profile")
-
-                        # Check against threshold.
-                        if (!is.null(threshold) && all(sampleData$Height > threshold)) {
-                                # Complete profile, all peaks > T.
-                                res[s, ] <- c(sampleNames[s], "Complete profile", paste("all peaks >", threshold))
-                        }
-
-                }
+      markers <- length(unique(sampleData$Marker[!is.na(sampleData$Allele)]))
+      if (!is.null(mixture.limits)) {
+        for (t in rev(seq(along = mixture.limits))) {
+          if (markers <= mixture.limits[t]) {
+            subtype <- paste("<=", mixture.limits[t], "markers")
+          } else if (markers > mixture.limits[length(mixture.limits)]) {
+            subtype <- paste(">", mixture.limits[length(mixture.limits)], "markers")
+          }
         }
+      } else {
+        subtype <- paste("Mixture")
+      }
+      res[s, ] <- c(sampleNames[s], "Mixture", subtype)
+    } else if (any(is.na(sampleData$Allele))) {
+      # Partial profile.
+
+      alleles <- sum(!is.na(sampleData$Allele))
+      if (!is.null(partial.limits)) {
+        for (t in rev(seq(along = partial.limits))) {
+          if (alleles <= partial.limits[t]) {
+            subtype <- paste("<=", partial.limits[t], "peaks")
+          } else if (alleles > partial.limits[length(partial.limits)]) {
+            subtype <- paste(">", partial.limits[length(partial.limits)], "peaks")
+          }
+        }
+      } else {
+        subtype <- paste("Partial")
+      }
+      res[s, ] <- c(sampleNames[s], "Partial", subtype)
+
+      # Check for subset.
+      if (!is.null(marker.subset)) {
+        # Subset data.
+        selectedMarkers <- grepl(marker.subset, sampleData$Marker)
+        if (all(!is.na(sampleData$Allele[selectedMarkers]))) {
+          # Full subset profile.
+          res[s, ] <- c(sampleNames[s], "Partial", paste("Complete", subset.name))
+        }
+      }
+    } else if (!any(is.na(sampleData$Allele))) {
+      # Complete profile.
+      res[s, ] <- c(sampleNames[s], "Complete profile", "Complete profile")
+
+      # Check against threshold.
+      if (!is.null(threshold) && all(sampleData$Height > threshold)) {
+        # Complete profile, all peaks > T.
+        res[s, ] <- c(sampleNames[s], "Complete profile", paste("all peaks >", threshold))
+      }
+    }
+  }
 
   # FACTORS -------------------------------------------------------------------
 
-        # Construct factor levels in correct order.
+  # Construct factor levels in correct order.
   # NB! Strings must be identical to the ones used in classification.
-        factorLabels <- NULL
-        blankLabels <- NULL
-        mixtureLabels <- NULL
-        partialLabels <- NULL
-        completeLabels <- NULL
+  factorLabels <- NULL
+  blankLabels <- NULL
+  mixtureLabels <- NULL
+  partialLabels <- NULL
+  completeLabels <- NULL
 
-        factorLabelsSub <- NULL
-        blankLabelsSub <- NULL
-        mixtureLabelsSub <- NULL
-        partialLabelsSub <- NULL
-        completeLabelsSub <- NULL
+  factorLabelsSub <- NULL
+  blankLabelsSub <- NULL
+  mixtureLabelsSub <- NULL
+  partialLabelsSub <- NULL
+  completeLabelsSub <- NULL
 
-        # Partial Labels.
+  # Partial Labels.
 
-        if (!is.null(marker.subset)) {
-                partialLabelsSub <- c(partialLabelsSub, paste("Complete", subset.name))
-        }
-        if (!is.null(partial.limits)) {
-                for (t in rev(seq(along = partial.limits))) {
-                        if (t == length(partial.limits)) {
-                                partialLabelsSub <- c(partialLabelsSub, paste(">", partial.limits[t], "peaks"))
-                        }
-                        partialLabelsSub <- c(partialLabelsSub, paste("<=", partial.limits[t], "peaks"))
-                }
-        }
-        partialLabels <- "Partial"
-        partialLabelsSub <- c("Partial", partialLabelsSub)
+  if (!is.null(marker.subset)) {
+    partialLabelsSub <- c(partialLabelsSub, paste("Complete", subset.name))
+  }
+  if (!is.null(partial.limits)) {
+    for (t in rev(seq(along = partial.limits))) {
+      if (t == length(partial.limits)) {
+        partialLabelsSub <- c(partialLabelsSub, paste(">", partial.limits[t], "peaks"))
+      }
+      partialLabelsSub <- c(partialLabelsSub, paste("<=", partial.limits[t], "peaks"))
+    }
+  }
+  partialLabels <- "Partial"
+  partialLabelsSub <- c("Partial", partialLabelsSub)
 
-        # Mixture Labels.
-        if (!is.null(mixture.limits)) {
-                for (t in rev(seq(along = mixture.limits))) {
-                        if (t == length(mixture.limits)) {
-                                mixtureLabelsSub <- c(mixtureLabelsSub, paste(">", mixture.limits[t], "markers"))
-                        }
-                        mixtureLabelsSub <- c(mixtureLabelsSub, paste("<=", mixture.limits[t], "markers"))
-                }
-        }
-        mixtureLabels <- "Mixture"
-        mixtureLabelsSub <- c("Mixture", mixtureLabelsSub)
+  # Mixture Labels.
+  if (!is.null(mixture.limits)) {
+    for (t in rev(seq(along = mixture.limits))) {
+      if (t == length(mixture.limits)) {
+        mixtureLabelsSub <- c(mixtureLabelsSub, paste(">", mixture.limits[t], "markers"))
+      }
+      mixtureLabelsSub <- c(mixtureLabelsSub, paste("<=", mixture.limits[t], "markers"))
+    }
+  }
+  mixtureLabels <- "Mixture"
+  mixtureLabelsSub <- c("Mixture", mixtureLabelsSub)
 
-        # Complete Labels.
-        if (!is.null(threshold)) {
-                completeLabelsSub <- c(completeLabelsSub, paste("all peaks >", threshold))
-        }
-        completeLabels <- "Complete profile"
-        completeLabelsSub <- c(completeLabelsSub, "Complete profile")
+  # Complete Labels.
+  if (!is.null(threshold)) {
+    completeLabelsSub <- c(completeLabelsSub, paste("all peaks >", threshold))
+  }
+  completeLabels <- "Complete profile"
+  completeLabelsSub <- c(completeLabelsSub, "Complete profile")
 
-        # Blank Labels.
-        blankLabels <- "No result"
-        blankLabelsSub <- "No result"
+  # Blank Labels.
+  blankLabels <- "No result"
+  blankLabelsSub <- "No result"
 
-        # All factor labels.
-        factorLabels <- c(mixtureLabels, completeLabels, partialLabels, blankLabels)
-        factorLabelsSub <- c(mixtureLabelsSub, completeLabelsSub, partialLabelsSub, blankLabelsSub)
+  # All factor labels.
+  factorLabels <- c(mixtureLabels, completeLabels, partialLabels, blankLabels)
+  factorLabelsSub <- c(mixtureLabelsSub, completeLabelsSub, partialLabelsSub, blankLabelsSub)
 
   if (debug) {
     print("factorLabels")
@@ -278,15 +282,15 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
     print(factorLabelsSub)
   }
 
-        # Assign factors.
-        res$Type <- factor(res$Type, levels = factorLabels)
-        res$Subtype <- factor(res$Subtype, levels = factorLabelsSub)
+  # Assign factors.
+  res$Type <- factor(res$Type, levels = factorLabels)
+  res$Subtype <- factor(res$Subtype, levels = factorLabelsSub)
 
-        # Add attributes to result.
-        attr(res, which = "kit") <- kit
+  # Add attributes to result.
+  attr(res, which = "kit") <- kit
 
-        # Update audit trail.
-        res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 
   if (debug) {
     print("head(res):")
@@ -294,5 +298,5 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
     print(paste("EXIT:", match.call()[[1]]))
   }
 
-        return(res)
+  return(res)
 }

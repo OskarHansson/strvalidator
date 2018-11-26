@@ -60,7 +60,6 @@
 calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
                             ol.rm = FALSE, ignore.case = TRUE, word = FALSE,
                             discard = FALSE, limit = 1, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -99,12 +98,14 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
   # Check if slim format.
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (sum(grepl("Height", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (is.null(ref$Sample.Name)) {
@@ -122,7 +123,8 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
   # Check if slim format.
   if (sum(grepl("Allele", names(ref))) > 1) {
     stop("'ref' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check flags.
@@ -242,7 +244,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
       allele <- unique(ref$Allele[ref$Sample.Name == grepNames[r] & ref$Marker == marker[m]])
 
       for (a in seq(along = allele)) {
-
         if (debug) {
           # Show detailed progress.
           message("Sample: ", grepNames[r], ", Marker: ", marker[m], ", Allele: ", allele[a])
@@ -257,11 +258,8 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
         # Mark as occupied with reference allele by setting min and max data point.
         data[selection, "Min"] <- data[selection, "Data.Point"] - (pullup.range / 2)
         data[selection, "Max"] <- data[selection, "Data.Point"] + (pullup.range / 2)
-
       }
-
     }
-
   }
 
   # Analyse -------------------------------------------------------------------
@@ -283,7 +281,9 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
     # Print progress.
     message(paste("Identify pull-up peaks for sample ",
-                  sample[s], " (", s, "of", length(sample), ")", sep = ""))
+      sample[s], " (", s, "of", length(sample), ")",
+      sep = ""
+    ))
 
     # Select start and end data point for current known profile.
     selCurrentSample <- dfKnown$Sample.Name == sample[s]
@@ -320,9 +320,7 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
           # Marked as masked i.e. not analysed.
           dfData[selCurrentData, ][matchPoints, ]$Masked <- TRUE
-
         }
-
       } else {
         # Not masked and we will search for possible pull-up peaks.
 
@@ -336,7 +334,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
           # Current matches.
           pullTmp <- dfData[selCurrentData, ][matchPoints, ]
-
         }
 
         # Current known allele.
@@ -364,7 +361,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
             pullHeight <- c(pullHeight, as.numeric(pullTmp$Height))
             pullSize <- c(pullSize, as.numeric(pullTmp$Size))
             pullPoint <- c(pullPoint, as.numeric(pullTmp$Data.Point))
-
           } else {
 
             # Fill with NA's.
@@ -374,7 +370,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
             pullHeight <- c(pullHeight, as.numeric(NA))
             pullSize <- c(pullSize, as.numeric(NA))
             pullPoint <- c(pullPoint, as.numeric(NA))
-
           }
 
           # Check value of len...
@@ -391,19 +386,12 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
           knownHeight <- c(knownHeight, rep(as.numeric(knownTmp$Height), len))
           knownSize <- c(knownSize, rep(knownTmp$Size, len))
           knownPoint <- c(knownPoint, rep(knownTmp$Data.Point, len))
-
         } else if (nrow(knownTmp) > 1) {
-
           stop(paste("Multiple rows! Expected one!"))
           print(head(knownTmp))
-
         }
-
-
       }
-
     } # End sequence element loop.
-
   }
 
   # Calculate additional metrics.
@@ -415,12 +403,14 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
     print(tail(dfKnown))
   }
 
-  res <- data.frame(Sample.Name = knownSample, Marker = knownMarker, Dye = knownDye,
-                    Allele = knownAllele, Height = knownHeight, Size = knownSize,
-                    Data.Point = knownPoint, P.Marker = pullMarker, P.Dye = pullDye,
-                    P.Allele = pullAllele, P.Height = pullHeight, P.Size = pullSize,
-                    P.Data.Point = pullPoint, Delta = pulldelta,
-                    Ratio = pullrate, stringsAsFactors = FALSE)
+  res <- data.frame(
+    Sample.Name = knownSample, Marker = knownMarker, Dye = knownDye,
+    Allele = knownAllele, Height = knownHeight, Size = knownSize,
+    Data.Point = knownPoint, P.Marker = pullMarker, P.Dye = pullDye,
+    P.Allele = pullAllele, P.Height = pullHeight, P.Size = pullSize,
+    P.Data.Point = pullPoint, Delta = pulldelta,
+    Ratio = pullrate, stringsAsFactors = FALSE
+  )
 
   if (discard) {
     # Discard alleles with no pull-up peaks from the result table.
@@ -448,6 +438,4 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
   # Return result.
   return(res)
-
-
 }

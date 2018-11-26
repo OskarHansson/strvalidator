@@ -34,7 +34,6 @@
 #'
 
 tableCapillary <- function(data, scope = "cap", debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -112,21 +111,22 @@ tableCapillary <- function(data, scope = "cap", debug = FALSE) {
       }
 
       # Create temporary dataframe.
-      tmpres <- data.frame(Instrument = instrument[i],
-                           Capillary = capillary,
-                           N = tmpN,
-                           Min = tmpMin,
-                           Q1 = tmp1Q,
-                           Median = tmpMedian,
-                           Mean = tmpMean,
-                           Q3 = tmp3Q,
-                           Max = tmpMax,
-                           Std.Dev = tmpSd,
-                           stringsAsFactors = FALSE)
+      tmpres <- data.frame(
+        Instrument = instrument[i],
+        Capillary = capillary,
+        N = tmpN,
+        Min = tmpMin,
+        Q1 = tmp1Q,
+        Median = tmpMedian,
+        Mean = tmpMean,
+        Q3 = tmp3Q,
+        Max = tmpMax,
+        Std.Dev = tmpSd,
+        stringsAsFactors = FALSE
+      )
 
       # Combine with result dataframe.
       res <- rbind(res, tmpres)
-
     } else if (scope == "INJ") {
 
       # Loop over all capillaries.
@@ -144,21 +144,22 @@ tableCapillary <- function(data, scope = "cap", debug = FALSE) {
       }
 
       # Create temporary dataframe.
-      tmpres <- data.frame(Instrument = instrument[i],
-                           Injection = injection,
-                           N = tmpN,
-                           Min = tmpMin,
-                           Q1 = tmp1Q,
-                           Median = tmpMedian,
-                           Mean = tmpMean,
-                           Q3 = tmp3Q,
-                           Max = tmpMax,
-                           Std.Dev = tmpSd,
-                           stringsAsFactors = FALSE)
+      tmpres <- data.frame(
+        Instrument = instrument[i],
+        Injection = injection,
+        N = tmpN,
+        Min = tmpMin,
+        Q1 = tmp1Q,
+        Median = tmpMedian,
+        Mean = tmpMean,
+        Q3 = tmp3Q,
+        Max = tmpMax,
+        Std.Dev = tmpSd,
+        stringsAsFactors = FALSE
+      )
 
       # Combine with result dataframe.
       res <- rbind(res, tmpres)
-
     } else if (scope == "ROW") {
 
       # Loop over all plate rows.
@@ -176,21 +177,22 @@ tableCapillary <- function(data, scope = "cap", debug = FALSE) {
       }
 
       # Create temporary dataframe.
-      tmpres <- data.frame(Instrument = instrument[i],
-                           Row = row,
-                           N = tmpN,
-                           Min = tmpMin,
-                           Q1 = tmp1Q,
-                           Median = tmpMedian,
-                           Mean = tmpMean,
-                           Q3 = tmp3Q,
-                           Max = tmpMax,
-                           Std.Dev = tmpSd,
-                           stringsAsFactors = FALSE)
+      tmpres <- data.frame(
+        Instrument = instrument[i],
+        Row = row,
+        N = tmpN,
+        Min = tmpMin,
+        Q1 = tmp1Q,
+        Median = tmpMedian,
+        Mean = tmpMean,
+        Q3 = tmp3Q,
+        Max = tmpMax,
+        Std.Dev = tmpSd,
+        stringsAsFactors = FALSE
+      )
 
       # Combine with result dataframe.
       res <- rbind(res, tmpres)
-
     } else if (scope == "RUN") {
 
       # Loop over all runs.
@@ -208,21 +210,22 @@ tableCapillary <- function(data, scope = "cap", debug = FALSE) {
       }
 
       # Create temporary dataframe.
-      tmpres <- data.frame(Instrument = instrument[i],
-                           Run = run,
-                           N = tmpN,
-                           Min = tmpMin,
-                           Q1 = tmp1Q,
-                           Median = tmpMedian,
-                           Mean = tmpMean,
-                           Q3 = tmp3Q,
-                           Max = tmpMax,
-                           Std.Dev = tmpSd,
-                           stringsAsFactors = FALSE)
+      tmpres <- data.frame(
+        Instrument = instrument[i],
+        Run = run,
+        N = tmpN,
+        Min = tmpMin,
+        Q1 = tmp1Q,
+        Median = tmpMedian,
+        Mean = tmpMean,
+        Q3 = tmp3Q,
+        Max = tmpMax,
+        Std.Dev = tmpSd,
+        stringsAsFactors = FALSE
+      )
 
       # Combine with result dataframe.
       res <- rbind(res, tmpres)
-
     } else if (scope == "INSTR") {
 
       # Summarise data.
@@ -236,24 +239,24 @@ tableCapillary <- function(data, scope = "cap", debug = FALSE) {
       tmpN <- sum(!is.na(datasub$Mean.Height))
 
       # Create temporary dataframe.
-      tmpres <- data.frame(Instrument = instrument[i],
-                           N = tmpN,
-                           Min = tmpMin,
-                           Q1 = tmp1Q,
-                           Median = tmpMedian,
-                           Mean = tmpMean,
-                           Q3 = tmp3Q,
-                           Max = tmpMax,
-                           Std.Dev = tmpSd,
-                           stringsAsFactors = FALSE)
+      tmpres <- data.frame(
+        Instrument = instrument[i],
+        N = tmpN,
+        Min = tmpMin,
+        Q1 = tmp1Q,
+        Median = tmpMedian,
+        Mean = tmpMean,
+        Q3 = tmp3Q,
+        Max = tmpMax,
+        Std.Dev = tmpSd,
+        stringsAsFactors = FALSE
+      )
 
       # Combine with result dataframe.
       res <- rbind(res, tmpres)
-
     } else {
       stop("Make table by =", scope, "not supported!")
     }
-
   }
 
   # Sort result.
@@ -279,5 +282,4 @@ tableCapillary <- function(data, scope = "cap", debug = FALSE) {
   }
 
   return(res)
-
 }

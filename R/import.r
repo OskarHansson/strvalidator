@@ -80,16 +80,15 @@
 
 
 import <- function(folder = TRUE, extension = "txt",
-                    suffix = NA, prefix = NA,
-                    import.file = NA, folder.name = NA,
-                    file.name = TRUE, time.stamp = TRUE,
-                    separator = "\t", ignore.case = TRUE,
-                    auto.trim = FALSE, trim.samples = NULL,
-                    trim.invert = FALSE,
-                    auto.slim = FALSE, slim.na = TRUE,
-                    na.strings = c("NA", ""),
-                    debug = FALSE) {
-
+                   suffix = NA, prefix = NA,
+                   import.file = NA, folder.name = NA,
+                   file.name = TRUE, time.stamp = TRUE,
+                   separator = "\t", ignore.case = TRUE,
+                   auto.trim = FALSE, trim.samples = NULL,
+                   trim.invert = FALSE,
+                   auto.slim = FALSE, slim.na = TRUE,
+                   na.strings = c("NA", ""),
+                   debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -161,11 +160,12 @@ import <- function(folder = TRUE, extension = "txt",
       }
 
       # Get list of files.
-      import.file <- list.files(path = folder, pattern = fileFilter,
-                                full.names = TRUE, recursive = FALSE,
-                                ignore.case = ignore.case, include.dirs = FALSE)
+      import.file <- list.files(
+        path = folder, pattern = fileFilter,
+        full.names = TRUE, recursive = FALSE,
+        ignore.case = ignore.case, include.dirs = FALSE
+      )
     }
-
   }
 
   if (debug) {
@@ -178,8 +178,10 @@ import <- function(folder = TRUE, extension = "txt",
 
     # Autotrim message (function inside loop).
     if (auto.trim) {
-      message(paste("Auto trim samples:", trim.samples,
-                    " invert =", trim.invert))
+      message(paste(
+        "Auto trim samples:", trim.samples,
+        " invert =", trim.invert
+      ))
     }
 
     # Read files.
@@ -197,28 +199,33 @@ import <- function(folder = TRUE, extension = "txt",
       # names(tmpdf) <- make.names(colnames(tmpdf))
 
       # Read a file.
-      tmpdf <- read.table(import.file[f], header = TRUE,
-                          sep = separator, fill = TRUE,
-                          na.strings = na.strings,
-                          colClasses = "character",
-                          stringsAsFactors = FALSE)
+      tmpdf <- read.table(import.file[f],
+        header = TRUE,
+        sep = separator, fill = TRUE,
+        na.strings = na.strings,
+        colClasses = "character",
+        stringsAsFactors = FALSE
+      )
 
       # Autotrim datset (message before loop).
       if (auto.trim) {
-        tmpdf <- trim(data = tmpdf, samples = trim.samples,
-                    invert.s = trim.invert, debug = debug)
+        tmpdf <- trim(
+          data = tmpdf, samples = trim.samples,
+          invert.s = trim.invert, debug = debug
+        )
       }
 
       # Show progress.
       message(paste("Importing (", f, " of ", length(import.file), "): ",
-                    import.file[f], sep = ""))
+        import.file[f],
+        sep = ""
+      ))
 
       # Check if file path should be saved.
       if (file.name) {
 
         # Add column and save file name.
         tmpdf$File.Name <- basename(import.file[f])
-
       }
 
       # Check if time stamp should be saved.
@@ -227,7 +234,6 @@ import <- function(folder = TRUE, extension = "txt",
         # Add column and save file name.
         tmptime <- file.info(import.file[f])
         tmpdf$File.Time <- as.character(tmptime$mtime)
-
       }
 
       # Check if multiple files.
@@ -238,7 +244,6 @@ import <- function(folder = TRUE, extension = "txt",
         # Create result data frame.
         res <- tmpdf
       }
-
     }
 
     # Autoslim dataset.
@@ -260,11 +265,11 @@ import <- function(folder = TRUE, extension = "txt",
       stackCol <- unlist(strsplit(stackCol, "|", fixed = TRUE))
 
       # Slim data.
-      res <- slim(data = res, fix = fixCol, stack = stackCol,
-                  keep.na = slim.na, debug = debug)
-
+      res <- slim(
+        data = res, fix = fixCol, stack = stackCol,
+        keep.na = slim.na, debug = debug
+      )
     }
-
   }
 
   # Update audit trail.
@@ -274,5 +279,4 @@ import <- function(folder = TRUE, extension = "txt",
   res <- colConvert(data = res)
 
   return(res)
-
 }

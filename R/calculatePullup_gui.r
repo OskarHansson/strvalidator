@@ -43,7 +43,7 @@
 
 
 calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
-                                 debug = FALSE, parent = NULL) {
+                                debug = FALSE, parent = NULL) {
 
   # Global variables.
   .gData <- NULL
@@ -74,14 +74,15 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 5,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -96,7 +97,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Open help page for function.
     print(help("calculatePullup_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
@@ -105,10 +105,12 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 0")
   }
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
@@ -118,22 +120,25 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
   dfs <- c("<Select a dataset>", listObjects(env = env, obj.class = "data.frame"))
 
-  g0[1, 2] <- g0_data_drp <- gcombobox(items = dfs,
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = g0,
-                                      ellipsize = "none")
+  g0[1, 2] <- g0_data_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
   g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_data_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Allele", "Marker", "Dye", "Height", "Size", "Data.Point")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Height",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Height",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -141,8 +146,10 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       # get dataset.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
-      svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
-                                           "samples.")
+      svalue(g0_data_samples_lbl) <- paste(
+        length(unique(.gData$Sample.Name)),
+        "samples."
+      )
 
       # Suggest a name for result.
       svalue(f4_save_edt) <- paste(val_obj, "_pullup", sep = "")
@@ -151,7 +158,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       kitIndex <- detectKit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(f4_kit_drp, index = TRUE) <- kitIndex
-
     } else {
 
       # Reset components.
@@ -160,9 +166,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(g0_data_drp, index = TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
       svalue(f4_save_edt) <- ""
-
     }
-
   })
 
   # Reference -----------------------------------------------------------------
@@ -170,32 +174,36 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   g0[2, 1] <- glabel(text = "Select reference dataset:", container = g0)
 
   # NB! dfs defined in previous section.
-  g0[2, 2] <- g0_ref_drp <- gcombobox(items = dfs,
-                                     selected = 1,
-                                     editable = FALSE,
-                                     container = g0,
-                                     ellipsize = "none")
+  g0[2, 2] <- g0_ref_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[2, 3] <- g0_ref_samples_lbl <- glabel(text = " 0 references", container = g0)
 
   addHandlerChanged(g0_ref_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_ref_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Allele",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Allele",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
 
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
-      svalue(g0_ref_samples_lbl) <- paste(length(unique(.gRef$Sample.Name)),
-                                          "samples.")
-
+      svalue(g0_ref_samples_lbl) <- paste(
+        length(unique(.gRef$Sample.Name)),
+        "samples."
+      )
     } else {
 
       # Reset components.
@@ -203,7 +211,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       .gRefName <<- NULL
       svalue(g0_ref_drp, index = TRUE) <- 1
       svalue(g0_ref_samples_lbl) <- " 0 references"
-
     }
   })
 
@@ -224,32 +231,35 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     val_word <- svalue(f1_word_chk)
 
     if (!is.null(.gData) || !is.null(.gRef)) {
+      chksubset_w <- gwindow(
+        title = "Check subsetting",
+        visible = FALSE, name = title,
+        width = NULL, height = NULL, parent = w,
+        handler = NULL, action = NULL
+      )
 
-      chksubset_w <- gwindow(title = "Check subsetting",
-                             visible = FALSE, name = title,
-                             width = NULL, height = NULL, parent = w,
-                             handler = NULL, action = NULL)
+      chksubset_txt <- checkSubset(
+        data = val_data,
+        ref = val_ref,
+        console = FALSE,
+        ignore.case = val_ignore,
+        word = val_word
+      )
 
-      chksubset_txt <- checkSubset(data = val_data,
-                                   ref = val_ref,
-                                   console = FALSE,
-                                   ignore.case = val_ignore,
-                                   word = val_word)
-
-      gtext(text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
-             wrap = FALSE, container = chksubset_w)
+      gtext(
+        text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
+        wrap = FALSE, container = chksubset_w
+      )
 
       visible(chksubset_w) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # FRAME 1 ###################################################################
@@ -258,22 +268,30 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 1")
   }
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 10,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
-  f1_ignore_chk <- gcheckbox(text = "Ignore case",
-                             checked = TRUE,
-                             container = f1)
+  f1_ignore_chk <- gcheckbox(
+    text = "Ignore case",
+    checked = TRUE,
+    container = f1
+  )
 
-  f1_word_chk <- gcheckbox(text = "Add word boundaries",
-                           checked = FALSE,
-                           container = f1)
+  f1_word_chk <- gcheckbox(
+    text = "Add word boundaries",
+    checked = FALSE,
+    container = f1
+  )
 
-  f1_ol_chk <- gcheckbox(text = "Remove off-ladder peaks",
-                           checked = FALSE,
-                           container = f1)
+  f1_ol_chk <- gcheckbox(
+    text = "Remove off-ladder peaks",
+    checked = FALSE,
+    container = f1
+  )
 
   # LAYOUT --------------------------------------------------------------------
 
@@ -288,9 +306,11 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   f1g1[3, 1] <- glabel(text = "Discard pull-ups with ratio: > ", container = f1g1)
   f1g1[3, 2] <- f1_limit_spb <- gspinbutton(from = 0, to = 10, by = 0.1, value = 1, container = f1g1)
 
-  f1_discard_chk <- gcheckbox(text = "Discard alleles with no pullup from the result table",
-                         checked = FALSE,
-                         container = f1)
+  f1_discard_chk <- gcheckbox(
+    text = "Discard alleles with no pullup from the result table",
+    checked = FALSE,
+    container = f1
+  )
 
   # FRAME 4 ###################################################################
 
@@ -298,10 +318,12 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 4")
   }
 
-  f4 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f4 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f4)
 
@@ -309,8 +331,10 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
   glabel(text = " Kit attribute:", container = f4)
 
-  f4_kit_drp <- gcombobox(items = getKit(), selected = 1,
-                          editable = FALSE, container = f4, ellipsize = "none")
+  f4_kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = f4, ellipsize = "none"
+  )
 
   # BUTTON ####################################################################
 
@@ -371,31 +395,39 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         unblockHandlers(calculate_btn)
         enabled(calculate_btn) <- FALSE
 
-        datanew <- calculatePullup(data = val_data,
-                                   ref = val_ref,
-                                   pullup.range = val_pullup,
-                                   block.range = val_block,
-                                   ol.rm = val_ol,
-                                   ignore.case = val_ignore,
-                                   word = val_word,
-                                   discard = val_discard,
-                                   limit = val_limit,
-                                   debug = debug)
+        datanew <- calculatePullup(
+          data = val_data,
+          ref = val_ref,
+          pullup.range = val_pullup,
+          block.range = val_block,
+          ol.rm = val_ol,
+          ignore.case = val_ignore,
+          word = val_word,
+          discard = val_discard,
+          limit = val_limit,
+          debug = debug
+        )
 
         # Add attributes to result.
         attr(datanew, which = "kit") <- val_kit
 
         # Create key-value pairs to log.
-        keys <- list("data", "ref", "pullup.range", "block.range", "ol.rm",
-                     "ignore.case", "word", "discard", "limit")
+        keys <- list(
+          "data", "ref", "pullup.range", "block.range", "ol.rm",
+          "ignore.case", "word", "discard", "limit"
+        )
 
-        values <- list(val_name_data, val_name_ref, val_pullup, val_block, val_ol,
-                       val_ignore, val_word, val_discard, val_limit)
+        values <- list(
+          val_name_data, val_name_ref, val_pullup, val_block, val_ol,
+          val_ignore, val_word, val_discard, val_limit
+        )
 
         # Update audit trail.
-        datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                              label = "calculatePullup_gui", arguments = FALSE,
-                              package = "strvalidator")
+        datanew <- auditTrail(
+          obj = datanew, key = keys, value = values,
+          label = "calculatePullup_gui", arguments = FALSE,
+          package = "strvalidator"
+        )
 
         # Save data.
         saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -408,27 +440,24 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Close GUI.
         dispose(w)
-
       } else {
-
         message <- "'NA' in 'Dye' column. \nUse add dye function to fix."
 
-        gmessage(message, title = "NA detected!",
-                 icon = "error",
-                 parent = w)
-
+        gmessage(message,
+          title = "NA detected!",
+          icon = "error",
+          parent = w
+        )
       }
-
     } else {
-
       message <- "A dataset and a reference dataset have to be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -482,14 +511,12 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculatePullup_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculatePullup_gui_window", value = svalue(f1_pullup_spb), envir = env)
       assign(x = ".strvalidator_calculatePullup_gui_block", value = svalue(f1_block_spb), envir = env)
@@ -498,7 +525,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       assign(x = ".strvalidator_calculatePullup_gui_ignore", value = svalue(f1_ignore_chk), envir = env)
       assign(x = ".strvalidator_calculatePullup_gui_word", value = svalue(f1_word_chk), envir = env)
       assign(x = ".strvalidator_calculatePullup_gui_discard", value = svalue(f1_discard_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculatePullup_gui_savegui", envir = env, inherits = FALSE)) {
@@ -534,7 +560,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -545,5 +570,4 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

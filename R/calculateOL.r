@@ -34,7 +34,6 @@
 #'
 
 calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("kit:")
@@ -110,20 +109,22 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
       minFreq <- (5 / (2 * size))
     } else {
       warning(paste("Multiple 'N' (", paste(size, collapse = ","),
-                    ") for current database!\n",
-                    "Using N=", size[1], " in calculations.\n", sep = ""))
+        ") for current database!\n",
+        "Using N=", size[1], " in calculations.\n",
+        sep = ""
+      ))
     }
 
-    message(paste("Replacing small frequencies with an estimate 5/2N =",
-                  minFreq))
-
+    message(paste(
+      "Replacing small frequencies with an estimate 5/2N =",
+      minFreq
+    ))
   }
 
   # Analyze -------------------------------------------------------------------
 
   # Loop over all kits.
   for (k in seq(along = kitNames)) {
-
     if (debug) {
       print("Analyzing risk for off-ladder with kit:")
       print(kitNames[k])
@@ -141,7 +142,6 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
 
     # Loop over all markers.
     for (m in seq(along = marker)) {
-
       if (debug) {
         print(marker[m])
       }
@@ -156,7 +156,6 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
 
         # Select only real alleles.
         selection <- selection & ladder$Virtual == 0
-
       }
 
       # Check that the marker exist in database.
@@ -179,22 +178,18 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
 
         # Sum frequencies of off-ladder alleles.
         olsum[m] <- sum(freq, na.rm = TRUE)
-
       } else {
-
         if (debug) {
           print("Marker not found!")
         }
 
         dbsum[m] <- NA
         olsum[m] <- NA
-
       }
 
       if (debug) {
         print(olsum[m])
       }
-
     }
 
     if (debug) {
@@ -207,17 +202,17 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
     }
 
     # Create result for current kit.
-    resKit <- data.frame(Kit = kitNames[k],
-                         Marker = marker,
-                         Database = dbsum,
-                         Risk = olsum,
-                         Total = sum(olsum, na.rm = TRUE),
-                         stringsAsFactors = FALSE)
+    resKit <- data.frame(
+      Kit = kitNames[k],
+      Marker = marker,
+      Database = dbsum,
+      Risk = olsum,
+      Total = sum(olsum, na.rm = TRUE),
+      stringsAsFactors = FALSE
+    )
 
     # Combine result.
     res <- rbind(res, resKit)
-
-
   }
 
   # Update audit trail.
@@ -230,5 +225,4 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
   }
 
   return(res)
-
 }

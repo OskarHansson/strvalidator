@@ -29,7 +29,6 @@
 checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
                          string = NULL, stringcol = NULL,
                          env = parent.frame(), parent = NULL, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -65,7 +64,6 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
 
       # Change flag.
       ok <- FALSE
-
     } else if (!is.null(reqcol) & !all(reqcol %in% colnames(df))) {
       # Check for required column names.
 
@@ -73,11 +71,12 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
 
       # Construct error message.
       messageText <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
       # Change flag.
       ok <- FALSE
-
     } else if (slim & !is.null(slimcol)) {
 
       # Loop over columns to check.
@@ -90,42 +89,36 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
 
           # Construct error message.
           messageText <- paste("The dataset is too fat!\n\n",
-                               "There can only be 1", slimcol[c], "column\n",
-                               "Slim the dataset", sep = "")
+            "There can only be 1", slimcol[c], "column\n",
+            "Slim the dataset",
+            sep = ""
+          )
 
           # Change flag.
           ok <- FALSE
-
         }
-
       }
-
     } else if (!is.null(string) & !is.null(stringcol)) {
 
       # Loop over columns to check.
       for (c in seq(along = stringcol)) {
-
         if (any(string %in% df[, stringcol[c]])) {
 
           # Construct error message.
           messageText <- paste("'", string, "' detected in column ", stringcol[c], "!\n",
-                               "Please make sure that data is clean/filtered.\n",
-                               sep = "")
+            "Please make sure that data is clean/filtered.\n",
+            sep = ""
+          )
 
           # Change flag.
           ok <- FALSE
-
         }
-
       }
-
     } else {
 
       # Dataset passed!
       ok <- TRUE
-
     }
-
   } else {
 
     # Construct error message.
@@ -133,7 +126,6 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
 
     # Change flag.
     ok <- FALSE
-
   }
 
   if (debug) {
@@ -160,5 +152,4 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
 
   # Return result.
   return(ok)
-
 }

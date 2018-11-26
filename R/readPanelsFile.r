@@ -50,12 +50,14 @@ readPanelsFile <- function(panel.files, debug = FALSE) {
     # Create an empty data frame to hold the result.
     panels <- data.frame(t(rep(NA, 6)))
     # Add column names.
-    names(panels) <- c("Panel",
-                       "Marker",
-                       "Color",
-                       "Marker.Min",
-                       "Marker.Max",
-                       "Repeat")
+    names(panels) <- c(
+      "Panel",
+      "Marker",
+      "Color",
+      "Marker.Min",
+      "Marker.Max",
+      "Repeat"
+    )
     # Remove all NAs
     panels <- panels [-1, ]
 
@@ -63,11 +65,9 @@ readPanelsFile <- function(panel.files, debug = FALSE) {
     rows <- length(allTextSplit)
 
     for (row in 1:rows) {
-
       currentTag <- allTextSplit[[row]][1]
 
       if (currentTag == keyPanel) {
-
         panelName <- allTextSplit[[row]][2]
 
         if (debug) {
@@ -122,24 +122,22 @@ readPanelsFile <- function(panel.files, debug = FALSE) {
           # alleleNames <- unlist(strsplit(ladderTrim,","))
 
           # Save information.
-          currentMarker <- data.frame(Panel = panelName,
-                                    Marker = markerName,
-                                    Color = colorName,
-                                    Marker.Min = rangeMin,
-                                    Marker.Max = rangeMax,
-                                    Repeat = repeatUnit,
-                                    stringsAsFactors = FALSE)
+          currentMarker <- data.frame(
+            Panel = panelName,
+            Marker = markerName,
+            Color = colorName,
+            Marker.Min = rangeMin,
+            Marker.Max = rangeMax,
+            Repeat = repeatUnit,
+            stringsAsFactors = FALSE
+          )
 
           # Concatenate with data frame.
           panels <- rbind(panels, currentMarker)
-
         }
-
       }
-
     }
 
     return(panels)
-
   }
 }

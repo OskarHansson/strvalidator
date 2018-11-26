@@ -30,30 +30,38 @@ test_that("calculateHeight", {
   height.1 <- c(3349, 1273, 627, 77, 7189, 3303, 582, 175, 2854, 1217, 460)
   height.2 <- c(2296, 1470, 377, NA, NA, 3026, 737, 174, 2547, NA, 355)
 
-  df1 <- data.frame(Sample.Name = "MySample",
-                   Marker = markers,
-                   Height.1 = height.1,
-                   Height.2 = height.2,
-                   stringsAsFactors = FALSE)
+  df1 <- data.frame(
+    Sample.Name = "MySample",
+    Marker = markers,
+    Height.1 = height.1,
+    Height.2 = height.2,
+    stringsAsFactors = FALSE
+  )
 
-  df1 <- slim(data = df1,
-             fix = c("Sample.Name", "Marker"),
-             stack = c("Height"))
+  df1 <- slim(
+    data = df1,
+    fix = c("Sample.Name", "Marker"),
+    stack = c("Height")
+  )
 
   # Generate test data.
   markers <- c("D3", "vWA", "D16", "D2", "AMEL", "D8", "D21", "D18", "D19", "TH01", "FGA")
   height.1 <- c(3349, 1273, 627, 77, 7189, 3303, 582, 175, 3416, 1217, 460)
   height.2 <- c(2296, 1470, 377, NA, NA, 3026, 737, 174, NA, NA, 355)
 
-  df2 <- data.frame(Sample.Name = "AnotherSample",
-                   Marker = markers,
-                   Height.1 = height.1,
-                   Height.2 = height.2,
-                   stringsAsFactors = FALSE)
+  df2 <- data.frame(
+    Sample.Name = "AnotherSample",
+    Marker = markers,
+    Height.1 = height.1,
+    Height.2 = height.2,
+    stringsAsFactors = FALSE
+  )
 
-  df2 <- slim(data = df2,
-             fix = c("Sample.Name", "Marker"),
-             stack = c("Height"))
+  df2 <- slim(
+    data = df2,
+    fix = c("Sample.Name", "Marker"),
+    stack = c("Height")
+  )
 
   df2 <- rbind(df1, df2)
 
@@ -64,8 +72,10 @@ test_that("calculateHeight", {
 
   # Off-ladder alleles "OL".
   df4 <- df1
-  df4$Allele <- c("10", "11", "12", "13", "14", "15", "OL", "X", "18", "19", "20",
-                    "21", "22", "OL", "24", "25", "26", "27", "28")
+  df4$Allele <- c(
+    "10", "11", "12", "13", "14", "15", "OL", "X", "18", "19", "20",
+    "21", "22", "OL", "24", "25", "26", "27", "28"
+  )
 
   # Create reference dataset.
   ref4 <- df4[df4$Allele != "OL", ]
@@ -721,5 +731,4 @@ test_that("calculateHeight", {
   expect_that(res$Peaks, equals(0))
   expect_that(res$Expected, equals(17))
   expect_that(res$Proportion, equals(0))
-
 })

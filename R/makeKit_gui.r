@@ -47,7 +47,6 @@
 #' @seealso \code{\link{readBinsFile}}, \code{\link{readPanelsFile}}, \code{\link{combineBinsAndPanels}}
 
 makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -75,15 +74,19 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   if (!is.na(.filePath)) {
     if (file.exists(.filePath)) {
       # Read kit info file.
-      .kitInfo <- read.delim(file = .filePath, header = TRUE,
-                                 sep = "\t", quote = "\"",
-                                 dec = ".", fill = TRUE,
-                                 stringsAsFactors = FALSE)
+      .kitInfo <- read.delim(
+        file = .filePath, header = TRUE,
+        sep = "\t", quote = "\"",
+        dec = ".", fill = TRUE,
+        stringsAsFactors = FALSE
+      )
     } else {
-      gmessage(msg = "The kit file was not found",
-               title = "File not found",
-               icon = "error",
-               parent = w)
+      gmessage(
+        msg = "The kit file was not found",
+        title = "File not found",
+        icon = "error",
+        parent = w
+      )
     }
   }
 
@@ -101,15 +104,16 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -125,31 +129,33 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Open help page for function.
     print(help("makeKit_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "STR Kits",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "STR Kits",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f0_opt <- gradio(items = c("Edit kit file", "Add new kits"),
-                                  selected = 2, container = f0)
+  f0_opt <- gradio(
+    items = c("Edit kit file", "Add new kits"),
+    selected = 2, container = f0
+  )
 
   addHandlerChanged(f0_opt, handler = function(h, ...) {
-
     val_obj <- svalue(f0_opt, index = TRUE)
 
     if (debug) {
       print(val_obj)
     }
 
-     # Clear.
-     if (!is.null(.f3g1)) {
-       delete(obj = f3, child = .f3g1)
-     }
+    # Clear.
+    if (!is.null(.f3g1)) {
+      delete(obj = f3, child = .f3g1)
+    }
 
     if (val_obj == 1) {
 
@@ -164,7 +170,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       # Update path.
       svalue(f1g1_file_edt) <- .filePath
-
     } else {
 
       # Enable 'new' objects.
@@ -175,17 +180,17 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       # Autoselect 'Overwrite'.
       svalue(f4_opt, index = TRUE) <- 1
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Kit file",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Kit file",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   # This is disabled by default.
   enabled(f1) <- FALSE
@@ -196,7 +201,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f1g1[1, 2] <- f1g1_file_btn <- gbutton(text = "Load", container = f1g1)
 
   addHandlerChanged(f1g1_file_btn, handler = function(h, ...) {
-
     val_obj <- svalue(f1g1_file_edt)
 
     # Disable options after loading the kit definition file.
@@ -212,85 +216,99 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       if (file.exists(val_obj)) {
 
         # Read kit info file.
-        .newKitInfo <<- read.delim(file = val_obj, header = TRUE,
-                               sep = "\t", quote = "\"",
-                               dec = ".", fill = TRUE,
-                               stringsAsFactors = FALSE)
+        .newKitInfo <<- read.delim(
+          file = val_obj, header = TRUE,
+          sep = "\t", quote = "\"",
+          dec = ".", fill = TRUE,
+          stringsAsFactors = FALSE
+        )
 
         # Update GUI.
         .update(kitInfo = .newKitInfo, addKit = FALSE)
-
       } else {
-
-        gmessage(msg = "The kit file was not found",
-                 title = "File not found",
-                 icon = "error",
-                 parent = w)
+        gmessage(
+          msg = "The kit file was not found",
+          title = "File not found",
+          icon = "error",
+          parent = w
+        )
       }
     }
-
   })
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "New kits",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "New kits",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f2g1 <- glayout(container = f2, spacing = 1)
 
   # BINS ----------------------------------------------------------------------
 
-  f2g1[1, 1] <- f2g1_bins_btn <- gbutton(text = "Select Bins File",
-                                        container = f2g1)
+  f2g1[1, 1] <- f2g1_bins_btn <- gbutton(
+    text = "Select Bins File",
+    container = f2g1
+  )
 
   f2g1[1, 2] <- f2g1_bins_lbl <- glabel(text = "", container = f2g1)
 
   addHandlerChanged(f2g1_bins_btn, handler = function(h, ...) {
-
-    .binsFiles <<- gfile(text = "Select Bins file...",
-                        type = "open",
-                        filter = list("text files" = list(mime.types = c("text/plain")),
-                                      "All files" = list(patterns = c("*"))),
-                        multi = FALSE)
+    .binsFiles <<- gfile(
+      text = "Select Bins file...",
+      type = "open",
+      filter = list(
+        "text files" = list(mime.types = c("text/plain")),
+        "All files" = list(patterns = c("*"))
+      ),
+      multi = FALSE
+    )
     if (!is.na(.binsFiles)) {
       svalue(f2g1_bins_lbl) <- basename(.binsFiles)
     }
-
   })
 
   # PANELS --------------------------------------------------------------------
 
-  f2g1[2, 1] <- f2g1_panels_btn <- gbutton(text = "Select Panels File",
-                                        container = f2g1)
+  f2g1[2, 1] <- f2g1_panels_btn <- gbutton(
+    text = "Select Panels File",
+    container = f2g1
+  )
 
   f2g1[2, 2] <- f2g1_panels_lbl <- glabel(text = "", container = f2g1)
 
   addHandlerChanged(f2g1_panels_btn, handler = function(h, ...) {
-
-    .panelsFiles <<- gfile(text = "Select Panels file...",
-                        type = "open",
-                        filter = list("text files" = list(mime.types = c("text/plain")),
-                                      "All files" = list(patterns = c("*"))),
-                        multi = FALSE)
+    .panelsFiles <<- gfile(
+      text = "Select Panels file...",
+      type = "open",
+      filter = list(
+        "text files" = list(mime.types = c("text/plain")),
+        "All files" = list(patterns = c("*"))
+      ),
+      multi = FALSE
+    )
 
     if (!is.na(.panelsFiles)) {
       svalue(f2g1_panels_lbl) <- basename(.panelsFiles)
     }
-
   })
 
   # READ AND COMBINE ----------------------------------------------------------
 
-  f2g1[3, 1] <- f2g1_read_btn <- gbutton(text = "Combine",
-                                          container = f2g1)
+  f2g1[3, 1] <- f2g1_read_btn <- gbutton(
+    text = "Combine",
+    container = f2g1
+  )
 
-  f2g1[3, 2] <- glabel(text = "Read and combine Bins and Panels files",
-                      container = f2g1)
+  f2g1[3, 2] <- glabel(
+    text = "Read and combine Bins and Panels files",
+    container = f2g1
+  )
 
   addHandlerChanged(f2g1_read_btn, handler = function(h, ...) {
-
     if (debug) {
       print("Bins file:")
       print(.binsFiles)
@@ -305,31 +323,33 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       enabled(f0_opt) <- FALSE
 
       # Read and combine files.
-      .newKitInfo <<- combineBinsAndPanels(bin = readBinsFile(.binsFiles),
-                           panel = readPanelsFile(.panelsFiles))
+      .newKitInfo <<- combineBinsAndPanels(
+        bin = readBinsFile(.binsFiles),
+        panel = readPanelsFile(.panelsFiles)
+      )
 
       # Update GUI.
       .update(kitInfo = .newKitInfo, addKit = TRUE)
-
     } else {
-
-      gmessage(msg = "One or several files was not found",
-               title = "File not found",
-               icon = "error",
-               parent = w)
-
+      gmessage(
+        msg = "One or several files was not found",
+        title = "File not found",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # FRAME 3 ###################################################################
 
-  f3 <- ggroup(horizontal = FALSE,
-               use.scrollwindow = TRUE,
-               expand = TRUE,
-               fill = "both",
-               spacing = 5,
-               container = gv)
+  f3 <- ggroup(
+    horizontal = FALSE,
+    use.scrollwindow = TRUE,
+    expand = TRUE,
+    fill = "both",
+    spacing = 5,
+    container = gv
+  )
 
   # Function for updating GUI with kits.
   .update <- function(kitInfo, addKit) {
@@ -367,10 +387,14 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     .f3g1[1, 2] <<- glabel(text = "Panel", container = .f3g1)
     .f3g1[1, 3] <<- glabel(text = "Short.Name", container = .f3g1)
     .f3g1[1, 4] <<- glabel(text = "Full.Name", container = .f3g1)
-    .f3g1[1, 5] <<- glabel(text = "List sex markers (separate by comma)",
-                          container = .f3g1)
-    .f3g1[1, 6] <<- glabel(text = "List quality sensors (separate by comma)",
-                          container = .f3g1)
+    .f3g1[1, 5] <<- glabel(
+      text = "List sex markers (separate by comma)",
+      container = .f3g1
+    )
+    .f3g1[1, 6] <<- glabel(
+      text = "List quality sensors (separate by comma)",
+      container = .f3g1
+    )
 
     # Loop over panel and add objects.
     for (p in seq(along = panel)) {
@@ -389,7 +413,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       } else {
         # Get current sex marker.
         sexMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p]
-                                            & kitInfo$Sex.Marker])
+        & kitInfo$Sex.Marker])
         if (length(sexMarkers) == 0) {
           # If no matching marker, set to no sex marker string.
           sexMarkers <- .noSexMarkerString
@@ -409,7 +433,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       } else {
         # Get current quality sensors.
         qsMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p]
-                                           & kitInfo$Quality.Sensor])
+        & kitInfo$Quality.Sensor])
         if (length(qsMarkers) == 0) {
           # If no matching marker, set to no qs marker string.
           qsMarkers <- .noQsMarkerString
@@ -436,27 +460,31 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .f3g1[p + 1, 4] <<- gedit(text = fullName[p], width = 40, container = .f3g1)
       .f3g1[p + 1, 5] <<- gedit(text = sexMarkers, width = 40, container = .f3g1)
       .f3g1[p + 1, 6] <<- gedit(text = qsMarkers, width = 20, container = .f3g1)
-
     }
-
   }
 
   # FRAME 4 ###################################################################
 
-  f4 <- gframe(text = "Save as",
-               horizontal = FALSE,
-               expand = FALSE,
-               spacing = 10,
-               container = gv)
+  f4 <- gframe(
+    text = "Save as",
+    horizontal = FALSE,
+    expand = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
   # SAVE ----------------------------------------------------------------------
 
-  f4_opt <- gradio(items = c("Append to kit file",
-                           "Overwrite kit file",
-                           "Save as data frame"),
-                   selected = 1,
-                   horizontal = FALSE,
-                   container = f4)
+  f4_opt <- gradio(
+    items = c(
+      "Append to kit file",
+      "Overwrite kit file",
+      "Save as data frame"
+    ),
+    selected = 1,
+    horizontal = FALSE,
+    container = f4
+  )
 
   f4_name_edt <- gedit(expand = TRUE, container = f4)
   enabled(f4_name_edt) <- FALSE
@@ -465,7 +493,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
 
   addHandlerChanged(f4_opt, handler = function(h, ...) {
-
     val_obj <- svalue(f4_opt, index = TRUE)
 
     if (debug) {
@@ -479,19 +506,15 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       # Update path.
       svalue(f1g1_file_edt) <- .filePath
-
     } else if (val_obj == 2) {
 
       # Disable.
       enabled(f4_name_edt) <- FALSE
-
     } else if (val_obj == 3) {
 
       # Enable.
       enabled(f4_name_edt) <- TRUE
-
     }
-
   })
 
   addHandlerClicked(f4_save_btn, handler = function(h, ...) {
@@ -535,7 +558,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         # Replace one or more space plus comma with just comma.
         qsTmp <- gsub("\\s+,", ",", qsTmp)
         qsMarkers[p] <- qsTmp
-
       }
 
       if (debug) {
@@ -554,7 +576,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       # Check if short name is missing.
       if (!any(missing)) {
-
         if (val_opt == 1) { # Append (add new kits).
           # Check if short name exist in kit file.
           exist <- shortName[!removeKit] %in% getKit()
@@ -573,7 +594,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
           enabled(f4_save_btn) <- FALSE
 
           for (p in seq(along = panel)) {
-
             if (debug) {
               print("Panel:")
               print(panel[p])
@@ -606,9 +626,11 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
             # Check for misspelled markers.
             ok <- currentSexMarkers %in% .newKitInfo$Marker[selPanel]
             if (!all(ok)) {
-              stop(paste("Given sex marker:",
-                         paste(currentSexMarkers[!ok], collapse = ","),
-                         "not found in", panel[p]))
+              stop(paste(
+                "Given sex marker:",
+                paste(currentSexMarkers[!ok], collapse = ","),
+                "not found in", panel[p]
+              ))
             }
 
             # Set quality sensor flag.
@@ -625,16 +647,16 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
             # Check for misspelled markers.
             ok <- currentQsMarkers %in% .newKitInfo$Marker[selPanel]
             if (!all(ok)) {
-              stop(paste("Given quality sensor:",
-                         paste(currentQsMarkers[!ok], collapse = ","),
-                         "not found in", panel[p]))
+              stop(paste(
+                "Given quality sensor:",
+                paste(currentQsMarkers[!ok], collapse = ","),
+                "not found in", panel[p]
+              ))
             }
-
           }
 
           # Remove kits if any.
           if (any(removeKit)) {
-
             if (debug) {
               print("panel:")
               print(panel)
@@ -652,7 +674,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
             for (p in seq(along = removePanel)) {
               .newKitInfo <<- .newKitInfo[.newKitInfo$Panel != removePanel[p], ]
             }
-
           }
 
           if (debug) {
@@ -669,20 +690,24 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
               print(head(.newKitInfo))
             }
             # .newKitInfo <<- rbind(.kitInfo, .newKitInfo)
-            write.table(x = .newKitInfo, file = .filePath,
-                        row.names = FALSE,
-                        append = TRUE,
-                        col.names = FALSE,
-                        quote = FALSE, sep = "\t")
+            write.table(
+              x = .newKitInfo, file = .filePath,
+              row.names = FALSE,
+              append = TRUE,
+              col.names = FALSE,
+              quote = FALSE, sep = "\t"
+            )
           } else if (val_opt == 2) {
             if (debug) {
               print("Save as kit file")
             }
-            write.table(x = .newKitInfo, file = .filePath,
-                        row.names = FALSE,
-                        append = FALSE,
-                        col.names = TRUE,
-                        quote = FALSE, sep = "\t")
+            write.table(
+              x = .newKitInfo, file = .filePath,
+              row.names = FALSE,
+              append = FALSE,
+              col.names = TRUE,
+              quote = FALSE, sep = "\t"
+            )
           } else if (val_opt == 3) {
             if (debug) {
               print("Save as data frame")
@@ -696,36 +721,33 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
           # Close GUI.
           dispose(w)
-
         } else {
+          message <- paste(
+            "A kit with short name",
+            shortName[exist][1],
+            "already exist!\n\n",
+            "Short name must be unique!"
+          )
 
-          message <- paste("A kit with short name",
-                           shortName[exist][1],
-                           "already exist!\n\n",
-                           "Short name must be unique!")
-
-          gmessage(message, title = "Duplicate short name",
-                   icon = "error",
-                   parent = w)
-
+          gmessage(message,
+            title = "Duplicate short name",
+            icon = "error",
+            parent = w
+          )
         }
-
       } else {
-
         message <- "A short name must be provided for all new kits"
 
-        gmessage(message, title = "Missing short name",
-                 icon = "error",
-                 parent = w)
-
+        gmessage(message,
+          title = "Missing short name",
+          icon = "error",
+          parent = w
+        )
       }
-
     }
-
   })
 
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

@@ -78,15 +78,16 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -101,39 +102,47 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     # Open help page for function.
     print(help("cropData_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
   g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
 
-  g0[1, 2] <- dataset_drp <- gcombobox(items = c("<Select data frame>",
-                                              listObjects(env = env,
-                                                          obj.class = "data.frame")),
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = g0,
-                                      ellipsize = "none")
+  g0[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select data frame>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples,", container = g0)
   g0[1, 4] <- g0_columns_lbl <- glabel(text = " 0 columns,", container = g0)
   g0[1, 5] <- g0_rows_lbl <- glabel(text = " 0 rows", container = g0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
-    ok <- checkDataset(name = val_obj, reqcol = NULL,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = NULL,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -144,11 +153,15 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       # Check for dropout dataset and warn.
       if ("Dropout" %in% names(.gData)) {
         message <- paste("Do not make subsets of a drop-out dataset before modelling!",
-                         "1) Make a subset from the original data.",
-                         "2) Run calculate dropout on that subset.",
-                         "3) Model drop-out from the new drop-out dataset.", sep = "\n  ")
-        gmessage(message, title = "Warning!",
-                 icon = "warning", parent = w)
+          "1) Make a subset from the original data.",
+          "2) Run calculate dropout on that subset.",
+          "3) Model drop-out from the new drop-out dataset.",
+          sep = "\n  "
+        )
+        gmessage(message,
+          title = "Warning!",
+          icon = "warning", parent = w
+        )
       }
 
       # Refresh column drop-down menu.
@@ -171,7 +184,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       # Update info:
       svalue(f1_min_lbl) <- " Min:"
       svalue(f1_max_lbl) <- " Max:"
-
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
@@ -188,25 +200,27 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       svalue(f3_samples_lbl) <- paste(" ", "<NA>", "samples,")
       svalue(f3_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(f3_rows_lbl) <- paste(" ", "<NA>", "rows")
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Column",
-               horizontal = TRUE,
-               spacing = 15,
-               container = gv)
+  f1 <- gframe(
+    text = "Column",
+    horizontal = TRUE,
+    spacing = 15,
+    container = gv
+  )
 
   glabel(text = "Select target column:", container = f1)
 
-  f1_column_drp <- gcombobox(items = "<Select column>",
-                             selected = 1,
-                             editable = FALSE,
-                             container = f1,
-                             ellipsize = "none")
+  f1_column_drp <- gcombobox(
+    items = "<Select column>",
+    selected = 1,
+    editable = FALSE,
+    container = f1,
+    ellipsize = "none"
+  )
 
   glabel(text = " Info:", container = f1)
   f1_min_lbl <- glabel(text = " Min:", container = f1)
@@ -214,13 +228,10 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   f1_na_chk <- gcheckbox(text = "Ignore NA for info", checked = TRUE, container = f1)
 
   addHandlerChanged(f1_na_chk, handler = function(h, ...) {
-
     .refresh_info()
-
   })
 
   addHandlerChanged(f1_column_drp, handler = function(h, ...) {
-
     val_column <- svalue(f1_column_drp)
 
     # Detect data type.
@@ -242,15 +253,16 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         .refresh_options()
       }
     }
-
   })
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f2_na_rm_chk <- gcheckbox(text = "Remove NA", checked = FALSE, container = f2)
 
@@ -258,57 +270,69 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   f2g1 <- glayout(container = f2, spacing = 5)
 
-  f2g1[1, 1] <- f2g1_task_opt <- gradio(items = c("Discard values", "Replace values"),
-                                            selected = 1,
-                                            container = f2g1)
+  f2g1[1, 1] <- f2g1_task_opt <- gradio(
+    items = c("Discard values", "Replace values"),
+    selected = 1,
+    container = f2g1
+  )
 
-  f2_items <- c("above", "above or equal to",
-                "below", "below or equal to",
-                "equal to", "not equal to",
-                "is NA", "is not NA",
-                "containing", "not containing")
+  f2_items <- c(
+    "above", "above or equal to",
+    "below", "below or equal to",
+    "equal to", "not equal to",
+    "is NA", "is not NA",
+    "containing", "not containing"
+  )
 
-  f2g1[1, 2] <- f2g1_operator_drp <- gcombobox(items = f2_items, container = f2g1,
-                                              ellipsize = "none")
+  f2g1[1, 2] <- f2g1_operator_drp <- gcombobox(
+    items = f2_items, container = f2g1,
+    ellipsize = "none"
+  )
 
   # Note: <Target> is only to create width of the widget.
   #       It will be replaced when a target column is selected.
-  f2g1[1, 3] <- f2g1_target_cbo <- gcombobox(items = "<Target value>",
-                                            selected = 1,
-                                            editable = TRUE,
-                                            container = f2g1,
-                                            ellipsize = "none")
+  f2g1[1, 3] <- f2g1_target_cbo <- gcombobox(
+    items = "<Target value>",
+    selected = 1,
+    editable = TRUE,
+    container = f2g1,
+    ellipsize = "none"
+  )
 
-  f2g1[1, 4] <- f2g1_new_lbl <- glabel(text = "with",
-                                      visible = FALSE,
-                                      anchor = c(0, -1),
-                                      container = f2g1)
+  f2g1[1, 4] <- f2g1_new_lbl <- glabel(
+    text = "with",
+    visible = FALSE,
+    anchor = c(0, -1),
+    container = f2g1
+  )
 
-  f2g1[1, 5] <- f2g1_new_edt <- gedit(text = "",
-                                     visible = FALSE,
-                                     width = 15,
-                                     container = f2g1)
+  f2g1[1, 5] <- f2g1_new_edt <- gedit(
+    text = "",
+    visible = FALSE,
+    width = 15,
+    container = f2g1
+  )
 
-  glabel(text = "Target column contain data of type:",
-         visible = FALSE, anchor = c(-1, -1), container = f2)
+  glabel(
+    text = "Target column contain data of type:",
+    visible = FALSE, anchor = c(-1, -1), container = f2
+  )
 
-  f2_type_opt <- gradio(items = c("Numeric", "Character"),
-                        horizontal = FALSE,
-                        selected = 1,
-                        container = f2)
+  f2_type_opt <- gradio(
+    items = c("Numeric", "Character"),
+    horizontal = FALSE,
+    selected = 1,
+    container = f2
+  )
 
   # HANDLERS ------------------------------------------------------------------
 
   addHandlerChanged(f2g1_task_opt, handler = function(h, ...) {
-
     .refresh_options()
-
   })
 
   addHandlerChanged(f2g1_operator_drp, handler = function(h, ...) {
-
     .refresh_options()
-
   })
 
   # BUTTON ####################################################################
@@ -317,7 +341,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
 
   addHandlerClicked(apply_btn, handler = function(h, ...) {
-
     val_column <- svalue(f1_column_drp)
     val_task <- svalue(f2g1_task_opt, index = TRUE)
     val_operator <- svalue(f2g1_operator_drp, index = TRUE)
@@ -376,7 +399,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     unblockHandlers(f3_save_btn)
 
     if (!is.null(.gData) && !is.null(.gData)) {
-
       if (debug) {
         print("Before action: .gData dim, str, head, tail:")
         print(dim(.gData))
@@ -397,7 +419,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         } else { # replace
           .gData[val_column][.gData[val_column] > val_target] <<- val_new
         }
-
       } else if (val_operator == 2) { # above or equal to
 
         if (val_task == 1) { # crop
@@ -405,7 +426,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         } else { # replace
           .gData[val_column][.gData[val_column] >= val_target] <<- val_new
         }
-
       } else if (val_operator == 3) { # below
 
         if (val_task == 1) { # crop
@@ -413,7 +433,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         } else { # replace
           .gData[val_column][.gData[val_column] < val_target] <<- val_new
         }
-
       } else if (val_operator == 4) { # below or equal to
 
         if (val_task == 1) { # crop
@@ -421,7 +440,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         } else { # replace
           .gData[val_column][.gData[val_column] <= val_target] <<- val_new
         }
-
       } else if (val_operator == 5) { # equal to
 
         if (val_task == 1) { # crop
@@ -429,7 +447,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         } else { # replace
           .gData[val_column][.gData[val_column] == val_target] <<- val_new
         }
-
       } else if (val_operator == 6) { # not equal to
 
         if (val_task == 1) { # crop
@@ -437,7 +454,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         } else { # replace
           .gData[val_column][.gData[val_column] != val_target] <<- val_new
         }
-
       } else if (val_operator == 7) { # is NA
 
         if (val_task == 1) { # crop
@@ -445,7 +461,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         } else { # replace
           .gData[val_column][is.na(.gData[val_column])] <<- val_new
         }
-
       } else if (val_operator == 8) { # is not NA
 
         if (val_task == 1) { # crop
@@ -453,7 +468,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         } else { # replace
           .gData[val_column][!is.na(.gData[val_column])] <<- val_new
         }
-
       } else if (val_operator == 9) { # containing
 
         if (val_task == 1) { # crop
@@ -463,7 +477,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
           sel <- is.na(.gData[[val_column]]) | !grepl(val_target, .gData[[val_column]], fixed = TRUE)
           .gData[val_column][sel, ] <<- val_new
         }
-
       } else if (val_operator == 10) { # not containing
 
         if (val_task == 1) { # crop
@@ -473,20 +486,25 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
           sel <- is.na(.gData[[val_column]]) | grepl(val_target, .gData[[val_column]], fixed = TRUE)
           .gData[val_column][sel, ] <<- val_new
         }
-
       }
 
       # Create key-value pairs to log.
-      keys <- list("data", "column", "na", "task", "operator",
-                   "target", "value", "type")
+      keys <- list(
+        "data", "column", "na", "task", "operator",
+        "target", "value", "type"
+      )
 
-      values <- list(.gDataName, val_column, val_na_rm, val_task, val_operator,
-                     val_target, val_new, val_type)
+      values <- list(
+        .gDataName, val_column, val_na_rm, val_task, val_operator,
+        val_target, val_new, val_type
+      )
 
       # Update audit trail.
-      .gData <- auditTrail(obj = .gData, key = keys, value = values,
-                            label = "cropData_gui", arguments = FALSE,
-                            package = "strvalidator")
+      .gData <- auditTrail(
+        obj = .gData, key = keys, value = values,
+        label = "cropData_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Update the current dataset to perform possible additional tasks.
       .gData <<- .gData
@@ -498,13 +516,12 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         print(head(.gData))
         print(tail(.gData))
       }
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
 
     # Change button.
@@ -521,15 +538,16 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     } else {
       svalue(f3_save_edt) <- paste(currentName, val_target, sep = "_")
     }
-
   })
 
   # FRAME 3 ###################################################################
 
-  f3 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f3 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f3)
 
@@ -542,7 +560,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   f3_rows_lbl <- glabel(text = " 0 rows", container = f3)
 
   addHandlerChanged(f3_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f3_save_edt)
     datanew <- .gData
 
@@ -561,13 +578,11 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     blockHandlers(f3_save_btn)
     svalue(f3_save_btn) <- "Saved!"
     unblockHandlers(f3_save_btn)
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
 
   .refresh_column_drp <- function() {
-
     if (debug) {
       print("Refresh column drop-down")
     }
@@ -576,7 +591,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     dfs <- names(.gData)
 
     if (!is.null(dfs)) {
-
       blockHandler(f1_column_drp)
 
       # Populate drop list.
@@ -586,7 +600,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       svalue(f1_column_drp, index = TRUE) <- 1
 
       unblockHandler(f1_column_drp)
-
     }
 
     if (debug) {
@@ -595,7 +608,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   }
 
   .refresh_info <- function() {
-
     if (debug) {
       print("Refresh info")
     }
@@ -608,17 +620,27 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
         # Update info:
         if (is.factor(.gData[, val_col])) {
-          svalue(f1_min_lbl) <- paste(" Min:",
-                                      min(as.character(.gData[, val_col]),
-                                                   na.rm = val_na))
-          svalue(f1_max_lbl) <- paste(" Max:",
-                                      max(as.character(.gData[, val_col]),
-                                                   na.rm = val_na))
+          svalue(f1_min_lbl) <- paste(
+            " Min:",
+            min(as.character(.gData[, val_col]),
+              na.rm = val_na
+            )
+          )
+          svalue(f1_max_lbl) <- paste(
+            " Max:",
+            max(as.character(.gData[, val_col]),
+              na.rm = val_na
+            )
+          )
         } else {
-          svalue(f1_min_lbl) <- paste(" Min:",
-                                      min(.gData[, val_col], na.rm = val_na))
-          svalue(f1_max_lbl) <- paste(" Max:",
-                                      max(.gData[, val_col], na.rm = val_na))
+          svalue(f1_min_lbl) <- paste(
+            " Min:",
+            min(.gData[, val_col], na.rm = val_na)
+          )
+          svalue(f1_max_lbl) <- paste(
+            " Max:",
+            max(.gData[, val_col], na.rm = val_na)
+          )
         }
 
         # Update 'Save As'
@@ -626,7 +648,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         svalue(f3_samples_lbl) <- paste(" ", samples, "samples,")
         svalue(f3_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
         svalue(f3_rows_lbl) <- paste(" ", nrow(.gData), "rows")
-
       } else {
 
         # Update info:
@@ -642,11 +663,9 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     if (debug) {
       print("Info refreshed!")
     }
-
   }
 
   .refresh_options <- function() {
-
     if (debug) {
       print("Refresh options")
     }
@@ -663,14 +682,12 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
           # Select default value.
           svalue(f2g1_target_cbo, index = TRUE) <- 1
-
         }
       }
     }
 
     # Crop.
     if (val_col == 1) {
-
       enabled(f2g1_new_lbl) <- FALSE
       enabled(f2g1_new_edt) <- FALSE
 
@@ -682,9 +699,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       } else {
         enabled(f2g1_target_cbo) <- TRUE
       }
-
     } else {
-
       enabled(f2g1_new_lbl) <- TRUE
       enabled(f2g1_new_edt) <- TRUE
 
@@ -701,7 +716,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     if (debug) {
       print("Options refreshed!")
     }
-
   }
 
   .loadSavedSettings <- function() {
@@ -747,21 +761,18 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_cropData_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_cropData_gui_na", value = svalue(f1_na_chk), envir = env)
       assign(x = ".strvalidator_cropData_gui_na_rm", value = svalue(f2_na_rm_chk), envir = env)
       assign(x = ".strvalidator_cropData_gui_task", value = svalue(f2g1_task_opt), envir = env)
       assign(x = ".strvalidator_cropData_gui_operator", value = svalue(f2g1_operator_drp), envir = env)
       assign(x = ".strvalidator_cropData_gui_new", value = svalue(f2g1_new_edt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_cropData_gui_savegui", envir = env, inherits = FALSE)) {
@@ -791,7 +802,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################

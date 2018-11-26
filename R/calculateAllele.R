@@ -46,7 +46,6 @@
 
 calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
                             debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("str(data):")
@@ -69,17 +68,20 @@ calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
   # Check if slim format:
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (sum(grepl("Height", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (sum(grepl("Size", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check logical.
@@ -120,7 +122,6 @@ calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
       message("'kit' is not provided. Autodetect kit...")
       kit <- detectKit(data = data, index = FALSE, debug = debug)[1]
       message("Using first detected kit '", kit, "' to define sex markers.")
-
     }
 
     # Get sex markes.
@@ -128,14 +129,11 @@ calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
     message("Defined markers: ", paste(sexMarker, collapse = ", "))
 
     for (m in seq(along = sexMarker)) {
-
       n1 <- nrow(data)
       data <- data[!data$Marker == sexMarker[m], ]
       n2 <- nrow(data)
       message("Removed ", n1 - n2, " rows with sex marker ", sexMarker[m])
-
     }
-
   } # End if remove sex markers.
 
   # Convert to data.table.
@@ -176,32 +174,37 @@ calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
     message("Counts number of peaks for each allele by marker.")
     message("Calculates summary statistics for both 'Size' and 'Height'.")
 
-    res <- DT[, list("Peaks" = .N, "Size.Min" = min(Size), "Size.Mean" = mean(Size),
-                         "Size.Max" = max(Size), "Height.Min" = min(Height),
-                         "Height.Mean" = mean(Height), "Height.Max" = max(Height)),
-                  by = c("Marker", "Allele")]
-
+    res <- DT[, list(
+      "Peaks" = .N, "Size.Min" = min(Size), "Size.Mean" = mean(Size),
+      "Size.Max" = max(Size), "Height.Min" = min(Height),
+      "Height.Mean" = mean(Height), "Height.Max" = max(Height)
+    ),
+    by = c("Marker", "Allele")
+    ]
   } else if ("Height" %in% names(DT)) {
     message("Counts number of peaks for each allele by marker.")
     message("Calculates summary statistics for 'Height'.")
 
-    res <- DT[, list("Peaks" = .N, "Height.Min" = min(Height),
-                         "Height.Mean" = mean(Height), "Height.Max" = max(Height)),
-                  by = c("Marker", "Allele")]
-
+    res <- DT[, list(
+      "Peaks" = .N, "Height.Min" = min(Height),
+      "Height.Mean" = mean(Height), "Height.Max" = max(Height)
+    ),
+    by = c("Marker", "Allele")
+    ]
   } else if ("Size" %in% names(DT)) {
     message("Counts number of peaks for each allele by marker.")
     message("Calculates summary statistics for 'Size'.")
 
-    res <- DT[, list("Peaks" = .N, "Size.Min" = min(Size),
-                     "Size.Mean" = mean(Size), "Size.Max" = max(Size)),
-              by = c("Marker", "Allele")]
-
+    res <- DT[, list(
+      "Peaks" = .N, "Size.Min" = min(Size),
+      "Size.Mean" = mean(Size), "Size.Max" = max(Size)
+    ),
+    by = c("Marker", "Allele")
+    ]
   } else {
     message("Counts number of peaks for each allele by marker.")
 
     res <- DT[, list("Peaks" = .N), by = c("Marker", "Allele")]
-
   }
 
   if (debug) {
@@ -234,5 +237,4 @@ calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
   }
 
   return(res)
-
 }

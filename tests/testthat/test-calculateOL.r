@@ -26,8 +26,10 @@ test_that("calculateOL", {
   # Test excluding virtual alleles, actual frequencies.
 
   # Analyse dataframe.
-  res <- calculateOL(kit = kitInfo, db = database,
-                     virtual = FALSE, limit = FALSE, debug = FALSE)
+  res <- calculateOL(
+    kit = kitInfo, db = database,
+    virtual = FALSE, limit = FALSE, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -59,8 +61,10 @@ test_that("calculateOL", {
   # Test including virtual alleles, actual frequencies.
 
   # Analyse dataframe.
-  res <- calculateOL(kit = kitInfo, db = database,
-                     virtual = TRUE, limit = FALSE, debug = FALSE)
+  res <- calculateOL(
+    kit = kitInfo, db = database,
+    virtual = TRUE, limit = FALSE, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -91,8 +95,10 @@ test_that("calculateOL", {
   # Test excluding virtual alleles, using minimum frequency.
 
   # Analyse dataframe.
-  res <- calculateOL(kit = kitInfo, db = database,
-                     virtual = FALSE, limit = TRUE, debug = FALSE)
+  res <- calculateOL(
+    kit = kitInfo, db = database,
+    virtual = FALSE, limit = TRUE, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -123,8 +129,10 @@ test_that("calculateOL", {
   # Test including virtual alleles, using minimum frequency.
 
   # Analyse dataframe.
-  res <- calculateOL(kit = kitInfo, db = database,
-                     virtual = TRUE, limit = TRUE, debug = FALSE)
+  res <- calculateOL(
+    kit = kitInfo, db = database,
+    virtual = TRUE, limit = TRUE, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -156,8 +164,10 @@ test_that("calculateOL", {
   # Test excluding virtual alleles, actual frequencies.
 
   # Analyse dataframe.
-  res <- calculateOL(kit = kitInfo2, db = database2,
-                     virtual = FALSE, limit = FALSE, debug = FALSE)
+  res <- calculateOL(
+    kit = kitInfo2, db = database2,
+    virtual = FALSE, limit = FALSE, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -189,8 +199,10 @@ test_that("calculateOL", {
   # Test including virtual alleles, actual frequencies.
 
   # Analyse dataframe.
-  res <- calculateOL(kit = kitInfo2, db = database2,
-                     virtual = TRUE, limit = FALSE, debug = FALSE)
+  res <- calculateOL(
+    kit = kitInfo2, db = database2,
+    virtual = TRUE, limit = FALSE, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -221,8 +233,10 @@ test_that("calculateOL", {
   # Test excluding virtual alleles, using minimum frequency.
 
   # Analyse dataframe.
-  res <- calculateOL(kit = kitInfo2, db = database2,
-                     virtual = FALSE, limit = TRUE, debug = FALSE)
+  res <- calculateOL(
+    kit = kitInfo2, db = database2,
+    virtual = FALSE, limit = TRUE, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -253,8 +267,10 @@ test_that("calculateOL", {
   # Test including virtual alleles, using minimum frequency.
 
   # Analyse dataframe.
-  res <- calculateOL(kit = kitInfo2, db = database2,
-                     virtual = TRUE, limit = TRUE, debug = FALSE)
+  res <- calculateOL(
+    kit = kitInfo2, db = database2,
+    virtual = TRUE, limit = TRUE, debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -280,6 +296,4 @@ test_that("calculateOL", {
   # Check result.
   expect_that(length(unique(res$Total)), equals(1))
   expect_that(round(unique(res$Total), 4), equals(0))
-
-
 })

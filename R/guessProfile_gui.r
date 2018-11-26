@@ -68,14 +68,15 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 15,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -90,39 +91,49 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     # Open help page for function.
     print(help("guessProfile_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Datasets",
-                   horizontal = FALSE,
-                   spacing = 10,
-                   container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- f0g0_dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                 listObjects(env = env,
-                                                             obj.class = "data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g0,
-                                         ellipsize = "none")
+  f0g0[1, 2] <- f0g0_dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(text = " 0 samples",
-                                              container = f0g0)
+  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(
+    text = " 0 samples",
+    container = f0g0
+  )
 
   addHandlerChanged(f0g0_dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0g0_dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -132,7 +143,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       samples <- length(unique(.gData$Sample.Name))
       svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
       svalue(f2_save_edt) <- paste(val_obj, "_profile", sep = "")
-
     } else {
 
       # Reset components.
@@ -141,44 +151,52 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       svalue(f0g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
       svalue(f0g0_dataset_drp, index = TRUE) <- 1
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-                   horizontal = FALSE,
-                   spacing = 10,
-                   container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
   f1g1 <- glayout(container = f1, spacing = 5)
 
   f1g1[1, 1] <- glabel(text = "Accepted ratio >=", container = f1g1)
 
-  f1g1[1, 2] <- f1g1_ratio_spb <- gspinbutton(from = 0, to = 1,
-                                            by = 0.01, value = 0.6,
-                                            container = f1g1)
+  f1g1[1, 2] <- f1g1_ratio_spb <- gspinbutton(
+    from = 0, to = 1,
+    by = 0.01, value = 0.6,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "Accepted peak height >=", container = f1g1)
 
   f1g1[2, 2] <- f1g1_height_edt <- gedit(text = "100", width = 6, container = f1g1)
 
-  f1g1[3, 1] <- f1g1_na_chk <- gcheckbox(text = "Discard NA rows",
-                                   checked = FALSE,
-                                   container = f1g1)
+  f1g1[3, 1] <- f1g1_na_chk <- gcheckbox(
+    text = "Discard NA rows",
+    checked = FALSE,
+    container = f1g1
+  )
 
-  f1g1[4, 1] <- f1g1_ol_chk <- gcheckbox(text = "Ignore off-ladder (OL) alleles",
-                                        checked = FALSE,
-                                        container = f1g1)
+  f1g1[4, 1] <- f1g1_ol_chk <- gcheckbox(
+    text = "Ignore off-ladder (OL) alleles",
+    checked = FALSE,
+    container = f1g1
+  )
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -215,12 +233,14 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       unblockHandlers(check_btn)
       enabled(check_btn) <- FALSE
 
-      datanew <- guessProfile(data = val_data,
-                              ratio = val_ratio,
-                              height = val_height,
-                              na.rm = val_NA,
-                              ol.rm = val_OL,
-                              debug = debug)
+      datanew <- guessProfile(
+        data = val_data,
+        ratio = val_ratio,
+        height = val_height,
+        na.rm = val_NA,
+        ol.rm = val_OL,
+        debug = debug
+      )
 
       # Create key-value pairs to log.
       keys <- list("data", "ratio", "height", "na.rm", "ol.rm")
@@ -228,9 +248,11 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       values <- list(val_name_data, val_ratio, val_height, val_NA, val_OL)
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "guessProfile_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "guessProfile_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -242,16 +264,14 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
       # Close GUI.
       dispose(w)
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -296,20 +316,17 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_guessProfile_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_guessProfile_gui_ratio", value = svalue(f1g1_ratio_spb), envir = env)
       assign(x = ".strvalidator_guessProfile_gui_height", value = svalue(f1g1_height_edt), envir = env)
       assign(x = ".strvalidator_guessProfile_gui_na", value = svalue(f1g1_na_chk), envir = env)
       assign(x = ".strvalidator_guessProfile_gui_ol", value = svalue(f1g1_ol_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_guessProfile_gui_savegui", envir = env, inherits = FALSE)) {
@@ -336,7 +353,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -347,5 +363,4 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

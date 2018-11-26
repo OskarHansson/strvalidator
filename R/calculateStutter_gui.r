@@ -73,15 +73,16 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-              spacing = 5,
-              use.scrollwindow = FALSE,
-              container = w,
-              expand = FALSE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = FALSE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -96,15 +97,16 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     # Open help page for function.
     print(help("calculateStutter_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
@@ -112,24 +114,31 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- f0_dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                              listObjects(env = env,
-                                                          obj.class = "data.frame")),
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = f0g0,
-                                      ellipsize = "none")
+  f0g0[1, 2] <- f0_dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
   f0g0[1, 3] <- f0_samples_lbl <- glabel(text = " 0 samples", container = f0g0)
 
   addHandlerChanged(f0_dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0_dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -143,7 +152,6 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       kitIndex <- detectKit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(f2_kit_drp, index = TRUE) <- kitIndex
-
     } else {
 
       # Reset components.
@@ -152,31 +160,36 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       svalue(f0_dataset_drp, index = TRUE) <- 1
       svalue(f0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-
     }
-
   })
 
   f0g0[2, 1] <- glabel(text = "Select reference dataset:", container = f0g0)
 
-  f0g0[2, 2] <- f0_refset_drp <- gcombobox(items = c("<Select dataset>",
-                                             listObjects(env = env,
-                                                         obj.class = "data.frame")),
-                                     selected = 1,
-                                     editable = FALSE,
-                                     container = f0g0,
-                                     ellipsize = "none")
+  f0g0[2, 2] <- f0_refset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
   f0g0[2, 3] <- f0_ref_lbl <- glabel(text = " 0 references", container = f0g0)
 
   addHandlerChanged(f0_refset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0_refset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -185,7 +198,6 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       .gRefName <<- val_obj
       refs <- length(unique(.gRef$Sample.Name))
       svalue(f0_ref_lbl) <- paste("", refs, "references")
-
     } else {
 
       # Reset components.
@@ -193,9 +205,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       .gRefName <<- NULL
       svalue(f0_refset_drp, index = TRUE) <- 1
       svalue(f0_ref_lbl) <- " 0 references"
-
     }
-
   })
 
   # CHECK ---------------------------------------------------------------------
@@ -213,93 +223,117 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     val_ref <- .gRef
 
     if (!is.null(.gData) || !is.null(.gRef)) {
+      chksubset_w <- gwindow(
+        title = "Check subsetting",
+        visible = FALSE, name = title,
+        width = NULL, height = NULL, parent = w,
+        handler = NULL, action = NULL
+      )
 
-      chksubset_w <- gwindow(title = "Check subsetting",
-                             visible = FALSE, name = title,
-                             width = NULL, height = NULL, parent = w,
-                             handler = NULL, action = NULL)
+      chksubset_txt <- checkSubset(
+        data = val_data,
+        ref = val_ref,
+        console = FALSE,
+        ignore.case = TRUE,
+        word = FALSE
+      )
 
-      chksubset_txt <- checkSubset(data = val_data,
-                                   ref = val_ref,
-                                   console = FALSE,
-                                   ignore.case = TRUE,
-                                   word = FALSE)
-
-      gtext(text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
-             wrap = FALSE, container = chksubset_w)
+      gtext(
+        text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
+        wrap = FALSE, container = chksubset_w
+      )
 
       visible(chksubset_w) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe("Options", horizontal = FALSE, container = gv)
 
-  glabel(text = "Calculate stutter ratio within the the following analysis range:",
-                      container = f1, anchor = c(-1, 0))
+  glabel(
+    text = "Calculate stutter ratio within the the following analysis range:",
+    container = f1, anchor = c(-1, 0)
+  )
 
-  f1g1 <- ggroup(horizontal = TRUE,
-               spacing = 5,
-               use.scrollwindow = FALSE,
-               container = f1,
-               expand = FALSE)
+  f1g1 <- ggroup(
+    horizontal = TRUE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = f1,
+    expand = FALSE
+  )
 
-  f1g1_range_b_spb <- gspinbutton(from = 0, to = 3, by = 1,
-                            value = 1, digits = 0,
-                            container = f1g1)
+  f1g1_range_b_spb <- gspinbutton(
+    from = 0, to = 3, by = 1,
+    value = 1, digits = 0,
+    container = f1g1
+  )
 
   glabel(text = "backward stutters to", container = f1g1, anchor = c(-1, 0))
 
-  f1g1_range_f_spb <- gspinbutton(from = 0, to = 3, by = 1,
-                              value = 1, digits = 0,
-                              container = f1g1)
+  f1g1_range_f_spb <- gspinbutton(
+    from = 0, to = 3, by = 1,
+    value = 1, digits = 0,
+    container = f1g1
+  )
 
   glabel(text = "forward stutters.", container = f1g1, anchor = c(-1, 0))
 
-  glabel(text = "NB! Additive effects outside the analysis range cannot be controlled.",
-         container = f1, anchor = c(-1, 0))
-  glabel(text = "A narrow range like 0 to +1 can be greately affected by neighbouring -1 stutters.",
-         container = f1, anchor = c(-1, 0))
+  glabel(
+    text = "NB! Additive effects outside the analysis range cannot be controlled.",
+    container = f1, anchor = c(-1, 0)
+  )
+  glabel(
+    text = "A narrow range like 0 to +1 can be greately affected by neighbouring -1 stutters.",
+    container = f1, anchor = c(-1, 0)
+  )
 
   interference_f <- gframe("Level of interference within the given range",
-                           horizontal = FALSE, container = gv)
+    horizontal = FALSE, container = gv
+  )
 
-  options <- c("no overlap between stutters and alleles",
-               "stutter-stutter interference allowed",
-               "stutter-allele interference allowed")
+  options <- c(
+    "no overlap between stutters and alleles",
+    "stutter-stutter interference allowed",
+    "stutter-allele interference allowed"
+  )
 
-  interference_opt <- gradio(items = options,
-                       selected = 1,
-                       horizontal = FALSE,
-                       container = interference_f)
+  interference_opt <- gradio(
+    items = options,
+    selected = 1,
+    horizontal = FALSE,
+    container = interference_f
+  )
 
   # FRAME 3 ###################################################################
 
   f3 <- gframe("Replace 'false' stutters", horizontal = FALSE, expand = TRUE, container = gv)
 
-  f3g1 <- ggroup(horizontal = FALSE,
-                 spacing = 5,
-                 use.scrollwindow = FALSE,
-                 container = f3,
-                 expand = TRUE)
+  f3g1 <- ggroup(
+    horizontal = FALSE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = f3,
+    expand = TRUE
+  )
 
   # Create default data frame.
   f3_replace_val <- c(-1.9, -1.8, -1.7, -0.9, -0.8, -0.7, 0.9, 0.8, 0.7)
   f3_by_val <- c(-1.3, -1.2, -1.1, -0.3, -0.2, -0.1, 0.3, 0.2, 0.1)
-  f3_default <- data.frame(False.Stutter = f3_replace_val,
-                           True.Stutter = f3_by_val,
-                           Replace = TRUE,
-                           stringsAsFactors = FALSE)
+  f3_default <- data.frame(
+    False.Stutter = f3_replace_val,
+    True.Stutter = f3_by_val,
+    Replace = TRUE,
+    stringsAsFactors = FALSE
+  )
 
   f3_default_gdf <- gdf(items = f3_default, container = f3g1, expand = TRUE)
 
@@ -308,10 +342,12 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -319,8 +355,10 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   glabel(text = " Kit attribute:", container = f2)
 
-  f2_kit_drp <- gcombobox(items = getKit(), selected = 1,
-                          editable = FALSE, container = f2, ellipsize = "none")
+  f2_kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = f2, ellipsize = "none"
+  )
 
 
   # BUTTON ####################################################################
@@ -359,7 +397,6 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     }
 
     if (!is.null(val_data) & !is.null(val_ref)) {
-
       if (debug) {
         print("val_data")
         print(head(val_data))
@@ -384,27 +421,35 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       enabled(calculate_btn) <- FALSE
 
       # Calculate stutter.
-      datanew <- calculateStutter(data = val_data, ref = val_ref,
-                                  back = val_back, forward = val_forward,
-                                  interference = val_interference,
-                                  replace.val = val_replace,
-                                  by.val = val_by,
-                                  debug = debug)
+      datanew <- calculateStutter(
+        data = val_data, ref = val_ref,
+        back = val_back, forward = val_forward,
+        interference = val_interference,
+        replace.val = val_replace,
+        by.val = val_by,
+        debug = debug
+      )
 
       # Add attributes to result.
       attr(datanew, which = "kit") <- val_kit
 
       # Create key-value pairs to log.
-      keys <- list("data", "ref", "back", "forward",
-                   "interference", "replace.val", "by.val")
+      keys <- list(
+        "data", "ref", "back", "forward",
+        "interference", "replace.val", "by.val"
+      )
 
-      values <- list(val_name_data, val_name_ref, val_back, val_forward,
-                     val_interference, val_replace, val_by)
+      values <- list(
+        val_name_data, val_name_ref, val_back, val_forward,
+        val_interference, val_replace, val_by
+      )
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateStutter_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateStutter_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -417,17 +462,15 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "A dataset and a reference dataset must be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -472,20 +515,17 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateStutter_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateStutter_gui_back", value = svalue(f1g1_range_b_spb), envir = env)
       assign(x = ".strvalidator_calculateStutter_gui_forward", value = svalue(f1g1_range_f_spb), envir = env)
       assign(x = ".strvalidator_calculateStutter_gui_interference", value = svalue(interference_opt), envir = env)
       assign(x = ".strvalidator_calculateStutter_gui_replace", value = f3_default_gdf[], envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateStutter_gui_savegui", envir = env, inherits = FALSE)) {
@@ -512,7 +552,6 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -523,5 +562,4 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

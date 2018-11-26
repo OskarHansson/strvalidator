@@ -66,17 +66,18 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
     chkMarkers <- unique(data$Marker)
     if (!all(chkMarkers %in% names(db))) {
       message(paste("Marker(s) ", paste(chkMarkers[!chkMarkers %in% names(db)], collapse = ", "),
-                    " not found in frequency database!",
-                    "\nA frequency of 5/2N will be used as an estimate for missing alleles/markers.",
-                    sep = ""))
+        " not found in frequency database!",
+        "\nA frequency of 5/2N will be used as an estimate for missing alleles/markers.",
+        sep = ""
+      ))
     }
 
     # Check if 'N' (size of frequency databse) is available.
     if (is.na(db$N[1])) {
       message(paste("'N' not found in frequency database!",
-                    "\nA frequency of 0 will be used for missing alleles/markers.",
-                    sep = ""))
-
+        "\nA frequency of 0 will be used for missing alleles/markers.",
+        sep = ""
+      ))
     }
   }
 
@@ -95,7 +96,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
   # Create penalty matrix.
   if (!is.null(penalty)) {
-
     if (debug) {
       print("Creating penalty matrix...")
     }
@@ -115,7 +115,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
       # Construct a matrix row.
       mrow[[i]] <- c(rev(penalty[a:b]), NA, penalty[c:d])
-
     }
     # Construct matrix.
     mpenalty <- matrix(unlist(mrow), nrow = msize)
@@ -123,7 +122,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
     if (debug) {
       print(mpenalty)
     }
-
   }
 
   # Get kits.
@@ -170,7 +168,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
     # Loop over all colors. This loop is the color being compared.
     for (c in seq(along = colors)) {
-
       if (debug) {
         print(paste("Analyzing color", colors[c]))
       }
@@ -203,7 +200,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
         if (debug) {
           print("Virtual alleles removed for current colour!")
         }
-
       }
 
       # c2<-2
@@ -212,7 +208,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
         # Do not compare to same color.
         if (colors[c] != colors[c2]) {
-
           if (debug) {
             print(paste("Comparing to", colors[c2]))
           }
@@ -238,7 +233,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
             if (debug) {
               print("Virtual alleles removed for comparing colour!")
             }
-
           }
 
           # Get maximum size bins to compare to.
@@ -253,16 +247,17 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
             if (debug) {
               print(paste("Checking allele ", cAllele,
-                          " in marker ", cMarker, ".",
-                          sep = ""))
+                " in marker ", cMarker, ".",
+                sep = ""
+              ))
             }
 
             # Exit when bin in color is > max size in color2.
             if (xUpper[x] > xMax2) {
-#               if(debug){
-#                 print(paste("Break at", xLower2[x2],
-#                             ", current bin is larger than remaining bins."))
-#               }
+              #               if(debug){
+              #                 print(paste("Break at", xLower2[x2],
+              #                             ", current bin is larger than remaining bins."))
+              #               }
               break
             }
 
@@ -270,16 +265,16 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
             for (x2 in which(xUpper2 > xLower[x])) {
               # Compare bin in color with all bins in color2.
 
-#               if(debug){
-#                 print(paste("Enter at", xLower2[x2]))
-#               }
+              #               if(debug){
+              #                 print(paste("Enter at", xLower2[x2]))
+              #               }
 
               # Exit when bin in color2 is > current bin size in color.
               if (xLower2[x2] > xUpper[x]) {
-#                 if(debug){
-#                   print(paste("Break at", xLower2[x2],
-#                               ", remaining bins are larger than current bin."))
-#                 }
+                #                 if(debug){
+                #                   print(paste("Break at", xLower2[x2],
+                #                               ", remaining bins are larger than current bin."))
+                #                 }
                 break
               }
 
@@ -320,43 +315,39 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
                     # Check if minimum frequency could be estimated.
                     if (is.na(freq)) {
-
                       freq <- 0
 
                       warning(paste("Marker ", cMarker, ": ", cAllele,
-                                    " - 'N' not found in frequency database.",
-                                    " Using a frequency of ", freq, sep = ""))
-
+                        " - 'N' not found in frequency database.",
+                        " Using a frequency of ", freq,
+                        sep = ""
+                      ))
                     } else {
-
                       warning(paste("Marker ", cMarker, ": ", cAllele,
-                                    " - No frequency found in frequency database.",
-                                    " Using a frequency of ", freq,
-                                    " (5/2N) as an estimate!", sep = ""))
-
+                        " - No frequency found in frequency database.",
+                        " Using a frequency of ", freq,
+                        " (5/2N) as an estimate!",
+                        sep = ""
+                      ))
                     }
-
                   } else {
 
                     # Adjust overlap score.
                     bp <- bp * freq
-
                   }
-
                 }
 
                 # Sum total overlap score.
                 totalOverlap <- totalOverlap + bp
 
                 if (debug) {
-                  print(paste(bp, "basepair overlap in", cMarker,
-                              "for allele", cAllele))
+                  print(paste(
+                    bp, "basepair overlap in", cMarker,
+                    "for allele", cAllele
+                  ))
                 }
-
               }
-
             }
-
           }
 
           if (debug) {
@@ -365,16 +356,12 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
           # Same color.
           overlapMatrix[c, c2] <- totalOverlap
-
         } else {
 
           # Same color.
           overlapMatrix[c, c2] <- NA
-
         }
-
       } # Color loop 2 ends!
-
     } # Color loop 1 ends!
 
     if (debug) {
@@ -390,7 +377,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
         print("penalty matrix:")
         print(mpenalty)
       }
-
     }
 
     # Create data frame.
@@ -411,8 +397,7 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
     # Combine with previous result.
     dfRes <- plyr::rbind.fill(dfRes, dfKit)
-
-   } # Kit loop ends!
+  } # Kit loop ends!
 
   # Update audit trail.
   dfRes <- auditTrail(obj = dfRes, f.call = match.call(), package = "strvalidator")
@@ -423,5 +408,4 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
   }
 
   return(dfRes)
-
 }

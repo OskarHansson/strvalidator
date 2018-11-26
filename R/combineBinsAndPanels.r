@@ -36,7 +36,6 @@
 #'
 
 combineBinsAndPanels <- function(bin, panel) {
-
   kit <- bin
 
   # Add new columns.
@@ -82,9 +81,7 @@ combineBinsAndPanels <- function(bin, panel) {
       # Marker size range max.
       kit$Marker.Max[kit$Panel == binPanel[p] & kit$Marker == binMarker[m]] <-
         panel[panel$Panel == binPanel[p] & panel$Marker == binMarker[m], ]$Marker.Max
-
     }
-
   }
 
   # Estimate marker offset by taking the smallest ladder fragment.
@@ -130,11 +127,8 @@ combineBinsAndPanels <- function(bin, panel) {
 
       # Add new info for current marker in current panel.
       kit$Offset[selPanel & selMarker] <- markerOffset
-
     }
-
   }
 
   return(kit)
-
 }

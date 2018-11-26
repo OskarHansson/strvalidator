@@ -66,15 +66,16 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 15,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -89,39 +90,49 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Open help page for function.
     print(help("addSize_gui", help_type = "html"))
-
   })
 
   # DATASET ###################################################################
 
-  f0 <- gframe(text = "Dataset and kit",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset and kit",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f0g1 <- glayout(container = f0, spacing = 1)
 
   f0g1[1, 1] <- glabel(text = "Select dataset:", container = f0g1)
 
-  f0g1[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                listObjects(env = env,
-                                                            obj.class = "data.frame")),
-                                        selected = 1,
-                                        editable = FALSE,
-                                        container = f0g1,
-                                        ellipsize = "none")
+  f0g1[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g1,
+    ellipsize = "none"
+  )
 
-  f0g1[1, 3] <- dataset_samples_lbl <- glabel(text = " 0 samples",
-                                              container = f0g1)
+  f0g1[1, 3] <- dataset_samples_lbl <- glabel(
+    text = " 0 samples",
+    container = f0g1
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -138,7 +149,6 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         print("Detected kit index")
         print(.gKit)
       }
-
     } else {
 
       # Reset components.
@@ -146,20 +156,20 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-
     }
-
   })
 
   # KIT -----------------------------------------------------------------------
 
   f0g1[2, 1] <- glabel(text = "Kit:", container = f0g1)
 
-  kit_drp <- gcombobox(items = getKit(),
-                       selected = 1,
-                       editable = FALSE,
-                       container = f0g1,
-                       ellipsize = "none")
+  kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = f0g1,
+    ellipsize = "none"
+  )
 
   f0g1[2, 2] <- kit_drp
 
@@ -167,22 +177,28 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # OPTIONS -----------------------------------------------------------------------
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_items <- c("Get size as defined in bins file (NA if not defined)",
-                "Calculate an estimate from locus offset and number of repeats")
+  f1_items <- c(
+    "Get size as defined in bins file (NA if not defined)",
+    "Calculate an estimate from locus offset and number of repeats"
+  )
 
   f1_size_opt <- gradio(items = f1_items, selected = 2, container = f1)
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -217,12 +233,10 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       # Get kit with size information.
       val_kitinfo <- getKit(kit = val_kit, what = "Size")
-
     } else {
 
       # Get kit with offset and repeat information.
       val_kitinfo <- getKit(kit = val_kit, what = "Offset")
-
     }
 
     # Change button.
@@ -231,8 +245,10 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     unblockHandlers(add_btn)
     enabled(add_btn) <- FALSE
 
-    datanew <- addSize(data = val_data, kit = val_kitinfo,
-                       bins = val_bins, debug = debug)
+    datanew <- addSize(
+      data = val_data, kit = val_kitinfo,
+      bins = val_bins, debug = debug
+    )
 
     # Add attributes to result.
     attr(datanew, which = "kit") <- val_kit
@@ -243,16 +259,17 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     values <- list(val_data_name, val_kit, val_bins)
 
     # Update audit trail.
-    datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                          label = "addSize_gui", arguments = FALSE,
-                          package = "strvalidator")
+    datanew <- auditTrail(
+      obj = datanew, key = keys, value = values,
+      label = "addSize_gui", arguments = FALSE,
+      package = "strvalidator"
+    )
 
     # Save data.
     saveObject(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
     dispose(w)
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -288,17 +305,14 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_addSize_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_addSize_gui_bins", value = svalue(f1_size_opt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_addSize_gui_savegui", envir = env, inherits = FALSE)) {
@@ -316,7 +330,6 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -327,5 +340,4 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

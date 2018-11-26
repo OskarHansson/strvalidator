@@ -44,7 +44,7 @@ test_that("calculateConcordance", {
   # TEST 01 -------------------------------------------------------------------
   # Test all differences with default settings.
 
-    # List with dataset.
+  # List with dataset.
   dataList <- list(x1, x2, x3, x4)
 
   # Analyse dataframe.
@@ -175,9 +175,11 @@ test_that("calculateConcordance", {
   dataList <- list(x1, x2, x3, x4)
 
   # Analyse dataframe.
-  resList <- calculateConcordance(data = dataList, kit.name = kitVector,
-                                  no.marker = "M", no.sample = "S", delimeter = "|",
-                                  debug = FALSE)
+  resList <- calculateConcordance(
+    data = dataList, kit.name = kitVector,
+    no.marker = "M", no.sample = "S", delimeter = "|",
+    debug = FALSE
+  )
 
   # Extract result tables.
   res1 <- resList[[1]]
@@ -515,6 +517,4 @@ test_that("calculateConcordance", {
   expect_true(res2$Concordance[4] == 100 * (36 - 2) / 36)
   expect_true(res2$Concordance[5] == 100 * (36 - 0) / 36)
   expect_true(res2$Concordance[6] == 100 * (66 - 7) / 66)
-
-
 })

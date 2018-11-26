@@ -85,15 +85,16 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -108,44 +109,54 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Open help page for function.
     print(help("plotStutter_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset and kit",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset and kit",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Select dataset:", container = f0)
 
-  dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0,
-                           ellipsize = "none")
+  dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
 
   glabel(text = " and the kit used:", container = f0)
 
-  kit_drp <- gcombobox(items = getKit(),
-                       selected = 1,
-                       editable = FALSE,
-                       container = f0,
-                       ellipsize = "none")
+  kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele", "HeightA", "Stutter", "Type")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -157,8 +168,10 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       svalue(f0_samples_lbl) <- paste(" (",
-                                      length(unique(.gData$Sample.Name)),
-                                      " samples)", sep = "")
+        length(unique(.gData$Sample.Name)),
+        " samples)",
+        sep = ""
+      )
 
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
@@ -167,7 +180,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Enable buttons.
       .enablePlotButtons()
-
     } else {
 
       # Reset components.
@@ -175,20 +187,22 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(f0_samples_lbl) <- " (0 samples)"
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
@@ -204,78 +218,93 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   enabled(f1g1) <- svalue(f1_titles_chk)
 
   f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- title_edt <- gedit(text = "",
-                                   width = 40,
-                                   container = f1g1)
+  f1g1[1, 2] <- title_edt <- gedit(
+    text = "",
+    width = 40,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- x_title_edt <- gedit(text = "",
-                                     container = f1g1)
+  f1g1[2, 2] <- x_title_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- y_title_edt <- gedit(text = "",
-                                     container = f1g1)
+  f1g1[3, 2] <- y_title_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g2 <- glayout(container = f1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
-  items_theme <- c("theme_grey()", "theme_bw()", "theme_linedraw()",
-                   "theme_light()", "theme_dark()", "theme_minimal()",
-                   "theme_classic()", "theme_void()")
-  f1g2[1, 2] <- f1_theme_drp <- gcombobox(items = items_theme,
-                                         selected = 1,
-                                         container = f1g2,
-                                         ellipsize = "none")
+  items_theme <- c(
+    "theme_grey()", "theme_bw()", "theme_linedraw()",
+    "theme_light()", "theme_dark()", "theme_minimal()",
+    "theme_classic()", "theme_void()"
+  )
+  f1g2[1, 2] <- f1_theme_drp <- gcombobox(
+    items = items_theme,
+    selected = 1,
+    container = f1g2,
+    ellipsize = "none"
+  )
 
-  f1_drop_chk <- gcheckbox(text = "Drop sex markers",
-                           checked = TRUE,
-                           container = f1)
+  f1_drop_chk <- gcheckbox(
+    text = "Drop sex markers",
+    checked = TRUE,
+    container = f1
+  )
 
-  f1_levels_chk <- gcheckbox(text = "Drop markers with no data",
-                           checked = FALSE,
-                           container = f1)
+  f1_levels_chk <- gcheckbox(
+    text = "Drop markers with no data",
+    checked = FALSE,
+    container = f1
+  )
 
   addHandlerChanged(f1_drop_chk, handler = function(h, ...) {
 
     # Enable buttons.
     .enablePlotButtons()
-
   })
 
   # FRAME 7 ###################################################################
 
-  f7 <- gframe(text = "Plot stutter data",
-               horizontal = FALSE,
-               container = gv)
+  f7 <- gframe(
+    text = "Plot stutter data",
+    horizontal = FALSE,
+    container = gv
+  )
 
   grid7 <- glayout(container = f7)
 
-  grid7[1, 1] <- plot_allele_btn <- gbutton(text = "Ratio vs. Allele",
-                                           container = grid7)
+  grid7[1, 1] <- plot_allele_btn <- gbutton(
+    text = "Ratio vs. Allele",
+    container = grid7
+  )
 
   grid7[1, 2] <- plot_height_btn <- gbutton(text = "Ratio vs. Height", container = grid7)
 
   addHandlerChanged(plot_allele_btn, handler = function(h, ...) {
-
     enabled(plot_allele_btn) <- FALSE
     .plotStutter(what = "allele")
     enabled(plot_allele_btn) <- TRUE
-
   })
 
   addHandlerChanged(plot_height_btn, handler = function(h, ...) {
-
     enabled(plot_height_btn) <- FALSE
     .plotStutter(what = "height")
     enabled(plot_height_btn) <- TRUE
-
   })
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -286,7 +315,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -296,31 +324,34 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # ADVANCED OPTIONS ##########################################################
 
-  e2 <- gexpandgroup(text = "Data points",
-               horizontal = FALSE,
-               container = f1)
+  e2 <- gexpandgroup(
+    text = "Data points",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e2) <- FALSE
@@ -328,23 +359,29 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   grid2 <- glayout(container = e2)
 
   grid2[1, 1] <- glabel(text = "Shape:", container = grid2)
-  grid2[1, 2] <- shape_spb <- gspinbutton(from = 0, to = 25,
-                                         by = 1, value = 18,
-                                         container = grid2)
+  grid2[1, 2] <- shape_spb <- gspinbutton(
+    from = 0, to = 25,
+    by = 1, value = 18,
+    container = grid2
+  )
 
   grid2[1, 3] <- glabel(text = "Alpha:", container = grid2)
-  grid2[1, 4] <- alpha_spb <- gspinbutton(from = 0, to = 1,
-                                         by = 0.01, value = 0.60,
-                                         container = grid2)
+  grid2[1, 4] <- alpha_spb <- gspinbutton(
+    from = 0, to = 1,
+    by = 0.01, value = 0.60,
+    container = grid2
+  )
 
   grid2[1, 5] <- glabel(text = "Jitter (width):", container = grid2)
   grid2[1, 6] <- jitter_txt <- gedit(text = "0.1", width = 4, container = grid2)
 
   # FRAME 3 ###################################################################
 
-  e3 <- gexpandgroup(text = "Axes",
-                     horizontal = FALSE,
-                     container = f1)
+  e3 <- gexpandgroup(
+    text = "Axes",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e3) <- FALSE
@@ -362,24 +399,27 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   grid3[1, 3] <- glabel(text = "    ", container = grid3) # Add some space.
 
   grid3[1, 4] <- glabel(text = "Scales:", container = grid3)
-  grid3[2:4, 4] <- scales_opt <- gradio(items = c("fixed", "free_x", "free_y", "free"),
-                                      selected = 2,
-                                      horizontal = FALSE,
-                                      container = grid3)
+  grid3[2:4, 4] <- scales_opt <- gradio(
+    items = c("fixed", "free_x", "free_y", "free"),
+    selected = 2,
+    horizontal = FALSE,
+    container = grid3
+  )
 
   addHandlerChanged(scales_opt, handler = function(h, ...) {
 
     # Enable buttons.
     .enablePlotButtons()
-
   })
 
 
   # FRAME 4 ###################################################################
 
-  e4 <- gexpandgroup(text = "X labels",
-                     horizontal = FALSE,
-                     container = f1)
+  e4 <- gexpandgroup(
+    text = "X labels",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e4) <- FALSE
@@ -390,18 +430,24 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   grid4[1, 2] <- size_txt <- gedit(text = "8", width = 4, container = grid4)
 
   grid4[1, 3] <- glabel(text = "Angle:", container = grid4)
-  grid4[1, 4] <- angle_spb <- gspinbutton(from = 0, to = 360, by = 1,
-                                         value = 270,
-                                         container = grid4)
+  grid4[1, 4] <- angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 270,
+    container = grid4
+  )
 
   grid4[2, 1] <- glabel(text = "Justification (v/h):", container = grid4)
-  grid4[2, 2] <- vjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0.5,
-                                          container = grid4)
+  grid4[2, 2] <- vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = grid4
+  )
 
-  grid4[2, 3] <- hjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0,
-                                          container = grid4)
+  grid4[2, 3] <- hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0,
+    container = grid4
+  )
 
 
 
@@ -488,9 +534,11 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       }
 
       # Sort by marker in kit
-      .gData <- sortMarker(data = .gData,
-                          kit = val_kit,
-                          add.missing.levels = TRUE)
+      .gData <- sortMarker(
+        data = .gData,
+        kit = val_kit,
+        add.missing.levels = TRUE
+      )
 
       # Drop sex markers.
       if (val_drop) {
@@ -508,10 +556,9 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
           # Refactor and keep order of levels.
           .gData$Marker <- factor(.gData$Marker,
-                                  levels = levels(.gData$Marker)[!levels(.gData$Marker) %in% sexMarkers])
-
+            levels = levels(.gData$Marker)[!levels(.gData$Marker) %in% sexMarkers]
+          )
         }
-
       }
 
       # Create factors and round. IMPORTANT!
@@ -553,14 +600,15 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Check for facet error caused by all NA's.
       tmp <- dt[, list(Sum = sum(Ratio)), by = Marker]
       if (any(tmp$Sum == 0) || !all(levels(dt$Marker) %in% unique(dt$Marker))) {
-        message("Empty facets detected!",
-                "If this leads to plot error try another scale for axes,",
-                "or drop markers with no data.")
+        message(
+          "Empty facets detected!",
+          "If this leads to plot error try another scale for axes,",
+          "or drop markers with no data."
+        )
       }
 
       # Plotting alleles for observed stutters per marker.
       if (what == "allele") {
-
         if (val_titles) {
           mainTitle <- val_title
           xTitle <- val_xtitle
@@ -572,9 +620,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         }
 
         gp <- ggplot(.gData, aes_string(x = "Allele", y = "Ratio", colour = "Type"))
-
       } else if (what == "height") {
-
         if (val_titles) {
           mainTitle <- val_title
           xTitle <- val_xtitle
@@ -587,15 +633,16 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         gp <- ggplot(.gData, aes_string(x = "HeightA", y = "Ratio", colour = "Type"))
         gp <- gp + scale_x_continuous(breaks = scales::pretty_breaks())
-
       }
 
       # Apply theme.
       gp <- gp + eval(parse(text = val_theme))
 
       # Plot settings.
-      gp <- gp + geom_point(shape = val_shape, alpha = val_alpha,
-                            position = position_jitter(height = 0, width = val_jitter))
+      gp <- gp + geom_point(
+        shape = val_shape, alpha = val_alpha,
+        position = position_jitter(height = 0, width = val_jitter)
+      )
 
       # Facet and keep all levels.
       gp <- gp + facet_grid("Dye ~ Marker", drop = val_levels)
@@ -621,10 +668,12 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Titles and legends.
       gp <- gp + guides(fill = guide_legend(reverse = TRUE))
-      gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                hjust = val_hjust,
-                                                vjust = val_vjust,
-                                                size = val_size))
+      gp <- gp + theme(axis.text.x = element_text(
+        angle = val_angle,
+        hjust = val_hjust,
+        vjust = val_vjust,
+        size = val_size
+      ))
       gp <- gp + labs(title = mainTitle)
       gp <- gp + xlab(xTitle)
       gp <- gp + ylab(yTitle)
@@ -634,13 +683,17 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Simple plot, equal number of markers per dye.
 
         if (debug) {
-          print(paste("Simple plot, val_ncol:",
-                      paste(val_ncol, collapse = ", ")))
+          print(paste(
+            "Simple plot, val_ncol:",
+            paste(val_ncol, collapse = ", ")
+          ))
         }
         # NB! 'facet_wrap' does not seem to support strings.
         #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-        gp <- gp + facet_wrap(as.formula(paste("~ Marker")), ncol = val_ncol,
-                              drop = val_levels, scales = val_scales)
+        gp <- gp + facet_wrap(as.formula(paste("~ Marker")),
+          ncol = val_ncol,
+          drop = val_levels, scales = val_scales
+        )
 
         # Restrict y axis.
         if (!is.na(val_ymin) && !is.na(val_ymax)) {
@@ -667,13 +720,14 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Change save button.
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- TRUE
-
       } else if (length(val_ncol) > 1) {
         # Complex plot, unequal number of markers per dye.
 
         if (debug) {
-          print(paste("Complex plot, val_ncol:",
-                      paste(val_ncol, collapse = ", ")))
+          print(paste(
+            "Complex plot, val_ncol:",
+            paste(val_ncol, collapse = ", ")
+          ))
         }
 
         # Extract the legend from the 'simple' plot.
@@ -701,11 +755,17 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Create table object.
         # Note: width(1.5 for y-title, and the rest for plots + guides)
         #       height(1.5 for plot title, equal for each plot, and 1.5 for x-title)
-        g <- gtable::gtable(widths = grid::unit.c(grid::unit(1.5, "lines"),
-                                          grid::unit(1, "null"),
-                                          sum(guide$widths)),
-                            heights = grid::unit(c(1.5, rep(1, noDyes), 1.5),
-                                           c("line", rep("null", noDyes), "line")))
+        g <- gtable::gtable(
+          widths = grid::unit.c(
+            grid::unit(1.5, "lines"),
+            grid::unit(1, "null"),
+            sum(guide$widths)
+          ),
+          heights = grid::unit(
+            c(1.5, rep(1, noDyes), 1.5),
+            c("line", rep("null", noDyes), "line")
+          )
+        )
 
         # Add titles.
         g <- gtable::gtable_add_grob(g, grid::textGrob(mainTitle), t = 1, b = 1, l = 2, r = 2)
@@ -737,7 +797,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           if (nrow(gDataSub) == 0) {
             tmp <- data.frame(Marker = gDyeLevel, Allele = NA, HeightA = 0, Ratio = 0, Type = -1)
             gDataSub <- plyr::rbind.fill(gDataSub, tmp)
-
           }
 
           # Refactor to levels of current dye (and maintain order).
@@ -751,22 +810,22 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
             # Create a plot for the current subset.
             gp <- ggplot(gDataSub, aes_string(x = "Allele", y = "Ratio", color = "Type"))
-
           } else if (what == "height") {
             # Plotting true allele height for observed stutters per marker.
 
             # Create a plot for the current subset.
             gp <- ggplot(gDataSub, aes_string(x = "HeightA", y = "Ratio", color = "Type"))
             gp <- gp + scale_x_continuous(breaks = scales::pretty_breaks())
-
           }
 
           # Apply theme.
           gp <- gp + eval(parse(text = val_theme))
 
           # Plot settings.
-          gp <- gp + geom_point(shape = val_shape, alpha = val_alpha,
-                                position = position_jitter(height = 0, width = val_jitter))
+          gp <- gp + geom_point(
+            shape = val_shape, alpha = val_alpha,
+            position = position_jitter(height = 0, width = val_jitter)
+          )
 
           # Add custom color palette (use same for all sub plots).
           gp <- gp + scale_colour_manual(values = val_palette)
@@ -808,10 +867,12 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           # Remove titles, axis labels and legend.
           gp <- gp + labs(title = element_blank())
           gp <- gp + theme(axis.title.x = element_blank())
-          gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                    hjust = val_hjust,
-                                                    vjust = val_vjust,
-                                                    size = val_size))
+          gp <- gp + theme(axis.text.x = element_text(
+            angle = val_angle,
+            hjust = val_hjust,
+            vjust = val_vjust,
+            size = val_size
+          ))
 
           gp <- gp + theme(axis.title.y = element_blank())
 
@@ -819,8 +880,8 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
           # Add plot panel to table object.
           g <- gtable::gtable_add_grob(g, ggplotGrob(gp),
-                                       t = (d + 1), b = (d + 1), l = 2, r = 2)
-
+            t = (d + 1), b = (d + 1), l = 2, r = 2
+          )
         }
 
         # Plot.
@@ -835,7 +896,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Change save button.
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- FALSE
-
       } else {
         # Not supported!
         stop(paste("Unsupported number of columns:", val_ncol))
@@ -844,24 +904,20 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Store in global variable.
       .gPlot <<- gp
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
 
   .enablePlotButtons <- function() {
-
     enabled(plot_allele_btn) <- TRUE
     enabled(plot_height_btn) <- TRUE
-
   }
 
   # Return a number of ggplot default colors.
@@ -956,14 +1012,12 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotStutter_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotStutter_gui_title", value = svalue(title_edt), envir = env)
       assign(x = ".strvalidator_plotStutter_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
@@ -984,7 +1038,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       assign(x = ".strvalidator_plotStutter_gui_theme", value = svalue(f1_theme_drp), envir = env)
       assign(x = ".strvalidator_plotStutter_gui_sex", value = svalue(f1_drop_chk), envir = env)
       assign(x = ".strvalidator_plotStutter_gui_levels", value = svalue(f1_levels_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotStutter_gui_savegui", envir = env, inherits = FALSE)) {
@@ -1056,7 +1109,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -1067,5 +1119,4 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

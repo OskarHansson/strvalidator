@@ -40,7 +40,6 @@
 #'
 
 colNames <- function(data, slim = TRUE, concatenate = NULL, numbered = TRUE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -88,15 +87,16 @@ colNames <- function(data, slim = TRUE, concatenate = NULL, numbered = TRUE, deb
 
     # Indicate column names ending with a number.
     if (numbered) {
-      number <- suppressWarnings(!is.na(as.numeric(substr(columnNames,
-                                                          nchar(columnNames),
-                                                          nchar(columnNames)))))
+      number <- suppressWarnings(!is.na(as.numeric(substr(
+        columnNames,
+        nchar(columnNames),
+        nchar(columnNames)
+      ))))
 
       if (debug) {
         print("number")
         print(number)
       }
-
     }
 
 
@@ -122,7 +122,6 @@ colNames <- function(data, slim = TRUE, concatenate = NULL, numbered = TRUE, deb
         # Return concatenated as single string.
         ret <- paste(matchingNames, collapse = concatenate)
       }
-
     } else {
       # Return column names matching 'base name' that occured multiple times.
       if (is.null(concatenate)) {
@@ -152,5 +151,4 @@ colNames <- function(data, slim = TRUE, concatenate = NULL, numbered = TRUE, deb
   }
 
   return(ret)
-
 }

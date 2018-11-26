@@ -53,8 +53,10 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   .gData <- NULL
   .gDataName <- NULL
   .gPlot <- NULL
-  .palette <- c("Set1", "Set2", "Set3", "Accent", "Dark2",
-                "Paired", "Pastel1", "Pastel2")
+  .palette <- c(
+    "Set1", "Set2", "Set3", "Accent", "Dark2",
+    "Paired", "Pastel1", "Pastel2"
+  )
   # Qualitative palette, do not imply magnitude differences between legend
   # classes, and hues are used to create the primary visual differences
   # between classes. Qualitative schemes are best suited to representing
@@ -77,14 +79,15 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -99,36 +102,44 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
     # Open help page for function.
     print(help("plotResultType_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Select dataset:", container = f0)
 
-  dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0,
-                           ellipsize = "none")
+  dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Type", "Subtype")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -140,12 +151,13 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       svalue(f0_samples_lbl) <- paste(" (",
-                                      nrow(.gData),
-                                      " samples)", sep = "")
+        nrow(.gData),
+        " samples)",
+        sep = ""
+      )
 
       # Enable buttons.
       enabled(plot_btn) <- TRUE
-
     } else {
 
       # Reset components.
@@ -153,20 +165,22 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(f0_samples_lbl) <- " (0 samples)"
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
@@ -182,21 +196,29 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   enabled(grid1) <- svalue(f1_titles_chk)
 
   grid1[1, 1] <- glabel(text = "Plot title:", container = grid1)
-  grid1[1, 2] <- f1_title_edt <- gedit(text = "",
-                                   width = 40,
-                                   container = grid1)
+  grid1[1, 2] <- f1_title_edt <- gedit(
+    text = "",
+    width = 40,
+    container = grid1
+  )
 
   grid1[2, 1] <- glabel(text = "X title:", container = grid1)
-  grid1[2, 2] <- f1_xtitle_edt <- gedit(text = "",
-                                     container = grid1)
+  grid1[2, 2] <- f1_xtitle_edt <- gedit(
+    text = "",
+    container = grid1
+  )
 
   grid1[3, 1] <- glabel(text = "Y title:", container = grid1)
-  grid1[3, 2] <- f1_ytitle_edt <- gedit(text = "",
-                                     container = grid1)
+  grid1[3, 2] <- f1_ytitle_edt <- gedit(
+    text = "",
+    container = grid1
+  )
 
-  f1_prop_chk <- gcheckbox(text = "Plot proportion",
-                           checked = TRUE,
-                           container = f1)
+  f1_prop_chk <- gcheckbox(
+    text = "Plot proportion",
+    checked = TRUE,
+    container = f1
+  )
 
   grid2 <- glayout(container = f1, spacing = 1)
   grid2[1, 1] <- glabel(text = "Base font size (pts):", container = grid2)
@@ -204,17 +226,21 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   grid3 <- glayout(container = f1, spacing = 1)
   grid3[1, 1] <- glabel(text = "Color palette:", container = grid3)
-  grid3[1, 2] <- f1_palette_drp <- gcombobox(items = .palette,
-                                            selected = 1,
-                                            editable = FALSE,
-                                            container = grid3,
-                                            ellipsize = "none")
+  grid3[1, 2] <- f1_palette_drp <- gcombobox(
+    items = .palette,
+    selected = 1,
+    editable = FALSE,
+    container = grid3,
+    ellipsize = "none"
+  )
 
   grid4 <- glayout(container = f1, spacing = 1)
   grid4[1, 1] <- f1_print_chk <- gcheckbox(text = "Print values as bar labels", checked = TRUE, container = grid4)
   grid4[2, 1] <- glabel(text = "Number of decimals for bar labels:", container = grid4)
-  grid4[2, 2] <- f1_decimal_spb <- gspinbutton(from = 0, to = 9, by = 1, value = 4,
-                                              container = grid4)
+  grid4[2, 2] <- f1_decimal_spb <- gspinbutton(
+    from = 0, to = 9, by = 1, value = 4,
+    container = grid4
+  )
   grid4[3, 1] <- glabel(text = "Font size for bar labels (pts):", container = grid4)
   grid4[3, 2] <- f1_lab_size_edt <- gedit(text = "5", width = 4, container = grid4)
 
@@ -224,20 +250,20 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   plot_btn <- gbutton(text = "Plot", container = gv)
 
   addHandlerChanged(plot_btn, handler = function(h, ...) {
-
-      enabled(plot_btn) <- FALSE
-      .plot()
-      enabled(plot_btn) <- TRUE
-
+    enabled(plot_btn) <- FALSE
+    .plot()
+    enabled(plot_btn) <- TRUE
   })
 
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -248,7 +274,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -258,24 +283,25 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # FUNCTIONS #################################################################
@@ -321,7 +347,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
     # Check if data.
     if (!is.na(.gData) && !is.null(.gData)) {
-
       if (debug) {
         print("Before plot: str(.gData)")
         print(str(.gData))
@@ -380,7 +405,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
           # Calculate the cumulative sum.
           .gData[.gData$Type == type[t], ]$Cum <-
             rev(cumsum(rev(.gData[.gData$Type == type[t], ]$freq)))
-
         }
 
         # Calculate the position for labels.
@@ -391,10 +415,14 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
         }
 
         # Add labels.
-         gp <- gp + geom_text(data = .gData, aes_string(x = "Type", y = "Pos",
-                                                     label = "lab",
-                                                     hjust = 0.5, vjust = 0),
-                              size = val_lab_size)
+        gp <- gp + geom_text(
+          data = .gData, aes_string(
+            x = "Type", y = "Pos",
+            label = "lab",
+            hjust = 0.5, vjust = 0
+          ),
+          size = val_lab_size
+        )
       }
 
       # plot.
@@ -406,15 +434,13 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       # Change save button.
       svalue(f5_save_btn) <- "Save as object"
       enabled(f5_save_btn) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
@@ -478,14 +504,12 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotResultType_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotResultType_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
       assign(x = ".strvalidator_plotResultType_gui_title", value = svalue(f1_title_edt), envir = env)
@@ -497,7 +521,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       assign(x = ".strvalidator_plotResultType_gui_prop", value = svalue(f1_prop_chk), envir = env)
       assign(x = ".strvalidator_plotResultType_gui_palette", value = svalue(f1_palette_drp), envir = env)
       assign(x = ".strvalidator_plotResultType_gui_decimal", value = svalue(f1_decimal_spb), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotResultType_gui_savegui", envir = env, inherits = FALSE)) {
@@ -542,7 +565,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -553,5 +575,4 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

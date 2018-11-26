@@ -57,7 +57,6 @@
 
 editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
                          name = NULL, edit = TRUE, debug = FALSE, parent = NULL) {
-
   .gData <- data
   .gDataName <- name
 
@@ -91,14 +90,15 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -113,7 +113,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
     # Open help page for function.
     print(help("editData_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
@@ -122,22 +121,30 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     print("FRAME 0")
   }
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
   g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
 
-  g0[1, 2] <- dataset_drp <- gcombobox(items = c("<Select data frame>",
-                                              listObjects(env = env,
-                                                          obj.class = "data.frame")),
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = g0,
-                                      ellipsize = "none")
+  g0[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select data frame>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   if (!is.null(.gDataName)) {
     svalue(dataset_drp) <- .gDataName
@@ -148,12 +155,13 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   g0[1, 5] <- g0_rows_lbl <- glabel(text = " 0 rows", container = g0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
-    ok <- checkDataset(name = val_obj, reqcol = NULL,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = NULL,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -179,13 +187,11 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
       # Refresh info and load table.
       .refreshTbl()
-
     } else {
       svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
       svalue(g0_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(g0_rows_lbl) <- paste(" ", "<NA>", "rows")
     }
-
   })
 
   # FRAME 1 ###################################################################
@@ -194,25 +200,30 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     print("FRAME 1")
   }
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   g1 <- glayout(container = f1, spacing = 1)
 
-  g1[1, 1] <- f1_show_attr_chk <- gcheckbox(text = "Show attributes (separate window)",
-                                           checked = FALSE, container = g1)
+  g1[1, 1] <- f1_show_attr_chk <- gcheckbox(
+    text = "Show attributes (separate window)",
+    checked = FALSE, container = g1
+  )
 
 
-  g1[2, 1] <- f1_limit_chk <- gcheckbox(text = "Limit number of rows to:",
-                                       checked = FALSE, container = g1)
+  g1[2, 1] <- f1_limit_chk <- gcheckbox(
+    text = "Limit number of rows to:",
+    checked = FALSE, container = g1
+  )
   tooltip(f1_limit_chk) <- "NB! Sorting will only be performed on the loaded data."
 
   g1[2, 2] <- f1_max_edt <- gedit(text = 100, width = 8, container = g1)
 
   addHandlerChanged(f1_show_attr_chk, handler = function(h, ...) {
-
     if (svalue(f1_show_attr_chk)) {
       .showAttributes()
     } else {
@@ -220,13 +231,10 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
         visible(w_attributes) <- FALSE
       }
     }
-
   })
 
   addHandlerChanged(f1_limit_chk, handler = function(h, ...) {
-
     .refreshTbl()
-
   })
 
 
@@ -236,8 +244,10 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     print("FRAME 2")
   }
 
-  f2 <- gframe(text = "Copy | Export | Save",
-               horizontal = TRUE, spacing = 5, container = gv)
+  f2 <- gframe(
+    text = "Copy | Export | Save",
+    horizontal = TRUE, spacing = 5, container = gv
+  )
 
   copy_btn <- gbutton(text = "Copy", container = f2)
   tooltip(copy_btn) <- "Copy to clipboard (NB! large datasets might get truncated)"
@@ -251,7 +261,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   save_txt <- gedit(text = .gDataName, container = f2, expand = TRUE)
 
   addHandlerClicked(copy_btn, handler = function(h, ...) {
-
     val_tbl <- data_tbl[]
 
     # Change button.
@@ -262,18 +271,17 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
     # Copy data.
     write.table(val_tbl, "clipboard",
-                sep = "\t", row.names = FALSE)
+      sep = "\t", row.names = FALSE
+    )
 
     # Change button.
     blockHandlers(copy_btn)
     svalue(copy_btn) <- "Copy"
     unblockHandlers(copy_btn)
     enabled(copy_btn) <- TRUE
-
   })
 
   addHandlerClicked(save_btn, handler = function(h, ...) {
-
     val_name <- svalue(save_txt)
     datanew <- data_tbl[]
 
@@ -295,8 +303,10 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       enabled(save_btn) <- FALSE
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, label = "editData_gui",
-                            arguments = FALSE, package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, label = "editData_gui",
+        arguments = FALSE, package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env, debug = debug)
@@ -306,22 +316,19 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       svalue(save_btn) <- "Save as"
       unblockHandlers(save_btn)
       enabled(save_btn) <- TRUE
-
     } else {
-
-      gmessage(msg = "A name must be given!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "A name must be given!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   addHandlerChanged(export_btn, handler = function(h, ...) {
 
     # Open GUI.
     export_gui(env = env, savegui = savegui, debug = debug, parent = parent)
-
   })
 
   # FRAME 3 ###################################################################
@@ -333,8 +340,10 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   f3 <- gvbox(container = gv, expand = TRUE)
 
   if (is.null(.gData)) {
-    data_tbl <- gWidgets2::gtable(items = data.frame(Data = "There is no data"),
-                                 container = f3, expand = TRUE)
+    data_tbl <- gWidgets2::gtable(
+      items = data.frame(Data = "There is no data"),
+      container = f3, expand = TRUE
+    )
   } else {
 
     # Get options.
@@ -362,20 +371,23 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     # Load data.
     if (edit) {
       if (val_limit) {
-        data_tbl <<- gdf(items = head(.gData, val_max),
-                         container = f3, expand = TRUE)
+        data_tbl <<- gdf(
+          items = head(.gData, val_max),
+          container = f3, expand = TRUE
+        )
       } else {
         data_tbl <<- gdf(items = .gData, container = f3, expand = TRUE)
       }
     } else {
       if (val_limit) {
-        data_tbl <<- gWidgets2::gtable(items = head(.gData, val_max),
-                                      container = f3, expand = TRUE)
+        data_tbl <<- gWidgets2::gtable(
+          items = head(.gData, val_max),
+          container = f3, expand = TRUE
+        )
       } else {
         data_tbl <<- gWidgets2::gtable(items = .gData, container = f3, expand = TRUE)
       }
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
@@ -385,7 +397,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   }
 
   .showAttributes <- function() {
-
     if (debug) {
       print(paste("IN:", match.call()[[1]]))
     }
@@ -394,13 +405,11 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     val_attr <- svalue(f1_show_attr_chk)
 
     if (val_attr & !is.null(.gData)) {
-
       if (!isExtant(w_attributes)) {
 
         # Re-create window.
         w_attributes <<- gwindow(title = "Attributes", visible = FALSE)
         attr_text <<- gtext("", container = w_attributes)
-
       }
 
       # Get list of attributes.
@@ -422,18 +431,14 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
         # Insert text for current attribute.
         insert(attr_text, paste(attrNames[a], attributeList[a], sep = ": "))
-
       }
 
       # Show window.
       visible(w_attributes) <- TRUE
-
     }
-
   }
 
   .refreshTbl <- function() {
-
     if (debug) {
       print(paste("IN:", match.call()[[1]]))
     }
@@ -444,7 +449,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     val_attr <- svalue(f1_show_attr_chk)
 
     if (!is.null(.gData)) {
-
       if (val_attr) {
         .showAttributes()
       }
@@ -459,24 +463,26 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       # ...creating a new table.
       if (edit) {
         if (val_limit) {
-          data_tbl <<- gdf(items = head(.gData, val_max),
-                           container = f3, expand = TRUE)
+          data_tbl <<- gdf(
+            items = head(.gData, val_max),
+            container = f3, expand = TRUE
+          )
         } else {
           data_tbl <<- gdf(items = .gData, container = f3, expand = TRUE)
         }
       } else {
         if (val_limit) {
-          data_tbl <<- gWidgets2::gtable(items = head(.gData, val_max),
-                                         container = f3, expand = TRUE)
+          data_tbl <<- gWidgets2::gtable(
+            items = head(.gData, val_max),
+            container = f3, expand = TRUE
+          )
         } else {
           data_tbl <<- gWidgets2::gtable(items = .gData, container = f3, expand = TRUE)
         }
       }
 
       visible(f3) <- TRUE
-
     }
-
   }
 
   .loadSavedSettings <- function() {
@@ -518,19 +524,16 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_editData_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_editData_gui_attr", value = svalue(f1_show_attr_chk), envir = env)
       assign(x = ".strvalidator_editData_gui_limit", value = svalue(f1_limit_chk), envir = env)
       assign(x = ".strvalidator_editData_gui_maxrow", value = svalue(f1_max_edt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_editData_gui_savegui", envir = env, inherits = FALSE)) {
@@ -554,7 +557,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -565,5 +567,4 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

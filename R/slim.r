@@ -54,7 +54,6 @@
 
 slim <- function(data, fix = NULL, stack = NULL,
                  keep.na = TRUE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data")
@@ -72,12 +71,14 @@ slim <- function(data, fix = NULL, stack = NULL,
   # Check parameters.
   if (!is.logical(keep.na)) {
     stop("'keep.na' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.data.frame(data)) {
     stop("'data' must be a data.frame",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Prepare -------------------------------------------------------------------
@@ -110,10 +111,12 @@ slim <- function(data, fix = NULL, stack = NULL,
     # Check if equal.
     if (length(nbCol) != 1) {
       stop(paste("Columns to stack must have equal number of columns each!",
-                 paste(paste(stack, nbSlimCol, sep = ":"), collapse = "\n"),
-                 "The most common problem is multiple columns matching the same 'base' name.",
-                 "Here are your column names:",
-                 paste(names(data), collapse = ", "), sep = "\n"))
+        paste(paste(stack, nbSlimCol, sep = ":"), collapse = "\n"),
+        "The most common problem is multiple columns matching the same 'base' name.",
+        "Here are your column names:",
+        paste(names(data), collapse = ", "),
+        sep = "\n"
+      ))
     }
 
     if (!is.null(fix)) {
@@ -157,12 +160,10 @@ slim <- function(data, fix = NULL, stack = NULL,
 
           # Extract values to keep.
           vectorStack <- vectorStack[keep]
-
         } else {
 
           # Extract values to keep.
           vectorStack <- vectorStack[!is.na(vectorStack)]
-
         }
 
         # Add values to list.
@@ -170,7 +171,6 @@ slim <- function(data, fix = NULL, stack = NULL,
 
         # Transpose and vectorize matrix, and put in list.
         listStack[c] <- list(vectorStack)
-
       }
 
       # Check if all listRep's are equal.
@@ -188,17 +188,16 @@ slim <- function(data, fix = NULL, stack = NULL,
 
             # Compare elements.
             if (testA[e] != testB[e]) {
-
-              stop(paste("Different repeat patterns detected for stacked columns!\n",
-                         "Caused by: ",
-                         paste(paste(names(fixedData), ":", fixedData[e, ], sep = ""),
-                               collapse = ", "), "\n",
-                         "Please fix and try again!"), sep = "")
-
+              stop(paste(
+                "Different repeat patterns detected for stacked columns!\n",
+                "Caused by: ",
+                paste(paste(names(fixedData), ":", fixedData[e, ], sep = ""),
+                  collapse = ", "
+                ), "\n",
+                "Please fix and try again!"
+              ), sep = "")
             }
-
           }
-
         }
       }
 
@@ -208,7 +207,6 @@ slim <- function(data, fix = NULL, stack = NULL,
 
         # Repeat each 'row' to fit the stacked data.
         fixedDataExt[k] <- list(rep(fixedData[, k], times = unlist(listRep[1])))
-
       }
 
       # Get number of rows.
@@ -234,23 +232,16 @@ slim <- function(data, fix = NULL, stack = NULL,
       }
 
       return(res)
-
     } else {
-
       message("fix=NULL, return data unchanged!")
 
       # Return the data frame unchanged.
       return(data)
-
     }
-
   } else {
-
     message("stack=NULL, return data unchanged!")
 
     # Return the data frame unchanged.
     return(data)
-
   }
-
 }

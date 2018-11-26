@@ -60,8 +60,8 @@
 
 
 trim <- function(data, samples = NULL, columns = NULL,
-        word = FALSE, ignore.case = TRUE, invert.s = FALSE, invert.c = FALSE,
-        rm.na.col = TRUE, rm.empty.col = TRUE, missing = NA, debug = FALSE) {
+                 word = FALSE, ignore.case = TRUE, invert.s = FALSE, invert.c = FALSE,
+                 rm.na.col = TRUE, rm.empty.col = TRUE, missing = NA, debug = FALSE) {
 
   # Variables.
   colNames <- columns
@@ -112,12 +112,10 @@ trim <- function(data, samples = NULL, columns = NULL,
       print("columns:")
       print(columns)
     }
-
   }
 
   # Add word boundary. NB! Must be after ignore case.
   if (word) {
-
     if (!is.null(samples)) {
       samples <- gsub("|", "\\b|\\b", samples, fixed = TRUE)
       samples <- paste("\\b", samples, "\\b", sep = "")
@@ -134,7 +132,6 @@ trim <- function(data, samples = NULL, columns = NULL,
       print("columns:")
       print(columns)
     }
-
   }
 
   # Check for and escape '+' and '-' in sample names.
@@ -170,7 +167,6 @@ trim <- function(data, samples = NULL, columns = NULL,
 
       # Default is to keep all samples.
       rows <- rep(TRUE, length(sampleNames))
-
     } else {
 
       # Get matching rows.
@@ -180,10 +176,9 @@ trim <- function(data, samples = NULL, columns = NULL,
       if (invert.s) {
         rows <- !rows
       }
-
     }
 
-  # Check if column 'Sample.File.Name' exist.
+    # Check if column 'Sample.File.Name' exist.
   } else if ("Sample.File.Name" %in% names(data)) {
 
     # Grab rows.
@@ -204,7 +199,6 @@ trim <- function(data, samples = NULL, columns = NULL,
 
       # Default is to keep all samples.
       rows <- rep(TRUE, length(sampleNames))
-
     } else {
 
       # Get matching rows.
@@ -214,51 +208,46 @@ trim <- function(data, samples = NULL, columns = NULL,
       if (invert.s) {
         rows <- !rows
       }
-
     }
 
-  # Check if any column containing 'Sample' exist.
+    # Check if any column containing 'Sample' exist.
   } else if (any(grepl("SAMPLE", names(data), ignore.case = TRUE))) {
 
     # Get (first) column name containing "Sample".
     sampleCol <- names(data)[grep("SAMPLE", names(data), ignore.case = TRUE)[1]]
 
-      # Grab rows.
-      if (ignore.case) {
-        sampleNames <- toupper(as.character(data[, sampleCol]))
-      } else {
-        sampleNames <- as.character(data[, sampleCol])
+    # Grab rows.
+    if (ignore.case) {
+      sampleNames <- toupper(as.character(data[, sampleCol]))
+    } else {
+      sampleNames <- as.character(data[, sampleCol])
+    }
+
+    if (debug) {
+      print("Pattern for samples")
+      print(head(samples))
+      print("String")
+      print(head(sampleNames))
+    }
+
+    if (is.null(samples)) {
+
+      # Default is to keep all samples.
+      rows <- rep(TRUE, length(sampleNames))
+    } else {
+
+      # Get matching rows.
+      rows <- grepl(samples, sampleNames, fixed = FALSE)
+
+      # Invert selection of samples.
+      if (invert.s) {
+        rows <- !rows
       }
-
-      if (debug) {
-        print("Pattern for samples")
-        print(head(samples))
-        print("String")
-        print(head(sampleNames))
-      }
-
-      if (is.null(samples)) {
-
-        # Default is to keep all samples.
-        rows <- rep(TRUE, length(sampleNames))
-
-      } else {
-
-        # Get matching rows.
-        rows <- grepl(samples, sampleNames, fixed = FALSE)
-
-        # Invert selection of samples.
-        if (invert.s) {
-          rows <- !rows
-        }
-
-      }
-
+    }
   } else {
 
     # Keep all rows.
     rows <- rep(TRUE, nrow(data))
-
   }
 
   if (debug) {
@@ -281,46 +270,44 @@ trim <- function(data, samples = NULL, columns = NULL,
   }
 
 
-        if (is.null(columns)) {
+  if (is.null(columns)) {
 
-                # Default is to keep all columns.
-                columns <- rep(TRUE, length(columnNames))
-
-        } else {
+    # Default is to keep all columns.
+    columns <- rep(TRUE, length(columnNames))
+  } else {
 
     # Get matching columns.
-                columns <- grepl(columns, columnNames, fixed = FALSE)
+    columns <- grepl(columns, columnNames, fixed = FALSE)
 
-                # Invert selection of columns.
-                if (invert.c) {
-                  columns <- !columns
-                }
-
-        }
+    # Invert selection of columns.
+    if (invert.c) {
+      columns <- !columns
+    }
+  }
 
   if (debug) {
     print(columns)
     print(paste("Grab columns:", paste(names(data)[columns], collapse = ",")))
   }
 
-        # Trim data.
-        data <- data[rows, columns]
+  # Trim data.
+  data <- data[rows, columns]
 
-        if (!is.null(missing)) {
-                data[data == ""] <- missing
-        }
+  if (!is.null(missing)) {
+    data[data == ""] <- missing
+  }
 
   if (rm.empty.col) {
     if (!is.null(ncol(data))) {
-                  data <- data[, colSums(data == "") != nrow(data) | colSums(is.na(data)) > 0]
+      data <- data[, colSums(data == "") != nrow(data) | colSums(is.na(data)) > 0]
     }
-        }
+  }
 
-        if (rm.na.col) {
-          if (!is.null(ncol(data))) {
-            data <- data[, colSums(is.na(data)) < nrow(data)]
-          }
-        }
+  if (rm.na.col) {
+    if (!is.null(ncol(data))) {
+      data <- data[, colSums(is.na(data)) < nrow(data)]
+    }
+  }
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))
@@ -331,9 +318,8 @@ trim <- function(data, samples = NULL, columns = NULL,
     names(data) <- colNames
   }
 
-        # Update audit trail.
-        data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+  # Update audit trail.
+  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
 
-        return(data)
-
+  return(data)
 }

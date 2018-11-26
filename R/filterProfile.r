@@ -73,7 +73,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
                           ignore.case = TRUE, exact = FALSE, word = FALSE,
                           invert = FALSE, sex.rm = FALSE, qs.rm = FALSE, kit = NULL,
                           filter.allele = TRUE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
@@ -127,7 +126,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
   # Check reference dataset.
   if (!is.null(ref)) {
-
     if (!"Sample.Name" %in% names(ref)) {
       message("'ref' does not contain a column 'Sample.Name'.")
       message("The same reference will be used for all samples.")
@@ -138,7 +136,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     if (!"Allele" %in% names(ref)) {
       stop("'ref' must contain a column 'Allele'.", call. = TRUE)
     }
-
   }
 
   # Check logical flags.
@@ -175,45 +172,35 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
   # Check if character data.
   if ("Allele" %in% names(ref)) {
     if (!is.character(ref$Allele)) {
-
       message("'Allele' must be character. 'ref' converted.")
 
       ref$Allele <- as.character(ref$Allele)
-
     }
   }
 
   if ("Allele" %in% names(data)) {
     if (!is.character(data$Allele)) {
-
       message("'Allele' must be character. 'data' converted.")
 
       data$Allele <- as.character(data$Allele)
-
     }
   }
 
   # Check conflicting options.
   if (!filter.allele & add.missing.loci) {
-
     message("'filter.allele' overrides 'add.missing.loci'. Setting add.missing.loci=FALSE")
     add.missing.loci <- FALSE
-
   }
   # Check conflicting options.
   if (add.missing.loci & !keep.na) {
-
     message("'add.missing.loci' overrides 'keep.na'. Setting keep.na=TRUE")
 
     keep.na = TRUE
-
   }
   # Check conflicting options.
   if (is.null(ref) & filter.allele) {
-
     message("'ref' cannot be NULL if 'filter.allele=TRUE'. Setting filter.allele=FALSE")
     filter.allele <- FALSE
-
   }
 
   # Remove sex markers.
@@ -221,7 +208,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
     # Check if kit is provided.
     if (is.null(kit)) {
-
       message("No kit defined. Attempt to auto detect:")
 
       kit <- detectKit(data)[1]
@@ -232,7 +218,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       if (is.na(kit)) {
         stop("No matching kit was found in the kit definition file.")
       }
-
     }
 
     message("Removing sex markers defined in kit: ", kit, ".")
@@ -248,16 +233,16 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     message("Removing sex markers from dataset:")
     # Loop through and remove all sex markers.
     for (i in seq(along = sexMarkers)) {
-
       tmp1 <- nrow(data)
 
       data <- data[data$Marker != sexMarkers[i], ]
 
       tmp2 <- nrow(data)
 
-      message("Removed ", tmp1 - tmp2,
-              " rows with Marker=", sexMarkers[i], ".")
-
+      message(
+        "Removed ", tmp1 - tmp2,
+        " rows with Marker=", sexMarkers[i], "."
+      )
     }
 
     if (!is.null(ref)) {
@@ -265,20 +250,18 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       # Loop through and remove all sex markers.
       message("Removing sex markers from reference dataset:")
       for (i in seq(along = sexMarkers)) {
-
         tmp1 <- nrow(ref)
 
         ref <- ref[ref$Marker != sexMarkers[i], ]
 
         tmp2 <- nrow(ref)
 
-        message("Removed ", tmp1 - tmp2,
-                " rows with Marker=", sexMarkers[i], ".")
-
+        message(
+          "Removed ", tmp1 - tmp2,
+          " rows with Marker=", sexMarkers[i], "."
+        )
       }
-
     }
-
   } # End remove sex markers.
 
   # Remove quality sensors.
@@ -286,7 +269,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
     # Check if kit is provided.
     if (is.null(kit)) {
-
       message("No kit defined. Attempt to auto detect:")
 
       kit <- detectKit(data)[1]
@@ -297,7 +279,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       if (is.na(kit)) {
         stop("No matching kit was found in the kit definition file.")
       }
-
     }
 
     message("Removing quality sensors defined in kit: ", kit, ".")
@@ -313,16 +294,16 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     # Loop through and remove all quality sensors.
     message("Removing quality sensors from dataset:")
     for (i in seq(along = qsMarkers)) {
-
       tmp1 <- nrow(data)
 
       data <- data[data$Marker != qsMarkers[i], ]
 
       tmp2 <- nrow(data)
 
-      message("Removed ", tmp1 - tmp2,
-              " rows with Marker=", qsMarkers[i], ".")
-
+      message(
+        "Removed ", tmp1 - tmp2,
+        " rows with Marker=", qsMarkers[i], "."
+      )
     }
 
     if (!is.null(ref)) {
@@ -330,20 +311,18 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       # Loop through and remove all quality sensors.
       message("Removing quality sensors from reference dataset:")
       for (i in seq(along = qsMarkers)) {
-
         tmp1 <- nrow(ref)
 
         ref <- ref[ref$Marker != qsMarkers[i], ]
 
         tmp2 <- nrow(ref)
 
-        message("Removed ", tmp1 - tmp2,
-                " rows with Marker=", qsMarkers[i], ".")
-
+        message(
+          "Removed ", tmp1 - tmp2,
+          " rows with Marker=", qsMarkers[i], "."
+        )
       }
-
     }
-
   } # End remove quality sensors.
 
   # FILTER --------------------------------------------------------------------
@@ -365,21 +344,17 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       naAllele <- length(data$Allele[data$Allele == "NA"])
 
       if (naAllele > 0) {
-
         data$Allele[data$Allele == "NA"] <- NA
 
         message(naAllele, " \"NA\" in 'Allele' converted to NA")
-
       }
 
       # Check if NA in alleles.
       naAllele <- sum(is.na(data$Allele))
       if (naAllele > 0) {
-
         data <- data[!is.na(data$Allele), ]
 
         message("Removed ", naAllele, " rows where Allele=<NA>")
-
       }
 
       # Get reference names.
@@ -387,12 +362,10 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
         # Get reference names from reference dataset.
         refSampleNames <- unique(ref$Sample.Name)
-
       } else {
 
         # Get reference names from dataset.
         refSampleNames <- unique(data$Sample.Name)
-
       }
 
       if (word) {
@@ -422,19 +395,19 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
       # Loop through all reference samples.
       for (s in seq(along = refSampleNames)) {
-
         if ("Sample.Name" %in% names(ref)) {
 
           # Get current reference subset.
           selection <- grepl(refSampleNames[s], ref$Sample.Name,
-                             ignore.case = ignore.case)
+            ignore.case = ignore.case
+          )
           currentRef <- ref[selection, ]
-
         }
 
         # Select matching samples.
         selectedSamples <- grepl(refSampleNames[s], data$Sample.Name,
-                                 ignore.case = ignore.case)
+          ignore.case = ignore.case
+        )
 
         if (debug) {
           print("Current ref:")
@@ -462,16 +435,12 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
             # 'Concatenate' booleans
             matchingData <- matchingData | currentMatch
-
           } # End of allele for-loop.
-
         } # End of marker for-loop.
-
       } # End of reference for-loop.
 
       # Create return data frame.
       res <- data[matchingData, ]
-
     } else {
 
       # 'SLOW' METHOD -----------------------------------------------------------
@@ -499,12 +468,10 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
         # Get reference names from reference dataset.
         refSampleNames <- unique(ref$Sample.Name)
-
       } else {
 
         # Get reference names from dataset.
         refSampleNames <- unique(data$Sample.Name)
-
       }
 
       # Add regex for exact or word matching.
@@ -522,19 +489,19 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
       # Loop through all reference samples.
       for (r in seq(along = refSampleNames)) {
-
         if ("Sample.Name" %in% names(ref)) {
 
           # Get current reference subset.
           selection <- grepl(refSampleNames[r], ref$Sample.Name,
-                             ignore.case = ignore.case)
+            ignore.case = ignore.case
+          )
           currentRef <- ref[selection, ]
-
         }
 
         # Select matching samples.
         selectedSamples <- grepl(refSampleNames[r], data$Sample.Name,
-                                 ignore.case = ignore.case)
+          ignore.case = ignore.case
+        )
 
         if (debug) {
           print("Current ref:")
@@ -572,12 +539,16 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
             if (nrow(tmpDf) == 0 & add.missing.loci) {
 
               # Add missing marker, allele will become NA in rbind.fill.
-              tmpDf <- data.frame(Sample.Name = dataSampleNames[s],
-                                  Marker = refMarkers[m],
-                                  stringsAsFactors = FALSE)
+              tmpDf <- data.frame(
+                Sample.Name = dataSampleNames[s],
+                Marker = refMarkers[m],
+                stringsAsFactors = FALSE
+              )
 
-              message("Missing marker ", refMarkers[m],
-                      " added for sample ", dataSampleNames[s])
+              message(
+                "Missing marker ", refMarkers[m],
+                " added for sample ", dataSampleNames[s]
+              )
 
 
               # Attempt to fill additional information required by other functions.
@@ -585,21 +556,22 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
               # Add missing values.
               for (a in seq(along = additionalColumns)) {
-
                 addValue <- unique(currentData[additionalColumns[a]])
 
                 if (length(addValue) > 1) {
-                  message("Multiple candidates for missing information in column, ",
-                          additionalColumns[a])
-                  message("Using first candidate to fill data.frame: ",
-                          paste(addValue, collapse = ", "))
+                  message(
+                    "Multiple candidates for missing information in column, ",
+                    additionalColumns[a]
+                  )
+                  message(
+                    "Using first candidate to fill data.frame: ",
+                    paste(addValue, collapse = ", ")
+                  )
                 }
 
                 # Add missing value.
                 tmpDf[additionalColumns[a]] <- addValue[1]
-
               }
-
             } else {
 
               # Filter alleles and add to selection.
@@ -607,12 +579,10 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
                 # Select peaks not in reference.
                 selection <- selection & !currentData$Allele %in% refAlleles
-
               } else {
 
                 # Select peaks matching reference.
                 selection <- selection & currentData$Allele %in% refAlleles
-
               }
 
               # Get selected data.
@@ -622,9 +592,11 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
               if (nrow(tmpDf) == 0 & keep.na) {
 
                 # Add missing marker, allele will become NA in rbind.fill.
-                tmpDf <- data.frame(Sample.Name = dataSampleNames[s],
-                                    Marker = refMarkers[m],
-                                    stringsAsFactors = FALSE)
+                tmpDf <- data.frame(
+                  Sample.Name = dataSampleNames[s],
+                  Marker = refMarkers[m],
+                  stringsAsFactors = FALSE
+                )
 
                 if (debug) {
                   print(paste("NA kept for marker", refMarkers[m]))
@@ -635,42 +607,35 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
                 # Add missing values.
                 for (a in seq(along = additionalColumns)) {
-
                   addValue <- unique(currentData[additionalColumns[a]])
 
                   if (length(addValue) > 1) {
-                    message("Multiple candidates for missing information in column, ",
-                            additionalColumns[a])
-                    message("Using first candidate to fill data.frame: ",
-                            paste(addValue, collapse = ", "))
+                    message(
+                      "Multiple candidates for missing information in column, ",
+                      additionalColumns[a]
+                    )
+                    message(
+                      "Using first candidate to fill data.frame: ",
+                      paste(addValue, collapse = ", ")
+                    )
                   }
 
                   # Add missing value.
                   tmpDf[additionalColumns[a]] <- addValue[1]
-
                 }
-
               }
-
             }
 
             # Combine result.
             res <- plyr::rbind.fill(res, tmpDf)
-
           } # End of marker for-loop.
-
         } # End of sample for-loop.
-
       } # End of reference for-loop.
-
     }
-
   } else {
-
     message("No allele filtering was performed.")
 
     res <- data
-
   } # End filter alleles.
 
   # Check if Dye is available.
@@ -681,7 +646,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
       # Check if kit is provided.
       if (is.null(kit)) {
-
         message("No kit defined. Attempt to auto detect:")
 
         kit <- detectKit(data)[1]
@@ -692,19 +656,18 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
         if (is.na(kit)) {
           stop("No matching kit was found in the kit definition file.")
         }
-
       }
 
       message("Detected NA in 'Dye' colum.")
       message("Adding Dye to result using kit ", kit, ".")
 
       # Fix broken dyes.
-      res <- addColor(data = res, kit = kit, need = "Dye",
-                            overwrite = TRUE, ignore.case = TRUE,
-                            debug = debug)
-
+      res <- addColor(
+        data = res, kit = kit, need = "Dye",
+        overwrite = TRUE, ignore.case = TRUE,
+        debug = debug
+      )
     }
-
   }
 
   # Add attributes to result.
@@ -719,6 +682,5 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     print(paste("EXIT:", match.call()[[1]]))
   }
 
-        return(res)
-
+  return(res)
 }

@@ -56,7 +56,6 @@
 #' # Show all information stored for kit with short name 'ESX17'.
 #' getKit("ESX17")
 getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NULL, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -73,157 +72,153 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
 
     filePath <- paste(packagePath, subFolder, fileName, sep = .separator)
 
-    .kit.info <- read.delim(file = filePath, header = TRUE, sep = "\t", quote = "\"",
-                           dec = ".", fill = TRUE, stringsAsFactors = FALSE)
-
+    .kit.info <- read.delim(
+      file = filePath, header = TRUE, sep = "\t", quote = "\"",
+      dec = ".", fill = TRUE, stringsAsFactors = FALSE
+    )
   }
 
   # Available kits. Must match else if construct.
   kits <- unique(.kit.info$Short.Name)
 
-        # Check if NULL
-        if (is.null(kit)) {
+  # Check if NULL
+  if (is.null(kit)) {
 
-                # Print available kits
-                if (show.messages) {
-                        message("Available kits:")
-                }
-                res <- kits
+    # Print available kits
+    if (show.messages) {
+      message("Available kits:")
+    }
+    res <- kits
 
-        # String provided.
-        } else {
+    # String provided.
+  } else {
 
-                # Check if number or string.
-                if (is.numeric(kit)) {
+    # Check if number or string.
+    if (is.numeric(kit)) {
 
-                        # Set index to number.
-                        index <- kit
+      # Set index to number.
+      index <- kit
+    } else {
 
-                } else {
+      # Find matching kit index (case insensitive)
+      index <- match(toupper(kit), toupper(kits))
+    }
 
-                        # Find matching kit index (case insensitive)
-                        index <- match(toupper(kit), toupper(kits))
+    # No matching kit.
+    if (any(is.na(index))) {
 
-                }
+      # Print available kits
+      if (show.messages) {
+        message(paste(
+          "No matching kit! \nAvailable kits:",
+          paste(kits, collapse = ", ")
+        ))
+      }
+      return(NA)
 
-                # No matching kit.
-                if (any(is.na(index))) {
+      # Assign matching kit information.
+    } else {
+      currentKit <- .kit.info[.kit.info$Short.Name %in% kits[index], ]
 
-                        # Print available kits
-                        if (show.messages) {
-                                message(paste("No matching kit! \nAvailable kits:",
-                      paste(kits, collapse = ", ")))
-                        }
-                        return(NA)
-
-                # Assign matching kit information.
-                } else {
-
-                  currentKit <- .kit.info[.kit.info$Short.Name %in% kits[index], ]
-
-      res <- data.frame(Panel = currentKit$Panel,
-                        Short.Name = currentKit$Short.Name,
-                        Full.Name = currentKit$Full.Name,
-                        Marker = currentKit$Marker,
-                        Allele = currentKit$Allele,
-                        Size = currentKit$Size,
-                        Size.Min = currentKit$Size.Min,
-                        Size.Max = currentKit$Size.Max,
-                        Virtual = currentKit$Virtual,
-                        Color = currentKit$Color,
-                        Repeat = currentKit$Repeat,
-                        Marker.Min = currentKit$Marker.Min,
-                        Marker.Max = currentKit$Marker.Max,
-                        Offset = currentKit$Offset,
-                        Sex.Marker = currentKit$Sex.Marker,
-                        Quality.Sensor = currentKit$Quality.Sensor,
-                        stringsAsFactors = FALSE)
+      res <- data.frame(
+        Panel = currentKit$Panel,
+        Short.Name = currentKit$Short.Name,
+        Full.Name = currentKit$Full.Name,
+        Marker = currentKit$Marker,
+        Allele = currentKit$Allele,
+        Size = currentKit$Size,
+        Size.Min = currentKit$Size.Min,
+        Size.Max = currentKit$Size.Max,
+        Virtual = currentKit$Virtual,
+        Color = currentKit$Color,
+        Repeat = currentKit$Repeat,
+        Marker.Min = currentKit$Marker.Min,
+        Marker.Max = currentKit$Marker.Max,
+        Offset = currentKit$Offset,
+        Sex.Marker = currentKit$Sex.Marker,
+        Quality.Sensor = currentKit$Quality.Sensor,
+        stringsAsFactors = FALSE
+      )
 
       # Create useful factors.
-                  res$Marker <- factor(res$Marker, levels = unique(res$Marker))
-
-                }
-
-        }
+      res$Marker <- factor(res$Marker, levels = unique(res$Marker))
+    }
+  }
 
   # Used in error message in 'else'.
   options <- paste("Index",
-                   "Panel",
-                   "Short.Name",
-                   "Full.Name",
-                   "Marker",
-                   "Allele",
-                   "Size",
-                   "Virtual",
-                   "Color",
-                   "Repeat",
-                   "Range",
-                   "Offset",
-                   "Sex.Marker",
-                   "Quality.Sensor", sep = ", ")
+    "Panel",
+    "Short.Name",
+    "Full.Name",
+    "Marker",
+    "Allele",
+    "Size",
+    "Virtual",
+    "Color",
+    "Repeat",
+    "Range",
+    "Offset",
+    "Sex.Marker",
+    "Quality.Sensor",
+    sep = ", "
+  )
 
   # WHAT ----------------------------------------------------------------------
 
   # Kit is required.
   if (!is.null(kit)) {
-
     if (is.na(what)) {
       # Return all kit information.
       return(res)
-
     } else if (toupper(what) == "INDEX") {
       # Return kit index.
       return(index)
-
     } else if (toupper(what) == "PANEL") {
       # Return panel name.
       return(unique(res$Panel))
-
     } else if (toupper(what) == "SHORT.NAME") {
       # Return short name.
       return(unique(res$Short.Name))
-
     } else if (toupper(what) == "FULL.NAME") {
       # Return full name.
       return(unique(res$Full.Name))
-
     } else if (toupper(what) == "MARKER") {
       # Return all markers.
       return(as.vector(unique(res$Marker)))
-
     } else if (toupper(what) == "ALLELE") {
       # Return all alleles and markers.
 
       res <- data.frame(Marker = res$Marker, Allele = res$Allele)
 
       return(res)
-
     } else if (toupper(what) == "SIZE") {
       # Returns all alleles and their indicated normal size in base pair.
       # Their normal size range is idicated in min and max columns.
       # Grouped by marker.
 
-      res <- data.frame(Marker = res$Marker,
-                        Allele = res$Allele,
-                        Size = res$Size,
-                        Size.Min = res$Size.Min,
-                        Size.Max = res$Size.Max,
-                        stringsAsFactors = FALSE)
+      res <- data.frame(
+        Marker = res$Marker,
+        Allele = res$Allele,
+        Size = res$Size,
+        Size.Min = res$Size.Min,
+        Size.Max = res$Size.Max,
+        stringsAsFactors = FALSE
+      )
 
       return(res)
-
     } else if (toupper(what) == "VIRTUAL") {
       # Returns all alleles (bins) with a flag if it is virtual
       # 1 for virtual or 0 it it is a physical ladder fragment.
       # Grouped per marker.
 
-      res <- data.frame(Marker = as.character(res$Marker),
-                        Allele = res$Allele,
-                        Virtual = res$Virtual,
-                        stringsAsFactors = FALSE)
+      res <- data.frame(
+        Marker = as.character(res$Marker),
+        Allele = res$Allele,
+        Virtual = res$Virtual,
+        stringsAsFactors = FALSE
+      )
 
       return(res)
-
     } else if (toupper(what) == "COLOR") {
       # Return markers and their color as strings.
 
@@ -234,12 +229,13 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
         color[m] <- unique(res$Color[res$Marker == marker[m]])
       }
 
-      res <- data.frame(Marker = marker,
-                        Color = color,
-                        stringsAsFactors = FALSE)
+      res <- data.frame(
+        Marker = marker,
+        Color = color,
+        stringsAsFactors = FALSE
+      )
 
       return(res)
-
     } else if (toupper(what) == "REPEAT") {
       # Return markers and their repeat unit length in base pair.
 
@@ -252,11 +248,12 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
         repeatUnit[m] <- unique(res$Repeat[res$Marker == marker[m]])
       }
 
-      res <- data.frame(Marker = marker, Offset = offset, Repeat = repeatUnit,
-                        stringsAsFactors = FALSE)
+      res <- data.frame(
+        Marker = marker, Offset = offset, Repeat = repeatUnit,
+        stringsAsFactors = FALSE
+      )
 
       return(res)
-
     } else if (toupper(what) == "RANGE") {
       # Return markers and their range (min and max) in base pair.
 
@@ -271,18 +268,19 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
         color[m] <- unique(res$Color[res$Marker == marker[m]])
       }
 
-      res <- data.frame(Marker = marker,
-                        Color = color,
-                        Marker.Min = markerMin,
-                        Marker.Max = markerMax,
-                        stringsAsFactors = FALSE)
+      res <- data.frame(
+        Marker = marker,
+        Color = color,
+        Marker.Min = markerMin,
+        Marker.Max = markerMax,
+        stringsAsFactors = FALSE
+      )
 
       # Create useful factors.
       res$Color <- factor(res$Color, levels = unique(res$Color))
 
 
       return(res)
-
     } else if (toupper(what) == "OFFSET") {
       # Return markers and their estimated offset in base pair.
 
@@ -295,37 +293,31 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
         repeatUnit[m] <- unique(res$Repeat[res$Marker == marker[m]])
       }
 
-      res <- data.frame(Marker = marker, Offset = offset, Repeat = repeatUnit,
-                        stringsAsFactors = FALSE)
+      res <- data.frame(
+        Marker = marker, Offset = offset, Repeat = repeatUnit,
+        stringsAsFactors = FALSE
+      )
 
       return(res)
-
     } else if (toupper(what) == "QUALITY.SENSOR") {
       # Return quality sensors as vector.
 
       qsMarkers <- as.character(unique(res$Marker[res$Quality.Sensor == TRUE]))
 
       return(qsMarkers)
-
     } else if (toupper(what) == "SEX.MARKER") {
       # Return sex markers as vector.
 
       sexMarkers <- as.character(unique(res$Marker[res$Sex.Marker == TRUE]))
 
       return(sexMarkers)
-
     } else {
-
       warning(paste(what, "not supported! \nwhat = {", options, "}"))
       return(NA)
-
     }
-
   } else {
     # If kit is NULL return available kits.
 
     return(res)
-
   }
-
 }

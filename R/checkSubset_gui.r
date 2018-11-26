@@ -71,15 +71,16 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 15,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -94,39 +95,49 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Open help page for function.
     print(help("checkSubset_gui", help_type = "html"))
-
   })
 
   # DATASET ###################################################################
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f0g1 <- glayout(container = f0, spacing = 1)
 
   f0g1[1, 1] <- glabel(text = "Select dataset:", container = f0g1)
 
-  f0g1[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                listObjects(env = env,
-                                                            obj.class = "data.frame")),
-                                        selected = 1,
-                                        editable = FALSE,
-                                        container = f0g1,
-                                        ellipsize = "none")
+  f0g1[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g1,
+    ellipsize = "none"
+  )
 
-  f0g1[1, 3] <- dataset_samples_lbl <- glabel(text = " 0 samples",
-                                              container = f0g1)
+  f0g1[1, 3] <- dataset_samples_lbl <- glabel(
+    text = " 0 samples",
+    container = f0g1
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -134,29 +145,34 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gData <<- get(val_obj, envir = env)
       samples <- length(unique(.gData$Sample.Name))
       svalue(dataset_samples_lbl) <- paste("", samples, "samples")
-
     } else {
 
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       svalue(dataset_samples_lbl) <- " 0 samples"
-
     }
-
   })
 
   f0g1[2, 1] <- glabel(text = "Select reference set:", container = f0g1)
 
-  f0g1[2, 2] <- dataset_ref_drp <- gcombobox(items = c("<Select dataset>",
-                                                 listObjects(env = env,
-                                                             obj.class = "data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g1,
-                                         ellipsize = "none")
+  f0g1[2, 2] <- dataset_ref_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g1,
+    ellipsize = "none"
+  )
 
-  f0g1[2, 3] <- dataset_ref_lbl <- glabel(text = " 0 reference samples",
-                                              container = f0g1)
+  f0g1[2, 3] <- dataset_ref_lbl <- glabel(
+    text = " 0 reference samples",
+    container = f0g1
+  )
 
 
   f0g1[3, 1] <- glabel(text = "Or type a reference name:", container = f0g1)
@@ -164,13 +180,14 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f0g1[3, 2] <- dataset_ref_edt <- gedit(container = f0g1)
 
   addHandlerChanged(dataset_ref_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_ref_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -178,35 +195,40 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gRef <<- get(val_obj, envir = env)
       refs <- length(unique(.gRef$Sample.Name))
       svalue(dataset_ref_lbl) <- paste("", refs, "reference samples")
-
     } else {
 
       # Reset components.
       .gRef <<- data.frame(No.Data = NA)
       svalue(dataset_ref_lbl) <- " 0 reference samples"
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_ignore_case_chk <- gcheckbox(text = "Ignore case ('A' will match 'A', 'B-a.2', and 'A2')",
-                                  checked = TRUE,
-                                  container = f1)
+  f1_ignore_case_chk <- gcheckbox(
+    text = "Ignore case ('A' will match 'A', 'B-a.2', and 'A2')",
+    checked = TRUE,
+    container = f1
+  )
 
-  f1_word_chk <- gcheckbox(text = "Add word boundaries ('A' will match 'A', 'B-A.2', and 'A 2' but not 'A2')",
-                                  checked = FALSE,
-                                  container = f1)
+  f1_word_chk <- gcheckbox(
+    text = "Add word boundaries ('A' will match 'A', 'B-A.2', and 'A 2' but not 'A2')",
+    checked = FALSE,
+    container = f1
+  )
 
-  f1_exact_chk <- gcheckbox(text = "Exact matching ('A' will match 'A' but not 'B-A.2', 'A 2', or 'A2')",
-                           checked = FALSE,
-                           container = f1)
+  f1_exact_chk <- gcheckbox(
+    text = "Exact matching ('A' will match 'A' but not 'B-A.2', 'A 2', or 'A2')",
+    checked = FALSE,
+    container = f1
+  )
 
   # BUTTON ####################################################################
 
@@ -233,33 +255,36 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check that data is available.
     if (!is.null(val_data) && !is.null(val_ref)) {
+      chksubset_w <- gwindow(
+        title = "Check subsetting",
+        visible = FALSE, name = title,
+        width = NULL, height = NULL, parent = w,
+        handler = NULL, action = NULL
+      )
 
-      chksubset_w <- gwindow(title = "Check subsetting",
-                             visible = FALSE, name = title,
-                             width = NULL, height = NULL, parent = w,
-                             handler = NULL, action = NULL)
+      chksubset_txt <- checkSubset(
+        data = val_data,
+        ref = val_ref,
+        ignore.case = val_ignore,
+        word = val_word,
+        exact = val_exact,
+        console = FALSE
+      )
 
-      chksubset_txt <- checkSubset(data = val_data,
-                                   ref = val_ref,
-                                   ignore.case = val_ignore,
-                                   word = val_word,
-                                   exact = val_exact,
-                                   console = FALSE)
-
-      gtext(text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
-             wrap = FALSE, container = chksubset_w)
+      gtext(
+        text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
+        wrap = FALSE, container = chksubset_w
+      )
 
       visible(chksubset_w) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set or type a reference name",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -301,19 +326,16 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_checkSubset_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_checkSubset_gui_ignore", value = svalue(f1_ignore_case_chk), envir = env)
       assign(x = ".strvalidator_checkSubset_gui_word", value = svalue(f1_word_chk), envir = env)
       assign(x = ".strvalidator_checkSubset_gui_exact", value = svalue(f1_word_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_checkSubset_gui_savegui", envir = env, inherits = FALSE)) {
@@ -337,7 +359,6 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -348,5 +369,4 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

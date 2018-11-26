@@ -37,7 +37,6 @@
 
 tablePrecision <- function(data, key = c("Marker", "Allele"), target = c("Size"),
                            debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -58,14 +57,16 @@ tablePrecision <- function(data, key = c("Marker", "Allele"), target = c("Size")
   for (k in seq(along = key)) {
     if (!any(grepl(key[k], names(data)))) {
       stop(paste("'data' must contain a column '", key[k], "'.", sep = ""),
-           call. = TRUE)
+        call. = TRUE
+      )
     }
   }
 
   for (t in seq(along = target)) {
     if (!any(grepl(target[t], names(data)))) {
       stop(paste("'data' must contain a column '", target[t], "'.", sep = ""),
-           call. = TRUE)
+        call. = TRUE
+      )
     }
   }
 
@@ -73,16 +74,22 @@ tablePrecision <- function(data, key = c("Marker", "Allele"), target = c("Size")
   for (k in seq(along = key)) {
     if (sum(grepl(key[k], names(data))) > 1) {
       stop(paste("Multiple '", key[k], "' columns found!",
-                 "\n'data' must be in 'slim' format", sep = ""),
-           call. = TRUE)
+        "\n'data' must be in 'slim' format",
+        sep = ""
+      ),
+      call. = TRUE
+      )
     }
   }
 
   for (t in seq(along = target)) {
     if (sum(grepl(target[t], names(data))) > 1) {
       stop(paste("Multiple '", target[t], "' columns found!",
-                 "\n'data' must be in 'slim' format", sep = ""),
-           call. = TRUE)
+        "\n'data' must be in 'slim' format",
+        sep = ""
+      ),
+      call. = TRUE
+      )
     }
   }
 
@@ -161,9 +168,7 @@ tablePrecision <- function(data, key = c("Marker", "Allele"), target = c("Size")
 
       # Place in data frame.
       res[resRow, firstCol[t]:lastCol[t]] <- c(s.min, s.max, s.mean, s.n, s.sd)
-
     }
-
   }
 
   # FINALISE ------------------------------------------------------------------
@@ -181,5 +186,4 @@ tablePrecision <- function(data, key = c("Marker", "Allele"), target = c("Size")
   }
 
   return(res)
-
 }

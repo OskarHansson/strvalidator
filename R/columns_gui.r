@@ -63,15 +63,16 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-              spacing = 15,
-              use.scrollwindow = FALSE,
-              container = w,
-              expand = FALSE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = FALSE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -86,34 +87,42 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Open help page for function.
     print(help("columns_gui", help_type = "html"))
-
   })
 
   # DATASET ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = FALSE,
-               spacing = 10,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- f0g0_data_drp <- gcombobox(items = c("<Select dataset>",
-                                                 listObjects(env = env,
-                                                             obj.class = "data.frame")),
-                                         selected = 1,
-                                         editable = FALSE,
-                                         container = f0g0,
-                                         ellipsize = "none")
+  f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
-  f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(text = " 0 columns",
-                                              container = f0g0)
+  f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
+    text = " 0 columns",
+    container = f0g0
+  )
 
   addHandlerChanged(f0g0_data_drp, handler = function(h, ...) {
-
     val_obj <- svalue(f0g0_data_drp)
 
     # Check if suitable.
@@ -132,9 +141,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       svalue(f1g1_col1_drp, index = TRUE) <- 1
       f1g1_col2_drp[] <- c(.columnDropDefault, names(.gData))
       svalue(f1g1_col2_drp, index = TRUE) <- 1
-
     } else {
-
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(f0g0_data_col_lbl) <- " 0 columns"
@@ -144,9 +151,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       svalue(f1g1_col1_drp, index = TRUE) <- 1
       f1g1_col2_drp[] <- c(.columnDropDefault)
       svalue(f1g1_col2_drp, index = TRUE) <- 1
-
     }
-
   })
 
   # COLUMNS ###################################################################
@@ -157,20 +162,23 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   f1g1[1, 1] <- glabel(text = "Select column 1:", container = f1g1)
 
-  f1g1[1, 2] <- f1g1_col1_drp <- gcombobox(items = c(.columnDropDefault),
-                                          editable = FALSE,
-                                          container = f1g1,
-                                          ellipsize = "none")
+  f1g1[1, 2] <- f1g1_col1_drp <- gcombobox(
+    items = c(.columnDropDefault),
+    editable = FALSE,
+    container = f1g1,
+    ellipsize = "none"
+  )
 
   f1g1[2, 1] <- glabel(text = "Select column 2:", container = f1g1)
 
-  f1g1[2, 2] <- f1g1_col2_drp <- gcombobox(items = c(.columnDropDefault),
-                                          editable = FALSE,
-                                          container = f1g1,
-                                          ellipsize = "none")
+  f1g1[2, 2] <- f1g1_col2_drp <- gcombobox(
+    items = c(.columnDropDefault),
+    editable = FALSE,
+    container = f1g1,
+    ellipsize = "none"
+  )
 
   addHandlerChanged(f1g1_col1_drp, handler = function(h, ...) {
-
     val_col <- svalue(f1g1_col1_drp)
 
     # Check if column exist.
@@ -184,11 +192,9 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         svalue(f3g1_col_edt) <- ""
       }
     }
-
   })
 
   addHandlerChanged(f1g1_col2_drp, handler = function(h, ...) {
-
     if (svalue(f1g1_col2_drp) %in% names(.gData)) {
       # If an existing colum gets selected.
 
@@ -197,13 +203,10 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
         # Reset action dropdown.
         svalue(f3g1_action_drp, index = TRUE) <- 1
-
       }
-
     }
 
     .updateGui()
-
   })
 
   # OPTIONS ###################################################################
@@ -223,9 +226,11 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f3g1[3, 1] <- glabel(text = "Action:", container = f3g1)
 
   action_items <- c(.columnActionDefault, "&", "+", "*", "-", "/", "substr")
-  f3g1[3, 2] <- f3g1_action_drp <- gcombobox(items = action_items, selected = 1,
-                                            editable = FALSE, container = f3g1,
-                                            ellipsize = "none")
+  f3g1[3, 2] <- f3g1_action_drp <- gcombobox(
+    items = action_items, selected = 1,
+    editable = FALSE, container = f3g1,
+    ellipsize = "none"
+  )
 
   f3g1[4, 1] <- glabel(text = "Start position:", container = f3g1)
 
@@ -237,24 +242,23 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
 
   addHandlerChanged(f3g1_action_drp, handler = function(h, ...) {
-
     if (svalue(f3g1_action_drp) %in% "substr") {
 
       # Reset column 2 if 'substr' is selected.
       svalue(f1g1_col2_drp, index = TRUE) <- 1
-
     }
 
     .updateGui()
-
   })
 
   # NAME ######################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Save as:", container = f2)
   f2_name <- gedit(text = "", container = f2, expand = TRUE)
@@ -268,7 +272,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   combine_btn <- gbutton(text = "Execute", container = gv)
 
   addHandlerChanged(combine_btn, handler = function(h, ...) {
-
     val_col1 <- svalue(f1g1_col1_drp)
     val_col2 <- svalue(f1g1_col2_drp)
     val_action <- svalue(f3g1_action_drp)
@@ -288,22 +291,30 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       val_col2 <- NA
     }
 
-    datanew <- columns(data = val_data, col1 = val_col1, col2 = val_col2,
-                       operator = val_action, fixed = val_fixed,
-                       target = val_target, start = val_start, stop = val_stop,
-                       debug = debug)
+    datanew <- columns(
+      data = val_data, col1 = val_col1, col2 = val_col2,
+      operator = val_action, fixed = val_fixed,
+      target = val_target, start = val_start, stop = val_stop,
+      debug = debug
+    )
 
     # Create key-value pairs to log.
-    keys <- list("data", "col1", "col2", "action", "target",
-                 "fixed", "start", "stop")
+    keys <- list(
+      "data", "col1", "col2", "action", "target",
+      "fixed", "start", "stop"
+    )
 
-    values <- list(val_data_name, val_col1, val_col2, val_action, val_target,
-                   val_fixed, val_start, val_stop)
+    values <- list(
+      val_data_name, val_col1, val_col2, val_action, val_target,
+      val_fixed, val_start, val_stop
+    )
 
     # Update audit trail.
-    datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                          label = "columns_gui", arguments = FALSE,
-                          package = "strvalidator")
+    datanew <- auditTrail(
+      obj = datanew, key = keys, value = values,
+      label = "columns_gui", arguments = FALSE,
+      package = "strvalidator"
+    )
 
     # Save data.
     saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -315,13 +326,11 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Close GUI.
     dispose(w)
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     substr_selected <- svalue(f3g1_action_drp) %in% "substr"
     no_action <- svalue(f3g1_action_drp) %in% .columnActionDefault
     second_col_selected <- svalue(f1g1_col2_drp) %in% names(.gData)
@@ -345,7 +354,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     } else {
       enabled(combine_btn) <- TRUE
     }
-
   }
 
   .loadSavedSettings <- function() {
@@ -391,20 +399,17 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_columns_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_columns_gui_fixed", value = svalue(f3g1_val_edt), envir = env)
       assign(x = ".strvalidator_columns_gui_action", value = svalue(f3g1_action_drp), envir = env)
       assign(x = ".strvalidator_columns_gui_start", value = svalue(f3g1_start_edt), envir = env)
       assign(x = ".strvalidator_columns_gui_stop", value = svalue(f3g1_stop_edt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_columns_gui_savegui", envir = env, inherits = FALSE)) {
@@ -431,7 +436,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -443,5 +447,4 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

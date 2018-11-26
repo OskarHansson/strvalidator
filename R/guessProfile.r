@@ -40,7 +40,6 @@
 #' guessProfile(data = set2, ratio = 0.7)
 guessProfile <- function(data, ratio = 0.6, height = 50,
                          na.rm = FALSE, ol.rm = TRUE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -64,11 +63,13 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
   # Check if slim format.
   if (sum(grepl("Height", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check data type.
@@ -103,9 +104,7 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
 
   # Loop through and filter out the presumed correct profile.
   for (s in seq(along = samples)) {
-
     for (m in seq(along = markers)) {
-
       cRows <- data$Sample.Name == samples[s] & data$Marker == markers[m]
       peaks <- data$Height[cRows]
 
@@ -136,12 +135,10 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
         } else {
           genotype <- NA # NA %in% NA = TRUE
         }
-
       } else if (length(peaks) == 1) {
         # Homozygous.
 
         genotype <- peaks
-
       } else {
         # Heterozygous.
 
@@ -154,21 +151,23 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
         } else if (sum(peaks %in% max1) == 2) {
           max2 <- max1
           if (debug) {
-            print(paste("Two peaks of equal height in sample", samples[s],
-                  "marker", markers[m]))
+            print(paste(
+              "Two peaks of equal height in sample", samples[s],
+              "marker", markers[m]
+            ))
           }
         } else {
-
-          msg <- paste(sum(peaks %in% max1),
-                       "peaks of equal height in sample", samples[s],
-                       "marker", markers[m],
-                       "\n\nCan't determine correct allele. Returning NA.")
+          msg <- paste(
+            sum(peaks %in% max1),
+            "peaks of equal height in sample", samples[s],
+            "marker", markers[m],
+            "\n\nCan't determine correct allele. Returning NA."
+          )
           warning(msg)
 
           if (debug) {
             print(msg)
           }
-
         }
 
         # Check condition.
@@ -179,7 +178,6 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
         } else {
           genotype <- max1
         }
-
       }
 
       if (debug) {
@@ -189,7 +187,6 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
 
       # Add to mask.
       keepRows <- keepRows | cRows & data$Height %in% genotype
-
     }
   }
 
@@ -204,5 +201,4 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
   }
 
   return(data)
-
 }

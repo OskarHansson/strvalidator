@@ -44,23 +44,18 @@
 
 
 tableBalance <- function(data, scope = "locus", quant = 0.05) {
-
   message("Function to calculate summary statistics for balance data.")
 
   # Prepare -------------------------------------------------------------------
 
   if ("Hb" %in% names(data)) {
-
     message("Hb column detected.")
 
     targetCol <- quote(Hb)
-
   } else if ("Lb" %in% names(data)) {
-
     message("Lb column detected.")
 
     targetCol <- quote(Lb)
-
   }
 
   # Create column names.
@@ -76,49 +71,55 @@ tableBalance <- function(data, scope = "locus", quant = 0.05) {
 
   # Check for and remove NA in target column.
   if (any(is.na(DT[, eval(targetCol)]))) {
-
     tmp1 <- nrow(DT)
     # DT <- DT[!is.na(get(targetCol))]
     DT <- DT[!is.na(eval(targetCol))]
     tmp2 <- nrow(DT)
 
     message("Removed ", tmp1 - tmp2, " rows with NA.")
-
   }
 
   # Calculate -----------------------------------------------------------------
 
   if (scope == "global") {
-
     message("Calculating global summary statistics across all data...")
 
-    DT <- DT[, j = setNames(list(.N,
-                                 min(eval(targetCol)),
-                                 mean(eval(targetCol)),
-                                 sd(eval(targetCol)),
-                                 max(eval(targetCol)),
-                                 quantile(eval(targetCol), quant)),
-                            list(nameN, nameMin, nameMean, nameSd,
-                                 nameMax, namePerc))]
-
+    DT <- DT[, j = setNames(
+      list(
+        .N,
+        min(eval(targetCol)),
+        mean(eval(targetCol)),
+        sd(eval(targetCol)),
+        max(eval(targetCol)),
+        quantile(eval(targetCol), quant)
+      ),
+      list(
+        nameN, nameMin, nameMean, nameSd,
+        nameMax, namePerc
+      )
+    )]
   } else if (scope == "locus") {
-
     message("Calculating summary statistics by locus...")
 
-    DT <- DT[, j = setNames(list(.N,
-                                 min(eval(targetCol)),
-                                 mean(eval(targetCol)),
-                                 sd(eval(targetCol)),
-                                 max(eval(targetCol)),
-                                 quantile(eval(targetCol), quant)),
-                            list(nameN, nameMin, nameMean, nameSd,
-                                 nameMax, namePerc)),
-             by = list(Marker)]
-
+    DT <- DT[,
+      j = setNames(
+        list(
+          .N,
+          min(eval(targetCol)),
+          mean(eval(targetCol)),
+          sd(eval(targetCol)),
+          max(eval(targetCol)),
+          quantile(eval(targetCol), quant)
+        ),
+        list(
+          nameN, nameMin, nameMean, nameSd,
+          nameMax, namePerc
+        )
+      ),
+      by = list(Marker)
+    ]
   } else {
-
     message("Required column not in dataset. Return data unchanged.")
-
   }
 
   # Convert to data.frame.
@@ -128,5 +129,4 @@ tableBalance <- function(data, scope = "locus", quant = 0.05) {
   res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 
   return(res)
-
 }

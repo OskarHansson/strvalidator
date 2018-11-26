@@ -66,8 +66,10 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   .gData <- NULL
   .gDataName <- NULL
   .gPlot <- NULL
-  .palette <- c("Set1", "Set2", "Set3", "Accent", "Dark2",
-                "Paired", "Pastel1", "Pastel2")
+  .palette <- c(
+    "Set1", "Set2", "Set3", "Accent", "Dark2",
+    "Paired", "Pastel1", "Pastel2"
+  )
   .defaultGroup <- "<Select group>"
   .defaultColumn <- "<Select column>"
   # Qualitative palette, do not imply magnitude differences between legend
@@ -92,14 +94,15 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -114,50 +117,62 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     # Open help page for function.
     print(help("plotDistribution_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   f0g0 <- glayout(container = f0)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                listObjects(env = env,
-                                                            obj.class = "data.frame")),
-                                        selected = 1,
-                                        editable = FALSE,
-                                        container = f0g0,
-                                        ellipsize = "none")
+  f0g0[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g0,
+    ellipsize = "none"
+  )
 
   f0g0[1, 3] <- f0_samples_lbl <- glabel(text = " (0 rows)", container = f0g0)
 
   f0g0[2, 1] <- glabel(text = "Select group:", container = f0g0)
-  f0g0[2, 2] <- f0_group_drp <- gcombobox(items = .defaultGroup,
-                                         selected = 1, container = f0g0,
-                                         ellipsize = "none")
+  f0g0[2, 2] <- f0_group_drp <- gcombobox(
+    items = .defaultGroup,
+    selected = 1, container = f0g0,
+    ellipsize = "none"
+  )
   f0g0[2, 3] <- f0_rows_lbl <- glabel(text = " (0 rows)", container = f0g0)
 
   f0g0[3, 1] <- glabel(text = "Select column:", container = f0g0)
-  f0g0[3, 2] <- f0_column_drp <- gcombobox(items = .defaultColumn,
-                                          selected = 1, container = f0g0,
-                                          ellipsize = "none")
+  f0g0[3, 2] <- f0_column_drp <- gcombobox(
+    items = .defaultColumn,
+    selected = 1, container = f0g0,
+    ellipsize = "none"
+  )
 
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- NULL
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -187,26 +202,21 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       enabled(f7_ecdf_btn) <- TRUE
       enabled(f7_pdf_btn) <- TRUE
       enabled(f7_histogram_btn) <- TRUE
-
     } else {
 
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(f0_samples_lbl) <- " (0 rows)"
-
     }
-
   })
 
   addHandlerChanged(f0_group_drp, handler = function(h, ...) {
-
     val <- svalue(f0_group_drp)
     rows <- nrow(.gData[.gData$Group == val, ])
 
     # Update number of observations.
     svalue(f0_rows_lbl) <- paste(" (", rows, " rows)", sep = "")
-
   })
 
   addHandlerChanged(f0_column_drp, handler = function(h, ...) {
@@ -215,18 +225,21 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     enabled(f7_ecdf_btn) <- TRUE
     enabled(f7_pdf_btn) <- TRUE
     enabled(f7_histogram_btn) <- TRUE
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
@@ -242,78 +255,99 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   enabled(f1g1) <- svalue(f1_titles_chk)
 
   f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- f1_title_edt <- gedit(text = "", width = 50,
-                                     container = f1g1)
+  f1g1[1, 2] <- f1_title_edt <- gedit(
+    text = "", width = 50,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- f1_xtitle_edt <- gedit(text = "",
-                                      container = f1g1)
+  f1g1[2, 2] <- f1_xtitle_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- f1_ytitle_edt <- gedit(text = "",
-                                      container = f1g1)
+  f1g1[3, 2] <- f1_ytitle_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g2 <- glayout(container = f1, spacing = 1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
-  items_theme <- c("theme_grey()", "theme_bw()", "theme_linedraw()",
-                   "theme_light()", "theme_dark()", "theme_minimal()",
-                   "theme_classic()", "theme_void()")
-  f1g2[1, 2] <- f1_theme_drp <- gcombobox(items = items_theme,
-                                         selected = 1,
-                                         container = f1g2,
-                                         ellipsize = "none")
+  items_theme <- c(
+    "theme_grey()", "theme_bw()", "theme_linedraw()",
+    "theme_light()", "theme_dark()", "theme_minimal()",
+    "theme_classic()", "theme_void()"
+  )
+  f1g2[1, 2] <- f1_theme_drp <- gcombobox(
+    items = items_theme,
+    selected = 1,
+    container = f1g2,
+    ellipsize = "none"
+  )
 
   # Boxplot.
   f1g3 <- glayout(container = f1, spacing = 1)
-  f1g3[1, 1] <- f1_box_chk <- gcheckbox(text = "Overlay boxplot", checked = TRUE,
-                                       container = f1g3)
+  f1g3[1, 1] <- f1_box_chk <- gcheckbox(
+    text = "Overlay boxplot", checked = TRUE,
+    container = f1g3
+  )
   f1g3[1, 2] <- glabel(text = "Width of boxplot:", container = f1g3)
-  f1g3[1, 3] <- f1_width_spn <- gspinbutton(from = 0, to = 1, by = 0.01, value = 0.25,
-                                           container = f1g3)
+  f1g3[1, 3] <- f1_width_spn <- gspinbutton(
+    from = 0, to = 1, by = 0.01, value = 0.25,
+    container = f1g3
+  )
 
   addHandlerChanged(f1_box_chk, handler = function(h, ...) {
-
     .updateEnableStatus()
-
   })
 
   # Transformation.
   f1g3[2, 1] <- f1_log_chk <- gcheckbox(text = "Transform to logarithms.", container = f1g3)
   f1g3[2, 2] <- glabel(text = "Base:", container = f1g3)
   f1g3[2, 3] <- f1_base_edt <- gedit(text = "2.718282", width = 8, container = f1g3)
-  tooltip(f1_base_edt) <- paste("Default is the natural logarithm, approximately 2.718282.",
-                                "Other common values are 10 for the common logarithm,"
-                                , "and 2 for binary logarithms.")
+  tooltip(f1_base_edt) <- paste(
+    "Default is the natural logarithm, approximately 2.718282.",
+    "Other common values are 10 for the common logarithm,", "and 2 for binary logarithms."
+  )
 
   addHandlerChanged(f1_log_chk, handler = function(h, ...) {
-
     .updateEnableStatus()
-
   })
 
-  f1e2 <- gexpandgroup(text = "Distribution function",
-                       horizontal = FALSE, container = f1)
+  f1e2 <- gexpandgroup(
+    text = "Distribution function",
+    horizontal = FALSE, container = f1
+  )
 
   # Start collapsed.
   visible(f1e2) <- FALSE
 
   f1g4 <- glayout(container = f1e2, spacing = 1)
 
-  f1_kernel <- c("gaussian", "rectangular", "triangular", "epanechnikov",
-                 "biweight", "cosine", "optcosine")
+  f1_kernel <- c(
+    "gaussian", "rectangular", "triangular", "epanechnikov",
+    "biweight", "cosine", "optcosine"
+  )
   f1g4[1, 1] <- glabel(text = "Smoothing kernel:", container = f1g4)
-  f1g4[1, 2] <- f1_kernel_drp <- gcombobox(items = f1_kernel,
-                                          selected = 1, container = f1g4,
-                                          ellipsize = "none")
+  f1g4[1, 2] <- f1_kernel_drp <- gcombobox(
+    items = f1_kernel,
+    selected = 1, container = f1g4,
+    ellipsize = "none"
+  )
 
   f1_adjust <- c(4, 2, 1, 0.5, 0.25)
   f1g4[2, 1] <- glabel(text = "Adjust bandwidth:", container = f1g4)
-  f1g4[2, 2] <- f1_adjustbw_cbo <- gcombobox(items = f1_adjust,
-                                            selected = 3, editable = TRUE,
-                                            container = f1g4, ellipsize = "none")
+  f1g4[2, 2] <- f1_adjustbw_cbo <- gcombobox(
+    items = f1_adjust,
+    selected = 3, editable = TRUE,
+    container = f1g4, ellipsize = "none"
+  )
 
-  f1e3 <- gexpandgroup(text = "Histogram",
-                       horizontal = FALSE, container = f1)
+  f1e3 <- gexpandgroup(
+    text = "Histogram",
+    horizontal = FALSE, container = f1
+  )
 
   # Start collapsed.
   visible(f1e3) <- FALSE
@@ -322,26 +356,24 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   f1g5[1, 1] <- glabel(text = "Adjust binwidth:", container = f1g5)
   f1g5[1, 2] <- f1_binwidth_edt <- gedit(text = "", width = 6, container = f1g5)
-  binwidth_tip <- paste("The width of the bins. The default is to use 30 bins, ",
-                        "that cover the range of the data. You should always",
-                        "override this value, exploring multiple widths to",
-                        "find the best to illustrate your data.",
-                        "Leave empty to use 'bins'.")
+  binwidth_tip <- paste(
+    "The width of the bins. The default is to use 30 bins, ",
+    "that cover the range of the data. You should always",
+    "override this value, exploring multiple widths to",
+    "find the best to illustrate your data.",
+    "Leave empty to use 'bins'."
+  )
   tooltip(f1_binwidth_edt) <- binwidth_tip
   f1g5[2, 1] <- glabel(text = "Number of bins:", container = f1g5)
   f1g5[2, 2] <- f1_bins_edt <- gedit(text = "30", width = 6, container = f1g5)
   tooltip(f1_bins_edt) <- "Overridden by binwidth. Defaults to 30."
 
   addHandlerKeystroke(f1_binwidth_edt, handler = function(h, ...) {
-
     .updateEnableStatus()
-
   })
 
   addHandlerChanged(f1_binwidth_edt, handler = function(h, ...) {
-
     .updateEnableStatus()
-
   })
 
 
@@ -350,10 +382,12 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   # Start collapsed.
   visible(f1e4) <- FALSE
 
-#  f1g6 <- gframe(text = "", horizontal = FALSE, container = f1e4)
+  #  f1g6 <- gframe(text = "", horizontal = FALSE, container = f1e4)
 
-  glabel(text = "NB! Must provide both min and max value.",
-         anchor = c(-1, 0), container = f1e4)
+  glabel(
+    text = "NB! Must provide both min and max value.",
+    anchor = c(-1, 0), container = f1e4
+  )
 
   f1g6 <- glayout(container = f1e4, spacing = 1)
   f1g6[1, 1:2] <- glabel(text = "Limit Y axis (min-max)", container = f1g6)
@@ -366,84 +400,76 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   # FRAME 7 ###################################################################
 
-  f7 <- gframe(text = "Plot distribution",
-               horizontal = FALSE,
-               container = gv)
+  f7 <- gframe(
+    text = "Plot distribution",
+    horizontal = FALSE,
+    container = gv
+  )
 
   f7g7 <- glayout(container = f7)
 
   f7g7[1, 1] <- f7_ecdf_btn <- gbutton(text = "CDF", container = f7g7)
 
   addHandlerChanged(f7_ecdf_btn, handler = function(h, ...) {
-
     val_column <- svalue(f0_column_drp)
 
     if (val_column == .defaultColumn) {
-
-      gmessage(msg = "A data column must be specified!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "A data column must be specified!",
+        title = "Error",
+        icon = "error"
+      )
     } else {
-
       enabled(f7_ecdf_btn) <- FALSE
       .plot(how = "cdf")
       enabled(f7_ecdf_btn) <- TRUE
-
     }
-
   })
 
   f7g7[1, 2] <- f7_pdf_btn <- gbutton(text = "PDF", container = f7g7)
 
   addHandlerChanged(f7_pdf_btn, handler = function(h, ...) {
-
     val_column <- svalue(f0_column_drp)
 
     if (val_column == .defaultColumn) {
-
-      gmessage(msg = "A data column must be specified!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "A data column must be specified!",
+        title = "Error",
+        icon = "error"
+      )
     } else {
-
       enabled(f7_pdf_btn) <- FALSE
       .plot(how = "pdf")
       enabled(f7_pdf_btn) <- TRUE
-
     }
-
   })
 
   f7g7[1, 3] <- f7_histogram_btn <- gbutton(text = "Histogram", container = f7g7)
 
   addHandlerChanged(f7_histogram_btn, handler = function(h, ...) {
-
     val_column <- svalue(f0_column_drp)
 
     if (val_column == .defaultColumn) {
-
-      gmessage(msg = "A data column must be specified!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "A data column must be specified!",
+        title = "Error",
+        icon = "error"
+      )
     } else {
-
       enabled(f7_histogram_btn) <- FALSE
       .plot(how = "histogram")
       enabled(f7_histogram_btn) <- TRUE
-
     }
-
   })
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -454,7 +480,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -464,24 +489,25 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # FUNCTIONS #################################################################
@@ -547,7 +573,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     # Check if data.
     if (!is.na(val_data) && !is.null(val_data)) {
-
       if (debug) {
         print("Before plot: str(val_data)")
         print(str(val_data))
@@ -559,7 +584,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
       # Get data for selected group.
       if ("Group" %in% names(val_data)) {
-
         if (val_group != .defaultGroup) {
 
           # Store nb of observations.
@@ -573,12 +597,12 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
           # Show message.
           message(paste("Subset group = '", val_group,
-                        "', removed ", nb0 - nb, " rows.", sep = ""))
-
+            "', removed ", nb0 - nb, " rows.",
+            sep = ""
+          ))
         }
 
         message("No group selected.")
-
       }
 
       # Convert to numeric.
@@ -617,12 +641,10 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
           print(str(val_data))
           print(head(val_data))
         }
-
       }
 
       # Create titles.
       if (val_titles) {
-
         if (debug) {
           print("Custom titles")
         }
@@ -630,65 +652,51 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         mainTitle <- val_title
         xTitle <- val_x_title
         yTitle <- val_y_title
-
       } else {
-
         if (debug) {
           print("Default titles")
         }
 
         # Different titles.
         if (how == "cdf") {
-
           mainTitle <- paste("Cumulative density function (",
-                             nb, " observations)", sep = "")
+            nb, " observations)",
+            sep = ""
+          )
 
           yTitle <- "Density"
-
         } else if (how == "pdf") {
-
           mainTitle <- paste("Probability density function (",
-                             nb, " observations)", sep = "")
+            nb, " observations)",
+            sep = ""
+          )
 
           yTitle <- "Density"
-
         } else if (how == "histogram") {
-
           mainTitle <- paste("Histogram (",
-                             nb, " observations)", sep = "")
+            nb, " observations)",
+            sep = ""
+          )
 
           yTitle <- "Count"
-
         } else {
-
           warning(paste("how=", how, "not implemented for titles!"))
-
         }
 
         # Different X axis depending on chosen column.
         if (val_column == "Height") {
-
           xTitle <- "Peak height (RFU)"
-
         } else if (val_column == "Size") {
-
           xTitle <- "Fragment size (bp)"
-
         } else if (val_column == "Data.Point") {
-
           xTitle <- "Data point"
-
         } else {
-
           xTitle <- val_column
-
         }
-
       }
 
       # Create plots.
       if (how == "cdf") {
-
         if (debug) {
           print("Create cdf plot")
         }
@@ -696,18 +704,14 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         # ECDP
         gp <- ggplot(data = val_data, aes_string(x = val_column))
         gp <- gp + stat_ecdf()
-
       } else if (how == "pdf") {
-
         if (debug) {
           print("Create pdf plot")
         }
 
         gp <- ggplot(data = val_data, aes_string(x = val_column))
         gp <- gp + geom_density(aes_string(x = val_column), kernel = val_kernel, adjust = val_adjustbw)
-
       } else if (how == "histogram") {
-
         if (debug) {
           print("Create Histogram")
         }
@@ -724,11 +728,8 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
           }
           gp <- gp + geom_histogram(bins = val_bins)
         }
-
       } else {
-
         warning(paste("how=", how, "not implemented for plots!"))
-
       }
 
       if (debug) {
@@ -737,7 +738,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
       # Overlay boxplot.
       if (val_boxplot) {
-
         if (debug) {
           print("Overlay boxplot")
         }
@@ -760,9 +760,11 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         right <- gb$data[[1]]$upper
         dots <- unlist(gb$data[[1]]$outliers)
 
-        val_box <- data.frame(xmin = xmin, xmax = xmax,
-                              ymin = ymean - ywidth, ymax = ymean + ywidth, ymean = ymean,
-                              left = left, middle = middle, right = right)
+        val_box <- data.frame(
+          xmin = xmin, xmax = xmax,
+          ymin = ymean - ywidth, ymax = ymean + ywidth, ymean = ymean,
+          left = left, middle = middle, right = right
+        )
 
 
         if (debug) {
@@ -782,29 +784,43 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         #                                                      ymin = "ymin", ymax="ymax"),
         #                             color=1, alpha=0)
         # Add top.
-        gp <- gp + geom_segment(data = val_box, aes_string(x = "left", y = "ymax",
-                                                         xend = "right", yend = "ymax"))
+        gp <- gp + geom_segment(data = val_box, aes_string(
+          x = "left", y = "ymax",
+          xend = "right", yend = "ymax"
+        ))
 
         # Add bottom.
-        gp <- gp + geom_segment(data = val_box, aes_string(x = "left", y = "ymin",
-                                                         xend = "right", yend = "ymin"))
+        gp <- gp + geom_segment(data = val_box, aes_string(
+          x = "left", y = "ymin",
+          xend = "right", yend = "ymin"
+        ))
 
         # Add left.
-        gp <- gp + geom_segment(data = val_box, aes_string(x = "left", y = "ymin",
-                                                         xend = "left", yend = "ymax"))
+        gp <- gp + geom_segment(data = val_box, aes_string(
+          x = "left", y = "ymin",
+          xend = "left", yend = "ymax"
+        ))
 
         # Add right.
-        gp <- gp + geom_segment(data = val_box, aes_string(x = "right", y = "ymin",
-                                                         xend = "right", yend = "ymax"))
+        gp <- gp + geom_segment(data = val_box, aes_string(
+          x = "right", y = "ymin",
+          xend = "right", yend = "ymax"
+        ))
 
         # Add median.
-        gp <- gp + geom_segment(data = val_box, aes_string(x = "middle", y = "ymin",
-                                                         xend = "middle", yend = "ymax"))
+        gp <- gp + geom_segment(data = val_box, aes_string(
+          x = "middle", y = "ymin",
+          xend = "middle", yend = "ymax"
+        ))
         # Add whiskers.
-        gp <- gp + geom_segment(data = val_box, aes_string(x = "xmin", y = "ymean",
-                                                         xend = "left", yend = "ymean"))
-        gp <- gp + geom_segment(data = val_box, aes_string(x = "xmax", y = "ymean",
-                                                         xend = "right", yend = "ymean"))
+        gp <- gp + geom_segment(data = val_box, aes_string(
+          x = "xmin", y = "ymean",
+          xend = "left", yend = "ymean"
+        ))
+        gp <- gp + geom_segment(data = val_box, aes_string(
+          x = "xmax", y = "ymean",
+          xend = "right", yend = "ymean"
+        ))
         # Add outliers.
         out <- data.frame(x = dots, y = rep(ymean, length(dots)))
         gp <- gp + geom_point(data = out, aes_string(x = "x", y = "y"))
@@ -812,7 +828,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         if (debug) {
           print("Boxplot created")
         }
-
       } # End if boxplot.
 
       # Add titles.
@@ -837,14 +852,14 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
       # Check if any axis limits.
       if (any(!is.null(val_y), !is.null(val_x))) {
-
-        message("Zoom plot xmin/xmax,ymin/ymax:",
-                paste(val_x, collapse = "/"), ",",
-                paste(val_y, collapse = "/"))
+        message(
+          "Zoom plot xmin/xmax,ymin/ymax:",
+          paste(val_x, collapse = "/"), ",",
+          paste(val_y, collapse = "/")
+        )
 
         # Zoom in without dropping observations.
         gp <- gp + coord_cartesian(xlim = val_x, ylim = val_y)
-
       }
 
       # plot.
@@ -856,15 +871,13 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       # Change save button.
       svalue(f5_save_btn) <- "Save as object"
       enabled(f5_save_btn) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
@@ -894,11 +907,9 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     } else {
       enabled(f1_bins_edt) <- FALSE
     }
-
   }
 
   .refresh_column_drp <- function() {
-
     if (debug) {
       print("Refresh group and column dropdown")
     }
@@ -908,7 +919,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     columns <- names(.gData)
 
     if (length(groups) > 0) {
-
       blockHandler(f0_group_drp)
 
       # Populate drop list.
@@ -916,9 +926,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       svalue(f0_group_drp, index = TRUE) <- 1
 
       unblockHandler(f0_group_drp)
-
     } else {
-
       blockHandler(f0_group_drp)
 
       # Reset drop list and select first item.
@@ -926,12 +934,10 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       svalue(f0_group_drp, index = TRUE) <- 1
 
       unblockHandler(f0_group_drp)
-
     }
 
 
     if (!is.null(columns)) {
-
       blockHandler(f0_column_drp)
 
       # Populate drop list.
@@ -939,9 +945,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       svalue(f0_column_drp, index = TRUE) <- 1
 
       unblockHandler(f0_column_drp)
-
     } else {
-
       blockHandler(f0_column_drp)
 
       # Reset drop list and select first item.
@@ -949,9 +953,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       svalue(f0_column_drp, index = TRUE) <- 1
 
       unblockHandler(f0_column_drp)
-
     }
-
   }
 
   .loadSavedSettings <- function() {
@@ -1019,14 +1021,12 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotDistribution_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotDistribution_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
       assign(x = ".strvalidator_plotDistribution_gui_title", value = svalue(f1_title_edt), envir = env)
@@ -1040,7 +1040,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       assign(x = ".strvalidator_plotDistribution_gui_bins", value = svalue(f1_bins_edt), envir = env)
       assign(x = ".strvalidator_plotDistribution_gui_log", value = svalue(f1_log_chk), envir = env)
       assign(x = ".strvalidator_plotDistribution_gui_base", value = svalue(f1_base_edt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotDistribution_gui_savegui", envir = env, inherits = FALSE)) {
@@ -1091,7 +1090,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -1105,5 +1103,4 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

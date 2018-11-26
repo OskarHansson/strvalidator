@@ -37,7 +37,6 @@
 #'
 
 calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -90,9 +89,9 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
     stop("'Height' does not exist!")
   }
 
-#  if(is.null(plot.table$Data.Point)){
-#    stop("'Data.Point' does not exist!")
-#  }
+  #  if(is.null(plot.table$Data.Point)){
+  #    stop("'Data.Point' does not exist!")
+  #  }
 
   # Read size standard --------------------------------------------------------
 
@@ -108,8 +107,10 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
 
     filePath <- paste(packagePath, subFolder, fileName, sep = .separator)
 
-    ils <- read.delim(file = filePath, header = TRUE, sep = "\t", quote = "\"",
-                           dec = ".", fill = TRUE, stringsAsFactors = FALSE)
+    ils <- read.delim(
+      file = filePath, header = TRUE, sep = "\t", quote = "\"",
+      dec = ".", fill = TRUE, stringsAsFactors = FALSE
+    )
 
     if (debug) {
       print(paste("ILS definition loaded from", filePath))
@@ -117,7 +118,6 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
       print(head(ils))
       print(tail(ils))
     }
-
   } else {
     stop("Size standard name error: not found, or multiple.")
   }
@@ -130,9 +130,7 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
   # NB! The only option if re-injections are used is to use positional information.
   # NB!  i.e. firs re-injection comes first followed by the second and so on...
   if (!"Sample.File" %in% names(plot.table)) {
-
     if ("Sample.File.Name" %in% names(plot.table)) {
-
       if (debug) {
         print("Change column names from:")
         print(names(plot.table))
@@ -145,9 +143,7 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
         print("To:")
         print(names(plot.table))
       }
-
     }
-
   }
 
   # Merge data frames.
@@ -189,27 +185,20 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
 
   # Capillary and injection is instrument dependent.
   if (instrument == "ABI3500") {
-
     capillary <- c(1, 4, 7, 10, 13, 16, 19, 22, 2, 5, 8, 11, 14, 17, 20, 23, 3, 6, 9, 12, 15, 18, 21, 24, 1, 4, 7, 10, 13, 16, 19, 22, 2, 5, 8, 11, 14, 17, 20, 23, 3, 6, 9, 12, 15, 18, 21, 24, 1, 4, 7, 10, 13, 16, 19, 22, 2, 5, 8, 11, 14, 17, 20, 23, 3, 6, 9, 12, 15, 18, 21, 24, 1, 4, 7, 10, 13, 16, 19, 22, 2, 5, 8, 11, 14, 17, 20, 23, 3, 6, 9, 12, 15, 18, 21, 24)
     injection <- c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4)
-
   } else if (instrument == "ABI3130") {
-
     capillary <- c(1, 3, 5, 7, 9, 11, 13, 15, 2, 4, 6, 8, 10, 12, 14, 16, 1, 3, 5, 7, 9, 11, 13, 15, 2, 4, 6, 8, 10, 12, 14, 16, 1, 3, 5, 7, 9, 11, 13, 15, 2, 4, 6, 8, 10, 12, 14, 16, 1, 3, 5, 7, 9, 11, 13, 15, 2, 4, 6, 8, 10, 12, 14, 16, 1, 3, 5, 7, 9, 11, 13, 15, 2, 4, 6, 8, 10, 12, 14, 16, 1, 3, 5, 7, 9, 11, 13, 15, 2, 4, 6, 8, 10, 12, 14, 16)
     injection <- c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6)
-
   } else {
-
     stop(paste("Specific information not available for instrument of type:", instrument))
   }
 
   # Add extra information by looping over each well.
   for (w in seq(along = well)) {
-
     df$Injection[df$Well == well[w]] <- injection[w] # This is the important information.
     df$Lane[df$Well == well[w]] <- lane[w] # Equals the well number when reading in column order (1-12).
     # df$Capillary[df$Well == well[w]] <- capillary[w] # Can be used for checking, should be identical with 'Cap'.
-
   }
 
   if (debug) {
@@ -270,10 +259,12 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
 
         # Expect only one value.
         if (length(csq) != 1) {
-          stop(paste("Error in dataset or selection",
-                     "\nCurrent capillary:", cap[c],
-                     "\nCurrent injection:", inj[i],
-                     "\nSQ:", paste(csq, collapse = "")))
+          stop(paste(
+            "Error in dataset or selection",
+            "\nCurrent capillary:", cap[c],
+            "\nCurrent injection:", inj[i],
+            "\nSQ:", paste(csq, collapse = "")
+          ))
         }
 
         # Check if sizing quality pass threshold.
@@ -311,7 +302,6 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
           vecCap[r] <- unique(df[selection, ]$Cap)
           vecWell[r] <- unique(df[selection, ]$Well)
           vecCom[r] <- NA
-
         } else {
           # Size quality below threshold.
 
@@ -321,9 +311,7 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
           vecCap[r] <- unique(df[selection, ]$Cap)
           vecWell[r] <- unique(df[selection, ]$Well)
           vecCom[r] <- paste("SQ <", sq)
-
         }
-
       } else {
         # Data is missing.
 
@@ -337,27 +325,26 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
         vecCap[r] <- cap[c]
         vecWell[r] <- well[r]
         vecCom[r] <- "Missing"
-
       }
 
       # Increase vector index.
       r <- r + 1
-
     }
-
   }
 
   # Create result data frame.
-  res <- data.frame(Instrument = instrument,
-                    Instrument.ID = instrumentID,
-                    Run = run,
-                    Mean.Height = vecHeight,
-                    SQ = vecSQ,
-                    Injection = vecInj,
-                    Capillary = vecCap,
-                    Well = vecWell,
-                    Comment = vecCom,
-                    stringsAsFactors = FALSE)
+  res <- data.frame(
+    Instrument = instrument,
+    Instrument.ID = instrumentID,
+    Run = run,
+    Mean.Height = vecHeight,
+    SQ = vecSQ,
+    Injection = vecInj,
+    Capillary = vecCap,
+    Well = vecWell,
+    Comment = vecCom,
+    stringsAsFactors = FALSE
+  )
 
   # Update audit trail.
   res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
@@ -368,5 +355,4 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
 
   # Return result.
   return(res)
-
 }

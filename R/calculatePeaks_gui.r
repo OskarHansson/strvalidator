@@ -38,7 +38,6 @@
 #' @seealso \code{\link{calculatePeaks}}
 
 calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   .gData <- NULL
   .gDataName <- NULL
 
@@ -58,14 +57,15 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -80,15 +80,16 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
     # Open help page for function.
     print(help("calculatePeaks_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
@@ -96,25 +97,32 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
 
-  g0[1, 2] <- g0_dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = g0,
-                           ellipsize = "none")
+  g0[1, 2] <- g0_dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples", container = g0)
 
   addHandlerChanged(g0_dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Height",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Height",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -124,7 +132,6 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste("", samples, "samples")
       svalue(f2_save_edt) <- paste(.gDataName, "_peaks", sep = "")
-
     } else {
 
       # Reset components.
@@ -133,46 +140,64 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       svalue(g0_dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_no_ol_chk <- gcheckbox(text = "Exclude off-ladder peaks (OL alleles).",
-                           checked = FALSE, container = f1)
+  f1_no_ol_chk <- gcheckbox(
+    text = "Exclude off-ladder peaks (OL alleles).",
+    checked = FALSE, container = f1
+  )
 
-  f1_count_by_opt <- gradio(items = c("Count peaks by sample",
-                                    "Count peaks by marker."),
-                            selected = 1, container = f1)
+  f1_count_by_opt <- gradio(
+    items = c(
+      "Count peaks by sample",
+      "Count peaks by marker."
+    ),
+    selected = 1, container = f1
+  )
 
-  glabel(text = "Define group labels (separate by comma):",
-         container = f1, anchor = c(-1, 0))
-  f1_labels_edt <- gedit(text = "No contamination,Drop-in contamination,Gross contamination",
-                         width = 60, container = f1)
-  tooltip(f1_labels_edt) <- paste("Number labels must be one more than",
-                                "the number of cut-off points.",
-                                "The last group is defined by > than the last cut-off point.")
+  glabel(
+    text = "Define group labels (separate by comma):",
+    container = f1, anchor = c(-1, 0)
+  )
+  f1_labels_edt <- gedit(
+    text = "No contamination,Drop-in contamination,Gross contamination",
+    width = 60, container = f1
+  )
+  tooltip(f1_labels_edt) <- paste(
+    "Number labels must be one more than",
+    "the number of cut-off points.",
+    "The last group is defined by > than the last cut-off point."
+  )
 
-  glabel(text = "Define cut-off points (<=) for the groups (separate by comma):",
-         container = f1, anchor = c(-1, 0))
+  glabel(
+    text = "Define cut-off points (<=) for the groups (separate by comma):",
+    container = f1, anchor = c(-1, 0)
+  )
   f1_bins_edt <- gedit(text = "0,2", width = 60, container = f1)
-  tooltip(f1_bins_edt) <- paste("Number of cut-off points must be one less than",
-                                "the number of group labels.",
-                                "The last group is defined by > than the last cut-off point.")
+  tooltip(f1_bins_edt) <- paste(
+    "Number of cut-off points must be one less than",
+    "the number of group labels.",
+    "The last group is defined by > than the last cut-off point."
+  )
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -210,24 +235,32 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculatePeaks(data = val_data,
-                                bins = val_bins,
-                                labels = val_labels,
-                                ol.rm = val_no_ol,
-                                by.marker = val_per_marker,
-                                debug = debug)
+      datanew <- calculatePeaks(
+        data = val_data,
+        bins = val_bins,
+        labels = val_labels,
+        ol.rm = val_no_ol,
+        by.marker = val_per_marker,
+        debug = debug
+      )
 
       # Create key-value pairs to log.
-      keys <- list("data", "bins", "labels", "ol.rm",
-                   "by.marker")
+      keys <- list(
+        "data", "bins", "labels", "ol.rm",
+        "by.marker"
+      )
 
-      values <- list(val_name_data, val_bins, val_labels, val_no_ol,
-                     val_per_marker)
+      values <- list(
+        val_name_data, val_bins, val_labels, val_no_ol,
+        val_per_marker
+      )
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculatePeaks_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculatePeaks_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -239,17 +272,15 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "A dataset has to be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -294,20 +325,17 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculatePeaks_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculatePeaks_gui_nool", value = svalue(f1_no_ol_chk), envir = env)
       assign(x = ".strvalidator_calculatePeaks_gui_labels", value = svalue(f1_labels_edt), envir = env)
       assign(x = ".strvalidator_calculatePeaks_gui_bins", value = svalue(f1_bins_edt), envir = env)
       assign(x = ".strvalidator_calculatePeaks_gui_countby", value = svalue(f1_count_by_opt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculatePeaks_gui_savegui", envir = env, inherits = FALSE)) {
@@ -334,7 +362,6 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -345,5 +372,4 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

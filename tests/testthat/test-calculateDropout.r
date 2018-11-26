@@ -416,6 +416,4 @@ test_that("calculateDropout", {
 
   expect_that(sum(res$Rfu, na.rm = TRUE), equals(1647))
   expect_that(sum(is.na(res$Rfu)), equals(17))
-
-
 })

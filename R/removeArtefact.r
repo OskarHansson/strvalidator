@@ -39,7 +39,6 @@
 
 removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
                            threshold = NULL, na.rm = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
@@ -85,8 +84,10 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
       stop("'threshold' must be numeric {0-1}", call. = TRUE)
     }
     if (!"Allele.Proportion" %in% names(artefact)) {
-      stop(paste("To use 'threshold' the 'artefact' dataset must",
-                 "contain a column 'Allele.Proportion'."), call. = TRUE)
+      stop(paste(
+        "To use 'threshold' the 'artefact' dataset must",
+        "contain a column 'Allele.Proportion'."
+      ), call. = TRUE)
     }
   }
 
@@ -113,7 +114,8 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
   # Check that enough information is provided.
   if (is.null(artefact) && any(is.null(marker), is.null(allele))) {
     stop("Either 'artefact' or both 'marker' and 'allele' must be provided!",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(na.rm)) {
@@ -124,23 +126,17 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
 
   # Check if character data.
   if (!is.character(data$Allele)) {
-
     message("'Allele' must be character. 'data' converted")
 
     data$Allele <- as.character(data$Allele)
-
   }
 
   if (!is.null(artefact)) {
-
     if (!is.character(artefact$Allele)) {
-
       message("'Allele' must be character. 'artefact' converted")
 
       artefact$Allele <- as.character(artefact$Allele)
-
     }
-
   }
 
   # If threshold is provided.
@@ -151,7 +147,6 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
     artefact <- artefact[artefact$Allele.Proportion >= threshold, ]
 
     message(nrow(artefact), " artefacts passing 'threshold'.")
-
   }
 
   # Get artefacts.
@@ -161,22 +156,17 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
     marker <- artefact$Marker
     allele <- artefact$Allele
     proportion <- artefact$Allele.Proportion # NULL if not provided.
-
   } else {
-
     message("Arguments 'marker' and 'allele' provided and will be used.")
-
   }
 
   # Check if NA's should be removed.
   if (na.rm) {
-
     n1 <- nrow(data)
     data <- data[!is.na(data$Allele), ]
     n2 <- nrow(data)
 
     message("Removed ", n1 - n2, " rows where Allele=NA.")
-
   }
 
   # FILTER --------------------------------------------------------------------
@@ -195,7 +185,6 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
 
     # Calculate and print number of rows removed.
     message("Removed ", n1 - n2, " artefacts (", marker[m], ":", allele[m], ").")
-
   }
 
   # RETURN --------------------------------------------------------------------
@@ -208,5 +197,4 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
   }
 
   return(data)
-
 }

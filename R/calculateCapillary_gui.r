@@ -39,7 +39,7 @@
 #' @seealso \code{\link{calculateCapillary}}
 
 calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
-                                 debug = FALSE, parent = NULL) {
+                                   debug = FALSE, parent = NULL) {
 
   # Global variables.
   .gSamples <- NULL
@@ -66,14 +66,15 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -88,15 +89,16 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Open help page for function.
     print(help("calculateCapillary_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Select datasets",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Select datasets",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
@@ -106,32 +108,38 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
   dfs <- c("<Select a dataset>", listObjects(env = env, obj.class = "data.frame"))
 
-  g0[1, 2] <- g0_data_drp <- gcombobox(items = dfs,
-                           selected = 1,
-                           editable = FALSE,
-                           container = g0,
-                           ellipsize = "none")
+  g0[1, 2] <- g0_data_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
   g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_data_drp)
 
     # Check if suitable.
-    requiredCol <- c("Sample.File", "Sample.Name", "Size.Standard",
-                     "Instrument.Type", "Instrument.ID", "Cap", "Well", "SQ")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    requiredCol <- c(
+      "Sample.File", "Sample.Name", "Size.Standard",
+      "Instrument.Type", "Instrument.ID", "Cap", "Well", "SQ"
+    )
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
 
       .gSamples <<- get(val_obj, envir = env)
       .gSamplesName <<- val_obj
-      svalue(g0_data_samples_lbl) <- paste(length(unique(.gSamples$Sample.Name)),
-                                        "samples.")
+      svalue(g0_data_samples_lbl) <- paste(
+        length(unique(.gSamples$Sample.Name)),
+        "samples."
+      )
       svalue(f4_save_edt) <- paste(val_obj, "_cap", sep = "")
-
     } else {
 
       # Reset components.
@@ -140,9 +148,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(g0_data_drp, index = TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
       svalue(f4_save_edt) <- ""
-
     }
-
   })
 
   # Plot ----------------------------------------------------------------------
@@ -150,31 +156,35 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   g0[2, 1] <- glabel(text = "Sample Plot Sizing Table:", container = g0)
 
   # NB! dfs defined in previous section.
-  g0[2, 2] <- g0_ref_drp <- gcombobox(items = dfs,
-                                   selected = 1,
-                                   editable = FALSE,
-                                   container = g0,
-                                   ellipsize = "none")
+  g0[2, 2] <- g0_ref_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[2, 3] <- g0_ref_samples_lbl <- glabel(text = " 0 sample files", container = g0)
 
   addHandlerChanged(g0_ref_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_ref_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.File.Name", "Size", "Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
 
       .gPlot <<- get(val_obj, envir = env)
       .gPlotName <<- val_obj
-      svalue(g0_ref_samples_lbl) <- paste(length(unique(.gPlot$Sample.File.Name)),
-                                          "sample files.")
-
+      svalue(g0_ref_samples_lbl) <- paste(
+        length(unique(.gPlot$Sample.File.Name)),
+        "sample files."
+      )
     } else {
 
       # Reset components.
@@ -182,35 +192,43 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       .gPlotName <<- NULL
       svalue(g0_ref_drp, index = TRUE) <- 1
       svalue(g0_ref_samples_lbl) <- " 0 sample files"
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 10,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
   f1g1 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
-  glabel(text = "Run name:", initial.msg = "Optional run name",
-         anchor = c(-1, 0), container = f1g1)
+  glabel(
+    text = "Run name:", initial.msg = "Optional run name",
+    anchor = c(-1, 0), container = f1g1
+  )
   f1_run_edt <- gedit(text = "", width = 45, container = f1g1)
 
   f1g2 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
-  glabel(text = "Sizing quality threshold:",
-         anchor = c(-1, 0), container = f1g2)
-  f1_sq_spb <- gspinbutton(from = 0, to = 1, by = 0.01, value = 0, digits = 4,
-                           container = f1g2)
+  glabel(
+    text = "Sizing quality threshold:",
+    anchor = c(-1, 0), container = f1g2
+  )
+  f1_sq_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.01, value = 0, digits = 4,
+    container = f1g2
+  )
 
   # FRAME 4 ###################################################################
 
-  f4 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f4 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f4)
 
@@ -253,11 +271,13 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateCapillary(samples.table = val_samples,
-                                    plot.table = val_plot,
-                                    sq = val_sq,
-                                    run = val_run,
-                                    debug = debug)
+      datanew <- calculateCapillary(
+        samples.table = val_samples,
+        plot.table = val_plot,
+        sq = val_sq,
+        run = val_run,
+        debug = debug
+      )
 
       # Create key-value pairs to log.
       keys <- list("sample.table", "plot.table", "sq", "run")
@@ -265,9 +285,11 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       values <- list(val_name_samples, val_name_plot, val_sq, val_run)
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateCapillary_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateCapillary_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -279,17 +301,15 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "A 'Samples Table' dataset and a 'SamplePlotSizing' dataset have to be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -328,18 +348,15 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_capillaryBalance_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_capillaryBalance_gui_sq", value = svalue(f1_sq_spb), envir = env)
       assign(x = ".strvalidator_capillaryBalance_gui_run", value = svalue(f1_run_edt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_capillaryBalance_gui_savegui", envir = env, inherits = FALSE)) {
@@ -360,7 +377,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -371,5 +387,4 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

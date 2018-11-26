@@ -66,15 +66,16 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 15,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 15,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -89,39 +90,49 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
     # Open help page for function.
     print(help("addMarker_gui", help_type = "html"))
-
   })
 
   # DATASET ###################################################################
 
-  f0 <- gframe(text = "Dataset and kit",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset and kit",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f0g1 <- glayout(container = f0, spacing = 1)
 
   f0g1[1, 1] <- glabel(text = "Select dataset:", container = f0g1)
 
-  f0g1[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                                listObjects(env = env,
-                                                            obj.class = "data.frame")),
-                                        selected = 1,
-                                        editable = FALSE,
-                                        container = f0g1,
-                                        ellipsize = "none")
+  f0g1[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0g1,
+    ellipsize = "none"
+  )
 
-  f0g1[1, 3] <- dataset_samples_lbl <- glabel(text = " 0 samples",
-                                              container = f0g1)
+  f0g1[1, 3] <- dataset_samples_lbl <- glabel(
+    text = " 0 samples",
+    container = f0g1
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -141,7 +152,6 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
         print("Detected kit index")
         print(.gKit)
       }
-
     } else {
 
       # Reset components.
@@ -149,20 +159,20 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-
     }
-
   })
 
   # KIT -----------------------------------------------------------------------
 
   f0g1[2, 1] <- glabel(text = "Kit:", container = f0g1)
 
-  kit_drp <- gcombobox(items = getKit(),
-                       selected = 1,
-                       editable = FALSE,
-                       container = f0g1,
-                       ellipsize = "none")
+  kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = f0g1,
+    ellipsize = "none"
+  )
 
   f0g1[2, 2] <- kit_drp
 
@@ -170,20 +180,26 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   # OPTIONS -----------------------------------------------------------------------
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_ignore_chk <- gcheckbox(text = "Ignore case (marker name)",
-                             checked = FALSE, container = f1)
+  f1_ignore_chk <- gcheckbox(
+    text = "Ignore case (marker name)",
+    checked = FALSE, container = f1
+  )
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -219,9 +235,11 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     unblockHandlers(add_btn)
     enabled(add_btn) <- FALSE
 
-    datanew <- addMarker(data = val_data,
-                         marker = getKit(val_kit, what = "Marker"),
-                         ignore.case = val_ignore, debug = debug)
+    datanew <- addMarker(
+      data = val_data,
+      marker = getKit(val_kit, what = "Marker"),
+      ignore.case = val_ignore, debug = debug
+    )
 
     # Add attributes to result.
     attr(datanew, which = "kit") <- val_kit
@@ -232,16 +250,17 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     values <- list(val_data_name, val_kit, val_ignore)
 
     # Update audit trail.
-    datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                          label = "addMarker_gui", arguments = FALSE,
-                          package = "strvalidator")
+    datanew <- auditTrail(
+      obj = datanew, key = keys, value = values,
+      label = "addMarker_gui", arguments = FALSE,
+      package = "strvalidator"
+    )
 
     # Save data.
     saveObject(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
     dispose(w)
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -278,17 +297,14 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_addMarker_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_addMarker_gui_ignore", value = svalue(f1_ignore_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_addMarker_gui_savegui", envir = env, inherits = FALSE)) {
@@ -306,7 +322,6 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -317,5 +332,4 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 } # End of GUI

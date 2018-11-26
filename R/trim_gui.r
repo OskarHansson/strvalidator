@@ -74,15 +74,16 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-              spacing = 5,
-              use.scrollwindow = FALSE,
-              container = w,
-              expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -97,29 +98,34 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Open help page for function.
     print(help("trim_gui", help_type = "html"))
-
   })
 
   # Vertical sub group.
-  g0 <- ggroup(horizontal = FALSE,
-               spacing = 5,
-               use.scrollwindow = FALSE,
-               container = gv,
-               expand = FALSE)
+  g0 <- ggroup(
+    horizontal = FALSE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = gv,
+    expand = FALSE
+  )
 
   # Horizontal sub group.
-  g1 <- ggroup(horizontal = TRUE,
-              spacing = 5,
-              use.scrollwindow = FALSE,
-              container = gv,
-              expand = TRUE)
+  g1 <- ggroup(
+    horizontal = TRUE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = gv,
+    expand = TRUE
+  )
 
   # Vertical sub group.
-  g2 <- ggroup(horizontal = FALSE,
-              spacing = 5,
-              use.scrollwindow = FALSE,
-              container = gv,
-              expand = FALSE)
+  g2 <- ggroup(
+    horizontal = FALSE,
+    spacing = 5,
+    use.scrollwindow = FALSE,
+    container = gv,
+    expand = FALSE
+  )
 
 
   # DATASET ###################################################################
@@ -128,38 +134,46 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     print("DATASET")
   }
 
-  frame0 <- gframe(text = "Datasets",
-                   horizontal = FALSE,
-                   spacing = 5,
-                   container = g0)
+  frame0 <- gframe(
+    text = "Datasets",
+    horizontal = FALSE,
+    spacing = 5,
+    container = g0
+  )
 
   g0 <- glayout(container = frame0, spacing = 1)
 
   g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
 
-  g0[1, 2] <- dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                              listObjects(env = env,
-                                                          obj.class = "data.frame")),
-                                      selected = 1,
-                                      editable = FALSE,
-                                      container = g0,
-                                      ellipsize = "none")
+  g0[1, 2] <- dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples,", container = g0)
   g0[1, 4] <- g0_columns_lbl <- glabel(text = " 0 columns,", container = g0)
   g0[1, 5] <- g0_rows_lbl <- glabel(text = " 0 rows", container = g0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- NULL
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
-
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
@@ -185,7 +199,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
       # Result name.
       svalue(f2_save_edt) <- paste(val_obj, "_trim", sep = "")
-
     } else {
 
       # Reset components.
@@ -199,7 +212,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(g0_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(g0_rows_lbl) <- paste(" ", "<NA>", "rows")
       svalue(f2_save_edt) <- ""
-
     }
   })
 
@@ -212,30 +224,42 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   sample_f <- gframe("Samples", horizontal = FALSE, container = g1, expand = TRUE)
 
 
-  sample_opt <- gradio(items = c("Keep", "Remove"),
-                       selected = 1,
-                       horizontal = FALSE,
-                       container = sample_f)
+  sample_opt <- gradio(
+    items = c("Keep", "Remove"),
+    selected = 1,
+    horizontal = FALSE,
+    container = sample_f
+  )
 
-  sample_lbl <- glabel(text = "Selected samples (separate by pipe |):",
-                       container = sample_f,
-                       anchor = c(-1, 0))
+  sample_lbl <- glabel(
+    text = "Selected samples (separate by pipe |):",
+    container = sample_f,
+    anchor = c(-1, 0)
+  )
 
-  sample_edt <- gedit(initial.msg = "Doubleklick or drag sample names to list",
-                      width = 40,
-                      container = sample_f)
+  sample_edt <- gedit(
+    initial.msg = "Doubleklick or drag sample names to list",
+    width = 40,
+    container = sample_f
+  )
 
   if ("SAMPLE.NAME" %in% toupper(names(.gData))) {
-    df_items <- data.frame(Samples = unique(.gData$Sample.Name),
-                           stringsAsFactors = FALSE)
+    df_items <- data.frame(
+      Samples = unique(.gData$Sample.Name),
+      stringsAsFactors = FALSE
+    )
   } else if ("SAMPLE.FILE.NAME" %in% toupper(names(.gData))) {
-    df_items <- data.frame(Samples = unique(.gData$Sample.File.Name),
-                           stringsAsFactors = FALSE)
+    df_items <- data.frame(
+      Samples = unique(.gData$Sample.File.Name),
+      stringsAsFactors = FALSE
+    )
   } else if (any(grepl("SAMPLE", names(.gData), ignore.case = TRUE))) {
     # Get (first) column name containing "Sample".
     sampleCol <- names(.gData)[grep("Sample", names(.gData), ignore.case = TRUE)[1]]
-    df_items <- data.frame(Samples = unique(.gData[sampleCol]),
-                           stringsAsFactors = FALSE)
+    df_items <- data.frame(
+      Samples = unique(.gData[sampleCol]),
+      stringsAsFactors = FALSE
+    )
   }
   sample_tbl <- gWidgets2::gtable(items = df_items, container = sample_f, expand = TRUE)
 
@@ -257,7 +281,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     tmp_tbl <- sample_tbl[, ] # Get all values.
     tmp_tbl <- tmp_tbl[tmp_tbl != drp_val] # Remove value added to selected.
     sample_tbl[, ] <- tmp_tbl # Update table.
-
   })
 
 
@@ -268,27 +291,36 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   column_f <- gframe("Columns",
-                     horizontal = FALSE,
-                     container = g1,
-                     expand = TRUE)
+    horizontal = FALSE,
+    container = g1,
+    expand = TRUE
+  )
 
-  column_opt <- gradio(items = c("Keep", "Remove"),
-                       selected = 1,
-                       horizontal = FALSE,
-                       container = column_f)
+  column_opt <- gradio(
+    items = c("Keep", "Remove"),
+    selected = 1,
+    horizontal = FALSE,
+    container = column_f
+  )
 
-  column_lbl <- glabel(text = "Selected columns (separate by pipe |):",
-                       container = column_f,
-                       anchor = c(-1, 0))
+  column_lbl <- glabel(
+    text = "Selected columns (separate by pipe |):",
+    container = column_f,
+    anchor = c(-1, 0)
+  )
 
-  column_edt <- gedit(initial.msg = "Doubleklick or drag column names to list",
-                      width = 40,
-                      container = column_f)
+  column_edt <- gedit(
+    initial.msg = "Doubleklick or drag column names to list",
+    width = 40,
+    container = column_f
+  )
 
 
-  column_tbl <- gWidgets2::gtable(items = names(.gData),
-                       container = column_f,
-                       expand = TRUE)
+  column_tbl <- gWidgets2::gtable(
+    items = names(.gData),
+    container = column_f,
+    expand = TRUE
+  )
 
   addDropTarget(column_edt, handler = function(h, ...) {
     # Get values.
@@ -297,8 +329,9 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Add new value to selected.
     new_val <- ifelse(nchar(column_val) > 0,
-                  paste(column_val, drp_val, sep = "|"),
-                  drp_val)
+      paste(column_val, drp_val, sep = "|"),
+      drp_val
+    )
 
     # Update text box.
     svalue(h$obj) <- new_val
@@ -307,7 +340,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     tmp_tbl <- column_tbl[, ] # Get all values.
     tmp_tbl <- tmp_tbl[tmp_tbl != drp_val] # Remove value added to selected.
     column_tbl[, ] <- tmp_tbl # Update table.
-
   })
 
   # OPTIONS ###################################################################
@@ -317,30 +349,43 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   option_f <- gframe("Options",
-                     horizontal = FALSE,
-                     container = g1,
-                     expand = TRUE)
+    horizontal = FALSE,
+    container = g1,
+    expand = TRUE
+  )
 
-  empty_chk <- gcheckbox(text = "Remove empty columns",
-                         checked = TRUE,
-                         container = option_f)
+  empty_chk <- gcheckbox(
+    text = "Remove empty columns",
+    checked = TRUE,
+    container = option_f
+  )
 
-  na_chk <- gcheckbox(text = "Remove NA columns",
-                      checked = TRUE,
-                      container = option_f)
+  na_chk <- gcheckbox(
+    text = "Remove NA columns",
+    checked = TRUE,
+    container = option_f
+  )
 
-  word_chk <- gcheckbox(text = "Add word boundaries",
-                        checked = FALSE,
-                        container = option_f)
+  word_chk <- gcheckbox(
+    text = "Add word boundaries",
+    checked = FALSE,
+    container = option_f
+  )
 
-  case_chk <- gcheckbox(text = "Ignore case",
-                        checked = TRUE,
-                        container = option_f)
+  case_chk <- gcheckbox(
+    text = "Ignore case",
+    checked = TRUE,
+    container = option_f
+  )
 
-  glabel(text = "Replace missing values with:",
-                  container = option_f)
-  na_edt <- gedit(text = "NA",
-                  container = option_f)
+  glabel(
+    text = "Replace missing values with:",
+    container = option_f
+  )
+  na_edt <- gedit(
+    text = "NA",
+    container = option_f
+  )
 
   # FRAME 2 ###################################################################
 
@@ -348,10 +393,12 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     print("SAVE")
   }
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = g2)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = g2
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -379,8 +426,16 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       column_val <- svalue(column_edt)
       word_val <- svalue(word_chk)
       case_val <- svalue(case_chk)
-      sample_opt_val <- if (svalue(sample_opt, index = TRUE) == 1) {FALSE} else {TRUE}
-      column_opt_val <- if (svalue(column_opt, index = TRUE) == 1) {FALSE} else {TRUE}
+      sample_opt_val <- if (svalue(sample_opt, index = TRUE) == 1) {
+        FALSE
+      } else {
+        TRUE
+      }
+      column_opt_val <- if (svalue(column_opt, index = TRUE) == 1) {
+        FALSE
+      } else {
+        TRUE
+      }
       na_val <- svalue(na_chk)
       empty_val <- svalue(empty_chk)
       na_edt_val <- svalue(na_edt)
@@ -429,43 +484,49 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(trim_btn)
       enabled(trim_btn) <- FALSE
 
-      datanew <- trim(data = val_data, samples = sample_val, columns = column_val,
-                   word = word_val, ignore.case = case_val, invert.s = sample_opt_val, invert.c = column_opt_val,
-                   rm.na.col = na_val, rm.empty.col = empty_val, missing = na_edt_val, debug = debug)
+      datanew <- trim(
+        data = val_data, samples = sample_val, columns = column_val,
+        word = word_val, ignore.case = case_val, invert.s = sample_opt_val, invert.c = column_opt_val,
+        rm.na.col = na_val, rm.empty.col = empty_val, missing = na_edt_val, debug = debug
+      )
 
       # Create key-value pairs to log.
-      keys <- list("data", "samples", "columns", "word", "ignore.case",
-                   "invert.s", "invert.c", "rm.na.col", "rm.empty.col",
-                   "missing")
+      keys <- list(
+        "data", "samples", "columns", "word", "ignore.case",
+        "invert.s", "invert.c", "rm.na.col", "rm.empty.col",
+        "missing"
+      )
 
-      values <- list(val_data_name, sample_val, column_val, word_val, case_val,
-                     sample_opt_val, column_opt_val, na_val, empty_val,
-                     na_edt_val)
+      values <- list(
+        val_data_name, sample_val, column_val, word_val, case_val,
+        sample_opt_val, column_opt_val, na_val, empty_val,
+        na_edt_val
+      )
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "trim_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "trim_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
 
       # Close GUI.
       dispose(w)
-
     } else {
-
-      gmessage("A file name must be provided!", title = "Error",
-               icon = "error",
-               parent = w)
+      gmessage("A file name must be provided!",
+        title = "Error",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
 
   .refresh_samples_tbl <- function() {
-
     if (debug) {
       print(paste("IN:", match.call()[[1]]))
     }
@@ -476,16 +537,22 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       delete(sample_f, sample_tbl)
 
       if ("SAMPLE.NAME" %in% toupper(names(.gData))) {
-        df_items <- data.frame(Samples = unique(.gData$Sample.Name),
-                               stringsAsFactors = FALSE)
+        df_items <- data.frame(
+          Samples = unique(.gData$Sample.Name),
+          stringsAsFactors = FALSE
+        )
       } else if ("SAMPLE.FILE.NAME" %in% toupper(names(.gData))) {
-        df_items <- data.frame(Samples = unique(.gData$Sample.File.Name),
-                               stringsAsFactors = FALSE)
+        df_items <- data.frame(
+          Samples = unique(.gData$Sample.File.Name),
+          stringsAsFactors = FALSE
+        )
       } else if (any(grepl("SAMPLE", names(.gData), ignore.case = TRUE))) {
         # Get (first) column name containing "Sample".
         sampleCol <- names(.gData)[grep("Sample", names(.gData), ignore.case = TRUE)[1]]
-        df_items <- data.frame(Samples = unique(.gData[sampleCol]),
-                               stringsAsFactors = FALSE)
+        df_items <- data.frame(
+          Samples = unique(.gData[sampleCol]),
+          stringsAsFactors = FALSE
+        )
       }
 
       # ...creating a new table.
@@ -501,8 +568,9 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Add new value to selected.
         new_val <- ifelse(nchar(sample_val) > 0,
-                      paste(sample_val, tbl_val, sep = "|"),
-                      tbl_val)
+          paste(sample_val, tbl_val, sep = "|"),
+          tbl_val
+        )
 
         # Update text box.
         svalue(sample_edt) <- new_val
@@ -512,15 +580,11 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
         tmp_tbl <- sample_tbl[, ] # Get all values.
         tmp_tbl <- tmp_tbl[tmp_tbl != tbl_val] # Remove value added to selected.
         sample_tbl[, ] <- tmp_tbl # Update table.
-
       })
-
     }
-
   }
 
   .refresh_columns_tbl <- function() {
-
     if (debug) {
       print(paste("IN:", match.call()[[1]]))
     }
@@ -529,9 +593,11 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     delete(column_f, column_tbl)
 
     # ...creating a new table.
-    column_tbl <<- gWidgets2::gtable(items = names(.gData),
-                         container = column_f,
-                         expand = TRUE)
+    column_tbl <<- gWidgets2::gtable(
+      items = names(.gData),
+      container = column_f,
+      expand = TRUE
+    )
 
     addDropSource(column_tbl, handler = function(h, ...) svalue(h$obj))
 
@@ -543,8 +609,9 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Add new value to selected.
       new_val <- ifelse(nchar(column_val) > 0,
-                    paste(column_val, tbl_val, sep = "|"),
-                    tbl_val)
+        paste(column_val, tbl_val, sep = "|"),
+        tbl_val
+      )
 
       # Update text box.
       svalue(column_edt) <- new_val
@@ -553,9 +620,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       tmp_tbl <- column_tbl[, ] # Get all values.
       tmp_tbl <- tmp_tbl[tmp_tbl != tbl_val] # Remove value added to selected.
       column_tbl[, ] <- tmp_tbl # Update table.
-
     })
-
   }
 
   .loadSavedSettings <- function() {
@@ -608,14 +673,12 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_trim_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_trim_gui_sample_option", value = svalue(sample_opt), envir = env)
       assign(x = ".strvalidator_trim_gui_column_option", value = svalue(column_opt), envir = env)
@@ -624,7 +687,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       assign(x = ".strvalidator_trim_gui_add_word", value = svalue(word_chk), envir = env)
       assign(x = ".strvalidator_trim_gui_ignore_case", value = svalue(case_chk), envir = env)
       assign(x = ".strvalidator_trim_gui_replace_na", value = svalue(na_edt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_trim_gui_savegui", envir = env, inherits = FALSE)) {
@@ -660,7 +722,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -671,5 +732,4 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

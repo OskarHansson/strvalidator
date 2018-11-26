@@ -83,7 +83,6 @@
 calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exclude = NULL,
                             sex.rm = FALSE, qs.rm = FALSE, kit = NULL, ignore.case = TRUE,
                             exact = FALSE, word = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -120,7 +119,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     if (sum(grepl("Allele", names(ref)) > 1)) {
       stop("'ref' must be in 'slim' format.", call. = TRUE)
     }
-
   }
 
   # Check na.
@@ -162,7 +160,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     data$Height <- as.numeric(data$Height)
 
     message("The column 'Height' was converted to numeric.")
-
   }
 
   if (!is.null(exclude)) {
@@ -175,9 +172,7 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
       data <- data[data$Allele != exclude[e] | is.na(data$Allele), ]
       tmp2 <- nrow(data)
       message("Removed ", tmp1 - tmp2, " rows with Allele=", exclude[e], ".")
-
     }
-
   }
 
   # Check if reference dataset was provided.
@@ -185,19 +180,21 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
     # Filter dataset.
     message("Extracting known alleles from dataset...")
-    data <- filterProfile(data = data, ref = ref,
-                          add.missing.loci = FALSE, keep.na = TRUE, invert = FALSE,
-                          ignore.case = ignore.case, exact = exact, word = word,
-                          sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug)
+    data <- filterProfile(
+      data = data, ref = ref,
+      add.missing.loci = FALSE, keep.na = TRUE, invert = FALSE,
+      ignore.case = ignore.case, exact = exact, word = word,
+      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug
+    )
 
     # Remove sex markers and quality sensors from reference dataset.
     if (sex.rm || qs.rm) {
-
       message("Removing gender markers and/or quality sensors from reference dataset...")
-      ref <- filterProfile(data = ref, filter.allele = FALSE,
-                           sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
-                           debug = debug)
-
+      ref <- filterProfile(
+        data = ref, filter.allele = FALSE,
+        sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+        debug = debug
+      )
     }
 
     # Check if missing alleles (Y markers in female profiles.)
@@ -208,42 +205,42 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
       ref <- ref[!is.na(ref$Allele), ]
       tmp2 <- nrow(ref)
       message("Removed ", tmp1 - tmp2, " rows with Allele=NA in reference dataset.")
-
     }
 
     if (!"Copies" %in% names(ref)) {
       # Add
       ref <- calculateCopies(data = ref)
       message("Number of allele copies added to reference dataset.")
-
     }
 
     # Convert to data.table and calculate number of allele copies and expected peaks.
     DTref <- data.table(ref)
     # This code is required to handle homozygotes with double notation.
     DTref <- DTref[, list(Copies = unique(Copies)),
-                   by = list(Sample.Name, Marker, Allele)]
+      by = list(Sample.Name, Marker, Allele)
+    ]
     # Calculate then number of expected peaks.
     DTref[, Expected := .N, by = list(Sample.Name)]
 
     # Add to dataset.
-    data <- addData(data = data, new.data = DTref,
-                    by.col = "Sample.Name", then.by.col = "Marker",
-                    what = c("Copies", "Expected"), exact = exact,
-                    debug = debug)
+    data <- addData(
+      data = data, new.data = DTref,
+      by.col = "Sample.Name", then.by.col = "Marker",
+      what = c("Copies", "Expected"), exact = exact,
+      debug = debug
+    )
     message("Expected number of alleles added to dataset.")
-
   } else {
-
     message("Reference dataset not provided.")
 
     # Filter quality sensors and sex markers.
-    data <- filterProfile(data = data, ref = NULL,
-                          add.missing.loci = FALSE, keep.na = TRUE, invert = FALSE,
-                          ignore.case = ignore.case, exact = exact, word = word,
-                          sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
-                          filter.allele = FALSE, debug = debug)
-
+    data <- filterProfile(
+      data = data, ref = NULL,
+      add.missing.loci = FALSE, keep.na = TRUE, invert = FALSE,
+      ignore.case = ignore.case, exact = exact, word = word,
+      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+      filter.allele = FALSE, debug = debug
+    )
   }
 
   # CALCULATE -----------------------------------------------------------------
@@ -264,44 +261,34 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
       # Calculate number of observed peaks for each sample.
       DT[, N.Alleles := sum(Copies[!is.na(Height)]), by = list(Sample.Name)]
-
     } else {
-
       message("A column 'Copies' was not found in 'data'.")
       message("Number of observed allele copies cannot be calculated")
       message("Provide a reference dataset to enable calculation of 'N.Alleles'.")
-
     }
 
     if ("N.Alleles" %in% names(DT)) {
 
       # Calculate average peak height for each sample.
       DT[, H := TPH / N.Alleles, by = list(Sample.Name)]
-
     } else {
-
       message("A column 'N.Alleles' was not found in 'data'.")
       message("Average peak height cannot be calculated.")
       message("Provide a reference dataset to enable calculation of 'H'.")
-
     }
 
     if ("Expected" %in% names(DT)) {
 
       # Calculate proportion observed profile for each sample.
       DT[, Proportion := Peaks / Expected, by = list(Sample.Name)]
-
     } else {
-
       message("A column 'Expected' was not found in 'data'.")
       message("Profile proportion cannot be calculated.")
       message("Provide a reference dataset to enable calculation of 'Expected'.")
-
     }
 
     # Assign to result.
     res <- DT
-
   } else if (!add & nrow(DT) > 0) {
     # Calculate per sample in a new dataset.
 
@@ -318,35 +305,35 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
       # Calculate total and average peak height, number of peaks,
       # and profile proportion for each sample.
-      res <- DT[, list(TPH = unique(TPH),
-                    H = unique(TPH) / unique(N.Alleles),
-                    Peaks = unique(Peaks),
-                    Expected = unique(Expected),
-                    Proportion = unique(Peaks) / unique(Expected)),
-                by = list(Sample.Name)]
-
+      res <- DT[, list(
+        TPH = unique(TPH),
+        H = unique(TPH) / unique(N.Alleles),
+        Peaks = unique(Peaks),
+        Expected = unique(Expected),
+        Proportion = unique(Peaks) / unique(Expected)
+      ),
+      by = list(Sample.Name)
+      ]
     } else {
 
       # Calculate total peak height and number of peaks for each sample.
-      res <- DT[, list(TPH = sum(Height, na.rm = TRUE),
-                    Peaks = sum(!is.na(Height))),
-                by = list(Sample.Name)]
+      res <- DT[, list(
+        TPH = sum(Height, na.rm = TRUE),
+        Peaks = sum(!is.na(Height))
+      ),
+      by = list(Sample.Name)
+      ]
 
       message("Average peak height and profile proportion will not be calculated.")
       message("Provide a reference dataset to enable calculation.")
-
     }
-
   } else if (!nrow(DT) > 0) {
-
     message("Dataset is empty. Returning NULL")
     res <- NULL
-
   } else {
 
     # This should not happen.
     message("There was an unexpected error")
-
   }
 
   # Convert to data.frame to avoid unexpected results in other functions.
@@ -360,17 +347,17 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
     if ("TPH" %in% names(res)) {
       if (any(is.na(res$TPH))) {
-      n <- sum(is.na(res$TPH))
-      res[is.na(res$TPH), ]$TPH <- na.replace
-      message("Replaced ", n, " NA's in 'TPH' with '", na.replace, "'.")
+        n <- sum(is.na(res$TPH))
+        res[is.na(res$TPH), ]$TPH <- na.replace
+        message("Replaced ", n, " NA's in 'TPH' with '", na.replace, "'.")
       }
     }
 
     if ("Peaks" %in% names(res)) {
       if (any(is.na(res$Peaks))) {
-      n <- sum(is.na(res$Peaks))
-      res[is.na(res$Peaks), ]$Peaks <- na.replace
-      message("Replaced ", n, " NA's in 'Peaks' with '", na.replace, "'.")
+        n <- sum(is.na(res$Peaks))
+        res[is.na(res$Peaks), ]$Peaks <- na.replace
+        message("Replaced ", n, " NA's in 'Peaks' with '", na.replace, "'.")
       }
     }
 
@@ -384,21 +371,19 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
     if ("Proportion" %in% names(res)) {
       if (any(is.na(res$Proportion))) {
-      n <- sum(is.na(res$Proportion))
-      res[is.na(res$Proportion), ]$Proportion <- na.replace
-      message("Replaced ", n, " NA's in 'Proportion' with '", na.replace, "'.")
+        n <- sum(is.na(res$Proportion))
+        res[is.na(res$Proportion), ]$Proportion <- na.replace
+        message("Replaced ", n, " NA's in 'Proportion' with '", na.replace, "'.")
       }
     }
-
   }
 
-        # Add attributes to result.
-        attr(res, which = "kit") <- kit
+  # Add attributes to result.
+  attr(res, which = "kit") <- kit
 
-        # Update audit trail.
-        res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  # Update audit trail.
+  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
 
-        # Return result.
-        return(res)
-
+  # Return result.
+  return(res)
 }

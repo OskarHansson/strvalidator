@@ -48,12 +48,16 @@ test_that("filterProfile", {
   set4$Sample.Name[set4$Sample.Name == "SampleA02"] <- "sAmPLea02"
 
   # Dataset with dirty' data.
-  set6 <- slim(set1, fix = c("Sample.Name", "Marker"),
-               stack = c("Allele", "Height"),
-               keep.na = TRUE)
-  ref6 <- slim(ref1, fix = c("Sample.Name", "Marker"),
-               stack = c("Allele"),
-               keep.na = TRUE)
+  set6 <- slim(set1,
+    fix = c("Sample.Name", "Marker"),
+    stack = c("Allele", "Height"),
+    keep.na = TRUE
+  )
+  ref6 <- slim(ref1,
+    fix = c("Sample.Name", "Marker"),
+    stack = c("Allele"),
+    keep.na = TRUE
+  )
 
   # Extract a single samples.
   set7 <- set7[set7$Sample.Name == "H01", ]
@@ -76,11 +80,13 @@ test_that("filterProfile", {
   # Test that filtering of two 'clean' samples work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set2, ref = ref2,
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       ignore.case = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set2, ref = ref2,
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    ignore.case = FALSE,
+    debug = FALSE
+  )
 
 
   # Check return class.
@@ -108,12 +114,14 @@ test_that("filterProfile", {
   # Test that adding missing loci work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set3, ref = ref2,
-                       add.missing.loci = TRUE,
-                       keep.na = TRUE,
-                       ignore.case = FALSE,
-                       kit = "SGMPlus",
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set3, ref = ref2,
+    add.missing.loci = TRUE,
+    keep.na = TRUE,
+    ignore.case = FALSE,
+    kit = "SGMPlus",
+    debug = FALSE
+  )
 
 
   # Check return class.
@@ -139,12 +147,14 @@ test_that("filterProfile", {
   # Test that keep NA loci work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set2, ref = ref2,
-                       add.missing.loci = FALSE,
-                       keep.na = TRUE,
-                       ignore.case = FALSE,
-                       kit = "SGMPlus",
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set2, ref = ref2,
+    add.missing.loci = FALSE,
+    keep.na = TRUE,
+    ignore.case = FALSE,
+    kit = "SGMPlus",
+    debug = FALSE
+  )
 
 
   # Check return class.
@@ -170,12 +180,14 @@ test_that("filterProfile", {
   # Test that ignore case = FALSE work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set2, ref = ref2,
-                       add.missing.loci = FALSE,
-                       keep.na = TRUE,
-                       ignore.case = FALSE,
-                       kit = "SGMPlus",
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set2, ref = ref2,
+    add.missing.loci = FALSE,
+    keep.na = TRUE,
+    ignore.case = FALSE,
+    kit = "SGMPlus",
+    debug = FALSE
+  )
 
 
   # Check return class.
@@ -201,38 +213,52 @@ test_that("filterProfile", {
   # Test that 'fat' data gives error.
 
   # Test using 'fat' data.
-  expect_that(filterProfile(data = set1, ref = ref2,
-                       add.missing.loci = FALSE,
-                       keep.na = TRUE,
-                       ignore.case = FALSE,
-                       debug = FALSE),
-              throws_error())
+  expect_that(
+    filterProfile(
+      data = set1, ref = ref2,
+      add.missing.loci = FALSE,
+      keep.na = TRUE,
+      ignore.case = FALSE,
+      debug = FALSE
+    ),
+    throws_error()
+  )
 
   # Test using 'fat' ref.
-  expect_that(filterProfile(data = set2, ref = ref1,
-                            add.missing.loci = FALSE,
-                            keep.na = TRUE,
-                            ignore.case = FALSE,
-                            debug = FALSE),
-              throws_error())
+  expect_that(
+    filterProfile(
+      data = set2, ref = ref1,
+      add.missing.loci = FALSE,
+      keep.na = TRUE,
+      ignore.case = FALSE,
+      debug = FALSE
+    ),
+    throws_error()
+  )
 
   # Test using 'fat' data and ref.
-  expect_that(filterProfile(data = set1, ref = ref1,
-                            add.missing.loci = FALSE,
-                            keep.na = TRUE,
-                            ignore.case = FALSE,
-                            debug = FALSE),
-              throws_error())
+  expect_that(
+    filterProfile(
+      data = set1, ref = ref1,
+      add.missing.loci = FALSE,
+      keep.na = TRUE,
+      ignore.case = FALSE,
+      debug = FALSE
+    ),
+    throws_error()
+  )
 
   # TEST 06 -------------------------------------------------------------------
   # Test that filtering of 'dirty' samples work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set6, ref = ref6,
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       ignore.case = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set6, ref = ref6,
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    ignore.case = FALSE,
+    debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -276,11 +302,13 @@ test_that("filterProfile", {
   # Test that filtering using double notation work (16/16 vs 16).
 
   # Analyse dataframe.
-  res <- filterProfile(data = set1d, ref = ref1d,
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       ignore.case = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set1d, ref = ref1d,
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    ignore.case = FALSE,
+    debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -324,11 +352,13 @@ test_that("filterProfile", {
   # Test that filtering of 'dirty' samples without Sample.Name work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set8, ref = ref8,
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       ignore.case = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set8, ref = ref8,
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    ignore.case = FALSE,
+    debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -375,12 +405,14 @@ test_that("filterProfile", {
   # Test that invert filtering of 'dirty' samples work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set6, ref = ref6,
-                       add.missing.loci = TRUE,
-                       keep.na = TRUE,
-                       ignore.case = FALSE,
-                       invert = TRUE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set6, ref = ref6,
+    add.missing.loci = TRUE,
+    keep.na = TRUE,
+    ignore.case = FALSE,
+    invert = TRUE,
+    debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -424,12 +456,14 @@ test_that("filterProfile", {
   # Test that filtering generates incorrect profile in 'fast' mode.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set9, ref = ref9,
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       ignore.case = FALSE,
-                       exact = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set9, ref = ref9,
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    ignore.case = FALSE,
+    exact = FALSE,
+    debug = FALSE
+  )
 
 
   # Check return class.
@@ -453,19 +487,22 @@ test_that("filterProfile", {
 
   # Check if filtered profile equals reference.
   expect_false(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
-                                     ref9[ref9$Sample.Name == "NOPC15", ],
-                                     check.attributes = FALSE)))
+    ref9[ref9$Sample.Name == "NOPC15", ],
+    check.attributes = FALSE
+  )))
 
   # TEST 11 -------------------------------------------------------------------
   # Test that filtering generates correct profile in 'fast' mode.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set9, ref = ref9,
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       ignore.case = FALSE,
-                       exact = TRUE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set9, ref = ref9,
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    ignore.case = FALSE,
+    exact = TRUE,
+    debug = FALSE
+  )
 
 
   # Check return class.
@@ -489,19 +526,22 @@ test_that("filterProfile", {
 
   # Check if filtered profile equals reference.
   expect_true(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
-                                   ref9[ref9$Sample.Name == "NOPC15", ],
-                                   check.attributes = FALSE)))
+    ref9[ref9$Sample.Name == "NOPC15", ],
+    check.attributes = FALSE
+  )))
 
   # TEST 12 -------------------------------------------------------------------
   # Test that filtering generates incorrect profile in 'slow' mode.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set9, ref = ref9,
-                       add.missing.loci = TRUE,
-                       keep.na = TRUE,
-                       ignore.case = FALSE,
-                       exact = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set9, ref = ref9,
+    add.missing.loci = TRUE,
+    keep.na = TRUE,
+    ignore.case = FALSE,
+    exact = FALSE,
+    debug = FALSE
+  )
 
 
   # Check return class.
@@ -525,19 +565,22 @@ test_that("filterProfile", {
 
   # Check if filtered profile equals reference.
   expect_false(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
-                         ref9[ref9$Sample.Name == "NOPC15", ],
-                         check.attributes = FALSE)))
+    ref9[ref9$Sample.Name == "NOPC15", ],
+    check.attributes = FALSE
+  )))
 
   # TEST 12 -------------------------------------------------------------------
   # Test that filtering generates correct profile in 'slow' mode.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set9, ref = ref9,
-                       add.missing.loci = TRUE,
-                       keep.na = TRUE,
-                       ignore.case = FALSE,
-                       exact = TRUE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set9, ref = ref9,
+    add.missing.loci = TRUE,
+    keep.na = TRUE,
+    ignore.case = FALSE,
+    exact = TRUE,
+    debug = FALSE
+  )
 
 
   # Check return class.
@@ -561,22 +604,25 @@ test_that("filterProfile", {
 
   # Check if filtered profile equals reference.
   expect_true(is.logical(all.equal(res[res$Sample.Name == "NOPC15", ],
-                                   ref9[ref9$Sample.Name == "NOPC15", ],
-                                   check.attributes = FALSE)))
+    ref9[ref9$Sample.Name == "NOPC15", ],
+    check.attributes = FALSE
+  )))
 
 
   # TEST 13 -------------------------------------------------------------------
   # Test that filtering of only quality sensors work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set7, ref = ref7, kit = "ESSplexSEQS",
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       qs.rm = TRUE,
-                       sex.rm = FALSE,
-                       ignore.case = FALSE,
-                       filter.allele = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set7, ref = ref7, kit = "ESSplexSEQS",
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    qs.rm = TRUE,
+    sex.rm = FALSE,
+    ignore.case = FALSE,
+    filter.allele = FALSE,
+    debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -650,14 +696,16 @@ test_that("filterProfile", {
   # Test that filtering of only sex markers work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set7, ref = ref7, kit = "ESSplexSEQS",
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       qs.rm = FALSE,
-                       sex.rm = TRUE,
-                       ignore.case = FALSE,
-                       filter.allele = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set7, ref = ref7, kit = "ESSplexSEQS",
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    qs.rm = FALSE,
+    sex.rm = TRUE,
+    ignore.case = FALSE,
+    filter.allele = FALSE,
+    debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -731,14 +779,16 @@ test_that("filterProfile", {
   # Test that filtering of sex markers and quality sensors work.
 
   # Analyse dataframe.
-  res <- filterProfile(data = set7, ref = ref7, kit = "ESSplexSEQS",
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       qs.rm = TRUE,
-                       sex.rm = TRUE,
-                       ignore.case = FALSE,
-                       filter.allele = FALSE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set7, ref = ref7, kit = "ESSplexSEQS",
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    qs.rm = TRUE,
+    sex.rm = TRUE,
+    ignore.case = FALSE,
+    filter.allele = FALSE,
+    debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -811,14 +861,16 @@ test_that("filterProfile", {
   # TEST 16 -------------------------------------------------------------------
   # Test that filtering of sex markers, quality sensors, and known alleles work.
 
-  res <- filterProfile(data = set7, ref = ref7, kit = "ESSplexSEQS",
-                       add.missing.loci = FALSE,
-                       keep.na = FALSE,
-                       qs.rm = TRUE,
-                       sex.rm = TRUE,
-                       ignore.case = FALSE,
-                       filter.allele = TRUE,
-                       debug = FALSE)
+  res <- filterProfile(
+    data = set7, ref = ref7, kit = "ESSplexSEQS",
+    add.missing.loci = FALSE,
+    keep.na = FALSE,
+    qs.rm = TRUE,
+    sex.rm = TRUE,
+    ignore.case = FALSE,
+    filter.allele = TRUE,
+    debug = FALSE
+  )
 
   # Check return class.
   expect_that(class(res), matches(class(data.frame())))
@@ -886,6 +938,4 @@ test_that("filterProfile", {
   expect_true(all(c("10", "14") %in% res$Allele[res$Marker == "D2S441"]))
   expect_true(all(c("16", "18") %in% res$Allele[res$Marker == "D18S51"]))
   expect_true(all(c("20", "23") %in% res$Allele[res$Marker == "FGA"]))
-
-
 })

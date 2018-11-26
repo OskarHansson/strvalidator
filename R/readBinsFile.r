@@ -26,7 +26,6 @@
 #'
 
 readBinsFile <- function(bin.files, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -54,13 +53,15 @@ readBinsFile <- function(bin.files, debug = FALSE) {
     # Create an empty data frame to hold the result.
     bins <- data.frame(t(rep(NA, 7)))
     # Add column names.
-    names(bins) <- c("Panel",
-                       "Marker",
-                       "Allele",
-                       "Size",
-                       "Size.Min",
-                       "Size.Max",
-                       "Virtual")
+    names(bins) <- c(
+      "Panel",
+      "Marker",
+      "Allele",
+      "Size",
+      "Size.Min",
+      "Size.Max",
+      "Virtual"
+    )
     # Remove all NAs
     bins <- bins [-1, ]
 
@@ -69,7 +70,6 @@ readBinsFile <- function(bin.files, debug = FALSE) {
 
     # Loop over all rows.
     for (row in 1:rows) {
-
       if (debug) {
         print(allTextSplit[[row]])
       }
@@ -77,7 +77,6 @@ readBinsFile <- function(bin.files, debug = FALSE) {
       currentTag <- allTextSplit[[row]][1]
 
       if (currentTag == keyPanel) {
-
         if (debug) {
           print(paste("FOUND PANEL AT ROW:", row))
         }
@@ -104,7 +103,6 @@ readBinsFile <- function(bin.files, debug = FALSE) {
 
         # Read all lines until next panel.
         while (currentTag != keyPanel && row < rows) {
-
           markerName <- allTextSplit[[row]][2]
 
           alleleName <- vector()
@@ -119,14 +117,17 @@ readBinsFile <- function(bin.files, debug = FALSE) {
 
           # Read all lines until next marker or panel.
           while (currentTag != keyPanel && currentTag != keyMarker && row < rows) {
-
             a <- a + 1
 
             alleleName[a] <- allTextSplit[[row]][1]
             alleleBp[a] <- as.numeric(allTextSplit[[row]][2])
             alleleMin[a] <- as.numeric(allTextSplit[[row]][3])
             alleleMax[a] <- as.numeric(allTextSplit[[row]][4])
-            alleleVirtual[a] <- if (is.na(allTextSplit[[row]][5])) {0} else {1}
+            alleleVirtual[a] <- if (is.na(allTextSplit[[row]][5])) {
+              0
+            } else {
+              1
+            }
 
             row <- row + 1
             currentTag <- allTextSplit[[row]][1]
@@ -147,24 +148,23 @@ readBinsFile <- function(bin.files, debug = FALSE) {
             print(alleleVirtual)
           }
 
-          currentMarker <- data.frame(Panel = panelName,
-                                      Marker = markerName,
-                                      Allele = alleleName,
-                                      Size = alleleBp,
-                                      Size.Min = alleleBp - alleleMin,
-                                      Size.Max = alleleBp + alleleMax,
-                                      Virtual = alleleVirtual,
-                                      stringsAsFactors = FALSE)
+          currentMarker <- data.frame(
+            Panel = panelName,
+            Marker = markerName,
+            Allele = alleleName,
+            Size = alleleBp,
+            Size.Min = alleleBp - alleleMin,
+            Size.Max = alleleBp + alleleMax,
+            Virtual = alleleVirtual,
+            stringsAsFactors = FALSE
+          )
 
           # Concatenate with data frame.
           bins <- rbind(bins, currentMarker)
         }
-
       }
-
     }
 
     return(bins)
-
   }
 }

@@ -30,7 +30,6 @@
 #'
 
 scrambleAlleles <- function(data, db = "ESX 17 Hill") {
-
   if (!"Sample.Name" %in% names(data)) {
     stop("Sample.Name is a required column in 'data'")
   }
@@ -80,12 +79,10 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
     dbSel <- !is.na(dfDb[[dfMarker[i]]])
     allele[[i]] <- dfDb[dbSel, ]$Allele
     freq[[i]] <- dfDb[[dfMarker[i]]][dbSel]
-
   }
 
 
   for (s in seq(along = dfSample)) {
-
     for (i in seq(along = dfMarker)) {
 
       # Select current sample.
@@ -110,23 +107,21 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
         f <- freq[[i]]
         f <- c(f, rep(min(f), length(a) - length(f)))
         f <- f / sum(f)
-
       } else {
 
         # Use alleles and frequencies in database.
         a <- allele[[i]]
         f <- freq[[i]]
-
       }
 
       # Replace selected alleles with random alleles sorted.
-      data[selection, ]$Allele <- as.character(sort(as.numeric(sample(x = a,
-                                                                     size = n,
-                                                                     replace = FALSE,
-                                                                     prob = f))))
-
+      data[selection, ]$Allele <- as.character(sort(as.numeric(sample(
+        x = a,
+        size = n,
+        replace = FALSE,
+        prob = f
+      ))))
     }
-
   }
 
   if ("Data.Point" %in% names(data)) {
@@ -140,18 +135,18 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
     tmpSize <- data$Size
 
     # Calculate size for the new alleles.
-    data <- addSize(data = data,
-                    kit = getKit(kit = kit, what = "Offset"),
-                    bins = FALSE, ignore.case = TRUE)
+    data <- addSize(
+      data = data,
+      kit = getKit(kit = kit, what = "Offset"),
+      bins = FALSE, ignore.case = TRUE
+    )
 
     # Use original size for off-ladder peaks.
     data$Size[data$Allele == "OL"] <- tmpSize[data$Allele == "OL"]
-
   }
 
   # Update audit trail.
   data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
 
   return(data)
-
 }

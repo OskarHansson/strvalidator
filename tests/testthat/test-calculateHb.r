@@ -39,12 +39,14 @@ test_that("calculateHb", {
   extraAllele <- c("17", "10", "24")
   extraHeight <- c(50, 400, 40)
   extraDye <- c("B", "B", "Y")
-  extra <- data.frame(Sample.Name = extraName,
-                      Marker = extraMarker,
-                      Allele = extraAllele,
-                      Height = extraHeight,
-                      Dye = extraDye,
-                      stringsAsFactors = FALSE)
+  extra <- data.frame(
+    Sample.Name = extraName,
+    Marker = extraMarker,
+    Allele = extraAllele,
+    Height = extraHeight,
+    Dye = extraDye,
+    stringsAsFactors = FALSE
+  )
   setUnfiltered <- rbind(setUnfiltered, extra)
 
 
@@ -251,8 +253,10 @@ test_that("calculateHb", {
   # Test that two equally high maximum peaks works.
 
   # Analyse dataframe.
-  res <- calculateHb(data = setEqual, ref = ref2, hb = 1,
-                             kit = "SGMplus", ignore.case = TRUE)
+  res <- calculateHb(
+    data = setEqual, ref = ref2, hb = 1,
+    kit = "SGMplus", ignore.case = TRUE
+  )
 
   # Check result: Heterozygous balance.
   expect_that(res$Hb[1], equals(1))
@@ -267,8 +271,10 @@ test_that("calculateHb", {
   expect_that(res$Hb[10], equals(179 / 183))
 
   # Analyse dataframe.
-  res <- calculateHb(data = setEqual, ref = ref2, hb = 2,
-                             kit = "SGMplus", ignore.case = TRUE)
+  res <- calculateHb(
+    data = setEqual, ref = ref2, hb = 2,
+    kit = "SGMplus", ignore.case = TRUE
+  )
 
   # Check result: Heterozygous balance.
   expect_that(res$Hb[1], equals(1))
@@ -283,8 +289,10 @@ test_that("calculateHb", {
   expect_that(res$Hb[10], equals(183 / 179))
 
   # Analyse dataframe.
-  res <- calculateHb(data = setEqual, ref = ref2, hb = 3,
-                             kit = "SGMplus", ignore.case = TRUE)
+  res <- calculateHb(
+    data = setEqual, ref = ref2, hb = 3,
+    kit = "SGMplus", ignore.case = TRUE
+  )
 
   # Check result: Heterozygous balance.
   expect_that(res$Hb[1], equals(1))
@@ -303,8 +311,10 @@ test_that("calculateHb", {
   # Test that unfiltered data works.
 
   # Analyse dataframe.
-  res <- calculateHb(data = setUnfiltered, ref = ref2, hb = 1,
-                             kit = "SGMplus", ignore.case = TRUE)
+  res <- calculateHb(
+    data = setUnfiltered, ref = ref2, hb = 1,
+    kit = "SGMplus", ignore.case = TRUE
+  )
 
   # Check result: Heterozygous balance.
   expect_that(res$Hb[1], equals(402 / 460))
@@ -319,8 +329,10 @@ test_that("calculateHb", {
   expect_that(res$Hb[10], equals(179 / 183))
 
   # Analyse dataframe.
-  res <- calculateHb(data = setUnfiltered, ref = ref2, hb = 2,
-                             kit = "SGMplus", ignore.case = TRUE)
+  res <- calculateHb(
+    data = setUnfiltered, ref = ref2, hb = 2,
+    kit = "SGMplus", ignore.case = TRUE
+  )
 
   # Check result: Heterozygous balance.
   expect_that(res$Hb[1], equals(460 / 402))
@@ -335,8 +347,10 @@ test_that("calculateHb", {
   expect_that(res$Hb[10], equals(183 / 179))
 
   # Analyse dataframe.
-  res <- calculateHb(data = setUnfiltered, ref = ref2, hb = 3,
-                             kit = "SGMplus", ignore.case = TRUE)
+  res <- calculateHb(
+    data = setUnfiltered, ref = ref2, hb = 3,
+    kit = "SGMplus", ignore.case = TRUE
+  )
 
   # Check result: Heterozygous balance.
   expect_that(res$Hb[1], equals(402 / 460))
@@ -822,6 +836,4 @@ test_that("calculateHb", {
   expect_that(res$Delta[20], equals(1))
   expect_that(res$Delta[21], equals(2))
   expect_that(res$Delta[22], equals(3))
-
-
 })

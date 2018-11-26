@@ -38,7 +38,6 @@
 #' }
 #' 
 listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -56,14 +55,12 @@ listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
 
   # Check if specified object class.
   if (!is.null(obj.class)) {
-
     classes <- list()
 
     # Loop to save all class information.
     for (i in seq(along = wsObj)) {
       obj <- get(wsObj[i], envir = env)
       classes[i] <- list(class(obj))
-
     }
 
     # Filter objects with specified classes.
@@ -74,12 +71,10 @@ listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
         }
       }
     }
-
   } else {
 
     # Return all objects.
     res <- wsObj
-
   }
 
   if (debug) {
@@ -89,5 +84,4 @@ listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
   }
 
   return(res)
-
 }

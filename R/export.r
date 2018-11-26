@@ -57,7 +57,6 @@ export <- function(object, name = NA, use.object.name = is.na(name),
                    ext = "auto", delim = "\t",
                    width = 3000, height = 2000, res = 250,
                    overwrite = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("object")
@@ -96,9 +95,13 @@ export <- function(object, name = NA, use.object.name = is.na(name),
     if (file.exists(path)) {
 
       # Make a data frame of objects that could not be exported.
-      failed <<- rbind(failed,
-                       data.frame(Object = object, Name = name, New.Name = as.character(NA),
-                                  stringsAsFactors = FALSE))
+      failed <<- rbind(
+        failed,
+        data.frame(
+          Object = object, Name = name, New.Name = as.character(NA),
+          stringsAsFactors = FALSE
+        )
+      )
 
       if (debug) {
         print(paste("file '", name, "' already exist!", sep = ""))
@@ -106,7 +109,6 @@ export <- function(object, name = NA, use.object.name = is.na(name),
 
       # Set flag.
       available <- FALSE
-
     } else {
 
       # Set flag.
@@ -118,7 +120,6 @@ export <- function(object, name = NA, use.object.name = is.na(name),
     }
 
     return(available)
-
   }
 
   # Constants.
@@ -149,37 +150,44 @@ export <- function(object, name = NA, use.object.name = is.na(name),
     }
   } else if (!use.object.name) {
     stop("'name' is required",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (is.na(path)) {
     stop("'path' is required",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(use.object.name)) {
     stop("'use.object.name' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(overwrite)) {
     stop("'overwrite' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (width < 20 || !is.numeric(width) || is.na(width)) {
     stop("'width' must a numeric <20",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (height < 20 || !is.numeric(height) || is.na(height)) {
     stop("'height' must a numeric <20",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (res < 20 || !is.numeric(res) || is.na(res)) {
     stop("'res' must a numeric <20",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # PREPARE ----------------------------------------------------------------
@@ -249,38 +257,42 @@ export <- function(object, name = NA, use.object.name = is.na(name),
       } else {
         # Write warning.
         warning(text = paste("Object '", object[o], "' was not exported.\n",
-                           "The file '", fullFileName, "' already exist!", sep = ""))
+          "The file '", fullFileName, "' already exist!",
+          sep = ""
+        ))
       }
-
     } else if (ext == "auto") { # Automatic detection based on class type.
 
       if (any(class(get(object[o], envir = env)) == "data.frame")) {
 
-          # Construct complete file name.
-          fullFileName <- paste(path, name[o], ".txt", sep = "")
+        # Construct complete file name.
+        fullFileName <- paste(path, name[o], ".txt", sep = "")
 
-          # Overwrite.
-          if (overwrite) {
-            ok <- TRUE
-          } else {
-            # Check if file exist.
-            ok <- .uniqueFile(object = object[o], name = name[o], path = fullFileName)
-          }
+        # Overwrite.
+        if (overwrite) {
+          ok <- TRUE
+        } else {
+          # Check if file exist.
+          ok <- .uniqueFile(object = object[o], name = name[o], path = fullFileName)
+        }
 
-          # Check if ok to export.
-          if (ok) {
-            # Save as text file.
-            write.table(x = get(object[o], envir = env),
-                        file = fullFileName,
-                        append = FALSE, quote = FALSE, sep = delim,
-                        dec = ".", row.names = FALSE,
-                        col.names = TRUE)
-          } else {
-            # Write warning.
-            warning(text = paste("Object '", object[o], "' was not exported.\n",
-                               "The file '", fullFileName, "' already exist!", sep = ""))
-          }
-
+        # Check if ok to export.
+        if (ok) {
+          # Save as text file.
+          write.table(
+            x = get(object[o], envir = env),
+            file = fullFileName,
+            append = FALSE, quote = FALSE, sep = delim,
+            dec = ".", row.names = FALSE,
+            col.names = TRUE
+          )
+        } else {
+          # Write warning.
+          warning(text = paste("Object '", object[o], "' was not exported.\n",
+            "The file '", fullFileName, "' already exist!",
+            sep = ""
+          ))
+        }
       } else if (any(class(get(object[o], envir = env)) == "ggplot")) {
 
         # Construct complete file name.
@@ -303,28 +315,28 @@ export <- function(object, name = NA, use.object.name = is.na(name),
         } else {
           # Write warning.
           warning(text = paste("Object '", object[o], "' was not exported.\n",
-                             "The file '", fullFileName, "' already exist!", sep = ""))
+            "The file '", fullFileName, "' already exist!",
+            sep = ""
+          ))
         }
-
       } else {
-
         warning(paste("Object", object[o],
-                      "could not be exported. Object class '",
-                      class(get(object[o], envir = env)), "' not supported!",
-                      sep = ""),
-                call. = TRUE, immediate. = FALSE, domain = NULL)
-
+          "could not be exported. Object class '",
+          class(get(object[o], envir = env)), "' not supported!",
+          sep = ""
+        ),
+        call. = TRUE, immediate. = FALSE, domain = NULL
+        )
       }
     } else {
-
       stop(paste("Object", object[o],
-                    "could not be exported. File extension '",
-                    ext, "' not supported!",
-                    sep = ""),
-              call. = TRUE)
-
+        "could not be exported. File extension '",
+        ext, "' not supported!",
+        sep = ""
+      ),
+      call. = TRUE
+      )
     }
-
   }
 
   if (debug) {
@@ -337,5 +349,4 @@ export <- function(object, name = NA, use.object.name = is.na(name),
   }
 
   return(failed)
-
 }

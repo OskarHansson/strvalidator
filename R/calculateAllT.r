@@ -125,7 +125,6 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
 
   # Internal function to clead data befor analysis.
   .clean <- function(data, rm.sex = TRUE) {
-
     message("Model drop-out for dataset with:")
     message(paste(nrow(data), " rows.", sep = ""))
 
@@ -180,7 +179,6 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
     }
 
     return(data)
-
   }
 
   .store <- function(df, index, title, res) {
@@ -200,7 +198,6 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
     }
 
     return(df)
-
   }
 
   # PREPARE -------------------------------------------------------------------
@@ -228,32 +225,40 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
   data$Dep <- data$MethodX
   data$Exp <- data$Height
   message("Calculating Random (Ph)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = FALSE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 1, title = "Random (Ph)", res = res)
 
   # LMW
   data$Dep <- data$Method1
   data$Exp <- data$Height
   message("Calculating LMW (Ph)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = FALSE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 2, title = "LMW (Ph)", res = res)
 
   # HMW
   data$Dep <- data$Method2
   data$Exp <- data$Height
   message("Calculating HMW (Ph)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = FALSE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 3, title = "HMW (Ph)", res = res)
 
   # Locus
   data$Dep <- data$MethodL
   data$Exp <- data$MethodL.Ph
   message("Calculating Locus (Ph)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = FALSE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 4, title = "Locus (Ph)", res = res)
 
   # Use average peak height.
@@ -262,32 +267,40 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
   data$Dep <- data$MethodX
   data$Exp <- data$H
   message("Calculating Random (H)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = FALSE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 5, title = "Random (H)", res = res)
 
   # LMW
   data$Dep <- data$Method1
   data$Exp <- data$H
   message("Calculating LMW (H)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = FALSE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 6, title = "LMW (H)", res = res)
 
   # HMW
   data$Dep <- data$Method2
   data$Exp <- data$H
   message("Calculating HMW (H)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = FALSE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 7, title = "HMW (H)", res = res)
 
   # Locus
   data$Dep <- data$MethodL
   data$Exp <- data$H
   message("Calculating Locus (H)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = FALSE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = FALSE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 8, title = "Locus (H)", res = res)
 
   # Log data.
@@ -296,32 +309,40 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
   data$Dep <- data$MethodX
   data$Exp <- data$Height
   message("Calculating Random log(Ph)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = TRUE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 9, title = "Random log(Ph)", res = res)
 
   # LMW
   data$Dep <- data$Method1
   data$Exp <- data$Height
   message("Calculating LMW log(Ph)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = TRUE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 10, title = "LMW log(Ph)", res = res)
 
   # HMW
   data$Dep <- data$Method2
   data$Exp <- data$Height
   message("Calculating HMW log(Ph)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = TRUE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 11, title = "HMW log(Ph)", res = res)
 
   # Locus
   data$Dep <- data$MethodL
   data$Exp <- data$MethodL.Ph
   message("Calculating Locus log(Ph)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = TRUE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 12, title = "Locus log(Ph)", res = res)
 
   # Use log average peak height.
@@ -330,32 +351,40 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
   data$Dep <- data$MethodX
   data$Exp <- data$H
   message("Calculating Random log(H)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = TRUE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 13, title = "Random log(H)", res = res)
 
   # LMW
   data$Dep <- data$Method1
   data$Exp <- data$H
   message("Calculating LMW log(H)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = TRUE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 14, title = "LMW log(H)", res = res)
 
   # HMW
   data$Dep <- data$Method2
   data$Exp <- data$H
   message("Calculating HMW log(H)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = TRUE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 15, title = "HMW log(H)", res = res)
 
   # Locus
   data$Dep <- data$MethodL
   data$Exp <- data$H
   message("Calculating Locus log(H)...")
-  res <- calculateT(data = .clean(data, rm.sex), log.model = TRUE,
-                    p.dropout = p.dropout, pred.int = 1 - p.conservative)
+  res <- calculateT(
+    data = .clean(data, rm.sex), log.model = TRUE,
+    p.dropout = p.dropout, pred.int = 1 - p.conservative
+  )
   df <- .store(df = df, index = 16, title = "Locus log(H)", res = res)
 
 
@@ -372,5 +401,4 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
   df <- auditTrail(obj = df, f.call = match.call(), package = "strvalidator")
 
   return(df)
-
 }

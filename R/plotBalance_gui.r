@@ -90,15 +90,16 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -113,44 +114,54 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Open help page for function.
     print(help("plotBalance_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset and kit",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset and kit",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Select dataset:", container = f0)
 
-  dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0,
-                           ellipsize = "none")
+  dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
 
   glabel(text = " and the kit used:", container = f0)
 
-  kit_drp <- gcombobox(items = getKit(),
-                       selected = 1,
-                       editable = FALSE,
-                       container = f0,
-                       ellipsize = "none")
+  kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -163,8 +174,10 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       svalue(f0_samples_lbl) <- paste(" (",
-                                      length(unique(.gData$Sample.Name)),
-                                      " samples)", sep = "")
+        length(unique(.gData$Sample.Name)),
+        " samples)",
+        sep = ""
+      )
 
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
@@ -177,7 +190,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       enabled(plot_hb_h_btn) <- TRUE
       enabled(plot_lb_btn) <- TRUE
       enabled(plot_lb_h_btn) <- TRUE
-
     } else {
 
       # Reset components.
@@ -185,20 +197,22 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(f0_samples_lbl) <- " (0 samples)"
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
@@ -214,43 +228,61 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   enabled(f1g1) <- svalue(f1_titles_chk)
 
   f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- title_edt <- gedit(text = "",
-                                   width = 40,
-                                   container = f1g1)
+  f1g1[1, 2] <- title_edt <- gedit(
+    text = "",
+    width = 40,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- x_title_edt <- gedit(text = "",
-                                     container = f1g1)
+  f1g1[2, 2] <- x_title_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- y_title_edt <- gedit(text = "",
-                                     container = f1g1)
+  f1g1[3, 2] <- y_title_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g2 <- glayout(container = f1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
-  items_theme <- c("theme_grey()", "theme_bw()", "theme_linedraw()",
-                   "theme_light()", "theme_dark()", "theme_minimal()",
-                   "theme_classic()", "theme_void()")
-  f1g2[1, 2] <- f1_theme_drp <- gcombobox(items = items_theme,
-                                         selected = 1,
-                                         container = f1g2,
-                                         ellipsize = "none")
+  items_theme <- c(
+    "theme_grey()", "theme_bw()", "theme_linedraw()",
+    "theme_light()", "theme_dark()", "theme_minimal()",
+    "theme_classic()", "theme_void()"
+  )
+  f1g2[1, 2] <- f1_theme_drp <- gcombobox(
+    items = items_theme,
+    selected = 1,
+    container = f1g2,
+    ellipsize = "none"
+  )
 
   f1_drop_chk <- gcheckbox(text = "Drop sex markers", checked = FALSE, container = f1)
 
-  f1_logHb_chk <- gcheckbox(text = "Plot Log(balance)", checked = FALSE,
-                            container = f1)
+  f1_logHb_chk <- gcheckbox(
+    text = "Plot Log(balance)", checked = FALSE,
+    container = f1
+  )
 
-  f1_wrap_opt <- gradio(items = c("Do not facet or wrap",
-                                  "Wrap by Dye",
-                                  "Facet by Marker and wrap by Dye"),
-                        horizontal = FALSE, container = f1)
+  f1_wrap_opt <- gradio(
+    items = c(
+      "Do not facet or wrap",
+      "Wrap by Dye",
+      "Facet by Marker and wrap by Dye"
+    ),
+    horizontal = FALSE, container = f1
+  )
 
   # FRAME 7 ###################################################################
 
-  f7 <- gframe(text = "Plot Balance data",
-               horizontal = FALSE,
-               container = gv)
+  f7 <- gframe(
+    text = "Plot Balance data",
+    horizontal = FALSE,
+    container = gv
+  )
 
   grid7 <- glayout(container = f7)
 
@@ -274,24 +306,23 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     requiredCol <- c("Sample.Name", "Marker", "Hb", "MPH")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(plot_hb_btn) <- FALSE
       .plotBalance(what = "Hb")
       enabled(plot_hb_btn) <- TRUE
-
     }
-
   })
 
   addHandlerChanged(plot_hb_d_btn, handler = function(h, ...) {
@@ -300,24 +331,23 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     requiredCol <- c("Sample.Name", "Marker", "Delta", "Hb")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(plot_hb_d_btn) <- FALSE
       .plotBalance(what = "Hb_D")
       enabled(plot_hb_d_btn) <- TRUE
-
     }
-
   })
 
   addHandlerChanged(plot_hb_h_btn, handler = function(h, ...) {
@@ -326,24 +356,23 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     requiredCol <- c("Sample.Name", "Marker", "Hb", "H")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(plot_hb_h_btn) <- FALSE
       .plotBalance(what = "Hb_H")
       enabled(plot_hb_h_btn) <- TRUE
-
     }
-
   })
 
   addHandlerChanged(plot_hb_m_btn, handler = function(h, ...) {
@@ -352,24 +381,23 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     requiredCol <- c("Sample.Name", "Marker", "Hb")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(plot_hb_m_btn) <- FALSE
       .plotBalance(what = "Hb_M", complex = FALSE)
       enabled(plot_hb_m_btn) <- TRUE
-
     }
-
   })
 
   addHandlerChanged(plot_lb_btn, handler = function(h, ...) {
@@ -378,24 +406,23 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     requiredCol <- c("Sample.Name", "Marker", "Lb", "TPH")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(plot_lb_btn) <- FALSE
       .plotBalance(what = "Lb")
       enabled(plot_lb_btn) <- TRUE
-
     }
-
   })
 
   addHandlerChanged(plot_lb_h_btn, handler = function(h, ...) {
@@ -404,24 +431,23 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     requiredCol <- c("Sample.Name", "Marker", "Lb", "H")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(plot_lb_h_btn) <- FALSE
       .plotBalance(what = "Lb_H")
       enabled(plot_lb_h_btn) <- TRUE
-
     }
-
   })
 
   addHandlerChanged(plot_lb_m_btn, handler = function(h, ...) {
@@ -430,32 +456,33 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     requiredCol <- c("Sample.Name", "Marker", "Lb")
 
     if (!all(requiredCol %in% colnames(.gData))) {
-
       missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
 
       message <- paste("Additional columns required:\n",
-                       paste(missingCol, collapse = "\n"), sep = "")
+        paste(missingCol, collapse = "\n"),
+        sep = ""
+      )
 
-      gmessage(message, title = "message",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "message",
+        icon = "error",
+        parent = w
+      )
     } else {
-
       enabled(plot_lb_m_btn) <- FALSE
       .plotBalance(what = "Lb_M", complex = FALSE)
       enabled(plot_lb_m_btn) <- TRUE
-
     }
-
   })
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -466,7 +493,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -476,31 +502,34 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # ADVANCED OPTIONS ##########################################################
 
-  e2 <- gexpandgroup(text = "Data points",
-               horizontal = FALSE,
-               container = f1)
+  e2 <- gexpandgroup(
+    text = "Data points",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e2) <- FALSE
@@ -508,23 +537,29 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   grid2 <- glayout(container = e2)
 
   grid2[1, 1] <- glabel(text = "Shape:", container = grid2)
-  grid2[1, 2] <- e2_shape_spb <- gspinbutton(from = 0, to = 25,
-                                         by = 1, value = 18,
-                                         container = grid2)
+  grid2[1, 2] <- e2_shape_spb <- gspinbutton(
+    from = 0, to = 25,
+    by = 1, value = 18,
+    container = grid2
+  )
 
   grid2[1, 3] <- glabel(text = "Alpha:", container = grid2)
-  grid2[1, 4] <- e2_alpha_spb <- gspinbutton(from = 0, to = 1,
-                                         by = 0.01, value = 0.60,
-                                         container = grid2)
+  grid2[1, 4] <- e2_alpha_spb <- gspinbutton(
+    from = 0, to = 1,
+    by = 0.01, value = 0.60,
+    container = grid2
+  )
 
   grid2[1, 5] <- glabel(text = "Jitter (width):", container = grid2)
   grid2[1, 6] <- e2_jitter_edt <- gedit(text = "0", width = 4, container = grid2)
 
   # FRAME 3 ###################################################################
 
-  e3 <- gexpandgroup(text = "Axes",
-                     horizontal = FALSE,
-                     container = f1)
+  e3 <- gexpandgroup(
+    text = "Axes",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e3) <- FALSE
@@ -542,16 +577,20 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   grid3[1, 3] <- glabel(text = "    ", container = grid3) # Add some space.
 
   grid3[1, 4] <- glabel(text = "Scales:", container = grid3)
-  grid3[2:4, 4] <- e3_scales_opt <- gradio(items = c("fixed", "free_x", "free_y", "free"),
-                                      selected = 1,
-                                      horizontal = FALSE,
-                                      container = grid3)
+  grid3[2:4, 4] <- e3_scales_opt <- gradio(
+    items = c("fixed", "free_x", "free_y", "free"),
+    selected = 1,
+    horizontal = FALSE,
+    container = grid3
+  )
 
   # FRAME 4 ###################################################################
 
-  e4 <- gexpandgroup(text = "X labels",
-                     horizontal = FALSE,
-                     container = f1)
+  e4 <- gexpandgroup(
+    text = "X labels",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e4) <- FALSE
@@ -562,18 +601,24 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   grid4[1, 2] <- e4_size_edt <- gedit(text = "10", width = 4, container = grid4)
 
   grid4[1, 3] <- glabel(text = "Angle:", container = grid4)
-  grid4[1, 4] <- e4_angle_spb <- gspinbutton(from = 0, to = 360, by = 1,
-                                         value = 270,
-                                         container = grid4)
+  grid4[1, 4] <- e4_angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 270,
+    container = grid4
+  )
 
   grid4[2, 1] <- glabel(text = "Justification (v/h):", container = grid4)
-  grid4[2, 2] <- e4_vjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0.5,
-                                          container = grid4)
+  grid4[2, 2] <- e4_vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = grid4
+  )
 
-  grid4[2, 3] <- e4_hjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0,
-                                          container = grid4)
+  grid4[2, 3] <- e4_hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0,
+    container = grid4
+  )
 
 
 
@@ -655,12 +700,13 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       if (is.null(.gData$Dye)) {
         .gData <- addColor(data = .gData, kit = val_kit, need = "Dye")
         message("'Dye' is missing. Dye information added!")
-
       }
       # Sort by marker in kit
-      .gData <- sortMarker(data = .gData,
-                          kit = val_kit,
-                          add.missing.levels = TRUE)
+      .gData <- sortMarker(
+        data = .gData,
+        kit = val_kit,
+        add.missing.levels = TRUE
+      )
 
       # Drop sex markers.
       if (val_drop) {
@@ -681,10 +727,9 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
           # Refactor and keep order of levels.
           .gData$Marker <- factor(.gData$Marker,
-                                  levels = levels(.gData$Marker)[!levels(.gData$Marker) %in% sexMarkers])
-
+            levels = levels(.gData$Marker)[!levels(.gData$Marker) %in% sexMarkers]
+          )
         }
-
       }
 
       # Height must be numeric (not string).
@@ -700,7 +745,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         if (!is.numeric(.gData$TPH)) {
           .gData$TPH <- as.numeric(as.character(.gData$TPH))
           message("'TPH' not numeric, converting to numeric.")
-
         }
       }
 
@@ -726,7 +770,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Auto detect if complex plot.
         complex <- length(val_ncol) > 1
-
       }
 
       # Make palette.
@@ -761,13 +804,11 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Create default titles.
       if (!val_titles) {
-
         if (debug) {
           print("Using default titles.")
         }
 
         if (what == "Hb") {
-
           mainTitle <- "Heterozygous balance"
           xTitle <- "Mean peak height (RFU)"
           if (val_log) {
@@ -775,9 +816,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           } else {
             yTitle <- "Ratio"
           }
-
         } else if (what == "Hb_D") {
-
           mainTitle <- "Heterozygous balance"
           xTitle <- "Repeat difference"
           if (val_log) {
@@ -785,9 +824,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           } else {
             yTitle <- "Ratio"
           }
-
         } else if (what == "Hb_H") {
-
           mainTitle <- "Heterozygous balance"
           xTitle <- "Average peak height 'H' (RFU)"
           if (val_log) {
@@ -795,9 +832,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           } else {
             yTitle <- "Ratio"
           }
-
         } else if (what == "Hb_M") {
-
           mainTitle <- "Heterozygous balance"
           xTitle <- "Locus"
           if (val_log) {
@@ -805,9 +840,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           } else {
             yTitle <- "Ratio"
           }
-
         } else if (what == "Lb") {
-
           mainTitle <- "Locus balance"
           xTitle <- "Locus peak height (RFU)"
           if (val_log) {
@@ -815,9 +848,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           } else {
             yTitle <- "Ratio"
           }
-
         } else if (what == "Lb_H") {
-
           mainTitle <- "Locus balance"
           xTitle <- "Average peak height 'H' (RFU)"
           if (val_log) {
@@ -825,9 +856,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           } else {
             yTitle <- "Ratio"
           }
-
         } else if (what == "Lb_M") {
-
           mainTitle <- "Locus balance"
           xTitle <- "Locus"
           if (val_log) {
@@ -835,11 +864,8 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           } else {
             yTitle <- "Ratio"
           }
-
         } else {
-
           stop(paste("what =", what, "not implemented for create title!"))
-
         }
       }
 
@@ -863,7 +889,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Select what to plot and create default titles.
         if (what == "Hb") {
-
           gp <- ggplot(.gData, aes_string(x = "MPH", y = "Hb", colour = "Dye"))
           val_box <- FALSE
 
@@ -872,9 +897,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           if (any(is.na(tmp$Sum))) {
             message("Empty facets detected! If this leads to plot error try another scale for axes")
           }
-
         } else if (what == "Hb_D") {
-
           gp <- ggplot(.gData, aes_string(x = "Delta", y = "Hb", colour = "Dye"))
           val_box <- FALSE
 
@@ -883,9 +906,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           if (any(is.na(tmp$Sum))) {
             message("Empty facets detected! If this leads to plot error try another scale for axes")
           }
-
         } else if (what == "Hb_H") {
-
           gp <- ggplot(.gData, aes_string(x = "H", y = "Hb", colour = "Dye"))
           val_box <- FALSE
 
@@ -894,9 +915,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           if (any(is.na(tmp$Sum))) {
             message("Empty facets detected! If this leads to plot error try another scale for axes")
           }
-
         } else if (what == "Hb_M") {
-
           gp <- ggplot(.gData, aes_string(x = "Marker", y = "Hb", colour = "Dye"))
           val_box <- TRUE
 
@@ -905,9 +924,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           if (any(is.na(tmp$Sum))) {
             message("Empty facets detected! If this leads to plot error try another scale for axes")
           }
-
         } else if (what == "Lb") {
-
           gp <- ggplot(.gData, aes_string(x = "TPH", y = "Lb", colour = "Dye"))
           val_box <- FALSE
 
@@ -916,9 +933,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           if (any(is.na(tmp$Sum))) {
             message("Empty facets detected! If this leads to plot error try another scale for axes")
           }
-
         } else if (what == "Lb_H") {
-
           gp <- ggplot(.gData, aes_string(x = "H", y = "Lb", colour = "Dye"))
           val_box <- FALSE
 
@@ -927,9 +942,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           if (any(is.na(tmp$Sum))) {
             message("Empty facets detected! If this leads to plot error try another scale for axes")
           }
-
         } else if (what == "Lb_M") {
-
           gp <- ggplot(.gData, aes_string(x = "Marker", y = "Lb", colour = "Dye"))
           val_box <- TRUE
 
@@ -938,11 +951,8 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           if (any(is.na(tmp$Sum))) {
             message("Empty facets detected! If this leads to plot error try another scale for axes")
           }
-
         } else {
-
           stop(paste("what =", what, "not implemented for create plot!"))
-
         }
 
         if (debug) {
@@ -957,26 +967,26 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
           # Create box and whisker plot.
           gp <- gp + geom_boxplot(alpha = val_alpha)
-
         } else {
 
           # Create scatter plot.
-          gp <- gp + geom_point(shape = val_shape, alpha = val_alpha,
-                                position = position_jitter(height = 0, width = val_jitter))
-
+          gp <- gp + geom_point(
+            shape = val_shape, alpha = val_alpha,
+            position = position_jitter(height = 0, width = val_jitter)
+          )
         }
 
         # Facet plot.
         if (val_wrap == 1) {
 
           # Do nothing.
-
         } else if (val_wrap == 2) {
 
           # Plot by dye per row.
-          gp <- gp + facet_wrap(as.formula(paste("~", "Dye")), ncol = 1,
-                                drop = FALSE, scales = val_scales)
-
+          gp <- gp + facet_wrap(as.formula(paste("~", "Dye")),
+            ncol = 1,
+            drop = FALSE, scales = val_scales
+          )
         } else if (val_wrap == 3) {
 
           # Plot per marker one dye per row.
@@ -984,12 +994,10 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           # NB! 'facet_wrap' does not seem to support strings.
           #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
           gp <- gp + facet_wrap(as.formula(paste("~", "Marker")),
-                                ncol = val_ncol, drop = FALSE, scales = val_scales)
-
+            ncol = val_ncol, drop = FALSE, scales = val_scales
+          )
         } else {
-
           stop("val_wrap =", val_wrap, "not implemented.")
-
         }
 
         # Add colours.
@@ -1016,10 +1024,12 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Add titles etc.
         gp <- gp + guides(fill = guide_legend(reverse = TRUE))
-        gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                  hjust = val_hjust,
-                                                  vjust = val_vjust,
-                                                  size = val_size))
+        gp <- gp + theme(axis.text.x = element_text(
+          angle = val_angle,
+          hjust = val_hjust,
+          vjust = val_vjust,
+          size = val_size
+        ))
         gp <- gp + labs(title = mainTitle)
         gp <- gp + xlab(xTitle)
         gp <- gp + ylab(yTitle)
@@ -1030,7 +1040,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Change save button.
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- TRUE
-
       } else if (complex) {
         # Complex plot, unequal number of markers per dye.
 
@@ -1061,8 +1070,10 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Create table object.
         # Note: width(1.5 for y-title, and the rest for plots)
         #       height(1.5 for plot title, equal for each plot, and 1.5 for x-title)
-        g <- gtable::gtable(widths = grid::unit(c(1.5, 1), c("lines", "null")),
-                    heights = grid::unit(c(1.5, rep(1, noDyes), 1.5), c("line", rep("null", noDyes), "line")))
+        g <- gtable::gtable(
+          widths = grid::unit(c(1.5, 1), c("lines", "null")),
+          heights = grid::unit(c(1.5, rep(1, noDyes), 1.5), c("line", rep("null", noDyes), "line"))
+        )
 
         # Add titles.
         g <- gtable::gtable_add_grob(g, grid::textGrob(mainTitle), t = 1, b = 1, l = 2, r = 2)
@@ -1084,10 +1095,11 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
           # Can't handle zero rows.
           if (nrow(gDataSub) == 0) {
-            tmp <- data.frame(Marker = gDyeLevel, Allele = NA, MPH = 0, Hb = 0,
-                              Lb = 0, H = 0, Delta = 0, Dye = dyes[d])
+            tmp <- data.frame(
+              Marker = gDyeLevel, Allele = NA, MPH = 0, Hb = 0,
+              Lb = 0, H = 0, Delta = 0, Dye = dyes[d]
+            )
             gDataSub <- plyr::rbind.fill(gDataSub, tmp)
-
           }
 
           # Refactor to levels of current dye (and maintain order).
@@ -1100,7 +1112,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           # Create a plot for the current subset.
           # Select what to plot.
           if (what == "Hb") {
-
             gp <- ggplot(gDataSub, aes_string(x = "MPH", y = "Hb", colour = "Dye"))
             val_box <- FALSE
 
@@ -1109,9 +1120,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             if (any(is.na(tmp$Sum))) {
               message("Empty facets detected! If this leads to plot error try another scale for axes")
             }
-
           } else if (what == "Hb_D") {
-
             gp <- ggplot(gDataSub, aes_string(x = "Delta", y = "Hb", colour = "Dye"))
             val_box <- FALSE
 
@@ -1120,9 +1129,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             if (any(is.na(tmp$Sum))) {
               message("Empty facets detected! If this leads to plot error try another scale for axes")
             }
-
           } else if (what == "Hb_H") {
-
             gp <- ggplot(gDataSub, aes_string(x = "H", y = "Hb", colour = "Dye"))
             val_box <- FALSE
 
@@ -1131,9 +1138,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             if (any(is.na(tmp$Sum))) {
               message("Empty facets detected! If this leads to plot error try another scale for axes")
             }
-
           } else if (what == "Hb_M") {
-
             gp <- ggplot(gDataSub, aes_string(x = "Marker", y = "Hb", colour = "Dye"))
             val_box <- TRUE
 
@@ -1142,9 +1147,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             if (any(is.na(tmp$Sum))) {
               message("Empty facets detected! If this leads to plot error try another scale for axes")
             }
-
           } else if (what == "Lb") {
-
             gp <- ggplot(gDataSub, aes_string(x = "TPH", y = "Lb", colour = "Dye"))
             val_box <- FALSE
 
@@ -1153,9 +1156,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             if (any(is.na(tmp$Sum))) {
               message("Empty facets detected! If this leads to plot error try another scale for axes")
             }
-
           } else if (what == "Lb_H") {
-
             gp <- ggplot(gDataSub, aes_string(x = "H", y = "Lb", colour = "Dye"))
             val_box <- FALSE
 
@@ -1164,9 +1165,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             if (any(is.na(tmp$Sum))) {
               message("Empty facets detected! If this leads to plot error try another scale for axes")
             }
-
           } else if (what == "Lb_M") {
-
             gp <- ggplot(gDataSub, aes_string(x = "Marker", y = "Lb", colour = "Dye"))
             val_box <- TRUE
 
@@ -1175,11 +1174,8 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             if (any(is.na(tmp$Sum))) {
               message("Empty facets detected! If this leads to plot error try another scale for axes")
             }
-
           } else {
-
             stop(paste("what =", what, "not implemented for create complex plot!"))
-
           }
 
           # Apply theme.
@@ -1190,14 +1186,16 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
             # Create box and whisker plot.
             gp <- gp + geom_boxplot(alpha = val_alpha)
-
           } else {
 
             # Create scatter plot.
-            gp <- gp + geom_point(shape = val_shape, alpha = val_alpha,
-                                  position = position_jitter(height = 0,
-                                                             width = val_jitter))
-
+            gp <- gp + geom_point(
+              shape = val_shape, alpha = val_alpha,
+              position = position_jitter(
+                height = 0,
+                width = val_jitter
+              )
+            )
           }
 
           # Wrap by marker one dye per row.
@@ -1239,17 +1237,18 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           # Remove titles, axis labels and legend.
           gp <- gp + labs(title = element_blank())
           gp <- gp + theme(axis.title.x = element_blank())
-          gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                    hjust = val_hjust,
-                                                    vjust = val_vjust,
-                                                    size = val_size))
+          gp <- gp + theme(axis.text.x = element_text(
+            angle = val_angle,
+            hjust = val_hjust,
+            vjust = val_vjust,
+            size = val_size
+          ))
           gp <- gp + theme(axis.title.y = element_blank())
           gp <- gp + theme(legend.position = "none")
 
 
           # Add plot panel to table object.
           g <- gtable::gtable_add_grob(g, ggplotGrob(gp), t = (d + 1), b = (d + 1), l = 2, r = 2)
-
         }
 
         # Plot.
@@ -1264,20 +1263,17 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Change save button.
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- FALSE
-
       } # End if(complex)
 
       # Store in global variable.
       .gPlot <<- gp
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
@@ -1371,14 +1367,12 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotBalance_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_sex", value = svalue(f1_drop_chk), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_log", value = svalue(f1_logHb_chk), envir = env)
@@ -1400,7 +1394,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       assign(x = ".strvalidator_plotBalance_gui_xlabel_justv", value = svalue(e4_vjust_spb), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_theme", value = svalue(f1_theme_drp), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_wrap", value = svalue(f1_wrap_opt), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotBalance_gui_savegui", envir = env, inherits = FALSE)) {
@@ -1475,7 +1468,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -1486,5 +1478,4 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

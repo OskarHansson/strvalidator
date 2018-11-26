@@ -41,7 +41,6 @@
 
 checkSubset <- function(data, ref, console = TRUE, ignore.case = TRUE,
                         word = FALSE, exact = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -50,21 +49,21 @@ checkSubset <- function(data, ref, console = TRUE, ignore.case = TRUE,
   res <- list()
 
   # Get reference name(s).
-        if (is.atomic(ref)) {
-                ref.names <- ref
-        } else if ("Sample.Name" %in% names(ref)) {
-                ref.names <- unique(ref$Sample.Name)
-        } else if ("Sample.File.Name" %in% names(ref)) {
-          ref.names <- unique(ref$Sample.File.Name)
-        } else if (any(grepl("SAMPLE", names(ref), ignore.case = TRUE))) {
-          # Get (first) column name containing "Sample".
-          sampleCol <- names(ref)[grep("SAMPLE", names(ref), ignore.case = TRUE)[1]]
-          # Grab sample names.
-          ref.names <- unique(ref[, sampleCol])
-        } else {
+  if (is.atomic(ref)) {
+    ref.names <- ref
+  } else if ("Sample.Name" %in% names(ref)) {
+    ref.names <- unique(ref$Sample.Name)
+  } else if ("Sample.File.Name" %in% names(ref)) {
+    ref.names <- unique(ref$Sample.File.Name)
+  } else if (any(grepl("SAMPLE", names(ref), ignore.case = TRUE))) {
+    # Get (first) column name containing "Sample".
+    sampleCol <- names(ref)[grep("SAMPLE", names(ref), ignore.case = TRUE)[1]]
+    # Grab sample names.
+    ref.names <- unique(ref[, sampleCol])
+  } else {
     stop("'ref' must contain a column 'Sample.Name', 'Sample.File.Name',
          or 'Sample'")
-        }
+  }
 
   if ("Sample.Name" %in% names(data)) {
     samples <- unique(data$Sample.Name)
@@ -80,9 +79,8 @@ checkSubset <- function(data, ref, console = TRUE, ignore.case = TRUE,
          or 'Sample'")
   }
 
-        # Subset 'data$Sample.Name' using 'ref.name'.
-        for (n in seq(along = ref.names)) {
-
+  # Subset 'data$Sample.Name' using 'ref.name'.
+  for (n in seq(along = ref.names)) {
     cRef <- ref.names[n]
 
     # Add word anchor.
@@ -108,21 +106,23 @@ checkSubset <- function(data, ref, console = TRUE, ignore.case = TRUE,
     }
 
     cSamples <- grep(cRef, samples,
-                     value = TRUE, fixed = FALSE, ignore.case = ignore.case)
+      value = TRUE, fixed = FALSE, ignore.case = ignore.case
+    )
 
     res[n] <- paste("Reference name: ", ref.names[n], "\n",
-                    "Subsetted samples: ", paste(cSamples, collapse = ", "), "\n\n", sep = "")
+      "Subsetted samples: ", paste(cSamples, collapse = ", "), "\n\n",
+      sep = ""
+    )
 
     if (debug) {
       print("cSamples")
       print(cSamples)
     }
-        }
+  }
 
   if (console) {
     cat(unlist(res))
   } else {
     return(unlist(res))
   }
-
 }

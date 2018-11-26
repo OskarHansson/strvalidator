@@ -61,7 +61,6 @@
 #' calculateRatio(data = set2, numerator = NULL, denominator = NULL)
 calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NULL, group = NULL,
                            ol.rm = TRUE, ignore.case = TRUE, word = FALSE, exact = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -106,12 +105,14 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
   # Check if slim format.
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (sum(grepl("Height", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.null(ref)) {
@@ -130,7 +131,8 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
     # Check if slim format.
     if (sum(grepl("Allele", names(ref))) > 1) {
       stop("'ref' must be in 'slim' format",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
   }
 
@@ -161,7 +163,6 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
   message("Preparing to calculate marker ratios.")
 
   if (ol.rm) {
-
     tmp1 <- nrow(data)
 
     # Remove off-ladder alleles.
@@ -170,12 +171,10 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
     tmp2 <- nrow(data)
 
     message("Removed ", tmp1 - tmp2, " off-ladder alleles!")
-
   }
 
   # Automatically calculate all combinations.
   if (all(is.null(numerator), is.null(denominator))) {
-
     message("Generating all possible combinations.")
 
     # Get all unique markers.
@@ -184,9 +183,7 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
     # Define numerator and denominator.
     numerator <- combn(markers, 2, simplify = TRUE)[1, ]
     denominator <- combn(markers, 2, simplify = TRUE)[2, ]
-
   } else if (is.null(numerator)) {
-
     message("Generating all possible numerators.")
 
     # Get all unique markers.
@@ -195,9 +192,7 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
     # Define numerator and denominator.
     numerator <- rep(markers, length(denominator))
     denominator <- rep(denominator, each = length(markers))
-
   } else if (is.null(denominator)) {
-
     message("Generating all possible denominators.")
 
     # Get all unique markers.
@@ -206,27 +201,18 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
     # Define numerator and denominator.
     numerator <- rep(numerator, each = length(markers))
     denominator <- rep(markers, length(numerator))
-
   } else if (length(numerator) != length(denominator)) {
-
     if (length(numerator) < length(denominator)) {
-
       message("Numerator expanded.")
 
       numerator <- rep(numerator, length.out = length(denominator))
-
     } else {
-
       message("Denominator expanded.")
 
       denominator <- rep(denominator, length.out = length(numerator))
-
     }
-
   } else {
-
     message("Numerator and denominator of equal length provided.")
-
   }
 
   # Store length of vector.
@@ -244,27 +230,23 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
 
   # Filter data.
   if (!is.null(ref)) {
-
     message("Filter data")
 
     # Convert to numeric.
-    data <- filterProfile(data = data, ref = ref, add.missing.loci = TRUE,
-                          keep.na = FALSE, ignore.case = ignore.case,
-                          exact = exact, invert = FALSE, debug = debug)
-
+    data <- filterProfile(
+      data = data, ref = ref, add.missing.loci = TRUE,
+      keep.na = FALSE, ignore.case = ignore.case,
+      exact = exact, invert = FALSE, debug = debug
+    )
   }
 
   # Get columns and rename.
   if (is.null(group)) {
-
     data <- data[, c("Sample.Name", "Marker", "Height")]
     names(data) <- c("Sample.Name", "Marker", "Height")
-
   } else {
-
     data <- data[, c("Sample.Name", "Marker", "Height", group)]
     names(data) <- c("Sample.Name", "Marker", "Height", "Group")
-
   }
 
   # Analyse -------------------------------------------------------------------
@@ -276,17 +258,19 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
   message("Calculating total peak height per marker.")
 
   if (is.null(group)) {
-
-    dtTPH <- DT[, list(TPH = sum(Height),
-                      Peaks = length(Height)),
-                by = list(Sample.Name, Marker)]
-
+    dtTPH <- DT[, list(
+      TPH = sum(Height),
+      Peaks = length(Height)
+    ),
+    by = list(Sample.Name, Marker)
+    ]
   } else {
-
-    dtTPH <- DT[, list(TPH = sum(Height),
-                      Peaks = length(Height)),
-                by = list(Sample.Name, Marker, Group)]
-
+    dtTPH <- DT[, list(
+      TPH = sum(Height),
+      Peaks = length(Height)
+    ),
+    by = list(Sample.Name, Marker, Group)
+    ]
   }
 
   if (debug) {
@@ -312,12 +296,10 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
       } else {
         res <- data.frame(dtNum[, list(Sample.Name, Group)])
       }
-
     }
 
     # Add new columns.
     res[paste(numerator[i], denominator[i], sep = "/")] <- dtNum$TPH / dtDen$TPH
-
   }
 
   # Update audit trail.
@@ -329,5 +311,4 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
 
   # Return result.
   return(res)
-
 }

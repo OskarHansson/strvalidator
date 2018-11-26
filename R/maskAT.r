@@ -56,10 +56,9 @@
 
 
 maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
-                    mask.sample = TRUE, per.dye = TRUE, range.sample = 20,
-                    mask.ils = TRUE, range.ils = 10,
-                    ignore.case = TRUE, word = FALSE, debug = FALSE) {
-
+                   mask.sample = TRUE, per.dye = TRUE, range.sample = 20,
+                   mask.ils = TRUE, range.ils = 10,
+                   ignore.case = TRUE, word = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -100,17 +99,18 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
   if (sum(grepl("Height", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (sum(grepl("Data.Point", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check ref.
   if (!is.null(ref)) {
-
     if (is.null(ref$Sample.Name)) {
       stop("'ref' must contain a column 'Sample.Name'")
     }
@@ -126,60 +126,70 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     # Check if slim format.
     if (sum(grepl("Allele", names(ref))) > 1) {
       stop("'ref' must be in 'slim' format",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
-
   }
 
   # Check parameters.
   if (!is.logical(mask.height)) {
     stop("'mask.height' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(height)) {
     stop("'height' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(mask.sample)) {
     stop("'mask.sample' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(per.dye)) {
     stop("'per.dye' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(range.sample)) {
     stop("'range.sample' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(mask.ils)) {
     stop("'mask.ils' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(range.ils)) {
     stop("'range.ils' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(ignore.case)) {
     stop("'ignore.case' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(word)) {
     stop("'word' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(debug)) {
     stop("'debug' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Prepare -------------------------------------------------------------------
@@ -200,9 +210,11 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
   if (!is.numeric(height) & mask.height) {
     mask.height = FALSE
-    message(paste("No valid threshold for peak height was provided (",
-                  height, ")\n",
-                  "Setting mask.height to FALSE"))
+    message(paste(
+      "No valid threshold for peak height was provided (",
+      height, ")\n",
+      "Setting mask.height to FALSE"
+    ))
   }
 
   # Split information in Dye.Sample.Peak column.
@@ -231,9 +243,10 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
       tmp1 <- nrow(ref)
       ref <- ref[!is.na(ref$Allele), ]
       tmp2 <- nrow(ref)
-      message("Removed ", tmp1 - tmp2,
-              " rows with NA in 'Allele' column in reference dataset.")
-
+      message(
+        "Removed ", tmp1 - tmp2,
+        " rows with NA in 'Allele' column in reference dataset."
+      )
     }
 
     # Get the reference sample names.
@@ -247,7 +260,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
       # Use reference sample names.
       grepNames <- refNames
     }
-
   }
 
   # Add columns for mask status for ILS and sample.
@@ -259,9 +271,10 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
   # Mask ILS peak range in all dyes per sample.
   if (mask.ils) {
-
-    message(paste("Masking internal lane standard (ILS) +/-",
-                  range.ils, "data points."))
+    message(paste(
+      "Masking internal lane standard (ILS) +/-",
+      range.ils, "data points."
+    ))
 
     # Add columns for masking range.
     data$ILS.Min <- NA
@@ -273,7 +286,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
     # Loop over all samples.
     for (s in seq(along = sample)) {
-
       message(paste("Masking ILS in sample", sample[s]))
 
       # Select start and end data point for current samples ILS.
@@ -298,16 +310,12 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
         # Mark masked data points.
         data$I.Mask[selection] <- data$I.Mask[selection] | maskVec
-
       } # End element loop.
-
     } # End sample loop.
-
   } # End mask.ils if.
 
   # Mask sample peak range per sample.
   if (mask.sample & !is.null(ref)) {
-
     message(paste("Masking sample alleles +/-", range.sample, "data points."))
 
     # Get data into temporary vectors.
@@ -326,8 +334,10 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
       selSample <- grepl(grepNames[r], sVec, ignore.case = ignore.case)
 
       # Show progress.
-      message(paste("Masking", length(unique(sVec[selSample])),
-                    "samples matching reference", grepNames[r]))
+      message(paste(
+        "Masking", length(unique(sVec[selSample])),
+        "samples matching reference", grepNames[r]
+      ))
 
       # Select current reference sample.
       selRef <- ref$Sample.Name == grepNames[r]
@@ -359,9 +369,7 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
         # Calculate min and max data point to mask.
         minVec[sel] <- pVec[sel] - range.sample
         maxVec[sel] <- pVec[sel] + range.sample
-
       } # End marker loop.
-
     } # End reference loop.
 
     # Add columns with mask range.
@@ -411,11 +419,8 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
             # Mark masked data points.
             data$S.Mask[selection] <- data$S.Mask[selection] | maskVec
-
           } # End element loop.
-
         } # End dye loop.
-
       } else {
         # Mask sample peaks per sample
 
@@ -440,23 +445,17 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
           # Mark masked data points.
           data$S.Mask[selSample] <- data$S.Mask[selSample] | maskVec
-
         } # End element for loop.
-
       } # End mask sample if.
-
     } # End sample loop.
-
   } # End mask.sample if.
 
   # Mask sample peak range per sample.
   if (mask.height) {
-
     message(paste("Masking peaks >", height, "RFU."))
 
     # Mask peaks.
     data$H.Mask <- data$Height > height
-
   }
 
   # Mark masked data points.
@@ -471,5 +470,4 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
   # Return result.
   return(data)
-
 }

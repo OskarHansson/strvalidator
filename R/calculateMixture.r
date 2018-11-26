@@ -69,7 +69,6 @@
 
 calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
                              ignore.dropout = TRUE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -80,59 +79,72 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
   # Check dataset.
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Sample.Name" %in% names(data)) {
     stop("'data' must contain a column 'Sample.Name'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Marker" %in% names(data)) {
     stop("'data' must contain a column 'Marker'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Allele" %in% names(data)) {
     stop("'data' must contain a column 'Allele'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Height" %in% names(data)) {
     warning("'data' must contain a column 'Height' to calculate Mx.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check ref1.
   if (sum(grepl("Allele", names(ref1))) > 1) {
     stop("'ref1' must be in 'slim' format.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Sample.Name" %in% names(ref1)) {
     stop("'ref1' must contain a column 'Sample.Name'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Marker" %in% names(ref1)) {
     stop("'ref1' must contain a column 'Marker'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Allele" %in% names(ref1)) {
     stop("'ref1' must contain a column 'Allele'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check ref2.
   if (sum(grepl("Allele", names(ref2))) > 1) {
     stop("'ref2' must be in 'slim' format.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Sample.Name" %in% names(ref2)) {
     stop("'ref2' must contain a column 'Sample.Name'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Marker" %in% names(ref2)) {
     stop("'ref2' must contain a column 'Marker'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Allele" %in% names(ref2)) {
     stop("'ref2' must contain a column 'Allele'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check flags.
@@ -172,13 +184,16 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
   # Check uniqueness between reference datasets.
   if (length(intersect(sampleNamesRef1, sampleNamesRef2)) != 0) {
     stop("Reference sample names must be unique both within and between reference datasets",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Get number of samples.
   if (length(sampleNamesRef1) != length(sampleNamesRef2)) {
     warning(paste("Reference datasets have unequal number of unique samples!",
-                  "The smaller dataset will limit the calculation", sep = "\n"))
+      "The smaller dataset will limit the calculation",
+      sep = "\n"
+    ))
   }
 
   if (debug) {
@@ -194,7 +209,9 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
     data <- data[data$Allele != "OL", ]
     tmp2 <- nrow(data)
     message(paste("Off-ladder alleles removed (",
-                  tmp1 - tmp2, " rows).", sep = ""))
+      tmp1 - tmp2, " rows).",
+      sep = ""
+    ))
   }
 
   # CALCULATE -----------------------------------------------------------------
@@ -232,10 +249,11 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
 
         # Loop over all marker names.
         for (m in seq(along = markerNames)) {
-
           if (debug) {
-            print(paste("Calculate for sample", sampleNames[s],
-                        "marker", markerNames[m]))
+            print(paste(
+              "Calculate for sample", sampleNames[s],
+              "marker", markerNames[m]
+            ))
           }
 
           # Get reference alleles.
@@ -288,9 +306,8 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
           }
 
 
-         # Option to calculate only when no dropout.
-         if (ignore.dropout | all(expAlleles %in% observedAlleles)) {
-
+          # Option to calculate only when no dropout.
+          if (ignore.dropout | all(expAlleles %in% observedAlleles)) {
             if (totalUnshared > 0) {
               # At least one unshared allele.
               # Calculate mixture proportion Mx.
@@ -310,8 +327,10 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
                 } else if (totalUnshared == 4) {
                   style <- "AB:CD"
                 } else {
-                  style <- paste(totalUnshared,
-                                   "unshared alleles not handled!")
+                  style <- paste(
+                    totalUnshared,
+                    "unshared alleles not handled!"
+                  )
                 }
 
                 if (debug) {
@@ -321,7 +340,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
                 # Sum peak heights for major and minor alleles.
                 nominator <- sum(observedHeights[observedAlleles %in% ref2a], na.rm = TRUE)
                 denominator <- sum(observedHeights, na.rm = TRUE)
-
               } else if (length(sharedAlleles) == 1 && totalUnshared == 2) {
                 # Mx can be calculated.
                 style <- "AB:AC"
@@ -333,7 +351,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
                 # Sum peak heights for non-shared major and minor alleles.
                 nominator <- sum(observedHeights[observedAlleles %in% unsharedMinor], na.rm = TRUE)
                 denominator <- sum(observedHeights[!observedAlleles %in% sharedAlleles], na.rm = TRUE)
-
               } else if (length(sharedAlleles) == 1 && length(unsharedMinor) == 0) {
                 # Mx can be calculated.
                 style <- "AA:AB"
@@ -354,9 +371,7 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
                   if (debug) {
                     print("Replaced negative or missing nominator with 0!")
                   }
-
                 }
-
               } else if (length(sharedAlleles) == 1 && length(unsharedMajor) == 0) {
                 # Mx can be calculated.
                 style <- "AB:AA"
@@ -376,18 +391,16 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
                   if (debug) {
                     print("Replaced missing nominator with 0!")
                   }
-
                 }
-
               } else {
-
                 style <- "Unhandled locus style"
 
-                message(paste("Unhandled locus style for locus",
-                              markerNames[m],
-                              "in sample",
-                              sampleNames[s]))
-
+                message(paste(
+                  "Unhandled locus style for locus",
+                  markerNames[m],
+                  "in sample",
+                  sampleNames[s]
+                ))
               }
 
               if (debug) {
@@ -399,7 +412,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
 
               # Calculate mixture proportion.
               mx <- nominator / denominator
-
             } else {
               # No unshared alleles.
               # Mx cannot be calculated.
@@ -410,16 +422,16 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
               } else if (length(sharedAlleles) == 2) {
                 style <- "AB:AB"
               } else {
-                style <- paste(length(sharedAlleles),
-                                 "shared alleles not handled!")
+                style <- paste(
+                  length(sharedAlleles),
+                  "shared alleles not handled!"
+                )
               }
 
               if (debug) {
                 print("No unshared alleles!")
               }
-
             }
-
           } else {
             # Dropout of an allele.
             # Mx cannot be calculated.
@@ -429,7 +441,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
             if (debug) {
               print("Dropout of an allele!")
             }
-
           }
 
           if (debug) {
@@ -455,7 +466,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
 
           # Increase counter.
           i <- i + 1
-
         } # End of marker loop.
 
         # Calculate average Mx for current sample.
@@ -469,30 +479,29 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
         # Save in result vectors.
         resAvgMx[resSample == sampleNames[s]] <- avgMx
         resProfile[resSample == sampleNames[s]] <- tmpProfile
-
       } # End of sample loop.
-
     } else {
       # No matching mixture sample, go to next reference sample.
     }
-
   } # End of reference sample loop.
 
   # Calculate the difference D=|Mx-mean(Mx)| for current sample.
   resD <- abs(resMx - resAvgMx)
 
   # Create dataframe.
-  res <- data.frame(Sample.Name = resSample,
-                    Marker = resMarker,
-                    Style = resStyle,
-                    Mx = resMx,
-                    Average = resAvgMx,
-                    Difference = resD,
-                    Observed = resObs,
-                    Expected = resExp,
-                    Profile = resProfile,
-                    Dropin = resDropin,
-                    stringsAsFactors = FALSE)
+  res <- data.frame(
+    Sample.Name = resSample,
+    Marker = resMarker,
+    Style = resStyle,
+    Mx = resMx,
+    Average = resAvgMx,
+    Difference = resD,
+    Observed = resObs,
+    Expected = resExp,
+    Profile = resProfile,
+    Dropin = resDropin,
+    stringsAsFactors = FALSE
+  )
 
   # Update audit trail.
   res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
@@ -501,7 +510,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
     print(paste("EXIT:", match.call()[[1]]))
   }
 
-        # Return result.
-        return(res)
-
+  # Return result.
+  return(res)
 }

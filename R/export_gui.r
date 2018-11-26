@@ -51,14 +51,15 @@
 
 export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", "ggplot")),
                        env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
 
   # Main window.
-  w <- gwindow(title = "Export objects as files or images",
-               visible = FALSE)
+  w <- gwindow(
+    title = "Export objects as files or images",
+    visible = FALSE
+  )
 
   # Runs when window is closed.
   addHandlerDestroy(w, handler = function(h, ...) {
@@ -70,12 +71,13 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE, spacing = 5, use.scrollwindow = FALSE,
-               container = w, expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE, spacing = 5, use.scrollwindow = FALSE,
+    container = w, expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -90,21 +92,26 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
     # Open help page for function.
     print(help("export_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Objects", horizontal = FALSE, spacing = 5, expand = TRUE,
-               container = gv)
+  f0 <- gframe(
+    text = "Objects", horizontal = FALSE, spacing = 5, expand = TRUE,
+    container = gv
+  )
 
   # Active selection label.
-  f0_selection_lbl <- glabel(text = paste(length(obj), " objects selected for export:"),
-                             anchor = c(-1, 0), container = f0)
+  f0_selection_lbl <- glabel(
+    text = paste(length(obj), " objects selected for export:"),
+    anchor = c(-1, 0), container = f0
+  )
 
   # Create list of objects.
-  f0_object_tbl <- gWidgets2::gtable(items = obj, multiple = TRUE,
-                                    expand = TRUE, container = f0)
+  f0_object_tbl <- gWidgets2::gtable(
+    items = obj, multiple = TRUE,
+    expand = TRUE, container = f0
+  )
 
   # Initiate with all objects selected.
   # (works best from within the main GUI but not ideal for the separate wrapper)
@@ -121,20 +128,26 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   f1g1 <- glayout(container = f1)
 
-  f1g1[1, 1] <- f1g1_name_chk <- gcheckbox(text = "Use object names",
-                                          checked = TRUE,
-                                          container = f1g1)
+  f1g1[1, 1] <- f1g1_name_chk <- gcheckbox(
+    text = "Use object names",
+    checked = TRUE,
+    container = f1g1
+  )
 
-  f1g1[2, 1] <- glabel(text = "File name (separated by | ):",
-                      container = f1g1, anchor = c(-1, 0), expand = TRUE)
+  f1g1[2, 1] <- glabel(
+    text = "File name (separated by | ):",
+    container = f1g1, anchor = c(-1, 0), expand = TRUE
+  )
 
   f1g1[3, 1] <- f1g1_name_edt <- gedit(text = "", width = 50, container = f1g1)
 
   # Defult is disabled.
   enabled(f1g1_name_edt) <- FALSE
 
-  f1g1[4, 1] <- f1g1_replace_chk <- gcheckbox(text = "Overwrite existing files",
-                                             checked = TRUE, container = f1g1)
+  f1g1[4, 1] <- f1g1_replace_chk <- gcheckbox(
+    text = "Overwrite existing files",
+    checked = TRUE, container = f1g1
+  )
 
   # FRAME 2 ###################################################################
 
@@ -144,23 +157,31 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   f2g1 <- glayout(container = f2)
 
-  f2g1[1, 1] <- glabel(text = "File extension:", container = f2g1,
-                      anchor = c(-1, 0))
+  f2g1[1, 1] <- glabel(
+    text = "File extension:", container = f2g1,
+    anchor = c(-1, 0)
+  )
 
-  f2g1[1, 2] <- f2g1_ext_drp <- gcombobox(items = c("auto", ".RData"),
-                                         selected = 1, editable = FALSE,
-                                         container = f2g1, ellipsize = "none")
+  f2g1[1, 2] <- f2g1_ext_drp <- gcombobox(
+    items = c("auto", ".RData"),
+    selected = 1, editable = FALSE,
+    container = f2g1, ellipsize = "none"
+  )
 
   f2g1[2, 1] <- glabel(text = "Delimiter:", container = f2g1, anchor = c(-1, 0))
 
-  f2g1[2, 2] <- f2g1_del_drp <- gcombobox(items = c("TAB", "SPACE", "COMMA"),
-                                         selected = 1, editable = FALSE,
-                                         container = f2g1, ellipsize = "none")
+  f2g1[2, 2] <- f2g1_del_drp <- gcombobox(
+    items = c("TAB", "SPACE", "COMMA"),
+    selected = 1, editable = FALSE,
+    container = f2g1, ellipsize = "none"
+  )
 
   # FRAME 3 ###################################################################
 
-  f3 <- gframe(text = "Image settings", horizontal = FALSE, spacing = 10,
-               container = gv)
+  f3 <- gframe(
+    text = "Image settings", horizontal = FALSE, spacing = 10,
+    container = gv
+  )
 
   # GRID 1 --------------------------------------------------------------------
 
@@ -168,18 +189,24 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   f3g1[1, 1] <- glabel(text = "Width:", container = f3g1, anchor = c(-1, 0))
 
-  f3g1[1, 2] <- f3g1_width_edt <- gedit(text = "3000", width = 6,
-                                       initial.msg = "", container = f3g1)
+  f3g1[1, 2] <- f3g1_width_edt <- gedit(
+    text = "3000", width = 6,
+    initial.msg = "", container = f3g1
+  )
 
   f3g1[1, 3] <- glabel(text = "Height:", container = f3g1, anchor = c(-1, 0))
 
-  f3g1[1, 4] <- f3g1_height_edt <- gedit(text = "2000", width = 6,
-                                        initial.msg = "", container = f3g1)
+  f3g1[1, 4] <- f3g1_height_edt <- gedit(
+    text = "2000", width = 6,
+    initial.msg = "", container = f3g1
+  )
 
   f3g1[1, 5] <- glabel(text = "Resolution:", container = f3g1, anchor = c(-1, 0))
 
-  f3g1[1, 6] <- f3g1_res_edt <- gedit(text = "250", width = 6, initial.msg = "",
-                                     container = f3g1)
+  f3g1[1, 6] <- f3g1_res_edt <- gedit(
+    text = "250", width = 6, initial.msg = "",
+    container = f3g1
+  )
 
 
   # FRAME 4 ###################################################################
@@ -191,8 +218,10 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   # NB! text = getwd() does not always work (e.g. when 'Documents' are localized).
   # https://stackoverflow.com/questions/45231928/initiate-gfilebrowse-with-a-valid-path-gwidgets2
   # Unable to find a solution other then using the "Open" button to browse...
-  f4_save_brw <- gfilebrowse(text = getwd(), quote = FALSE, type = "selectdir",
-                             initial.dir = getwd(), expand = TRUE, container = f4)
+  f4_save_brw <- gfilebrowse(
+    text = getwd(), quote = FALSE, type = "selectdir",
+    initial.dir = getwd(), expand = TRUE, container = f4
+  )
 
   # BUTTON ####################################################################
 
@@ -206,9 +235,10 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
     val <- svalue(f0_object_tbl)
 
     # Update current selection label.
-    svalue(f0_selection_lbl) <- paste(length(val),
-                                      " objects selected for export:")
-
+    svalue(f0_selection_lbl) <- paste(
+      length(val),
+      " objects selected for export:"
+    )
   })
 
   addHandlerChanged(f1g1_name_chk, handler = function(h, ...) {
@@ -221,7 +251,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
     } else {
       enabled(f1g1_name_edt) <- TRUE
     }
-
   })
 
   addHandlerChanged(f2g1_ext_drp, handler = function(h, ...) {
@@ -236,7 +265,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
       enabled(f2g1_del_drp) <- TRUE
       enabled(f3g1) <- TRUE
     }
-
   })
 
   addHandlerChanged(g_export_btn, handler = function(h, ...) {
@@ -303,34 +331,37 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
     }
 
     if (ok) {
-
       blockHandlers(g_export_btn)
       svalue(g_export_btn) <- "Processing..."
       unblockHandlers(g_export_btn)
 
       repeat{
-
-        fail <- export(object = val_object, name = val_name, use.object.name = val_use_obj,
-                        env = env, path = val_path,
-                        ext = val_ext, delim = val_delimiter,
-                        width = val_w, height = val_h, res = val_r,
-                        overwrite = val_replace, debug = debug)
+        fail <- export(
+          object = val_object, name = val_name, use.object.name = val_use_obj,
+          env = env, path = val_path,
+          ext = val_ext, delim = val_delimiter,
+          width = val_w, height = val_h, res = val_r,
+          overwrite = val_replace, debug = debug
+        )
 
         if (is.data.frame(fail)) {
-
           if (debug) {
             print("The following objects failed:")
             print(fail)
           }
 
-          dialog <- gbasicdialog(title = "Export failed!", parent = w,
-                                 do.buttons = FALSE,
-                                 width = 200, height = 200, horizontal = FALSE)
+          dialog <- gbasicdialog(
+            title = "Export failed!", parent = w,
+            do.buttons = FALSE,
+            width = 200, height = 200, horizontal = FALSE
+          )
 
           group <- ggroup(horizontal = FALSE, container = dialog)
 
-          msgtxt <- paste("\nThe following objects were not saved because the file names existed.\n",
-                          "Make sure to exit the last edited cell before continuing.")
+          msgtxt <- paste(
+            "\nThe following objects were not saved because the file names existed.\n",
+            "Make sure to exit the last edited cell before continuing."
+          )
 
           msg <- glabel(text = msgtxt, anchor = c(-1, 0), container = group)
 
@@ -364,30 +395,29 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
           })
 
           visible(dialog, set = TRUE)
-
         } else {
-
-           break
+          break
         }
 
         if (is.null(fail)) {
           break
         }
-
       }
 
       # Close GUI.
       dispose(w)
-
     } else {
-
-      gmessage(msg = paste("At least one object must be selected.",
-                         "\nFile name and path must be provided.",
-                         "\n\nThis error may also occur the first time the function is used.",
-                         "\nPlease locate the folder using the 'Open' button."),
-               title = "Error",
-               parent = w,
-               icon = "error")
+      gmessage(
+        msg = paste(
+          "At least one object must be selected.",
+          "\nFile name and path must be provided.",
+          "\n\nThis error may also occur the first time the function is used.",
+          "\nPlease locate the folder using the 'Open' button."
+        ),
+        title = "Error",
+        parent = w,
+        icon = "error"
+      )
     }
   })
 
@@ -445,14 +475,12 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_export_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_export_gui_objName", value = svalue(f1g1_name_chk), envir = env)
       assign(x = ".strvalidator_export_gui_replace", value = svalue(f1g1_replace_chk), envir = env)
@@ -462,7 +490,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
       assign(x = ".strvalidator_export_gui_height", value = svalue(f3g1_height_edt), envir = env)
       assign(x = ".strvalidator_export_gui_res", value = svalue(f3g1_res_edt), envir = env)
       assign(x = ".strvalidator_export_gui_path", value = svalue(f4_save_brw), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_export_gui_savegui", envir = env, inherits = FALSE)) {
@@ -501,7 +528,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -512,5 +538,4 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

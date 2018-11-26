@@ -62,15 +62,16 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -85,36 +86,44 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Open help page for function.
     print(help("plotAT_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Select dataset:", container = f0)
 
-  dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0,
-                           ellipsize = "none")
+  dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Amount", "Height", "AT6")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -126,12 +135,13 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       svalue(f0_samples_lbl) <- paste(" (",
-                                      length(unique(.gData$Sample.Name)),
-                                      " samples)", sep = "")
+        length(unique(.gData$Sample.Name)),
+        " samples)",
+        sep = ""
+      )
 
       # Enable buttons.
       enabled(plot_at6_btn) <- TRUE
-
     } else {
 
       # Reset components.
@@ -139,20 +149,22 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(f0_samples_lbl) <- " (0 samples)"
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
@@ -168,49 +180,59 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   enabled(f1g1) <- svalue(f1_titles_chk)
 
   f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- title_edt <- gedit(text = "",
-                                   width = 40,
-                                   container = f1g1)
+  f1g1[1, 2] <- title_edt <- gedit(
+    text = "",
+    width = 40,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- x_title_edt <- gedit(text = "",
-                                     container = f1g1)
+  f1g1[2, 2] <- x_title_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- y_title_edt <- gedit(text = "",
-                                     container = f1g1)
+  f1g1[3, 2] <- y_title_edt <- gedit(
+    text = "",
+    container = f1g1
+  )
 
   f1g2 <- glayout(container = f1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
-  f1g2[1, 2] <- f1_theme_drp <- gcombobox(items = c("theme_grey()", "theme_bw()"),
-                                         selected = 1,
-                                         container = f1g2,
-                                         ellipsize = "none")
+  f1g2[1, 2] <- f1_theme_drp <- gcombobox(
+    items = c("theme_grey()", "theme_bw()"),
+    selected = 1,
+    container = f1g2,
+    ellipsize = "none"
+  )
 
   # FRAME 7 ###################################################################
 
-  f7 <- gframe(text = "Plot analytical threshold data",
-               horizontal = FALSE,
-               container = gv)
+  f7 <- gframe(
+    text = "Plot analytical threshold data",
+    horizontal = FALSE,
+    container = gv
+  )
 
   grid7 <- glayout(container = f7)
 
   grid7[1, 1] <- plot_at6_btn <- gbutton(text = "Plot AT6", container = grid7)
 
   addHandlerChanged(plot_at6_btn, handler = function(h, ...) {
-
     enabled(plot_at6_btn) <- FALSE
     .plotAT(what = "AT6")
     enabled(plot_at6_btn) <- TRUE
-
   })
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -221,7 +243,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -231,31 +252,34 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # ADVANCED OPTIONS ##########################################################
 
-  e2 <- gexpandgroup(text = "Data points",
-               horizontal = FALSE,
-               container = f1)
+  e2 <- gexpandgroup(
+    text = "Data points",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e2) <- FALSE
@@ -263,23 +287,29 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   grid2 <- glayout(container = e2)
 
   grid2[1, 1] <- glabel(text = "Shape:", container = grid2)
-  grid2[1, 2] <- shape_spb <- gspinbutton(from = 0, to = 25,
-                                         by = 1, value = 18,
-                                         container = grid2)
+  grid2[1, 2] <- shape_spb <- gspinbutton(
+    from = 0, to = 25,
+    by = 1, value = 18,
+    container = grid2
+  )
 
   grid2[1, 3] <- glabel(text = "Alpha:", container = grid2)
-  grid2[1, 4] <- alpha_spb <- gspinbutton(from = 0, to = 1,
-                                         by = 0.01, value = 1,
-                                         container = grid2)
+  grid2[1, 4] <- alpha_spb <- gspinbutton(
+    from = 0, to = 1,
+    by = 0.01, value = 1,
+    container = grid2
+  )
 
   grid2[1, 5] <- glabel(text = "Jitter (width):", container = grid2)
   grid2[1, 6] <- jitter_txt <- gedit(text = "0", width = 4, container = grid2)
 
   # FRAME 3 ###################################################################
 
-  e3 <- gexpandgroup(text = "Axes",
-                     horizontal = FALSE,
-                     container = f1)
+  e3 <- gexpandgroup(
+    text = "Axes",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e3) <- FALSE
@@ -297,16 +327,20 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   grid3[1, 3] <- glabel(text = "    ", container = grid3) # Add some space.
 
   grid3[1, 4] <- glabel(text = "Scales:", container = grid3)
-  grid3[2:4, 4] <- scales_opt <- gradio(items = c("fixed", "free_x", "free_y", "free"),
-                                      selected = 2,
-                                      horizontal = FALSE,
-                                      container = grid3)
+  grid3[2:4, 4] <- scales_opt <- gradio(
+    items = c("fixed", "free_x", "free_y", "free"),
+    selected = 2,
+    horizontal = FALSE,
+    container = grid3
+  )
 
   # FRAME 4 ###################################################################
 
-  e4 <- gexpandgroup(text = "X labels",
-                     horizontal = FALSE,
-                     container = f1)
+  e4 <- gexpandgroup(
+    text = "X labels",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e4) <- FALSE
@@ -317,18 +351,24 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   grid4[1, 2] <- size_txt <- gedit(text = "10", width = 4, container = grid4)
 
   grid4[1, 3] <- glabel(text = "Angle:", container = grid4)
-  grid4[1, 4] <- angle_spb <- gspinbutton(from = 0, to = 360, by = 1,
-                                         value = 270,
-                                         container = grid4)
+  grid4[1, 4] <- angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 270,
+    container = grid4
+  )
 
   grid4[2, 1] <- glabel(text = "Justification (v/h):", container = grid4)
-  grid4[2, 2] <- vjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0.5,
-                                          container = grid4)
+  grid4[2, 2] <- vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = grid4
+  )
 
-  grid4[2, 3] <- hjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0,
-                                          container = grid4)
+  grid4[2, 3] <- hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0,
+    container = grid4
+  )
 
 
 
@@ -394,7 +434,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
       # Plotting data and regression for AT6.
       if (what == "AT6") {
-
         if (val_titles) {
           mainTitle <- val_title
           xTitle <- val_xtitle
@@ -422,33 +461,36 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
           # Add regression line.
           gp <- gp + stat_smooth(aes_string(x = "Amount", y = "Height"),
-                                 method = "lm", se = TRUE, n = npoints,
-                                 fullrange = TRUE, level = 1 - alpha * 2)
-
-          } else {
+            method = "lm", se = TRUE, n = npoints,
+            fullrange = TRUE, level = 1 - alpha * 2
+          )
+        } else {
 
           # Add weighted regression line.
           gp <- gp + stat_smooth(aes_string(x = "Amount", y = "Height", weight = "Weight"),
-                                 method = "lm", se = TRUE, n = npoints,
-                                 fullrange = TRUE, level = 1 - alpha * 2)
-
+            method = "lm", se = TRUE, n = npoints,
+            fullrange = TRUE, level = 1 - alpha * 2
+          )
         }
 
         # Addthreshold line.
-        gp <- gp + geom_abline(intercept = atinterc,
-                               slope = 0, linetype = "dotted")
+        gp <- gp + geom_abline(
+          intercept = atinterc,
+          slope = 0, linetype = "dotted"
+        )
 
         # Set x-axis to extend regression line.
         gp <- gp + xlim(0, max(.gData$Amount))
-
       }
 
       # Apply theme.
       gp <- gp + eval(parse(text = val_theme))
 
       # Plot settings.
-      gp <- gp + geom_point(shape = val_shape, alpha = val_alpha,
-                            position = position_jitter(height = 0, width = val_jitter))
+      gp <- gp + geom_point(
+        shape = val_shape, alpha = val_alpha,
+        position = position_jitter(height = 0, width = val_jitter)
+      )
 
       # Restrict y axis.
       if (!is.na(val_ymin) && !is.na(val_ymax)) {
@@ -470,10 +512,12 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       }
 
       # Titles.
-      gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                hjust = val_hjust,
-                                                vjust = val_vjust,
-                                                size = val_size))
+      gp <- gp + theme(axis.text.x = element_text(
+        angle = val_angle,
+        hjust = val_hjust,
+        vjust = val_vjust,
+        size = val_size
+      ))
       gp <- gp + labs(title = paste(mainTitle, "\n", subTitle))
       gp <- gp + xlab(xTitle)
       gp <- gp + ylab(yTitle)
@@ -506,15 +550,13 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
       # Store in global variable.
       .gPlot <<- gp
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
@@ -599,14 +641,12 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotAT_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotAT_gui_title", value = svalue(title_edt), envir = env)
       assign(x = ".strvalidator_plotAT_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
@@ -625,7 +665,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       assign(x = ".strvalidator_plotAT_gui_xlabel_justh", value = svalue(hjust_spb), envir = env)
       assign(x = ".strvalidator_plotAT_gui_xlabel_justv", value = svalue(vjust_spb), envir = env)
       assign(x = ".strvalidator_plotAT_gui_theme", value = svalue(f1_theme_drp), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotAT_gui_savegui", envir = env, inherits = FALSE)) {
@@ -691,7 +730,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -702,5 +740,4 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

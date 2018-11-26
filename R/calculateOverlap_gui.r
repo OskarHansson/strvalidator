@@ -46,7 +46,6 @@
 #' @seealso \code{\link{calculateOverlap}}
 
 calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -64,14 +63,15 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -86,23 +86,25 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
     # Open help page for function.
     print(help("calculateOverlap_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Select kits",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Select kits",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
-  kit_checkbox_group <- gcheckboxgroup(items = getKit(),
-                                       checked = FALSE,
-                                       horizontal = FALSE,
-                                       container = f0)
+  kit_checkbox_group <- gcheckboxgroup(
+    items = getKit(),
+    checked = FALSE,
+    horizontal = FALSE,
+    container = f0
+  )
 
   addHandlerChanged(kit_checkbox_group, handler = function(h, ...) {
-
     val_kits <- svalue(kit_checkbox_group)
 
     if (debug) {
@@ -118,10 +120,8 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
       # Get selected kits.
       for (k in seq(along = val_kits)) {
-
         kit <- getKit(val_kits[k], what = "Color")
         kitColor[k] <- list(unique(kit$Color))
-
       }
 
       # Check if identical.
@@ -172,20 +172,23 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
         # Suggest a save name.
         svalue(f5_save_edt) <- paste(paste(val_kits, collapse = "_"),
-                                     "_overlap", sep = "")
-
+          "_overlap",
+          sep = ""
+        )
       } else {
         # Show error message.
-        message <- paste("Kit color set must be identical for multiple kit comparison!\n",
-                         "Analyse one kit at a time!")
-        gmessage(message, title = "Error",
-                 icon = "error", parent = w)
+        message <- paste(
+          "Kit color set must be identical for multiple kit comparison!\n",
+          "Analyse one kit at a time!"
+        )
+        gmessage(message,
+          title = "Error",
+          icon = "error", parent = w
+        )
 
         # Disable analyse button.
         enabled(analyse_btn) <- FALSE
-
       }
-
     } else {
 
       # Disable all.
@@ -200,40 +203,50 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
       # Empty save name.
       svalue(f5_save_edt) <- ""
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_db_chk <- gcheckbox(text = "Multiply overlap with allele frequency",
-                         checked = TRUE,
-                         container = f1)
+  f1_db_chk <- gcheckbox(
+    text = "Multiply overlap with allele frequency",
+    checked = TRUE,
+    container = f1
+  )
 
   f1_db_names <- getDb()
 
-  f1_db_drp <- gcombobox(items = f1_db_names, fill = FALSE, selected = 1,
-                         container = f1, ellipsize = "none")
+  f1_db_drp <- gcombobox(
+    items = f1_db_names, fill = FALSE, selected = 1,
+    container = f1, ellipsize = "none"
+  )
 
-  f1_virtual_chk <- gcheckbox(text = "Include virtual bins in analysis",
-                              checked = TRUE,
-                              container = f1)
+  f1_virtual_chk <- gcheckbox(
+    text = "Include virtual bins in analysis",
+    checked = TRUE,
+    container = f1
+  )
 
-  f1_msg <- paste("NB! Not all vendors specify which alleles are virtual",
-                  "in the bins file.\n",
-                  "This can be done manually in the kit.txt file.")
+  f1_msg <- paste(
+    "NB! Not all vendors specify which alleles are virtual",
+    "in the bins file.\n",
+    "This can be done manually in the kit.txt file."
+  )
   glabel(text = f1_msg, anchor = c(-1, 0), container = f1)
 
 
-  f1_penalty_chk <- gcheckbox(text = "Apply spectral channel penalty",
-                            checked = TRUE,
-                            container = f1)
+  f1_penalty_chk <- gcheckbox(
+    text = "Apply spectral channel penalty",
+    checked = TRUE,
+    container = f1
+  )
 
   # HANDLERS ------------------------------------------------------------------
 
@@ -257,29 +270,45 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Penalty",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Penalty",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  glabel(text = "Define penalty by the distance between dye channels  (1st neighbor to 5th neighbor)",
-               container = f2)
+  glabel(
+    text = "Define penalty by the distance between dye channels  (1st neighbor to 5th neighbor)",
+    container = f2
+  )
 
-  f2g1 <- ggroup(horizontal = TRUE,
-               spacing = 5,
-               container = f2)
+  f2g1 <- ggroup(
+    horizontal = TRUE,
+    spacing = 5,
+    container = f2
+  )
 
   # Penalty vector elements.
-  f2_penalty1_spb <- gspinbutton(from = 0, to = 1, by = 0.001,
-                                 value = 1, container = f2g1)
-  f2_penalty2_spb <- gspinbutton(from = 0, to = 1, by = 0.001,
-                                 value = 0.1, container = f2g1)
-  f2_penalty3_spb <- gspinbutton(from = 0, to = 1, by = 0.001,
-                                 value = 0.01, container = f2g1)
-  f2_penalty4_spb <- gspinbutton(from = 0, to = 1, by = 0.001,
-                                 value = 0, container = f2g1)
-  f2_penalty5_spb <- gspinbutton(from = 0, to = 1, by = 0.001,
-                                 value = 0, container = f2g1)
+  f2_penalty1_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.001,
+    value = 1, container = f2g1
+  )
+  f2_penalty2_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.001,
+    value = 0.1, container = f2g1
+  )
+  f2_penalty3_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.001,
+    value = 0.01, container = f2g1
+  )
+  f2_penalty4_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.001,
+    value = 0, container = f2g1
+  )
+  f2_penalty5_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.001,
+    value = 0, container = f2g1
+  )
 
   # Disable all until a kit is selected.
   enabled(f2_penalty1_spb) <- FALSE
@@ -290,10 +319,12 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -306,7 +337,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   analyse_btn <- gbutton(text = "Analyse", container = gv)
 
   addHandlerClicked(analyse_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
     val_kits <- svalue(kit_checkbox_group)
     val_kitData <- data.frame() # Filled further down.
@@ -374,11 +404,13 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       }
 
       # Analyse bins overlap.
-      datanew <- calculateOverlap(data = val_kitData,
-                              db = val_db,
-                              penalty = val_penalty,
-                              virtual = val_virtual,
-                             debug = debug)
+      datanew <- calculateOverlap(
+        data = val_kitData,
+        db = val_db,
+        penalty = val_penalty,
+        virtual = val_virtual,
+        debug = debug
+      )
 
       # Create key-value pairs to log.
       keys <- list("data", "db", "penalty", "virtual")
@@ -386,9 +418,11 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       values <- list(val_kits, val_db_selected, val_penalty, val_virtual)
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateOverlap_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateOverlap_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
 
 
@@ -402,17 +436,15 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "At least one kit has to be selected."
 
-      gmessage(message, title = "Not kit selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Not kit selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
 
@@ -474,14 +506,12 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateOverlap_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateOverlap_gui_db", value = svalue(f1_db_chk), envir = env)
       assign(x = ".strvalidator_calculateOverlap_gui_db_name", value = svalue(f1_db_drp), envir = env)
@@ -492,7 +522,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       assign(x = ".strvalidator_calculateOverlap_gui_kit_p3", value = svalue(f2_penalty3_spb), envir = env)
       assign(x = ".strvalidator_calculateOverlap_gui_kit_p4", value = svalue(f2_penalty4_spb), envir = env)
       assign(x = ".strvalidator_calculateOverlap_gui_kit_p5", value = svalue(f2_penalty5_spb), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateOverlap_gui_savegui", envir = env, inherits = FALSE)) {
@@ -535,7 +564,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -546,5 +574,4 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

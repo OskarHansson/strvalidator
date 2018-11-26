@@ -38,7 +38,6 @@
 #'
 
 removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
@@ -54,41 +53,49 @@ removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
   # Check dataset.
   if (!"Sample.Name" %in% names(data)) {
     stop("'data' must contain a column 'Sample.Name'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!"Marker" %in% names(data)) {
     stop("'data' must contain a column 'Marker'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!"Allele" %in% names(data)) {
     stop("'data' must contain a column 'Allele'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!"File.Name" %in% names(data)) {
     stop("'data' must contain a column 'File.Name'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check reference dataset.
   if (!"Sample.Name" %in% names(spike)) {
     stop("'spike' must contain a column 'Sample.Name'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Marker" %in% names(spike)) {
     stop("'spike' must contain a column 'Marker'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
   if (!"Allele" %in% names(spike)) {
     stop("'spike' must contain a column 'Allele'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check logical flags.
@@ -100,19 +107,15 @@ removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
 
   # Check if character data.
   if (!is.character(data$Allele)) {
-
     message("'Allele' must be character. 'data' converted")
 
     data$Allele <- as.character(data$Allele)
-
   }
 
   if (!is.character(spike$Allele)) {
-
     message("'Allele' must be character. 'spike' converted")
 
     spike$Allele <- as.character(spike$Allele)
-
   }
 
   # FILTER --------------------------------------------------------------------
@@ -176,11 +179,8 @@ removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
         } else {
           data[selection, ]$Remove <- TRUE
         }
-
       } # End size loop.
-
     } # End marker loop.
-
   } # End id loop.
 
   # Remove flagged data.
@@ -204,5 +204,4 @@ removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
   }
 
   return(res)
-
 }

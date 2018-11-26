@@ -60,7 +60,6 @@
 #' set2 <- columns(data = set2, operator = "&", fixed = "1234", target = "Batch")
 columns <- function(data, col1 = NA, col2 = NA, operator = "&",
                     fixed = NA, target = NA, start = 1, stop = 1, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -86,36 +85,42 @@ columns <- function(data, col1 = NA, col2 = NA, operator = "&",
 
   if (class(data) != "data.frame") {
     stop("'data' must be of type data.frame",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.na(col1)) {
     if (!col1 %in% names(data)) {
       stop("'col1' must be a column in 'data'",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
   }
 
   if (!is.na(col2)) {
     if (!col2 %in% names(data)) {
       stop("'col2' must be a column in 'data'",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
   }
 
   if (!operator %in% c("&", "+", "-", "*", "/", "substr")) {
     stop("The following operators are supported: &, +, -, *, /, and substr",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(start)) {
     stop("'start' must be a numeric integer",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(stop)) {
     stop("'stop' must be a numeric integer",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Prepare -------------------------------------------------------------------
@@ -152,40 +157,34 @@ columns <- function(data, col1 = NA, col2 = NA, operator = "&",
 
     # Concatenate values.
     valueNew <- paste(value1, value2, sep = "")
-
   } else if (operator == "+") {
 
     # Add values.
     value1 <- as.numeric(value1)
     value2 <- as.numeric(value2)
     valueNew <- value1 + value2
-
   } else if (operator == "*") {
 
     # Multiply values.
     value1 <- as.numeric(value1)
     value2 <- as.numeric(value2)
     valueNew <- value1 * value2
-
   } else if (operator == "-") {
 
     # Substract values.
     value1 <- as.numeric(value1)
     value2 <- as.numeric(value2)
     valueNew <- value1 - value2
-
   } else if (operator == "/") {
 
     # Divide values.
     value1 <- as.numeric(value1)
     value2 <- as.numeric(value2)
     valueNew <- value1 / value2
-
   } else if (operator == "substr") {
 
     # Extract a substring from values.
     valueNew <- substr(x = as.character(value1), start = start, stop = stop)
-
   }
 
   # Add new values to data frame.
@@ -200,5 +199,4 @@ columns <- function(data, col1 = NA, col2 = NA, operator = "&",
 
   # Return result.
   return(data)
-
 }

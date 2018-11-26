@@ -40,7 +40,6 @@
 #' addOrder(data = set2, kit = "SGMPlus")
 addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
                      debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -63,28 +62,22 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
 
     # Check if overwrite.
     if (overwrite) {
-
       message("Column 'Order' will be overwritten!")
       ok <- TRUE
 
       # Remove and re-add column (will add column to the right).
       data$Order <- NULL
       data$Order <- as.numeric(NA)
-
     } else {
-
       message("A column 'Order' already exist! Data returned unchanged.")
       message("Remove 'Order' or use option overwrite=TRUE to update.")
       ok <- FALSE
-
     }
-
   } else {
 
     # Add column.
     data$Order <- as.numeric(NA)
     ok <- TRUE
-
   }
 
   if (ok) {
@@ -104,19 +97,15 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
 
     # Loop over all markers.
     for (m in seq(along = marker)) {
-
       if (ignore.case) {
 
         # Add order by marker.
         data$Order[toupper(data$Marker) == toupper(marker[m])] <- m
-
       } else {
 
         # Add new column and colors per marker.
         data$Order[data$Marker == marker[m]] <- m
-
       }
-
     }
 
     # Add attributes to result.
@@ -124,7 +113,6 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
 
     # Update audit trail.
     data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
-
   }
 
   if (debug) {
@@ -133,5 +121,4 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
   }
 
   return(data)
-
 }

@@ -43,7 +43,6 @@
 #' @seealso \code{\link{calculateOL}}
 
 calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -61,14 +60,15 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -83,23 +83,25 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
     # Open help page for function.
     print(help("calculateOL_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Select kits",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Select kits",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
-  kit_checkbox_group <- gcheckboxgroup(items = getKit(),
-                                       checked = FALSE,
-                                       horizontal = FALSE,
-                                       container = f0)
+  kit_checkbox_group <- gcheckboxgroup(
+    items = getKit(),
+    checked = FALSE,
+    horizontal = FALSE,
+    container = f0
+  )
 
   addHandlerChanged(kit_checkbox_group, handler = function(h, ...) {
-
     val_kits <- svalue(kit_checkbox_group)
 
     if (debug) {
@@ -115,8 +117,9 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
       # Suggest a save name.
       svalue(f5_save_edt) <- paste(paste(val_kits, collapse = "_"),
-                                   "_OL", sep = "")
-
+        "_OL",
+        sep = ""
+      )
     } else {
 
       # Disable analyse button.
@@ -124,45 +127,57 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
       # Empty save name.
       svalue(f5_save_edt) <- ""
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  glabel(text = "Select allele frequency database:",
-         anchor = c(-1, 0), container = f1)
+  glabel(
+    text = "Select allele frequency database:",
+    anchor = c(-1, 0), container = f1
+  )
 
   f1_db_names <- getDb()
 
-  f1_db_drp <- gcombobox(items = f1_db_names, fill = FALSE,
-                         selected = 1, container = f1, ellipsize = "none")
+  f1_db_drp <- gcombobox(
+    items = f1_db_names, fill = FALSE,
+    selected = 1, container = f1, ellipsize = "none"
+  )
 
-  f1_virtual_chk <- gcheckbox(text = "Include virtual bins in analysis",
-                              checked = TRUE,
-                              container = f1)
+  f1_virtual_chk <- gcheckbox(
+    text = "Include virtual bins in analysis",
+    checked = TRUE,
+    container = f1
+  )
 
-  f1_msg <- paste("NB! Not all vendors specify which alleles are virtual",
-                  "in the bins file.\n",
-                  "This can be done manually in the kit.txt file.")
+  f1_msg <- paste(
+    "NB! Not all vendors specify which alleles are virtual",
+    "in the bins file.\n",
+    "This can be done manually in the kit.txt file."
+  )
   glabel(text = f1_msg, anchor = c(-1, 0), container = f1)
 
-  f1_limit_chk <- gcheckbox(text = "Limit small frequencies to 5/2N",
-                              checked = TRUE,
-                              container = f1)
+  f1_limit_chk <- gcheckbox(
+    text = "Limit small frequencies to 5/2N",
+    checked = TRUE,
+    container = f1
+  )
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -175,7 +190,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   analyse_btn <- gbutton(text = "Analyse", container = gv)
 
   addHandlerClicked(analyse_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
     val_kits <- svalue(kit_checkbox_group)
     val_kitData <- data.frame() # Filled further down.
@@ -211,11 +225,13 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       }
 
       # Analyse bins overlap.
-      datanew <- calculateOL(kit = val_kitData,
-                             db = val_db,
-                             virtual = val_virtual,
-                             limit = val_limit,
-                             debug = debug)
+      datanew <- calculateOL(
+        kit = val_kitData,
+        db = val_db,
+        virtual = val_virtual,
+        limit = val_limit,
+        debug = debug
+      )
 
       # Create key-value pairs to log.
       keys <- list("kit", "db", "virtual", "limit")
@@ -223,9 +239,11 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       values <- list(val_kits, val_db_selected, val_virtual, val_limit)
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateOL_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateOL_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -237,17 +255,15 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "At least one kit has to be selected."
 
-      gmessage(message, title = "Not kit selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Not kit selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
 
@@ -291,19 +307,16 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateOL_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateOL_gui_db_name", value = svalue(f1_db_drp), envir = env)
       assign(x = ".strvalidator_calculateOL_gui_virtual", value = svalue(f1_virtual_chk), envir = env)
       assign(x = ".strvalidator_calculateOL_gui_limit", value = svalue(f1_limit_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateOL_gui_savegui", envir = env, inherits = FALSE)) {
@@ -327,7 +340,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -338,5 +350,4 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

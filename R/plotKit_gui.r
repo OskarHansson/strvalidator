@@ -60,15 +60,16 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -83,89 +84,113 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Open help page for function.
     print(help("plotKit_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Select kits",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Select kits",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
-  kit_checkbox_group <- gcheckboxgroup(items = getKit(),
-                                       checked = FALSE,
-                                       horizontal = FALSE,
-                                       container = f0)
+  kit_checkbox_group <- gcheckboxgroup(
+    items = getKit(),
+    checked = FALSE,
+    horizontal = FALSE,
+    container = f0
+  )
 
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
   f1g1 <- glayout(container = f1, spacing = 1)
 
   f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- title_edt <- gedit(text = "Marker size range",
-                                   width = 40,
-                                   container = f1g1)
+  f1g1[1, 2] <- title_edt <- gedit(
+    text = "Marker size range",
+    width = 40,
+    container = f1g1
+  )
   f1g1[1, 3] <- glabel(text = "Size:", container = f1g1)
-  f1g1[1, 4] <- title_size_edt <- gedit(text = "20",
-                                   width = 4,
-                                   container = f1g1)
+  f1g1[1, 4] <- title_size_edt <- gedit(
+    text = "20",
+    width = 4,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- x_title_edt <- gedit(text = "Size (bp)",
-                                     container = f1g1)
+  f1g1[2, 2] <- x_title_edt <- gedit(
+    text = "Size (bp)",
+    container = f1g1
+  )
 
   f1g1[2, 3] <- glabel(text = "Size:", container = f1g1)
-  f1g1[2, 4] <- x_title_size_edt <- gedit(text = "10",
-                                        width = 4,
-                                        container = f1g1)
+  f1g1[2, 4] <- x_title_size_edt <- gedit(
+    text = "10",
+    width = 4,
+    container = f1g1
+  )
 
   f1g2 <- glayout(container = f1, spacing = 1)
 
   f1g2[1, 1] <- glabel(text = "Kit name size:", container = f1g2)
-  f1g2[1, 2] <- kit_size_edt <- gedit(text = "4",
-                                         width = 4,
-                                         container = f1g2)
+  f1g2[1, 2] <- kit_size_edt <- gedit(
+    text = "4",
+    width = 4,
+    container = f1g2
+  )
 
   f1g2[2, 1] <- glabel(text = "Inter kit spacing:", container = f1g2)
-  f1g2[2, 2] <- kit_spacing_spb <- gspinbutton(from = 1, to = 10, by = 1,
-                                                value = 2,
-                                                container = f1g2)
+  f1g2[2, 2] <- kit_spacing_spb <- gspinbutton(
+    from = 1, to = 10, by = 1,
+    value = 2,
+    container = f1g2
+  )
 
   f1g2[3, 1] <- glabel(text = "Marker name size:", container = f1g2)
-  f1g2[3, 2] <- marker_size_edt <- gedit(text = "3",
-                                          width = 4,
-                                          container = f1g2)
+  f1g2[3, 2] <- marker_size_edt <- gedit(
+    text = "3",
+    width = 4,
+    container = f1g2
+  )
 
   f1g2[4, 1] <- glabel(text = "Marker height:", container = f1g2)
-  f1g2[4, 2] <- marker_hight_spb <- gspinbutton(from = 0.1, to = 0.5, by = 0.1,
-                                                value = 0.5,
-                                                container = f1g2)
+  f1g2[4, 2] <- marker_hight_spb <- gspinbutton(
+    from = 0.1, to = 0.5, by = 0.1,
+    value = 0.5,
+    container = f1g2
+  )
 
   f1g2[5, 1] <- glabel(text = "Marker range alpha:", container = f1g2)
-  f1g2[5, 2] <- marker_alpha_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                                value = 1,
-                                                container = f1g2)
+  f1g2[5, 2] <- marker_alpha_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 1,
+    container = f1g2
+  )
 
 
   # FRAME 7 ###################################################################
 
-  f7 <- gframe(text = "Plot kit",
-               horizontal = FALSE,
-               container = gv)
+  f7 <- gframe(
+    text = "Plot kit",
+    horizontal = FALSE,
+    container = gv
+  )
 
   grid7 <- glayout(container = f7)
 
   grid7[1, 1] <- plot_btn <- gbutton(text = "Plot", container = grid7)
 
   addHandlerClicked(plot_btn, handler = function(h, ...) {
-
     val_name <- svalue(plot_btn)
     val_kits <- svalue(kit_checkbox_group)
 
@@ -188,15 +213,16 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     svalue(plot_btn) <- "Plot"
     unblockHandlers(plot_btn)
     enabled(plot_btn) <- TRUE
-
   })
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -207,7 +233,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -217,24 +242,25 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
   # FUNCTIONS #################################################################
@@ -309,7 +335,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         kitTitle$X <- 50
         kitTitle$Y <- min(kit$Ymin) - val_markerheight
         kitName <- rbind(kitName, kitTitle)
-
       }
 
       # Get plot fill colors as strings.
@@ -318,15 +343,19 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       # Create plot.
       gp <- ggplot()
-      gp <- gp + geom_rect(data = kitData,
-                           mapping = aes_string(xmin = "Marker.Min", xmax = "Marker.Max", ymin = "Ymin", ymax = "Ymax", fill = "Color"),
-                           color = "black", alpha = val_markeralpha)
+      gp <- gp + geom_rect(
+        data = kitData,
+        mapping = aes_string(xmin = "Marker.Min", xmax = "Marker.Max", ymin = "Ymin", ymax = "Ymax", fill = "Color"),
+        color = "black", alpha = val_markeralpha
+      )
       # Add marker names.
       gp <- gp + geom_text(data = kitData, aes_string(x = "Xtxt", y = "Ytxt", label = "Marker"), size = val_markernamesize)
 
-      gp <- gp + geom_text(data = kitName, aes_string(x = "X", y = "Y", label = "Name"),
-                           size = val_kitnamesize,
-                           hjust = 0, vjust = 0)
+      gp <- gp + geom_text(
+        data = kitName, aes_string(x = "X", y = "Y", label = "Name"),
+        size = val_kitnamesize,
+        hjust = 0, vjust = 0
+      )
 
 
       # Map fill colors.
@@ -339,17 +368,23 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       gp <- gp + theme(legend.position = "none")
 
       # Remove grid.
-      gp <- gp + theme(panel.grid.major = element_blank(),
-                       panel.grid.minor = element_blank())
+      gp <- gp + theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+      )
 
       # Remove y axis.
-      gp <- gp + theme(axis.text.y = element_blank(),
-                       axis.title.y = element_blank(),
-                       axis.ticks.y = element_blank())
+      gp <- gp + theme(
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank()
+      )
 
       # Add titles.
-      gp <- gp + labs(title = val_title,
-                      x = val_xtitle)
+      gp <- gp + labs(
+        title = val_title,
+        x = val_xtitle
+      )
       gp <- gp + theme(plot.title = element_text(size = val_titlesize))
       gp <- gp + theme(axis.title.x = element_text(size = val_xtitlesize))
 
@@ -359,15 +394,13 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       # Store in global variable.
       .gPlot <<- gp
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
@@ -428,14 +461,12 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_plotKit_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotKit_gui_title", value = svalue(title_edt), envir = env)
       assign(x = ".strvalidator_plotKit_gui_title_size", value = svalue(title_size_edt), envir = env)
@@ -446,7 +477,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       assign(x = ".strvalidator_plotKit_gui_marker_size", value = svalue(marker_size_edt), envir = env)
       assign(x = ".strvalidator_plotKit_gui_marker_hight", value = svalue(marker_hight_spb), envir = env)
       assign(x = ".strvalidator_plotKit_gui_marker_alpha", value = svalue(marker_alpha_spb), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotKit_gui_savegui", envir = env, inherits = FALSE)) {
@@ -489,7 +519,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -500,5 +529,4 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

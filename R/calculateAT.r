@@ -100,7 +100,6 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
                         mask.ils = TRUE, range.ils = 10,
                         k = 3, rank.t = 0.99, alpha = 0.01,
                         ignore.case = TRUE, word = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -163,21 +162,23 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   # Check if slim format.
   if (sum(grepl("Allele", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (sum(grepl("Height", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (sum(grepl("Data.Point", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.null(ref)) {
-
     if (is.null(ref$Sample.Name)) {
       stop("'ref' must contain a column 'Sample.Name'")
     }
@@ -193,75 +194,88 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     # Check if slim format.
     if (sum(grepl("Allele", names(ref))) > 1) {
       stop("'ref' must be in 'slim' format",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
-
   }
 
   # Check parameters.
   if (!is.logical(mask.height)) {
     stop("'mask.height' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(height)) {
     stop("'height' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(mask.sample)) {
     stop("'mask.sample' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(per.dye)) {
     stop("'per.dye' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(range.sample)) {
     stop("'range.sample' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(mask.ils)) {
     stop("'mask.ils' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(range.ils)) {
     stop("'range.ils' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(k)) {
     stop("'k' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(rank.t)) {
     stop("'rank.t' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(alpha)) {
     stop("'alpha' must be numeric",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(ignore.case)) {
     stop("'ignore.case' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(word)) {
     stop("'word' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(debug)) {
     stop("'debug' must be logical",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Prepare -------------------------------------------------------------------
@@ -269,11 +283,12 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   if (!all(c("Masked", "Dye") %in% names(data))) {
     # Mask data for AT calculation
     # (need to be separate function to enable control plots in GUI).
-    data <- maskAT(data = data, ref = ref, mask.height = mask.height, height = height,
-                    mask.sample = mask.sample, per.dye = per.dye, range.sample = range.sample,
-                    mask.ils = mask.ils, range.ils = range.ils,
-                    ignore.case = ignore.case, word = word, debug = debug)
-
+    data <- maskAT(
+      data = data, ref = ref, mask.height = mask.height, height = height,
+      mask.sample = mask.sample, per.dye = per.dye, range.sample = range.sample,
+      mask.ils = mask.ils, range.ils = range.ils,
+      ignore.case = ignore.case, word = word, debug = debug
+    )
   }
 
   # Get all dyes.
@@ -296,18 +311,15 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
   # Check ILS dye.
   if (length(dyeILS) == 0) {
-
     message("No ILS dye found!")
     message("Identified dyes: ", paste(dyes, collapse = ", "))
 
     # Strip masked data.
     dt <- data[data$Masked == FALSE, ]
-
   } else {
 
     # Strip masked data, and ILS channel.
     dt <- data[data$Masked == FALSE & data$Dye != dyeILS, ]
-
   }
 
   # Convert to data.table for performance.
@@ -316,35 +328,44 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   # Analyse1 ------------------------------------------------------------------
 
   # Calculate for sample per dye.
-  at.sample.dye <- dt[, list(Dye.Mean = mean(Height, na.rm = TRUE),
-                             Dye.Sd = sd(Height, na.rm = TRUE),
-                             Dye.Mean.ln = mean(log(Height), na.rm = TRUE),
-                             Dye.Sd.ln = sd(log(Height), na.rm = TRUE),
-                             Dye.Peaks = sum(Masked == FALSE),
-                             Dye.AT2 = rankThreshold(Height, rank.t)),
-                      by = list(Sample.File.Name, Dye)]
+  at.sample.dye <- dt[, list(
+    Dye.Mean = mean(Height, na.rm = TRUE),
+    Dye.Sd = sd(Height, na.rm = TRUE),
+    Dye.Mean.ln = mean(log(Height), na.rm = TRUE),
+    Dye.Sd.ln = sd(log(Height), na.rm = TRUE),
+    Dye.Peaks = sum(Masked == FALSE),
+    Dye.AT2 = rankThreshold(Height, rank.t)
+  ),
+  by = list(Sample.File.Name, Dye)
+  ]
 
   # Extract AT2 and remove from dataset to get final row order correct.
   at.sample.dye.AT2 <- at.sample.dye$Dye.AT2
   at.sample.dye$Dye.AT2 <- NULL
 
   # Calculate globally for each dye.
-  at.dye <- dt[, list(Mean = mean(Height, na.rm = TRUE),
-                      Sd = sd(Height, na.rm = TRUE),
-                      Mean.ln = mean(log(Height), na.rm = TRUE),
-                      Sd.ln = sd(log(Height), na.rm = TRUE),
-                      Peaks = sum(Masked == FALSE),
-                      AT2 = rankThreshold(Height, rank.t)),
-               by = list(Dye)]
+  at.dye <- dt[, list(
+    Mean = mean(Height, na.rm = TRUE),
+    Sd = sd(Height, na.rm = TRUE),
+    Mean.ln = mean(log(Height), na.rm = TRUE),
+    Sd.ln = sd(log(Height), na.rm = TRUE),
+    Peaks = sum(Masked == FALSE),
+    AT2 = rankThreshold(Height, rank.t)
+  ),
+  by = list(Dye)
+  ]
 
   # Calculate for sample.
-  at.sample <- dt[, list(Mean = mean(Height, na.rm = TRUE),
-                         Sd = sd(Height, na.rm = TRUE),
-                         Mean.ln = mean(log(Height), na.rm = TRUE),
-                         Sd.ln = sd(log(Height), na.rm = TRUE),
-                         Peaks = sum(Masked == FALSE),
-                         AT2 = rankThreshold(Height, rank.t)),
-                  by = list(Sample.File.Name)]
+  at.sample <- dt[, list(
+    Mean = mean(Height, na.rm = TRUE),
+    Sd = sd(Height, na.rm = TRUE),
+    Mean.ln = mean(log(Height), na.rm = TRUE),
+    Sd.ln = sd(log(Height), na.rm = TRUE),
+    Peaks = sum(Masked == FALSE),
+    AT2 = rankThreshold(Height, rank.t)
+  ),
+  by = list(Sample.File.Name)
+  ]
 
   # Extract AT2 and remove from dataset to get final row order correct.
   at.sample.AT2 <- at.sample$AT2
@@ -358,12 +379,14 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   at.sample.dye$Sample.Peaks <- rep(at.sample$Peaks, each = length(dyesKit))
 
   # Calculate globally for all data.
-  at.global <- dt[, list(Mean = mean(Height, na.rm = TRUE),
-                         Sd = sd(Height, na.rm = TRUE),
-                         Peaks = sum(Masked == FALSE),
-                         Mean.ln = mean(log(Height), na.rm = TRUE),
-                         Sd.ln = sd(log(Height), na.rm = TRUE),
-                         AT2 = rankThreshold(Height, rank.t))]
+  at.global <- dt[, list(
+    Mean = mean(Height, na.rm = TRUE),
+    Sd = sd(Height, na.rm = TRUE),
+    Peaks = sum(Masked == FALSE),
+    Mean.ln = mean(log(Height), na.rm = TRUE),
+    Sd.ln = sd(log(Height), na.rm = TRUE),
+    AT2 = rankThreshold(Height, rank.t)
+  )]
 
   # Join the result.
   at.sample.dye$Global.Mean <- rep(at.global$Mean, nrow(at.sample.dye))
@@ -443,8 +466,10 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   at.sample.dye$Total.Samples <- nSamples
 
   # Update audit trail.
-  at.sample.dye <- auditTrail(obj = at.sample.dye, f.call = match.call(),
-                              package = "strvalidator")
+  at.sample.dye <- auditTrail(
+    obj = at.sample.dye, f.call = match.call(),
+    package = "strvalidator"
+  )
 
   # Convert back to data.frame.
   res1 <- data.frame(at.sample.dye)
@@ -453,13 +478,17 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   # Analyse2 ------------------------------------------------------------------
 
   # Calculate complete percentile rank list.
-  at.rank <- data.frame(Height = unique(sort(dt$Height)),
-                        Rank = unique(percentileRank(sort(dt$Height))),
-                        Observations = as.numeric(table(dt$Height)))
+  at.rank <- data.frame(
+    Height = unique(sort(dt$Height)),
+    Rank = unique(percentileRank(sort(dt$Height))),
+    Observations = as.numeric(table(dt$Height))
+  )
 
   # Update audit trail.
-  at.rank <- auditTrail(obj = at.rank, f.call = match.call(),
-                        package = "strvalidator")
+  at.rank <- auditTrail(
+    obj = at.rank, f.call = match.call(),
+    package = "strvalidator"
+  )
 
   # Convert back to data frame.
   res2 <- data.frame(at.rank)
@@ -468,8 +497,10 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   # Masked data ---------------------------------------------------------------
 
   # Update audit trail.
-  data <- auditTrail(obj = data, f.call = match.call(),
-                     package = "strvalidator")
+  data <- auditTrail(
+    obj = data, f.call = match.call(),
+    package = "strvalidator"
+  )
 
   # Convert back to data.frame.
   res3 <- data.frame(data)
@@ -505,5 +536,4 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
   # Return result.
   return(res)
-
 }

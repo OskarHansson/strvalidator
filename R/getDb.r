@@ -37,7 +37,6 @@
 #' # Show available allele frequency databases.
 #' getDb()
 getDb <- function(db.name.or.index = NULL, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -59,47 +58,41 @@ getDb <- function(db.name.or.index = NULL, debug = FALSE) {
   # Create complete file path.
   filePath <- paste(packagePath, subFolder, fileName, sep = .separator)
 
-  .db <- read.delim(file = filePath, header = TRUE, sep = "\t", quote = "\"",
-                         dec = ".", fill = TRUE, stringsAsFactors = FALSE)
+  .db <- read.delim(
+    file = filePath, header = TRUE, sep = "\t", quote = "\"",
+    dec = ".", fill = TRUE, stringsAsFactors = FALSE
+  )
 
   # Available databases. Must match else if construct.
   databases <- unique(.db$Database)
 
-        # Check if NULL
-        if (is.null(db.name.or.index)) {
+  # Check if NULL
+  if (is.null(db.name.or.index)) {
+    db <- databases
 
-                db <- databases
+    # String provided.
+  } else {
 
-        # String provided.
-        } else {
+    # Check if number or string.
+    if (is.numeric(db.name.or.index)) {
 
-                # Check if number or string.
-                if (is.numeric(db.name.or.index)) {
+      # Set index to number.
+      index <- db.name.or.index
+    } else {
 
-                        # Set index to number.
-                        index <- db.name.or.index
+      # Find matching database index (case insensitive)
+      index <- match(toupper(db.name.or.index), toupper(databases))
+    }
 
-                } else {
+    # No matching database.
+    if (is.na(index)) {
+      db <- NA
 
-                        # Find matching database index (case insensitive)
-                        index <- match(toupper(db.name.or.index), toupper(databases))
-
-                }
-
-                # No matching database.
-                if (is.na(index)) {
-
-                        db <- NA
-
-                # Assign matching database information.
-                } else {
-
-                  db <- .db[.db$Database == databases[index], ]
-
-                }
-
-        }
+      # Assign matching database information.
+    } else {
+      db <- .db[.db$Database == databases[index], ]
+    }
+  }
 
   return(db)
-
 }

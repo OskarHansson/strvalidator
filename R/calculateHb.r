@@ -51,9 +51,8 @@
 #' # Calculate average balances.
 #' calculateHb(data = set2, ref = ref2)
 calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = FALSE,
-                             ignore.case = TRUE, exact = FALSE, word = FALSE,
-                             debug = FALSE) {
-
+                        ignore.case = TRUE, exact = FALSE, word = FALSE,
+                        debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -117,10 +116,8 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
 
   # Check if 'kit' is provided.
   if (is.null(kit)) {
-
     message("'kit' not provided. Attempting auto detection.")
     kit <- detectKit(data = data, debug = debug)
-
   }
 
   # Check data type of Height.
@@ -132,39 +129,39 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
 
   # Filter dataset.
   message("Extracting known alleles from dataset...")
-  data <- filterProfile(data = data, ref = ref,
-                        add.missing.loci = FALSE, keep.na = FALSE, invert = FALSE,
-                        ignore.case = ignore.case, exact = exact, word = word,
-                        sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug)
+  data <- filterProfile(
+    data = data, ref = ref,
+    add.missing.loci = FALSE, keep.na = FALSE, invert = FALSE,
+    ignore.case = ignore.case, exact = exact, word = word,
+    sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug
+  )
 
   # Remove sex markers and quality sensors from reference dataset.
   if (sex.rm || qs.rm) {
-
     message("Removing gender markers and/or quality sensors from reference dataset...")
-    ref <- filterProfile(data = ref, filter.allele = FALSE,
-                         sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
-                         debug = debug)
-
+    ref <- filterProfile(
+      data = ref, filter.allele = FALSE,
+      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+      debug = debug
+    )
   }
 
   # Add Size
   if (!"Size" %in% names(data)) {
-
     if (hb != 3) {
-
       message("Estimating size of alleles...")
 
       # Get repeat size and offset.
       kitSize <- getKit(kit = kit, what = "Repeat")
 
       # Add estimated size to data.
-      data <- addSize(data = data, kit = kitSize, bins = FALSE,
-                      ignore.case = ignore.case, debug = debug)
-
+      data <- addSize(
+        data = data, kit = kitSize, bins = FALSE,
+        ignore.case = ignore.case, debug = debug
+      )
     } else {
       # Size not needed.
     }
-
   }
 
   # Analyse -------------------------------------------------------------------
@@ -191,55 +188,56 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
 
     # New dataset with only heterozygotes.
     message("Extracting heterozygotes...")
-    DT2 <- DT[Peaks == 2,
-              list(HMW = Height[Size == max(Size)],
-                   LMW = Height[Size == min(Size)]),
-              list(Sample.Name, Marker, Dye, Delta)]
+    DT2 <- DT[
+      Peaks == 2,
+      list(
+        HMW = Height[Size == max(Size)],
+        LMW = Height[Size == min(Size)]
+      ),
+      list(Sample.Name, Marker, Dye, Delta)
+    ]
 
     # Calculate mean peak height and heterozygote balance.
     message("Calculating mean peak height: MPH=(HMW+LMW)/2...")
     DT2[, MPH := (HMW + LMW) / 2, by = list(Sample.Name, Marker)]
     message("Calculating heterozygote balance: Hb=HMW/LMW...")
     DT2[, Hb := HMW / LMW, by = list(Sample.Name, Marker)]
-
-
   } else if (hb == 2) {
     # Low molecular weight (short) allele / High molecular weight (long) allele
 
     # New dataset with only heterozygotes.
     message("Extracting heterozygotes...")
-    DT2 <- DT[Peaks == 2,
-              list(LMW = Height[Size == min(Size)],
-                   HMW = Height[Size == max(Size)]),
-              list(Sample.Name, Marker, Dye, Delta)]
+    DT2 <- DT[
+      Peaks == 2,
+      list(
+        LMW = Height[Size == min(Size)],
+        HMW = Height[Size == max(Size)]
+      ),
+      list(Sample.Name, Marker, Dye, Delta)
+    ]
 
     # Calculate heterozygote balance and mean peak height.
     message("Calculating mean peak height: MPH=(LMW+HMW)/2...")
     DT2[, MPH := (LMW + HMW) / 2, by = list(Sample.Name, Marker)]
     message("Calculating heterozygote balance: Hb=LMW/HMW...")
     DT2[, Hb := LMW / HMW, by = list(Sample.Name, Marker)]
-
-
-
   } else if (hb == 3) {
     # Small peak (low) / Large peak (high)
 
     # New dataset with only heterozygotes.
     message("Extracting heterozygotes...")
     DT2 <- DT[Peaks == 2,
-              list(Small = min(Height), Large = max(Height)),
-              by = list(Sample.Name, Marker, Dye, Delta)]
+      list(Small = min(Height), Large = max(Height)),
+      by = list(Sample.Name, Marker, Dye, Delta)
+    ]
 
     # Calculate mean peak height and heterozygote balance.
     message("Calculating mean peak height: MPH=(Small+Large)/2...")
     DT2[, MPH := (Small + Large) / 2, by = list(Sample.Name, Marker)]
     message("Calculating heterozygote balance: Hb=Small/Large...")
     DT2[, Hb := Small / Large, by = list(Sample.Name, Marker)]
-
   } else {
-
     stop("Illegal method choice.", call. = TRUE)
-
   }
 
   # Convert back to data.frame to avoid any backward compatibility issues.
@@ -257,5 +255,4 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
 
   # Return result.
   return(res)
-
 }

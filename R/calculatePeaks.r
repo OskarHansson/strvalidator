@@ -61,7 +61,6 @@
 
 calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
                            ol.rm = FALSE, by.marker = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
@@ -166,17 +165,13 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
   DT <- data.table::data.table(data)
 
   if (by.marker) {
-
     message("Counting number of peaks by marker...")
 
     DT[, Peaks := sum(!is.na(Height), na.rm = TRUE), by = list(Id, Marker)]
-
   } else {
-
     message("Counting number of peaks by sample...")
 
     DT[, Peaks := sum(!is.na(Height), na.rm = TRUE), by = list(Id)]
-
   }
 
   # Add group.
@@ -184,34 +179,27 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
 
   # Check if at least one bin.
   if (length(labels) >= 1) {
-
     message("Adding first group label...")
 
     DT[Peaks <= bins[1]]$Group <- labels[1]
-
   }
 
   # Check if at least two bins.
   if (length(labels) >= 2) {
-
     message("Adding last group label...")
 
     DT[Peaks >= bins[length(bins)]]$Group <- labels[length(labels)]
-
   }
 
   # Check if more than two bins.
   if (length(labels) > 2) {
-
     message("Adding other group labels...")
 
     for (g in seq(from = 2, to = length(bins))) {
 
       # Add group label.
       DT[Peaks > bins[g - 1] & Peaks <= bins[g]]$Group <- labels[g]
-
     }
-
   }
 
   # Convert to data.frame.
@@ -231,5 +219,4 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
 
   # Return result.
   return(data)
-
 }

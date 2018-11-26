@@ -40,9 +40,9 @@
 #' @examples
 #' # A simple function with audit trail logging.
 #' myFunction <- function(x, a, b = 5) {
-#' x <- x + a + b
-#' x <- auditTrail(obj = x, f.call = match.call(), package = "strvalidator")
-#' return(x)
+#'   x <- x + a + b
+#'   x <- auditTrail(obj = x, f.call = match.call(), package = "strvalidator")
+#'   return(x)
 #' }
 #' # Run the function.
 #' myData <- myFunction(x = 10, a = 2)
@@ -56,7 +56,6 @@
 auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NULL,
                        arguments = TRUE, exact = TRUE, remove = FALSE, package = NULL,
                        rversion = TRUE) {
-
   if (length(key) != length(value)) {
     stop("Arguments 'key' and 'value' must have equal length.")
   }
@@ -70,7 +69,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
     attr(x = obj, which = which) <- NULL
 
     message("Audit trail removed.")
-
   } else {
 
     # Get call information.
@@ -83,7 +81,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
       # Uncomment the next two lines to log each argument-parameter separately.
       # key <- c(key, names(info)[-1])
       # value <- c(value, as.character(info)[-1])
-
     }
 
     # Initiate new log entry.
@@ -100,12 +97,12 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Check if attribute exists.
     if (is.null(audit.trail)) {
-
       log.entry <- paste0(prefix, "audit trail created.")
       new.entries <- paste(new.entries, log.entry, sep = "")
-      message("Audit trail created for ", substitute(obj),
-              " in function ", label, ".")
-
+      message(
+        "Audit trail created for ", substitute(obj),
+        " in function ", label, "."
+      )
     }
 
     # Check option to store R version.
@@ -114,7 +111,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
       # Add current R version.
       log.entry <- paste0(prefix, R.version.string)
       new.entries <- paste(new.entries, log.entry, sep = "\n")
-
     }
 
     # Check option to store package version.
@@ -126,13 +122,11 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
       # Add current package version.
       log.entry <- paste0(prefix, package, "=", version)
       new.entries <- paste(new.entries, log.entry, sep = "\n")
-
     }
 
 
     # Check option to store function arguments.
     if (arguments) {
-
       if (!is.null(f.call)) {
 
         # Get function name.
@@ -157,15 +151,10 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
           # Add function arguments.
           log.entry <- paste0(prefix, "arguments=", arg.info)
           new.entries <- paste(new.entries, log.entry, sep = "\n")
-
         } else {
-
           warning("auditTrail could not find function ", fname)
-
         }
-
       }
-
     }
 
     # Check option to store the function call.
@@ -174,28 +163,26 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
       # Add function call.
       log.entry <- paste0(prefix, "call=", as.character(c(f.call)))
       new.entries <- paste(new.entries, log.entry, sep = "\n")
-
     }
 
     # Loop over key-value pairs.
     for (i in seq(along = key)) {
 
       # Add all key-value pairs.
-      log.entry <- paste0(prefix,
-                          paste0(key[[i]], collapse = ","),
-                          "=",
-                          paste0(value[[i]], collapse = ","))
+      log.entry <- paste0(
+        prefix,
+        paste0(key[[i]], collapse = ","),
+        "=",
+        paste0(value[[i]], collapse = ",")
+      )
 
       new.entries <- paste(new.entries, log.entry, sep = "\n")
-
     }
 
     # Add new entries to existing audit trail attribute.
     attr(x = obj, which = which) <- paste(audit.trail, new.entries, sep = "\n")
     message("Audit trail updated by function ", label, ".")
-
   }
 
   return(obj)
-
 }

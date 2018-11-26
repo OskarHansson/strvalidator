@@ -42,7 +42,6 @@
 #'
 
 addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("PARAMETERS:")
@@ -59,45 +58,48 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
   # Check dataset.
   if (!"Marker" %in% names(data)) {
     stop("'data' must contain a column 'Marker'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!"Allele" %in% names(data)) {
     stop("'data' must contain a column 'Allele'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check kit depending on 'bins'.
   if (bins) {
-
     if (!"Size" %in% names(kit)) {
       stop("'kit' must contain a column 'Size'",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
 
     if (!"Allele" %in% names(kit)) {
       stop("'kit' must contain a column 'Allele'",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
-
   } else {
-
     if (!"Offset" %in% names(kit)) {
       stop("'kit' must contain a column 'Offset'",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
 
     if (!"Repeat" %in% names(kit)) {
       stop("'kit' must contain a column 'Repeat'",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
-
   }
 
   # Check kit.
   if (!"Marker" %in% names(kit)) {
     stop("'kit' must contain a column 'Marker'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check if character data.
@@ -110,10 +112,8 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
 
   # Check for column 'Size'
   if ("Size" %in% names(data)) {
-
     message("'data' already contain a column 'Size'")
     message("Size will be overwritten!")
-
   }
 
   # Add a column 'Size'
@@ -137,7 +137,6 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
 
   # Loop over markers.
   for (m in seq(along = marker)) {
-
     if (debug) {
       print("Current marker:")
       print(marker[m])
@@ -147,12 +146,10 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
 
       # Select rows for current marker and ignore case in marker names.
       cMarker <- toupper(data$Marker) == toupper(marker[m])
-
     } else {
 
       # Select rows for current marker.
       cMarker <- data$Marker == marker[m]
-
     }
 
     # Get alleles for current marker.
@@ -178,7 +175,6 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
 
         # Get size from matching bins.
         size <- kit$Size[kit$Marker == marker[m] & kit$Allele == allele[a]]
-
       } else {
         # Calculate size from 'offset' and 'repeat'.
 
@@ -200,23 +196,18 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
         tmpOffset <- kit$Offset[kit$Marker == marker[m]]
         tmpRepeat <- kit$Repeat[kit$Marker == marker[m]]
         size <- tmpOffset + floor(alleleTmp) * tmpRepeat + (alleleTmp %% 1) * 10
-
       }
 
       # Store size for current allele in current marker.
       if (length(size) != 0) {
-
         data$Size[selection] <- size
-
       } else {
-
-        message(paste("Allele", allele[a],
-                      "for marker", marker[m], "not in kit definition file."))
-
+        message(paste(
+          "Allele", allele[a],
+          "for marker", marker[m], "not in kit definition file."
+        ))
       }
-
     }
-
   }
 
   if (debug) {
@@ -232,5 +223,4 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
   data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
 
   return(data)
-
 }

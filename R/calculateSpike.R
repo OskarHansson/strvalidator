@@ -85,7 +85,8 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
   # Check if slim format.
   if (sum(grepl("Size", names(data))) > 1) {
     stop("'data' must be in 'slim' format",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   # Check data type.
@@ -105,7 +106,6 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
     kit <- detectKit(data = DT, index = FALSE, debug = debug)
     kit <- kit[1]
     message(paste("Using kit:", kit))
-
   }
 
   # Getdye channels.
@@ -117,14 +117,12 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
     # Default to number of dyes minus one to allow for one unlabeled spike.
     threshold <- length(kitDyes) - 1
     message(paste("Using default spike threshold:", threshold))
-
   } else if (threshold > length(kitDyes)) {
 
     # Threshold cannot be larger than the number of dyes in the kit.
     threshold <- length(kitDyes) - 1
     message(paste("'threshold' cannot be larger than the number of dyes in the kit"))
     message(paste("Using default spike threshold:", threshold))
-
   }
 
   # Remove NA's.
@@ -152,10 +150,14 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
   col5 <- "Dyes"
 
   if (quick) {
-    message("Calculating spikes using the quick and dirty method based on ",
-            "rounded 'Size' and the package data.table.")
-    message("NB! This method may not catch all spikes since two peaks can ",
-            "be separated by rounding e.g. 200.5 and 200.6 -> 200 and 201.")
+    message(
+      "Calculating spikes using the quick and dirty method based on ",
+      "rounded 'Size' and the package data.table."
+    )
+    message(
+      "NB! This method may not catch all spikes since two peaks can ",
+      "be separated by rounding e.g. 200.5 and 200.6 -> 200 and 201."
+    )
 
     # Round to nearest base pair
     DT$Round <- tolerance * round(DT$Size / tolerance)
@@ -168,10 +170,11 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
 
     # Extract samples with at least 'threshold' peaks of the same size.
     res <- res[get(col3) >= threshold, ]
-
   } else {
-    message("Calculating spikes using the accurate method based on calculating ",
-            "the distance between each peak in a sample.")
+    message(
+      "Calculating spikes using the accurate method based on calculating ",
+      "the distance between each peak in a sample."
+    )
 
     # Add column for number of peaks within accepted distance.
     DT$Peaks <- as.numeric(NA)
@@ -202,7 +205,6 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
 
       # Check if result.
       if (length(currentDist) != 0) {
-
         currentMat <- as.matrix(currentDist)
 
         # Get length of current matrix.
@@ -218,15 +220,12 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
           closePeaks <- which(currentMat[r, ] <= tolerance)
           currentDist[r] <- paste(closePeaks, collapse = ",")
           currentPeaks[r] <- length(closePeaks)
-
         }
 
         # Write result.
         DT[selected, ]$Dist <- currentDist
         DT[selected, ]$Peaks <- currentPeaks
-
       }
-
     }
 
     # Count number of dyes of same size per sample.
@@ -234,7 +233,6 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
 
     # Extract samples with at least 'threshold' peaks of the same size.
     res <- res["Dist" >= threshold, ]
-
   }
 
   # Remove 'false' spikes (multiple peaks in same dye).
@@ -257,6 +255,4 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
   }
 
   return(res)
-
-
 }

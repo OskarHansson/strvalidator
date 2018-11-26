@@ -37,7 +37,7 @@
 #' @seealso \code{link{calculateRatio}}, \code{link{checkSubset}}
 
 calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
-                                 debug = FALSE, parent = NULL) {
+                               debug = FALSE, parent = NULL) {
 
   # Global variables.
   .gData <- NULL
@@ -71,14 +71,15 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -93,7 +94,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Open help page for function.
     print(help("calculateRatio_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
@@ -102,10 +102,12 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 0")
   }
 
-  f0 <- gframe(text = "Datasets",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Datasets",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
@@ -115,22 +117,25 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
   dfs <- c(.datasetDropDefault, listObjects(env = env, obj.class = "data.frame"))
 
-  g0[1, 2] <- g0_data_drp <- gcombobox(items = dfs,
-                           selected = 1,
-                           editable = FALSE,
-                           container = g0,
-                           ellipsize = "none")
+  g0[1, 2] <- g0_data_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
   g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_data_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Height",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Height",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
@@ -138,8 +143,10 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       # get dataset.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
-      svalue(g0_data_samples_lbl) <- paste(length(unique(.gData$Sample.Name)),
-                                        "samples.")
+      svalue(g0_data_samples_lbl) <- paste(
+        length(unique(.gData$Sample.Name)),
+        "samples."
+      )
       # Update dropdown menues.
       f1_numerator_drp[, ] <- unique(c(.markerDropDefault, .gData$Marker))
       f1_denominator_drp[, ] <- unique(c(.markerDropDefault, .gData$Marker))
@@ -152,7 +159,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Suggest a name for the result.
       svalue(f4_save_edt) <- paste(val_obj, "_ratio", sep = "")
-
     } else {
 
       # Reset components.
@@ -171,9 +177,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f1_numerator_drp, index = TRUE) <- 1
       svalue(f1_denominator_drp, index = TRUE) <- 1
       svalue(f1_group_drp, index = TRUE) <- 1
-
     }
-
   })
 
   # Reference -----------------------------------------------------------------
@@ -181,32 +185,36 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   g0[2, 1] <- glabel(text = "Select reference dataset:", container = g0)
 
   # NB! dfs defined in previous section.
-  g0[2, 2] <- g0_ref_drp <- gcombobox(items = dfs,
-                                   selected = 1,
-                                   editable = FALSE,
-                                   container = g0,
-                                   ellipsize = "none")
+  g0[2, 2] <- g0_ref_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[2, 3] <- g0_ref_samples_lbl <- glabel(text = " 0 references", container = g0)
 
   addHandlerChanged(g0_ref_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_ref_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       slim = TRUE, slimcol = "Allele",
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      slim = TRUE, slimcol = "Allele",
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
       # Load or change components.
 
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
-      svalue(g0_ref_samples_lbl) <- paste(length(unique(.gRef$Sample.Name)),
-                                          "samples.")
-
+      svalue(g0_ref_samples_lbl) <- paste(
+        length(unique(.gRef$Sample.Name)),
+        "samples."
+      )
     } else {
 
       # Reset components.
@@ -214,7 +222,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       .gRefName <<- NULL
       svalue(g0_ref_drp, index = TRUE) <- 1
       svalue(g0_ref_samples_lbl) <- " 0 references"
-
     }
   })
 
@@ -235,32 +242,35 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     val_word <- svalue(f1_word_chk)
 
     if (!is.null(.gData) || !is.null(.gRef)) {
+      chksubset_w <- gwindow(
+        title = "Check subsetting",
+        visible = FALSE, name = title,
+        width = NULL, height = NULL, parent = w,
+        handler = NULL, action = NULL
+      )
 
-      chksubset_w <- gwindow(title = "Check subsetting",
-                             visible = FALSE, name = title,
-                             width = NULL, height = NULL, parent = w,
-                             handler = NULL, action = NULL)
+      chksubset_txt <- checkSubset(
+        data = val_data,
+        ref = val_ref,
+        console = FALSE,
+        ignore.case = val_ignore,
+        word = val_word
+      )
 
-      chksubset_txt <- checkSubset(data = val_data,
-                                   ref = val_ref,
-                                   console = FALSE,
-                                   ignore.case = val_ignore,
-                                   word = val_word)
-
-      gtext(text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
-             wrap = FALSE, container = chksubset_w)
+      gtext(
+        text = chksubset_txt, width = NULL, height = 300, font.attr = NULL,
+        wrap = FALSE, container = chksubset_w
+      )
 
       visible(chksubset_w) <- TRUE
-
     } else {
-
-      gmessage(msg = "Data frame is NULL!\n\n
+      gmessage(
+        msg = "Data frame is NULL!\n\n
                Make sure to select a dataset and a reference set",
-               title = "Error",
-               icon = "error")
-
+        title = "Error",
+        icon = "error"
+      )
     }
-
   })
 
   # FRAME 1 ###################################################################
@@ -269,41 +279,56 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 1")
   }
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 10,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 10,
+    container = gv
+  )
 
-  f1_ol_chk <- gcheckbox(text = "Remove off-ladder alleles", checked = TRUE,
-                         container = f1)
+  f1_ol_chk <- gcheckbox(
+    text = "Remove off-ladder alleles", checked = TRUE,
+    container = f1
+  )
 
-  f1_ignore_chk <- gcheckbox(text = "Ignore case", checked = TRUE,
-                         container = f1)
+  f1_ignore_chk <- gcheckbox(
+    text = "Ignore case", checked = TRUE,
+    container = f1
+  )
 
-  f1_word_chk <- gcheckbox(text = "Add word boundaries", checked = FALSE,
-                           container = f1)
+  f1_word_chk <- gcheckbox(
+    text = "Add word boundaries", checked = FALSE,
+    container = f1
+  )
 
-  f1_exact_chk <- gcheckbox(text = "Exact matching", checked = FALSE,
-                           container = f1)
+  f1_exact_chk <- gcheckbox(
+    text = "Exact matching", checked = FALSE,
+    container = f1
+  )
 
   f1g1 <- glayout(container = f1)
 
   f1g1[1, 1] <- glabel(text = "Select numerator markers:", container = f1g1)
-  f1g1[1, 2] <- f1_numerator_drp <- gcombobox(items = .markerDropDefault,
-                                             container = f1g1, ellipsize = "none")
+  f1g1[1, 2] <- f1_numerator_drp <- gcombobox(
+    items = .markerDropDefault,
+    container = f1g1, ellipsize = "none"
+  )
   f1g1[2, 1:2] <- f1_numerator_edt <- gedit(text = "", container = f1g1)
 
   f1g1[3, 1] <- glabel(text = "Select denominator markers:", container = f1g1)
-  f1g1[3, 2] <- f1_denominator_drp <- gcombobox(items = .markerDropDefault,
-                                               container = f1g1, ellipsize = "none")
+  f1g1[3, 2] <- f1_denominator_drp <- gcombobox(
+    items = .markerDropDefault,
+    container = f1g1, ellipsize = "none"
+  )
   f1g1[4, 1:2] <- f1_denominator_edt <- gedit(text = "", container = f1g1)
 
   f1g1[5, 1] <- glabel(text = "Group by column:", container = f1g1)
-  f1g1[5, 2] <- f1_group_drp <- gcombobox(items = .groupDropDefault,
-                                         container = f1g1, ellipsize = "none")
+  f1g1[5, 2] <- f1_group_drp <- gcombobox(
+    items = .groupDropDefault,
+    container = f1g1, ellipsize = "none"
+  )
 
   addHandlerChanged(f1_numerator_drp, handler = function(h, ...) {
-
     val_marker <- svalue(f1_numerator_drp)
     val_value <- svalue(f1_numerator_edt)
 
@@ -312,22 +337,15 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Add new value to selected.
         if (nchar(val_value) == 0) {
-
           svalue(f1_numerator_edt) <- val_marker
-
         } else {
-
           svalue(f1_numerator_edt) <- paste(val_value, val_marker, sep = ",")
-
         }
-
       }
     }
-
   })
 
   addHandlerChanged(f1_denominator_drp, handler = function(h, ...) {
-
     val_marker <- svalue(f1_denominator_drp)
     val_value <- svalue(f1_denominator_edt)
 
@@ -336,18 +354,12 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Add new value to selected.
         if (nchar(val_value) == 0) {
-
           svalue(f1_denominator_edt) <- val_marker
-
         } else {
-
           svalue(f1_denominator_edt) <- paste(val_value, val_marker, sep = ",")
-
         }
-
       }
     }
-
   })
 
 
@@ -357,10 +369,12 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 4")
   }
 
-  f4 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f4 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f4)
 
@@ -414,24 +428,16 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if data.
     if (!is.null(.gData)) {
-
       if (!nchar(val_numerator) > 0) {
-
         val_numerator <- NULL
-
       } else {
-
         val_numerator <- unlist(strsplit(val_numerator, split = ","))
       }
 
       if (!nchar(val_denominator) > 0) {
-
         val_denominator <- NULL
-
       } else {
-
         val_denominator <- unlist(strsplit(val_denominator, split = ","))
-
       }
 
       if (debug) {
@@ -452,26 +458,34 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateRatio(data = val_data, ref = val_ref,
-                                numerator = val_numerator,
-                                denominator = val_denominator,
-                                group = val_group, ol.rm = val_ol,
-                                ignore.case = val_ignore, word = val_word,
-                                exact = val_exact, debug = debug)
+      datanew <- calculateRatio(
+        data = val_data, ref = val_ref,
+        numerator = val_numerator,
+        denominator = val_denominator,
+        group = val_group, ol.rm = val_ol,
+        ignore.case = val_ignore, word = val_word,
+        exact = val_exact, debug = debug
+      )
 
       # Create key-value pairs to log.
-      keys <- list("data", "ref", "numerator",
-                   "denominator", "group", "ol", "ignore.case", "word",
-                   "exact")
+      keys <- list(
+        "data", "ref", "numerator",
+        "denominator", "group", "ol", "ignore.case", "word",
+        "exact"
+      )
 
-      values <- list(val_name_data, val_name_ref, val_numerator,
-                     val_denominator, val_group, val_ol, val_ignore, val_word,
-                     val_exact)
+      values <- list(
+        val_name_data, val_name_ref, val_numerator,
+        val_denominator, val_group, val_ol, val_ignore, val_word,
+        val_exact
+      )
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateRatio_gui", arguments = FALSE,
-                            package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateRatio_gui", arguments = FALSE,
+        package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -484,17 +498,15 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "A dataset and a reference dataset have to be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -545,21 +557,18 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateRatio_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateRatio_gui_numerator", value = svalue(f1_numerator_edt), envir = env)
       assign(x = ".strvalidator_calculateRatio_gui_denominator", value = svalue(f1_denominator_edt), envir = env)
       assign(x = ".strvalidator_calculateRatio_gui_word", value = svalue(f1_word_chk), envir = env)
       assign(x = ".strvalidator_calculateRatio_gui_ignore", value = svalue(f1_ignore_chk), envir = env)
       assign(x = ".strvalidator_calculateRatio_gui_exact", value = svalue(f1_exact_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateRatio_gui_savegui", envir = env, inherits = FALSE)) {
@@ -589,7 +598,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -600,5 +608,4 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

@@ -42,7 +42,7 @@
 #' @seealso \code{\link{calculateResultType}}
 
 calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
-                                 debug = FALSE, parent = NULL) {
+                                    debug = FALSE, parent = NULL) {
 
   # Global variables.
   .gData <- NULL
@@ -65,15 +65,16 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
   # Vertical main group.
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -88,15 +89,16 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Open help page for function.
     print(help("calculateResultType_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset and kit",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset and kit",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   g0 <- glayout(container = f0, spacing = 1)
 
@@ -104,33 +106,42 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
 
   g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
 
-  g0[1, 2] <- g0_dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = g0,
-                           ellipsize = "none")
+  g0[1, 2] <- g0_dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
   g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples", container = g0)
 
   g0[2, 1] <- glabel(text = " and the kit used:", container = g0)
 
-  g0[2, 2] <- f0_kit_drp <- gcombobox(items = getKit(),
-                                  selected = 1,
-                                  editable = FALSE,
-                                  container = g0,
-                                  ellipsize = "none")
+  g0[2, 2] <- f0_kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none"
+  )
 
 
   addHandlerChanged(g0_dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(g0_dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -145,7 +156,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       kitIndex <- detectKit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(f0_kit_drp, index = TRUE) <- kitIndex
-
     } else {
 
       # Reset components.
@@ -154,53 +164,67 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(g0_dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
       svalue(f2_save_edt) <- ""
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_add_chk <- gcheckbox(text = "Add missing markers (can be slow on large datasets)",
-                          checked = TRUE, container = f1)
+  f1_add_chk <- gcheckbox(
+    text = "Add missing markers (can be slow on large datasets)",
+    checked = TRUE, container = f1
+  )
 
   glabel(text = "NB! All markers must be present in each sample for correct results.")
 
-  glabel(text = "Peak height threshold (RFU):",
-         container = f1, anchor = c(-1, 0))
+  glabel(
+    text = "Peak height threshold (RFU):",
+    container = f1, anchor = c(-1, 0)
+  )
 
   f1_rfu_edt <- gedit(text = "", width = 6, container = f1)
 
-  glabel(text = "Define subtypes of mixtures by number of markers with >2 detected peaks:",
-                      container = f1, anchor = c(-1, 0))
+  glabel(
+    text = "Define subtypes of mixtures by number of markers with >2 detected peaks:",
+    container = f1, anchor = c(-1, 0)
+  )
 
   f1_mix_edt <- gedit(text = "", width = 6, container = f1)
 
-  glabel(text = "Define subtypes of partial profiles by number of detected peaks:",
-         container = f1, anchor = c(-1, 0))
+  glabel(
+    text = "Define subtypes of partial profiles by number of detected peaks:",
+    container = f1, anchor = c(-1, 0)
+  )
 
   f1_par_edt <- gedit(text = "", width = 6, container = f1)
 
-  glabel(text = "Define subtypes of partial profiles by kit:",
-         container = f1, anchor = c(-1, 0))
+  glabel(
+    text = "Define subtypes of partial profiles by kit:",
+    container = f1, anchor = c(-1, 0)
+  )
 
-  f1_kit_drp <- gcombobox(items = c("<Select kit>", getKit()),
-                          selected = 1,
-                          editable = FALSE,
-                          container = f1,
-                          ellipsize = "none")
+  f1_kit_drp <- gcombobox(
+    items = c("<Select kit>", getKit()),
+    selected = 1,
+    editable = FALSE,
+    container = f1,
+    ellipsize = "none"
+  )
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f2 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f2)
 
@@ -212,7 +236,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
   calculate_btn <- gbutton(text = "Calculate", container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     val_data <- .gData
     val_name_data <- .gDataName
     val_threshold <- as.numeric(svalue(f1_rfu_edt))
@@ -306,30 +329,38 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateResultType(data = val_data,
-                                     kit = val_kit,
-                                     add.missing.marker = val_add,
-                                     threshold = val_threshold,
-                                     mixture.limits = val_mix,
-                                     partial.limits = val_par,
-                                     subset.name = val_subkit,
-                                     marker.subset = val_marker,
-                                     debug = debug)
+      datanew <- calculateResultType(
+        data = val_data,
+        kit = val_kit,
+        add.missing.marker = val_add,
+        threshold = val_threshold,
+        mixture.limits = val_mix,
+        partial.limits = val_par,
+        subset.name = val_subkit,
+        marker.subset = val_marker,
+        debug = debug
+      )
 
       # Add attributes to result.
       attr(datanew, which = "kit") <- val_kit
 
       # Create key-value pairs to log.
-      keys <- list("data", "add.missing.marker", "threshold", "mixture.limits",
-                   "partial.limits", "subset.name", "marker.subset")
+      keys <- list(
+        "data", "add.missing.marker", "threshold", "mixture.limits",
+        "partial.limits", "subset.name", "marker.subset"
+      )
 
-      values <- list(val_name_data, val_add, val_threshold, val_mix,
-                     val_par, val_subkit, val_marker)
+      values <- list(
+        val_name_data, val_add, val_threshold, val_mix,
+        val_par, val_subkit, val_marker
+      )
 
       # Update audit trail.
-      datanew <- auditTrail(obj = datanew, key = keys, value = values,
-                            label = "calculateResultType_gui",
-                            arguments = FALSE, package = "strvalidator")
+      datanew <- auditTrail(
+        obj = datanew, key = keys, value = values,
+        label = "calculateResultType_gui",
+        arguments = FALSE, package = "strvalidator"
+      )
 
       # Save data.
       saveObject(name = val_name, object = datanew, parent = w, env = env)
@@ -340,17 +371,15 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Close GUI.
       dispose(w)
-
     } else {
-
       message <- "A dataset and a reference dataset have to be selected."
 
-      gmessage(message, title = "Datasets not selected",
-               icon = "error",
-               parent = w)
-
+      gmessage(message,
+        title = "Datasets not selected",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
   # INTERNAL FUNCTIONS ########################################################
@@ -399,21 +428,18 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_calculateResultType_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateResultType_gui_rfu", value = svalue(f1_rfu_edt), envir = env)
       assign(x = ".strvalidator_calculateResultType_gui_mix", value = svalue(f1_mix_edt), envir = env)
       assign(x = ".strvalidator_calculateResultType_gui_par", value = svalue(f1_par_edt), envir = env)
       assign(x = ".strvalidator_calculateResultType_gui_kit", value = svalue(f1_kit_drp), envir = env)
       assign(x = ".strvalidator_calculateResultType_gui_add", value = svalue(f1_add_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateResultType_gui_savegui", envir = env, inherits = FALSE)) {
@@ -443,7 +469,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -454,5 +479,4 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }

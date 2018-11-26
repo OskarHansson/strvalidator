@@ -34,7 +34,6 @@
 #' @importFrom utils str
 
 heightToPeak <- function(data, width = 1, keep.na = TRUE, debug = FALSE) {
-
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
@@ -51,27 +50,32 @@ heightToPeak <- function(data, width = 1, keep.na = TRUE, debug = FALSE) {
 
   if (!is.data.frame(data)) {
     stop("'data' must be a data frame.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!any(grepl("Height", names(data)))) {
     stop("Data frame 'data' must contain a column 'Height'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!any(grepl("Size", names(data)))) {
     stop("Data frame 'data' must contain a column 'Size'.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.numeric(width)) {
     stop("Peak width 'width' must be a numeric value.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if (!is.logical(keep.na)) {
     stop("'keep.na' must be a logical value.",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
   if ("Size" %in% names(data)) {
@@ -97,7 +101,6 @@ heightToPeak <- function(data, width = 1, keep.na = TRUE, debug = FALSE) {
   nb <- length(data$Size)
 
   if (nb > 0) {
-
     vsize <- vector(mode = "numeric", length = nb * 3)
     vsize[seq(1, nb * 3, 3)] <- data$Size - width / 2
     vsize[seq(2, nb * 3, 3)] <- data$Size
@@ -115,7 +118,6 @@ heightToPeak <- function(data, width = 1, keep.na = TRUE, debug = FALSE) {
     # Add new data.
     data$Size <- vsize
     data$Height <- vheight
-
   }
 
   # Update audit trail.
@@ -130,5 +132,4 @@ heightToPeak <- function(data, width = 1, keep.na = TRUE, debug = FALSE) {
   }
 
   return(data)
-
 }

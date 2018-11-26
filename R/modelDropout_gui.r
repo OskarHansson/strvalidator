@@ -164,14 +164,15 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     if (!is.null(parent)) {
       focus(parent)
     }
-
   })
 
-  gv <- ggroup(horizontal = FALSE,
-               spacing = 8,
-               use.scrollwindow = FALSE,
-               container = w,
-               expand = TRUE)
+  gv <- ggroup(
+    horizontal = FALSE,
+    spacing = 8,
+    use.scrollwindow = FALSE,
+    container = w,
+    expand = TRUE
+  )
 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
@@ -186,42 +187,52 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     # Open help page for function.
     print(help("modelDropout_gui", help_type = "html"))
-
   })
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f0 <- gframe(
+    text = "Dataset",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Select dataset:", container = f0)
 
-  dataset_drp <- gcombobox(items = c("<Select dataset>",
-                                   listObjects(env = env,
-                                               obj.class = "data.frame")),
-                           selected = 1,
-                           editable = FALSE,
-                           container = f0,
-                           ellipsize = "none")
+  dataset_drp <- gcombobox(
+    items = c(
+      "<Select dataset>",
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   glabel(text = " and the kit used:", container = f0)
 
-  kit_drp <- gcombobox(items = getKit(),
-                       selected = 1,
-                       editable = FALSE,
-                       container = f0,
-                       ellipsize = "none")
+  kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = f0,
+    ellipsize = "none"
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
-
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Height")
-    ok <- checkDataset(name = val_obj, reqcol = requiredCol,
-                       env = env, parent = w, debug = debug)
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
 
     if (ok) {
 
@@ -232,7 +243,8 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       if ("Heterozygous" %in% names(.gData)) {
         # Make sure numeric, then find range for heterozygotes.
         ph_range <- range(as.numeric(.gData$Height[.gData$Heterozygous == 1 & .gData$Dropout != 2]),
-                          na.rm = TRUE)
+          na.rm = TRUE
+        )
       } else {
         # Make sure numeric, then find min and max.
         ph_range <- range(as.numeric(.gData$Height), na.rm = TRUE)
@@ -250,26 +262,27 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
       # Check additional required columns and enable/disable plot button.
       .checkColumns()
-
     } else {
 
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
-
     }
-
   })
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options",
-               horizontal = FALSE,
-               spacing = 5,
-               container = gv)
+  f1 <- gframe(
+    text = "Options",
+    horizontal = FALSE,
+    spacing = 5,
+    container = gv
+  )
 
-  f1_titles_chk <- gcheckbox(text = "Override automatic titles.",
-                             checked = FALSE, container = f1)
+  f1_titles_chk <- gcheckbox(
+    text = "Override automatic titles.",
+    checked = FALSE, container = f1
+  )
 
 
   addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
@@ -286,19 +299,25 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # Legends
   f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- f1_title_edt <- gedit(text = "",
-                                     width = 60,
-                                     container = f1g1)
+  f1g1[1, 2] <- f1_title_edt <- gedit(
+    text = "",
+    width = 60,
+    container = f1g1
+  )
 
   f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- f1_x_title_edt <- gedit(text = "",
-                                       width = 60,
-                                       container = f1g1)
+  f1g1[2, 2] <- f1_x_title_edt <- gedit(
+    text = "",
+    width = 60,
+    container = f1g1
+  )
 
   f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- f1_y_title_edt <- gedit(text = "",
-                                       width = 60,
-                                       container = f1g1)
+  f1g1[3, 2] <- f1_y_title_edt <- gedit(
+    text = "",
+    width = 60,
+    container = f1g1
+  )
 
 
   # Group 2.
@@ -313,63 +332,77 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # Other options.
   log_model <- gcheckbox(text = "Log (Height)", checked = FALSE, container = f1)
 
-  f1_sex_chk <- gcheckbox(text = "Exclude sex markers",
-                               checked = TRUE,
-                               container = f1)
+  f1_sex_chk <- gcheckbox(
+    text = "Exclude sex markers",
+    checked = TRUE,
+    container = f1
+  )
 
-  glabel(text = paste("NB! Currently, the recommended methods are the first three options.\n",
-                    "The fourth alternative has not been evaluated by the DNA Commission.",
-                    "\nSee 'Details' in 'Help' for more information.", sep = ""),
-         anchor = c(-1, 0), container = f1)
+  glabel(
+    text = paste("NB! Currently, the recommended methods are the first three options.\n",
+      "The fourth alternative has not been evaluated by the DNA Commission.",
+      "\nSee 'Details' in 'Help' for more information.",
+      sep = ""
+    ),
+    anchor = c(-1, 0), container = f1
+  )
 
   glabel(text = "Model drop-out from scoring method:", anchor = c(-1, 0), container = f1)
-  f1_column_opt <- gradio(items = c("Relative a random allele and peak height of surviving allele",
-                                  "Relative the low molecular weight allele and peak height of surviving allele",
-                                  "Relative the high molecular weight allele and peak height of surviving allele",
-                                  "Relative the locus and peak height of surviving allele, or mean locus peak height"),
-                          selected = 2,
-                          horizontal = FALSE,
-                          container = f1)
+  f1_column_opt <- gradio(
+    items = c(
+      "Relative a random allele and peak height of surviving allele",
+      "Relative the low molecular weight allele and peak height of surviving allele",
+      "Relative the high molecular weight allele and peak height of surviving allele",
+      "Relative the locus and peak height of surviving allele, or mean locus peak height"
+    ),
+    selected = 2,
+    horizontal = FALSE,
+    container = f1
+  )
 
-  f1_h_chk <- gcheckbox(text = "Use average peak height 'H' instead of allele/locus peak hight",
-                                 checked = FALSE,
-                                 container = f1)
+  f1_h_chk <- gcheckbox(
+    text = "Use average peak height 'H' instead of allele/locus peak hight",
+    checked = FALSE,
+    container = f1
+  )
 
-  f1_printmodel_chk <- gcheckbox(text = "Print model",
-                                 checked = FALSE,
-                                 container = f1)
+  f1_printmodel_chk <- gcheckbox(
+    text = "Print model",
+    checked = FALSE,
+    container = f1
+  )
 
-  f1_dump_chk <- gcheckbox(text = "Dump model input", checked = FALSE,
-                           container = f1)
+  f1_dump_chk <- gcheckbox(
+    text = "Dump model input", checked = FALSE,
+    container = f1
+  )
 
   addHandlerChanged(f1_column_opt, handler = function(h, ...) {
-
     .checkColumns()
-
   })
 
   addHandlerChanged(f1_h_chk, handler = function(h, ...) {
-
     .checkColumns()
-
   })
 
   # FRAME 7 ###################################################################
 
-  f7 <- gframe(text = "Plot drop-out data",
-               horizontal = FALSE,
-               container = gv)
+  f7 <- gframe(
+    text = "Plot drop-out data",
+    horizontal = FALSE,
+    container = gv
+  )
 
   f7g1 <- glayout(container = f7)
 
-  f7g1[1, 1] <- f7_plot_drop_btn <- gbutton(text = "Plot predicted drop-out probability",
-                                           container = f7g1)
+  f7g1[1, 1] <- f7_plot_drop_btn <- gbutton(
+    text = "Plot predicted drop-out probability",
+    container = f7g1
+  )
 
 
   addHandlerChanged(f7_plot_drop_btn, handler = function(h, ...) {
-
     if (!is.null(.gData)) {
-
       enabled(f7_plot_drop_btn) <- FALSE
 
       blockHandlers(f7_plot_drop_btn)
@@ -383,24 +416,26 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       unblockHandlers(f7_plot_drop_btn)
 
       enabled(f7_plot_drop_btn) <- TRUE
-
     } else {
       message <- paste("Select a drop-out dataset")
 
-      gmessage(message, title = "Could not find dataset",
-               icon = "error",
-               parent = w)
+      gmessage(message,
+        title = "Could not find dataset",
+        icon = "error",
+        parent = w
+      )
     }
-
   })
 
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as",
-               horizontal = TRUE,
-               spacing = 5,
-               container = gv)
+  f5 <- gframe(
+    text = "Save as",
+    horizontal = TRUE,
+    spacing = 5,
+    container = gv
+  )
 
   glabel(text = "Name for result:", container = f5)
 
@@ -411,7 +446,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
 
   addHandlerChanged(f5_save_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Change button.
@@ -421,24 +455,25 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(name = val_name, object = .gPlot,
-               parent = w, env = env, debug = debug)
+    saveObject(
+      name = val_name, object = .gPlot,
+      parent = w, env = env, debug = debug
+    )
 
     # Change button.
     blockHandlers(f5_save_btn)
     svalue(f5_save_btn) <- "Object saved"
     unblockHandlers(f5_save_btn)
-
   })
 
   addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-
     val_name <- svalue(f5_save_edt)
 
     # Save data.
-    ggsave_gui(ggplot = .gPlot, name = val_name,
-               parent = w, env = env, savegui = savegui, debug = debug)
-
+    ggsave_gui(
+      ggplot = .gPlot, name = val_name,
+      parent = w, env = env, savegui = savegui, debug = debug
+    )
   })
 
 
@@ -446,9 +481,11 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # EXPAND 1 ##################################################################
 
-  e1 <- gexpandgroup(text = "Drop-out prediction and threshold",
-                     horizontal = FALSE,
-                     container = f1)
+  e1 <- gexpandgroup(
+    text = "Drop-out prediction and threshold",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e1) <- FALSE
@@ -461,13 +498,17 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # Group 2.
   e1f1g2 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f1)
 
-  e1f1_threshold_chk <- gcheckbox(text = "Mark threshold @ P(D):",
-                                               checked = TRUE,
-                                               container = e1f1g2)
+  e1f1_threshold_chk <- gcheckbox(
+    text = "Mark threshold @ P(D):",
+    checked = TRUE,
+    container = e1f1g2
+  )
 
-  e1f1_risk_spn <- gspinbutton(from = 0, to = 1, by = 0.001,
-                                                 value = 0.01,
-                                                 container = e1f1g2)
+  e1f1_risk_spn <- gspinbutton(
+    from = 0, to = 1, by = 0.001,
+    value = 0.01,
+    container = e1f1g2
+  )
 
   # Group 3.
   e1f1g3 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f1)
@@ -476,24 +517,30 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   glabel("Line type", container = e1f1g3)
 
-  e1f1_t_linetype_drp <- gcombobox(items = e1_linetypes,
-                                   selected = 2,
-                                   container = e1f1g3,
-                                   ellipsize = "none")
+  e1f1_t_linetype_drp <- gcombobox(
+    items = e1_linetypes,
+    selected = 2,
+    container = e1f1g3,
+    ellipsize = "none"
+  )
 
   glabel("Line colour", container = e1f1g3)
 
-  e1f1_t_linecolor_drp <- gcombobox(items = palette(),
-                                selected = 2,
-                                container = e1f1g3,
-                                ellipsize = "none")
+  e1f1_t_linecolor_drp <- gcombobox(
+    items = palette(),
+    selected = 2,
+    container = e1f1g3,
+    ellipsize = "none"
+  )
 
   # Group 4.
   e1f1g4 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f1)
 
-  e1f1_print_chk <- gcheckbox(text = "Print threshold value",
-                                               checked = TRUE,
-                                               container = e1f1g4)
+  e1f1_print_chk <- gcheckbox(
+    text = "Print threshold value",
+    checked = TRUE,
+    container = e1f1g4
+  )
 
   # FRAME 2 -------------------------------------------------------------------
   # PREDICTION INTERVAL
@@ -506,41 +553,53 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   glabel(text = "Prediction interval:", container = e1f2g1)
 
-  e1f2_conf_spn <- gspinbutton(from = 0, to = 1, by = 0.001,
-                                                 value = 0.950,
-                                                 container = e1f2g1)
+  e1f2_conf_spn <- gspinbutton(
+    from = 0, to = 1, by = 0.001,
+    value = 0.950,
+    container = e1f2g1
+  )
 
   # Group 2.
   e1f2g2 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f2)
 
-  e1f2_print_interval_chk <- gcheckbox(text = "Print conservative T value",
-                                           checked = TRUE,
-                                           container = e1f2g2)
+  e1f2_print_interval_chk <- gcheckbox(
+    text = "Print conservative T value",
+    checked = TRUE,
+    container = e1f2g2
+  )
 
   # Group 3.
   e1f2g3 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f2)
 
-  e1f2_mark_interval_chk <- gcheckbox(text = "Draw prediction interval:",
-                                                checked = TRUE,
-                                                container = e1f2g3)
+  e1f2_mark_interval_chk <- gcheckbox(
+    text = "Draw prediction interval:",
+    checked = TRUE,
+    container = e1f2g3
+  )
 
   glabel("Alpha", container = e1f2g3)
 
-  e1f2_interval_spb <- gspinbutton(from = 0, to = 1, by = 0.01,
-                                                     value = 0.25,
-                                                     container = e1f2g3)
+  e1f2_interval_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.01,
+    value = 0.25,
+    container = e1f2g3
+  )
 
   glabel("Fill colour", container = e1f2g3)
-  e1f2_interval_drp <- gcombobox(items = palette(),
-                                 selected = 2,
-                                 container = e1f2g3,
-                                 ellipsize = "none")
+  e1f2_interval_drp <- gcombobox(
+    items = palette(),
+    selected = 2,
+    container = e1f2g3,
+    ellipsize = "none"
+  )
 
   # EXPAND 2 ##################################################################
 
-  e2 <- gexpandgroup(text = "Data points",
-                     horizontal = FALSE,
-                     container = f1)
+  e2 <- gexpandgroup(
+    text = "Data points",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e2) <- FALSE
@@ -549,18 +608,24 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   e2g1 <- glayout(container = e2f1)
 
-  e2g1[1, 1] <- e2g1_plotpoints_chk <- gcheckbox(text = "Plot data points",
-                                               checked = TRUE,
-                                               container = e2g1)
+  e2g1[1, 1] <- e2g1_plotpoints_chk <- gcheckbox(
+    text = "Plot data points",
+    checked = TRUE,
+    container = e2g1
+  )
   e2g1[1, 2] <- glabel(text = "Shape:", container = e2g1)
-  e2g1[1, 3] <- e2g1_shape_spb <- gspinbutton(from = 0, to = 25,
-                                         by = 1, value = 18,
-                                         container = e2g1)
+  e2g1[1, 3] <- e2g1_shape_spb <- gspinbutton(
+    from = 0, to = 25,
+    by = 1, value = 18,
+    container = e2g1
+  )
 
   e2g1[1, 4] <- glabel(text = "Alpha:", container = e2g1)
-  e2g1[1, 5] <- e2g1_alpha_spb <- gspinbutton(from = 0, to = 1,
-                                         by = 0.01, value = 0.60,
-                                         container = e2g1)
+  e2g1[1, 5] <- e2g1_alpha_spb <- gspinbutton(
+    from = 0, to = 1,
+    by = 0.01, value = 0.60,
+    container = e2g1
+  )
 
   e2g1[1, 6] <- glabel(text = "Jitter (h/v):", container = e2g1)
   e2g1[1, 7] <- e2g1_jitterh_edt <- gedit(text = "0", width = 4, container = e2g1)
@@ -568,17 +633,21 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # EXPAND 3 ##################################################################
 
-  e3 <- gexpandgroup(text = "Axes",
-                     horizontal = FALSE,
-                     container = f1)
+  e3 <- gexpandgroup(
+    text = "Axes",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e3) <- FALSE
 
   e3f1 <- gframe(text = "", horizontal = FALSE, container = e3)
 
-  glabel(text = "NB! Must provide both min and max value.",
-         anchor = c(-1, 0), container = e3f1)
+  glabel(
+    text = "NB! Must provide both min and max value.",
+    anchor = c(-1, 0), container = e3f1
+  )
 
   e3g1 <- glayout(container = e3f1, spacing = 1)
   e3g1[1, 1:2] <- glabel(text = "Limit Y axis (min-max)", container = e3g1)
@@ -591,9 +660,11 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # FRAME 4 ###################################################################
 
-  e4 <- gexpandgroup(text = "X labels",
-                     horizontal = FALSE,
-                     container = f1)
+  e4 <- gexpandgroup(
+    text = "X labels",
+    horizontal = FALSE,
+    container = f1
+  )
 
   # Start collapsed.
   visible(e4) <- FALSE
@@ -606,24 +677,29 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e4g1[1, 2] <- e4g1_size_edt <- gedit(text = "8", width = 4, container = e4g1)
 
   e4g1[1, 3] <- glabel(text = "Angle:", container = e4g1)
-  e4g1[1, 4] <- e4g1_angle_spb <- gspinbutton(from = 0, to = 360, by = 1,
-                                          value = 0,
-                                          container = e4g1)
+  e4g1[1, 4] <- e4g1_angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 0,
+    container = e4g1
+  )
 
   e4g1[2, 1] <- glabel(text = "Justification (v/h):", container = e4g1)
-  e4g1[2, 2] <- e4g1_vjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0.5,
-                                          container = e4g1)
+  e4g1[2, 2] <- e4g1_vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = e4g1
+  )
 
-  e4g1[2, 3] <- e4g1_hjust_spb <- gspinbutton(from = 0, to = 1, by = 0.1,
-                                          value = 0.5,
-                                          container = e4g1)
+  e4g1[2, 3] <- e4g1_hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = e4g1
+  )
 
 
   # FUNCTIONS #################################################################
 
   .plotDrop <- function() {
-
     logModel <- svalue(log_model)
 
     # Get values.
@@ -708,25 +784,17 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     # Get data for the selected analysis.
     if (val_column == 1) {
-
       obsData$Dep <- .gData$MethodX
       obsData$Exp <- .gData$Height
-
     } else if (val_column == 2) {
-
       obsData$Dep <- .gData$Method1
       obsData$Exp <- .gData$Height
-
     } else if (val_column == 3) {
-
       obsData$Dep <- .gData$Method2
       obsData$Exp <- .gData$Height
-
     } else if (val_column == 4) {
-
       obsData$Dep <- .gData$MethodL
       obsData$Exp <- .gData$MethodL.Ph
-
     }
 
     if (val_h) {
@@ -816,8 +884,10 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     # Dump model input data.
     if (val_dump) {
-      sel_col_names <- c("Sample.Name", "Marker", "Allele", "TPH", "H", "Peaks",
-                         "Expected", "Proportion", "Dep", "Exp")
+      sel_col_names <- c(
+        "Sample.Name", "Marker", "Allele", "TPH", "H", "Peaks",
+        "Expected", "Proportion", "Dep", "Exp"
+      )
       selected <- names(modData) %in% sel_col_names
       saveObject(name = "model_data_dump", object = modData[, selected], parent = w, env = env)
     }
@@ -888,13 +958,16 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     # Create legend text.
     legendModel <- paste("Model parameters: \u03B20=", round(b0, 3),
-                         ", \u03B21=", round(b1, 3), sep = "")
+      ", \u03B21=", round(b1, 3),
+      sep = ""
+    )
 
     if (hosOk) {
       # Add Hosmer-Lemeshow test.
       legendModel <- paste(legendModel,
-                           "\nHosmer-Lemeshow test: p = ", round(hos$p.value, 4),
-                           sep = "")
+        "\nHosmer-Lemeshow test: p = ", round(hos$p.value, 4),
+        sep = ""
+      )
     } else {
       message("Package 'ResourceSelection' is required for Hosmer-Lemeshow test.")
     }
@@ -938,26 +1011,31 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     if (!is.na(predictionDf) && !is.null(predictionDf)) {
 
       # Plotting global dropout probability.
-      gp <- ggplot(data = predictionDf,
-                   aes_string(y = "Prob", x = "Exp")) + geom_line()
+      gp <- ggplot(
+        data = predictionDf,
+        aes_string(y = "Prob", x = "Exp")
+      ) + geom_line()
 
       # Plot observed data points (heterozygotes).
       if (val_points) {
-
-          gp <- gp + geom_point(data = obsData, aes_string(x = "Exp", y = "Dep"),
-                                shape = val_shape, alpha = val_alpha,
-                                position = position_jitter(width = val_jitterh,
-                                                         height = val_jitterv))
+        gp <- gp + geom_point(
+          data = obsData, aes_string(x = "Exp", y = "Dep"),
+          shape = val_shape, alpha = val_alpha,
+          position = position_jitter(
+            width = val_jitterh,
+            height = val_jitterv
+          )
+        )
       }
 
       # Prediction interval.
       if (val_prediction_interval) {
-
-        gp <- gp + geom_ribbon(data = predictionDf,
-                               aes_string(y = "Prob", ymin = "ylower", ymax = "yupper"),
-                               fill = val_interval_col,
-                               alpha = val_interval_alpha)
-
+        gp <- gp + geom_ribbon(
+          data = predictionDf,
+          aes_string(y = "Prob", ymin = "ylower", ymax = "yupper"),
+          fill = val_interval_col,
+          alpha = val_interval_alpha
+        )
       }
 
       # Dropout threshold.
@@ -968,21 +1046,22 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
         # Create threshold label.
         thresholdLegend <- paste("P(dropout|T=",
-                                 round(t_dropout, 0),
-                                 ")=",
-                                 round(val_p_dropout, 3),
-                                 sep = "")
+          round(t_dropout, 0),
+          ")=",
+          round(val_p_dropout, 3),
+          sep = ""
+        )
 
         # Add prediction interval.
         if (val_prediction_print) {
           thresholdLegend <- paste(thresholdLegend,
-                                   "\n P(dropout>", round(val_p_dropout, 3),
-                                   "|T=",
-                                   round(t_dropout_cons, 0),
-                                   ")<",
-                                   val_pi_alpha * 100, "%",
-                                   sep = "")
-
+            "\n P(dropout>", round(val_p_dropout, 3),
+            "|T=",
+            round(t_dropout_cons, 0),
+            ")<",
+            val_pi_alpha * 100, "%",
+            sep = ""
+          )
         }
 
         # Make data frame.
@@ -991,9 +1070,11 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
         } else {
           t_height <- t_dropout
         }
-        thresholdLabel <- data.frame(Exp = t_height,
-                                     Prob = val_p_dropout,
-                                     label = thresholdLegend)
+        thresholdLabel <- data.frame(
+          Exp = t_height,
+          Prob = val_p_dropout,
+          label = thresholdLegend
+        )
 
         if (debug) {
           print("thresholdLabel")
@@ -1001,7 +1082,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
         }
 
         if (!is.na(t_dropout)) {
-
           if (debug) {
             print("Mark threshold")
           }
@@ -1014,12 +1094,16 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
           }
 
           # Add horizontal threshold line.
-          gp <- gp + geom_segment(data = thresholdLabel,
-                                  aes_string(x = xtemp, y = "Prob",
-                                             xend = "Exp",
-                                             yend = "Prob"),
-                                  color = val_predcol,
-                                  linetype = val_predline)
+          gp <- gp + geom_segment(
+            data = thresholdLabel,
+            aes_string(
+              x = xtemp, y = "Prob",
+              xend = "Exp",
+              yend = "Prob"
+            ),
+            color = val_predcol,
+            linetype = val_predline
+          )
 
           if (debug) {
             print("Horizontal line added")
@@ -1033,46 +1117,53 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
           }
 
           # Add vertical threshold line.
-          gp <- gp + geom_segment(data = thresholdLabel,
-                                  aes_string(x = "Exp", y = ytemp,
-                                             xend = "Exp",
-                                             yend = "Prob"),
-                                  color = val_predcol,
-                                  linetype = val_predline)
+          gp <- gp + geom_segment(
+            data = thresholdLabel,
+            aes_string(
+              x = "Exp", y = ytemp,
+              xend = "Exp",
+              yend = "Prob"
+            ),
+            color = val_predcol,
+            linetype = val_predline
+          )
 
           if (debug) {
             print("Vertical line added")
           }
-
         }
 
         # Print threshold label.
         if (val_threshold_print) {
-          gp <- gp + geom_text(data = thresholdLabel,
-                             aes_string(x = "Exp", y = "Prob", label = "label"),
-                             hjust = 0, vjust = 0)
+          gp <- gp + geom_text(
+            data = thresholdLabel,
+            aes_string(x = "Exp", y = "Prob", label = "label"),
+            hjust = 0, vjust = 0
+          )
           if (debug) {
             print("Threshold printed")
           }
         }
-
       }
 
       # Print dropout model.
       if (val_model) {
-
         if (debug) {
           print("Print model")
         }
 
         # Create data frame.
-        modelLabel <- data.frame(Exp = t_dropout,
-                                 Prob = val_p_dropout,
-                                 label = legendModel,
-                                 xmax = val_pred_xmax)
+        modelLabel <- data.frame(
+          Exp = t_dropout,
+          Prob = val_p_dropout,
+          label = legendModel,
+          xmax = val_pred_xmax
+        )
         # Add model text.
-        gp <- gp + geom_text(data = modelLabel, aes_string(x = Inf, y = Inf, label = "label"),
-                        hjust = 1, vjust = 1)
+        gp <- gp + geom_text(
+          data = modelLabel, aes_string(x = Inf, y = Inf, label = "label"),
+          hjust = 1, vjust = 1
+        )
       }
 
       # Restrict y axis.
@@ -1088,10 +1179,12 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
         val_x <- NULL
       }
       if (debug) {
-        print(paste("Zoom plot xmin/xmax,ymin/ymax:",
-                    paste(val_x, collapse = "/"),
-                    ",",
-                    paste(val_y, collapse = "/")))
+        print(paste(
+          "Zoom plot xmin/xmax,ymin/ymax:",
+          paste(val_x, collapse = "/"),
+          ",",
+          paste(val_y, collapse = "/")
+        ))
         print(str(val_x))
         print(str(val_y))
       }
@@ -1104,10 +1197,12 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       }
 
       # Apply theme.
-      gp <- gp + theme(axis.text.x = element_text(angle = val_angle,
-                                                hjust = val_hjust,
-                                                vjust = val_vjust,
-                                                size = val_size))
+      gp <- gp + theme(axis.text.x = element_text(
+        angle = val_angle,
+        hjust = val_hjust,
+        vjust = val_vjust,
+        size = val_size
+      ))
 
       # Add titles and labels.
       gp <- gp + labs(title = mainTitle)
@@ -1127,21 +1222,18 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
       # Store in global variable.
       .gPlot <<- gp
-
     } else {
-
-      gmessage(msg = "Data frame is NULL or NA!",
-               title = "Error",
-               icon = "error")
-
+      gmessage(
+        msg = "Data frame is NULL or NA!",
+        title = "Error",
+        icon = "error"
+      )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################
 
   .checkColumns <- function() {
-
     val_col <- svalue(f1_column_opt, index = TRUE)
     val_h <- svalue(f1_h_chk)
     requiredCol <- NULL
@@ -1163,64 +1255,56 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
       # Check available modeling columns and enable/select.
       if (val_col == 1) {
-
         requiredCol <- c("MethodX")
         if (!all(requiredCol %in% colnames(.gData))) {
           missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
         }
-
       } else if (val_col == 2) {
-
         requiredCol <- c("Method1")
         if (!all(requiredCol %in% colnames(.gData))) {
           missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
         }
-
       } else if (val_col == 3) {
-
         requiredCol <- c("Method2")
         if (!all(requiredCol %in% colnames(.gData))) {
           missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
         }
-
       } else if (val_col == 4) {
-
         requiredCol <- c("MethodL", "MethodL.Ph")
         if (!all(requiredCol %in% colnames(.gData))) {
           missingCol <- requiredCol[!requiredCol %in% colnames(.gData)]
         }
-
       } else {
-
         message <- paste("Selection not supported!")
 
-        gmessage(message, title = "Error",
-                 icon = "error",
-                 parent = w)
+        gmessage(message,
+          title = "Error",
+          icon = "error",
+          parent = w
+        )
 
         # Disable button.
         enabled(f7_plot_drop_btn) <- FALSE
       }
 
       if (!is.null(missingCol)) {
-
         message <- paste("Dataset is ok for drop-out analysis.\n",
-                        "However, additional columns are required for this analysis:\n",
-                         paste(missingCol, collapse = "\n"),
-                         "\n\nPlease try modeling using another scoring method.",
-                         sep = "")
+          "However, additional columns are required for this analysis:\n",
+          paste(missingCol, collapse = "\n"),
+          "\n\nPlease try modeling using another scoring method.",
+          sep = ""
+        )
 
-        gmessage(message, title = "message",
-                 icon = "info",
-                 parent = w)
+        gmessage(message,
+          title = "message",
+          icon = "info",
+          parent = w
+        )
 
         # Disable button.
         enabled(f7_plot_drop_btn) <- FALSE
-
       }
-
     }
-
   }
 
   .loadSavedSettings <- function() {
@@ -1345,14 +1429,12 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
         print("Saved settings loaded!")
       }
     }
-
   }
 
   .saveSettings <- function() {
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-
       assign(x = ".strvalidator_modelDropout_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_title", value = svalue(f1_title_edt), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
@@ -1385,7 +1467,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       assign(x = ".strvalidator_modelDropout_gui_xlabel_justv", value = svalue(e4g1_vjust_spb), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_h", value = svalue(f1_h_chk), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_dump", value = svalue(f1_dump_chk), envir = env)
-
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_modelDropout_gui_savegui", envir = env, inherits = FALSE)) {
@@ -1493,7 +1574,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     if (debug) {
       print("Settings saved!")
     }
-
   }
 
   # END GUI ###################################################################
@@ -1504,5 +1584,4 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
-
 }
