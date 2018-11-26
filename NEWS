@@ -581,11 +581,11 @@ Version 1.3.0
 * New example datasets:
   - 'set5', 'ref51', and 'ref52' (ESX17 example data for mixture analysis).
 * New functions:
-	- calculateConcordance, calculateConcordance_gui, calculateMixture, calculateMixture_gui.
+  - calculateConcordance, calculateConcordance_gui, calculateMixture, calculateMixture_gui.
 * Renamed or replaced functions:
   - concatenate_gui -> combine_gui
 * New tests:
-	- test-calculateConcordance, test-calculateMixture.
+  - test-calculateConcordance, test-calculateMixture.
 
 
 
@@ -601,38 +601,38 @@ Version 1.2.0
     - Option to ignore case in marker names.
   - Added 'orange' and 'purple'.
   addSize/addSize_gui
-	- Option to ignore case in marker names.
-	- Option 'bins' and option to calculate an estimate of size.
-	- Fixed bug, kit always "ESX17" (issue#4 @ GitHub).
+  - Option to ignore case in marker names.
+  - Option 'bins' and option to calculate an estimate of size.
+  - Fixed bug, kit always "ESX17" (issue#4 @ GitHub).
   calculateBalance/calculateBalance_gui
     - New column 'TPH' (Total locus Peak Height) in result table.
   plotBalance_gui
-	- 'position_jitter height' now fixed to zero, previously 'default'.
-	- Implemented new column 'TPH' for X-axis when plot Lb.
-	- Fixed bug when no observation in an entire dye channel.
+  - 'position_jitter height' now fixed to zero, previously 'default'.
+  - Implemented new column 'TPH' for X-axis when plot Lb.
+  - Fixed bug when no observation in an entire dye channel.
   plotDistribution_gui
   - Fixed boxplot bug.
   plotDropout_gui
-	- 'position_jitter height' now fixed to zero, previously 'default'.
+  - 'position_jitter height' now fixed to zero, previously 'default'.
   plotStutter_gui
-	- 'position_jitter height' now fixed to zero, previously 'default'.
-	- Fixed same color scale for all sub plots in complex plots.
-	- Fixed different y max for complex plot, when supposed to be fixed.
-	- Fixed bug when no observation in an entire dye channel.
+  - 'position_jitter height' now fixed to zero, previously 'default'.
+  - Fixed same color scale for all sub plots in complex plots.
+  - Fixed different y max for complex plot, when supposed to be fixed.
+  - Fixed bug when no observation in an entire dye channel.
   trim
-	- Made more robust and handles '+' and '-' in sample names.
+  - Made more robust and handles '+' and '-' in sample names.
 * New experimental functions for capillary balance analysis:
-	- Functions: calculateCapillary, calculateCapillary_gui, plotCapillary_gui, tableCapillary, and tableCapillary_gui.
-	- Internal lane standard definition file (ils.txt).
+  - Functions: calculateCapillary, calculateCapillary_gui, plotCapillary_gui, tableCapillary, and tableCapillary_gui.
+  - Internal lane standard definition file (ils.txt).
 * New function:
-	- checkDataset.
+  - checkDataset.
 * Updated test:
   test-calculateBalance
     - Updated in response to new column 'TPH' and NA in 'MPH' if homozygous.
 * New tests:
-	- test-addSize, test-tableBalance, test-trim.
+  - test-addSize, test-tableBalance, test-trim.
 * New file:
-	- database_readme.
+  - database_readme.
 
 
 Version 1.1.0
