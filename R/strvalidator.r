@@ -91,7 +91,7 @@
 #' \dontrun{
 #' strvalidator()
 #' }
-#' 
+#'
 strvalidator <- function(debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))

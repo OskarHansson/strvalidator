@@ -88,7 +88,7 @@
 #' @examples
 #' # Load data.
 #' data(set2)
-#' 
+#'
 #' # Calculate inter-locus balance.
 #' res <- calculateLb(data = set2)
 #' print(res)

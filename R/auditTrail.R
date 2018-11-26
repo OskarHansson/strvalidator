@@ -48,7 +48,7 @@
 #' myData <- myFunction(x = 10, a = 2)
 #' # Check the audit trail.
 #' cat(attr(myData, "audit trail"))
-#' 
+#'
 #' # Remove the audit trail.
 #' myData <- auditTrail(myData, remove = TRUE)
 #' # Confirm that the audit trail is removed.

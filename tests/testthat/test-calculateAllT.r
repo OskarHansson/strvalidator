@@ -7,7 +7,7 @@ context("calculateAllT")
 ################################################################################
 # CHANGE LOG
 # 13.07.2018: First version.
-# 
+#
 # require(strvalidator)
 # require(testthat)
 # test_dir("inst/tests/")
@@ -30,22 +30,22 @@ test_that("calculateAllT", {
                          add = FALSE, exclude = "OL", sex.rm = TRUE,
                          qs.rm = TRUE, kit = kit,
                          ignore.case = TRUE, exact = FALSE))
-  
+
   # Add average peak height to dataset.
   dropout <- suppressMessages(addData(data = dropout, new.data = dfH,
                      by.col = "Sample.Name", then.by.col = NULL,
                      exact = TRUE, ignore.case = TRUE))
-  
+
   # TEST 01 -------------------------------------------------------------------
   # Test that the expected result is calculated.
-  
+
   # Analyse dataframe.
   res <- suppressMessages(
     calculateAllT(data = dropout, kit = kit,
                   p.dropout = 0.01, p.conservative = 0.05)
     )
 
-  # Check return class.  
+  # Check return class.
   expect_match(class(res), class(data.frame()))
 
   # Check that expected Explanatory_variable was recorded.
@@ -65,7 +65,7 @@ test_that("calculateAllT", {
   expect_equal(res[14,1], "LMW log(H)")
   expect_equal(res[15,1], "HMW log(H)")
   expect_equal(res[16,1], "Locus log(H)")
-  
+
   # Check that expected P(dropout)=0.01@T was calculated.
   expect_equal(res[1,2], 611)
   expect_equal(res[2,2], 495)
@@ -101,7 +101,7 @@ test_that("calculateAllT", {
   expect_equal(res[14,3], 1381)
   expect_equal(res[15,3], 1358)
   expect_equal(res[16,3], 1194)
-  
+
   # Check that expected Hosmer-Lemeshow_p was calculated.
   expect_equal(res[1,4], 0.8505)
   expect_equal(res[2,4], 0.9922)
@@ -119,7 +119,7 @@ test_that("calculateAllT", {
   expect_equal(res[14,4], 0.9245)
   expect_equal(res[15,4], 0.9650)
   expect_equal(res[16,4], 0.8995)
-  
+
   # Check that expected ß0 was calculated.
   expect_equal(res[1,5], -0.3754)
   expect_equal(res[2,5], 0.2337)
@@ -137,7 +137,7 @@ test_that("calculateAllT", {
   expect_equal(res[14,5], 10.8486)
   expect_equal(res[15,5], 10.7495)
   expect_equal(res[16,5], 15.5977)
-  
+
   # Check that expected ß1 was calculated.
   expect_equal(res[1,6], -0.0069)
   expect_equal(res[2,6], -0.0097)
@@ -155,7 +155,7 @@ test_that("calculateAllT", {
   expect_equal(res[14,6], -2.3593)
   expect_equal(res[15,6], -2.3572)
   expect_equal(res[16,6], -3.0403)
-  
+
   # Check that expected observed was calculated.
   expect_equal(res[1,7], 381)
   expect_equal(res[2,7], 382)
@@ -173,7 +173,7 @@ test_that("calculateAllT", {
   expect_equal(res[14,7], 382)
   expect_equal(res[15,7], 383)
   expect_equal(res[16,7], 367)
-  
+
   # Check that expected dropout was calculated.
   expect_equal(res[1,8], 17)
   expect_equal(res[2,8], 16)
@@ -191,17 +191,17 @@ test_that("calculateAllT", {
   expect_equal(res[14,8], 16)
   expect_equal(res[15,8], 15)
   expect_equal(res[16,8], 31)
-  
+
   # TEST 02 -------------------------------------------------------------------
   # Test that input data is checked.
-  
+
   # Dataframe with required column names.
   dfNames <- data.frame(MethodX=NA, Method1=NA, Method2=NA, MethodL=NA, Height=NA, H=NA, MethodL.Ph=NA)
-  
+
   # Missing 'MethodX' column should generate an error.
   expect_error(calculateAllT(data = dfNames[,-1], kit = kit,
                              p.dropout = 0.01, p.conservative = 0.05))
-  
+
   # Missing 'Method1' column should generate an error.
   expect_error(calculateAllT(data = dfNames[,-2], kit = kit,
                              p.dropout = 0.01, p.conservative = 0.05))
@@ -209,35 +209,35 @@ test_that("calculateAllT", {
   # Missing 'Method2' column should generate an error.
   expect_error(calculateAllT(data = dfNames[,-3], kit = kit,
                              p.dropout = 0.01, p.conservative = 0.05))
-  
+
   # Missing 'MethodL' column should generate an error.
   expect_error(calculateAllT(data = dfNames[,-4], kit = kit,
                              p.dropout = 0.01, p.conservative = 0.05))
-  
+
   # Missing 'Height' column should generate an error.
   expect_error(calculateAllT(data = dfNames[,-5], kit = kit,
                              p.dropout = 0.01, p.conservative = 0.05))
-  
+
   # Missing 'H' column should generate an error.
   expect_error(calculateAllT(data = dfNames[,-6], kit = kit,
                              p.dropout = 0.01, p.conservative = 0.05))
-  
+
   # Missing 'MethodL.Ph' column should generate an error.
   expect_error(calculateAllT(data = dfNames[,-7], kit = kit,
                              p.dropout = 0.01, p.conservative = 0.05))
-  
+
   # kit not in kit definition file should generate an error.
   expect_error(calculateAllT(data = dropout, kit = "KitNotDefined",
                              p.dropout = 0.01, p.conservative = 0.05))
-  
+
   # p.dropout > 1 should generate an error.
   expect_error(calculateAllT(data = dropout, kit = kit,
                   p.dropout = 1.01, p.conservative = 0.05))
-  
+
   # p.dropout < 0 should generate an error.
   expect_error(calculateAllT(data = dropout, kit = kit,
                              p.dropout = -0.01, p.conservative = 0.05))
-  
+
   # length(p.dropout) > 1 should generate an error.
   expect_error(calculateAllT(data = dropout, kit = kit,
                              p.dropout = c(0.01, 0.01), p.conservative = 0.05))
@@ -245,15 +245,14 @@ test_that("calculateAllT", {
   # p.conservative > 1 should generate an error.
   expect_error(calculateAllT(data = dropout, kit = kit,
                              p.dropout = 0.01, p.conservative = 1.05))
-  
+
   # p.conservative < 0 should generate an error.
   expect_error(calculateAllT(data = dropout, kit = kit,
                              p.dropout = 0.01, p.conservative = -0.05))
-  
+
   # length(p.conservative) > 1 should generate an error.
   expect_error(calculateAllT(data = dropout, kit = kit,
                              p.dropout = 0.01, p.conservative = c(0.05, 0.05)))
-  
-  
+
+
 })
-  
