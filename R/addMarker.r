@@ -25,23 +25,22 @@
 #' the specified marker vector. Use \code{\link{sortMarker}} to sort the markers
 #' according to a specified kit.
 #' Required columns are: 'Sample.Name'.
-#' 
+#'
 #' @param data data.frame or vector with sample names.
 #' @param marker vector with marker names.
 #' @param ignore.case logical. TRUE ignores case in marker names.
 #' @param debug logical indicating printing debug information.
-#' 
+#'
 #' @importFrom plyr rbind.fill
 #' @importFrom utils head
-#' 
+#'
 #' @export
-#' 
+#'
 #' @return data.frame.
-#' 
+#'
 
-addMarker <- function(data, marker, ignore.case=FALSE, debug=FALSE){
-  
-  if(debug){
+addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
+  if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
     print("data")
@@ -51,109 +50,109 @@ addMarker <- function(data, marker, ignore.case=FALSE, debug=FALSE){
     print("ignore.case")
     print(ignore.case)
   }
-  
+
   # Initiate variables.
-  res <- data[0,]
+  res <- data[0, ]
   vectorFlag <- FALSE
   markerName <- marker # 'marker' might be converted to uppercase.
-  
+
   # CHECK DATA ----------------------------------------------------------------
 
-  if(is.data.frame(data)){
+  if (is.data.frame(data)) {
     # Check dataset.
-    if(!"Sample.Name" %in% names(data)){
+    if (!"Sample.Name" %in% names(data)) {
       stop("'data' must contain a column 'Sample.Name'",
-           call. = TRUE)
+        call. = TRUE
+      )
     }
-  } else if(is.vector(data)){
+  } else if (is.vector(data)) {
     vectorFlag <- TRUE
   } else {
     stop("'data' must be a vector of sample names or a data.frame containing a column 'Sample.Name'",
-         call. = TRUE)
+      call. = TRUE
+    )
   }
 
-  if(!is.vector(marker)){
-      stop("'marker' must be a vector", call. = TRUE)
+  if (!is.vector(marker)) {
+    stop("'marker' must be a vector", call. = TRUE)
   }
-  
+
   # PREPARE -------------------------------------------------------------------
 
-  if(vectorFlag){
+  if (vectorFlag) {
     # Create data frame.
-    data <- data.frame(Sample.Name=data)
+    data <- data.frame(Sample.Name = data)
   }
-  
-  if(ignore.case){
+
+  if (ignore.case) {
     marker <- toupper(marker)
   }
-  
-  if(!"Marker" %in% names(data)){
+
+  if (!"Marker" %in% names(data)) {
     data$Marker <- NA
     message("Column 'Marker' added to 'data'")
   }
-  
+
   # METHOD --------------------------------------------------------------------
-  
+
   # Get sample names.
   sample <- unique(data$Sample.Name)
-  
+
   # Loop through all samples.
-  for(s in seq(along=sample)){
+  for (s in seq(along = sample)) {
 
     # Reset vector.
     missingMarkers <- NULL
-    
+
     # Get current data subset.
     cSample <- data[data$Sample.Name == sample[s], ]
-    
+
     # Get current sample marker names.
     cMarker <- unique(cSample$Marker)
-    if(ignore.case){
+    if (ignore.case) {
       cMarker <- toupper(cMarker)
     }
 
     # Loop over provided marker vector.
-    for(m in seq(along=marker)){
-      
-      if(!marker[m] %in% cMarker){
+    for (m in seq(along = marker)) {
+      if (!marker[m] %in% cMarker) {
         # Add missing marker to data set.
         missingMarkers <- c(missingMarkers, markerName[m])
       }
-      
     }
-    
-    if(!is.null(missingMarkers)){
-      
+
+    if (!is.null(missingMarkers)) {
+
       # Show progress.
       message(paste("Adding missing markers to sample (",
-                    s, " of ", length(sample), "): ", sample[s], sep=""))
+        s, " of ", length(sample), "): ", sample[s],
+        sep = ""
+      ))
 
       # Add missing markers to current sample.
-      new <- plyr::rbind.fill(cSample, data.frame(Sample.Name=sample[s],
-                                            Marker=missingMarkers,
-                                            stringsAsFactors=FALSE))
+      new <- plyr::rbind.fill(cSample, data.frame(
+        Sample.Name = sample[s],
+        Marker = missingMarkers,
+        stringsAsFactors = FALSE
+      ))
       # Add to result.
       res <- plyr::rbind.fill(res, new)
-      
     } else {
-      
+
       # Add current sample to res.
       res <- rbind(res, cSample)
-      
     }
-    
   }
-  
+
   # RETURN --------------------------------------------------------------------
-  
+
   # Update audit trail.
   res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
-  
 
-  if(debug){
+
+  if (debug) {
     print(paste("EXIT:", match.call()[[1]]))
   }
-  
+
   return(res)
-  
 }

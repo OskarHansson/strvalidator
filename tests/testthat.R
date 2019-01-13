@@ -12,7 +12,7 @@
 library(testthat)
 
 # Run all tests.
-test_check(package="strvalidator")
+test_check(package = "strvalidator")
 
 #  # Run manually:
 # library(strvalidator)

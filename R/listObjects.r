@@ -20,74 +20,68 @@
 #' Internal helper function to retrieve a list of objects from a workspace.
 #' Take an environment as argument and optionally an object class.
 #' Returns a list of objects of the specified class in the environment.
-#' 
+#'
 #' @param env environment in which to search for objects.
 #' @param obj.class character string or vector specifying the object class.
 #' @param debug logical indicating printing debug information.
-#' 
+#'
 #' @return character vector with the object names.
-#' 
+#'
 #' @export
-#'  
+#'
 #' @examples
 #' \dontrun{
 #' # List data frames in the workspace.
-#' listObjects(obj.class="data.frame")
+#' listObjects(obj.class = "data.frame")
 #' # List functions in the workspace.
-#' listObjects(obj.class="function")
+#' listObjects(obj.class = "function")
 #' }
-
-listObjects <- function(env=parent.frame(), obj.class=NULL, debug=FALSE){
-  
-  if(debug){
+#'
+listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
+  if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
 
   # Result vector.
   res <- character()
-  
+
   # List objects in environment.
   wsObj <- ls(env)
 
-  if(debug){
+  if (debug) {
     print("Objects:")
     print(wsObj)
   }
-  
-  # Check if specified object class.
-  if(!is.null(obj.class)){
 
+  # Check if specified object class.
+  if (!is.null(obj.class)) {
     classes <- list()
 
     # Loop to save all class information.
-    for(i in seq(along=wsObj)){
-      obj <- get(wsObj[i], envir=env)
+    for (i in seq(along = wsObj)) {
+      obj <- get(wsObj[i], envir = env)
       classes[i] <- list(class(obj))
-      
     }
-    
+
     # Filter objects with specified classes.
-    for(c in seq(along=obj.class)){
-      for(i in seq(along=classes)){
-        if(obj.class[c] %in% classes[[i]]){
+    for (c in seq(along = obj.class)) {
+      for (i in seq(along = classes)) {
+        if (obj.class[c] %in% classes[[i]]) {
           res <- c(res, wsObj[i])
         }
       }
     }
-    
   } else {
 
     # Return all objects.
     res <- wsObj
-    
   }
 
-  if(debug){
+  if (debug) {
     print("Returned objects:")
     print(res)
     print(paste("EXIT:", match.call()[[1]]))
   }
-  
+
   return(res)
-  
 }

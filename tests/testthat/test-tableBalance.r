@@ -11,7 +11,7 @@ context("tableBalance")
 # 07.09.2016: Updated to work with calculateHb, replacing calculateBalance.
 # 13.11.2015: Updated hb=2 to hb=3 in to correspond to new implemented method in calculateBalance.
 # 07.05.2014: First version.
-# 
+#
 # require(testthat)
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-tableBalance.r")
@@ -22,29 +22,33 @@ test_that("tableBalance", {
   # Get test data.
   data(set2)
   data(ref2)
-  
+
   data(set1)
   data(ref1)
-  
-  set1 <- slim(data = set1,
-               fix = c("Sample.Name", "Marker", "Dye"),
-               stack = c("Allele", "Height"))
-  
-  ref1 <- slim(data = ref1,
-               fix = c("Sample.Name", "Marker"),
-               stack = c("Allele"))
-  
+
+  set1 <- slim(
+    data = set1,
+    fix = c("Sample.Name", "Marker", "Dye"),
+    stack = c("Allele", "Height")
+  )
+
+  ref1 <- slim(
+    data = ref1,
+    fix = c("Sample.Name", "Marker"),
+    stack = c("Allele")
+  )
+
   # TEST 01 -------------------------------------------------------------------
-  
+
   # Analyse dataframe.
-  tmp <- calculateHb(data=set2, ref=ref2, hb=3, kit="SGMPlus", ignore.case=TRUE)
-  
-  res <- tableBalance(data=tmp, scope="locus", quant=0.05)
-  
-  # Check return class.  
+  tmp <- calculateHb(data = set2, ref = ref2, hb = 3, kit = "SGMPlus", ignore.case = TRUE)
+
+  res <- tableBalance(data = tmp, scope = "locus", quant = 0.05)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_true(is.null(res$Sample.Name))
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Hb.n))
@@ -68,38 +72,38 @@ test_that("tableBalance", {
   expect_that(res$Hb.n[5], equals(2))
 
   # Check result: Mean heterozygous balance.
-  expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225))))
-  expect_that(res$Hb.Mean[2], equals(mean(c(423/491,198/241))))
-  expect_that(res$Hb.Mean[3], equals(mean(c(587/632,312/326))))
-  expect_that(res$Hb.Mean[4], equals(mean(c(361/398,195/206))))
-  expect_that(res$Hb.Mean[5], equals(mean(c(359/384,179/183))))
+  expect_that(res$Hb.Mean[1], equals(mean(c(402 / 460, 215 / 225))))
+  expect_that(res$Hb.Mean[2], equals(mean(c(423 / 491, 198 / 241))))
+  expect_that(res$Hb.Mean[3], equals(mean(c(587 / 632, 312 / 326))))
+  expect_that(res$Hb.Mean[4], equals(mean(c(361 / 398, 195 / 206))))
+  expect_that(res$Hb.Mean[5], equals(mean(c(359 / 384, 179 / 183))))
 
   # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225))))
-  expect_that(res$Hb.Sd[2], equals(sd(c(423/491,198/241))))
-  expect_that(res$Hb.Sd[3], equals(sd(c(587/632,312/326))))
-  expect_that(res$Hb.Sd[4], equals(sd(c(361/398,195/206))))
-  expect_that(res$Hb.Sd[5], equals(sd(c(359/384,179/183))))
+  expect_that(res$Hb.Sd[1], equals(sd(c(402 / 460, 215 / 225))))
+  expect_that(res$Hb.Sd[2], equals(sd(c(423 / 491, 198 / 241))))
+  expect_that(res$Hb.Sd[3], equals(sd(c(587 / 632, 312 / 326))))
+  expect_that(res$Hb.Sd[4], equals(sd(c(361 / 398, 195 / 206))))
+  expect_that(res$Hb.Sd[5], equals(sd(c(359 / 384, 179 / 183))))
 
   # Check result: 5 percentile for heterozygous balance.
-  expect_that(res$Hb.Perc.5[1], equals(as.numeric(quantile(c(402/460,215/225), 0.05))))
-  expect_that(res$Hb.Perc.5[2], equals(as.numeric(quantile(c(423/491,198/241), 0.05))))
-  expect_that(res$Hb.Perc.5[3], equals(as.numeric(quantile(c(587/632,312/326), 0.05))))
-  expect_that(res$Hb.Perc.5[4], equals(as.numeric(quantile(c(361/398,195/206), 0.05))))
-  expect_that(res$Hb.Perc.5[5], equals(as.numeric(quantile(c(359/384,179/183), 0.05))))
+  expect_that(res$Hb.Perc.5[1], equals(as.numeric(quantile(c(402 / 460, 215 / 225), 0.05))))
+  expect_that(res$Hb.Perc.5[2], equals(as.numeric(quantile(c(423 / 491, 198 / 241), 0.05))))
+  expect_that(res$Hb.Perc.5[3], equals(as.numeric(quantile(c(587 / 632, 312 / 326), 0.05))))
+  expect_that(res$Hb.Perc.5[4], equals(as.numeric(quantile(c(361 / 398, 195 / 206), 0.05))))
+  expect_that(res$Hb.Perc.5[5], equals(as.numeric(quantile(c(359 / 384, 179 / 183), 0.05))))
 
-  
+
   # TEST 02 -------------------------------------------------------------------
-  
-  # Analyse dataframe.
-  tmp <- calculateHb(data=set2, ref=ref2, hb=3, kit="SGMPlus", ignore.case=TRUE)
 
-  res <- tableBalance(data=tmp, scope="global", quant=0.10)
-  
-  # Check return class.  
+  # Analyse dataframe.
+  tmp <- calculateHb(data = set2, ref = ref2, hb = 3, kit = "SGMPlus", ignore.case = TRUE)
+
+  res <- tableBalance(data = tmp, scope = "global", quant = 0.10)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_true(is.null(res$Sample.Name))
   expect_true(is.null(res$Marker))
   expect_false(is.null(res$Hb.n))
@@ -116,46 +120,52 @@ test_that("tableBalance", {
 
   # Check result: number of values for heterozygous balance.
   expect_that(res$Hb.n[1], equals(10))
-  
+
   # Check result: Mean heterozygous balance.
-  expect_that(res$Hb.Mean[1], equals(mean(c(402/460,215/225,
-                                            423/491,198/241, 
-                                            587/632,312/326,
-                                            361/398,195/206,
-                                            359/384,179/183))))
-  
+  expect_that(res$Hb.Mean[1], equals(mean(c(
+    402 / 460, 215 / 225,
+    423 / 491, 198 / 241,
+    587 / 632, 312 / 326,
+    361 / 398, 195 / 206,
+    359 / 384, 179 / 183
+  ))))
+
   # Check result: Heterozygous balance standard deviation.
-  expect_that(res$Hb.Sd[1], equals(sd(c(402/460,215/225,
-                                          423/491,198/241,
-                                          587/632,312/326,
-                                          361/398,195/206,
-                                          359/384,179/183))))
-  
+  expect_that(res$Hb.Sd[1], equals(sd(c(
+    402 / 460, 215 / 225,
+    423 / 491, 198 / 241,
+    587 / 632, 312 / 326,
+    361 / 398, 195 / 206,
+    359 / 384, 179 / 183
+  ))))
+
   # Check result: 10 percentile for heterozygous balance.
-  expect_that(res$Hb.Perc.10[1], equals(as.numeric(quantile(c(402/460,215/225,
-                                                              423/491,198/241,
-                                                              587/632,312/326,
-                                                              361/398,195/206,
-                                                              359/384,179/183), 0.10))))
+  expect_that(res$Hb.Perc.10[1], equals(as.numeric(quantile(c(
+    402 / 460, 215 / 225,
+    423 / 491, 198 / 241,
+    587 / 632, 312 / 326,
+    361 / 398, 195 / 206,
+    359 / 384, 179 / 183
+  ), 0.10))))
 
   # TEST 03 -------------------------------------------------------------------
-  
+
   # Analyse dataframe.
-  tmp <- calculateLb(data=set1, ref=ref1, option = "prop", kit="ESX17", ignore.case=TRUE)
-  
-  res <- tableBalance(data=tmp, scope="locus", quant=0.50)
-  
-  # Check return class.  
+  tmp <- calculateLb(data = set1, ref = ref1, option = "prop", kit = "ESX17", ignore.case = TRUE)
+
+  res <- tableBalance(data = tmp, scope = "locus", quant = 0.50)
+
+  # Check return class.
   expect_that(class(res), matches(class(data.frame())))
-  
-  # Check that expected columns exist.  
+
+  # Check that expected columns exist.
   expect_true(is.null(res$Sample.Name))
   expect_false(is.null(res$Marker))
   expect_false(is.null(res$Lb.n))
   expect_false(is.null(res$Lb.Mean))
   expect_false(is.null(res$Lb.Sd))
   expect_false(is.null(res$Lb.Perc.50))
-  
+
   # Check for NA's.
   expect_false(any(is.na(res$Marker)))
   expect_false(any(is.na(res$Lb.n)))
@@ -163,7 +173,7 @@ test_that("tableBalance", {
   expect_false(any(is.na(res$Lb.Mean)))
   expect_false(any(is.na(res$Lb.Sd)))
   expect_false(any(is.na(res$Lb.Perc.50)))
-  
+
   # Check result: number of values for inter-locus balance.
   expect_true(all(res$Lb.n == 8))
 
@@ -185,7 +195,7 @@ test_that("tableBalance", {
   expect_that(res$Lb.Min[15], equals(0.058938857))
   expect_that(res$Lb.Min[16], equals(0.080518159))
   expect_that(res$Lb.Min[17], equals(0.059245481))
-  
+
   # Check result: Mean inter-locus balance.
   expect_that(res$Lb.Mean[1], equals(0.052283019))
   expect_that(res$Lb.Mean[2], equals(0.058387614))
@@ -204,7 +214,7 @@ test_that("tableBalance", {
   expect_that(res$Lb.Mean[15], equals(0.069514774))
   expect_that(res$Lb.Mean[16], equals(0.092054472))
   expect_that(res$Lb.Mean[17], equals(0.070339746))
-  
+
   # Check result: Inter-locus balance standard deviation.
   expect_that(res$Lb.Sd[1], equals(0.003277776))
   expect_that(res$Lb.Sd[2], equals(0.008279161))
@@ -242,7 +252,7 @@ test_that("tableBalance", {
   expect_that(res$Lb.Max[15], equals(0.079043085))
   expect_that(res$Lb.Max[16], equals(0.112178367))
   expect_that(res$Lb.Max[17], equals(0.085363181))
-  
+
   # Check result: 50 percentile for inter-locus balance.
   expect_that(res$Lb.Perc.50[1], equals(0.05109985))
   expect_that(res$Lb.Perc.50[2], equals(0.05865409))
@@ -261,5 +271,4 @@ test_that("tableBalance", {
   expect_that(res$Lb.Perc.50[15], equals(0.06942801))
   expect_that(res$Lb.Perc.50[16], equals(0.09111388))
   expect_that(res$Lb.Perc.50[17], equals(0.06878986))
-
 })
