@@ -18,7 +18,7 @@ calculateMixture(data, ref1, ref2, ol.rm = TRUE, ignore.dropout = TRUE,
 \item{ol.rm}{logical TRUE removes off-ladder alleles (OL), FALSE count
 OL as drop-in.}
 
-\item{ignore.dropout}{logical TRUE calculate Mx also if there are 
+\item{ignore.dropout}{logical TRUE calculate Mx also if there are
 missing alleles.}
 
 \item{debug}{logical indicating printing debug information.}
@@ -31,8 +31,8 @@ data.frame with columns 'Sample.Name', 'Marker', 'Style', 'Mx',
 Calculate Mx, drop-in, and % profile for mixtures.
 }
 \details{
-Given a set of mixture results, reference profiles for the 
-major component, and reference profile for the minor component the 
+Given a set of mixture results, reference profiles for the
+major component, and reference profile for the minor component the
 function calculates the mixture proportion (Mx), the average Mx, the
 absolute difference D=|Mx-AvgMx| for each marker, the percentage
 profile for the minor component, number of drop-ins.
@@ -43,7 +43,7 @@ NB! All sample names must be unique within and between each reference dataset.
 NB! Samples in ref1 and ref2 must be in 'sync'. The first sample in
 ref1 is combined with the first sample in ref2 to make a mixture sample.
 For example: ref1 "A" and ref2 "B" match mixture samples "A_B_1", "A_B_2"
-and so on. 
+and so on.
 NB! If reference datasets have unequal number of unique samples the smaller
 dataset will limit the calculation.
 

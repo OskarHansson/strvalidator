@@ -23,7 +23,7 @@ TRUE
 GUI wrapper for the \code{\link{tablePrecision}} function.
 }
 \details{
-Simplifies the use of the \code{\link{tablePrecision}} function by providing 
+Simplifies the use of the \code{\link{tablePrecision}} function by providing
 a graphical user interface.
 }
 \seealso{

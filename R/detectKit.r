@@ -40,7 +40,7 @@
 
 detectKit <- function(data, index = FALSE, debug = FALSE) {
   if (is.data.frame(data)) {
-    if (!'Marker' %in% colnames(data)) {
+    if (!"Marker" %in% colnames(data)) {
       stop("Data frame must contain a column 'Marker'")
     }
   } else if (is.vector(data)) {
@@ -196,7 +196,7 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
           matchStart <- match
 
           # Get match length
-          matchEnd <- match + attr(match, 'match.length')
+          matchEnd <- match + attr(match, "match.length")
 
           if (matchStart < prevPos) {
             # Back matching, penalise.

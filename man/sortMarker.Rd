@@ -11,7 +11,7 @@ sortMarker(data, kit, add.missing.levels = FALSE, debug = FALSE)
 
 \item{kit}{string or integer indicating kit.}
 
-\item{add.missing.levels}{logical, TRUE missing markers are added, 
+\item{add.missing.levels}{logical, TRUE missing markers are added,
 FALSE missing markers are not added.}
 
 \item{debug}{logical indicating printing debug information.}

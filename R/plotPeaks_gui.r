@@ -350,7 +350,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
       # Prepare data.
       # Get one row from each sample for plotting.
-      .gData <- .gData[!duplicated(.gData[, 'Id']), ]
+      .gData <- .gData[!duplicated(.gData[, "Id"]), ]
 
       # Create titles.
       if (val_titles) {

@@ -37,6 +37,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.01.2019: Adaptations to gWidgets2tcltk.
 # 18.07.2018: Added button to plot groups in 'Result' tab.
 # 17.07.2018: Added button to calculate stochastic thresholds in 'Dropout' tab.
 # 02.08.2017: Allow multiple objects to be removed from workspace.
@@ -56,7 +57,6 @@
 # 29.08.2016: calculateBalance_gui replaced by calculateHb_gui.
 # 15.08.2016: Removed calculateHeterozygous, added calculateCopies in the 'Edit' tab.
 # 04.08.2016: Added button to plot contamination in the 'Result' tab.
-# 27.06.2016: Added button to create new project in the 'Workspace' tab.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -75,12 +75,7 @@
 #'
 #' @return TRUE
 #'
-# @import ggplot2
 #' @import gWidgets2
-#' @import gWidgets2RGtk2
-#' @import RGtk2
-# @import data.table
-# @import gridExtra
 #' @importFrom utils packageVersion help object.size
 #' @importFrom graphics title
 #'
@@ -91,14 +86,11 @@
 #' \dontrun{
 #' strvalidator()
 #' }
-#'
+#' 
 strvalidator <- function(debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
-
-  # Specify toolkit.
-  # options("guiToolkit"="RGtk2")
 
   # Global variables.
   .strvalidator_env <- new.env()
@@ -187,7 +179,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .start_tab_name,
-    expand = TRUE
+    index = 1
   )
 
   project_tab <- ggroup(
@@ -196,7 +188,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .project_tab_name,
-    expand = TRUE
+    index = 2
   )
 
   file_tab <- ggroup(
@@ -205,7 +197,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .file_tab_name,
-    expand = TRUE
+    index = 3
   )
 
   drylab_tab <- ggroup(
@@ -214,7 +206,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .drylab_tab_name,
-    expand = TRUE
+    index = 4
   )
 
   edit_tab <- ggroup(
@@ -223,7 +215,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .edit_tab_name,
-    expand = TRUE
+    index = 5
   )
 
   at_tab <- ggroup(
@@ -232,7 +224,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .at_tab_name,
-    expand = TRUE
+    index = 6
   )
 
   stutter_tab <- ggroup(
@@ -241,7 +233,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .stutter_tab_name,
-    expand = TRUE
+    index = 7
   )
 
   balance_tab <- ggroup(
@@ -250,7 +242,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .balance_tab_name,
-    expand = TRUE
+    index = 8
   )
 
   concordance_tab <- ggroup(
@@ -259,7 +251,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .concordance_tab_name,
-    expand = TRUE
+    index = 9
   )
 
   drop_tab <- ggroup(
@@ -268,7 +260,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .drop_tab_name,
-    expand = TRUE
+    index = 10
   )
 
   mixture_tab <- ggroup(
@@ -277,7 +269,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .mixture_tab_name,
-    expand = TRUE
+    index = 11
   )
 
   result_tab <- ggroup(
@@ -286,7 +278,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .result_tab_name,
-    expand = TRUE
+    index = 12
   )
 
   precision_tab <- ggroup(
@@ -295,7 +287,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .precision_tab_name,
-    expand = TRUE
+    index = 13
   )
 
   pullup_tab <- ggroup(
@@ -304,7 +296,7 @@ strvalidator <- function(debug = FALSE) {
     use.scrollwindow = FALSE,
     container = nb,
     label = .pullup_tab_name,
-    expand = TRUE
+    index = 14
   )
 
   # START #####################################################################

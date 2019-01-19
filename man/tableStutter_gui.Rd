@@ -23,7 +23,7 @@ TRUE
 GUI wrapper for the \code{\link{tableStutter}} function.
 }
 \details{
-Simplifies the use of the \code{\link{tableStutter}} function by providing a graphical 
+Simplifies the use of the \code{\link{tableStutter}} function by providing a graphical
 user interface to it.
 }
 \seealso{

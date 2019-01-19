@@ -29,7 +29,7 @@ If 'data' is a vector 'need' must be a single string.}
 \item{debug}{logical indicating printing debug information.}
 }
 \value{
-data.frame with additional columns for added colors, 
+data.frame with additional columns for added colors,
 or vector with converted values.
 }
 \description{
@@ -45,11 +45,11 @@ it can convert a vector containing one scheme to another.
 }
 \examples{
 # Get marker and colors for SGM Plus.
-df <- getKit("SGMPlus", what="Color")
+df <- getKit("SGMPlus", what = "Color")
 # Add dye color.
-dfDye <- addColor(data=df, need="Dye")
+dfDye <- addColor(data = df, need = "Dye")
 # Add all color alternatives.
-dfAll <- addColor(data=df)
+dfAll <- addColor(data = df)
 # Convert a dye vector to R colors
-addColor(data=c("R","G","Y","B"), have="dye", need="r.color")
+addColor(data = c("R", "G", "Y", "B"), have = "dye", need = "r.color")
 }

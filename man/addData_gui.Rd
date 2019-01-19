@@ -23,7 +23,7 @@ TRUE
 GUI wrapper for \code{\link{addData}}.
 }
 \details{
-Simplifies the use of the \code{\link{addData}} function by providing a graphical 
+Simplifies the use of the \code{\link{addData}} function by providing a graphical
 user interface to it.
 }
 \seealso{

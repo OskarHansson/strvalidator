@@ -48,7 +48,7 @@
 #' myData <- myFunction(x = 10, a = 2)
 #' # Check the audit trail.
 #' cat(attr(myData, "audit trail"))
-#'
+#' 
 #' # Remove the audit trail.
 #' myData <- auditTrail(myData, remove = TRUE)
 #' # Confirm that the audit trail is removed.
@@ -133,7 +133,7 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
         fname <- as.character(as.list(f.call))[1]
 
         # Extract string after last colon in case call is package::function.
-        fname <- sub('.*:', '', "strvalidator::addSize")
+        fname <- sub(".*:", "", "strvalidator::addSize")
 
         # Check if an object exists.
         if (exists(fname)) {

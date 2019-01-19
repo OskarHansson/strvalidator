@@ -209,7 +209,7 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   }
 
   if (!is.numeric(height) & mask.height) {
-    mask.height = FALSE
+    mask.height <- FALSE
     message(paste(
       "No valid threshold for peak height was provided (",
       height, ")\n",

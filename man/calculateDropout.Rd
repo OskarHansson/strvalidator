@@ -79,7 +79,7 @@ separate column.
 \examples{
 data(set4)
 data(ref4)
-drop <- calculateDropout(data=set4, ref=ref4, kit="ESX17", ignore.case=TRUE)
+drop <- calculateDropout(data = set4, ref = ref4, kit = "ESX17", ignore.case = TRUE)
 }
 \references{
 Peter Gill et.al.,

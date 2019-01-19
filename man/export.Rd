@@ -12,7 +12,7 @@ export(object, name = NA, use.object.name = is.na(name),
 \arguments{
 \item{object}{string, list or vector containing object names to be exported.}
 
-\item{name}{string, list or vector containing file names. 
+\item{name}{string, list or vector containing file names.
 Multiple names as string must be separated by pipe '|'.
 If not equal number of names as objects, first name will be used to construct names.}
 

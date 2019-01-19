@@ -94,7 +94,7 @@ tableStutter <- function(data, scope = "stutter", quant = 0.95) {
           sumAllele <- length(unique(data.subset$Allele[data.subset$Type == type[t]]))
           sumObs <- length(data.subset$Ratio[data.subset$Type == type[t]])
           if (is.null(sumObs)) {
-            sumObs = NA
+            sumObs <- NA
           }
           xbar <- mean(data.subset$Ratio[data.subset$Type == type[t]])
           stdv <- sd(data.subset$Ratio[data.subset$Type == type[t]])
@@ -115,7 +115,7 @@ tableStutter <- function(data, scope = "stutter", quant = 0.95) {
         sumAllele <- length(unique(data.subset$Allele))
         sumObs <- length(data.subset$Ratio)
         if (is.null(sumObs)) {
-          sumObs = NA
+          sumObs <- NA
         }
         xbar <- mean(data.subset$Ratio)
         stdv <- sd(data.subset$Ratio)

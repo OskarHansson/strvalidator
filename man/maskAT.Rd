@@ -48,7 +48,7 @@ Break-out function to prepare data for the function \code{calculateAT}.
 }
 \details{
 Prepares the 'SamplePlotSizingTable' for analysis of analytical threshold. It is needed
-by the plot functions for control of masking. The preparation consist of 
+by the plot functions for control of masking. The preparation consist of
 converting the 'Height' and 'Data.Point' column to numeric (if needed), then
 dye channel information is extracted from the 'Dye.Sample.Peak' column and
 added to its own 'Dye' column, known fragments of the internal lane standard

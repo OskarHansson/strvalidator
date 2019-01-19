@@ -29,4 +29,5 @@ of functions.
 \dontrun{
 strvalidator()
 }
+
 }

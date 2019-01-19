@@ -26,7 +26,7 @@ GUI simplifying the creation of empirical cumulative distribution plots.
 Plot the distribution of data as cumulative distribution function
 for multiple groups. First select a dataset, then select columns to flat,
 group, and plot by. For example, if a genotype dataset is selected and data
-is flattened by Sample.Name the 'group by' and 'plot by' values must be 
+is flattened by Sample.Name the 'group by' and 'plot by' values must be
 identical for all rows for a given sample.
 Automatic plot titles can be replaced by custom titles.
 Group names can be changed. A name for the result is automatically suggested.
