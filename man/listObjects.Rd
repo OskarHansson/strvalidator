@@ -27,8 +27,9 @@ Returns a list of objects of the specified class in the environment.
 \examples{
 \dontrun{
 # List data frames in the workspace.
-listObjects(obj.class="data.frame")
+listObjects(obj.class = "data.frame")
 # List functions in the workspace.
-listObjects(obj.class="function")
+listObjects(obj.class = "function")
 }
+
 }

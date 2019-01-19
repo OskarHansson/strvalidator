@@ -34,8 +34,8 @@ list of data.frames (discordance table, and pair-wise comparison).
 Calculates concordance and discordance for profiles in multiple datasets.
 }
 \details{
-Takes a list of datasets as input. It is assumed that each unique 
-sample name represent a result originating from the same source DNA and 
+Takes a list of datasets as input. It is assumed that each unique
+sample name represent a result originating from the same source DNA and
 thus is expected to give identical DNA profiles. The function first compare
 the profiles for each sample across datasets and lists discordant results.
 Then it performs a pair-wise comparison and compiles a concordance table.

@@ -23,7 +23,7 @@ TRUE
 GUI wrapper for the \code{\link{tableBalance}} function.
 }
 \details{
-Simplifies the use of the \code{\link{tableBalance}} function by providing a graphical 
+Simplifies the use of the \code{\link{tableBalance}} function by providing a graphical
 user interface to it.
 }
 \seealso{

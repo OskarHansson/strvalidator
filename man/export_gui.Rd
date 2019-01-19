@@ -27,7 +27,7 @@ TRUE
 GUI wrapper for the \code{\link{export}} function.
 }
 \details{
-Simplifies the use of the \code{\link{export}} function by providing a 
+Simplifies the use of the \code{\link{export}} function by providing a
 graphical user interface to it. Currently all available objects provided
 are selected by default.
 }

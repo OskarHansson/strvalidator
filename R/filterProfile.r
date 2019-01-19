@@ -195,7 +195,7 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
   if (add.missing.loci & !keep.na) {
     message("'add.missing.loci' overrides 'keep.na'. Setting keep.na=TRUE")
 
-    keep.na = TRUE
+    keep.na <- TRUE
   }
   # Check conflicting options.
   if (is.null(ref) & filter.allele) {

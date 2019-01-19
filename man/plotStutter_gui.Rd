@@ -24,7 +24,7 @@ GUI simplifying the creation of plots from stutter data.
 }
 \details{
 Select data to plot in the drop-down menu. Check that the correct
-kit has been detected. Plot stutter data by parent allele or by peak height. 
+kit has been detected. Plot stutter data by parent allele or by peak height.
 Automatic plot titles can be replaced by custom titles.
 A name for the result is automatically suggested.
 The resulting plot can be saved as either a plot object or as an image.

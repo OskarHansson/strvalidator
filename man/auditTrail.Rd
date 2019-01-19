@@ -45,18 +45,18 @@ to include the version number of a package.
 }
 \examples{
 # A simple function with audit trail logging.
-myFunction <- function(x, a, b=5){
+myFunction <- function(x, a, b = 5) {
   x <- x + a + b
   x <- auditTrail(obj = x, f.call = match.call(), package = "strvalidator")
   return(x)
 }
 # Run the function.
-myData <- myFunction(x=10, a=2)
+myData <- myFunction(x = 10, a = 2)
 # Check the audit trail.
 cat(attr(myData, "audit trail"))
 
 # Remove the audit trail.
-myData <- auditTrail(myData, remove=TRUE)
+myData <- auditTrail(myData, remove = TRUE)
 # Confirm that the audit trail is removed.
 cat(attr(myData, "audit trail"))
 }

@@ -16,7 +16,7 @@ trim(data, samples = NULL, columns = NULL, word = FALSE,
 
 \item{columns}{string giving column names separated by pipe (|).}
 
-\item{word}{logical indicating if a word boundary should be added to 
+\item{word}{logical indicating if a word boundary should be added to
 \code{samples} and \code{columns}.}
 
 \item{ignore.case}{logical, TRUE ignore case in sample names.}

@@ -70,9 +70,9 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   }
 
   if (edit) {
-    guiTitle = "Edit or view data frame"
+    guiTitle <- "Edit or view data frame"
   } else {
-    guiTitle = "View data frame"
+    guiTitle <- "View data frame"
   }
 
   # Create windows.

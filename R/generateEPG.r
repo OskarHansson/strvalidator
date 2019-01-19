@@ -136,7 +136,7 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
   # Prepare -------------------------------------------------------------------
 
   # Width of peaks in base pair.
-  width = 1
+  width <- 1
 
   if (!collapse) {
     if (boxplot) {

@@ -23,7 +23,7 @@ TRUE
 GUI simplifying the creation of plots from marker ratio data.
 }
 \details{
-Select data to plot in the drop-down menu. 
+Select data to plot in the drop-down menu.
 Automatic plot titles can be replaced by custom titles.
 A name for the result is automatically suggested.
 The resulting plot can be saved as either a plot object or as an image.

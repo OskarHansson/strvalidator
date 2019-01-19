@@ -51,7 +51,7 @@ Filters out the peaks matching (or not matching) specified known profiles
 from typing data containing 'noise' such as stutters.
 If 'ref' does not contain a 'Sample.Name' column it will be used
 as reference for all samples in 'data'. The 'invert' option filters out
-peaks NOT matching the reference (e.g. drop-in peaks). Sex markers and 
+peaks NOT matching the reference (e.g. drop-in peaks). Sex markers and
 quality sensors can be removed.
 NB! add.missing.loci overrides keep.na.
 Returns data where allele names match/not match 'ref' allele names.

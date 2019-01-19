@@ -23,7 +23,7 @@ TRUE
 GUI simplifying the creation of plots from dropout data.
 }
 \details{
-Plot dropout data as heatmap arranged by, average peak height, 
+Plot dropout data as heatmap arranged by, average peak height,
 amount, concentration, or sample name. It is also possible to plot the
 empirical cumulative distribution (ecdp) of the peak heights of surviving heterozygote
 alleles (with dropout of the parter allele), or a dotplot of all dropout events.

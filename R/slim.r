@@ -85,13 +85,13 @@ slim <- function(data, fix = NULL, stack = NULL,
 
   # Handle fix="" and fix=character(0)
   if (length(fix) == 0 || all(nchar(fix) == 0)) {
-    fix = NULL
+    fix <- NULL
     message("'fix' set to NULL")
   }
 
   # Handle stack="" and stack=character(0)
   if (length(stack) == 0 || all(nchar(stack) == 0)) {
-    stack = NULL
+    stack <- NULL
     message("'stack' set to NULL")
   }
 

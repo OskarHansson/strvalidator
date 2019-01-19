@@ -36,7 +36,7 @@ readPanelsFile <- function(panel.files, debug = FALSE) {
   if (!is.na(panel.files)) {
 
     # Open file for reading.
-    f1 = file(panel.files[1], open = "r")
+    f1 <- file(panel.files[1], open = "r")
 
     # Read raw text.
     allTextRaw <- readLines(f1)

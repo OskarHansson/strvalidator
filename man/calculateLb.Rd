@@ -32,7 +32,7 @@ considered. If TRUE sex markers will be removed.}
 \item{qs.rm}{logical. Default is TRUE indicating that all quality sensors
 will be removed.}
 
-\item{na}{numeric. Numeric to replace NA values e.g. locus dropout can be 
+\item{na}{numeric. Numeric to replace NA values e.g. locus dropout can be
 given a peak height equal to the limit of detection threshold, or zero.
 Default is NULL indicating that NA will be treated as missing values.}
 
@@ -68,7 +68,7 @@ markers. A kit should be provided for filtering of known profile, sex
 markers, or quality sensors. If not automatic detection will be attempted.
 If missing, dye will be added according to kit. Off-ladder alleles and
 quality sensors are by default removed from the dataset.
-Sex markers are optionally removed. 
+Sex markers are optionally removed.
 Some columns in the result may vary:
 TPH: Total (marker) Peak Height.
 TPPH: Total Profile Peak Height.
@@ -82,7 +82,6 @@ data(set2)
 # Calculate inter-locus balance.
 res <- calculateLb(data = set2)
 print(res)
-
 }
 \references{
 Torben Tvedebrink et.al.,

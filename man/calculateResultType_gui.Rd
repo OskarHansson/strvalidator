@@ -23,7 +23,7 @@ TRUE
 GUI wrapper for the \code{\link{calculateResultType}} function.
 }
 \details{
-Simplifies the use of \code{\link{calculateResultType}} by providing a 
+Simplifies the use of \code{\link{calculateResultType}} by providing a
 graphical user interface.
 }
 \seealso{

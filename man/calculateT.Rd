@@ -27,7 +27,7 @@ Calculates point estimates for the stochastic threshold.
 \details{
 Given a data.frame with observed values for the dependent variable
 (column 'Dep') and explanary values (column 'Exp') point estimates
-corresponding to a risk level of \code{p.dropout} are calculated 
+corresponding to a risk level of \code{p.dropout} are calculated
 using logistic regression: \code{glm(Dep~Exp, family=binomial("logit")}.
 A conservative estimate is calculated from the \code{pred.int}.
 In addition the model parameters B0 (intercept) and B1 (slope),

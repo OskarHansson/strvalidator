@@ -29,7 +29,7 @@ is a matrix with the total bins overlap in number of base pairs. If an allele
 frequency database is provided the overlap at each bin is multiplied with the
 frequency of the corresponding allele. If no frequence exist for that allele
 a frequency of 5/2N will be used. X and Y alleles is given the frequency 1.
-A scoring matrix can be supplied to reduce the effect by spectral distance, 
+A scoring matrix can be supplied to reduce the effect by spectral distance,
 meaning that overlap with the neighboring dye can be counted in full (100%)
 while a non neighbor dye get its overlap reduced (to e.g. 10%).
 }
