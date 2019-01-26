@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 26.01.2019: Fixed table not updated after selecting from drop-down (tcltk)
 # 07.08.2017: Added audit trail.
 # 17.07.2017: Fixed "Error in if (nchar(text) > 0) set_value(text) : argument is of length zero"
 # 13.07.2017: Fixed issue with button handlers.
@@ -59,6 +60,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
                          name = NULL, edit = TRUE, debug = FALSE, parent = NULL) {
   .gData <- data
   .gDataName <- name
+  .showMsg <- TRUE
 
   # gedit cannot handle zero length 'text'.
   if (length(.gDataName) == 0) {
@@ -169,28 +171,13 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      if ("Sample.Name" %in% names(.gData)) {
-        samples <- length(unique(.gData$Sample.Name))
-      } else if ("Sample.File.Name" %in% names(.gData)) {
-        samples <- length(unique(.gData$Sample.File.Name))
-      } else if (any(grepl("SAMPLE", names(.gData), ignore.case = TRUE))) {
-        # Get (first) column name containing "Sample".
-        sampleCol <- names(.gData)[grep("SAMPLE", names(.gData), ignore.case = TRUE)[1]]
-        # Grab sample names.
-        samples <- length(unique(.gData[, sampleCol]))
-      } else {
-        samples <- "<NA>"
-      }
-      svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
-      svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
-      svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
-
       # Refresh info and load table.
+      .refreshInfo()
       .refreshTbl()
     } else {
-      svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
-      svalue(g0_columns_lbl) <- paste(" ", "<NA>", "columns,")
-      svalue(g0_rows_lbl) <- paste(" ", "<NA>", "rows")
+
+      # Clear info.
+      .refreshInfo(clear = TRUE)
     }
   })
 
@@ -339,56 +326,11 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
   f3 <- gvbox(container = gv, expand = TRUE)
 
-  if (is.null(.gData)) {
-    data_tbl <- gWidgets2::gtable(
-      items = data.frame(Data = "There is no data"),
-      container = f3, expand = TRUE
-    )
-  } else {
-
-    # Get options.
-    val_limit <- svalue(f1_limit_chk)
-    val_max <- as.numeric(svalue(f1_max_edt))
-    val_attr <- svalue(f1_show_attr_chk)
-
-    # Update info.
-    if ("Sample.Name" %in% names(.gData)) {
-      samples <- length(unique(.gData$Sample.Name))
-    } else if ("Sample.File.Name" %in% names(.gData)) {
-      samples <- length(unique(.gData$Sample.File.Name))
-    } else if (any(grepl("SAMPLE", names(.gData), ignore.case = TRUE))) {
-      # Get (first) column name containing "Sample".
-      sampleCol <- names(.gData)[grep("SAMPLE", names(.gData), ignore.case = TRUE)[1]]
-      # Grab sample names.
-      samples <- length(unique(.gData[, sampleCol]))
-    } else {
-      samples <- "<NA>"
-    }
-    svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
-    svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
-    svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
-
-    # Load data.
-    if (edit) {
-      if (val_limit) {
-        data_tbl <<- gdf(
-          items = head(.gData, val_max),
-          container = f3, expand = TRUE
-        )
-      } else {
-        data_tbl <<- gdf(items = .gData, container = f3, expand = TRUE)
-      }
-    } else {
-      if (val_limit) {
-        data_tbl <<- gWidgets2::gtable(
-          items = head(.gData, val_max),
-          container = f3, expand = TRUE
-        )
-      } else {
-        data_tbl <<- gWidgets2::gtable(items = .gData, container = f3, expand = TRUE)
-      }
-    }
-  }
+  # Add dummy table.
+  data_tbl <- gWidgets2::gtable(
+    items = data.frame(Data = "There is no data"),
+    container = f3, expand = TRUE
+  )
 
   # INTERNAL FUNCTIONS ########################################################
 
@@ -438,6 +380,35 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     }
   }
 
+  .refreshInfo <- function(clear = FALSE) {
+    if (debug) {
+      print(paste("IN:", match.call()[[1]]))
+    }
+
+    if (!clear) {
+      # Update info.
+      if ("Sample.Name" %in% names(.gData)) {
+        samples <- length(unique(.gData$Sample.Name))
+      } else if ("Sample.File.Name" %in% names(.gData)) {
+        samples <- length(unique(.gData$Sample.File.Name))
+      } else if (any(grepl("SAMPLE", names(.gData), ignore.case = TRUE))) {
+        # Get (first) column name containing "Sample".
+        sampleCol <- names(.gData)[grep("SAMPLE", names(.gData), ignore.case = TRUE)[1]]
+        # Grab sample names.
+        samples <- length(unique(.gData[, sampleCol]))
+      } else {
+        samples <- "<NA>"
+      }
+      svalue(g0_samples_lbl) <- paste(" ", samples, "samples,")
+      svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
+      svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
+    } else {
+      svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
+      svalue(g0_columns_lbl) <- paste(" ", "<NA>", "columns,")
+      svalue(g0_rows_lbl) <- paste(" ", "<NA>", "rows")
+    }
+  }
+
   .refreshTbl <- function() {
     if (debug) {
       print(paste("IN:", match.call()[[1]]))
@@ -456,32 +427,41 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       # Update "save as" with current dataset name.
       svalue(save_txt) <- paste(.gDataName, "_edit", sep = "")
 
-      # Refresh widget by removing it and...
-      delete(f3, data_tbl)
+      # Check which toolkit we are using.
+      if (gtoolkit() == "tcltk") {
+        # tcltk gtable and gdf does not like NA values.
 
-      visible(f3) <- FALSE
-      # ...creating a new table.
-      if (edit) {
-        if (val_limit) {
-          data_tbl <<- gdf(
-            items = head(.gData, val_max),
-            container = f3, expand = TRUE
-          )
-        } else {
-          data_tbl <<- gdf(items = .gData, container = f3, expand = TRUE)
-        }
-      } else {
-        if (val_limit) {
-          data_tbl <<- gWidgets2::gtable(
-            items = head(.gData, val_max),
-            container = f3, expand = TRUE
-          )
-        } else {
-          data_tbl <<- gWidgets2::gtable(items = .gData, container = f3, expand = TRUE)
+        # Check for NA if tcltk is used.
+        if (any(is.na(.gData))) {
+          .gData[is.na(.gData)] <<- ""
+          message("tcltk compatibility: NA values replaced with empty string.")
+
+          if (.showMsg) {
+            warning_dlg <- gbasicdialog(title = "TEST", handler = function(h, ...) {
+              assign(x = ".strvalidator_editData_gui_show", value = svalue(show_msg_chk), envir = env)
+            })
+            g <- ggroup(cont = warning_dlg, horizontal = FALSE)
+            glabel("The tcltk gui toolkit does not handle NA values in tables.", cont = g)
+            glabel("NA values replaced with empty string.", cont = g)
+            glabel("If you edit the table, NA values will be permanently replaced.", cont = g)
+            show_msg_chk <- gcheckbox(text = "Don't show this message again.", container = g)
+            visible(warning_dlg)
+          }
         }
       }
 
-      visible(f3) <- TRUE
+      # Replace data with limited or full dataset.
+      if (val_limit) {
+        data_tbl[] <<- head(.gData, val_max)
+        message("Output limited to ", val_max, " rows.")
+      } else {
+        data_tbl[] <<- .gData
+        message("Output all data.")
+      }
+    } else {
+
+      # Update with place holder.
+      data_tbl[] <<- data.frame(Data = "There is no data")
     }
   }
 
@@ -519,6 +499,9 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       if (exists(".strvalidator_editData_gui_maxrow", envir = env, inherits = FALSE)) {
         svalue(f1_max_edt) <- get(".strvalidator_editData_gui_maxrow", envir = env)
       }
+      if (exists(".strvalidator_editData_gui_show", envir = env, inherits = FALSE)) {
+        .showMsg <<- get(".strvalidator_editData_gui_show", envir = env)
+      }
 
       if (debug) {
         print("Saved settings loaded!")
@@ -534,6 +517,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       assign(x = ".strvalidator_editData_gui_attr", value = svalue(f1_show_attr_chk), envir = env)
       assign(x = ".strvalidator_editData_gui_limit", value = svalue(f1_limit_chk), envir = env)
       assign(x = ".strvalidator_editData_gui_maxrow", value = svalue(f1_max_edt), envir = env)
+      assign(x = ".strvalidator_editData_gui_show", value = .showMsg, envir = env)
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_editData_gui_savegui", envir = env, inherits = FALSE)) {
@@ -548,6 +532,9 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       if (exists(".strvalidator_editData_gui_maxrow", envir = env, inherits = FALSE)) {
         remove(".strvalidator_editData_gui_maxrow", envir = env)
       }
+      if (exists(".strvalidator_editData_gui_show", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_editData_gui_show", envir = env)
+      }
 
       if (debug) {
         print("Settings cleared!")
@@ -560,6 +547,10 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   }
 
   # END GUI ###################################################################
+
+  # Populate table.
+  .refreshInfo()
+  .refreshTbl()
 
   # Load GUI settings.
   .loadSavedSettings()
