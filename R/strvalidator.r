@@ -1,7 +1,6 @@
 ################################################################################
 # TODO LIST
 # TODO: Object size not sorted correct (seem to sort as character)
-# TODO: Multiple selection not working.
 # TODO: USe viwweports instead of grid.arrange in complex plots?
 # http://www.imachordata.com/extra-extra-get-your-gridextra/#comment-146
 # TODO: Bug in 'save description': if project A is open in the 'workspace' and

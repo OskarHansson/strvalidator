@@ -1,3 +1,11 @@
+Version 2.1.0.9003
+------------------------------------------------------------------------------
+* editData_gui: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
+
+Version 2.1.0.9002
+------------------------------------------------------------------------------
+* editData_gui: Fixed table not updated after selecting from drop-down (tcltk)
+
 Version 2.1.0.9001
 ------------------------------------------------------------------------------
 * Branch for tcltk compatibility

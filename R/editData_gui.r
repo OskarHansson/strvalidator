@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 27.01.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 26.01.2019: Fixed table not updated after selecting from drop-down (tcltk)
 # 07.08.2017: Added audit trail.
 # 17.07.2017: Fixed "Error in if (nchar(text) > 0) set_value(text) : argument is of length zero"
@@ -24,9 +25,6 @@
 # as alternative to colum name 'Sample.Name'. 'Sample' is case in-sensitive.
 # 04.05.2015: Added 'Sample.File.Name' as a defined alternative to Sample.Name.
 # 02.01.2015: Copy attribute list to new object upon 'Save As'.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 08.05.2014: Implemented 'checkDataset'.
 
 #' @title Edit or View Data Frames
 #'
@@ -60,7 +58,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
                          name = NULL, edit = TRUE, debug = FALSE, parent = NULL) {
   .gData <- data
   .gDataName <- name
-  .showMsg <- TRUE
+  .hideMsg <- FALSE
 
   # gedit cannot handle zero length 'text'.
   if (length(.gDataName) == 0) {
@@ -83,7 +81,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   attr_text <- gtext("", container = w_attributes)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -91,6 +89,13 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      return(TRUE) # Destroys window under tcltk, but not RGtk2.
+    } else {
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 
@@ -158,6 +163,8 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
+
+    message("Dataset ", val_obj, " was selected.")
 
     # Check if suitable.
     ok <- checkDataset(
@@ -436,16 +443,21 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
           .gData[is.na(.gData)] <<- ""
           message("tcltk compatibility: NA values replaced with empty string.")
 
-          if (.showMsg) {
-            warning_dlg <- gbasicdialog(title = "TEST", handler = function(h, ...) {
-              assign(x = ".strvalidator_editData_gui_show", value = svalue(show_msg_chk), envir = env)
-            })
-            g <- ggroup(cont = warning_dlg, horizontal = FALSE)
-            glabel("The tcltk gui toolkit does not handle NA values in tables.", cont = g)
-            glabel("NA values replaced with empty string.", cont = g)
-            glabel("If you edit the table, NA values will be permanently replaced.", cont = g)
+          if (!.hideMsg) {
+            d <- gbasicdialog(
+              title = "Warning", parent = w,
+              handler = function(h, ...) {
+                message("in dialog1, value ", .hideMsg)
+                .hideMsg <<- svalue(show_msg_chk)
+                message("in dialog2, value ", .hideMsg)
+              }
+            )
+            g <- ggroup(cont = d, horizontal = FALSE)
+            glabel("The tcltk gui toolkit does not handle NA values in tables.", container = g)
+            glabel("NA values will be replaced with empty strings.", container = g)
+            glabel("If you edit the table, NA values will be permanently replaced.", container = g)
             show_msg_chk <- gcheckbox(text = "Don't show this message again.", container = g)
-            visible(warning_dlg)
+            visible(d)
           }
         }
       }
@@ -453,10 +465,10 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       # Replace data with limited or full dataset.
       if (val_limit) {
         data_tbl[] <<- head(.gData, val_max)
-        message("Output limited to ", val_max, " rows.")
+        message("Showing ", val_max, " rows.")
       } else {
         data_tbl[] <<- .gData
-        message("Output all data.")
+        message("Showing all data.")
       }
     } else {
 
@@ -499,8 +511,8 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       if (exists(".strvalidator_editData_gui_maxrow", envir = env, inherits = FALSE)) {
         svalue(f1_max_edt) <- get(".strvalidator_editData_gui_maxrow", envir = env)
       }
-      if (exists(".strvalidator_editData_gui_show", envir = env, inherits = FALSE)) {
-        .showMsg <<- get(".strvalidator_editData_gui_show", envir = env)
+      if (exists(".strvalidator_editData_gui_hide", envir = env, inherits = FALSE)) {
+        .hideMsg <<- get(".strvalidator_editData_gui_hide", envir = env)
       }
 
       if (debug) {
@@ -517,7 +529,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       assign(x = ".strvalidator_editData_gui_attr", value = svalue(f1_show_attr_chk), envir = env)
       assign(x = ".strvalidator_editData_gui_limit", value = svalue(f1_limit_chk), envir = env)
       assign(x = ".strvalidator_editData_gui_maxrow", value = svalue(f1_max_edt), envir = env)
-      assign(x = ".strvalidator_editData_gui_show", value = .showMsg, envir = env)
+      assign(x = ".strvalidator_editData_gui_hide", value = .hideMsg, envir = env)
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_editData_gui_savegui", envir = env, inherits = FALSE)) {
@@ -532,8 +544,8 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       if (exists(".strvalidator_editData_gui_maxrow", envir = env, inherits = FALSE)) {
         remove(".strvalidator_editData_gui_maxrow", envir = env)
       }
-      if (exists(".strvalidator_editData_gui_show", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_editData_gui_show", envir = env)
+      if (exists(".strvalidator_editData_gui_hide", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_editData_gui_hide", envir = env)
       }
 
       if (debug) {
@@ -548,12 +560,12 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
   # END GUI ###################################################################
 
+  # Load GUI settings.
+  .loadSavedSettings()
+
   # Populate table.
   .refreshInfo()
   .refreshTbl()
-
-  # Load GUI settings.
-  .loadSavedSettings()
 
   # Show GUI.
   visible(w) <- TRUE
