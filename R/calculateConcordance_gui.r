@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.02.2019: Adjusted GUI for tcltk.
+# 10.02.2019: Fixed tcltk Error in structure(.External(.C_dotTclObjv, objv)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -103,7 +105,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     spacing = 2, container = gv
   )
 
-  f0g0 <- glayout(container = f0, expand = TRUE, fill = "both")
+  f0g0 <- glayout(container = f0, expand = TRUE, fill = "both", spacing = 2)
 
   f0g0[1, 1] <- glabel(text = "Dataset:", container = f0g0)
 
@@ -125,7 +127,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  f0g0[3, 1:3] <- f0_add_btn <- gbutton(text = "Add", container = f0g0)
+  f0_add_btn <- gbutton(text = "Add", container = f0)
 
   # HANDLERS ------------------------------------------------------------------
 
@@ -211,7 +213,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
 
-  f1g0 <- glayout(container = f1, expand = TRUE, fill = "both")
+  f1g0 <- glayout(container = f1, expand = TRUE, fill = "both", spacing = 2)
 
   f1g0[1, 1] <- glabel(
     text = "Delimeter for alleles in genotype:",
@@ -240,7 +242,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     width = 15, container = f1g0
   )
 
-  f1g0[4, 1] <- f1_all_chk <- gcheckbox(
+  f1_all_chk <- gcheckbox(
     text = "Include missing samples in result.",
     checked = FALSE, container = f1
   )
@@ -252,7 +254,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   f3 <- gframe(
     text = "Selected datasets",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
@@ -280,7 +282,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   f4 <- gframe(
     text = "Save as",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 

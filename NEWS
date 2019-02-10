@@ -1,3 +1,11 @@
+Version 2.1.0.9004
+------------------------------------------------------------------------------
+* calculateConcordance_gui: Minor adjustments in GUI under tcltk.
+* calculateConcordance_gui: Fixed Error in structure(.External(.C_dotTclObjv, objv), class = "tclObj") : 
+  [tcl] cannot use geometry manager grid inside .2.5.1.3 which already has slaves managed by pack.
+ (tcltk)
+* editData_gui: tlctk version dependent fix for (svalue(savegui_chk))
+
 Version 2.1.0.9003
 ------------------------------------------------------------------------------
 * editData_gui: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
