@@ -1,3 +1,8 @@
+Version 2.1.0.9005
+------------------------------------------------------------------------------
+* Minor adjustments in GUI under tcltk in functions:  calculateHb_gui, tableBalance_gui, plotBalance_gui, ggsave_gui
+* tlctk version dependent fix for (svalue(savegui_chk)) in functions: calculateHb_gui, tableBalance_gui, plotBalance_gui, ggsave_gui
+
 Version 2.1.0.9004
 ------------------------------------------------------------------------------
 * calculateConcordance_gui: Minor adjustments in GUI under tcltk.

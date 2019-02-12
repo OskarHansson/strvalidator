@@ -4,6 +4,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.02.2019: Minor adjustments to tcltk gui.
+# 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 01.08.2017: Added kit attribute to result.
 # 13.07.2017: Fixed issue with button handlers.
@@ -59,7 +61,7 @@ tableBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   w <- gwindow(title = "Make balance table", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -67,6 +69,24 @@ tableBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 
@@ -99,7 +119,7 @@ tableBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 5,
     container = gv
   )
 
@@ -164,7 +184,7 @@ tableBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 20,
+    spacing = 5,
     container = gv
   )
 
@@ -205,7 +225,7 @@ tableBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   glabel(text = "Name for result:", container = f2)
 
-  f2_save_edt <- gedit(text = "", width = 45, container = f2)
+  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE)
 
   # BUTTON ####################################################################
 

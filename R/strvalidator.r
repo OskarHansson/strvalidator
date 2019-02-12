@@ -237,7 +237,7 @@ strvalidator <- function(debug = FALSE) {
 
   balance_tab <- ggroup(
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = nb,
     label = .balance_tab_name,
