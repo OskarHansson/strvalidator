@@ -1,3 +1,8 @@
+Version 2.1.0.9006
+------------------------------------------------------------------------------
+* Adjustments in strvalidator (main GUI) for better experience under tcltk.
+* Updates to welcome tab, with links to webpages.
+
 Version 2.1.0.9005
 ------------------------------------------------------------------------------
 * Minor adjustments in GUI under tcltk in functions:  calculateHb_gui, tableBalance_gui, plotBalance_gui, ggsave_gui

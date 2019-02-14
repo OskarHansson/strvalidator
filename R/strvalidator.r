@@ -36,6 +36,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.02.2019: Adaptations to gWidgets2tcltk and updated welcome tab.
 # 19.01.2019: Adaptations to gWidgets2tcltk.
 # 18.07.2018: Added button to plot groups in 'Result' tab.
 # 17.07.2018: Added button to calculate stochastic thresholds in 'Dropout' tab.
@@ -55,7 +56,6 @@
 # 07.09.2016: tableBalance_gui replaced by tableHb_gui.
 # 29.08.2016: calculateBalance_gui replaced by calculateHb_gui.
 # 15.08.2016: Removed calculateHeterozygous, added calculateCopies in the 'Edit' tab.
-# 04.08.2016: Added button to plot contamination in the 'Result' tab.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -300,38 +300,72 @@ strvalidator <- function(debug = FALSE) {
 
   # START #####################################################################
 
-  glabel("", container = start_tab) # Adds some space.
+  # Vertical main group.
+  start_f1 <- gframe(
+    horizontal = FALSE,
+    container = start_tab,
+    spacing = 5,
+    expand = TRUE
+  )
 
   # STR TYPING KIT ------------------------------------------------------------
 
-  about_txt <- paste("STR-validator is a package ",
-    "developed for validation and process control of methods ",
-    "and instruments in a forensic genetic laboratory setting. ",
-    "This graphical user interface make it easy to ",
-    "analyse validation data in accordance with ENFSI and SWGDAM ",
-    "guidelines.",
-    "The code has been extensively tested in order to assure correct results. ",
+  about_txt <- paste("STR-validator is a package developed for validation ",
+    "and process control of methods and instruments in a forensic genetic ",
+    "laboratory setting. This graphical user interface make it easy to ",
+    "analyse data in accordance with European Network of Forensic Science ",
+    "Institutes (ENFSI) and Scientific Working Group on DNA Analysis Methods ",
+    "(SWGDAM) validation guidelines.",
+    "\n\n",
+    "The code has been extensively tested in order to assure correct results.",
     "\n\n",
     "Created by:\n",
-    "Oskar Hansson, Forensic Genetics (OUS, Norway)\n\n",
-    "General information and tutorials:\n",
-    "https://sites.google.com/site/forensicapps/strvalidator\n\n",
-    "Facebook:\n",
-    "https://www.facebook.com/pages/STR-validator/240891279451450?ref=tn_tnmn\n",
-    "https://www.facebook.com/groups/strvalidator/\n\n",
-    "Please report bugs to:\n",
-    "https://github.com/OskarHansson/strvalidator/issues\n\n",
-    "The source is hosted at GitHub:\n",
-    "https://github.com/OskarHansson/strvalidator",
+    "Oskar Hansson, Forensic Genetics (Oslo University Hospital, Norway)",
     sep = ""
   )
 
   gtext(
     text = about_txt, width = NULL, height = NULL, font.attr = NULL,
-    wrap = TRUE, expand = TRUE, container = start_tab
+    wrap = TRUE, expand = TRUE, container = start_f1, fill = TRUE,
+    anchor = c(-1, 0)
   )
 
-  start_license_btn <- gbutton(text = "License", container = start_tab, expand = FALSE)
+  webpage_btn <- gbutton(text = "STR-validator website", container = start_f1)
+  tooltip(webpage_btn) <- "General information, workshops, and tutorials"
+
+  addHandlerChanged(webpage_btn, handler = function(h, ...) {
+    browseURL("https://sites.google.com/site/forensicapps/strvalidator")
+  })
+
+  facebook_btn <- gbutton(text = "Facebook page", container = start_f1)
+  tooltip(facebook_btn) <- "News, tips, and other information"
+
+  addHandlerChanged(facebook_btn, handler = function(h, ...) {
+    browseURL("https://www.facebook.com/STRvalidator")
+  })
+
+  community_btn <- gbutton(text = "Support forum", container = start_f1)
+  tooltip(community_btn) <- "Get help from the Facebook user community"
+
+  addHandlerChanged(community_btn, handler = function(h, ...) {
+    browseURL("https://www.facebook.com/groups/strvalidator/")
+  })
+
+  report_btn <- gbutton(text = "Report bugs", container = start_f1)
+  tooltip(report_btn) <- "Report bugs, errors, and issues"
+
+  addHandlerChanged(report_btn, handler = function(h, ...) {
+    browseURL("https://github.com/OskarHansson/strvalidator/issues")
+  })
+
+  source_btn <- gbutton(text = "Source code", container = start_f1)
+  tooltip(source_btn) <- "Take a look at future, current, and past source code"
+
+  addHandlerChanged(source_btn, handler = function(h, ...) {
+    browseURL("https://github.com/OskarHansson/strvalidator")
+  })
+
+  start_license_btn <- gbutton(text = "License", container = start_f1, expand = FALSE)
 
   addHandlerChanged(start_license_btn, handler = function(h, ...) {
     license_txt <- paste("Copyright (C) 2013 Oskar Hansson\n\n",
@@ -364,7 +398,7 @@ strvalidator <- function(debug = FALSE) {
   project_f1 <- ggroup(
     horizontal = FALSE,
     container = project_tab,
-    spacing = 10,
+    spacing = 5,
     expand = TRUE
   )
 
@@ -387,7 +421,7 @@ strvalidator <- function(debug = FALSE) {
   project_f2 <- gframe(
     text = "Projects",
     horizontal = TRUE,
-    spacing = 10,
+    spacing = 5,
     container = project_f1,
     expand = TRUE
   )
@@ -395,12 +429,10 @@ strvalidator <- function(debug = FALSE) {
   # Button group.
   project_g1 <- ggroup(
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 5,
     container = project_f2,
     expand = FALSE
   )
-
-  glabel("", container = project_g1) # Adds some space.
 
   project_open_btn <- gbutton(text = "Open", container = project_g1)
   tooltip(project_open_btn) <- "Open selected project"
@@ -505,14 +537,15 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE,
     use.scrollwindow = FALSE,
     container = project_f2,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   # Projects list.
   project_tbl <- gWidgets2::gtable(
     items = data.frame(
-      Name = "", Date = "",
-      Size = "", Id = "",
+      Name = "[Name]", Date = "[Date]",
+      Size = "[Size]", Id = "[Id]",
       stringsAsFactors = FALSE
     ),
     multiple = TRUE,
@@ -568,24 +601,19 @@ strvalidator <- function(debug = FALSE) {
   project_f3 <- gframe(
     text = "Description",
     horizontal = TRUE,
-    spacing = 10,
+    spacing = 5,
     container = project_f1,
     expand = TRUE
   )
 
   # Button group.
   project_g3 <- ggroup(
-    horizontal = FALSE, spacing = 10,
+    horizontal = FALSE, spacing = 5,
     container = project_f3, expand = FALSE
   )
 
   project_save_btn <- gbutton(text = "Save", container = project_g3)
   tooltip(project_save_btn) <- "Save project description"
-
-
-  glabel("", container = project_g1) # Adds some space.
-
-  glabel("", container = project_g1) # Adds some space.
 
   addHandlerChanged(project_save_btn, handler = function(h, ...) {
     enabled(project_save_btn) <- FALSE
@@ -612,7 +640,7 @@ strvalidator <- function(debug = FALSE) {
   # Button group.
   project_g4 <- ggroup(
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 5,
     container = project_f3,
     expand = TRUE
   )
@@ -623,7 +651,7 @@ strvalidator <- function(debug = FALSE) {
     container = project_g4
   )
   proj_info_txt <- gtext(
-    text = NULL, height = 300, expand = TRUE,
+    text = "[Project description]", height = 50, expand = TRUE,
     wrap = TRUE, container = project_g4
   )
 
@@ -681,7 +709,7 @@ strvalidator <- function(debug = FALSE) {
 
   ws_loaded_tbl <- gWidgets2::gtable(
     items = data.frame(
-      Object = "", Size = "",
+      Object = "[Object]", Size = "[Size]",
       stringsAsFactors = FALSE
     ),
     multiple = TRUE,
@@ -1137,18 +1165,12 @@ strvalidator <- function(debug = FALSE) {
   workspace_f2g1 <- ggroup(
     horizontal = FALSE,
     container = workspace_f2,
-
     expand = FALSE
   )
-
-  glabel("", container = workspace_f2g1) # Adds some space.
 
   ws_r_refresh_btn <- gbutton(text = "Refresh dropdown", container = workspace_f2g1)
 
   ws_r_load_btn <- gbutton(text = "Load object", container = workspace_f2g1)
-
-
-  glabel("", container = workspace_f2g1) # Adds some space.
 
   ws_r_drp <- gcombobox(
     items = c(
@@ -1191,10 +1213,7 @@ strvalidator <- function(debug = FALSE) {
 
   # DRY LAB  ##################################################################
 
-  glabel("", container = drylab_tab) # Adds some space.
-
-
-  dry_grid <- glayout(container = drylab_tab)
+  dry_grid <- glayout(container = drylab_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
@@ -1281,10 +1300,7 @@ strvalidator <- function(debug = FALSE) {
 
   # EDIT  #####################################################################
 
-  glabel("", container = edit_tab) # Adds some space.
-
-
-  edit_grid <- glayout(container = edit_tab)
+  edit_grid <- glayout(container = edit_tab, spacing = 5)
 
   # EDIT ----------------------------------------------------------------------
 
@@ -1603,9 +1619,7 @@ strvalidator <- function(debug = FALSE) {
   # AT  #######################################################################
 
 
-  glabel("", container = at_tab) # Adds some space.
-
-  at_grid <- glayout(container = at_tab)
+  at_grid <- glayout(container = at_tab, spacing = 5)
 
 
   # VIEW ----------------------------------------------------------------------
@@ -1687,9 +1701,7 @@ strvalidator <- function(debug = FALSE) {
   # STUTTER  ##################################################################
 
 
-  glabel("", container = stutter_tab) # Adds some space.
-
-  stutter_grid <- glayout(container = stutter_tab)
+  stutter_grid <- glayout(container = stutter_tab, spacing = 5)
 
 
   # VIEW ----------------------------------------------------------------------
@@ -1783,9 +1795,8 @@ strvalidator <- function(debug = FALSE) {
 
   # BALANCE  ##################################################################
 
-  glabel("", container = balance_tab) # Adds some space.
 
-  balance_g1 <- glayout(container = balance_tab)
+  balance_g1 <- glayout(container = balance_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
@@ -1816,7 +1827,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = balance_tab
   )
 
-  balance_g2 <- glayout(container = balance_f2)
+  balance_g2 <- glayout(container = balance_f2, spacing = 5)
 
   # CALCULATE -----------------------------------------------------------------
 
@@ -1908,7 +1919,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = balance_tab
   )
 
-  balance_g3 <- glayout(container = balance_f3)
+  balance_g3 <- glayout(container = balance_f3, spacing = 5)
 
 
   # CALCULATE -----------------------------------------------------------------
@@ -1982,7 +1993,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = balance_tab
   )
 
-  balance_g4 <- glayout(container = balance_f4)
+  balance_g4 <- glayout(container = balance_f4, spacing = 5)
 
   # CALCULATE -----------------------------------------------------------------
 
@@ -2029,9 +2040,8 @@ strvalidator <- function(debug = FALSE) {
 
   # CONCORDANCE  ##############################################################
 
-  glabel("", container = concordance_tab) # Adds some space.
 
-  conc_grid <- glayout(container = concordance_tab)
+  conc_grid <- glayout(container = concordance_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
@@ -2077,9 +2087,8 @@ strvalidator <- function(debug = FALSE) {
 
   # DROPOUT  ##################################################################
 
-  glabel("", container = drop_tab) # Adds some space.
 
-  drop_grid <- glayout(container = drop_tab)
+  drop_grid <- glayout(container = drop_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
@@ -2198,9 +2207,8 @@ strvalidator <- function(debug = FALSE) {
 
   # MIXTURE  ##################################################################
 
-  glabel("", container = mixture_tab) # Adds some space.
 
-  mix_grid <- glayout(container = mixture_tab)
+  mix_grid <- glayout(container = mixture_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
@@ -2250,9 +2258,8 @@ strvalidator <- function(debug = FALSE) {
 
   # RESULT  ###################################################################
 
-  glabel("", container = result_tab) # Adds some space.
 
-  result_grid <- glayout(container = result_tab)
+  result_grid <- glayout(container = result_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
@@ -2283,7 +2290,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = result_tab
   )
 
-  result_g1 <- glayout(container = result_f1)
+  result_g1 <- glayout(container = result_f1, spacing = 5)
 
 
   # CALCULATE -----------------------------------------------------------------
@@ -2337,7 +2344,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = result_tab
   )
 
-  result_g2 <- glayout(container = result_f2)
+  result_g2 <- glayout(container = result_f2, spacing = 5)
 
 
   # CALCULATE -----------------------------------------------------------------
@@ -2392,7 +2399,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = result_tab
   )
 
-  result_g3 <- glayout(container = result_f3)
+  result_g3 <- glayout(container = result_f3, spacing = 5)
 
   # PLOT PEAKS ----------------------------------------------------------------
 
@@ -2423,7 +2430,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = result_tab
   )
 
-  result_g4 <- glayout(container = result_f4)
+  result_g4 <- glayout(container = result_f4, spacing = 5)
 
   # PLOT PEAKS ----------------------------------------------------------------
 
@@ -2475,7 +2482,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = result_tab
   )
 
-  result_g5 <- glayout(container = result_f5)
+  result_g5 <- glayout(container = result_f5, spacing = 5)
 
 
   # CALCULATE -----------------------------------------------------------------
@@ -2593,7 +2600,7 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE, container = result_tab
   )
 
-  result_g6 <- glayout(container = result_f6)
+  result_g6 <- glayout(container = result_f6, spacing = 5)
 
 
   # CALCULATE -----------------------------------------------------------------
@@ -2642,9 +2649,8 @@ strvalidator <- function(debug = FALSE) {
 
   # PRECISION  ################################################################
 
-  glabel("", container = precision_tab) # Adds some space.
 
-  precision_grid <- glayout(container = precision_tab)
+  precision_grid <- glayout(container = precision_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
@@ -2714,9 +2720,8 @@ strvalidator <- function(debug = FALSE) {
 
   # PULLUP  ###################################################################
 
-  glabel("", container = pullup_tab) # Adds some space.
 
-  pull_grid <- glayout(container = pullup_tab)
+  pull_grid <- glayout(container = pullup_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
