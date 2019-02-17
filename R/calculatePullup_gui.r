@@ -342,7 +342,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
   glabel(text = "Name for result:", container = f4)
 
-  f4_save_edt <- gedit(text = "", container = f4, expand = TRUE)
+  f4_save_edt <- gedit(text = "", container = f4, expand = TRUE, fill = TRUE)
 
   glabel(text = " Kit attribute:", container = f4)
 

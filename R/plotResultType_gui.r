@@ -282,7 +282,7 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE)
+  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE, fill = TRUE)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 

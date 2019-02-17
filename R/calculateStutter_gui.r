@@ -365,7 +365,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   glabel(text = "Name for result:", container = f2)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE)
+  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
 
   glabel(text = " Kit attribute:", container = f2)
 
