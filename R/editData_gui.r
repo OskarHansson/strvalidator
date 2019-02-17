@@ -1,9 +1,4 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-
-################################################################################
 # CHANGE LOG (last 20 changes)
 # 10.02.2019: Try version dependent fix.
 # 27.01.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -94,7 +89,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
     # Check which toolkit we are using.
     if (gtoolkit() == "tcltk") {
-      if(as.numeric(gsub("[^0-9]", "",  packageVersion("gWidgets2tcltk"))) <= 106){
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
         # Version <= 1.0.6 have the wrong implementation:
         # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
         message("tcltk version <= 1.0.6, returned TRUE!")

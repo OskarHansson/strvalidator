@@ -1,10 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: implement log(P(D)) scale. Quite tricky...
-# TODO: parameter perLocus? Not priority since easy to make subset of dataframe.
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 25.07.2018: Added option to dump model data. Changed default P(D) to 0.01.
 # 10.07.2018: Converts dependent and explanatory values to numeric if necessary.
 # 18.07.2017: Fixed issue with infinite loop for the 'model' button.
@@ -155,7 +151,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   w <- gwindow(title = "Plot dropout prediction", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -163,6 +159,24 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 

@@ -1,10 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.02.2019: Minor adjustments to tcltk gui. Expand gedit.
 # 11.02.2019: Minor adjustments to tcltk gui.
 # 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 25.07.2018: Added instruction in error message.
@@ -141,7 +137,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
   f1g1 <- ggroup(horizontal = TRUE, spacing = 10, container = f1)
 
-  f1g1_name_edt <- gedit(text = name, container = f1g1, expand = TRUE)
+  f1g1_name_edt <- gedit(text = name, container = f1g1, expand = TRUE, fill = TRUE)
 
   f1g1_ext_drp <- gcombobox(
     items = c(

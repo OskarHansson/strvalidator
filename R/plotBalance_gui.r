@@ -1,7 +1,4 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
 # NOTE: Column names used for calculations with data.table is declared
 # in globals.R to avoid NOTES in R CMD CHECK.
 
@@ -26,9 +23,6 @@
 # 08.11.2015: Added options to plot all data 'Facet per marker and wrap by dye'.
 # 29.08.2015: Added importFrom.
 # 17.04.2015: Included a check for plot facet error caused by all NA's.
-# 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
 
 #' @title Plot Balance
 #'
@@ -248,20 +242,25 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
   f1g1[1, 2] <- title_edt <- gedit(
     text = "",
-    width = 40,
-    container = f1g1
+    container = f1g1,
+    expand = TRUE,
+    fill = TRUE
   )
 
   f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
   f1g1[2, 2] <- x_title_edt <- gedit(
     text = "",
-    container = f1g1
+    container = f1g1,
+    expand = TRUE,
+    fill = TRUE
   )
 
   f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
   f1g1[3, 2] <- y_title_edt <- gedit(
     text = "",
-    container = f1g1
+    container = f1g1,
+    expand = TRUE,
+    fill = TRUE
   )
 
   f1g2 <- glayout(container = f1)
@@ -504,7 +503,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE)
+  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE, fill = TRUE)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 

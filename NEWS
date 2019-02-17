@@ -1,3 +1,9 @@
+Version 2.1.0.9007
+------------------------------------------------------------------------------
+* tlctk version dependent fix for (svalue(savegui_chk)) in all remaining functions.
+* Minor adjustments in GUI under tcltk in functions: plotBalance_gui, ggsave_gui, tableBalance_gui, calculateHb_gui, calculateLb_gui
+* auditTrail: removed message printed to console
+
 Version 2.1.0.9006
 ------------------------------------------------------------------------------
 * Adjustments in strvalidator (main GUI) for better experience under tcltk.

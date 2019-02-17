@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 10.07.2018: Fixed error replacing NA's.
 # 10.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 07.08.2017: Added audit trail.
@@ -23,9 +20,6 @@
 # 07.05.2014: Fixed 'Target Value' drop not updated.
 # 07.02.2014: Removed redundant handler for 'f1_column_drp'.
 # 30.11.2013: Fixed info when factors.
-# 27.09.2013: Added option to specify data type and warning for dropout dataset.
-# 26.09.2013: Fixed NA rows in resulting data frame.
-# 16.09.2013: Changed 'edit' to 'combobox' populated with unique values.
 
 #' @title Crop Or Replace
 #'
@@ -69,7 +63,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   w <- gwindow(title = "Crop or replace values in data frames", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -77,6 +71,24 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 

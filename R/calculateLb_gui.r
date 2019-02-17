@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
 # 11.02.2019: Minor adjustments to tcltk gui.
 # 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
@@ -401,7 +398,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   glabel(text = "Name for result:", container = f4)
 
-  f4_save_edt <- gedit(expand = TRUE, container = f4)
+  f4_save_edt <- gedit(expand = TRUE, container = f4, fill = TRUE)
 
   # BUTTON ####################################################################
 

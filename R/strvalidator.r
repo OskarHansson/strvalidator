@@ -7,8 +7,6 @@
 # description is changed in 'Projects' and the project is save from the ws
 # the variable holding the description will be overwritten by an empty/previous value.
 # (must check which project is open and update both?)
-# TODO: Open projects folder does not update 'projects' list (to empty) if no
-# R files in selected folder.
 
 # IMPORTANT: To manually run R CMD check in RStudio all packages must be installed in
 # both the 32 and 64 bit version. Make sure it is possible to start manually
@@ -36,6 +34,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.02.2019: Rearranged buttons on welcome tab.
 # 14.02.2019: Adaptations to gWidgets2tcltk and updated welcome tab.
 # 19.01.2019: Adaptations to gWidgets2tcltk.
 # 18.07.2018: Added button to plot groups in 'Result' tab.
@@ -330,42 +329,44 @@ strvalidator <- function(debug = FALSE) {
     anchor = c(-1, 0)
   )
 
-  webpage_btn <- gbutton(text = "STR-validator website", container = start_f1)
+  button_group <- ggroup(container = start_f1)
+
+  webpage_btn <- gbutton(text = "STR-validator website", container = button_group)
   tooltip(webpage_btn) <- "General information, workshops, and tutorials"
 
   addHandlerChanged(webpage_btn, handler = function(h, ...) {
     browseURL("https://sites.google.com/site/forensicapps/strvalidator")
   })
 
-  facebook_btn <- gbutton(text = "Facebook page", container = start_f1)
+  facebook_btn <- gbutton(text = "Facebook page", container = button_group)
   tooltip(facebook_btn) <- "News, tips, and other information"
 
   addHandlerChanged(facebook_btn, handler = function(h, ...) {
     browseURL("https://www.facebook.com/STRvalidator")
   })
 
-  community_btn <- gbutton(text = "Support forum", container = start_f1)
+  community_btn <- gbutton(text = "Support forum", container = button_group)
   tooltip(community_btn) <- "Get help from the Facebook user community"
 
   addHandlerChanged(community_btn, handler = function(h, ...) {
     browseURL("https://www.facebook.com/groups/strvalidator/")
   })
 
-  report_btn <- gbutton(text = "Report bugs", container = start_f1)
+  report_btn <- gbutton(text = "Report bugs", container = button_group)
   tooltip(report_btn) <- "Report bugs, errors, and issues"
 
   addHandlerChanged(report_btn, handler = function(h, ...) {
     browseURL("https://github.com/OskarHansson/strvalidator/issues")
   })
 
-  source_btn <- gbutton(text = "Source code", container = start_f1)
+  source_btn <- gbutton(text = "Source code", container = button_group)
   tooltip(source_btn) <- "Take a look at future, current, and past source code"
 
   addHandlerChanged(source_btn, handler = function(h, ...) {
     browseURL("https://github.com/OskarHansson/strvalidator")
   })
 
-  start_license_btn <- gbutton(text = "License", container = start_f1, expand = FALSE)
+  start_license_btn <- gbutton(text = "License", container = button_group, expand = FALSE)
 
   addHandlerChanged(start_license_btn, handler = function(h, ...) {
     license_txt <- paste("Copyright (C) 2013 Oskar Hansson\n\n",

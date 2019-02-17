@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.02.2019: Removed messages. Not useful from the STR-validator gui.
 # 24.08.2018: Added argument for logging R-version.
 # 05.08.2017: First version.
 
@@ -99,10 +100,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
     if (is.null(audit.trail)) {
       log.entry <- paste0(prefix, "audit trail created.")
       new.entries <- paste(new.entries, log.entry, sep = "")
-      message(
-        "Audit trail created for ", substitute(obj),
-        " in function ", label, "."
-      )
     }
 
     # Check option to store R version.
@@ -181,7 +178,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Add new entries to existing audit trail attribute.
     attr(x = obj, which = which) <- paste(audit.trail, new.entries, sep = "\n")
-    message("Audit trail updated by function ", label, ".")
   }
 
   return(obj)

@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 20.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 20.07.2017: Removed unused argument 'spacing' from 'gexpandgroup'.
 # 13.07.2017: Fixed issue with button handlers.
@@ -23,10 +20,6 @@
 # 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom ggplot2.
 # 11.11.2015: Added more themes.
-# 07.10.2015: NA's now removed prior to plotting, and from number of observations.
-# 29.08.2015: Added importFrom.
-# 11.06.2015: Fixed title for histogram plot.
-# 09.06.2015: Fixed 'overlay boxplot' not saved.
 
 #' @title Plot Distribution
 #'
@@ -85,7 +78,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   w <- gwindow(title = "Plot distributions", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -93,6 +86,24 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 

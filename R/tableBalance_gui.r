@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
 # 11.02.2019: Minor adjustments to tcltk gui.
 # 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -93,7 +90,7 @@ tableBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -225,7 +222,7 @@ tableBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   glabel(text = "Name for result:", container = f2)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE)
+  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
 
   # BUTTON ####################################################################
 

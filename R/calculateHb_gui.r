@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: Test function.
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
 # 11.02.2019: Minor adjustments to tcltk gui.
 # 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
@@ -325,7 +322,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
   glabel(text = "Name for result:", container = f4)
 
-  f4_save_edt <- gedit(text = "", container = f4, expand = TRUE)
+  f4_save_edt <- gedit(text = "", container = f4, expand = TRUE, fill = TRUE)
 
   glabel(text = " Kit attribute:", container = f4)
 
