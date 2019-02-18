@@ -371,7 +371,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
 
   glabel(text = "Name for result:", container = f2)
 
-  f2_save_edt <- gedit(text = "", expand = TRUE, container = f2)
+  f2_save_edt <- gedit(text = "", expand = TRUE, container = f2, fill = TRUE)
 
   # BUTTON ####################################################################
 
