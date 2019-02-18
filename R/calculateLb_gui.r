@@ -582,6 +582,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
         }
 
         # Close GUI.
+        .saveSettings()
         dispose(w)
       } else {
         message <- "'NA' in 'Dye' column. \nUse add dye function to fix."

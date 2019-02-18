@@ -475,6 +475,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A dataset and a reference dataset must be selected."

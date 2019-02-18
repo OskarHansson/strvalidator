@@ -1,3 +1,7 @@
+Version 2.1.0.9009
+------------------------------------------------------------------------------
+* Fixed settings not saved after running function. 
+
 Version 2.1.0.9008
 ------------------------------------------------------------------------------
 * Made text field "Name for result" expand under tlctk.

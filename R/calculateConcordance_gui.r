@@ -430,6 +430,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A dataset must be selected."

@@ -441,6 +441,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage("A file name must be provided!",

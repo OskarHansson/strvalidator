@@ -420,6 +420,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage(

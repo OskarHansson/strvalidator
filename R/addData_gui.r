@@ -459,6 +459,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A destination and a source dataset have to be selected."

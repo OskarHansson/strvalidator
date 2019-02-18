@@ -580,6 +580,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
       } ## END REPEAT.
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage(

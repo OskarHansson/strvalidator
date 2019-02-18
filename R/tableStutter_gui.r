@@ -281,6 +281,7 @@ tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage(

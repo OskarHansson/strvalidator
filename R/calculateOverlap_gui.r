@@ -450,6 +450,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "At least one kit has to be selected."

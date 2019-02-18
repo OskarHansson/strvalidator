@@ -402,6 +402,7 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A dataset must be selected."

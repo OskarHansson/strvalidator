@@ -492,6 +492,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A dataset and a reference dataset have to be selected."

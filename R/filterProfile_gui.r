@@ -464,6 +464,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A dataset and a reference dataset have to be selected."

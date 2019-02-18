@@ -264,6 +264,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage(

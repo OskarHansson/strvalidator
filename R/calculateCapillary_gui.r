@@ -315,6 +315,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A 'Samples Table' dataset and a 'SamplePlotSizing' dataset have to be selected."

@@ -271,6 +271,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage(

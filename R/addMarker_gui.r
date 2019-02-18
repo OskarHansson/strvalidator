@@ -274,6 +274,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     saveObject(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
+    .saveSettings()
     dispose(w)
   })
 

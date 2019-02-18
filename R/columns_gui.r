@@ -339,6 +339,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
     # Close GUI.
+    .saveSettings()
     dispose(w)
   })
 
