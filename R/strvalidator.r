@@ -34,6 +34,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.02.2019: Expand text box in welcome tab.
 # 15.02.2019: Rearranged buttons on welcome tab.
 # 14.02.2019: Adaptations to gWidgets2tcltk and updated welcome tab.
 # 19.01.2019: Adaptations to gWidgets2tcltk.
@@ -53,8 +54,6 @@
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 07.07.2017: Replaced gWidgets:: with gWidgets2::
 # 07.09.2016: tableBalance_gui replaced by tableHb_gui.
-# 29.08.2016: calculateBalance_gui replaced by calculateHb_gui.
-# 15.08.2016: Removed calculateHeterozygous, added calculateCopies in the 'Edit' tab.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -304,7 +303,8 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE,
     container = start_tab,
     spacing = 5,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   # STR TYPING KIT ------------------------------------------------------------

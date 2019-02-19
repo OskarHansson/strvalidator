@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -108,12 +109,18 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     spacing = 5,
     container = gv
   )
-
+  
+  scroll_view <- ggroup(horizontal = FALSE,
+                        use.scrollwindow = TRUE,
+                        container = f0,
+                        expand = TRUE,
+                        fill = TRUE)
+  
   kit_checkbox_group <- gcheckboxgroup(
     items = getKit(),
     checked = FALSE,
     horizontal = FALSE,
-    container = f0
+    container = scroll_view
   )
 
   addHandlerChanged(kit_checkbox_group, handler = function(h, ...) {
@@ -196,7 +203,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", width = 50, container = f5)
+  f5_save_edt <- gedit(expand = TRUE, container = f5, fill = TRUE)
 
 
   # BUTTON ####################################################################

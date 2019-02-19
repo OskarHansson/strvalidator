@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 25.07.2018: Fixed x title and size not saved.
 # 13.07.2017: Fixed issue with button handlers.
@@ -110,11 +111,17 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     container = gv
   )
 
+  scroll_view <- ggroup(horizontal = FALSE,
+                        use.scrollwindow = TRUE,
+                        container = f0,
+                        expand = TRUE,
+                        fill = TRUE)
+  
   kit_checkbox_group <- gcheckboxgroup(
     items = getKit(),
     checked = FALSE,
     horizontal = FALSE,
-    container = f0
+    container = scroll_view
   )
 
 
@@ -241,7 +248,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "_ggplot", container = f5)
+  f5_save_edt <- gedit(text = "_ggplot", container = f5, expand = TRUE, fill = TRUE)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 

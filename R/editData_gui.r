@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.02.2019: Expand table and text field under tcltk.
 # 10.02.2019: Try version dependent fix.
 # 27.01.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 26.01.2019: Fixed table not updated after selecting from drop-down (tcltk)
@@ -20,7 +21,6 @@
 # 11.05.2015: Accepts (the first) column name containing the string 'Sample'
 # as alternative to colum name 'Sample.Name'. 'Sample' is case in-sensitive.
 # 04.05.2015: Added 'Sample.File.Name' as a defined alternative to Sample.Name.
-# 02.01.2015: Copy attribute list to new object upon 'Save As'.
 
 #' @title Edit or View Data Frames
 #'
@@ -259,7 +259,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   save_btn <- gbutton(text = "Save as", container = f2)
   tooltip(save_btn) <- "Save as new dataset"
 
-  save_txt <- gedit(text = .gDataName, container = f2, expand = TRUE)
+  save_txt <- gedit(text = .gDataName, container = f2, expand = TRUE, fill = TRUE)
 
   addHandlerClicked(copy_btn, handler = function(h, ...) {
     val_tbl <- data_tbl[]
@@ -338,7 +338,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     print("FRAME 3")
   }
 
-  f3 <- gvbox(container = gv, expand = TRUE)
+  f3 <- gvbox(container = gv, expand = TRUE, fill = TRUE)
 
   # Add dummy table.
   data_tbl <- gWidgets2::gtable(
