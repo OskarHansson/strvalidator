@@ -25,7 +25,8 @@
 # Increment yy on new features.
 # Increment z on minor changes and bug fixes.
 # [optional]Increment ### on development versions.
-# NB! Write changes in NEWS for x.yy.z.9### versions, but move changes to NEWS under x.yy.z upon release official version.
+# NB! Write changes in NEWS for x.yy.z.9### versions, but move changes to NEWS
+# under x.yy.z upon release official version.
 
 # NOTE:
 # NOTE: Can't import data frame named 'drop'
@@ -34,6 +35,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.02.2019: Fixed previous project activated in Description, Projects tab.
 # 19.02.2019: Expand text box in welcome tab.
 # 15.02.2019: Rearranged buttons on welcome tab.
 # 14.02.2019: Adaptations to gWidgets2tcltk and updated welcome tab.
@@ -53,7 +55,6 @@
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 07.07.2017: Replaced gWidgets:: with gWidgets2::
-# 07.09.2016: tableBalance_gui replaced by tableHb_gui.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -555,7 +556,7 @@ strvalidator <- function(debug = FALSE) {
     container = project_g2
   )
 
-  addHandlerClicked(project_tbl, handler = function(h, ...) {
+  addHandlerSelectionChanged(project_tbl, handler = function(h, ...) {
 
     # Get selected projects file name.
     val_name <- svalue(project_tbl)
@@ -643,7 +644,8 @@ strvalidator <- function(debug = FALSE) {
     horizontal = FALSE,
     spacing = 5,
     container = project_f3,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   # Project description window.
@@ -653,7 +655,7 @@ strvalidator <- function(debug = FALSE) {
   )
   proj_info_txt <- gtext(
     text = "[Project description]", height = 50, expand = TRUE,
-    wrap = TRUE, container = project_g4
+    wrap = TRUE, container = project_g4, fill = TRUE
   )
 
   # WORKSPACE #################################################################
@@ -666,7 +668,8 @@ strvalidator <- function(debug = FALSE) {
     pos = 0,
     horizontal = TRUE,
     container = file_tab,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   workspace_f1g1 <- ggroup(

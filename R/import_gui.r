@@ -504,7 +504,8 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         )
 
         # Save data.
-        saveObject(name = val_name, object = datanew, parent = w, env = env)
+        saveObject(name = val_name, object = datanew, parent = w,
+                   env = env, debug = debug)
 
         # Close GUI.
         .saveSettings()

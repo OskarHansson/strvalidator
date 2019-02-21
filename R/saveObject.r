@@ -1,10 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: Fix: Overwrites functions without warning
-#       e.g. 't' when using 'import_gui' from R command.
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.02.2019: Fixed "error in if(ok) argument not logical" using tcltk.
 # 29.04.2016: Fixed object not saved if an object existed and the new object is renamed.
 # 18.07.2014: Added syntactically valid name check.
 # 18.07.2014: Added 'remove' and 'suggested' parameter.
@@ -101,17 +97,12 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
         print(paste("Object", name, "exists!"))
       }
 
-      dialog <- gbasicdialog(title = "Warning!", parent = parent, do.buttons = TRUE)
+      msg <- paste("An object named '", name, "' already exist.\n\n",
+                   "Do you want to overwrite?", sep = "")
 
-      msg <- glabel(
-        text = paste("An object named '", name, "' already exist.\n\n",
-          "Do you want to overwrite?",
-          sep = ""
-        ),
-        container = dialog
-      )
+      ok <- gconfirm(msg = msg, title = "Warning!",
+                     icon = "warning", parent = parent)
 
-      ok <- visible(dialog, set = TRUE) # Set flag by user input.
     }
 
     if (ok) {

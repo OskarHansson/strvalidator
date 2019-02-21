@@ -1,3 +1,10 @@
+Version 2.1.0.9012
+------------------------------------------------------------------------------
+* Fixed previous project activated in Description in Projects tab.
+* Expanded Description text field under tctk in Projects tab.
+* Fixed "error in if(ok) argument not logical" using tcltk.
+* Fixed default value for dropdown in editData_gui under tcltk.
+
 Version 2.1.0.9011
 ------------------------------------------------------------------------------
 * Minor gui adjustments under tlctk.

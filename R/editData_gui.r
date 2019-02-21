@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.02.2019: Fixed drop-down menu should default to <Select data frame> (tcltk).
 # 19.02.2019: Expand table and text field under tcltk.
 # 10.02.2019: Try version dependent fix.
 # 27.01.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -20,7 +21,6 @@
 # 01.06.2015: Fixed bug column names not saved. Introduced 02.01.2015 with attributes.
 # 11.05.2015: Accepts (the first) column name containing the string 'Sample'
 # as alternative to colum name 'Sample.Name'. 'Sample' is case in-sensitive.
-# 04.05.2015: Added 'Sample.File.Name' as a defined alternative to Sample.Name.
 
 #' @title Edit or View Data Frames
 #'
@@ -159,8 +159,8 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     container = g0,
     ellipsize = "none"
   )
-
-  if (!is.null(.gDataName)) {
+  
+  if (!is.null(.gDataName) && nchar(.gDataName) > 0) {
     svalue(dataset_drp) <- .gDataName
   }
 
