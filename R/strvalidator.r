@@ -35,6 +35,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 22.02.2019: Reset projects list and description field if no project in folder.
 # 19.02.2019: Fixed previous project activated in Description, Projects tab.
 # 19.02.2019: Expand text box in welcome tab.
 # 15.02.2019: Rearranged buttons on welcome tab.
@@ -54,7 +55,6 @@
 # 13.07.2017: Fixed "Error in get(val_obj..." clicking View with no object selected.
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 07.07.2017: Replaced gWidgets:: with gWidgets2::
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -546,8 +546,8 @@ strvalidator <- function(debug = FALSE) {
   # Projects list.
   project_tbl <- gWidgets2::gtable(
     items = data.frame(
-      Name = "[Name]", Date = "[Date]",
-      Size = "[Size]", Id = "[Id]",
+      Name = "[No project found]", Date = "",
+      Size = "", Id = "",
       stringsAsFactors = FALSE
     ),
     multiple = TRUE,
@@ -594,6 +594,11 @@ strvalidator <- function(debug = FALSE) {
         svalue(proj_info_lbl) <- paste("Project:", val_name)
         svalue(proj_info_txt) <- description
       }
+    } else {
+
+      # Reset description.
+      svalue(proj_info_lbl) <- "Project:"
+      svalue(proj_info_txt) <- "[Project description]"
     }
   })
 
@@ -629,12 +634,18 @@ strvalidator <- function(debug = FALSE) {
     val_env <- .project_tmp_env
     val_description <- svalue(proj_info_txt)
 
-    message("Assign: ", val_obj)
-    message("Save: ", val_prj)
+    # Check if selected project.
+    if (length(val_prj) > 0) {
 
-    # Save project description and write to disc.
-    assign(x = val_obj, value = val_description, envir = val_env, inherits = FALSE)
-    save(file = val_prj, list = ls(envir = val_env, all.names = TRUE), envir = val_env)
+      # Save project description and write to disc.
+      message("Assign: ", val_obj)
+      assign(x = val_obj, value = val_description, envir = val_env, inherits = FALSE)
+
+      message("Save: ", val_prj)
+      save(file = val_prj, list = ls(envir = val_env, all.names = TRUE), envir = val_env)
+    } else {
+      message("No valid project selected!")
+    }
 
     enabled(project_save_btn) <- TRUE
   })
@@ -2938,7 +2949,7 @@ strvalidator <- function(debug = FALSE) {
     projectdir <- svalue(project_fb)
 
     # If nothing, use working directory.
-    if (length(projectdir) == 0) {
+    if (length(projectdir) == 0 || nchar(projectdir) == 0) {
       projectdir <- getwd()
 
       blockHandlers(project_fb)
@@ -2983,7 +2994,19 @@ strvalidator <- function(debug = FALSE) {
 
       message("Updated project list with 'RData' files found in ", projectdir)
     } else {
+
+      # Reset projects list.
+      project_tbl[, ] <- data.frame(
+        Name = "[No project found]", Date = "",
+        Size = "", Id = "",
+        stringsAsFactors = FALSE
+      )
+
       message("No 'RData' files found in ", projectdir)
+
+      # Reset description.
+      svalue(proj_info_lbl) <- "Project:"
+      svalue(proj_info_txt) <- "[Project description]"
     }
   }
 

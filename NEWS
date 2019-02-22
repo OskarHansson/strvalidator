@@ -1,3 +1,7 @@
+Version 2.1.0.9013
+------------------------------------------------------------------------------
+* Fixed behaviour of project list and description field in Projects tab.
+
 Version 2.1.0.9012
 ------------------------------------------------------------------------------
 * Fixed previous project activated in Description in Projects tab.
