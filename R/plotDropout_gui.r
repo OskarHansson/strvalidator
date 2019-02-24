@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed expanded 'gexpandgroup'.
@@ -19,9 +20,6 @@
 # 17.02.2014: Fixed NA in title for ecdp.
 # 17.02.2014: Fixed heatmap by 'H' loosing samples with equal 'H'.
 # 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
-# 05.11.2013: Fixed not possible to limit both y/x axes.
-# 04.11.2013: Added edcf plot.
-# 01.11.2013: Added 'override titles' option.
 
 #' @title Plot Drop-out Events
 #'
@@ -103,7 +101,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -129,7 +127,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -206,46 +204,34 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(grid1) <- TRUE
-    } else {
-      enabled(grid1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  grid1 <- glayout(container = f1, spacing = 1)
-  enabled(grid1) <- svalue(f1_titles_chk)
-
-  grid1[1, 1] <- glabel(text = "Plot title:", container = grid1)
-  grid1[1, 2] <- f1_title_edt <- gedit(
-    text = "",
-    width = 40,
-    container = grid1
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
   )
 
-  grid1[2, 1] <- glabel(text = "X title:", container = grid1)
-  grid1[2, 2] <- f1_xtitle_edt <- gedit(
-    text = "",
-    container = grid1
-  )
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  grid1[3, 1] <- glabel(text = "Y title:", container = grid1)
-  grid1[3, 2] <- f1_ytitle_edt <- gedit(
-    text = "",
-    container = grid1
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
   # FRAME 7 ###################################################################
 
@@ -460,7 +446,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -571,10 +557,10 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   .plotDropout <- function(what) {
 
     # Get values.
-    val_titles <- svalue(f1_titles_chk)
-    val_title <- svalue(f1_title_edt)
-    val_xtitle <- svalue(f1_xtitle_edt)
-    val_ytitle <- svalue(f1_ytitle_edt)
+    val_titles <- svalue(titles_chk)
+    val_title <- svalue(title_edt)
+    val_xtitle <- svalue(x_title_edt)
+    val_ytitle <- svalue(y_title_edt)
     val_angle <- as.numeric(svalue(e4_angle_spb))
     val_vjust <- as.numeric(svalue(e4_vjust_spb))
     val_hjust <- as.numeric(svalue(e4_hjust_spb))
@@ -1132,6 +1118,17 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
+
   .loadSavedSettings <- function() {
 
     # First check status of save flag.
@@ -1157,16 +1154,16 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     # Then load settings if true.
     if (svalue(savegui_chk)) {
       if (exists(".strvalidator_plotDropout_gui_title", envir = env, inherits = FALSE)) {
-        svalue(f1_title_edt) <- get(".strvalidator_plotDropout_gui_title", envir = env)
+        svalue(title_edt) <- get(".strvalidator_plotDropout_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotDropout_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotDropout_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotDropout_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotDropout_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(f1_xtitle_edt) <- get(".strvalidator_plotDropout_gui_x_title", envir = env)
+        svalue(x_title_edt) <- get(".strvalidator_plotDropout_gui_x_title", envir = env)
       }
       if (exists(".strvalidator_plotDropout_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(f1_ytitle_edt) <- get(".strvalidator_plotDropout_gui_y_title", envir = env)
+        svalue(y_title_edt) <- get(".strvalidator_plotDropout_gui_y_title", envir = env)
       }
       if (exists(".strvalidator_plotDropout_gui_axes_y_min", envir = env, inherits = FALSE)) {
         svalue(e3_y_min_edt) <- get(".strvalidator_plotDropout_gui_axes_y_min", envir = env)
@@ -1210,10 +1207,10 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotDropout_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotDropout_gui_title", value = svalue(f1_title_edt), envir = env)
-      assign(x = ".strvalidator_plotDropout_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
-      assign(x = ".strvalidator_plotDropout_gui_x_title", value = svalue(f1_xtitle_edt), envir = env)
-      assign(x = ".strvalidator_plotDropout_gui_y_title", value = svalue(f1_ytitle_edt), envir = env)
+      assign(x = ".strvalidator_plotDropout_gui_title", value = svalue(title_edt), envir = env)
+      assign(x = ".strvalidator_plotDropout_gui_title_chk", value = svalue(titles_chk), envir = env)
+      assign(x = ".strvalidator_plotDropout_gui_x_title", value = svalue(x_title_edt), envir = env)
+      assign(x = ".strvalidator_plotDropout_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_plotDropout_gui_axes_y_min", value = svalue(e3_y_min_edt), envir = env)
       assign(x = ".strvalidator_plotDropout_gui_axes_y_max", value = svalue(e3_y_max_edt), envir = env)
       assign(x = ".strvalidator_plotDropout_gui_axes_x_min", value = svalue(e3_x_min_edt), envir = env)
@@ -1287,6 +1284,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed expanded 'gexpandgroup'.
@@ -104,7 +105,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -130,7 +131,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -209,46 +210,35 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(f1g1) <- TRUE
-    } else {
-      enabled(f1g1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  f1g1 <- glayout(container = f1, spacing = 1)
-  enabled(f1g1) <- svalue(f1_titles_chk)
-
-  f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- title_edt <- gedit(
-    text = "",
-    width = 40,
-    container = f1g1
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
   )
 
-  f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- x_title_edt <- gedit(
-    text = "",
-    container = f1g1
-  )
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- y_title_edt <- gedit(
-    text = "",
-    container = f1g1
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
 
   f1g2 <- glayout(container = f1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
@@ -286,18 +276,13 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   f7 <- gframe(
     text = "Plot stutter data",
-    horizontal = FALSE,
+    horizontal = TRUE,
     container = gv
   )
 
-  grid7 <- glayout(container = f7)
+  plot_allele_btn <- gbutton(text = "Ratio vs. Allele", container = f7)
 
-  grid7[1, 1] <- plot_allele_btn <- gbutton(
-    text = "Ratio vs. Allele",
-    container = grid7
-  )
-
-  grid7[1, 2] <- plot_height_btn <- gbutton(text = "Ratio vs. Height", container = grid7)
+  plot_height_btn <- gbutton(text = "Ratio vs. Height", container = f7)
 
   addHandlerChanged(plot_allele_btn, handler = function(h, ...) {
     enabled(plot_allele_btn) <- FALSE
@@ -316,13 +301,13 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE, fill = TRUE)
+  f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -471,7 +456,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   .plotStutter <- function(what) {
 
     # Get values.
-    val_titles <- svalue(f1_titles_chk)
+    val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
     val_xtitle <- svalue(x_title_edt)
     val_ytitle <- svalue(y_title_edt)
@@ -929,6 +914,17 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
+
   .enablePlotButtons <- function() {
     enabled(plot_allele_btn) <- TRUE
     enabled(plot_height_btn) <- TRUE
@@ -968,7 +964,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         svalue(title_edt) <- get(".strvalidator_plotStutter_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotStutter_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotStutter_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotStutter_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotStutter_gui_x_title", envir = env, inherits = FALSE)) {
         svalue(x_title_edt) <- get(".strvalidator_plotStutter_gui_x_title", envir = env)
@@ -1034,7 +1030,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotStutter_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotStutter_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
+      assign(x = ".strvalidator_plotStutter_gui_title_chk", value = svalue(titles_chk), envir = env)
       assign(x = ".strvalidator_plotStutter_gui_x_title", value = svalue(x_title_edt), envir = env)
       assign(x = ".strvalidator_plotStutter_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_plotStutter_gui_points_shape", value = svalue(shape_spb), envir = env)
@@ -1129,6 +1125,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

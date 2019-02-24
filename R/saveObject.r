@@ -98,11 +98,14 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
       }
 
       msg <- paste("An object named '", name, "' already exist.\n\n",
-                   "Do you want to overwrite?", sep = "")
+        "Do you want to overwrite?",
+        sep = ""
+      )
 
-      ok <- gconfirm(msg = msg, title = "Warning!",
-                     icon = "warning", parent = parent)
-
+      ok <- gconfirm(
+        msg = msg, title = "Warning!",
+        icon = "warning", parent = parent
+      )
     }
 
     if (ok) {

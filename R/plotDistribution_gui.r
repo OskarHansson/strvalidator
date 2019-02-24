@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 20.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 20.07.2017: Removed unused argument 'spacing' from 'gexpandgroup'.
@@ -19,7 +20,6 @@
 # 29.04.2016: 'Save as' textbox expandable.
 # 06.01.2016: Fixed theme methods not found and added more themes.
 # 11.11.2015: Added importFrom ggplot2.
-# 11.11.2015: Added more themes.
 
 #' @title Plot Distribution
 #'
@@ -109,7 +109,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -135,11 +135,11 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f0 <- gframe(
     text = "Dataset",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f0g0 <- glayout(container = f0)
+  f0g0 <- glayout(container = f0, spacing = 2)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
@@ -243,45 +243,35 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(f1g1) <- TRUE
-    } else {
-      enabled(f1g1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  f1g1 <- glayout(container = f1, spacing = 1)
-  enabled(f1g1) <- svalue(f1_titles_chk)
-
-  f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- f1_title_edt <- gedit(
-    text = "", width = 50,
-    container = f1g1
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
   )
 
-  f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- f1_xtitle_edt <- gedit(
-    text = "",
-    container = f1g1
-  )
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- f1_ytitle_edt <- gedit(
-    text = "",
-    container = f1g1
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
 
   f1g2 <- glayout(container = f1, spacing = 1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
@@ -310,7 +300,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   )
 
   addHandlerChanged(f1_box_chk, handler = function(h, ...) {
-    .updateEnableStatus()
+    .updateGui()
   })
 
   # Transformation.
@@ -323,7 +313,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   )
 
   addHandlerChanged(f1_log_chk, handler = function(h, ...) {
-    .updateEnableStatus()
+    .updateGui()
   })
 
   f1e2 <- gexpandgroup(
@@ -380,11 +370,11 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   tooltip(f1_bins_edt) <- "Overridden by binwidth. Defaults to 30."
 
   addHandlerKeystroke(f1_binwidth_edt, handler = function(h, ...) {
-    .updateEnableStatus()
+    .updateGui()
   })
 
   addHandlerChanged(f1_binwidth_edt, handler = function(h, ...) {
-    .updateEnableStatus()
+    .updateGui()
   })
 
 
@@ -413,13 +403,11 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   f7 <- gframe(
     text = "Plot distribution",
-    horizontal = FALSE,
+    horizontal = TRUE,
     container = gv
   )
 
-  f7g7 <- glayout(container = f7)
-
-  f7g7[1, 1] <- f7_ecdf_btn <- gbutton(text = "CDF", container = f7g7)
+  f7_ecdf_btn <- gbutton(text = "CDF", container = f7)
 
   addHandlerChanged(f7_ecdf_btn, handler = function(h, ...) {
     val_column <- svalue(f0_column_drp)
@@ -437,7 +425,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     }
   })
 
-  f7g7[1, 2] <- f7_pdf_btn <- gbutton(text = "PDF", container = f7g7)
+  f7_pdf_btn <- gbutton(text = "PDF", container = f7)
 
   addHandlerChanged(f7_pdf_btn, handler = function(h, ...) {
     val_column <- svalue(f0_column_drp)
@@ -455,7 +443,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     }
   })
 
-  f7g7[1, 3] <- f7_histogram_btn <- gbutton(text = "Histogram", container = f7g7)
+  f7_histogram_btn <- gbutton(text = "Histogram", container = f7)
 
   addHandlerChanged(f7_histogram_btn, handler = function(h, ...) {
     val_column <- svalue(f0_column_drp)
@@ -478,13 +466,13 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE, fill = TRUE)
+  f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -527,10 +515,10 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     # Get values.
     val_data <- .gData
-    val_titles <- svalue(f1_titles_chk)
-    val_title <- svalue(f1_title_edt)
-    val_x_title <- svalue(f1_xtitle_edt)
-    val_y_title <- svalue(f1_ytitle_edt)
+    val_titles <- svalue(titles_chk)
+    val_title <- svalue(title_edt)
+    val_x_title <- svalue(x_title_edt)
+    val_y_title <- svalue(y_title_edt)
     val_theme <- svalue(f1_theme_drp)
     val_group <- svalue(f0_group_drp)
     val_column <- svalue(f0_column_drp)
@@ -893,7 +881,15 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   # INTERNAL FUNCTIONS ########################################################
 
-  .updateEnableStatus <- function() {
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
 
     # Boxplot dependent widgets.
     val <- svalue(f1_box_chk)
@@ -992,16 +988,16 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     # Then load settings if true.
     if (svalue(savegui_chk)) {
       if (exists(".strvalidator_plotDistribution_gui_title", envir = env, inherits = FALSE)) {
-        svalue(f1_title_edt) <- get(".strvalidator_plotDistribution_gui_title", envir = env)
+        svalue(title_edt) <- get(".strvalidator_plotDistribution_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotDistribution_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotDistribution_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotDistribution_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotDistribution_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(f1_xtitle_edt) <- get(".strvalidator_plotDistribution_gui_x_title", envir = env)
+        svalue(x_title_edt) <- get(".strvalidator_plotDistribution_gui_x_title", envir = env)
       }
       if (exists(".strvalidator_plotDistribution_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(f1_ytitle_edt) <- get(".strvalidator_plotDistribution_gui_y_title", envir = env)
+        svalue(y_title_edt) <- get(".strvalidator_plotDistribution_gui_y_title", envir = env)
       }
       if (exists(".strvalidator_plotDistribution_gui_box", envir = env, inherits = FALSE)) {
         svalue(f1_box_chk) <- get(".strvalidator_plotDistribution_gui_box", envir = env)
@@ -1039,10 +1035,10 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotDistribution_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotDistribution_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
-      assign(x = ".strvalidator_plotDistribution_gui_title", value = svalue(f1_title_edt), envir = env)
-      assign(x = ".strvalidator_plotDistribution_gui_x_title", value = svalue(f1_xtitle_edt), envir = env)
-      assign(x = ".strvalidator_plotDistribution_gui_y_title", value = svalue(f1_ytitle_edt), envir = env)
+      assign(x = ".strvalidator_plotDistribution_gui_title_chk", value = svalue(titles_chk), envir = env)
+      assign(x = ".strvalidator_plotDistribution_gui_title", value = svalue(title_edt), envir = env)
+      assign(x = ".strvalidator_plotDistribution_gui_x_title", value = svalue(x_title_edt), envir = env)
+      assign(x = ".strvalidator_plotDistribution_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_plotDistribution_gui_box", value = svalue(f1_box_chk), envir = env)
       assign(x = ".strvalidator_plotDistribution_gui_kernel", value = svalue(f1_kernel_drp), envir = env)
       assign(x = ".strvalidator_plotDistribution_gui_theme", value = svalue(f1_theme_drp), envir = env)
@@ -1109,7 +1105,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   .loadSavedSettings()
 
   # Update widget status.
-  .updateEnableStatus()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

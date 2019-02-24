@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 22.02.2019: Compressed tcltk gui.
 # 15.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 17.07.2017: Added label "Selected for import".
@@ -19,7 +20,6 @@
 # 20.01.2014: Remove redundant "overwrite?" message dialog.
 # 13.01.2014: Handle empty dataframe by stay in gui and show message.
 # 10.12.2013: Updated with new parameter names in function 'import'.
-# 12.11.2013: Pass debug to function.
 
 #' @title Import Data
 #'
@@ -100,7 +100,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -201,7 +201,10 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # OPTIONS -------------------------------------------------------------------
 
-  opt_frm <- gframe(text = "Options", pos = 0, horizontal = FALSE, container = gv)
+  opt_frm <- gframe(
+    text = "Options", pos = 0, horizontal = FALSE,
+    spacing = 2, container = gv
+  )
 
   opt_file_chk <- gcheckbox(
     text = "Save file name", checked = TRUE,
@@ -504,8 +507,10 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         )
 
         # Save data.
-        saveObject(name = val_name, object = datanew, parent = w,
-                   env = env, debug = debug)
+        saveObject(
+          name = val_name, object = datanew, parent = w,
+          env = env, debug = debug
+        )
 
         # Close GUI.
         .saveSettings()

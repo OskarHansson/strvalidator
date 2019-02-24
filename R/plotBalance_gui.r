@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.02.2019: Compacted and tweaked gui for tcltk.
 # 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed expanded 'gexpandgroup'.
@@ -107,7 +108,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -133,7 +134,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -217,51 +218,34 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
-
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(f1g1) <- TRUE
-    } else {
-      enabled(f1g1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  f1g1 <- glayout(container = f1, spacing = 1)
-  enabled(f1g1) <- svalue(f1_titles_chk)
-
-  f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- title_edt <- gedit(
-    text = "",
-    container = f1g1,
-    expand = TRUE,
-    fill = TRUE
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
   )
 
-  f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- x_title_edt <- gedit(
-    text = "",
-    container = f1g1,
-    expand = TRUE,
-    fill = TRUE
-  )
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- y_title_edt <- gedit(
-    text = "",
-    container = f1g1,
-    expand = TRUE,
-    fill = TRUE
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
 
   f1g2 <- glayout(container = f1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
@@ -297,25 +281,24 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   f7 <- gframe(
     text = "Plot Balance data",
-    horizontal = FALSE,
-    container = gv
+    horizontal = TRUE,
+    container = gv,
+    spacing = 2
   )
 
-  grid7 <- glayout(container = f7)
+  plot_hb_btn <- gbutton(text = "Hb vs. Height", container = f7)
 
-  grid7[1, 1] <- plot_hb_btn <- gbutton(text = "Hb vs. Height", container = grid7)
+  plot_hb_d_btn <- gbutton(text = "Hb vs. Delta", container = f7)
 
-  grid7[1, 2] <- plot_hb_d_btn <- gbutton(text = "Hb vs. Delta", container = grid7)
+  plot_hb_h_btn <- gbutton(text = "Hb vs. 'H'", container = f7)
 
-  grid7[1, 3] <- plot_hb_h_btn <- gbutton(text = "Hb vs. 'H'", container = grid7)
+  plot_hb_m_btn <- gbutton(text = "Hb vs. Marker", container = f7)
 
-  grid7[1, 4] <- plot_hb_m_btn <- gbutton(text = "Hb vs. Marker", container = grid7)
+  plot_lb_btn <- gbutton(text = "Lb vs. Height", container = f7)
 
-  grid7[1, 5] <- plot_lb_btn <- gbutton(text = "Lb vs. Height", container = grid7)
+  plot_lb_h_btn <- gbutton(text = "Lb vs. 'H'", container = f7)
 
-  grid7[1, 6] <- plot_lb_h_btn <- gbutton(text = "Lb vs. 'H'", container = grid7)
-
-  grid7[1, 7] <- plot_lb_m_btn <- gbutton(text = "Lb vs. Marker", container = grid7)
+  plot_lb_m_btn <- gbutton(text = "Lb vs. Marker", container = f7)
 
   addHandlerChanged(plot_hb_btn, handler = function(h, ...) {
 
@@ -497,13 +480,13 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE, fill = TRUE)
+  f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -645,7 +628,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   .plotBalance <- function(what, complex = NULL) {
 
     # Get values.
-    val_titles <- svalue(f1_titles_chk)
+    val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
     val_xtitle <- svalue(x_title_edt)
     val_ytitle <- svalue(y_title_edt)
@@ -1295,6 +1278,17 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
+
   .loadSavedSettings <- function() {
 
     # First check status of save flag.
@@ -1323,7 +1317,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         svalue(title_edt) <- get(".strvalidator_plotBalance_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotBalance_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotBalance_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotBalance_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotBalance_gui_x_title", envir = env, inherits = FALSE)) {
         svalue(x_title_edt) <- get(".strvalidator_plotBalance_gui_x_title", envir = env)
@@ -1394,7 +1388,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       assign(x = ".strvalidator_plotBalance_gui_sex", value = svalue(f1_drop_chk), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_log", value = svalue(f1_logHb_chk), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
+      assign(x = ".strvalidator_plotBalance_gui_title_chk", value = svalue(titles_chk), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_x_title", value = svalue(x_title_edt), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_plotBalance_gui_points_shape", value = svalue(e2_shape_spb), envir = env)
@@ -1491,6 +1485,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

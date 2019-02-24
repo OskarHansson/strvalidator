@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.02.2019: Adjusted plot button.
 # 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 25.07.2018: Fixed x title and size not saved.
@@ -111,12 +112,14 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     container = gv
   )
 
-  scroll_view <- ggroup(horizontal = FALSE,
-                        use.scrollwindow = TRUE,
-                        container = f0,
-                        expand = TRUE,
-                        fill = TRUE)
-  
+  scroll_view <- ggroup(
+    horizontal = FALSE,
+    use.scrollwindow = TRUE,
+    container = f0,
+    expand = TRUE,
+    fill = TRUE
+  )
+
   kit_checkbox_group <- gcheckboxgroup(
     items = getKit(),
     checked = FALSE,
@@ -200,17 +203,10 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   )
 
 
-  # FRAME 7 ###################################################################
+  # BUTTON ####################################################################
 
-  f7 <- gframe(
-    text = "Plot kit",
-    horizontal = FALSE,
-    container = gv
-  )
-
-  grid7 <- glayout(container = f7)
-
-  grid7[1, 1] <- plot_btn <- gbutton(text = "Plot", container = grid7)
+  plot_btn <- gbutton(text = "Plot", container = gv)
+  tooltip(plot_btn) <- "Plot marker ranges for kit"
 
   addHandlerClicked(plot_btn, handler = function(h, ...) {
     val_name <- svalue(plot_btn)

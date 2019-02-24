@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 23.07.2018: Made 'Save as' textbox expandable.
 # 13.07.2017: Fixed issue with button handlers.
@@ -19,8 +20,6 @@
 # 23.02.2014: Fixed column check for plots.
 # 06.02.2014: Implemented theme and colour.
 # 06.02.2014: Implemented new dot/box plot and plot all data (not only min/max)
-# 22.01.2014: Fixed bug, different y-axis max value for complex plots.
-# 20.01.2014: Implemented ggsave with workaround for complex plots.
 
 #' @title Plot Precision
 #'
@@ -103,7 +102,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -129,7 +128,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -204,46 +203,35 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(grid1) <- TRUE
-    } else {
-      enabled(grid1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  grid1 <- glayout(container = f1, spacing = 1)
-  enabled(grid1) <- svalue(f1_titles_chk)
-
-  grid1[1, 1] <- glabel(text = "Plot title:", container = grid1)
-  grid1[1, 2] <- title_edt <- gedit(
-    text = "",
-    width = 40,
-    container = grid1
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
   )
 
-  grid1[2, 1] <- glabel(text = "X title:", container = grid1)
-  grid1[2, 2] <- x_title_edt <- gedit(
-    text = "",
-    container = grid1
-  )
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  grid1[3, 1] <- glabel(text = "Y title:", container = grid1)
-  grid1[3, 2] <- y_title_edt <- gedit(
-    text = "",
-    container = grid1
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
 
   f1_facet_chk <- gcheckbox(
     text = "Plot per marker",
@@ -278,17 +266,15 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   f7 <- gframe(
     text = "Plot precision data as dotplot",
-    horizontal = FALSE,
+    horizontal = TRUE,
     container = gv
   )
 
-  grid7 <- glayout(container = f7)
+  f7_size_btn <- gbutton(text = "Size", container = f7)
 
-  grid7[1, 1] <- f7_size_btn <- gbutton(text = "Size", container = grid7)
+  f7_height_btn <- gbutton(text = "Height", container = f7)
 
-  grid7[1, 2] <- f7_height_btn <- gbutton(text = "Height", container = grid7)
-
-  grid7[1, 3] <- f7_data_btn <- gbutton(text = "Data point", container = grid7)
+  f7_data_btn <- gbutton(text = "Data point", container = f7)
 
   addHandlerChanged(f7_size_btn, handler = function(h, ...) {
 
@@ -381,17 +367,15 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   f8 <- gframe(
     text = "Plot precision data as boxplot",
-    horizontal = FALSE,
+    horizontal = TRUE,
     container = gv
   )
 
-  grid8 <- glayout(container = f8)
+  f8_size_btn <- gbutton(text = "Size", container = f8)
 
-  grid8[1, 1] <- f8_size_btn <- gbutton(text = "Size", container = grid8)
+  f8_height_btn <- gbutton(text = "Height", container = f8)
 
-  grid8[1, 2] <- f8_height_btn <- gbutton(text = "Height", container = grid8)
-
-  grid8[1, 3] <- f8_data_btn <- gbutton(text = "Data point", container = grid8)
+  f8_data_btn <- gbutton(text = "Data point", container = f8)
 
   addHandlerChanged(f8_size_btn, handler = function(h, ...) {
 
@@ -485,13 +469,13 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", expand = TRUE, container = f5)
+  f5_save_edt <- gedit(expand = TRUE, fill = TRUE, container = f5)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -638,7 +622,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   .plot <- function(what, how) {
 
     # Get values.
-    val_titles <- svalue(f1_titles_chk)
+    val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
     val_xtitle <- svalue(x_title_edt)
     val_ytitle <- svalue(y_title_edt)
@@ -1137,6 +1121,16 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
   .loadSavedSettings <- function() {
 
     # First check status of save flag.
@@ -1165,7 +1159,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         svalue(title_edt) <- get(".strvalidator_plotPrecision_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotPrecision_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotPrecision_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_x_title", envir = env, inherits = FALSE)) {
         svalue(x_title_edt) <- get(".strvalidator_plotPrecision_gui_x_title", envir = env)
@@ -1228,7 +1222,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotPrecision_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotPrecision_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_title_chk", value = svalue(titles_chk), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_x_title", value = svalue(x_title_edt), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_points_shape", value = svalue(shape_spb), envir = env)
@@ -1319,6 +1313,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

@@ -159,7 +159,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     container = g0,
     ellipsize = "none"
   )
-  
+
   if (!is.null(.gDataName) && nchar(.gDataName) > 0) {
     svalue(dataset_drp) <- .gDataName
   }

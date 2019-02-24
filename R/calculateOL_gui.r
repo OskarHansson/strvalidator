@@ -109,13 +109,15 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     spacing = 5,
     container = gv
   )
-  
-  scroll_view <- ggroup(horizontal = FALSE,
-                        use.scrollwindow = TRUE,
-                        container = f0,
-                        expand = TRUE,
-                        fill = TRUE)
-  
+
+  scroll_view <- ggroup(
+    horizontal = FALSE,
+    use.scrollwindow = TRUE,
+    container = f0,
+    expand = TRUE,
+    fill = TRUE
+  )
+
   kit_checkbox_group <- gcheckboxgroup(
     items = getKit(),
     checked = FALSE,
