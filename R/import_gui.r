@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.03.2019: Rearranged widgets and changed visibility for more intuitive options.
 # 22.02.2019: Compressed tcltk gui.
 # 15.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -206,6 +207,35 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     spacing = 2, container = gv
   )
 
+  # MULTIPLE FILES OPTIONS ----------------------------------------------------
+
+  multi_frm <- gexpandgroup(
+    text = "Multiple files options",
+    horizontal = FALSE, container = opt_frm
+  )
+
+  # Start collapsed.
+  visible(multi_frm) <- FALSE
+
+  multi_case_chk <- gcheckbox(
+    text = "Ignore case", checked = TRUE,
+    container = multi_frm
+  )
+
+  glabel(text = "Prefix:", container = multi_frm, anchor = c(-1, 0))
+  multi_pre_edt <- gedit(container = multi_frm, expand = TRUE, fill = TRUE)
+
+  glabel(text = "Suffix:", container = multi_frm, anchor = c(-1, 0))
+  multi_suf_edt <- gedit(container = multi_frm, expand = TRUE, fill = TRUE)
+
+  glabel(text = "Extension:", container = multi_frm, anchor = c(-1, 0))
+  multi_ext_edt <- gedit(
+    text = "txt", container = multi_frm,
+    expand = TRUE, fill = TRUE
+  )
+
+  # INFO ----------------------------------------------------------------------
+
   opt_file_chk <- gcheckbox(
     text = "Save file name", checked = TRUE,
     container = opt_frm
@@ -215,6 +245,8 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     text = "Save file time stamp", checked = TRUE,
     container = opt_frm
   )
+
+  # DELIMITER -----------------------------------------------------------------
 
   glabel(text = "Delimiter:", container = opt_frm, anchor = c(-1, 0))
   opt_sep_drp <- gcombobox(
@@ -229,66 +261,19 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   )
   opt_na_edt <- gedit(text = "NA,,", container = opt_frm)
 
+  # TRIM ----------------------------------------------------------------------
+
   opt_trim_chk <- gcheckbox(
     text = "Auto trim samples", checked = FALSE,
     container = opt_frm
-  )
-
-  opt_slim_chk <- gcheckbox(
-    text = "Auto slim repeated columns",
-    checked = FALSE, container = opt_frm
   )
 
   addHandlerChanged(opt_trim_chk, handler = function(h, ...) {
     .refresh()
   })
 
-  addHandlerChanged(opt_slim_chk, handler = function(h, ...) {
-    .refresh()
-  })
-
-
-  # MULTIPLE FILES OPTIONS ----------------------------------------------------
-
-  multi_frm <- gexpandgroup(
-    text = "Multiple files options",
-    horizontal = FALSE, container = gv
-  )
-
-  # Start collapsed.
-  visible(multi_frm) <- FALSE
-
-  multi_case_chk <- gcheckbox(
-    text = "Ignore case", checked = TRUE,
-    container = multi_frm
-  )
-
-  glabel(text = "Prefix:", container = multi_frm, anchor = c(-1, 0))
-  multi_pre_edt <- gedit(
-    initial.msg = "", width = 25,
-    container = multi_frm, expand = TRUE
-  )
-
-  glabel(text = "Suffix:", container = multi_frm, anchor = c(-1, 0))
-  multi_suf_edt <- gedit(
-    initial.msg = "", width = 25,
-    container = multi_frm, expand = TRUE
-  )
-
-  glabel(text = "Extension:", container = multi_frm, anchor = c(-1, 0))
-  multi_ext_edt <- gedit(
-    text = "txt", width = 25,
-    container = multi_frm, expand = TRUE
-  )
-
-  # TRIM ----------------------------------------------------------------------
-
-  trim_frm <- gexpandgroup(
-    text = "Trim options",
-    horizontal = FALSE, container = gv
-  )
-
-  visible(trim_frm) <- FALSE
+  trim_frm <- ggroup(horizontal = FALSE, container = opt_frm)
+  enabled(trim_frm) <- FALSE
 
   glabel(
     text = "Trim samples containing the word (separate by pipe |):",
@@ -307,12 +292,18 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # SLIM ----------------------------------------------------------------------
 
-  slim_frm <- gexpandgroup(
-    text = "Slim options",
-    horizontal = FALSE, container = gv
+  opt_slim_chk <- gcheckbox(
+    text = "Auto slim repeated columns",
+    checked = FALSE, container = opt_frm
   )
 
-  visible(slim_frm) <- FALSE
+  addHandlerChanged(opt_slim_chk, handler = function(h, ...) {
+    .refresh()
+  })
+
+  slim_frm <- ggroup(horizontal = FALSE, container = opt_frm)
+
+  enabled(slim_frm) <- FALSE
 
   slim_fix_chk <- gcheckbox(
     text = "Keep all fixed (keep a row even if no data)",
@@ -329,7 +320,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   glabel(text = "Name:", container = save_frm, anchor = c(-1, 0))
   import_edt <- gedit(
     initial.msg = "Name for new dataset",
-    width = 25, container = save_frm, expand = TRUE
+    container = save_frm, expand = TRUE, fill = TRUE
   )
 
   # IMPORT --------------------------------------------------------------------

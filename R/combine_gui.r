@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 26.07.2017: Added expand=TRUE to save name text field.
@@ -16,7 +17,6 @@
 # 18.07.2013: Check before overwrite object.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 17.05.2013: First version.
-
 
 #' @title Combine Datasets
 #'
@@ -89,7 +89,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = FALSE
@@ -115,7 +115,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
@@ -159,12 +159,12 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       .gData1Name <<- val_obj
 
       svalue(f0g0_data1_col_lbl) <- paste(" ", ncol(.gData1), " columns")
-      svalue(f2_name) <- paste(.gData1Name, .gData2Name, sep = "_")
+      svalue(save_edt) <- paste(.gData1Name, .gData2Name, sep = "_")
     } else {
       .gData1 <<- NULL
       .gData1Name <<- NULL
       svalue(f0g0_data1_col_lbl) <- " 0 columns"
-      svalue(f2_name) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -197,12 +197,12 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       .gData2Name <<- val_obj
 
       svalue(f0g0_data2_col_lbl) <- paste(" ", ncol(.gData2), " columns")
-      svalue(f2_name) <- paste(.gData1Name, .gData2Name, sep = "_")
+      svalue(save_edt) <- paste(.gData1Name, .gData2Name, sep = "_")
     } else {
       .gData2 <<- NULL
       .gData1Name <<- NULL
       svalue(f0g0_data2_col_lbl) <- " 0 samples"
-      svalue(f2_name) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -212,17 +212,13 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   #
   #   f1g0 <- glayout(container = f1, expand=TRUE, fill="both")
 
-  # NAME ######################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Save as:", container = f2)
-  f2_name <- gedit(text = "", expand = TRUE, container = f2)
+  glabel(text = "Name for result:", container = save_frame)
+
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -236,7 +232,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
     colOk <- all(names(.gData1) %in% names(.gData2))
     val_data_1 <- .gData1Name
     val_data_2 <- .gData2Name
-    val_name <- svalue(f2_name)
+    val_name <- svalue(save_edt)
 
     if (colOk) {
 

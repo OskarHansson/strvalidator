@@ -317,8 +317,17 @@ strvalidator <- function(debug = FALSE) {
     "Institutes (ENFSI) and Scientific Working Group on DNA Analysis Methods ",
     "(SWGDAM) validation guidelines.",
     "\n\n",
-    "The code has been extensively tested in order to assure correct results.",
+    "In order to assure correct results, most of the core functions are ",
+    "extensively validated using the 'testthat' package before a new version ",
+    "is released.",
     "\n\n",
+    "Contributions to the strvalidator package or user community is more than welcome. ",
+    "Contact the developer to:\n ",
+    "- improve existing functionality or add new\n ",
+    "- translate course material, manuals, or tutorial\n ",
+    "- collaborate to implement new functions\n",
+    "- add tests to validate functions\n",
+    "\n",
     "Created by:\n",
     "Oskar Hansson, Forensic Genetics (Oslo University Hospital, Norway)",
     sep = ""
@@ -365,6 +374,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(source_btn, handler = function(h, ...) {
     browseURL("https://github.com/OskarHansson/strvalidator")
+  })
+
+  cran_btn <- gbutton(text = "CRAN page", container = button_group)
+  tooltip(cran_btn) <- "Official CRAN page with address to maintainer and version archive"
+
+  addHandlerChanged(cran_btn, handler = function(h, ...) {
+    browseURL("https://cran.r-project.org/web/packages/strvalidator/index.html")
   })
 
   start_license_btn <- gbutton(text = "License", container = button_group, expand = FALSE)

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -80,7 +81,7 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Vertical main group.
   gv <- ggroup(
-    horizontal = FALSE, spacing = 8, use.scrollwindow = FALSE,
+    horizontal = FALSE, spacing = 5, use.scrollwindow = FALSE,
     container = w, expand = TRUE
   )
 
@@ -104,7 +105,7 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -164,7 +165,7 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gData <<- get(val_obj, envir = env)
 
       # Suggest name.
-      svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       svalue(g0_data_samples_lbl) <- paste(" (",
         length(unique(.gData$Sample.Name)),
@@ -192,7 +193,7 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Reset components.
       .gData <<- NULL
-      svalue(f5_save_edt) <- ""
+      svalue(save_edt) <- ""
       svalue(g0_data_drp, index = TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " (0 samples)"
     }
@@ -219,7 +220,7 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
 
   glabel(text = "Plot title:", anchor = c(-1, 0), container = f1)
   f1_title_edt <- gedit(text = "", width = 25, container = f1)
@@ -312,31 +313,26 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
   })
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f5 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f5)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f5_save_edt <- gedit(text = "", container = f5)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
-  f5_save_btn <- gbutton(text = "Save as object", container = f5)
+  save_btn <- gbutton(text = "Save as object", container = save_frame)
 
-  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
+  ggsave_btn <- gbutton(text = "Save as image", container = save_frame)
 
-  addHandlerChanged(f5_save_btn, handler = function(h, ...) {
-    val_name <- svalue(f5_save_edt)
+  addHandlerChanged(save_btn, handler = function(h, ...) {
+    val_name <- svalue(save_edt)
 
     # Change button.
-    blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Processing..."
-    unblockHandlers(f5_save_btn)
-    enabled(f5_save_btn) <- FALSE
+    blockHandlers(save_btn)
+    svalue(save_btn) <- "Processing..."
+    unblockHandlers(save_btn)
+    enabled(save_btn) <- FALSE
 
     # Save data.
     saveObject(
@@ -345,13 +341,13 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     )
 
     # Change button.
-    blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Object saved"
-    unblockHandlers(f5_save_btn)
+    blockHandlers(save_btn)
+    svalue(save_btn) <- "Object saved"
+    unblockHandlers(save_btn)
   })
 
-  addHandlerChanged(f5_ggsave_btn, handler = function(h, ...) {
-    val_name <- svalue(f5_save_edt)
+  addHandlerChanged(ggsave_btn, handler = function(h, ...) {
+    val_name <- svalue(save_edt)
 
     # Save data.
     ggsave_gui(
@@ -367,7 +363,7 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   plot_epg_btn <- gbutton(text = .buttonDefault, container = gv)
 
   addHandlerClicked(plot_epg_btn, handler = function(h, ...) {
-    val_name <- svalue(f5_save_edt)
+    val_name <- svalue(save_edt)
     val_sample <- svalue(g0_sample_drp)
     val_kit <- svalue(kit_drp)
     val_peaks <- svalue(f1_peaks_chk)

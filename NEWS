@@ -1,7 +1,12 @@
+Version 2.1.0.9015
+------------------------------------------------------------------------------
+* import_gui: more intuitive layout.
+* Updated 'about'.
+* Compacted and tweaked function gui for tcltk and RGtk2.
+
 Version 2.1.0.9014
 ------------------------------------------------------------------------------
 * Compacted and tweaked plot function gui for tcltk and RGtk2.
-
 
 Version 2.1.0.9013
 ------------------------------------------------------------------------------

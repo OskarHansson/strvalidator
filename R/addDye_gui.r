@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -19,7 +20,6 @@
 # 27.11.2013: Added parameter 'overwrite=TRUE'.
 # 18.09.2013: Updated to use 'addColor' insted of removed 'addDye'.
 # 18.07.2013: Check before overwrite object.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 
 #' @title Add Dye Information
 #'
@@ -97,7 +97,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -123,7 +123,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -169,7 +169,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
       .gKit <<- detectKit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
-      svalue(f2_save_edt) <- paste(.gDataName, sep = "")
+      svalue(save_edt) <- paste(.gDataName, sep = "")
 
       if (debug) {
         print("Detected kit index")
@@ -181,7 +181,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -201,7 +201,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 5, container = gv)
+  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
 
   f1_ignore_chk <- gcheckbox(
     text = "Ignore case in marker name.",
@@ -228,13 +228,13 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     checked = FALSE, container = f1
   )
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(text = "Save as", horizontal = TRUE, spacing = 5, container = gv)
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -250,7 +250,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     val_kit <- svalue(kit_drp)
     val_data <- .gData
     val_data_name <- .gDataName
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_ignore <- svalue(f1_ignore_chk)
     val_dye <- svalue(f1_dye_chk)
     val_color <- svalue(f1_color_chk)

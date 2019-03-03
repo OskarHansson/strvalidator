@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -19,7 +20,6 @@
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 25.02.2014: Implemented new options 'replace NA' and 'add to dataset'.
 # 18.07.2013: Check before overwrite object.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 
 #' @title Calculate Peak Height
 #'
@@ -99,7 +99,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -125,7 +125,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -170,7 +170,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
 
       # Suggest name for the result.
-      svalue(f2_save_edt) <- paste(val_obj, "_height", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_height", sep = "")
 
       # Detect kit.
       kitIndex <- detectKit(data = .gData, index = TRUE)
@@ -183,7 +183,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gDataName <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(f0g0_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -292,7 +292,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
@@ -354,18 +354,13 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     }
   })
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -377,7 +372,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     val_data_name <- .gDataName
     val_ref <- .gRef
     val_ref_name <- .gRefName
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_add <- svalue(f1_add_chk)
     val_sex <- svalue(f1_sex_chk)
     val_qs <- svalue(f1_qs_chk)

@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
+# 01.03.2019: Compacting gui and made text box expand (tcltk)
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 11.07.2018: Fixed field 'Fixed value' not always disabled when it should.
 # 10.08.2017: Fixed column dropdowns lose selection after selecting dataset.
@@ -82,7 +84,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = FALSE
@@ -108,7 +110,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f0 <- gframe(
     text = "Dataset",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
@@ -149,7 +151,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gDataName <<- val_obj
 
       svalue(f0g0_data_col_lbl) <- paste(" ", ncol(.gData), " columns")
-      svalue(f2_name) <- paste(.gDataName, "new", sep = "_")
+      svalue(save_edt) <- paste(.gDataName, "new", sep = "_")
 
       f1g1_col1_drp[] <- c(.columnDropDefault, names(.gData))
       svalue(f1g1_col1_drp, index = TRUE) <- 1
@@ -159,7 +161,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(f0g0_data_col_lbl) <- " 0 columns"
-      svalue(f2_name) <- ""
+      svalue(save_edt) <- ""
 
       f1g1_col1_drp[] <- c(.columnDropDefault)
       svalue(f1g1_col1_drp, index = TRUE) <- 1
@@ -170,7 +172,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # COLUMNS ###################################################################
 
-  f1 <- gframe(text = "Columns", horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = "Columns", horizontal = FALSE, spacing = 2, container = gv)
 
   f1g1 <- glayout(container = f1, spacing = 1)
 
@@ -225,7 +227,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # OPTIONS ###################################################################
 
-  f3 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
+  f3 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
 
   f3g1 <- glayout(container = f3, spacing = 1)
 
@@ -265,17 +267,13 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     .updateGui()
   })
 
-  # NAME ######################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Save as:", container = f2)
-  f2_name <- gedit(text = "", container = f2, expand = TRUE)
+  glabel(text = "Name for result:", container = save_frame)
+
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -293,7 +291,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     val_fixed <- svalue(f3g1_val_edt)
     val_start <- as.integer(svalue(f3g1_start_edt))
     val_stop <- as.integer(svalue(f3g1_stop_edt))
-    val_name <- svalue(f2_name)
+    val_name <- svalue(save_edt)
     val_data_name <- .gDataName
     val_data <- .gData
 

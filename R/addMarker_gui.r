@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -85,7 +86,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -111,7 +112,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -160,7 +161,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
       .gKit <<- detectKit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
-      svalue(f2_save_edt) <- paste(.gDataName, "_marker", sep = "")
+      svalue(save_edt) <- paste(.gDataName, "_marker", sep = "")
 
       if (debug) {
         print("Detected kit index")
@@ -172,7 +173,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -197,7 +198,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -206,18 +207,13 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     checked = FALSE, container = f1
   )
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -234,7 +230,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     val_data <- .gData
     val_data_name <- .gDataName
     val_ignore <- svalue(f1_ignore_chk)
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
 
     if (debug) {
       print(".gData")

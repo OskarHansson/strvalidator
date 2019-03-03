@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -86,7 +87,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -112,7 +113,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -158,7 +159,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
       .gKit <<- detectKit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
-      svalue(f2_save_edt) <- paste(.gDataName, "_size", sep = "")
+      svalue(save_edt) <- paste(.gDataName, "_size", sep = "")
 
       if (debug) {
         print("Detected kit index")
@@ -170,7 +171,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -195,7 +196,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -206,18 +207,13 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   f1_size_opt <- gradio(items = f1_items, selected = 2, container = f1)
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", container = f2)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -233,7 +229,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     val_kit <- svalue(kit_drp)
     val_data <- .gData
     val_data_name <- .gDataName
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_bins <- svalue(f1_size_opt, index = TRUE) == 1 # TRUE / FALSE
 
     if (debug) {

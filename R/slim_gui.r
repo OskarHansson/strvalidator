@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.03.2019: Fixed expansion of widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -19,7 +20,6 @@
 # 18.07.2013: Check before overwrite object.
 # 16.07.2013: Added save GUI settings.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 06.06.2013: Set initial table height to 200.
 
 #' @title Slim Data Frames
 #'
@@ -115,28 +115,31 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # Vertical sub group.
   g0 <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = FALSE
+    expand = FALSE,
+    fill = TRUE
   )
 
   # Horizontal sub group.
   g1 <- ggroup(
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   # Vertical sub group.
   g2 <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = FALSE
+    expand = FALSE,
+    fill = TRUE
   )
 
 
@@ -145,7 +148,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = g0
   )
 
@@ -202,7 +205,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
       svalue(f0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
       # Result name.
-      svalue(f2_save_edt) <- paste(val_obj, "_slim", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_slim", sep = "")
 
       # Guess column names to keep fixed.
       svalue(fix_edt) <- colNames(data = .gData, slim = TRUE, numbered = TRUE, concatenate = "|")
@@ -225,7 +228,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f0_samples_lbl) <- paste(" ", "<NA>", "samples,")
       svalue(f0_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(f0_rows_lbl) <- paste(" ", "<NA>", "rows")
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -236,7 +239,10 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     print(unique(.gData$Sample.Name))
   }
 
-  fix_f <- gframe("Fix", horizontal = FALSE, container = g1, expand = TRUE)
+  fix_f <- gframe("Fix",
+    horizontal = FALSE, container = g1,
+    expand = TRUE, fill = TRUE
+  )
 
   fix_lbl <- glabel(
     text = "Columns to keep fixed (separate by pipe |):",
@@ -290,7 +296,10 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     print("STACK")
   }
 
-  stack_f <- gframe("Stack", horizontal = FALSE, container = g1, expand = TRUE)
+  stack_f <- gframe("Stack",
+    horizontal = FALSE, container = g1,
+    expand = TRUE, fill = TRUE
+  )
 
   stack_lbl <- glabel(
     text = "Columns to stack (separate by pipe |):",
@@ -360,31 +369,22 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     anchor = c(-1, 0)
   )
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = g2
-  )
+  save_frame <- gframe(text = "Save as", container = g2)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", expand = TRUE, container = f2, fill = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
-
-  if (debug) {
-    print("BUTTON")
-  }
 
   slim_btn <- gbutton(text = "Slim dataset", container = g2)
 
   addHandlerClicked(slim_btn, handler = function(h, ...) {
 
     # Get new dataset name.
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_data <- .gData
     val_data_name <- .gDataName
 

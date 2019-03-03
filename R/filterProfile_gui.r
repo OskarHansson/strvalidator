@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.03.2019: Tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -19,7 +20,6 @@
 # 08.05.2014: Implemented 'checkDataset'.
 # 12.01.2014: Replaced 'subset' with native code.
 # 15.12.2013: Fixed filter by kit bins.
-# 09.12.2013: Added 'filter by' option.
 
 #' @title Filter Profile
 #'
@@ -91,7 +91,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -117,7 +117,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -161,7 +161,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste("", samples, "samples")
-      svalue(f2_save_edt) <- paste(.gDataName, "_filter", sep = "")
+      svalue(save_edt) <- paste(.gDataName, "_filter", sep = "")
 
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
@@ -173,7 +173,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gData <<- NULL
       svalue(g0_dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -288,7 +288,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 5, container = gv)
+  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
 
   glabel(text = "Filter options:", anchor = c(-1, 0), container = f1)
 
@@ -360,22 +360,15 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     .refreshOptions()
   })
 
+  # SAVE ######################################################################
 
-  # FRAME 2 ###################################################################
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  glabel(text = "Name for result:", container = save_frame)
 
-  glabel(text = "Name for result:", container = f2)
-
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
-
 
   filter_btn <- gbutton(text = "Filter profile", container = gv)
 
@@ -390,7 +383,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     val_ignore_case <- svalue(f1_ignore_case_chk)
     val_exact <- svalue(f1_exact_chk)
     val_word <- svalue(f1_word_chk)
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_filter <- svalue(f1_filter_opt, index = TRUE)
     val_kit <- svalue(g0_kit_drp)
     val_exclude <- svalue(g0_kit_chk)

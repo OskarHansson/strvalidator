@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 26.07.2017: Added expand=TRUE to save name text field.
@@ -19,7 +20,6 @@
 # 29.05.2013: Disabled button and adding "processing..." after press.
 # 24.05.2013: Improved error message for missing columns.
 # 21.05.2013: Fixed name on save as.
-# 17.05.2013: listDataFrames() -> listObjects()
 
 #' @title Guess Profile
 #'
@@ -85,7 +85,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -111,7 +111,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
@@ -155,14 +155,14 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
-      svalue(f2_save_edt) <- paste(val_obj, "_profile", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_profile", sep = "")
     } else {
 
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
       svalue(f0g0_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
       svalue(f0g0_dataset_drp, index = TRUE) <- 1
     }
   })
@@ -172,11 +172,11 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
-  f1g1 <- glayout(container = f1, spacing = 5)
+  f1g1 <- glayout(container = f1, spacing = 2)
 
   f1g1[1, 1] <- glabel(text = "Accepted ratio >=", container = f1g1)
 
@@ -202,24 +202,15 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     container = f1g1
   )
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", width = 25, expand = TRUE, container = f2)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
-
-  if (debug) {
-    print("BUTTON")
-  }
 
   check_btn <- gbutton(text = "Guess", container = gv)
 
@@ -232,7 +223,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     val_height <- as.numeric(svalue(f1g1_height_edt))
     val_NA <- svalue(f1g1_na_chk)
     val_OL <- svalue(f1g1_ol_chk)
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
 
     if (is.na(val_height)) {
       val_height <- 0

@@ -124,7 +124,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -151,76 +151,43 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f0 <- gframe(
     text = "STR Kits",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f0_opt <- gradio(
+  kit_opt <- gradio(
     items = c("Edit kit file", "Add new kits"),
     selected = 2, container = f0
   )
 
-  addHandlerChanged(f0_opt, handler = function(h, ...) {
-    val_obj <- svalue(f0_opt, index = TRUE)
-
-    if (debug) {
-      print(val_obj)
-    }
-
-    # Clear.
-    if (!is.null(.f3g1)) {
-      delete(obj = f3, child = .f3g1)
-    }
-
-    if (val_obj == 1) {
-
-      # Enable 'edit' objects.
-      enabled(f1) <- TRUE
-
-      # Disable 'new' objects.
-      enabled(f2) <- FALSE
-
-      # Autoselect 'Overwrite'.
-      svalue(f4_opt, index = TRUE) <- 2
-
-      # Update path.
-      svalue(f1g1_file_edt) <- .filePath
-    } else {
-
-      # Enable 'new' objects.
-      enabled(f2) <- TRUE
-
-      # Disable 'edit' objects.
-      enabled(f1) <- FALSE
-
-      # Autoselect 'Overwrite'.
-      svalue(f4_opt, index = TRUE) <- 1
-    }
+  addHandlerChanged(kit_opt, handler = function(h, ...) {
+    .updateGui()
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
     text = "Kit file",
-    horizontal = FALSE,
-    spacing = 5,
+    horizontal = TRUE,
+    spacing = 2,
     container = gv
   )
 
   # This is disabled by default.
   enabled(f1) <- FALSE
 
-  f1g1 <- glayout(container = f1, spacing = 1)
+  file_edt <- gedit(
+    text = .filePath, container = f1,
+    expand = TRUE, fill = TRUE
+  )
+  file_btn <- gbutton(text = "Load", container = f1)
 
-  f1g1[1, 1] <- f1g1_file_edt <- gedit(text = .filePath, container = f1g1, width = 80)
-  f1g1[1, 2] <- f1g1_file_btn <- gbutton(text = "Load", container = f1g1)
-
-  addHandlerChanged(f1g1_file_btn, handler = function(h, ...) {
-    val_obj <- svalue(f1g1_file_edt)
+  addHandlerChanged(file_btn, handler = function(h, ...) {
+    val_obj <- svalue(file_edt)
 
     # Disable options after loading the kit definition file.
     # This is because the GUI cannot handle adding widgets correct.
-    enabled(f0_opt) <- FALSE
+    enabled(kit_opt) <- FALSE
 
     if (debug) {
       print("Kit file:")
@@ -256,7 +223,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f2 <- gframe(
     text = "New kits",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -335,7 +302,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       # Disable options after loading the kit definition file.
       # This is because the GUI cannot handle adding widgets correct.
-      enabled(f0_opt) <- FALSE
+      enabled(kit_opt) <- FALSE
 
       # Read and combine files.
       .newKitInfo <<- combineBinsAndPanels(
@@ -361,8 +328,8 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     horizontal = FALSE,
     use.scrollwindow = TRUE,
     expand = TRUE,
-    fill = "both",
-    spacing = 5,
+    fill = TRUE,
+    spacing = 2,
     container = gv
   )
 
@@ -395,7 +362,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
     # Add container.
-    .f3g1 <<- glayout(container = f3, spacing = 10, expand = TRUE, fill = "both")
+    .f3g1 <<- glayout(container = f3, spacing = 2, expand = TRUE, fill = "both")
 
     # Add titles.
     .f3g1[1, 1] <<- glabel(text = "Remove", container = .f3g1)
@@ -484,13 +451,13 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     text = "Save as",
     horizontal = FALSE,
     expand = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
   # SAVE ----------------------------------------------------------------------
 
-  f4_opt <- gradio(
+  save_opt <- gradio(
     items = c(
       "Append to kit file",
       "Overwrite kit file",
@@ -501,14 +468,14 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     container = f4
   )
 
-  f4_name_edt <- gedit(expand = TRUE, container = f4)
-  enabled(f4_name_edt) <- FALSE
+  save_edt <- gedit(expand = TRUE, container = f4)
+  enabled(save_edt) <- FALSE
 
-  f4_save_btn <- gbutton(text = "Save", expand = FALSE, container = f4)
+  save_btn <- gbutton(text = "Save", expand = FALSE, container = f4)
 
 
-  addHandlerChanged(f4_opt, handler = function(h, ...) {
-    val_obj <- svalue(f4_opt, index = TRUE)
+  addHandlerChanged(save_opt, handler = function(h, ...) {
+    val_obj <- svalue(save_opt, index = TRUE)
 
     if (debug) {
       print(val_obj)
@@ -517,27 +484,27 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (val_obj == 1) {
 
       # Disable.
-      enabled(f4_name_edt) <- FALSE
+      enabled(save_edt) <- FALSE
 
       # Update path.
-      svalue(f1g1_file_edt) <- .filePath
+      svalue(file_edt) <- .filePath
     } else if (val_obj == 2) {
 
       # Disable.
-      enabled(f4_name_edt) <- FALSE
+      enabled(save_edt) <- FALSE
     } else if (val_obj == 3) {
 
       # Enable.
-      enabled(f4_name_edt) <- TRUE
+      enabled(save_edt) <- TRUE
     }
   })
 
-  addHandlerClicked(f4_save_btn, handler = function(h, ...) {
+  addHandlerClicked(save_btn, handler = function(h, ...) {
 
     # Get variables.
-    val_name <- svalue(f4_name_edt)
-    val_opt <- svalue(f4_opt, index = TRUE)
-    val_check <- svalue(f0_opt, index = TRUE)
+    val_name <- svalue(save_edt)
+    val_opt <- svalue(save_opt, index = TRUE)
+    val_check <- svalue(kit_opt, index = TRUE)
 
     # Check if kit info exist.
     if (!is.null(.newKitInfo)) {
@@ -603,10 +570,10 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         if (!any(exist)) {
 
           # Change button.
-          blockHandlers(f4_save_btn)
-          svalue(f4_save_btn) <- "Saving..."
-          unblockHandlers(f4_save_btn)
-          enabled(f4_save_btn) <- FALSE
+          blockHandlers(save_btn)
+          svalue(save_btn) <- "Saving..."
+          unblockHandlers(save_btn)
+          enabled(save_btn) <- FALSE
 
           for (p in seq(along = panel)) {
             if (debug) {
@@ -762,6 +729,47 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       }
     }
   })
+
+  # INTERNAL FUNCTIONS ########################################################
+
+  .updateGui <- function() {
+
+    # Get option.
+    val_obj <- svalue(kit_opt, index = TRUE)
+
+    # Clear.
+    if (!is.null(.f3g1)) {
+      delete(obj = f3, child = .f3g1)
+    }
+
+    if (val_obj == 1) {
+
+      # Enable 'edit' objects.
+      enabled(f1) <- TRUE
+
+      # Disable 'new' objects.
+      enabled(f2) <- FALSE
+
+      # Autoselect 'Overwrite'.
+      svalue(save_opt, index = TRUE) <- 2
+
+      # Update path.
+      svalue(file_edt) <- .filePath
+    } else {
+
+      # Enable 'new' objects.
+      enabled(f2) <- TRUE
+
+      # Disable 'edit' objects.
+      enabled(f1) <- FALSE
+
+      # Autoselect 'Overwrite'.
+      svalue(save_opt, index = TRUE) <- 1
+    }
+  }
+
+  # Update gui.
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

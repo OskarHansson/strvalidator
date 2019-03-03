@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 19.07.2018: Minor changes to some labels (clarity).
 # 11.07.2018: 'Save as' textbox expandable.
@@ -19,7 +20,6 @@
 # 18.07.2013: Check before overwrite object.
 # 11.07.2013: Added save GUI settings.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 17.05.2013: listDataFrames() -> listObjects()
 
 #' @title Add Data
 #'
@@ -91,7 +91,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -117,7 +117,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -161,7 +161,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       samples <- length(unique(.gDataDest$Sample.Name))
       svalue(g0_samples_lbl) <- paste(" ", samples, "samples")
-      svalue(f2_save_edt) <- paste(.gDataDestName, "_new", sep = "")
+      svalue(save_edt) <- paste(.gDataDestName, "_new", sep = "")
 
       # Update dropdown menues.
       f1_key_drp[] <- c(
@@ -182,7 +182,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gDataDest <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
 
       # Update dropdown menues.
       f1_key_drp[] <- .gDefaultDrp
@@ -268,7 +268,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -347,18 +347,13 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
   })
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -375,7 +370,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     val_key2 <- svalue(f1_key2_drp)
     val_what <- svalue(f1_col_edt)
     val_ignore <- svalue(f1_ignore_chk)
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
 
     # Check if default.
     if (val_key == .gDefaultDrp) {

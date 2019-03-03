@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -89,7 +90,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -117,7 +118,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets", horizontal = FALSE, spacing = 5,
+    text = "Datasets", horizontal = FALSE, spacing = 2,
     container = gv
   )
 
@@ -160,7 +161,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
-      svalue(f2_save_edt) <- paste(val_obj, "_cop", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_cop", sep = "")
     } else {
 
       # Reset components.
@@ -168,7 +169,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       .gDataName <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(f0g0_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -176,51 +177,40 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1 <- gframe(
     text = "Options", horizontal = FALSE,
-    spacing = 10, container = gv
+    spacing = 2, container = gv
   )
-
-  f1_note <- paste(
-    "Note that the 'copies' and 'heterozygous' option are",
-    "intended for known complete profiles, while 'observed'",
-    "can be used for any samples to count the number of peaks."
-  )
-
-  gtext(text = f1_note, container = f1)
 
   f1_observed_chk <- gcheckbox(
-    text = "Add number of unique alleles",
+    text = "Add number of unique alleles (count number of peaks)",
     checked = FALSE, container = f1
   )
 
   f1_copies_chk <- gcheckbox(
-    text = "Add number of allele copies",
+    text = "Add number of allele copies (for known complete profiles)",
     checked = TRUE, container = f1
   )
-  tooltip(f1_copies_chk) <- "Indicated by '1' for heterozygotes and '2' for homozygotes."
+  tooltip(f1_copies_chk) <- "'1' for heterozygotes and '2' for homozygotes."
 
   f1_het_chk <- gcheckbox(
-    text = "Add heterozygote indicator",
+    text = "Add heterozygote indicator (for known complete profiles)",
     checked = FALSE, container = f1
   )
-  tooltip(f1_het_chk) <- "Indicated by '1' for heterozygous and '0' for homozygous loci."
+  tooltip(f1_het_chk) <- "'1' for heterozygous loci and '0' for homozygous loci."
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as", horizontal = TRUE, spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", expand = TRUE, container = f2, fill = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
   calculate_btn <- gbutton(text = "Calculate", container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_data <- .gData
     val_data_name <- .gDataName
     val_obs <- svalue(f1_observed_chk)
