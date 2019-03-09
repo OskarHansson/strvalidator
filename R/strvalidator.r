@@ -326,7 +326,7 @@ strvalidator <- function(debug = FALSE) {
     "- improve existing functionality or add new\n ",
     "- translate course material, manuals, or tutorial\n ",
     "- collaborate to implement new functions\n",
-    "- add tests to validate functions\n",
+    "- add tests to validate functions\n ",
     "\n",
     "Created by:\n",
     "Oskar Hansson, Forensic Genetics (Oslo University Hospital, Norway)",
