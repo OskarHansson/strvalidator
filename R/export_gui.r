@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: https://stackoverflow.com/questions/45231928/initiate-gfilebrowse-with-a-valid-path-gwidgets2
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 24.07.2018: Added instruction in error message.
 # 24.07.2018: Fixed: Error in if (nchar(val_path) == 0) { : argument is of length zero
 # 21.07.2017: Function now exported. Fixed number of selected objects.
@@ -62,7 +59,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   )
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -70,6 +67,24 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 
@@ -405,6 +420,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage(

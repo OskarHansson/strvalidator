@@ -41,7 +41,7 @@ concatenate, add, multiply, subtract, divide. The selected action can be
 performed on two columns, or one column and a fixed value, or a new column
 can be added. A target column for the result is specified.
 NB! if the target column already exist it will be overwritten,
-else it will be created. A common use is to create a unique 
+else it will be created. A common use is to create a unique
 Sample.Name from the existing Sample.Name column and e.g. the File.Name
 or File.Time columns. It can also be used to calculate the Amount from
 the Concentration.
@@ -50,11 +50,11 @@ the Concentration.
 # Get a sample dataset.
 data(set2)
 # Add concatenate Sample.Name and Dye.
-set2 <- columns(data=set2, col1="Sample.Name", col2="Dye")
+set2 <- columns(data = set2, col1 = "Sample.Name", col2 = "Dye")
 # Multiply Height by 4.
-set2 <- columns(data=set2, col1="Height", operator="*", fixed=4)
+set2 <- columns(data = set2, col1 = "Height", operator = "*", fixed = 4)
 # Add a new column.
-set2 <- columns(data=set2, operator="&", fixed="1234", target="Batch")
+set2 <- columns(data = set2, operator = "&", fixed = "1234", target = "Batch")
 }
 \seealso{
 \link{substr}

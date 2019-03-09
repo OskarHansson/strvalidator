@@ -15,7 +15,7 @@ calculateHb(data, ref, hb = 1, kit = NULL, sex.rm = FALSE,
 \item{ref}{a data frame containing at least
 'Sample.Name', 'Marker', 'Allele'.}
 
-\item{hb}{numerical, definition of heterozygote balance. Default is hb=1. 
+\item{hb}{numerical, definition of heterozygote balance. Default is hb=1.
 hb=1: HMW/LMW, hb=2: LMW/HMW, hb=3; min(Ph)/max(Ph).}
 
 \item{kit}{character defining the kit used. If NULL automatic detection is attempted.}
@@ -49,5 +49,5 @@ NB! 'X' and 'Y' will be handled as '1' and '2' respectively.
 data(ref2)
 data(set2)
 # Calculate average balances.
-calculateHb(data=set2, ref=ref2)
+calculateHb(data = set2, ref = ref2)
 }

@@ -25,8 +25,8 @@ GUI simplifying the creation of plots from result type data.
 \details{
 Plot result type data. It is possible to customize titles and font
 size. Data can be plotted as as frequency or proportion. The values can be
-printed on the plot with custom number of decimals. There are several 
-color palettes to chose from. 
+printed on the plot with custom number of decimals. There are several
+color palettes to chose from.
 Automatic plot titles can be replaced by custom titles.
 A name for the result is automatically suggested.
 The resulting plot can be saved as either a plot object or as an image.

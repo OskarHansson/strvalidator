@@ -47,17 +47,17 @@ denominator the ratio of all possible combinations of the provided markers
 and the markers not provided will be calculated. If the number of markers
 provided are different in the numerator and in the denominator the shorter
 vector will be repeated to equal the longer vector in length.
-Data can be unfiltered or filtered since the sum of 
+Data can be unfiltered or filtered since the sum of
 peak heights per marker is used. Off-ladder alleles is by default removed
 from the dataset before calculations.
 }
 \examples{
 data(set2)
 # Calculate ratio between the shortest and longest marker in each dye.
-numerator <- c("D3S1358", "AMEL","D19S433")
+numerator <- c("D3S1358", "AMEL", "D19S433")
 denominator <- c("D2S1338", "D18S51", "FGA")
-calculateRatio(data=set2, numerator=numerator, denominator=denominator)
-calculateRatio(data=set2, numerator=NULL, denominator="AMEL")
-calculateRatio(data=set2, numerator=c("AMEL","TH01"), denominator=NULL)
-calculateRatio(data=set2, numerator=NULL, denominator=NULL)
+calculateRatio(data = set2, numerator = numerator, denominator = denominator)
+calculateRatio(data = set2, numerator = NULL, denominator = "AMEL")
+calculateRatio(data = set2, numerator = c("AMEL", "TH01"), denominator = NULL)
+calculateRatio(data = set2, numerator = NULL, denominator = NULL)
 }

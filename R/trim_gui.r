@@ -1,10 +1,8 @@
-################################################################################
-# TODO LIST
-# TODO: ...
-
 # NB! Can't handle Sample.Names as factors?
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.03.2019: Fixed expansion of widgets under tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -24,7 +22,6 @@
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 # 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
 # 06.08.2013: Added rows and columns to info.
-# 18.07.2013: Check before overwrite object.
 
 #' @title Trim Data
 #'
@@ -65,7 +62,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   w <- gwindow(title = "Trim dataset", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -73,6 +70,24 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 
@@ -103,28 +118,31 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   # Vertical sub group.
   g0 <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = FALSE
+    expand = FALSE,
+    fill = TRUE
   )
 
   # Horizontal sub group.
   g1 <- ggroup(
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   # Vertical sub group.
   g2 <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = FALSE
+    expand = FALSE,
+    fill = TRUE
   )
 
 
@@ -137,7 +155,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   frame0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = g0
   )
 
@@ -198,7 +216,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(g0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
       svalue(g0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
       # Result name.
-      svalue(f2_save_edt) <- paste(val_obj, "_trim", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_trim", sep = "")
     } else {
 
       # Reset components.
@@ -211,7 +229,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(g0_samples_lbl) <- paste(" ", "<NA>", "samples,")
       svalue(g0_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(g0_rows_lbl) <- paste(" ", "<NA>", "rows")
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -221,7 +239,10 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     print("SAMPLES")
   }
 
-  sample_f <- gframe("Samples", horizontal = FALSE, container = g1, expand = TRUE)
+  sample_f <- gframe("Samples",
+    horizontal = FALSE, container = g1,
+    expand = TRUE, fill = TRUE
+  )
 
 
   sample_opt <- gradio(
@@ -293,7 +314,8 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   column_f <- gframe("Columns",
     horizontal = FALSE,
     container = g1,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   column_opt <- gradio(
@@ -351,7 +373,8 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   option_f <- gframe("Options",
     horizontal = FALSE,
     container = g1,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   empty_chk <- gcheckbox(
@@ -387,35 +410,22 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     container = option_f
   )
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  if (debug) {
-    print("SAVE")
-  }
+  save_frame <- gframe(text = "Save as", container = g2)
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = g2
-  )
+  glabel(text = "Name for result:", container = save_frame)
 
-  glabel(text = "Name for result:", container = f2)
-
-  f2_save_edt <- gedit(text = "", expand = TRUE, container = f2)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
-
-  if (debug) {
-    print("BUTTON")
-  }
 
   trim_btn <- gbutton(text = "Trim dataset", container = g2)
 
   addHandlerChanged(trim_btn, handler = function(h, ...) {
 
     # Get new dataset name.
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
 
     if (nchar(val_name) > 0) {
 
@@ -514,6 +524,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       saveObject(name = val_name, object = datanew, parent = w, env = env)
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage("A file name must be provided!",

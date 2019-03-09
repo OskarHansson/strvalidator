@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.02.2019: Compacted and tweaked gui for tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 17.07.2018: First version.
 
 #' @title Plot Empirical Cumulative Distributions
@@ -62,7 +60,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   w <- gwindow(title = "Plot groups", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -71,10 +69,28 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   gv <- ggroup(
-    horizontal = FALSE, spacing = 8, use.scrollwindow = FALSE,
+    horizontal = FALSE, spacing = 5, use.scrollwindow = FALSE,
     container = w, expand = TRUE
   )
 
@@ -98,9 +114,9 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = "Dataset", horizontal = TRUE, spacing = 5, container = gv)
+  f0 <- gframe(text = "Dataset", horizontal = TRUE, spacing = 2, container = gv)
 
-  f0g0 <- glayout(container = f0)
+  f0g0 <- glayout(container = f0, spacing = 2)
 
   f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
 
@@ -191,43 +207,43 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options", horizontal = FALSE, spacing = 5,
+    text = "Options", horizontal = FALSE, spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(f1g1) <- TRUE
-    } else {
-      enabled(f1g1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  f1g1 <- ggroup(container = f1, spacing = 1, horizontal = FALSE)
-  enabled(f1g1) <- svalue(f1_titles_chk)
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
+  )
 
-  glabel(text = "Plot title:", container = f1g1)
-  f1_title_edt <- gedit(text = "", expand = TRUE, container = f1g1)
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = "X title:", container = f1g1)
-  f1_xtitle_edt <- gedit(text = "", expand = TRUE, container = f1g1)
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = "Y title:", container = f1g1)
-  f1_ytitle_edt <- gedit(text = "", expand = TRUE, container = f1g1)
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  f1g2 <- ggroup(container = f1, spacing = 5, horizontal = TRUE, expand = TRUE)
+
+  f1g2 <- ggroup(container = f1, spacing = 2, horizontal = TRUE, expand = TRUE)
 
   glabel(text = "Group labels:", container = f1g2)
-  f1_labels_edt <- gedit(text = "", expand = TRUE, container = f1g2, spacing = 5)
+  f1_labels_edt <- gedit(expand = TRUE, fill = TRUE, container = f1g2)
+  tooltip(f1_labels_edt) <- "Separate by comma"
 
-  f1g3 <- glayout(container = f1, spacing = 5, expand = TRUE)
+  f1g3 <- glayout(container = f1, spacing = 2, expand = TRUE)
 
   f1g3[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g3)
   items_theme <- c(
@@ -262,9 +278,10 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # BUTTON ####################################################################
 
   plot_ecdf_btn <- gbutton(
-    text = "Empirical cumulative distribution function",
+    text = "Plot",
     container = gv
   )
+  tooltip(plot_ecdf_btn) <- "Empirical cumulative distribution function"
 
   addHandlerChanged(plot_ecdf_btn, handler = function(h, ...) {
     val_column <- svalue(f0_axis_drp)
@@ -284,11 +301,11 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = "Save as", horizontal = TRUE, spacing = 5, container = gv)
+  f5 <- gframe(text = "Save as", horizontal = TRUE, spacing = 2, container = gv)
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE)
+  f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -331,10 +348,10 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
     # Get values.
     val_data <- .gData
-    val_titles <- svalue(f1_titles_chk)
-    val_title <- svalue(f1_title_edt)
-    val_x_title <- svalue(f1_xtitle_edt)
-    val_y_title <- svalue(f1_ytitle_edt)
+    val_titles <- svalue(titles_chk)
+    val_title <- svalue(title_edt)
+    val_x_title <- svalue(x_title_edt)
+    val_y_title <- svalue(y_title_edt)
     val_theme <- svalue(f1_theme_drp)
     val_group <- svalue(f0_group_drp)
     val_axis <- svalue(f0_axis_drp)
@@ -546,6 +563,17 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
+
   .refresh_column_drp <- function() {
     if (debug) {
       print("Refresh group and axis dropdown")
@@ -609,16 +637,16 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     # Then load settings if true.
     if (svalue(savegui_chk)) {
       if (exists(".strvalidator_plotGroups_gui_title", envir = env, inherits = FALSE)) {
-        svalue(f1_title_edt) <- get(".strvalidator_plotGroups_gui_title", envir = env)
+        svalue(title_edt) <- get(".strvalidator_plotGroups_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotGroups_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotGroups_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotGroups_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotGroups_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(f1_xtitle_edt) <- get(".strvalidator_plotGroups_gui_x_title", envir = env)
+        svalue(x_title_edt) <- get(".strvalidator_plotGroups_gui_x_title", envir = env)
       }
       if (exists(".strvalidator_plotGroups_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(f1_ytitle_edt) <- get(".strvalidator_plotGroups_gui_y_title", envir = env)
+        svalue(y_title_edt) <- get(".strvalidator_plotGroups_gui_y_title", envir = env)
       }
       if (exists(".strvalidator_plotGroups_gui_theme", envir = env, inherits = FALSE)) {
         svalue(f1_theme_drp) <- get(".strvalidator_plotGroups_gui_theme", envir = env)
@@ -635,10 +663,10 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotGroups_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotGroups_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
-      assign(x = ".strvalidator_plotGroups_gui_title", value = svalue(f1_title_edt), envir = env)
-      assign(x = ".strvalidator_plotGroups_gui_x_title", value = svalue(f1_xtitle_edt), envir = env)
-      assign(x = ".strvalidator_plotGroups_gui_y_title", value = svalue(f1_ytitle_edt), envir = env)
+      assign(x = ".strvalidator_plotGroups_gui_title_chk", value = svalue(titles_chk), envir = env)
+      assign(x = ".strvalidator_plotGroups_gui_title", value = svalue(title_edt), envir = env)
+      assign(x = ".strvalidator_plotGroups_gui_x_title", value = svalue(x_title_edt), envir = env)
+      assign(x = ".strvalidator_plotGroups_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_plotGroups_gui_theme", value = svalue(f1_theme_drp), envir = env)
     } else { # or remove all saved values if false.
 
@@ -678,6 +706,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

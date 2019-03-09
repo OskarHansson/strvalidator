@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.02.2019: Compacted and tweaked gui for tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
@@ -58,7 +56,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   w <- gwindow(title = "Plot contamination", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -67,12 +65,30 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -98,7 +114,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   f0 <- gframe(
     text = "Dataset",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -162,45 +178,34 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(f1g1) <- TRUE
-    } else {
-      enabled(f1g1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  f1g1 <- glayout(container = f1, spacing = 1)
-  enabled(f1g1) <- svalue(f1_titles_chk)
-
-  f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- title_edt <- gedit(
-    text = "",
-    width = 40,
-    container = f1g1
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
   )
 
-  f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- x_title_edt <- gedit(
-    text = "",
-    container = f1g1
-  )
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- y_title_edt <- gedit(
-    text = "",
-    container = f1g1
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
 
   f1g2 <- glayout(container = f1)
   f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
@@ -216,17 +221,12 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     ellipsize = "none"
   )
 
-  # FRAME 7 ###################################################################
+  # BUTTON ####################################################################
 
-  f7 <- gframe(
-    text = "Plot contamination rate",
-    horizontal = FALSE,
-    container = gv
+  plot_poiss_btn <- gbutton(
+    text = "Plot", container = gv,
+    expand = TRUE, fill = TRUE
   )
-
-  grid7 <- glayout(container = f7)
-
-  grid7[1, 1] <- plot_poiss_btn <- gbutton(text = "Plot", container = grid7)
   tooltip(plot_poiss_btn) <- "Plot observed and expected contamination rate"
 
   addHandlerChanged(plot_poiss_btn, handler = function(h, ...) {
@@ -240,13 +240,13 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", container = f5)
+  f5_save_edt <- gedit(expand = TRUE, fill = TRUE, container = f5)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -290,7 +290,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
     # Get values.
     val_data <- .gData
-    val_titles <- svalue(f1_titles_chk)
+    val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
     val_xtitle <- svalue(x_title_edt)
     val_ytitle <- svalue(y_title_edt)
@@ -403,6 +403,17 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
+
   .applyPlotSettings <- function(gp, theme = "theme_grey()",
                                    main.title = NULL, x.title = NULL, y.title = NULL) {
 
@@ -446,7 +457,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
         svalue(title_edt) <- get(".strvalidator_plotContamination_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotContamination_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotContamination_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotContamination_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotContamination_gui_x_title", envir = env, inherits = FALSE)) {
         svalue(x_title_edt) <- get(".strvalidator_plotContamination_gui_x_title", envir = env)
@@ -470,7 +481,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotContamination_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_plotContamination_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotContamination_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
+      assign(x = ".strvalidator_plotContamination_gui_title_chk", value = svalue(titles_chk), envir = env)
       assign(x = ".strvalidator_plotContamination_gui_x_title", value = svalue(x_title_edt), envir = env)
       assign(x = ".strvalidator_plotContamination_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_plotContamination_gui_theme", value = svalue(f1_theme_drp), envir = env)
@@ -509,6 +520,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

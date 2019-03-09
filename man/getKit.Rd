@@ -28,9 +28,9 @@ Provides information about STR kits.
 \details{
 The function returns the following information for a kit specified in kits.txt:
 Panel name, short kit name (unique, user defined), full kit name (user defined),
-marker names, allele names, allele sizes (bp), 
+marker names, allele names, allele sizes (bp),
 minimum allele size, maximum allele size (bp), flag for virtual alleles,
-marker color, marker repeat unit size (bp), minimum marker size, 
+marker color, marker repeat unit size (bp), minimum marker size,
 maximum marker, marker offset (bp), flag for sex markers (TRUE/FALSE).
 
 If no matching kit or kit index is found NA is returned.

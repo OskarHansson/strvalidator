@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.03.2019: Fixed expansion of widgets under tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -22,8 +20,6 @@
 # 18.07.2013: Check before overwrite object.
 # 16.07.2013: Added save GUI settings.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 06.06.2013: Set initial table height to 200.
-# 04.06.2013: Fixed bug in 'missingCol'.
 
 #' @title Slim Data Frames
 #'
@@ -62,7 +58,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   w <- gwindow(title = "Slim dataset", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -70,6 +66,24 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 
@@ -101,28 +115,31 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # Vertical sub group.
   g0 <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = FALSE
+    expand = FALSE,
+    fill = TRUE
   )
 
   # Horizontal sub group.
   g1 <- ggroup(
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = TRUE
+    expand = TRUE,
+    fill = TRUE
   )
 
   # Vertical sub group.
   g2 <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     use.scrollwindow = FALSE,
     container = gv,
-    expand = FALSE
+    expand = FALSE,
+    fill = TRUE
   )
 
 
@@ -131,7 +148,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = g0
   )
 
@@ -188,7 +205,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
       svalue(f0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
       # Result name.
-      svalue(f2_save_edt) <- paste(val_obj, "_slim", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_slim", sep = "")
 
       # Guess column names to keep fixed.
       svalue(fix_edt) <- colNames(data = .gData, slim = TRUE, numbered = TRUE, concatenate = "|")
@@ -211,7 +228,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f0_samples_lbl) <- paste(" ", "<NA>", "samples,")
       svalue(f0_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(f0_rows_lbl) <- paste(" ", "<NA>", "rows")
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -222,7 +239,10 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     print(unique(.gData$Sample.Name))
   }
 
-  fix_f <- gframe("Fix", horizontal = FALSE, container = g1, expand = TRUE)
+  fix_f <- gframe("Fix",
+    horizontal = FALSE, container = g1,
+    expand = TRUE, fill = TRUE
+  )
 
   fix_lbl <- glabel(
     text = "Columns to keep fixed (separate by pipe |):",
@@ -276,7 +296,10 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     print("STACK")
   }
 
-  stack_f <- gframe("Stack", horizontal = FALSE, container = g1, expand = TRUE)
+  stack_f <- gframe("Stack",
+    horizontal = FALSE, container = g1,
+    expand = TRUE, fill = TRUE
+  )
 
   stack_lbl <- glabel(
     text = "Columns to stack (separate by pipe |):",
@@ -346,31 +369,22 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     anchor = c(-1, 0)
   )
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = g2
-  )
+  save_frame <- gframe(text = "Save as", container = g2)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", expand = TRUE, container = f2)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
-
-  if (debug) {
-    print("BUTTON")
-  }
 
   slim_btn <- gbutton(text = "Slim dataset", container = g2)
 
   addHandlerClicked(slim_btn, handler = function(h, ...) {
 
     # Get new dataset name.
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_data <- .gData
     val_data_name <- .gDataName
 
@@ -427,6 +441,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       gmessage("A file name must be provided!",

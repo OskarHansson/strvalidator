@@ -1,9 +1,8 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
+# 10.02.2019: Adjusted GUI for tcltk.
+# 10.02.2019: Fixed tcltk Error in structure(.External(.C_dotTclObjv, objv)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -58,7 +57,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   w <- gwindow(title = "Calculate concordance", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -66,6 +65,24 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 
@@ -103,7 +120,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     spacing = 2, container = gv
   )
 
-  f0g0 <- glayout(container = f0, expand = TRUE, fill = "both")
+  f0g0 <- glayout(container = f0, expand = TRUE, fill = "both", spacing = 2)
 
   f0g0[1, 1] <- glabel(text = "Dataset:", container = f0g0)
 
@@ -125,7 +142,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  f0g0[3, 1:3] <- f0_add_btn <- gbutton(text = "Add", container = f0g0)
+  f0_add_btn <- gbutton(text = "Add", container = f0)
 
   # HANDLERS ------------------------------------------------------------------
 
@@ -211,7 +228,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
 
-  f1g0 <- glayout(container = f1, expand = TRUE, fill = "both")
+  f1g0 <- glayout(container = f1, expand = TRUE, fill = "both", spacing = 2)
 
   f1g0[1, 1] <- glabel(
     text = "Delimeter for alleles in genotype:",
@@ -240,7 +257,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     width = 15, container = f1g0
   )
 
-  f1g0[4, 1] <- f1_all_chk <- gcheckbox(
+  f1_all_chk <- gcheckbox(
     text = "Include missing samples in result.",
     checked = FALSE, container = f1
   )
@@ -252,7 +269,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   f3 <- gframe(
     text = "Selected datasets",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
@@ -280,7 +297,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   f4 <- gframe(
     text = "Save as",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
@@ -413,6 +430,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A dataset must be selected."

@@ -1,9 +1,8 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
+# 11.02.2019: Minor adjustments to tcltk gui.
+# 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -61,7 +60,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   w <- gwindow(title = "Calculate locus balance", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -69,6 +68,23 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 
@@ -285,7 +301,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 5,
     container = gv
   )
 
@@ -354,7 +370,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     text = "Replace missing data with peak height:", anchor = c(-1, 0),
     container = f1
   )
-  f1_na_edt <- gedit(width = 5, expand = FALSE, container = f1)
+  f1_na_edt <- gedit(expand = TRUE, container = f1)
 
   #----------------------------------------------------------------------------
   glabel(text = "Post processing:", anchor = c(-1, 0), container = f1)
@@ -382,7 +398,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   glabel(text = "Name for result:", container = f4)
 
-  f4_save_edt <- gedit(expand = TRUE, container = f4)
+  f4_save_edt <- gedit(expand = TRUE, container = f4, fill = TRUE)
 
   # BUTTON ####################################################################
 
@@ -566,6 +582,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
         }
 
         # Close GUI.
+        .saveSettings()
         dispose(w)
       } else {
         message <- "'NA' in 'Dye' column. \nUse add dye function to fix."

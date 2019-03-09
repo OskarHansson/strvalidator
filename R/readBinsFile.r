@@ -39,7 +39,7 @@ readBinsFile <- function(bin.files, debug = FALSE) {
   if (!is.na(bin.files)) {
 
     # Open file for reading.
-    f1 = file(bin.files[1], open = "r")
+    f1 <- file(bin.files[1], open = "r")
 
     # Read raw text.
     allTextRaw <- readLines(f1)

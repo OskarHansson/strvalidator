@@ -144,7 +144,7 @@ tablePrecision <- function(data, key = c("Marker", "Allele"), target = c("Size")
 
     bool <- rep(TRUE, nrow(data))
     for (k in seq(along = key)) {
-      bool = bool & data[, key[k]] == keyComb[c, k]
+      bool <- bool & data[, key[k]] == keyComb[c, k]
     }
 
     # Subset data.

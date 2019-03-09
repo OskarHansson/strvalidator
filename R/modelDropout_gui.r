@@ -1,11 +1,8 @@
 ################################################################################
-# TODO LIST
-# TODO: implement log(P(D)) scale. Quite tricky...
-# TODO: parameter perLocus? Not priority since easy to make subset of dataframe.
-
-################################################################################
 # CHANGE LOG (last 20 changes)
 # 24.02.2019: Added option to use log10 y-axis scale.
+# 23.02.2019: Compacted and tweaked gui for tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 25.07.2018: Added option to dump model data. Changed default P(D) to 0.01.
 # 10.07.2018: Converts dependent and explanatory values to numeric if necessary.
 # 18.07.2017: Fixed issue with infinite loop for the 'model' button.
@@ -24,8 +21,6 @@
 # 05.01.2015: Changed check of suggested package ResourceSelection in accordance
 #             with Writing R extensions v 3.2.1 section 1.1.3.1.
 # 14.12.2014: Added option to use average peak height 'H'.
-# 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -155,7 +150,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   w <- gwindow(title = "Plot dropout prediction", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -164,11 +159,29 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -194,7 +207,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   f0 <- gframe(
     text = "Dataset",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -275,53 +288,37 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(f1g1) <- TRUE
-    } else {
-      enabled(f1g1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  f1g1 <- glayout(container = f1, spacing = 1)
-  enabled(f1g1) <- svalue(f1_titles_chk)
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
+  )
 
   # Legends
-  f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
-  f1g1[1, 2] <- f1_title_edt <- gedit(
-    text = "",
-    width = 60,
-    container = f1g1
-  )
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
-  f1g1[2, 2] <- f1_x_title_edt <- gedit(
-    text = "",
-    width = 60,
-    container = f1g1
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  f1g1[3, 1] <- glabel(text = "Y title:", container = f1g1)
-  f1g1[3, 2] <- f1_y_title_edt <- gedit(
-    text = "",
-    width = 60,
-    container = f1g1
-  )
-
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
   # Group 2.
-  f1g2 <- ggroup(horizontal = TRUE, spacing = 5, container = f1)
+  f1g2 <- ggroup(horizontal = TRUE, spacing = 2, container = f1)
   glabel(text = "Dataset peak height range:", container = f1g2)
   f1g2_low_lbl <- glabel(text = "", width = 6, container = f1g2)
   glabel(text = "-", container = f1g2)
@@ -385,37 +382,29 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     .checkColumns()
   })
 
-  # FRAME 7 ###################################################################
+  # BUTTON ####################################################################
 
-  f7 <- gframe(
-    text = "Plot drop-out data",
-    horizontal = FALSE,
+  plot_drop_btn <- gbutton(
+    text = "Plot predicted drop-out probability",
     container = gv
   )
 
-  f7g1 <- glayout(container = f7)
 
-  f7g1[1, 1] <- f7_plot_drop_btn <- gbutton(
-    text = "Plot predicted drop-out probability",
-    container = f7g1
-  )
-
-
-  addHandlerChanged(f7_plot_drop_btn, handler = function(h, ...) {
+  addHandlerChanged(plot_drop_btn, handler = function(h, ...) {
     if (!is.null(.gData)) {
-      enabled(f7_plot_drop_btn) <- FALSE
+      enabled(plot_drop_btn) <- FALSE
 
-      blockHandlers(f7_plot_drop_btn)
-      svalue(f7_plot_drop_btn) <- "Processing..."
-      unblockHandlers(f7_plot_drop_btn)
+      blockHandlers(plot_drop_btn)
+      svalue(plot_drop_btn) <- "Processing..."
+      unblockHandlers(plot_drop_btn)
 
       .plotDrop()
 
-      blockHandlers(f7_plot_drop_btn)
-      svalue(f7_plot_drop_btn) <- "Plot predicted drop-out probability"
-      unblockHandlers(f7_plot_drop_btn)
+      blockHandlers(plot_drop_btn)
+      svalue(plot_drop_btn) <- "Plot predicted drop-out probability"
+      unblockHandlers(plot_drop_btn)
 
-      enabled(f7_plot_drop_btn) <- TRUE
+      enabled(plot_drop_btn) <- TRUE
     } else {
       message <- paste("Select a drop-out dataset")
 
@@ -433,13 +422,13 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", expand = TRUE, container = f5)
+  f5_save_edt <- gedit(text = "", expand = TRUE, fill = TRUE, container = f5)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -496,7 +485,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e1f1 <- gframe(text = "", horizontal = FALSE, container = e1)
 
   # Group 2.
-  e1f1g2 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f1)
+  e1f1g2 <- ggroup(horizontal = TRUE, spacing = 2, container = e1f1)
 
   e1f1_threshold_chk <- gcheckbox(
     text = "Mark threshold @ P(D):",
@@ -511,7 +500,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   )
 
   # Group 3.
-  e1f1g3 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f1)
+  e1f1g3 <- ggroup(horizontal = TRUE, spacing = 2, container = e1f1)
 
   e1_linetypes <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
 
@@ -534,7 +523,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   )
 
   # Group 4.
-  e1f1g4 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f1)
+  e1f1g4 <- ggroup(horizontal = TRUE, spacing = 2, container = e1f1)
 
   e1f1_print_chk <- gcheckbox(
     text = "Print threshold value",
@@ -548,7 +537,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e1f2 <- gframe(text = "", horizontal = FALSE, container = e1)
 
   # Group 1.
-  e1f2g1 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f2)
+  e1f2g1 <- ggroup(horizontal = TRUE, spacing = 2, container = e1f2)
 
 
   glabel(text = "Prediction interval:", container = e1f2g1)
@@ -560,7 +549,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   )
 
   # Group 2.
-  e1f2g2 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f2)
+  e1f2g2 <- ggroup(horizontal = TRUE, spacing = 2, container = e1f2)
 
   e1f2_print_interval_chk <- gcheckbox(
     text = "Print conservative T value",
@@ -569,7 +558,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   )
 
   # Group 3.
-  e1f2g3 <- ggroup(horizontal = TRUE, spacing = 5, container = e1f2)
+  e1f2g3 <- ggroup(horizontal = TRUE, spacing = 2, container = e1f2)
 
   e1f2_mark_interval_chk <- gcheckbox(
     text = "Draw prediction interval:",
@@ -712,10 +701,10 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     val_predline <- svalue(e1f1_t_linetype_drp)
     val_predcol <- svalue(e1f1_t_linecolor_drp)
 
-    val_titles <- svalue(f1_titles_chk)
-    val_title <- svalue(f1_title_edt)
-    val_xtitle <- svalue(f1_x_title_edt)
-    val_ytitle <- svalue(f1_y_title_edt)
+    val_titles <- svalue(titles_chk)
+    val_title <- svalue(title_edt)
+    val_xtitle <- svalue(x_title_edt)
+    val_ytitle <- svalue(y_title_edt)
     val_column <- svalue(f1_column_opt, index = TRUE)
     val_sex <- svalue(f1_sex_chk)
     val_shape <- as.numeric(svalue(e2g1_shape_spb))
@@ -1245,6 +1234,18 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
+
   .checkColumns <- function() {
     val_col <- svalue(f1_column_opt, index = TRUE)
     val_h <- svalue(f1_h_chk)
@@ -1254,8 +1255,8 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     if (!is.null(.gData)) {
       # Enable button.
-      enabled(f7_plot_drop_btn) <- TRUE
-      svalue(f7_plot_drop_btn) <- "Plot predicted drop-out probability"
+      enabled(plot_drop_btn) <- TRUE
+      svalue(plot_drop_btn) <- "Plot predicted drop-out probability"
 
       # Check available modeling columns.
       if (val_h) {
@@ -1296,7 +1297,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
         )
 
         # Disable button.
-        enabled(f7_plot_drop_btn) <- FALSE
+        enabled(plot_drop_btn) <- FALSE
       }
 
       if (!is.null(missingCol)) {
@@ -1314,7 +1315,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
         )
 
         # Disable button.
-        enabled(f7_plot_drop_btn) <- FALSE
+        enabled(plot_drop_btn) <- FALSE
       }
     }
   }
@@ -1344,16 +1345,16 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     # Then load settings if true.
     if (svalue(savegui_chk)) {
       if (exists(".strvalidator_modelDropout_gui_title", envir = env, inherits = FALSE)) {
-        svalue(f1_title_edt) <- get(".strvalidator_modelDropout_gui_title", envir = env)
+        svalue(title_edt) <- get(".strvalidator_modelDropout_gui_title", envir = env)
       }
       if (exists(".strvalidator_modelDropout_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_modelDropout_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_modelDropout_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_modelDropout_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(f1_x_title_edt) <- get(".strvalidator_modelDropout_gui_x_title", envir = env)
+        svalue(x_title_edt) <- get(".strvalidator_modelDropout_gui_x_title", envir = env)
       }
       if (exists(".strvalidator_modelDropout_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(f1_y_title_edt) <- get(".strvalidator_modelDropout_gui_y_title", envir = env)
+        svalue(y_title_edt) <- get(".strvalidator_modelDropout_gui_y_title", envir = env)
       }
       if (exists(".strvalidator_modelDropout_gui_sex", envir = env, inherits = FALSE)) {
         svalue(f1_sex_chk) <- get(".strvalidator_modelDropout_gui_sex", envir = env)
@@ -1451,10 +1452,10 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_modelDropout_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_title", value = svalue(f1_title_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_x_title", value = svalue(f1_x_title_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_y_title", value = svalue(f1_y_title_edt), envir = env)
+      assign(x = ".strvalidator_modelDropout_gui_title", value = svalue(title_edt), envir = env)
+      assign(x = ".strvalidator_modelDropout_gui_title_chk", value = svalue(titles_chk), envir = env)
+      assign(x = ".strvalidator_modelDropout_gui_x_title", value = svalue(x_title_edt), envir = env)
+      assign(x = ".strvalidator_modelDropout_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_sex", value = svalue(f1_sex_chk), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_column", value = svalue(f1_column_opt), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_print_model", value = svalue(f1_printmodel_chk), envir = env)
@@ -1599,6 +1600,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

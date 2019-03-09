@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -22,8 +20,6 @@
 # 27.11.2013: Added parameter 'overwrite=TRUE'.
 # 18.09.2013: Updated to use 'addColor' insted of removed 'addDye'.
 # 18.07.2013: Check before overwrite object.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 04.06.2013: Fixed bug in 'missingCol'.
 
 #' @title Add Dye Information
 #'
@@ -70,7 +66,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   w <- gwindow(title = "Add dye to dataset", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -79,11 +75,29 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -109,7 +123,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -155,7 +169,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
       .gKit <<- detectKit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
-      svalue(f2_save_edt) <- paste(.gDataName, sep = "")
+      svalue(save_edt) <- paste(.gDataName, sep = "")
 
       if (debug) {
         print("Detected kit index")
@@ -167,7 +181,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -187,7 +201,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 5, container = gv)
+  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
 
   f1_ignore_chk <- gcheckbox(
     text = "Ignore case in marker name.",
@@ -214,13 +228,13 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     checked = FALSE, container = f1
   )
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(text = "Save as", horizontal = TRUE, spacing = 5, container = gv)
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -236,7 +250,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     val_kit <- svalue(kit_drp)
     val_data <- .gData
     val_data_name <- .gDataName
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_ignore <- svalue(f1_ignore_chk)
     val_dye <- svalue(f1_dye_chk)
     val_color <- svalue(f1_color_chk)
@@ -326,6 +340,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     saveObject(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
+    .saveSettings()
     dispose(w)
   })
 

@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.02.2019: Compacted and tweaked gui for tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 18.07.2017: Fixed "Warning: Ignoring unknown aesthetics: ymax".
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -67,7 +65,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   w <- gwindow(title = "Plot peaks", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -76,11 +74,29 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -106,7 +122,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f0 <- gframe(
     text = "Dataset",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -170,46 +186,35 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(grid1) <- TRUE
-    } else {
-      enabled(grid1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  grid1 <- glayout(container = f1, spacing = 1)
-  enabled(grid1) <- svalue(f1_titles_chk)
-
-  grid1[1, 1] <- glabel(text = "Plot title:", container = grid1)
-  grid1[1, 2] <- f1_title_edt <- gedit(
-    text = "",
-    width = 40,
-    container = grid1
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
   )
 
-  grid1[2, 1] <- glabel(text = "X title:", container = grid1)
-  grid1[2, 2] <- f1_xtitle_edt <- gedit(
-    text = "",
-    container = grid1
-  )
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  grid1[3, 1] <- glabel(text = "Y title:", container = grid1)
-  grid1[3, 2] <- f1_ytitle_edt <- gedit(
-    text = "",
-    container = grid1
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
 
   f1_prop_chk <- gcheckbox(
     text = "Plot proportion",
@@ -257,13 +262,13 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", container = f5, expand = TRUE)
+  f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -305,10 +310,10 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   .plotBalance <- function() {
 
     # Get values.
-    val_titles <- svalue(f1_titles_chk)
-    val_title <- svalue(f1_title_edt)
-    val_x_title <- svalue(f1_xtitle_edt)
-    val_y_title <- svalue(f1_ytitle_edt)
+    val_titles <- svalue(titles_chk)
+    val_title <- svalue(title_edt)
+    val_x_title <- svalue(x_title_edt)
+    val_y_title <- svalue(y_title_edt)
     val_base_size <- as.numeric(svalue(f1_base_size_edt))
     val_lab_size <- as.numeric(svalue(f1_lab_size_edt))
     val_palette <- svalue(f1_palette_drp)
@@ -350,7 +355,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
       # Prepare data.
       # Get one row from each sample for plotting.
-      .gData <- .gData[!duplicated(.gData[, 'Id']), ]
+      .gData <- .gData[!duplicated(.gData[, "Id"]), ]
 
       # Create titles.
       if (val_titles) {
@@ -421,6 +426,16 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
   .loadSavedSettings <- function() {
 
     # First check status of save flag.
@@ -446,16 +461,16 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     # Then load settings if true.
     if (svalue(savegui_chk)) {
       if (exists(".strvalidator_plotPeaks_gui_title", envir = env, inherits = FALSE)) {
-        svalue(f1_title_edt) <- get(".strvalidator_plotPeaks_gui_title", envir = env)
+        svalue(title_edt) <- get(".strvalidator_plotPeaks_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotPeaks_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotPeaks_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotPeaks_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotPeaks_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(f1_xtitle_edt) <- get(".strvalidator_plotPeaks_gui_x_title", envir = env)
+        svalue(x_title_edt) <- get(".strvalidator_plotPeaks_gui_x_title", envir = env)
       }
       if (exists(".strvalidator_plotPeaks_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(f1_ytitle_edt) <- get(".strvalidator_plotPeaks_gui_y_title", envir = env)
+        svalue(y_title_edt) <- get(".strvalidator_plotPeaks_gui_y_title", envir = env)
       }
       if (exists(".strvalidator_plotPeaks_gui_base_size", envir = env, inherits = FALSE)) {
         svalue(f1_base_size_edt) <- get(".strvalidator_plotPeaks_gui_base_size", envir = env)
@@ -487,10 +502,10 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotPeaks_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotPeaks_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
-      assign(x = ".strvalidator_plotPeaks_gui_title", value = svalue(f1_title_edt), envir = env)
-      assign(x = ".strvalidator_plotPeaks_gui_x_title", value = svalue(f1_xtitle_edt), envir = env)
-      assign(x = ".strvalidator_plotPeaks_gui_y_title", value = svalue(f1_ytitle_edt), envir = env)
+      assign(x = ".strvalidator_plotPeaks_gui_title_chk", value = svalue(titles_chk), envir = env)
+      assign(x = ".strvalidator_plotPeaks_gui_title", value = svalue(title_edt), envir = env)
+      assign(x = ".strvalidator_plotPeaks_gui_x_title", value = svalue(x_title_edt), envir = env)
+      assign(x = ".strvalidator_plotPeaks_gui_y_title", value = svalue(y_title_edt), envir = env)
       assign(x = ".strvalidator_plotPeaks_gui_base_size", value = svalue(f1_base_size_edt), envir = env)
       assign(x = ".strvalidator_plotPeaks_gui_label_size", value = svalue(f1_lab_size_edt), envir = env)
       assign(x = ".strvalidator_plotPeaks_gui_print", value = svalue(f1_print_chk), envir = env)
@@ -547,6 +562,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -51,7 +49,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   w <- gwindow(title = "Analyse off-ladder alleles", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -59,6 +57,24 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     # Focus on parent window.
     if (!is.null(parent)) {
       focus(parent)
+    }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
     }
   })
 
@@ -94,11 +110,19 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     container = gv
   )
 
+  scroll_view <- ggroup(
+    horizontal = FALSE,
+    use.scrollwindow = TRUE,
+    container = f0,
+    expand = TRUE,
+    fill = TRUE
+  )
+
   kit_checkbox_group <- gcheckboxgroup(
     items = getKit(),
     checked = FALSE,
     horizontal = FALSE,
-    container = f0
+    container = scroll_view
   )
 
   addHandlerChanged(kit_checkbox_group, handler = function(h, ...) {
@@ -181,7 +205,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", width = 50, container = f5)
+  f5_save_edt <- gedit(expand = TRUE, container = f5, fill = TRUE)
 
 
   # BUTTON ####################################################################
@@ -254,6 +278,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "At least one kit has to be selected."

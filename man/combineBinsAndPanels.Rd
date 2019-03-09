@@ -13,7 +13,7 @@ combineBinsAndPanels(bin, panel)
 }
 \value{
 data frame containing columns 'Panel', 'Marker', 'Allele',
-'Size', 'Size.Min', 'Size.Max', 'Virtual', 'Color', 'Repeat', 
+'Size', 'Size.Min', 'Size.Max', 'Virtual', 'Color', 'Repeat',
 'Marker.Min', 'Marker.Max', 'Offset', 'Short.Name', 'Full.Name'
 }
 \description{
@@ -25,7 +25,7 @@ a dataset containing information about panel name, marker name, alleles in the
 allelic ladder, their size and size range, a flag indicating virtual alleles,
 fluorophore color, repeat size, marker range. The short name, full name,
  and sex marker flag is populated through the \code{makeKit_gui} user interface.
-In addition the function calculates an estimated offset for each marker, 
+In addition the function calculates an estimated offset for each marker,
 which can be used for creating EPG like plots.
 Note: offset is estimated by taking the smallest physical ladder fragment
 e.g. 98.28 for D3 in ESX17. Round this to an integer (98) and finally

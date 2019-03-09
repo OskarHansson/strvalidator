@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.03.2019: Tweaked widgets under tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 10.07.2018: Fixed error replacing NA's.
 # 10.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 07.08.2017: Added audit trail.
@@ -22,10 +20,6 @@
 # 07.05.2014: Implemented 'checkDataset'.
 # 07.05.2014: Fixed 'Target Value' drop not updated.
 # 07.02.2014: Removed redundant handler for 'f1_column_drp'.
-# 30.11.2013: Fixed info when factors.
-# 27.09.2013: Added option to specify data type and warning for dropout dataset.
-# 26.09.2013: Fixed NA rows in resulting data frame.
-# 16.09.2013: Changed 'edit' to 'combobox' populated with unique values.
 
 #' @title Crop Or Replace
 #'
@@ -69,7 +63,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   w <- gwindow(title = "Crop or replace values in data frames", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -78,12 +72,30 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -109,7 +121,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -175,7 +187,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       .refresh_column_drp()
 
       # Update 'Save as'.
-      svalue(f3_save_edt) <- .gDataName
+      svalue(save_edt) <- .gDataName
       samples <- length(unique(.gData$Sample.Name))
       svalue(f3_samples_lbl) <- paste(" ", samples, "samples,")
       svalue(f3_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
@@ -196,7 +208,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       svalue(f1_max_lbl) <- " Max:"
 
       # Update 'Save as'.
-      svalue(f3_save_edt) <- ""
+      svalue(save_edt) <- ""
       svalue(f3_samples_lbl) <- paste(" ", "<NA>", "samples,")
       svalue(f3_columns_lbl) <- paste(" ", "<NA>", "columns,")
       svalue(f3_rows_lbl) <- paste(" ", "<NA>", "rows")
@@ -208,7 +220,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   f1 <- gframe(
     text = "Column",
     horizontal = TRUE,
-    spacing = 15,
+    spacing = 2,
     container = gv
   )
 
@@ -260,7 +272,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   f2 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -268,7 +280,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   glabel(text = "Action:", visible = FALSE, anchor = c(-1, -1), container = f2)
 
-  f2g1 <- glayout(container = f2, spacing = 5)
+  f2g1 <- glayout(container = f2, spacing = 2)
 
   f2g1[1, 1] <- f2g1_task_opt <- gradio(
     items = c("Discard values", "Replace values"),
@@ -307,9 +319,9 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   )
 
   f2g1[1, 5] <- f2g1_new_edt <- gedit(
-    text = "",
     visible = FALSE,
-    width = 15,
+    expand = TRUE,
+    fill = TRUE,
     container = f2g1
   )
 
@@ -351,7 +363,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     # If second round, get name from save box.
     if (svalue(dataset_drp, index = TRUE) == 1) {
-      .gDataName <<- svalue(f3_save_edt)
+      .gDataName <<- svalue(save_edt)
     }
 
     # Check data type and convert.
@@ -394,9 +406,9 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     unblockHandlers(apply_btn)
     enabled(apply_btn) <- FALSE
 
-    blockHandlers(f3_save_btn)
-    svalue(f3_save_btn) <- "Save"
-    unblockHandlers(f3_save_btn)
+    blockHandlers(save_btn)
+    svalue(save_btn) <- "Save"
+    unblockHandlers(save_btn)
 
     if (!is.null(.gData) && !is.null(.gData)) {
       if (debug) {
@@ -532,35 +544,30 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     # Update 'Save as'.
     .refresh_info()
-    currentName <- svalue(f3_save_edt)
+    currentName <- svalue(save_edt)
     if (nchar(currentName) == 0) {
-      svalue(f3_save_edt) <- paste(.gDataName, val_target, sep = "_")
+      svalue(save_edt) <- paste(.gDataName, val_target, sep = "_")
     } else {
-      svalue(f3_save_edt) <- paste(currentName, val_target, sep = "_")
+      svalue(save_edt) <- paste(currentName, val_target, sep = "_")
     }
   })
 
-  # FRAME 3 ###################################################################
+  # SAVE ######################################################################
 
-  f3 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f3)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f3_save_edt <- gedit(text = "", container = f3, expand = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
-  f3_save_btn <- gbutton(text = "Save", container = f3)
+  save_btn <- gbutton(text = "Save", container = save_frame)
 
-  f3_samples_lbl <- glabel(text = " 0 samples,", container = f3)
-  f3_columns_lbl <- glabel(text = " 0 columns,", container = f3)
-  f3_rows_lbl <- glabel(text = " 0 rows", container = f3)
+  f3_samples_lbl <- glabel(text = " 0 samples,", container = save_frame)
+  f3_columns_lbl <- glabel(text = " 0 columns,", container = save_frame)
+  f3_rows_lbl <- glabel(text = " 0 rows", container = save_frame)
 
-  addHandlerChanged(f3_save_btn, handler = function(h, ...) {
-    val_name <- svalue(f3_save_edt)
+  addHandlerChanged(save_btn, handler = function(h, ...) {
+    val_name <- svalue(save_edt)
     datanew <- .gData
 
     if (debug) {
@@ -575,9 +582,9 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     # Save data.
     saveObject(name = val_name, object = datanew, parent = w, env = env)
-    blockHandlers(f3_save_btn)
-    svalue(f3_save_btn) <- "Saved!"
-    unblockHandlers(f3_save_btn)
+    blockHandlers(save_btn)
+    svalue(save_btn) <- "Saved!"
+    unblockHandlers(save_btn)
   })
 
   # INTERNAL FUNCTIONS ########################################################

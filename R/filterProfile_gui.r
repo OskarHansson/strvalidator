@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.03.2019: Tweaked widgets under tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -22,8 +20,6 @@
 # 08.05.2014: Implemented 'checkDataset'.
 # 12.01.2014: Replaced 'subset' with native code.
 # 15.12.2013: Fixed filter by kit bins.
-# 09.12.2013: Added 'filter by' option.
-# 09.12.2013: Added check subset button.
 
 #' @title Filter Profile
 #'
@@ -64,7 +60,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   w <- gwindow(title = "Filter profile", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -73,11 +69,29 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -103,7 +117,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f0 <- gframe(
     text = "Datasets",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -147,7 +161,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste("", samples, "samples")
-      svalue(f2_save_edt) <- paste(.gDataName, "_filter", sep = "")
+      svalue(save_edt) <- paste(.gDataName, "_filter", sep = "")
 
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
@@ -159,7 +173,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gData <<- NULL
       svalue(g0_dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -274,7 +288,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 5, container = gv)
+  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
 
   glabel(text = "Filter options:", anchor = c(-1, 0), container = f1)
 
@@ -346,22 +360,15 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     .refreshOptions()
   })
 
+  # SAVE ######################################################################
 
-  # FRAME 2 ###################################################################
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  glabel(text = "Name for result:", container = save_frame)
 
-  glabel(text = "Name for result:", container = f2)
-
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
-
 
   filter_btn <- gbutton(text = "Filter profile", container = gv)
 
@@ -376,7 +383,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     val_ignore_case <- svalue(f1_ignore_case_chk)
     val_exact <- svalue(f1_exact_chk)
     val_word <- svalue(f1_word_chk)
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_filter <- svalue(f1_filter_opt, index = TRUE)
     val_kit <- svalue(g0_kit_drp)
     val_exclude <- svalue(g0_kit_chk)
@@ -450,6 +457,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       }
 
       # Close GUI.
+      .saveSettings()
       dispose(w)
     } else {
       message <- "A dataset and a reference dataset have to be selected."

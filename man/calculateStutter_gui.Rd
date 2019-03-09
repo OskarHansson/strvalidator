@@ -23,7 +23,7 @@ TRUE
 GUI wrapper for the \code{\link{calculateStutter}} function.
 }
 \details{
-Simplifies the use of the \code{\link{calculateStutter}} function by providing 
+Simplifies the use of the \code{\link{calculateStutter}} function by providing
 a graphical user interface to it.
 }
 \seealso{

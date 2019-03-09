@@ -24,7 +24,7 @@ TRUE
 Add new kits or edit the kit file.
 }
 \details{
-A graphical user interface for reading information from 'bins' and 
+A graphical user interface for reading information from 'bins' and
 'panels' file for the creation of additional kits. It is also possible to
 edit the short and full name of existing kits or removing kits.
 The gender marker of each kits is auto detected but can be changed manually.

@@ -1,9 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.02.2019: Compacted and tweaked gui for tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed expanded 'gexpandgroup'.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -62,7 +60,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   w <- gwindow(title = "Plot capillary balance", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -71,11 +69,29 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -101,7 +117,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f0 <- gframe(
     text = "Dataset",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -169,69 +185,53 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
-  f1_titles_chk <- gcheckbox(
+  titles_chk <- gcheckbox(
     text = "Override automatic titles.",
     checked = FALSE, container = f1
   )
 
 
-  addHandlerChanged(f1_titles_chk, handler = function(h, ...) {
-    val <- svalue(f1_titles_chk)
-    if (val) {
-      enabled(grid1) <- TRUE
-    } else {
-      enabled(grid1) <- FALSE
-    }
+  addHandlerChanged(titles_chk, handler = function(h, ...) {
+    .updateGui()
   })
 
-  grid1 <- glayout(container = f1, spacing = 1)
-  enabled(grid1) <- svalue(f1_titles_chk)
-
-  grid1[1, 1] <- glabel(text = "Plot title:", container = grid1)
-  grid1[1, 2] <- title_edt <- gedit(
-    text = "",
-    width = 40,
-    container = grid1
+  titles_group <- ggroup(
+    container = f1, spacing = 1, horizontal = FALSE,
+    expand = TRUE, fill = TRUE
   )
 
-  grid1[2, 1] <- glabel(text = "2nd line:", container = grid1)
-  grid1[2, 2] <- sub_title_edt <- gedit(
-    text = "",
-    width = 40,
-    container = grid1
-  )
+  # Legends
+  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  grid1[3, 1] <- glabel(text = "X title:", container = grid1)
-  grid1[3, 2] <- x_title_edt <- gedit(
-    text = "",
-    container = grid1
-  )
+  glabel(text = "2nd line:", container = titles_group, anchor = c(-1, 0))
+  sub_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  grid1[4, 1] <- glabel(text = "Y title:", container = grid1)
-  grid1[4, 2] <- y_title_edt <- gedit(
-    text = "",
-    container = grid1
-  )
+  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
+  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
+
 
   # FRAME 7 ###################################################################
 
   f7 <- gframe(
     text = "Plot capillary balance data",
     horizontal = FALSE,
-    container = gv
+    container = gv,
+    spacing = 5
   )
 
-  grid7 <- glayout(container = f7)
+  plot_dot_btn <- gbutton(text = "Dotplot", container = f7)
 
-  grid7[1, 1] <- plot_dot_btn <- gbutton(text = "Dotplot", container = grid7)
+  plot_box_btn <- gbutton(text = "Boxplot", container = f7)
 
-  grid7[1, 2] <- plot_box_btn <- gbutton(text = "Boxplot", container = grid7)
-
-  grid7[1, 3] <- plot_dst_btn <- gbutton(text = "Distribution", container = grid7)
+  plot_dst_btn <- gbutton(text = "Distribution", container = f7)
 
   addHandlerChanged(plot_dot_btn, handler = function(h, ...) {
 
@@ -322,13 +322,13 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f5 <- gframe(
     text = "Save as",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
   glabel(text = "Name for result:", container = f5)
 
-  f5_save_edt <- gedit(text = "", expand = TRUE, container = f5)
+  f5_save_edt <- gedit(expand = TRUE, fill = TRUE, container = f5)
 
   f5_save_btn <- gbutton(text = "Save as object", container = f5)
 
@@ -426,7 +426,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   .plotBalance <- function(what) {
 
     # Get values.
-    val_titles <- svalue(f1_titles_chk)
+    val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
     val_sub_title <- svalue(sub_title_edt)
     val_x_title <- svalue(x_title_edt)
@@ -610,6 +610,16 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Override titles.
+    val <- svalue(titles_chk)
+    if (val) {
+      enabled(titles_group) <- TRUE
+    } else {
+      enabled(titles_group) <- FALSE
+    }
+  }
   .loadSavedSettings <- function() {
 
     # First check status of save flag.
@@ -638,7 +648,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         svalue(title_edt) <- get(".strvalidator_plotCapillary_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotCapillary_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(f1_titles_chk) <- get(".strvalidator_plotCapillary_gui_title_chk", envir = env)
+        svalue(titles_chk) <- get(".strvalidator_plotCapillary_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotCapillary_gui_sub_title", envir = env, inherits = FALSE)) {
         svalue(sub_title_edt) <- get(".strvalidator_plotCapillary_gui_sub_title", envir = env)
@@ -676,7 +686,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotCapillary_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotCapillary_gui_title_chk", value = svalue(f1_titles_chk), envir = env)
+      assign(x = ".strvalidator_plotCapillary_gui_title_chk", value = svalue(titles_chk), envir = env)
       assign(x = ".strvalidator_plotCapillary_gui_title", value = svalue(title_edt), envir = env)
       assign(x = ".strvalidator_plotCapillary_gui_sub_title", value = svalue(sub_title_edt), envir = env)
       assign(x = ".strvalidator_plotCapillary_gui_x_title", value = svalue(x_title_edt), envir = env)
@@ -736,6 +746,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

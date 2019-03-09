@@ -1,10 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: Make a general function to add any (selected) kit information?
-# TODO: Option to add all uppercase/lower case marker names?
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2019: Compacted and tweaked widgets under tcltk.
+# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -57,7 +54,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   w <- gwindow(title = "Add missing markers to dataset", visible = FALSE)
 
   # Runs when window is closed.
-  addHandlerDestroy(w, handler = function(h, ...) {
+  addHandlerUnrealize(w, handler = function(h, ...) {
 
     # Save GUI state.
     .saveSettings()
@@ -66,12 +63,30 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     if (!is.null(parent)) {
       focus(parent)
     }
+
+    # Check which toolkit we are using.
+    if (gtoolkit() == "tcltk") {
+      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
+        # Version <= 1.0.6 have the wrong implementation:
+        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
+        message("tcltk version <= 1.0.6, returned TRUE!")
+        return(TRUE) # Destroys window under tcltk, but not RGtk2.
+      } else {
+        # Version > 1.0.6 will be fixed:
+        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+        message("tcltk version >1.0.6, returned FALSE!")
+        return(FALSE) # Destroys window under tcltk, but not RGtk2.
+      }
+    } else {
+      message("RGtk2, returned FALSE!")
+      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
+    }
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -97,7 +112,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f0 <- gframe(
     text = "Dataset and kit",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -146,7 +161,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       svalue(dataset_samples_lbl) <- paste(" ", samples, "samples")
       .gKit <<- detectKit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
-      svalue(f2_save_edt) <- paste(.gDataName, "_marker", sep = "")
+      svalue(save_edt) <- paste(.gDataName, "_marker", sep = "")
 
       if (debug) {
         print("Detected kit index")
@@ -158,7 +173,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
       svalue(dataset_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -183,7 +198,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f1 <- gframe(
     text = "Options",
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -192,18 +207,13 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     checked = FALSE, container = f1
   )
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -220,7 +230,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     val_data <- .gData
     val_data_name <- .gDataName
     val_ignore <- svalue(f1_ignore_chk)
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
 
     if (debug) {
       print(".gData")
@@ -260,6 +270,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     saveObject(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
+    .saveSettings()
     dispose(w)
   })
 

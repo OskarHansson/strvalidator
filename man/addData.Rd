@@ -37,11 +37,11 @@ secondary key values in column 'then.by.col'.
 }
 \examples{
 # Get marker names and alleles for Promega PowerPlex ESX 17.
-x <- getKit("ESX17", what="Allele")
+x <- getKit("ESX17", what = "Allele")
 # Get marker names and colors for Promega PowerPlex ESX 17.
-y <- getKit("ESX17", what="Color")
+y <- getKit("ESX17", what = "Color")
 # Add color information to allele information.
-z <- addData(data=x, new.data=y, by.col="Marker")
+z <- addData(data = x, new.data = y, by.col = "Marker")
 print(x)
 print(y)
 print(z)

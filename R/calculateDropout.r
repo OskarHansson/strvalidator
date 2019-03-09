@@ -782,10 +782,10 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
         # Indicate zygosity (1-Heterozygote, 0-Homozygote).
         if (expected == 1) {
           hetTmp <- rep(0, records)
-          het = FALSE
+          het <- FALSE
         } else if (expected == 2) {
           hetTmp <- rep(1, records)
-          het = TRUE
+          het <- TRUE
         } else {
           stop(paste("Sample: ", sampleNames[s],
             " Marker: ", markers[m],
@@ -939,7 +939,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
     dataDrop$Method1 <- method1Vec
   }
   if ("2" %in% toupper(method)) {
-    dataDrop$Method2 = method2Vec
+    dataDrop$Method2 <- method2Vec
   }
   if ("L" %in% toupper(method)) {
     dataDrop$MethodL <- methodLVec

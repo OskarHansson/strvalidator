@@ -23,7 +23,7 @@ TRUE
 GUI wrapper for the \code{\link{calculateCapillary}} function.
 }
 \details{
-Simplifies the use of the \code{\link{calculateCapillary}} function by providing 
+Simplifies the use of the \code{\link{calculateCapillary}} function by providing
 a graphical user interface.
 }
 \seealso{
