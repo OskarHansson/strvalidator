@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.02.2019: Added option to use log10 y-axis scale.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 25.07.2018: Added option to dump model data. Changed default P(D) to 0.01.
@@ -20,7 +21,6 @@
 # 05.01.2015: Changed check of suggested package ResourceSelection in accordance
 #             with Writing R extensions v 3.2.1 section 1.1.3.1.
 # 14.12.2014: Added option to use average peak height 'H'.
-# 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -633,6 +633,10 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   e3f1 <- gframe(text = "", horizontal = FALSE, container = e3)
 
+  log10_y_scale_chk <- gcheckbox("Use log10 scale at Y axis",
+                                 checked = FALSE,
+                                 container = e3f1)
+  
   glabel(
     text = "NB! Must provide both min and max value.",
     anchor = c(-1, 0), container = e3f1
@@ -707,6 +711,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     val_alpha <- as.numeric(svalue(e2g1_alpha_spb))
     val_jitterh <- as.numeric(svalue(e2g1_jitterh_edt))
     val_jitterv <- as.numeric(svalue(e2g1_jitterv_edt))
+    val_log10 <- svalue(log10_y_scale_chk)
     val_xmin <- as.numeric(svalue(e3g1_x_min_edt))
     val_xmax <- as.numeric(svalue(e3g1_x_max_edt))
     val_ymin <- as.numeric(svalue(e3g1_y_min_edt))
@@ -748,6 +753,8 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       print(val_xmin)
       print("val_xmax")
       print(val_xmax)
+      print("val_log10")
+      print(val_log10)
       print("val_ymin")
       print(val_ymin)
       print("val_ymax")
@@ -1154,7 +1161,12 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
           hjust = 1, vjust = 1
         )
       }
-
+      
+      # Use log10 y scale.
+      if(val_log10){
+        gp <- gp + scale_y_log10()
+      }
+      
       # Restrict y axis.
       if (!is.na(val_ymin) && !is.na(val_ymax)) {
         val_y <- c(val_ymin, val_ymax)
@@ -1395,6 +1407,9 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       if (exists(".strvalidator_modelDropout_gui_points_jitterv", envir = env, inherits = FALSE)) {
         svalue(e2g1_jitterv_edt) <- get(".strvalidator_modelDropout_gui_points_jitterv", envir = env)
       }
+      if (exists(".strvalidator_modelDropout_gui_axes_y_log10", envir = env, inherits = FALSE)) {
+        svalue(log10_y_scale_chk) <- get(".strvalidator_modelDropout_gui_axes_y_log10", envir = env)
+      }
       if (exists(".strvalidator_modelDropout_gui_axes_y_min", envir = env, inherits = FALSE)) {
         svalue(e3g1_y_min_edt) <- get(".strvalidator_modelDropout_gui_axes_y_min", envir = env)
       }
@@ -1458,6 +1473,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       assign(x = ".strvalidator_modelDropout_gui_points_alpha", value = svalue(e2g1_alpha_spb), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_points_jitterh", value = svalue(e2g1_jitterh_edt), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_points_jitterv", value = svalue(e2g1_jitterv_edt), envir = env)
+      assign(x = ".strvalidator_modelDropout_gui_axes_y_log10", value = svalue(log10_y_scale_chk), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_axes_y_min", value = svalue(e3g1_y_min_edt), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_axes_y_max", value = svalue(e3g1_y_max_edt), envir = env)
       assign(x = ".strvalidator_modelDropout_gui_axes_x_min", value = svalue(e3g1_x_min_edt), envir = env)
@@ -1535,6 +1551,9 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       }
       if (exists(".strvalidator_modelDropout_gui_points_jitterv", envir = env, inherits = FALSE)) {
         remove(".strvalidator_modelDropout_gui_points_jitterv", envir = env)
+      }
+      if (exists(".strvalidator_modelDropout_gui_axes_y_log10", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_modelDropout_gui_axes_y_log10", envir = env)
       }
       if (exists(".strvalidator_modelDropout_gui_axes_y_min", envir = env, inherits = FALSE)) {
         remove(".strvalidator_modelDropout_gui_axes_y_min", envir = env)

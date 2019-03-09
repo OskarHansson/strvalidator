@@ -71,7 +71,10 @@ Version 2.1.0.9001
 ------------------------------------------------------------------------------
 * Branch for tcltk compatibility
 * Cleaning formatting with styler.
-
+* New functionality:
+  - modelDropout_gui
+  Added option to use log10 y scale.
+  
 Version 2.1.0
 ------------------------------------------------------------------------------
 
