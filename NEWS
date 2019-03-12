@@ -1,3 +1,7 @@
+Version 2.1.0.9016
+------------------------------------------------------------------------------
+* calculateT: Fixed "Error: $operator..." when ResourceSelection is not installed.
+
 Version 2.1.0.9015
 ------------------------------------------------------------------------------
 * import_gui: more intuitive layout.

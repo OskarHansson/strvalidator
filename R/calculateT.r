@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 12.03.2019: Fixed "Error: $operator..." when ResourceSelection is not installed.
 # 17.07.2018: First version.
 
 #' @title Calculate Stochastic Threshold
@@ -134,7 +131,6 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   message("Observations with dropout n=", n_drop)
   message("Observations without dropout n=", n_obs)
 
-
   # Convert to log values.
   if (log.model) {
     data$Exp <- log(data$Exp)
@@ -146,10 +142,13 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   sumfit <- summary(dropoutModel)
 
   # Calculate model score.
-  hos <- NA
+  # You need the suggested package for this function
+  hos <- data.frame(p.value = NA)
   if (requireNamespace("ResourceSelection", quietly = TRUE)) {
     # p-value <0.05 rejects the model.
     hos <- ResourceSelection::hoslem.test(dropoutModel$y, fitted(dropoutModel))
+  } else {
+    message("Install \"ResourceSelection\" to perform the Hosmer-Lemeshow test.")
   }
 
   # Extract model parameters.
