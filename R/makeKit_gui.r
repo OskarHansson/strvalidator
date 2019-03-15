@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.03.2019: Fixed R-Check note.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 17.07.2017: Fixed changed arguments for 'delete'.
 # 13.07.2017: Fixed issue with button handlers.
@@ -702,7 +703,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
           }
 
           # Close GUI.
-          .saveSettings()
+          # .saveSettings()
           dispose(w)
         } else {
           message <- paste(

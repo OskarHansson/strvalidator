@@ -1,3 +1,9 @@
+Version 2.1.0.9017
+------------------------------------------------------------------------------
+* test-calculateAllT: Added temporary fix for changed random number generator.
+* strvalidator: included citation information.
+* Fixed R Check notes in editData_gui, combine_gui, makeKit_gui, strvalidator
+
 Version 2.1.0.9016
 ------------------------------------------------------------------------------
 * calculateT: Fixed "Error: $operator..." when ResourceSelection is not installed.

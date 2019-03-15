@@ -13,7 +13,7 @@ strvalidator(debug = FALSE)
 TRUE
 }
 \description{
-GUI simplifying the use of the STR-validator package.
+GUI simplifying the use of the strvalidator package.
 }
 \details{
 The graphical user interface give easy access to all graphical

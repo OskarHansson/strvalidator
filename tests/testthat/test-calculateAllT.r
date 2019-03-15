@@ -1,15 +1,14 @@
 context("calculateAllT")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 14.03.2019: Added temporary fix for changed random number generator.
 # 13.07.2018: First version.
 #
 # require(strvalidator)
 # require(testthat)
+# NB! ResourceSelection is required for this test function.
+# require(ResourceSelection)
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-calculateAllT.r")
 # test_dir("tests/testthat")
@@ -22,6 +21,19 @@ test_that("calculateAllT", {
 
   # Score dropout.
   kit <- "ESX17"
+
+  # The default method for generating from a discrete uniform distribution
+  # (used in sample(), for instance) has been changed.
+  # The previous method can be requested using RNGkind() or
+  # RNGversion() if necessary for reproduction of old results.
+   RNGversion("3.5.0")
+  # suppressWarnings(RNGversion("3.5.0"))
+  # before calling set.seed() in your example, vignette and test code
+  # (where the difference in RNG sample kinds matters, of course).
+  # Note that this ensures using the (old) non-uniform "Rounding" sampler
+  # for all 3.x versions of R, and does not add an R version dependency.
+  # Note also that the new "Rejection" sampler which R will use from 3.6.0
+  
   set.seed(123) # Set random seed for reproducible result on method X.
   dropout <- suppressMessages(calculateDropout(
     data = set4, ref = ref4, kit = kit,

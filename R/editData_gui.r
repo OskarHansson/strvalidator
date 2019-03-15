@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.03.2019: Fixed R-Check note.
 # 20.02.2019: Fixed drop-down menu should default to <Select data frame> (tcltk).
 # 19.02.2019: Expand table and text field under tcltk.
 # 10.02.2019: Try version dependent fix.
@@ -19,8 +20,6 @@
 # 04.10.2015: Added options to limit number of rows, and show attributes.
 # 28.08.2015: Added importFrom.
 # 01.06.2015: Fixed bug column names not saved. Introduced 02.01.2015 with attributes.
-# 11.05.2015: Accepts (the first) column name containing the string 'Sample'
-# as alternative to colum name 'Sample.Name'. 'Sample' is case in-sensitive.
 
 #' @title Edit or View Data Frames
 #'
@@ -459,7 +458,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
                 message("in dialog2, value ", .hideMsg)
               }
             )
-            g <- ggroup(cont = d, horizontal = FALSE)
+            g <- ggroup(container = d, horizontal = FALSE)
             glabel("The tcltk gui toolkit does not handle NA values in tables.", container = g)
             glabel("NA values will be replaced with empty strings.", container = g)
             glabel("If you edit the table, NA values will be permanently replaced.", container = g)

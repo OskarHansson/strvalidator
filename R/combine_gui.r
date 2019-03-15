@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.03.2019: Fixed R Check note.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -260,7 +261,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       }
 
       # Close GUI.
-      .saveSettings()
+      # .saveSettings()
       dispose(w)
     } else {
       gmessage(

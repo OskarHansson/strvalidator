@@ -35,6 +35,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.03.2019: Updated about. Fixed R-Check note.
 # 22.02.2019: Reset projects list and description field if no project in folder.
 # 19.02.2019: Fixed previous project activated in Description, Projects tab.
 # 19.02.2019: Expand text box in welcome tab.
@@ -54,12 +55,11 @@
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 13.07.2017: Fixed "Error in get(val_obj..." clicking View with no object selected.
 # 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
 #' @description
-#' GUI simplifying the use of the STR-validator package.
+#' GUI simplifying the use of the strvalidator package.
 #'
 #' @details The graphical user interface give easy access to all graphical
 #' versions of the functions available in the strvalidator package. It connects
@@ -74,7 +74,7 @@
 #' @return TRUE
 #'
 #' @import gWidgets2
-#' @importFrom utils packageVersion help object.size
+#' @importFrom utils packageVersion help object.size browseURL
 #' @importFrom graphics title
 #'
 #' @export
@@ -310,25 +310,36 @@ strvalidator <- function(debug = FALSE) {
 
   # STR TYPING KIT ------------------------------------------------------------
 
-  about_txt <- paste("STR-validator is a package developed for validation ",
+  about_txt <- paste("strvalidator is a package developed for validation ",
     "and process control of methods and instruments in a forensic genetic ",
-    "laboratory setting. This graphical user interface make it easy to ",
+    "laboratory. The graphical user interface STR-validator make it easy to ",
     "analyse data in accordance with European Network of Forensic Science ",
     "Institutes (ENFSI) and Scientific Working Group on DNA Analysis Methods ",
     "(SWGDAM) validation guidelines.",
     "\n\n",
     "In order to assure correct results, most of the core functions are ",
     "extensively validated using the 'testthat' package before a new version ",
-    "is released.",
+    "is released (see STR-validator webpage for details).",
+    "\n\n",
+    "STR-validator is a product of the PhD work performed by Oskar Hansson ",
+    "(thesis available at the STR-validator website), ",
+    "which was partly funded by the European Union seventh Framework ",
+    "Programme (FP7/2007-2013) under grant agreement no 285487 (EUROFORGEN-NoE).",
+    "\n\n",
+    "Please cite STR-validator as:",
+    "\n",
+    "Hansson O, Gill P, Egeland T (2014). \"STR-validator: An open source ",
+    "platform for validation and process control.\" Forensic Science ",
+    "International: Genetics, 13, 154-166. doi: 10.1016/j.fsigen.2014.07.009 ",
     "\n\n",
     "Contributions to the strvalidator package or user community is more than welcome. ",
     "Contact the developer to:\n ",
     "- improve existing functionality or add new\n ",
     "- translate course material, manuals, or tutorial\n ",
-    "- collaborate to implement new functions\n",
+    "- collaborate to implement new functions\n ",
     "- add tests to validate functions\n ",
     "\n",
-    "Created by:\n",
+    "Created and maintained by:\n",
     "Oskar Hansson, Forensic Genetics (Oslo University Hospital, Norway)",
     sep = ""
   )

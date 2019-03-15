@@ -1,28 +1,36 @@
 strvalidator
 ============
 
-STR-validator is a free and open source R-package intended for process control
-and internal validation of forensic STR DNA typing kit.
-Its graphical user interface simplifies the analysis of data exported from e.g.
-GeneMapper software, without extensive knowledge about R. It provides 
-functions to import, view, edit, and export data. After analysis the results,
-generated plots, heat-maps, and data can be saved in a project for easy access.
-Currently, analysis modules for stutter, balance, dropout, mixture, concordance,
-typing result, precision, pull-up, and analytical thresholds are available.
-In addition there are functions to analyse the GeneMapper bins- and panels files.
-EPG like plots can be generate from data. STR-validator can greatly increase the speed of 
-validation by reducing the time and effort needed to analyse the validation
-data. It allows exploration of the characteristics of DNA typing kits according
-to ENFSI and SWGDAM recommendations. This facilitates the implementation of 
-probabilistic interpretation of DNA results.
+strvalidator is a package developed for validation and process control of methods
+and instruments in a forensic genetic laboratory. The graphical user
+interface STR-validator make it easy to analyse data in accordance with European
+Network of Forensic Science Institutes (ENFSI) and Scientific Working Group on DNA
+Analysis Methods (SWGDAM) validation guidelines.
 
-STR-validator was written and is maintained by Oskar Hansson, senior forensic
-scientist at Oslo University Hospital (OUS), Section for Forensic Genetics.
-The work initially received external funding from the European
-Union seventh Framework Programme (FP7/2007-2013) under grant agreement no
-285487 (EUROFORGEN-NoE) but development and maintenance is now performed as 
-a part of my position at OUS, and on personal spare time.
+In order to assure correct results, most of the core functions are extensively
+validated using the 'testthat' package before a new version is released (see
+STR-validator webpage for details).
 
+STR-validator is a product of the PhD work performed by Oskar Hansson (thesis
+available at the STR-validator website), which was partly funded by the European
+Union seventh Framework Programme (FP7/2007-2013) under grant agreement 
+no 285487 (EUROFORGEN-NoE).
+
+Please cite STR-validator as:
+Hansson O, Gill P, Egeland T (2014). "STR-validator: An open source platform for
+validation and process control" Forensic Science International: Genetics, 13,
+154-166. doi: 10.1016/j.fsigen.2014.07.009
+
+Contributions to the strvalidator package or user community is more than welcome.
+Contact the developer to:
+- improve existing functionality or add new
+- translate course material, manuals, or tutorial
+- collaborate to implement new functions
+- add tests to validate functions
+
+Created and maintained by:
+Oskar Hansson, Forensic Genetics (Oslo University Hospital, Norway)
+    
 More information can be found at:
 https://sites.google.com/site/forensicapps/strvalidator
 
