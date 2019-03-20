@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.03.2019: Fixed freeze when opened with a NA containing dataset in view mode (tcltk).
 # 14.03.2019: Fixed R-Check note.
 # 20.02.2019: Fixed drop-down menu should default to <Select data frame> (tcltk).
 # 19.02.2019: Expand table and text field under tcltk.
@@ -453,9 +454,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
             d <- gbasicdialog(
               title = "Warning", parent = w,
               handler = function(h, ...) {
-                message("in dialog1, value ", .hideMsg)
                 .hideMsg <<- svalue(show_msg_chk)
-                message("in dialog2, value ", .hideMsg)
               }
             )
             g <- ggroup(container = d, horizontal = FALSE)
@@ -463,7 +462,8 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
             glabel("NA values will be replaced with empty strings.", container = g)
             glabel("If you edit the table, NA values will be permanently replaced.", container = g)
             show_msg_chk <- gcheckbox(text = "Don't show this message again.", container = g)
-            visible(d)
+            visible(w) <- TRUE # Main window must be visible to show message.
+            visible(d) <- TRUE # Show message window.
           }
         }
       }
