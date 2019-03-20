@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.03.2019: Fixed save object triggered when plotting if label is changed.
 # 24.02.2019: Added option to use log10 y-axis scale.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -20,7 +21,6 @@
 # 20.03.2015: Rounded printed conservative drop-out threshold to integer.
 # 05.01.2015: Changed check of suggested package ResourceSelection in accordance
 #             with Writing R extensions v 3.2.1 section 1.1.3.1.
-# 14.12.2014: Added option to use average peak height 'H'.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -634,9 +634,10 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e3f1 <- gframe(text = "", horizontal = FALSE, container = e3)
 
   log10_y_scale_chk <- gcheckbox("Use log10 scale at Y axis",
-                                 checked = FALSE,
-                                 container = e3f1)
-  
+    checked = FALSE,
+    container = e3f1
+  )
+
   glabel(
     text = "NB! Must provide both min and max value.",
     anchor = c(-1, 0), container = e3f1
@@ -1161,12 +1162,12 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
           hjust = 1, vjust = 1
         )
       }
-      
+
       # Use log10 y scale.
-      if(val_log10){
+      if (val_log10) {
         gp <- gp + scale_y_log10()
       }
-      
+
       # Restrict y axis.
       if (!is.na(val_ymin) && !is.na(val_ymax)) {
         val_y <- c(val_ymin, val_ymax)
@@ -1218,9 +1219,11 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       print(gp)
 
       # Change save button.
+      blockHandlers(f5_save_btn)
       svalue(f5_save_btn) <- "Save as object"
       enabled(f5_save_btn) <- TRUE
-
+      unblockHandlers(f5_save_btn)
+      
       # Store in global variable.
       .gPlot <<- gp
     } else {
