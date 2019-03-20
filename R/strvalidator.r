@@ -13,8 +13,11 @@
 # (GTK+ must be installed by clicking 'OK' on the message box).
 
 # See http://r-pkgs.had.co.nz/release.html for advice on release.
-# IMPORTANT: Use devtools::build_win() to test on current R and R-dev.
-# IMPORTANT: Use devtools::revdep_check() to check reverse dependencies
+# IMPORTANT: Use devtools::spell_check() to check spelling.
+# IMPORTANT: Use devtools::check_win_devel() to check on R-dev.
+# IMPORTANT: Use devtools::check_win_release() to check on current R.
+# IMPORTANT: Use devtools::check_win_oldrelease() to test on previous major R.
+# IMPORTANT: Use revdepcheck::revdep_check() to check reverse dependencies
 # (Does not work - gui related error).
 # IMPORTANT: Use devtools::release() to submitt to CRAN.
 # NB! The error below indicates some problem with the test server (try again later).
@@ -35,6 +38,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.03.2019: Added button to YouTube channel.
 # 14.03.2019: Updated about. Fixed R-Check note.
 # 22.02.2019: Reset projects list and description field if no project in folder.
 # 19.02.2019: Fixed previous project activated in Description, Projects tab.
@@ -54,7 +58,6 @@
 # 17.07.2017: Fixed "Error in paste(...) : argument "msg" is missing, with no default".
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 13.07.2017: Fixed "Error in get(val_obj..." clicking View with no object selected.
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -326,7 +329,7 @@ strvalidator <- function(debug = FALSE) {
     "which was partly funded by the European Union seventh Framework ",
     "Programme (FP7/2007-2013) under grant agreement no 285487 (EUROFORGEN-NoE).",
     "\n\n",
-    "Please cite STR-validator as:",
+    "Please cite as:",
     "\n",
     "Hansson O, Gill P, Egeland T (2014). \"STR-validator: An open source ",
     "platform for validation and process control.\" Forensic Science ",
@@ -358,7 +361,14 @@ strvalidator <- function(debug = FALSE) {
   addHandlerChanged(webpage_btn, handler = function(h, ...) {
     browseURL("https://sites.google.com/site/forensicapps/strvalidator")
   })
-
+  
+  youtube_btn <- gbutton(text = "Video tutorials", container = button_group)
+  tooltip(youtube_btn) <- "STR-validator YouTube channel"
+  
+  addHandlerChanged(youtube_btn, handler = function(h, ...) {
+    browseURL("https://www.youtube.com/channel/UCs7TxzK21OKvWebQygxAHHA")
+  })
+  
   facebook_btn <- gbutton(text = "Facebook page", container = button_group)
   tooltip(facebook_btn) <- "News, tips, and other information"
 
@@ -1880,7 +1890,7 @@ strvalidator <- function(debug = FALSE) {
   )
 
   balance_g2[1, 2] <- glabel(
-    text = "Calculate intra-locus balance.",
+    text = "Calculate intra-locus balance (heterozygote balance).",
     container = balance_g2
   )
 
@@ -1901,7 +1911,7 @@ strvalidator <- function(debug = FALSE) {
   )
 
   balance_g2[2, 2] <- glabel(
-    text = "Calculate inter-locus balance.",
+    text = "Calculate inter-locus balance (profile balance).",
     container = balance_g2
   )
 
