@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.03.2019: Fixed widgets not enabled.
 # 01.03.2019: Rearranged widgets and changed visibility for more intuitive options.
 # 22.02.2019: Compressed tcltk gui.
 # 15.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,8 +20,6 @@
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 20.01.2014: Remove redundant "overwrite?" message dialog.
-# 13.01.2014: Handle empty dataframe by stay in gui and show message.
-# 10.12.2013: Updated with new parameter names in function 'import'.
 
 #' @title Import Data
 #'
@@ -108,7 +107,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   )
 
   # Help button group.
-  gh <- ggroup(container = gv, expand = FALSE, fill = "both")
+  gh <- ggroup(container = gv, expand = FALSE, fill = TRUE)
 
   savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
 
@@ -269,25 +268,25 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   )
 
   addHandlerChanged(opt_trim_chk, handler = function(h, ...) {
-    .refresh()
+    .updateGui()
   })
 
-  trim_frm <- ggroup(horizontal = FALSE, container = opt_frm)
-  enabled(trim_frm) <- FALSE
+  trim_grp <- ggroup(horizontal = FALSE, container = opt_frm)
+  enabled(trim_grp) <- FALSE
 
   glabel(
     text = "Trim samples containing the word (separate by pipe |):",
-    container = trim_frm, anchor = c(-1, 0)
+    container = trim_grp, anchor = c(-1, 0)
   )
 
   trim_samples_edt <- gedit(
     text = "pos|neg|ladder",
-    width = 25, container = trim_frm, expand = TRUE
+    width = 25, container = trim_grp, expand = TRUE
   )
 
   trim_invert_chk <- gcheckbox(
     text = "Invert (remove matching samples)", checked = TRUE,
-    container = trim_frm
+    container = trim_grp
   )
 
   # SLIM ----------------------------------------------------------------------
@@ -298,16 +297,16 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   )
 
   addHandlerChanged(opt_slim_chk, handler = function(h, ...) {
-    .refresh()
+    .updateGui()
   })
 
-  slim_frm <- ggroup(horizontal = FALSE, container = opt_frm)
+  slim_grp <- ggroup(horizontal = FALSE, container = opt_frm)
 
-  enabled(slim_frm) <- FALSE
+  enabled(slim_grp) <- FALSE
 
   slim_fix_chk <- gcheckbox(
     text = "Keep all fixed (keep a row even if no data)",
-    checked = TRUE, container = slim_frm
+    checked = TRUE, container = slim_grp
   )
 
   # SAVE --------------------------------------------------------------------
@@ -512,7 +511,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # INTERNAL FUNCTIONS ########################################################
 
-  .refresh <- function() {
+  .updateGui <- function() {
 
     # Get values.
     val_trim <- svalue(opt_trim_chk)
@@ -521,17 +520,15 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
 
     if (val_trim) {
-      enabled(trim_samples_edt) <- TRUE
-      enabled(trim_invert_chk) <- TRUE
+      enabled(trim_grp) <- TRUE
     } else {
-      enabled(trim_samples_edt) <- FALSE
-      enabled(trim_invert_chk) <- FALSE
+      enabled(trim_grp) <- FALSE
     }
 
     if (val_slim) {
-      enabled(slim_fix_chk) <- TRUE
+      enabled(slim_grp) <- TRUE
     } else {
-      enabled(slim_fix_chk) <- FALSE
+      enabled(slim_grp) <- FALSE
     }
   }
 
@@ -702,7 +699,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # Load GUI settings.
   .loadSavedSettings()
-  .refresh()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE
