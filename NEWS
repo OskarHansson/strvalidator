@@ -1,93 +1,31 @@
-Version 2.1.0.9017
+Version 2.2.0
 ------------------------------------------------------------------------------
-* test-calculateAllT: Added temporary fix for changed random number generator.
-* strvalidator: included citation information.
-* Fixed R Check notes in editData_gui, combine_gui, makeKit_gui, strvalidator
-
-Version 2.1.0.9016
-------------------------------------------------------------------------------
-* calculateT: Fixed "Error: $operator..." when ResourceSelection is not installed.
-
-Version 2.1.0.9015
-------------------------------------------------------------------------------
-* import_gui: more intuitive layout.
-* Updated 'about'.
-* Compacted and tweaked function gui for tcltk and RGtk2.
-
-Version 2.1.0.9014
-------------------------------------------------------------------------------
-* Compacted and tweaked plot function gui for tcltk and RGtk2.
-
-Version 2.1.0.9013
-------------------------------------------------------------------------------
-* Fixed behaviour of project list and description field in Projects tab.
-
-Version 2.1.0.9012
-------------------------------------------------------------------------------
-* Fixed previous project activated in Description in Projects tab.
-* Expanded Description text field under tctk in Projects tab.
-* Fixed "error in if(ok) argument not logical" using tcltk.
-* Fixed default value for dropdown in editData_gui under tcltk.
-
-Version 2.1.0.9011
-------------------------------------------------------------------------------
-* Minor gui adjustments under tlctk.
-
-Version 2.1.0.9010
-------------------------------------------------------------------------------
-* More text fields "Name for result" expandable under tlctk.
-
-Version 2.1.0.9009
-------------------------------------------------------------------------------
-* Fixed settings not saved after running function. 
-
-Version 2.1.0.9008
-------------------------------------------------------------------------------
-* Made text field "Name for result" expand under tlctk.
-
-Version 2.1.0.9007
-------------------------------------------------------------------------------
-* tlctk version dependent fix for (svalue(savegui_chk)) in all remaining functions.
-* Minor adjustments in GUI under tcltk in functions: plotBalance_gui, ggsave_gui, tableBalance_gui, calculateHb_gui, calculateLb_gui
-* auditTrail: removed message printed to console
-
-Version 2.1.0.9006
-------------------------------------------------------------------------------
-* Adjustments in strvalidator (main GUI) for better experience under tcltk.
-* Updates to welcome tab, with links to webpages.
-
-Version 2.1.0.9005
-------------------------------------------------------------------------------
-* Minor adjustments in GUI under tcltk in functions:  calculateHb_gui, tableBalance_gui, plotBalance_gui, ggsave_gui
-* tlctk version dependent fix for (svalue(savegui_chk)) in functions: calculateHb_gui, tableBalance_gui, plotBalance_gui, ggsave_gui
-
-Version 2.1.0.9004
-------------------------------------------------------------------------------
-* calculateConcordance_gui: Minor adjustments in GUI under tcltk.
-* calculateConcordance_gui: Fixed Error in structure(.External(.C_dotTclObjv, objv), class = "tclObj") : 
-  [tcl] cannot use geometry manager grid inside .2.5.1.3 which already has slaves managed by pack.
- (tcltk)
-* editData_gui: tlctk version dependent fix for (svalue(savegui_chk))
-
-Version 2.1.0.9003
-------------------------------------------------------------------------------
-* editData_gui: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-
-Version 2.1.0.9002
-------------------------------------------------------------------------------
-* editData_gui: Fixed table not updated after selecting from drop-down (tcltk)
-
-Version 2.1.0.9001
-------------------------------------------------------------------------------
-* Branch for tcltk compatibility
-* Cleaning formatting with styler.
-* New functionality:
+* The package is now optimized for both the tcltk and the RGtk2 graphical user
+ interface packages through the gWidgets2 APIs gWidgets2tcltk and gWidgets2RGtk2.
+ In English: installing strvalidator should be easier, especially in restricted IT environments.
+* The graphical user interface STR-validator and functions have been compacted to work better on laptops with small screens.
+* The welcome tab has been updated and now includes important direct links.
+* Cleaning code formatting with styler package.
+* New functionality and changes:
+  - calculateLb/calculateLb_gui
+  New option to calculate locus balance as peak height ratio.
+  - import_gui
+  More intuitive layout.
   - modelDropout_gui
-  Added option to use log10 y scale.
+  Added option to use log10 y scale on plots.
+  - auditTrail
+  No longer print messages to console.
+* Bug fixes and improvements with the most significant listed below:
+  - strvalidator (the main GUI, STR-validator)
+  Fixed behaviour of project list and description field in Projects tab.
+  - calculateT
+  Fixed "Error: $operator..." when ResourceSelection is not installed.
+  - modelDropout_gui
+  Fixed "save object" triggered when plotting if object was previously saved (RGtk2).
+* Fixed settings not saved after running some functions. 
   
 Version 2.1.0
 ------------------------------------------------------------------------------
-
 * New functions
   - calculateT
   - calculateAllT
@@ -113,10 +51,8 @@ Version 2.1.0
   - ggsave_gui
   Fixed initial save error and improved error message.
 
-
 Version 2.0.0
 ------------------------------------------------------------------------------
-
 * The package now use gWidgets2 instead of gWidgets (changes in all "_gui" functions).
   - Improved GUI speed by 10-100% (https://github.com/jverzani/gWidgets2).
 * Improved audit trail logging.
@@ -148,7 +84,6 @@ Version 2.0.0
 
 Version 1.9.0
 ------------------------------------------------------------------------------
-
 * New functions
   - addOrder (implemented in addDye_gui)
 * Bug fixes and improvements with the most significant listed below:

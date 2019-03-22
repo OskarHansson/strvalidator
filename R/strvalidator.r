@@ -1,13 +1,3 @@
-################################################################################
-# TODO LIST
-# TODO: Object size not sorted correct (seem to sort as character)
-# TODO: USe viwweports instead of grid.arrange in complex plots?
-# http://www.imachordata.com/extra-extra-get-your-gridextra/#comment-146
-# TODO: Bug in 'save description': if project A is open in the 'workspace' and
-# description is changed in 'Projects' and the project is save from the ws
-# the variable holding the description will be overwritten by an empty/previous value.
-# (must check which project is open and update both?)
-
 # IMPORTANT: To manually run R CMD check in RStudio all packages must be installed in
 # both the 32 and 64 bit version. Make sure it is possible to start manually
 # (GTK+ must be installed by clicking 'OK' on the message box).
@@ -17,8 +7,8 @@
 # IMPORTANT: Use devtools::check_win_devel() to check on R-dev.
 # IMPORTANT: Use devtools::check_win_release() to check on current R.
 # IMPORTANT: Use devtools::check_win_oldrelease() to test on previous major R.
-# IMPORTANT: Use revdepcheck::revdep_check() to check reverse dependencies
-# (Does not work - gui related error).
+# IMPORTANT: Use revdepcheck::revdep_check() to check reverse dependencies?
+# IMPORTANT: Use devtools::check_rhub() to check on multiple platforms.
 # IMPORTANT: Use devtools::release() to submitt to CRAN.
 # NB! The error below indicates some problem with the test server (try again later).
 # Error in curl::curl_fetch_memory(url, handle = h) : Timeout was reached
