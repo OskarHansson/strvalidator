@@ -1,12 +1,9 @@
-################################################################################
-# TODO LIST
-# TODO: ...
-
 # NOTE: Column names used for calculations with data.table is declared
 # in globals.R to avoid NOTES in R CMD CHECK.
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.03.2019: Added new definition of balance (Issue:#14).
 # 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 06.09.2016: Fixed implementation of filterProfile function.
@@ -335,60 +332,87 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   # Convert to data.table for calculations.
   DT <- data.table::data.table(data)
 
-  message("Calculating total peak height by marker.")
-
-  # Calculate total locus peak height by sample and marker.
-  res <- DT[, list(TPH = sum(Height), Peaks = .N, Dye = unique(Dye)),
-    by = list(Sample.Name, Marker)
-  ]
-
+  # Check method and calculate accordingly.
   if (option == "prop") {
+
+    message("Calculating total peak height by sample and marker.")
+    res <- DT[, list(TPH = sum(Height), Peaks = .N, Dye = unique(Dye)),
+              by = list(Sample.Name, Marker)]
+    
     if (by.dye) {
 
-      # Calculate total profile peak height per sample and dye.
+      message("Calculating total profile peak height by sample and dye.")
       res[, TPPH := sum(TPH), by = list(Sample.Name, Dye)]
 
-      # Calculate locus proportion of total profile peak height.
+      message("Calculating locus proportions of total profile peak height.")
       res[, Lb := TPH / TPPH, by = list(Sample.Name, Dye, Marker)]
     } else {
 
-      # Calculate total profile peak height by sample.
+      message("Calculating total profile peak height by sample.")
       res[, TPPH := sum(TPH), by = list(Sample.Name)]
 
-      # Calculate locus proportion of total profile peak height.
+      message("Calculating locus proportions of total profile peak height.")
       res[, Lb := TPH / TPPH, by = list(Sample.Name, Marker)]
     }
   } else if (option == "norm") {
+    
+    message("Calculating total peak height by sample and marker.")
+    res <- DT[, list(TPH = sum(Height), Peaks = .N, Dye = unique(Dye)),
+              by = list(Sample.Name, Marker)]
+    
     if (by.dye) {
 
-      # Calculate maximum total peak height per sample and dye.
+      message("Calculating maximum total peak height by sample and dye.")
       res[, MTPH := max(TPH), by = list(Sample.Name, Dye)]
 
-      # Calculate normalized locus proportion.
+      message("Calculating normalized locus proportions.")
       res[, Lb := TPH / MTPH, by = list(Sample.Name, Dye, Marker)]
     } else {
 
-      # Calculate maximum total peak height per sample.
+      message("Calculating maximum total peak height by sample.")
       res[, MTPH := max(TPH), by = list(Sample.Name)]
 
-      # Calculate normalized locus proportion.
+      message("Calculating normalized locus proportions.")
       res[, Lb := TPH / MTPH, by = list(Sample.Name, Marker)]
     }
   } else if (option == "cent") {
+    
+    message("Calculating total peak height by sample and marker.")
+    res <- DT[, list(TPH = sum(Height), Peaks = .N, Dye = unique(Dye)),
+              by = list(Sample.Name, Marker)]
+    
     if (by.dye) {
 
-      # Calculate mean total peak height per sample and dye.
+      message("Calculating mean total peak height by sample and dye.")
       res[, MPH := mean(TPH), by = list(Sample.Name, Dye)]
 
-      # Calculate centred locus quantity.
+      message("Calculating centred locus quantities.")
       res[, Lb := (TPH - MPH) / sqrt(MPH), by = list(Sample.Name, Dye, Marker)]
     } else {
 
-      # Calculate mean total peak height per sample.
+      message("Calculating mean total peak height by sample.")
       res[, MPH := mean(TPH), by = list(Sample.Name)]
 
-      # Calculate centred locus quantity.
+      message("Calculating centred locus quantities.")
       res[, Lb := (TPH - MPH) / sqrt(MPH), by = list(Sample.Name, Marker)]
+    }
+  } else if (option == "peak") {
+    if (by.dye) {
+
+      message("Calculating minimum and maximum peak height by sample and dye.")
+      res <- DT[, list(Min = min(Height), Max = max(Height), Peaks = .N),
+                by = list(Sample.Name, Dye)]
+      
+      message("Calculating peak ratio by sample and dye.")
+      res[, Lb := Min / Max, by = list(Sample.Name, Dye)]
+    } else {
+
+      message("Calculating minimum and maximum peak height by sample.")
+      res <- DT[, list(Min = min(Height), Max = max(Height), Peaks = .N),
+                by = list(Sample.Name)]
+      
+      message("Calculating peak ratio by sample.")
+      res[, Lb := Min / Max, by = list(Sample.Name)]
     }
   } else {
     stop("option = ", option, "not implemented!")

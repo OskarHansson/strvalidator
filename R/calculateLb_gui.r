@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.03.2019: Added new option to calculate balance (Issue:#14).
 # 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
 # 11.02.2019: Minor adjustments to tcltk gui.
 # 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -164,7 +165,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Suggest a name for the result.
-      svalue(f4_save_edt) <- paste(val_obj, "_lb", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_lb", sep = "")
 
       # Detect kit.
       kitIndex <- detectKit(data = .gData, index = TRUE)
@@ -177,7 +178,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       .gDataName <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
-      svalue(f4_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -311,7 +312,8 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   f1_options_lb <- c(
     "Proportional",
     "Normalised",
-    "Centred Quantities"
+    "Centred Quantities",
+    "Peak Ratio"
   )
 
   f1_lb_opt <- gradio(
@@ -383,28 +385,15 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   # Disable checkbox to calculate H.
   enabled(f1_h_chk) <- FALSE
 
-  # FRAME 4 ###################################################################
+  # SAVE ######################################################################
 
-  if (debug) {
-    print("FRAME 4")
-  }
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  f4 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  glabel(text = "Name for result:", container = save_frame)
 
-  glabel(text = "Name for result:", container = f4)
-
-  f4_save_edt <- gedit(expand = TRUE, container = f4, fill = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
-
-  if (debug) {
-    print("BUTTON")
-  }
 
   calculate_btn <- gbutton(text = "Calculate", container = gv)
 
@@ -420,7 +409,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     val_data_name <- .gDataName
     val_ref <- .gRef
     val_ref_name <- .gRefName
-    val_name <- svalue(f4_save_edt)
+    val_name <- svalue(save_edt)
     val_kit <- svalue(kit_drp)
     val_ol <- svalue(f1_ol_chk)
     val_sex <- svalue(f1_sex_chk)
@@ -471,6 +460,8 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
           val_option <- "norm"
         } else if (val_option == 3) {
           val_option <- "cent"
+        } else if (val_option == 4) {
+          val_option <- "peak"
         } else {
           stop("val_option =", val_option, "not implemented!")
         }

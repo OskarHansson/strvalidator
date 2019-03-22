@@ -28,7 +28,7 @@ if (base::getRversion() >= "2.15.1") {
   utils::globalVariables(c(
     "Height", "Masked", "Sample.File.Name", "Dye",
     "Hb", "Marker", "Lb", "H", "Amount", "Size",
-    "Sample.Name", "TPH", "MPH", "TPPH", "MTPH",
+    "Sample.Name", "TPH", "MPH", "TPPH", "MTPH", "Min", "Max",
     "Group", "Allele", "Id", "Kit", "Lower", "Slope",
     "Error", "Peaks", "Upper", "Total.Peaks",
     "Allele.Proportion", "Sum.Peaks", "Allele.Frequency",
