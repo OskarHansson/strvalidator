@@ -1,12 +1,8 @@
 context("calculateHb")
 
 ################################################################################
-# TODO LIST
-# TODO: Test ignore.case.
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 29.08.2016: First tests 1-11.
 #
 # require(strvalidator)
@@ -58,7 +54,7 @@ test_that("calculateHb", {
   res <- calculateHb(data = set2, ref = ref2, hb = 1, kit = "SGMplus", ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -124,7 +120,7 @@ test_that("calculateHb", {
   res <- calculateHb(data = set2, ref = ref2, hb = 2, kit = "SGMplus", ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -190,7 +186,7 @@ test_that("calculateHb", {
   res <- calculateHb(data = set2, ref = ref2, hb = 3, kit = "SGMplus", ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))

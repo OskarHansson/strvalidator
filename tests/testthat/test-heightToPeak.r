@@ -1,11 +1,8 @@
 context("EPG generation")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 21.04.2016: Fixed old argument name 'keepNA' -> 'keep.na'.
 #
 # require(strvalidator)
@@ -30,7 +27,7 @@ test_that("heightToPeak", {
   expect_that(heightToPeak(data = mydf, keep.na = "String"), throws_error())
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check length.
   expect_that(nrow(res), equals(9))
@@ -62,7 +59,7 @@ test_that("heightToPeak", {
   res <- heightToPeak(data = mydf, width = peakw, keep.na = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check length.
   expect_that(nrow(res), equals(9))
@@ -94,7 +91,7 @@ test_that("heightToPeak", {
   res <- heightToPeak(data = mydf, width = peakw, keep.na = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check length.
   expect_that(nrow(res), equals(3))
@@ -127,7 +124,7 @@ test_that("heightToPeak", {
   res <- heightToPeak(data = mydf, keep.na = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check length.
   expect_that(nrow(res), equals(0))

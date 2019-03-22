@@ -1,11 +1,8 @@
 context("calculateOL")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 20.01.2014: All tests working.
 #
 # test_dir("inst/tests/")
@@ -32,7 +29,7 @@ test_that("calculateOL", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Kit", names(res))))
@@ -67,7 +64,7 @@ test_that("calculateOL", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Kit", names(res))))
@@ -101,7 +98,7 @@ test_that("calculateOL", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Kit", names(res))))
@@ -135,7 +132,7 @@ test_that("calculateOL", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Kit", names(res))))
@@ -170,7 +167,7 @@ test_that("calculateOL", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Kit", names(res))))
@@ -205,7 +202,7 @@ test_that("calculateOL", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Kit", names(res))))
@@ -239,7 +236,7 @@ test_that("calculateOL", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Kit", names(res))))
@@ -273,7 +270,7 @@ test_that("calculateOL", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Kit", names(res))))

@@ -1,11 +1,8 @@
 context("calculateMixture")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 31.07.2014: First version.
 #
 # library(testthat)
@@ -259,7 +256,7 @@ test_that("calculateMixture", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -418,7 +415,7 @@ test_that("calculateMixture", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -576,7 +573,7 @@ test_that("calculateMixture", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -735,7 +732,7 @@ test_that("calculateMixture", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))

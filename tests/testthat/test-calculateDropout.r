@@ -1,12 +1,8 @@
 context("calculateDropout")
 
 ################################################################################
-# TODO LIST
-# TODO: Update when dropout method is fixed.
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 07.12.2015: Fixed reference sample name subsetting bug.
 #
 # require(testthat)
@@ -29,7 +25,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = ref4, ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7)) # TODO: Number of columns not fixed yet.
@@ -74,7 +70,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = ref4, ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7))  # TODO: Number of columns not fixed yet.
@@ -120,7 +116,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = ref4, ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7))  # TODO: Number of columns not fixed yet.
@@ -167,7 +163,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = ref4, ignore.case = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7))  # TODO: Number of columns not fixed yet.
@@ -190,7 +186,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = ref4, ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7))  # TODO: Number of columns not fixed yet.
@@ -237,7 +233,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = ref4, ignore.case = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7))  # TODO: Number of columns not fixed yet.
@@ -285,7 +281,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = ref4, ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7))  # TODO: Number of columns not fixed yet.
@@ -330,7 +326,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = ref4, ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7))  # TODO: Number of columns not fixed yet.
@@ -381,7 +377,7 @@ test_that("calculateDropout", {
   res <- calculateDropout(data = testSample, ref = testRef, ignore.case = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns and rows exist.
   # expect_that(ncol(res), equals(7)) # TODO: Number of columns not fixed yet.

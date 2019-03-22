@@ -1,11 +1,8 @@
 context("calculateHeight")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 16.09.2016: Uppdated with test 21-22 for complete negative samples, updated test 16.
 # 15.09.2016: Uppdated with test 20 for homozygous double notation.
 # 19.08.2016: Uppdated as a consequence of a bug fix.
@@ -103,7 +100,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df1, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -126,7 +123,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df2, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -151,7 +148,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df3, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -177,7 +174,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df3, na = 0, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -203,7 +200,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df1, na = NULL, add = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -234,7 +231,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df2, na = NULL, add = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -267,7 +264,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df3, na = NULL, add = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -301,7 +298,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df3, na = 0, add = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -333,7 +330,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df1, na = 0, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -356,7 +353,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df4, na = NULL, add = FALSE, exclude = "OL")
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -379,7 +376,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df4, na = NULL, add = TRUE, exclude = c("X", "OL"))
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -410,7 +407,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df5, na = NULL, add = FALSE, exclude = "OL")
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -433,7 +430,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df5, na = NULL, add = TRUE, exclude = c("X", "OL"))
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -464,7 +461,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df4, ref = ref4, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -496,7 +493,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df5, ref = ref4, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -528,7 +525,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df6, ref = ref4, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that an empty dataset was returned.
   # Updated 16.09.2016. No longer remove NA samples.
@@ -541,7 +538,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df7, ref = ref4, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -574,7 +571,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df5, ref = ref4, na = NULL, add = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -608,7 +605,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df5, ref = ref4, na = NULL, add = TRUE, sex.rm = TRUE, kit = "SGMPlus")
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -641,7 +638,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df4, ref = ref5, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -674,7 +671,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df6, ref = ref4, na = 0, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -707,7 +704,7 @@ test_that("calculateHeight", {
   res <- calculateHeight(data = df6, ref = ref4, na = NULL, add = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))

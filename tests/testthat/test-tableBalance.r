@@ -1,11 +1,8 @@
 context("tableBalance")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 25.09.2016: Added Test 3 for Lb.
 # 24.09.2016: Updated to work with tableBalance, replacing tableHb.
 # 07.09.2016: Updated to work with calculateHb, replacing calculateBalance.
@@ -46,7 +43,7 @@ test_that("tableBalance", {
   res <- tableBalance(data = tmp, scope = "locus", quant = 0.05)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(is.null(res$Sample.Name))
@@ -101,7 +98,7 @@ test_that("tableBalance", {
   res <- tableBalance(data = tmp, scope = "global", quant = 0.10)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(is.null(res$Sample.Name))
@@ -156,7 +153,7 @@ test_that("tableBalance", {
   res <- tableBalance(data = tmp, scope = "locus", quant = 0.50)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(is.null(res$Sample.Name))

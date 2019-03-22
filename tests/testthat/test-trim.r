@@ -1,11 +1,8 @@
 context("trim")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 28.04.2014: First tests for 'trim'.
 #
 # test_dir("inst/tests/")
@@ -60,7 +57,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 5)
@@ -91,7 +88,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 4)
@@ -121,7 +118,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 4)
@@ -151,7 +148,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 5)
@@ -182,7 +179,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 5)
@@ -213,7 +210,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 1)
@@ -240,7 +237,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 4)
@@ -270,7 +267,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 2)
@@ -299,7 +296,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 2)
@@ -328,7 +325,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 2)
@@ -356,7 +353,7 @@ test_that("trim", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res) == 4)

@@ -1,11 +1,8 @@
 context("calculateConcordance")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 20.07.2016: Added test 04 for option list.all
 # 28.04.2014: First tests for 'calculateConcordance'.
 #
@@ -55,9 +52,9 @@ test_that("calculateConcordance", {
   res2 <- resList[[2]]
 
   # Check return class.
-  expect_that(class(resList), matches(class(list())))
-  expect_that(class(res1), matches(class(data.frame())))
-  expect_that(class(res2), matches(class(data.frame())))
+  expect_match(class(resList), class(list()))
+  expect_match(class(res1), class(data.frame()))
+  expect_match(class(res2), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res1) == 6)
@@ -186,9 +183,9 @@ test_that("calculateConcordance", {
   res2 <- resList[[2]]
 
   # Check return class.
-  expect_that(class(resList), matches(class(list())))
-  expect_that(class(res1), matches(class(data.frame())))
-  expect_that(class(res2), matches(class(data.frame())))
+  expect_match(class(resList), class(list()))
+  expect_match(class(res1), class(data.frame()))
+  expect_match(class(res2), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res1) == 6)
@@ -313,9 +310,9 @@ test_that("calculateConcordance", {
   res2 <- resList[[2]]
 
   # Check return class.
-  expect_that(class(resList), matches(class(list())))
-  expect_that(class(res1), matches(class(data.frame())))
-  expect_that(class(res2), matches(class(data.frame())))
+  expect_match(class(resList), class(list()))
+  expect_match(class(res1), class(data.frame()))
+  expect_match(class(res2), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res1) == 1)
@@ -356,9 +353,9 @@ test_that("calculateConcordance", {
   res2 <- resList[[2]]
 
   # Check return class.
-  expect_that(class(resList), matches(class(list())))
-  expect_that(class(res1), matches(class(data.frame())))
-  expect_that(class(res2), matches(class(data.frame())))
+  expect_match(class(resList), class(list()))
+  expect_match(class(res1), class(data.frame()))
+  expect_match(class(res2), class(data.frame()))
 
   # Check dimensions.
   expect_true(ncol(res1) == 6)

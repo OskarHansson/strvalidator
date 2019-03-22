@@ -1,12 +1,8 @@
 context("calculateStutter")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
-# dd.mm.yyyy: ...
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 #
 # test_dir("inst/tests/")
 # test_file("tests/testthat/test-calculateStutter.r")
@@ -37,7 +33,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -113,7 +109,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -215,7 +211,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -311,7 +307,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -399,7 +395,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -499,7 +495,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -609,7 +605,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -706,7 +702,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -786,7 +782,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -882,7 +878,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -980,7 +976,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1065,7 +1061,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1134,7 +1130,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1195,7 +1191,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1270,7 +1266,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1345,7 +1341,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1506,7 +1502,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1676,7 +1672,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1790,7 +1786,7 @@ test_that("calculateStutter", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))
@@ -1907,7 +1903,7 @@ test_that("calculateStutter", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Marker))

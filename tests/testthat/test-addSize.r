@@ -1,11 +1,8 @@
 context("addSize")
 
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 26.08.2014: Added test for scrampled markers (test 05 and test 06) [Issue#5].
 # 07.05.2014: Added test for 'ESX17' (test 03 and test 04).
 # 02.03.2014: First tests for 'addSize'.
@@ -47,7 +44,7 @@ test_that("addSize", {
   res <- addSize(data = set2, kit = kitBins, bins = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -106,7 +103,7 @@ test_that("addSize", {
   res <- addSize(data = set2, kit = kitCalc, bins = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -165,7 +162,7 @@ test_that("addSize", {
   res <- addSize(data = ref4, kit = kitBins2, bins = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -222,7 +219,7 @@ test_that("addSize", {
   res <- addSize(data = ref4, kit = kitCalc2, bins = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -279,7 +276,7 @@ test_that("addSize", {
   res <- addSize(data = scrampled, kit = kitBins, bins = TRUE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -322,7 +319,7 @@ test_that("addSize", {
   res <- addSize(data = scrampled, kit = kitCalc, bins = FALSE)
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))

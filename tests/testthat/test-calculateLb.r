@@ -1,12 +1,9 @@
 context("calculateLb")
 
 ################################################################################
-# TODO LIST
-# TODO: Test ignore.case.
-# TODO: ...
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
+# 22.03.2019: Added tests for new option "peak".
 # 29.08.2016: Added  kit = "SGMplus" for performance.
 # 01.03.2016: Upgraded to work with version 1.6.0.9002.
 # 26.12.2015: First version.
@@ -31,7 +28,7 @@ test_that("calculateLb", {
   ref1 <- slim(data = ref1, fix = c("Sample.Name", "Marker"), stack = c("Allele"))
 
   # TEST 01 -------------------------------------------------------------------
-  # Test that proportional Lb by dye can be calculated by dye for data including
+  # Test that proportional Lb by dye can be calculated for data including
   # one locus dropout.
 
   # Analyse dataframe.
@@ -42,7 +39,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -127,7 +124,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -212,7 +209,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -297,7 +294,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -382,7 +379,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -467,7 +464,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -542,6 +539,105 @@ test_that("calculateLb", {
 
 
   # TEST 07 -------------------------------------------------------------------
+  # Test that peak ratio Lb by dye can be calculated for data including
+  # one locus dropout.
+
+  # Analyse dataframe.
+  res <- calculateLb(
+    data = set2, ref = NULL, option = "peak", by.dye = TRUE,
+    ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
+    ignore.case = TRUE, word = FALSE, exact = FALSE
+  )
+
+  # Check return class.
+  expect_match(class(res), class(data.frame()))
+
+  # Check that expected columns exist.
+  expect_false(is.null(res$Sample.Name))
+  expect_false(is.null(res$Dye))
+  expect_false(is.null(res$Min))
+  expect_false(is.null(res$Max))
+  expect_false(is.null(res$Peaks))
+  expect_false(is.null(res$Lb))
+
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Dye)))
+  expect_true(any(is.na(res$Min)))
+  expect_true(any(is.na(res$Max)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_true(any(is.na(res$Lb)))
+
+  # Check result: Locus balance.
+  expect_that(res$Lb[1], equals(402 / 723))
+  expect_that(res$Lb[2], equals(361 / 766))
+  expect_that(res$Lb[3], equals(359 / 592))
+
+  expect_that(res$Lb[4], equals(198 / 347))
+  expect_that(res$Lb[5], equals(195 / 402))
+  expect_that(res$Lb[6], equals(as.numeric(NA)))
+
+  # Check result: Peaks.
+  expect_that(res$Peaks[1], equals(6))
+  expect_that(res$Peaks[2], equals(6))
+  expect_that(res$Peaks[3], equals(4))
+
+  expect_that(res$Peaks[4], equals(6))
+  expect_that(res$Peaks[5], equals(6))
+  expect_that(res$Peaks[6], equals(4))
+
+  # Check result: Min peak height.
+  expect_that(unique(res$Min), equals(c(402, 361, 359, 198, 195, NA)))
+
+  # Check result: Max peak height.
+  expect_that(unique(res$Max), equals(c(723, 766, 592, 347, 402, NA)))
+
+
+  # TEST 08 -------------------------------------------------------------------
+  # Test that peak ratio Lb can be calculated for data including
+  # one locus dropout.
+
+  res <- calculateLb(
+    data = set2, ref = NULL, option = "peak", by.dye = FALSE,
+    ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
+    ignore.case = TRUE, word = FALSE, exact = FALSE
+  )
+
+  # Check return class.
+  expect_match(class(res), class(data.frame()))
+
+  # Check that expected columns exist.
+  expect_false(is.null(res$Sample.Name))
+  expect_false(is.null(res$Min))
+  expect_false(is.null(res$Max))
+  expect_false(is.null(res$Peaks))
+  expect_false(is.null(res$Lb))
+
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_true(any(is.na(res$Min)))
+  expect_true(any(is.na(res$Max)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_true(any(is.na(res$Lb)))
+
+  # Check result: Locus balance.
+  expect_that(res$Lb[1], equals(359 / 766))
+
+  expect_that(res$Lb[2], equals(as.numeric(NA)))
+
+  # Check result: Peaks.
+  expect_that(res$Peaks[1], equals(16))
+
+  expect_that(res$Peaks[2], equals(16))
+
+  # Check result: Min peak height.
+  expect_that(unique(res$Min), equals(c(359, NA)))
+
+  # Check result: Max peak height.
+  expect_that(unique(res$Max), equals(c(766, NA)))
+
+
+  # TEST 09 -------------------------------------------------------------------
   # Test that proportional Lb by dye can be calculated for unfiltered data.
 
   # Analyse dataframe.
@@ -552,7 +648,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -614,7 +710,7 @@ test_that("calculateLb", {
   expect_that(unique(res$TPPH), equals(c(34486, 26214, 24822, 50136)))
 
 
-  # TEST 08 -------------------------------------------------------------------
+  # TEST 10 -------------------------------------------------------------------
   # Test that proportional Lb by dye can be calculated for unfiltered data
   # and off-ladder peaks removed.
 
@@ -626,7 +722,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -688,7 +784,7 @@ test_that("calculateLb", {
   expect_that(unique(res$TPPH), equals(c(34293, 26214, 24822, 50136)))
 
 
-  # TEST 09 -------------------------------------------------------------------
+  # TEST 11 -------------------------------------------------------------------
   # Test that proportional Lb by dye can be calculated for unfiltered data,
   # with off-ladder peaks, and sex markers removed.
 
@@ -700,7 +796,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -760,7 +856,7 @@ test_that("calculateLb", {
   expect_that(unique(res$TPPH), equals(c(27162, 26214, 24822, 50136)))
 
 
-  # TEST 10 -------------------------------------------------------------------
+  # TEST 12 -------------------------------------------------------------------
   # Test that proportional Lb by dye can be calculated for filtered data.
 
   # Analyse dataframe.
@@ -771,7 +867,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -833,7 +929,7 @@ test_that("calculateLb", {
   expect_that(unique(res$TPPH), equals(c(33079, 24651, 22933, 47097)))
 
 
-  # TEST 11 -------------------------------------------------------------------
+  # TEST 13 -------------------------------------------------------------------
   # Test that proportional Lb by dye can be calculated for filtered data
   # and off-ladder peaks removed.
 
@@ -845,7 +941,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -907,7 +1003,7 @@ test_that("calculateLb", {
   expect_that(unique(res$TPPH), equals(c(33079, 24651, 22933, 47097)))
 
 
-  # TEST 12 -------------------------------------------------------------------
+  # TEST 14 -------------------------------------------------------------------
   # Test that proportional Lb by dye can be calculated for filtered data,
   # with off-ladder peaks, and sex markers removed.
 
@@ -919,7 +1015,7 @@ test_that("calculateLb", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_false(is.null(res$Sample.Name))
@@ -979,7 +1075,7 @@ test_that("calculateLb", {
   expect_that(unique(res$TPPH), equals(c(25948, 24651, 22933, 47097)))
 
 
-  # TEST 13 -------------------------------------------------------------------
+  # TEST 15 -------------------------------------------------------------------
   # Test when a marker is missing from a sample.
 
   # Remove TH01 from the first sample.
@@ -1017,7 +1113,7 @@ test_that("calculateLb", {
   )
 
 
-  # TEST 14 -------------------------------------------------------------------
+  # TEST 16 -------------------------------------------------------------------
   # Test when all markers in one dye channel is missing from a sample.
 
   # Remove yellow dye channel from the first sample.
@@ -1055,7 +1151,7 @@ test_that("calculateLb", {
   )
 
 
-  # TEST 15 -------------------------------------------------------------------
+  # TEST 17 -------------------------------------------------------------------
   # Test that 'fat' data throws error.
 
   # Expect error due to 'fat' data.

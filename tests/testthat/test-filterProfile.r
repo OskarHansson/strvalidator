@@ -1,11 +1,8 @@
 context("filterProfile")
 
 ################################################################################
-# TODO LIST
-# TODO: Add tests 'word'.
-
-################################################################################
 # CHANGE LOG
+# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 28.08.2016: Updated to work with improved filterProfile.
 # 15.12.2015: Added test 10-12 to test new option 'exact'.
 # 09.04.2015: Added test 09 to test new option 'invert'.
@@ -90,7 +87,7 @@ test_that("filterProfile", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -125,7 +122,7 @@ test_that("filterProfile", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -158,7 +155,7 @@ test_that("filterProfile", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -191,7 +188,7 @@ test_that("filterProfile", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -261,7 +258,7 @@ test_that("filterProfile", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -311,7 +308,7 @@ test_that("filterProfile", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -361,7 +358,7 @@ test_that("filterProfile", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -415,7 +412,7 @@ test_that("filterProfile", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -467,7 +464,7 @@ test_that("filterProfile", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -506,7 +503,7 @@ test_that("filterProfile", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -545,7 +542,7 @@ test_that("filterProfile", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -584,7 +581,7 @@ test_that("filterProfile", {
 
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true(any(grepl("Sample.Name", names(res))))
@@ -625,7 +622,7 @@ test_that("filterProfile", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -708,7 +705,7 @@ test_that("filterProfile", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -791,7 +788,7 @@ test_that("filterProfile", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
@@ -873,7 +870,7 @@ test_that("filterProfile", {
   )
 
   # Check return class.
-  expect_that(class(res), matches(class(data.frame())))
+  expect_match(class(res), class(data.frame()))
 
   # Check that expected columns exist.
   expect_true("Sample.Name" %in% names(res))
