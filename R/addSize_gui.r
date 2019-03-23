@@ -217,10 +217,6 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
   add_btn <- gbutton(text = "Add size", container = gv)
 
   addHandlerClicked(add_btn, handler = function(h, ...) {

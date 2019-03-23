@@ -1,5 +1,6 @@
 ###############################################################################
 # CHANGE LOG (last 20 changes)
+# 23.03.2019: Fixed Error in paste(parent$ID, parent$env$num.subwin... (tcltk)
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -165,7 +166,7 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste("", samples, "samples")
-      svalue(f2_save_edt) <- paste(val_obj, "_type", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_type", sep = "")
 
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
@@ -178,7 +179,7 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       .gDataName <<- NULL
       svalue(g0_dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -196,7 +197,8 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
     checked = TRUE, container = f1
   )
 
-  glabel(text = "NB! All markers must be present in each sample for correct results.")
+  glabel(text = "NB! All markers must be present in each sample for correct results.",
+         container = f1, anchor = c(-1, 0))
 
   glabel(
     text = "Peak height threshold (RFU):",
@@ -232,19 +234,14 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  # FRAME 2 ###################################################################
-
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
-
-  glabel(text = "Name for result:", container = f2)
-
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
-
+  # SAVE ######################################################################
+  
+  save_frame <- gframe(text = "Save as", container = gv)
+  
+  glabel(text = "Name for result:", container = save_frame)
+  
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
+  
   # BUTTON ####################################################################
 
 
@@ -257,7 +254,7 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
     val_mix <- svalue(f1_mix_edt)
     val_par <- svalue(f1_par_edt)
     val_subkit <- svalue(f1_kit_drp)
-    val_name <- svalue(f2_save_edt)
+    val_name <- svalue(save_edt)
     val_marker <- NULL
     val_kit <- svalue(f0_kit_drp)
     val_add <- svalue(f1_add_chk)

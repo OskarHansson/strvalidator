@@ -1,4 +1,10 @@
-Version 2.2.0
+Version 2.2.0.9000
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateResultType_gui
+  Fixed Error in paste(parent$ID, parent$env$num.subwin... (tcltk)
+
+ Version 2.2.0
 ------------------------------------------------------------------------------
 * The package is now optimized for both the tcltk and the RGtk2 graphical user
  interface packages through the gWidgets2 APIs gWidgets2tcltk and gWidgets2RGtk2.
