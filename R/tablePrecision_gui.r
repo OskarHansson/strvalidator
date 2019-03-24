@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.03.2019: Improved tables with set initial height.
+# 23.03.2019: Fixed save field not expanded (tcltk)
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 23.07.2018: Made 'Save as' textbox expandable.
 # 07.08.2017: Added audit trail.
@@ -45,7 +47,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
                                debug = FALSE, parent = NULL) {
 
   # Global variables.
-  .gData <- data.frame(Columns = "NA")
+  .gData <- data.frame(Please.select.a.dataset = "NA")
   .gRef <- NULL
   .gDataName <- NULL
   .gRefName <- NULL
@@ -95,7 +97,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 5,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -121,7 +123,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
   f0 <- gframe(
     text = "Datasets",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -165,7 +167,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
         length(unique(.gData$Sample.Name)),
         "samples."
       )
-      svalue(f4_save_edt) <- paste(val_obj, "_precision_table", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_precision_table", sep = "")
 
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
@@ -177,11 +179,11 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     } else {
 
       # Reset components.
-      .gData <<- data.frame(Columns = "NA")
+      .gData <<- data.frame(Please.select.a.dataset = "NA")
       .gDataName <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
-      svalue(f4_save_edt) <- ""
+      svalue(save_edt) <- ""
       .refresh_key_tbl()
       .refresh_target_tbl()
     }
@@ -192,7 +194,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
   f2 <- gframe(
     text = "Filter",
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 2,
     container = gv
   )
 
@@ -381,33 +383,30 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(
-    text = "Options",
-    horizontal = FALSE,
-    spacing = 5,
-    expand = TRUE,
-    container = gv
-  )
-
   # KEY -----------------------------------------------------------------------
 
   f1_key_f <- gframe("Create key from columns",
     horizontal = FALSE,
-    container = f1,
-    expand = TRUE
+    container = gv,
+    expand = TRUE,
+    fill = TRUE
   )
 
   f1_key_txt <- gedit(
     initial.msg = "Doubleklick or drag column names to list",
-    width = 40,
-    container = f1_key_f
-  )
-
-  f1_key_tbl <- gWidgets2::gtable(
-    items = names(.gData),
     container = f1_key_f,
     expand = TRUE
   )
+
+  f1_key_tbl <- gWidgets2::gtable(
+    items = data.frame(Available.Columns = names(.gData)),
+    container = f1_key_f,
+    expand = TRUE
+  )
+  # Set initial table size.
+  size(f1_key_tbl) <- list(height = 100, width = 350, column.widths = 350)
+
+  addDropSource(f1_key_tbl, handler = function(h, ...) svalue(h$obj))
 
   addDropTarget(f1_key_txt, handler = function(h, ...) {
     # Get values.
@@ -433,21 +432,26 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1_target_f <- gframe("Calculate precision for target columns",
     horizontal = FALSE,
-    container = f1,
-    expand = TRUE
+    container = gv,
+    expand = TRUE,
+    fill = TRUE
   )
 
   f1_target_txt <- gedit(
     initial.msg = "Doubleklick or drag column names to list",
-    width = 40,
-    container = f1_target_f
-  )
-
-  f1_target_tbl <- gWidgets2::gtable(
-    items = names(.gData),
     container = f1_target_f,
     expand = TRUE
   )
+
+  f1_target_tbl <- gWidgets2::gtable(
+    items = data.frame(Available.Columns = names(.gData)),
+    container = f1_target_f,
+    expand = TRUE
+  )
+  # Set initial table size.
+  size(f1_target_tbl) <- list(height = 100, width = 350, column.widths = 350)
+
+  addDropSource(f1_target_tbl, handler = function(h, ...) svalue(h$obj))
 
   addDropTarget(f1_target_txt, handler = function(h, ...) {
     # Get values.
@@ -469,18 +473,13 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     f1_target_tbl[, ] <- tmp_tbl # Update table.
   })
 
-  # FRAME 4 ###################################################################
+  # SAVE ######################################################################
 
-  f4 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = "Save as", container = gv)
 
-  glabel(text = "Name for result:", container = f4)
+  glabel(text = "Name for result:", container = save_frame)
 
-  f4_save_edt <- gedit(text = "", expand = TRUE, container = f4)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -497,7 +496,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     val_ref <- .gRef
     val_name_data <- .gDataName
     val_name_ref <- .gRefName
-    val_name <- svalue(f4_save_edt)
+    val_name <- svalue(save_edt)
     val_kit <- svalue(f2g2_kit_drp)
     val_exclude <- svalue(f2g2_virtual_chk)
 
@@ -626,18 +625,8 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
       print(paste("IN:", match.call()[[1]]))
     }
 
-    # Refresh widget by removing it and...
-    delete(f1_target_f, f1_target_tbl)
-
-    # ...creating a new table.
-    f1_target_tbl <<- gWidgets2::gtable(
-      items = names(.gData),
-      container = f1_target_f,
-      expand = TRUE
-    )
-
-
-    addDropSource(f1_target_tbl, handler = function(h, ...) svalue(h$obj))
+    # Populate table.
+    f1_target_tbl[] <<- data.frame(Available.Columns = names(.gData))
 
     addHandlerDoubleclick(f1_target_tbl, handler = function(h, ...) {
 
@@ -654,7 +643,6 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
       # Update text box.
       svalue(f1_target_txt) <- new
 
-
       # Update sample name table.
       tmp_tbl <- f1_target_tbl[, ] # Get all values.
       tmp_tbl <- tmp_tbl[tmp_tbl != tbl_val] # Remove value added to selected.
@@ -667,17 +655,8 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
       print(paste("IN:", match.call()[[1]]))
     }
 
-    # Refresh widget by removing it and...
-    delete(f1_key_f, f1_key_tbl)
-
-    # ...creating a new table.
-    f1_key_tbl <<- gWidgets2::gtable(
-      items = names(.gData),
-      container = f1_key_f,
-      expand = TRUE
-    )
-
-    addDropSource(f1_key_tbl, handler = function(h, ...) svalue(h$obj))
+    # Populate table.
+    f1_key_tbl[] <<- data.frame(Available.Columns = names(.gData))
 
     addHandlerDoubleclick(f1_key_tbl, handler = function(h, ...) {
 

@@ -326,7 +326,7 @@ strvalidator <- function(debug = FALSE) {
     "International: Genetics, 13, 154-166. doi: 10.1016/j.fsigen.2014.07.009 ",
     "\n\n",
     "Contributions to the strvalidator package or user community is more than welcome. ",
-    "Contact the developer to:\n ",
+    "Contact the developer (see CRAN page) to:\n ",
     "- improve existing functionality or add new\n ",
     "- translate course material, manuals, or tutorial\n ",
     "- collaborate to implement new functions\n ",
