@@ -398,34 +398,71 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     expand = TRUE
   )
 
+  # Populate table.
+  # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
   f1_key_tbl <- gWidgets2::gtable(
-    items = data.frame(Available.Columns = names(.gData)),
+    items = data.frame(Available.Columns = names(.gData), stringsAsFactors = FALSE),
     container = f1_key_f,
     expand = TRUE
   )
   # Set initial table size.
   size(f1_key_tbl) <- list(height = 100, width = 350, column.widths = 350)
 
+  # Add click handler to table widget.
+  addHandlerDoubleclick(f1_key_tbl, handler = function(h, ...) {
+
+    # Get values.
+    tbl_val <- svalue(h$obj, index = FALSE)
+    key_val <- svalue(f1_key_txt)
+
+    # Check that the action was on a list element.
+    if (length(tbl_val) > 0 || nchar(tbl_val) == 0) {
+
+      # Add new value to selected.
+      new <- ifelse(nchar(key_val) > 0,
+        paste(key_val, tbl_val, sep = ","),
+        tbl_val
+      )
+
+      # Update text box.
+      svalue(f1_key_txt) <- new
+
+      # Update column name table.
+      tmp_tbl <- f1_key_tbl[, ] # Get all values.
+
+      # Remove value added to selected and Update table.
+      f1_key_tbl[] <- tmp_tbl[tmp_tbl != tbl_val]
+    }
+  })
+
+  # Add a drop source to the table.
   addDropSource(f1_key_tbl, handler = function(h, ...) svalue(h$obj))
 
+  # Add the edit widget as a drop target.
   addDropTarget(f1_key_txt, handler = function(h, ...) {
+
     # Get values.
     drp_val <- h$dropdata
-    f1_key_val <- svalue(h$obj)
+    key_val <- svalue(h$obj)
 
-    # Add new value to selected.
-    new <- ifelse(nchar(f1_key_val) > 0,
-      paste(f1_key_val, drp_val, sep = ","),
-      drp_val
-    )
+    # Check that the action was on a list element.
+    if (length(drp_val) > 0 || nchar(drp_val) == 0) {
 
-    # Update text box.
-    svalue(h$obj) <- new
+      # Add new value to selected.
+      new <- ifelse(nchar(key_val) > 0,
+        paste(key_val, drp_val, sep = ","),
+        drp_val
+      )
 
-    # Update column name table.
-    tmp_tbl <- f1_key_tbl[, ] # Get all values.
-    tmp_tbl <- tmp_tbl[tmp_tbl != drp_val] # Remove value added to selected.
-    f1_key_tbl[, ] <- tmp_tbl # Update table.
+      # Update text box.
+      svalue(f1_key_txt) <- new
+
+      # Update column name table.
+      tmp_tbl <- f1_key_tbl[] # Get all values.
+
+      # Remove value added to selected and update table.
+      f1_key_tbl[] <- tmp_tbl[tmp_tbl != drp_val]
+    }
   })
 
   # TARGET --------------------------------------------------------------------
@@ -443,34 +480,70 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     expand = TRUE
   )
 
+  # Populate table.
+  # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
   f1_target_tbl <- gWidgets2::gtable(
-    items = data.frame(Available.Columns = names(.gData)),
+    items = data.frame(Available.Columns = names(.gData), stringsAsFactors = FALSE),
     container = f1_target_f,
     expand = TRUE
   )
   # Set initial table size.
   size(f1_target_tbl) <- list(height = 100, width = 350, column.widths = 350)
 
+  # Add click handler to table widget.
+  addHandlerDoubleclick(f1_target_tbl, handler = function(h, ...) {
+
+    # Get values.
+    tbl_val <- svalue(h$obj)
+    target_val <- svalue(f1_target_txt)
+
+    # Check that the action was on a list element.
+    if (length(tbl_val) > 0 || nchar(tbl_val) == 0) {
+
+      # Add new value to selected.
+      new <- ifelse(nchar(target_val) > 0,
+        paste(target_val, tbl_val, sep = ","),
+        tbl_val
+      )
+
+      # Update text box.
+      svalue(f1_target_txt) <- new
+
+      # Update sample name table.
+      tmp_tbl <- f1_target_tbl[] # Get all values.
+
+      # Remove value added to selected and update table.
+      f1_target_tbl[] <- tmp_tbl[tmp_tbl != tbl_val]
+    }
+  })
+
+  # Add a drop source to the table.
   addDropSource(f1_target_tbl, handler = function(h, ...) svalue(h$obj))
 
+  # Add the edit widget as a drop target.
   addDropTarget(f1_target_txt, handler = function(h, ...) {
     # Get values.
     drp_val <- h$dropdata
-    f1_target_val <- svalue(h$obj)
+    target_val <- svalue(h$obj)
 
-    # Add new value to selected.
-    new <- ifelse(nchar(f1_target_val) > 0,
-      paste(f1_target_val, drp_val, sep = ","),
-      drp_val
-    )
+    # Check that the action was on a list element.
+    if (length(drp_val) > 0 || nchar(drp_val) == 0) {
 
-    # Update text box.
-    svalue(h$obj) <- new
+      # Add new value to selected.
+      new <- ifelse(nchar(target_val) > 0,
+        paste(target_val, drp_val, sep = ","),
+        drp_val
+      )
 
-    # Update column name table.
-    tmp_tbl <- f1_target_tbl[, ] # Get all values.
-    tmp_tbl <- tmp_tbl[tmp_tbl != drp_val] # Remove value added to selected.
-    f1_target_tbl[, ] <- tmp_tbl # Update table.
+      # Update text box.
+      svalue(h$obj) <- new
+
+      # Update column name table.
+      tmp_tbl <- f1_target_tbl[] # Get all values.
+
+      # Remove value added to selected and update table.
+      f1_target_tbl[] <- tmp_tbl[tmp_tbl != drp_val]
+    }
   })
 
   # SAVE ######################################################################
@@ -626,28 +699,8 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Populate table.
-    f1_target_tbl[] <<- data.frame(Available.Columns = names(.gData))
-
-    addHandlerDoubleclick(f1_target_tbl, handler = function(h, ...) {
-
-      # Get values.
-      tbl_val <- svalue(h$obj)
-      target_val <- svalue(f1_target_txt)
-
-      # Add new value to selected.
-      new <- ifelse(nchar(target_val) > 0,
-        paste(target_val, tbl_val, sep = ","),
-        tbl_val
-      )
-
-      # Update text box.
-      svalue(f1_target_txt) <- new
-
-      # Update sample name table.
-      tmp_tbl <- f1_target_tbl[, ] # Get all values.
-      tmp_tbl <- tmp_tbl[tmp_tbl != tbl_val] # Remove value added to selected.
-      f1_target_tbl[, ] <- tmp_tbl # Update table.
-    })
+    # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
+    f1_target_tbl[] <<- data.frame(Available.Columns = names(.gData), stringsAsFactors = FALSE)
   }
 
   .refresh_key_tbl <- function() {
@@ -656,28 +709,8 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Populate table.
-    f1_key_tbl[] <<- data.frame(Available.Columns = names(.gData))
-
-    addHandlerDoubleclick(f1_key_tbl, handler = function(h, ...) {
-
-      # Get values.
-      tbl_val <- svalue(h$obj)
-      key_val <- svalue(f1_key_txt)
-
-      # Add new value to selected.
-      new <- ifelse(nchar(key_val) > 0,
-        paste(key_val, tbl_val, sep = ","),
-        tbl_val
-      )
-
-      # Update text box.
-      svalue(f1_key_txt) <- new
-
-      # Update column name table.
-      tmp_tbl <- f1_key_tbl[, ] # Get all values.
-      tmp_tbl <- tmp_tbl[tmp_tbl != tbl_val] # Remove value added to selected.
-      f1_key_tbl[, ] <- tmp_tbl # Update table.
-    })
+    # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
+    f1_key_tbl[] <<- data.frame(Available.Columns = names(.gData), stringsAsFactors = FALSE)
   }
 
   .loadSavedSettings <- function() {
