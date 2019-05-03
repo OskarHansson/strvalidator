@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.05.2019: Further adjustments to tables in gui and handlers.
+# 26.03.2019: Further adjustments to tables in gui and handlers.
 # 24.03.2019: Improved tables with set initial height.
 # 23.03.2019: Fixed save field not expanded (tcltk)
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -18,7 +20,6 @@
 # 06.02.2014: Fixed button locks when error.
 # 06.02.2014: Changed name calculatePrecision_gui -> tablePrecision_gui
 # 12.01.2014: Replaced 'subset' with native code.
-# 08.12.2013: First version.
 
 #' @title Table Precision
 #'
@@ -47,7 +48,8 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
                                debug = FALSE, parent = NULL) {
 
   # Global variables.
-  .gData <- data.frame(Please.select.a.dataset = "NA")
+  # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
+  .gData <- data.frame(Please.select.a.dataset = NA, stringsAsFactors = FALSE)
   .gRef <- NULL
   .gDataName <- NULL
   .gRefName <- NULL
@@ -163,6 +165,9 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
       .refresh_key_tbl()
       .refresh_target_tbl()
 
+      svalue(f1_key_txt) <- ""
+      svalue(f1_target_txt) <- ""
+
       svalue(g0_data_samples_lbl) <- paste(
         length(unique(.gData$Sample.Name)),
         "samples."
@@ -186,6 +191,8 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(save_edt) <- ""
       .refresh_key_tbl()
       .refresh_target_tbl()
+      svalue(f1_key_txt) <- ""
+      svalue(f1_target_txt) <- ""
     }
   })
 
@@ -212,18 +219,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   addHandlerChanged(f2_filter_opt, handler = function(h, ...) {
-    val_opt <- svalue(f2_filter_opt, index = TRUE)
-
-    if (val_opt == 1) {
-      enabled(f2g1) <- TRUE
-      enabled(f2g2) <- FALSE
-    } else if (val_opt == 2) {
-      enabled(f2g1) <- FALSE
-      enabled(f2g2) <- TRUE
-    } else {
-      enabled(f2g1) <- FALSE
-      enabled(f2g2) <- FALSE
-    }
+    .updateGui()
   })
 
 
@@ -394,14 +390,12 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1_key_txt <- gedit(
     initial.msg = "Doubleklick or drag column names to list",
-    container = f1_key_f,
-    expand = TRUE
+    container = f1_key_f
   )
 
   # Populate table.
-  # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
   f1_key_tbl <- gWidgets2::gtable(
-    items = data.frame(Available.Columns = names(.gData), stringsAsFactors = FALSE),
+    items = names(.gData),
     container = f1_key_f,
     expand = TRUE
   )
@@ -416,7 +410,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     key_val <- svalue(f1_key_txt)
 
     # Check that the action was on a list element.
-    if (length(tbl_val) > 0 || nchar(tbl_val) == 0) {
+    if (!identical(tbl_val, character(0)) && length(tbl_val) > 0) {
 
       # Add new value to selected.
       new <- ifelse(nchar(key_val) > 0,
@@ -428,7 +422,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f1_key_txt) <- new
 
       # Update column name table.
-      tmp_tbl <- f1_key_tbl[, ] # Get all values.
+      tmp_tbl <- f1_key_tbl[] # Get all values.
 
       # Remove value added to selected and Update table.
       f1_key_tbl[] <- tmp_tbl[tmp_tbl != tbl_val]
@@ -446,7 +440,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     key_val <- svalue(h$obj)
 
     # Check that the action was on a list element.
-    if (length(drp_val) > 0 || nchar(drp_val) == 0) {
+    if (!identical(drp_val, character(0)) && length(drp_val) > 0 && nchar(drp_val) > 0) {
 
       # Add new value to selected.
       new <- ifelse(nchar(key_val) > 0,
@@ -476,14 +470,12 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1_target_txt <- gedit(
     initial.msg = "Doubleklick or drag column names to list",
-    container = f1_target_f,
-    expand = TRUE
+    container = f1_target_f
   )
 
   # Populate table.
-  # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
   f1_target_tbl <- gWidgets2::gtable(
-    items = data.frame(Available.Columns = names(.gData), stringsAsFactors = FALSE),
+    items = names(.gData),
     container = f1_target_f,
     expand = TRUE
   )
@@ -498,7 +490,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     target_val <- svalue(f1_target_txt)
 
     # Check that the action was on a list element.
-    if (length(tbl_val) > 0 || nchar(tbl_val) == 0) {
+    if (!identical(tbl_val, character(0)) && length(tbl_val) > 0) {
 
       # Add new value to selected.
       new <- ifelse(nchar(target_val) > 0,
@@ -527,7 +519,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     target_val <- svalue(h$obj)
 
     # Check that the action was on a list element.
-    if (length(drp_val) > 0 || nchar(drp_val) == 0) {
+    if (!identical(drp_val, character(0)) && length(drp_val) > 0 && nchar(drp_val) > 0) {
 
       # Add new value to selected.
       new <- ifelse(nchar(target_val) > 0,
@@ -693,14 +685,30 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateGui <- function() {
+
+    # Get radio button selection.
+    val_opt <- svalue(f2_filter_opt, index = TRUE)
+
+    if (val_opt == 1) {
+      enabled(f2g1) <- TRUE
+      enabled(f2g2) <- FALSE
+    } else if (val_opt == 2) {
+      enabled(f2g1) <- FALSE
+      enabled(f2g2) <- TRUE
+    } else {
+      enabled(f2g1) <- FALSE
+      enabled(f2g2) <- FALSE
+    }
+  }
+
   .refresh_target_tbl <- function() {
     if (debug) {
       print(paste("IN:", match.call()[[1]]))
     }
 
     # Populate table.
-    # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
-    f1_target_tbl[] <<- data.frame(Available.Columns = names(.gData), stringsAsFactors = FALSE)
+    f1_target_tbl[] <<- names(.gData)
   }
 
   .refresh_key_tbl <- function() {
@@ -709,8 +717,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Populate table.
-    # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.
-    f1_key_tbl[] <<- data.frame(Available.Columns = names(.gData), stringsAsFactors = FALSE)
+    f1_key_tbl[] <<- names(.gData)
   }
 
   .loadSavedSettings <- function() {
@@ -789,6 +796,7 @@ tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Load GUI settings.
   .loadSavedSettings()
+  .updateGui()
 
   # Show GUI.
   visible(w) <- TRUE

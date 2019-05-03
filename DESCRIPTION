@@ -2,8 +2,8 @@ Roxygen: list(wrap = FALSE)
 Package: strvalidator
 Type: Package
 Title: Process Control and Internal Validation of Forensic STR Kits
-Version: 2.2.0.9002
-Date: 2019-03-26
+Version: 2.2.0.9003
+Date: 2019-05-03
 Author: Oskar Hansson
 Maintainer: Oskar Hansson <oskhan@ous-hf.no>
 URL: https://sites.google.com/site/forensicapps/strvalidator
@@ -12,7 +12,6 @@ Depends: R (>= 3.1.3)
 Imports:
     ggplot2 (>= 2.0.0),
     gWidgets2,
-    gWidgets2tcltk,
     gridExtra,
     grid,
     gtable,
@@ -25,6 +24,8 @@ Imports:
     utils,
     MASS
 Suggests:
+    gWidgets2tcltk,
+    gWidgets2RGtk2,
     ResourceSelection,
     testthat
 Description: An open source platform for validation and process control.

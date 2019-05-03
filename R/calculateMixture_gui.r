@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.05.2019: Compacted gui and expand text field under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 12.09.2018: 'Save as' textbox expandable.
 # 06.08.2017: Added audit trail.
@@ -122,7 +123,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
   f0 <- gframe(
     text = "Datasets",
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 2,
     container = gv
   )
 
@@ -164,7 +165,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
         length(unique(.gData$Sample.Name)),
         "samples."
       )
-      svalue(f4_save_edt) <- paste(val_obj, "_mixture", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_mixture", sep = "")
     } else {
 
       # Reset components.
@@ -172,7 +173,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       .gNameData <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
       svalue(g0_data_samples_lbl) <- " 0 samples"
-      svalue(f4_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -338,7 +339,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     print("FRAME 1")
   }
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
 
   f1_ol_chk <- gcheckbox(
     text = "Remove off-ladder alleles (affects number of drop-in)",
@@ -352,21 +353,12 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
   # FRAME 4 ###################################################################
 
-  if (debug) {
-    print("FRAME 4")
-  }
-
-  f4 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
-
-  glabel(text = "Name for result:", container = f4)
-
-  f4_save_edt <- gedit(text = "", expand = TRUE, container = f4)
-
+  save_frame <- gframe(text = "Save as", container = gv)
+  
+  glabel(text = "Name for result:", container = save_frame)
+  
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
+  
   # BUTTON ####################################################################
 
   if (debug) {
@@ -384,7 +376,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     val_name_data <- .gNameData
     val_name_ref1 <- .gNameRef1
     val_name_ref2 <- .gNameRef2
-    val_name <- svalue(f4_save_edt)
+    val_name <- svalue(save_edt)
     val_ol <- svalue(f1_ol_chk)
     val_drop <- svalue(f1_drop_chk)
 

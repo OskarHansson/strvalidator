@@ -1,3 +1,17 @@
+Version 2.2.0.9003
+------------------------------------------------------------------------------
+* Intended to fix Travis error:
+  Moved gWidgets2tcltk to suggests in DESCRIPTION. Also included gWidgets2RGtk2.
+* Bug fixes and improvements with the most significant listed below:
+  - tablePrecision_gui
+  Further adjustments to gui.
+  - export_gui
+  Compacted and tweaked gui for tcltk.
+  - export
+  Added support for comma separated names.
+  - calculateMixture_gui
+  Compacted gui and expand text field under tcltk.
+
 Version 2.2.0.9002
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

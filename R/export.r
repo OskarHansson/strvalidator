@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.05.2019: Added support for comma separated names.
 # 21.07.2017: Function now exported.
 # 29.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
@@ -26,7 +23,7 @@
 #'
 #' @param object string, list or vector containing object names to be exported.
 #' @param name string, list or vector containing file names.
-#' Multiple names as string must be separated by pipe '|'.
+#' Multiple names as string must be separated by pipe '|' or comma ','.
 #' If not equal number of names as objects, first name will be used to construct names.
 #' @param use.object.name logical, if TRUE file name will be the same as object name.
 #' @param env environment where the objects exists.
@@ -205,8 +202,9 @@ export <- function(object, name = NA, use.object.name = is.na(name),
     # Check if not vector.
   } else if (length(name) == 1) {
 
-    # Split using pipe separator, if present.
+    # Split using pipe or comma separator, if present.
     name <- unlist(strsplit(name, "\\|"))
+    name <- unlist(strsplit(name, "\\,"))
 
     if (length(name) == nbObj) {
       # If equal length, make names.
