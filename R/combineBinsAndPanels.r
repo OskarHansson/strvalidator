@@ -110,7 +110,7 @@ combineBinsAndPanels <- function(bin, panel) {
       fragments <- kit$Size[selPanel & selMarker & kit$Virtual == 0]
       minFragment <- min(fragments)
 
-      # Get corresponsing allele and concert to numeric.
+      # Get corresponding allele and convert to numeric.
       minAllele <- kit$Allele[selPanel & selMarker & kit$Size == minFragment]
       if (minAllele == "X") {
         minAllele <- 1

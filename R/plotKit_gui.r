@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.08.2019: Expand scrollable checkbox view.
 # 24.02.2019: Adjusted plot button.
 # 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -109,7 +110,9 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     text = "Select kits",
     horizontal = TRUE,
     spacing = 5,
-    container = gv
+    container = gv,
+    expand = TRUE,
+    fill = TRUE
   )
 
   scroll_view <- ggroup(

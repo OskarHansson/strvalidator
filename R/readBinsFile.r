@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: Add support for several files in one go.
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.08.2019: Fixed failed detection of "virtual" when trailing tabs.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 22.09.2013: Fixed bug when reading LifeTech bins with comment.
 # 22.09.2013: Added 'debug' parameter.
@@ -123,7 +120,8 @@ readBinsFile <- function(bin.files, debug = FALSE) {
             alleleBp[a] <- as.numeric(allTextSplit[[row]][2])
             alleleMin[a] <- as.numeric(allTextSplit[[row]][3])
             alleleMax[a] <- as.numeric(allTextSplit[[row]][4])
-            alleleVirtual[a] <- if (is.na(allTextSplit[[row]][5])) {
+            alleleVirtual[a] <- if (is.na(allTextSplit[[row]][5]) |
+              nchar(allTextSplit[[row]][5]) == 0) {
               0
             } else {
               1
