@@ -28,6 +28,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.09.2019: Changed new.env() to new.env(parent = emptyenv())
 # 16.03.2019: Added button to YouTube channel.
 # 14.03.2019: Updated about. Fixed R-Check note.
 # 22.02.2019: Reset projects list and description field if no project in folder.
@@ -47,7 +48,6 @@
 # 17.07.2017: Removed some unnecessary calls to .refreshLoaded() and blocked handlers.
 # 17.07.2017: Fixed "Error in paste(...) : argument "msg" is missing, with no default".
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 13.07.2017: Fixed "Error in get(val_obj..." clicking View with no object selected.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -84,7 +84,7 @@ strvalidator <- function(debug = FALSE) {
   }
 
   # Global variables.
-  .strvalidator_env <- new.env()
+  .strvalidator_env <- new.env(parent = emptyenv())
   .separator <- .Platform$file.sep # Platform dependent path separator.
   .save_gui <- TRUE
   .ws_last_open_dir <- getwd()
@@ -105,7 +105,7 @@ strvalidator <- function(debug = FALSE) {
   .object_classes_view <- c("data.frame", "ggplot")
   .object_classes_import <- c("data.frame", "ggplot")
   .project_description_variable <- ".strvalidator_project_description"
-  .project_tmp_env <- new.env()
+  .project_tmp_env <- new.env(parent = emptyenv())
   .project_name_list <- NULL
   .project_path_list <- NULL
   .ws_name_variable <- ".strvalidator_project_name"
@@ -774,7 +774,7 @@ strvalidator <- function(debug = FALSE) {
     if (response) {
 
       # Create a new environment.
-      .strvalidator_env <<- new.env()
+      .strvalidator_env <<- new.env(parent = emptyenv())
       print("A new project environment was created.")
     }
   })

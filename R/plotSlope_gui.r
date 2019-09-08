@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.09.2019: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
@@ -126,7 +127,8 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     ),
     selected = 1,
     editable = FALSE,
-    container = f0
+    container = f0,
+    ellipsize = "none"
   )
 
   f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
@@ -213,7 +215,8 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   f1g2[1, 2] <- f1_theme_drp <- gcombobox(
     items = items_theme,
     selected = 1,
-    container = f1g2
+    container = f1g2,
+    ellipsize = "none"
   )
 
   # FRAME 7 ###################################################################

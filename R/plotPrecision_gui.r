@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.09.2019: Added option to override labels and titles.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 23.07.2018: Made 'Save as' textbox expandable.
@@ -19,7 +20,6 @@
 # 08.05.2014: Implemented 'checkDataset'.
 # 23.02.2014: Fixed column check for plots.
 # 06.02.2014: Implemented theme and colour.
-# 06.02.2014: Implemented new dot/box plot and plot all data (not only min/max)
 
 #' @title Plot Precision
 #'
@@ -217,12 +217,17 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     .updateGui()
   })
 
-  titles_group <- ggroup(
-    container = f1, spacing = 1, horizontal = FALSE,
-    expand = TRUE, fill = TRUE
+  # Titles --------------------------------------------------------------------
+
+  titles_group <- gexpandgroup(
+    text = "Titles",
+    horizontal = FALSE,
+    container = f1
   )
 
-  # Legends
+  # Start collapsed.
+  visible(titles_group) <- FALSE
+
   glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
@@ -232,9 +237,99 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
+  glabel(
+    text = "NB! Title size, angle, vjust, and hjust does not always work as expected with different number of facets per row.",
+    anchor = c(-1, 0), container = titles_group
+  )
+
+  titles_layout <- glayout(container = titles_group)
+
+  title_lbl <- glabel(
+    text = "Title size, angle, vjust, hjust:",
+    anchor = c(-1, 0), container = titles_layout
+  )
+  title_size_txt <- gedit(
+    text = "14", width = 2,
+    container = titles_layout
+  )
+  title_angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1, value = 0,
+    container = titles_layout
+  )
+  title_vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1, value = 0.5,
+    container = titles_layout
+  )
+
+  title_hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1, value = 0.5,
+    container = titles_layout
+  )
+
+  titles_layout[1, 1] <- title_lbl
+  titles_layout[1, 2] <- title_size_txt
+  titles_layout[1, 3] <- title_angle_spb
+  titles_layout[1, 4] <- title_vjust_spb
+  titles_layout[1, 5] <- title_hjust_spb
+
+  x_title_lbl <- glabel(
+    text = "X title size, angle, vjust, hjust:",
+    anchor = c(-1, 0), container = titles_layout
+  )
+  x_title_size_txt <- gedit(
+    text = "12", width = 2,
+    container = titles_layout
+  )
+  x_title_angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1, value = 0,
+    container = titles_layout
+  )
+  x_title_vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1, value = 0.5,
+    container = titles_layout
+  )
+
+  x_title_hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1, value = 0.5,
+    container = titles_layout
+  )
+  titles_layout[2, 1] <- x_title_lbl
+  titles_layout[2, 2] <- x_title_size_txt
+  titles_layout[2, 3] <- x_title_angle_spb
+  titles_layout[2, 4] <- x_title_vjust_spb
+  titles_layout[2, 5] <- x_title_hjust_spb
+
+  y_title_lbl <- glabel(
+    text = "Y title size, angle, vjust, hjust:",
+    anchor = c(-1, 0), container = titles_layout
+  )
+  y_title_size_txt <- gedit(
+    text = "12", width = 2,
+    container = titles_layout
+  )
+  y_title_angle_spb <- gspinbutton(
+    from = 0, to = 360, by = 1, value = 90,
+    container = titles_layout
+  )
+  y_title_vjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1, value = 0.5,
+    container = titles_layout
+  )
+
+  y_title_hjust_spb <- gspinbutton(
+    from = 0, to = 1, by = 0.1, value = 0.5,
+    container = titles_layout
+  )
+  titles_layout[3, 1] <- y_title_lbl
+  titles_layout[3, 2] <- y_title_size_txt
+  titles_layout[3, 3] <- y_title_angle_spb
+  titles_layout[3, 4] <- y_title_vjust_spb
+  titles_layout[3, 5] <- y_title_hjust_spb
+
+  # Plot options --------------------------------------------------------------
 
   f1_facet_chk <- gcheckbox(
-    text = "Plot per marker",
+    text = "Plot by marker",
     checked = TRUE,
     container = f1
   )
@@ -247,6 +342,8 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     horizontal = TRUE,
     container = f1g2
   )
+
+  # Theme ---------------------------------------------------------------------
 
   f1g2[2, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
   items_theme <- c(
@@ -580,6 +677,18 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # FRAME 4 ###################################################################
 
+  labels_chk <- gcheckbox(
+    text = "Override default x/y/facet labels",
+    checked = FALSE,
+    container = f1
+  )
+
+  addHandlerChanged(labels_chk, handler = function(h, ...) {
+
+    # Enable buttons.
+    .updateGui()
+  })
+
   e4 <- gexpandgroup(
     text = "X labels",
     horizontal = FALSE,
@@ -614,7 +723,74 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     container = grid4
   )
 
+  # FRAME 5 ###################################################################
 
+  e5 <- gexpandgroup(
+    text = "Y labels",
+    horizontal = FALSE,
+    container = f1
+  )
+
+  # Start collapsed.
+  visible(e5) <- FALSE
+
+  grid5 <- glayout(container = e5)
+
+  grid5[1, 1] <- glabel(text = "Text size (pts):", container = grid5)
+  grid5[1, 2] <- size_txt_y <- gedit(text = "8", width = 4, container = grid5)
+
+  grid5[1, 3] <- glabel(text = "Angle:", container = grid5)
+  grid5[1, 4] <- angle_spb_y <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 0,
+    container = grid5
+  )
+
+  grid5[2, 1] <- glabel(text = "Justification (v/h):", container = grid5)
+  grid5[2, 2] <- vjust_spb_y <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0.5,
+    container = grid5
+  )
+
+  grid5[2, 3] <- hjust_spb_y <- gspinbutton(
+    from = 0, to = 1, by = 0.1,
+    value = 0,
+    container = grid5
+  )
+
+  # FRAME 6 ###################################################################
+
+  e6 <- gexpandgroup(
+    text = "Facets",
+    horizontal = FALSE,
+    container = f1
+  )
+
+  # Start collapsed.
+  visible(e6) <- FALSE
+
+  grid6 <- glayout(container = e6)
+
+  grid6[1, 1] <- glabel(text = "Text size X (pts):", container = grid6)
+  grid6[1, 2] <- size_txt_sx <- gedit(text = "10", width = 4, container = grid6)
+
+  grid6[1, 3] <- glabel(text = "Angle:", container = grid6)
+  grid6[1, 4] <- angle_spb_sx <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 0,
+    container = grid6
+  )
+
+  grid6[2, 1] <- glabel(text = "Text size Y (pts):", container = grid6)
+  grid6[2, 2] <- size_txt_sy <- gedit(text = "10", width = 4, container = grid6)
+
+  grid6[2, 3] <- glabel(text = "Angle:", container = grid6)
+  grid6[2, 4] <- angle_spb_sy <- gspinbutton(
+    from = 0, to = 360, by = 1,
+    value = 0,
+    container = grid6
+  )
 
   # FUNCTIONS #################################################################
 
@@ -624,18 +800,39 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
+    val_title_size <- svalue(title_size_txt)
+    val_title_angle <- svalue(title_angle_spb)
+    val_title_vjust <- svalue(title_vjust_spb)
+    val_title_hjust <- svalue(title_hjust_spb)
     val_xtitle <- svalue(x_title_edt)
+    val_xtitle_size <- svalue(x_title_size_txt)
+    val_xtitle_angle <- svalue(x_title_angle_spb)
+    val_xtitle_vjust <- svalue(x_title_vjust_spb)
+    val_xtitle_hjust <- svalue(x_title_hjust_spb)
     val_ytitle <- svalue(y_title_edt)
+    val_ytitle_size <- svalue(y_title_size_txt)
+    val_ytitle_angle <- svalue(y_title_angle_spb)
+    val_ytitle_vjust <- svalue(y_title_vjust_spb)
+    val_ytitle_hjust <- svalue(y_title_hjust_spb)
     val_shape <- as.numeric(svalue(shape_spb))
     val_alpha <- as.numeric(svalue(alpha_spb))
     val_ymin <- as.numeric(svalue(y_min_txt))
     val_ymax <- as.numeric(svalue(y_max_txt))
     val_xmin <- as.numeric(svalue(x_min_txt))
     val_xmax <- as.numeric(svalue(x_max_txt))
+    val_labels <- svalue(labels_chk)
     val_angle <- as.numeric(svalue(angle_spb))
+    val_angle_y <- as.numeric(svalue(angle_spb_y))
+    val_angle_sx <- as.numeric(svalue(angle_spb_sx))
+    val_angle_sy <- as.numeric(svalue(angle_spb_sy))
     val_vjust <- as.numeric(svalue(vjust_spb))
+    val_vjust_y <- as.numeric(svalue(vjust_spb_y))
     val_hjust <- as.numeric(svalue(hjust_spb))
+    val_hjust_y <- as.numeric(svalue(hjust_spb_y))
     val_size <- as.numeric(svalue(size_txt))
+    val_size_y <- as.numeric(svalue(size_txt_y))
+    val_size_sx <- as.numeric(svalue(size_txt_sx))
+    val_size_sy <- as.numeric(svalue(size_txt_sy))
     val_scales <- svalue(scales_opt)
     val_kit <- svalue(kit_drp)
     val_data <- .gData
@@ -643,48 +840,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     val_colour <- svalue(colour_drp)
     val_axis <- svalue(f1_axis_opt)
     val_theme <- svalue(f1_theme_drp)
-
-    if (debug) {
-      print("ARGUMENTS:")
-      print("what")
-      print(what)
-      print("how")
-      print(how)
-      print("val_title")
-      print(val_title)
-      print("val_xtitle")
-      print(val_xtitle)
-      print("val_ytitle")
-      print(val_ytitle)
-      print("val_shape")
-      print(val_shape)
-      print("val_alpha")
-      print(val_alpha)
-      print("val_ymin")
-      print(val_ymin)
-      print("val_ymax")
-      print(val_ymax)
-      print("val_angle")
-      print(val_angle)
-      print("val_vjust")
-      print(val_vjust)
-      print("val_hjust")
-      print(val_hjust)
-      print("val_size")
-      print(val_size)
-      print("val_scales")
-      print(val_scales)
-      print("colour")
-      print(val_colour)
-      print("val_axis")
-      print(val_axis)
-      print("val_theme")
-      print(val_theme)
-    }
-
-    if (is.factor(val_data$Marker)) {
-
-    }
 
     if (!is.null(val_data) && !is.na(val_data)) {
       if (debug) {
@@ -868,7 +1023,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         # gp <- gp + facet_wrap(~Marker) # TODO: is this needed?
       } else if (how == "boxplot") {
 
-        # Create boxplot (per allele).
+        # Create boxplot (by allele).
         gp <- ggplot(val_data)
         gp <- gp + geom_boxplot(aes_string(x = val_axis, y = "Deviation"),
           alpha = val_alpha, shape = val_shape, fill = val_colour
@@ -923,16 +1078,50 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       gp <- gp + labs(title = mainTitle)
       gp <- gp + xlab(xTitle)
       gp <- gp + ylab(yTitle)
-      gp <- gp + theme(axis.text.x = element_text(
-        angle = val_angle,
-        hjust = val_hjust,
-        vjust = val_vjust,
-        size = val_size
-      ))
+
+      # Override default theme for titles.
+      if (val_titles) {
+        gp <- gp + theme(
+          plot.title = element_text(
+            angle = val_title_angle,
+            hjust = val_title_hjust,
+            vjust = val_title_vjust,
+            size = val_title_size
+          ), axis.title.x = element_text(
+            angle = val_xtitle_angle,
+            hjust = val_xtitle_hjust,
+            vjust = val_xtitle_vjust,
+            size = val_xtitle_size
+          ), axis.title.y = element_text(
+            angle = val_ytitle_angle,
+            hjust = val_ytitle_hjust,
+            vjust = val_ytitle_vjust,
+            size = val_ytitle_size
+          )
+        )
+      }
+
+      # Override default labels.
+      if (val_labels) {
+        gp <- gp + theme(
+          axis.text.x = element_text(
+            angle = val_angle,
+            hjust = val_hjust,
+            vjust = val_vjust,
+            size = val_size
+          ), axis.text.y = element_text(
+            angle = val_angle_y,
+            hjust = val_hjust_y,
+            vjust = val_vjust_y,
+            size = val_size_y
+          ), strip.text.x = element_text(size = val_size_sx, angle = val_angle_sx),
+          strip.text.y = element_text(size = val_size_sy, angle = val_angle_sy)
+        )
+      }
 
       # Check plot type.
       if (length(val_ncol) == 1) {
-        # Simple plot, equal number of markers per dye.
+        # Simple plot, equal number of facets per subplot.
 
         if (debug) {
           print(paste(
@@ -948,7 +1137,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         svalue(f5_save_btn) <- "Save as object"
         enabled(f5_save_btn) <- TRUE
       } else if (length(val_ncol) > 1) {
-        # Complex plot, unequal number of markers per dye.
+        # Complex plot, unequal number of facets per subplot.
 
         if (debug) {
           print(paste(
@@ -1002,10 +1191,36 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
             c("line", rep("null", noDyes), "line")
           )
         )
-        # Add titles.
-        g <- gtable::gtable_add_grob(g, grid::textGrob(mainTitle), t = 1, b = 1, l = 2, r = 2)
-        g <- gtable::gtable_add_grob(g, grid::textGrob(xTitle), t = noRows, b = noRows, l = 2, r = 2)
-        g <- gtable::gtable_add_grob(g, grid::textGrob(yTitle, rot = 90), t = 1, b = noRows, l = 1, r = 1)
+
+        # Override default titles.
+        if (val_titles) {
+          g <- gtable::gtable_add_grob(g,
+            grid::textGrob(mainTitle,
+              vjust = val_title_vjust,
+              hjust = val_title_hjust,
+              rot = val_title_angle
+            ),
+            t = 1, b = 1, l = 2, r = 2
+          )
+          g <- gtable::gtable_add_grob(g, grid::textGrob(xTitle,
+            vjust = val_xtitle_vjust,
+            hjust = val_xtitle_hjust,
+            rot = val_xtitle_angle
+          ),
+          t = noRows, b = noRows, l = 2, r = 2
+          )
+          g <- gtable::gtable_add_grob(g, grid::textGrob(yTitle,
+            vjust = val_ytitle_vjust,
+            hjust = val_ytitle_hjust,
+            rot = val_ytitle_angle
+          ), t = 1, b = noRows, l = 1, r = 1)
+        } else {
+          # Add default titles.
+
+          g <- gtable::gtable_add_grob(g, grid::textGrob(mainTitle), t = 1, b = 1, l = 2, r = 2)
+          g <- gtable::gtable_add_grob(g, grid::textGrob(xTitle), t = noRows, b = noRows, l = 2, r = 2)
+          g <- gtable::gtable_add_grob(g, grid::textGrob(yTitle, rot = 90), t = 1, b = noRows, l = 1, r = 1)
+        }
 
         # With guide:
         # Add the legend to the table object.
@@ -1070,15 +1285,32 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
           # Zoom in without dropping observations.
           gp <- gp + coord_cartesian(xlim = val_x, ylim = val_y)
 
-          # Remove titles, axis labels and legend.
+          # Remove titles, axis labels and legend on current subplot.
           gp <- gp + labs(title = element_blank())
           gp <- gp + theme(axis.title.x = element_blank())
-          gp <- gp + theme(axis.text.x = element_text(
-            angle = val_angle,
-            hjust = val_hjust,
-            vjust = val_vjust,
-            size = val_size
-          ))
+
+          # Override default labels.
+          if (val_labels) {
+            gp <- gp + theme(
+              axis.text.x = element_text(
+                angle = val_angle,
+                hjust = val_hjust,
+                vjust = val_vjust,
+                size = val_size
+              ), axis.text.y = element_text(
+                angle = val_angle_y,
+                hjust = val_hjust_y,
+                vjust = val_vjust_y,
+                size = val_size_y
+              ), strip.text.x = element_text(
+                size = val_size_sx,
+                angle = val_angle_sx
+              ), strip.text.y = element_text(
+                size = val_size_sy,
+                angle = val_angle_sy
+              )
+            )
+          }
 
           gp <- gp + theme(axis.title.y = element_blank())
 
@@ -1130,6 +1362,18 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     } else {
       enabled(titles_group) <- FALSE
     }
+
+    # Override labels.
+    val <- svalue(labels_chk)
+    if (val) {
+      enabled(e4) <- TRUE
+      enabled(e5) <- TRUE
+      enabled(e6) <- TRUE
+    } else {
+      enabled(e4) <- FALSE
+      enabled(e5) <- FALSE
+      enabled(e6) <- FALSE
+    }
   }
   .loadSavedSettings <- function() {
 
@@ -1155,17 +1399,53 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     # Then load settings if true.
     if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_plotPrecision_gui_title", envir = env, inherits = FALSE)) {
-        svalue(title_edt) <- get(".strvalidator_plotPrecision_gui_title", envir = env)
-      }
       if (exists(".strvalidator_plotPrecision_gui_title_chk", envir = env, inherits = FALSE)) {
         svalue(titles_chk) <- get(".strvalidator_plotPrecision_gui_title_chk", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title", envir = env, inherits = FALSE)) {
+        svalue(title_edt) <- get(".strvalidator_plotPrecision_gui_title", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_x_title", envir = env, inherits = FALSE)) {
         svalue(x_title_edt) <- get(".strvalidator_plotPrecision_gui_x_title", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_y_title", envir = env, inherits = FALSE)) {
         svalue(y_title_edt) <- get(".strvalidator_plotPrecision_gui_y_title", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_size", envir = env, inherits = FALSE)) {
+        svalue(title_size_txt) <- get(".strvalidator_plotPrecision_gui_title_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_x_title_size", envir = env, inherits = FALSE)) {
+        svalue(x_title_size_txt) <- get(".strvalidator_plotPrecision_gui_x_title_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_y_title_size", envir = env, inherits = FALSE)) {
+        svalue(y_title_size_txt) <- get(".strvalidator_plotPrecision_gui_y_title_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_angle", envir = env, inherits = FALSE)) {
+        svalue(title_angle_spb) <- get(".strvalidator_plotPrecision_gui_title_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_x_title_angle", envir = env, inherits = FALSE)) {
+        svalue(x_title_angle_spb) <- get(".strvalidator_plotPrecision_gui_x_title_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_y_title_angle", envir = env, inherits = FALSE)) {
+        svalue(y_title_angle_spb) <- get(".strvalidator_plotPrecision_gui_y_title_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_vjust", envir = env, inherits = FALSE)) {
+        svalue(title_vjust_spb) <- get(".strvalidator_plotPrecision_gui_title_vjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_x_title_vjust", envir = env, inherits = FALSE)) {
+        svalue(x_title_vjust_spb) <- get(".strvalidator_plotPrecision_gui_x_title_vjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_y_title_vjust", envir = env, inherits = FALSE)) {
+        svalue(y_title_vjust_spb) <- get(".strvalidator_plotPrecision_gui_y_title_vjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_hjust", envir = env, inherits = FALSE)) {
+        svalue(title_hjust_spb) <- get(".strvalidator_plotPrecision_gui_title_hjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_x_title_hjust", envir = env, inherits = FALSE)) {
+        svalue(x_title_hjust_spb) <- get(".strvalidator_plotPrecision_gui_x_title_hjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_y_title_hjust", envir = env, inherits = FALSE)) {
+        svalue(y_title_hjust_spb) <- get(".strvalidator_plotPrecision_gui_y_title_hjust", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_points_shape", envir = env, inherits = FALSE)) {
         svalue(shape_spb) <- get(".strvalidator_plotPrecision_gui_points_shape", envir = env)
@@ -1191,17 +1471,44 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       if (exists(".strvalidator_plotPrecision_gui_axes_scales", envir = env, inherits = FALSE)) {
         svalue(scales_opt) <- get(".strvalidator_plotPrecision_gui_axes_scales", envir = env)
       }
+      if (exists(".strvalidator_plotPrecision_gui_labels_chk", envir = env, inherits = FALSE)) {
+        svalue(labels_chk) <- get(".strvalidator_plotPrecision_gui_labels_chk", envir = env)
+      }
       if (exists(".strvalidator_plotPrecision_gui_xlabel_size", envir = env, inherits = FALSE)) {
         svalue(size_txt) <- get(".strvalidator_plotPrecision_gui_xlabel_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_ylabel_size", envir = env, inherits = FALSE)) {
+        svalue(size_txt_y) <- get(".strvalidator_plotPrecision_gui_ylabel_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_sxlabel_size", envir = env, inherits = FALSE)) {
+        svalue(size_txt_sx) <- get(".strvalidator_plotPrecision_gui_sxlabel_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_sylabel_size", envir = env, inherits = FALSE)) {
+        svalue(size_txt_sy) <- get(".strvalidator_plotPrecision_gui_sylabel_size", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_xlabel_angle", envir = env, inherits = FALSE)) {
         svalue(angle_spb) <- get(".strvalidator_plotPrecision_gui_xlabel_angle", envir = env)
       }
+      if (exists(".strvalidator_plotPrecision_gui_ylabel_angle", envir = env, inherits = FALSE)) {
+        svalue(angle_spb_y) <- get(".strvalidator_plotPrecision_gui_ylabel_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_sxlabel_angle", envir = env, inherits = FALSE)) {
+        svalue(angle_spb_sx) <- get(".strvalidator_plotPrecision_gui_sxlabel_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_sylabel_angle", envir = env, inherits = FALSE)) {
+        svalue(angle_spb_sy) <- get(".strvalidator_plotPrecision_gui_sylabel_angle", envir = env)
+      }
       if (exists(".strvalidator_plotPrecision_gui_xlabel_justh", envir = env, inherits = FALSE)) {
         svalue(hjust_spb) <- get(".strvalidator_plotPrecision_gui_xlabel_justh", envir = env)
       }
+      if (exists(".strvalidator_plotPrecision_gui_ylabel_justh", envir = env, inherits = FALSE)) {
+        svalue(hjust_spb_y) <- get(".strvalidator_plotPrecision_gui_ylabel_justh", envir = env)
+      }
       if (exists(".strvalidator_plotPrecision_gui_xlabel_justv", envir = env, inherits = FALSE)) {
         svalue(vjust_spb) <- get(".strvalidator_plotPrecision_gui_xlabel_justv", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_ylabel_justv", envir = env, inherits = FALSE)) {
+        svalue(vjust_spb_y) <- get(".strvalidator_plotPrecision_gui_ylabel_justv", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_facet", envir = env, inherits = FALSE)) {
         svalue(f1_facet_chk) <- get(".strvalidator_plotPrecision_gui_facet", envir = env)
@@ -1221,10 +1528,22 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotPrecision_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotPrecision_gui_title", value = svalue(title_edt), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_title_chk", value = svalue(titles_chk), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_title", value = svalue(title_edt), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_x_title", value = svalue(x_title_edt), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_y_title", value = svalue(y_title_edt), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_title_size", value = svalue(title_size_txt), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_x_title_size", value = svalue(x_title_size_txt), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_y_title_size", value = svalue(y_title_size_txt), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_title_angle", value = svalue(title_angle_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_x_title_angle", value = svalue(x_title_angle_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_y_title_angle", value = svalue(y_title_angle_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_title_vjust", value = svalue(title_vjust_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_x_title_vjust", value = svalue(x_title_vjust_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_y_title_vjust", value = svalue(y_title_vjust_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_title_hjust", value = svalue(title_hjust_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_x_title_hjust", value = svalue(x_title_hjust_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_y_title_hjust", value = svalue(y_title_hjust_spb), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_points_shape", value = svalue(shape_spb), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_points_alpha", value = svalue(alpha_spb), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_points_colour", value = svalue(colour_drp), envir = env)
@@ -1233,16 +1552,28 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       assign(x = ".strvalidator_plotPrecision_gui_axes_x_min", value = svalue(x_min_txt), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_axes_x_max", value = svalue(x_max_txt), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_axes_scales", value = svalue(scales_opt), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_labels_chk", value = svalue(labels_chk), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_xlabel_size", value = svalue(size_txt), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_ylabel_size", value = svalue(size_txt_y), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_sxlabel_size", value = svalue(size_txt_sx), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_sylabel_size", value = svalue(size_txt_sy), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_xlabel_angle", value = svalue(angle_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_ylabel_angle", value = svalue(angle_spb_y), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_sxlabel_angle", value = svalue(angle_spb_sx), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_sylabel_angle", value = svalue(angle_spb_sy), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_xlabel_justh", value = svalue(hjust_spb), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_xlabel_justv", value = svalue(vjust_spb), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_ylabel_justh", value = svalue(hjust_spb_y), envir = env)
+      assign(x = ".strvalidator_plotPrecision_gui_ylabel_justv", value = svalue(vjust_spb_y), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_facet", value = svalue(f1_facet_chk), envir = env)
       assign(x = ".strvalidator_plotPrecision_gui_theme", value = svalue(f1_theme_drp), envir = env)
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_plotPrecision_gui_savegui", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_savegui", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_chk", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_title_chk", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_title", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_title", envir = env)
@@ -1255,6 +1586,42 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       }
       if (exists(".strvalidator_plotPrecision_gui_y_title", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_y_title", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_size", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_title_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_x_title_size", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_x_title_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_y_title_size", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_y_title_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_angle", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_title_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_x_title_angle", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_x_title_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_y_title_angle", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_y_title_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_vjust", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_title_vjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_x_title_vjust", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_x_title_vjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_y_title_vjust", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_y_title_vjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_title_hjust", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_title_hjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_x_title_hjust", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_x_title_hjust", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_y_title_hjust", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_y_title_hjust", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_points_shape", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_points_shape", envir = env)
@@ -1280,17 +1647,44 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       if (exists(".strvalidator_plotPrecision_gui_axes_scales", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_axes_scales", envir = env)
       }
+      if (exists(".strvalidator_plotPrecision_gui_labels_chk", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_labels_chk", envir = env)
+      }
       if (exists(".strvalidator_plotPrecision_gui_xlabel_size", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_xlabel_size", envir = env)
       }
+      if (exists(".strvalidator_plotPrecision_gui_ylabel_size", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_ylabel_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_sxlabel_size", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_sxlabel_size", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_sylabel_size", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_sylabel_size", envir = env)
+      }
       if (exists(".strvalidator_plotPrecision_gui_xlabel_angle", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_xlabel_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_ylabel_angle", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_ylabel_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_sxlabel_angle", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_sxlabel_angle", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_sylabel_angle", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_sylabel_angle", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_xlabel_justh", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_xlabel_justh", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_xlabel_justv", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_xlabel_justv", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_ylabel_justh", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_ylabel_justh", envir = env)
+      }
+      if (exists(".strvalidator_plotPrecision_gui_ylabel_justv", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_plotPrecision_gui_ylabel_justv", envir = env)
       }
       if (exists(".strvalidator_plotPrecision_gui_facet", envir = env, inherits = FALSE)) {
         remove(".strvalidator_plotPrecision_gui_facet", envir = env)

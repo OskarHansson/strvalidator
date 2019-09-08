@@ -1,3 +1,13 @@
+Version 2.2.0.9005
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - strvalidator
+  Fixed potential "memory leak" by adding parent = emptyenv() to new.env()
+  - plotSlope_gui
+  Fixed narrow dropdown with hidden argument ellipsize = "none".
+  - plotStutter_gui, plotPrecision_gui
+  Added controls of main, x, y and facet titles.
+  
 Version 2.2.0.9004
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:
