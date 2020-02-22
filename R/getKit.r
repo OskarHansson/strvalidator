@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.01.2019: Elaborated description for parameter "what".
 # 28.06.2016: Added support for 'Quality Sensor'.
 # 02.12.2016: Possible to return multiple kits by specifying a vector.
 # 29.08.2015: Added importFrom.
@@ -41,7 +38,9 @@
 #'
 #' @param kit string or integer to specify the kit.
 #' @param what string to specify which information to return. Default is 'NA' which return all info.
-#' Not case sensitive.
+#' Not case sensitive. Possible values: "Index", "Panel", "Short.Name", "Full.Name",
+#' "Marker, "Allele", "Size", "Virtual", "Color", "Repeat", "Range", "Offset", "Sex.Marker",
+#' "Quality.Sensor". An unsupported value returns NA and a warning.
 #' @param show.messages logical, default TRUE for printing messages to the R prompt.
 #' @param .kit.info data frame, run function on a data frame instead of the kits.txt file.
 #' @param debug logical indicating printing debug information.

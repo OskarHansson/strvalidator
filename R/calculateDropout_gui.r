@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.01.2020: Changed "LDT" to "AT" following the book.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 17.07.2018: 'Save as' textbox expandable.
 # 06.08.2017: Added audit trail.
@@ -19,7 +20,6 @@
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
 # 16.01.2014: Adding 'option' for drop-out scoring method.
-# 13.11.2013: Removed 'allele' argument in call.
 
 #' @title Calculate Dropout Events
 #'
@@ -156,7 +156,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- get(val_obj, envir = env)
       samples <- length(unique(.gData$Sample.Name))
       svalue(g0_samples_lbl) <- paste("", samples, "samples")
-      svalue(f1g1_ldt_edt) <- min(as.numeric(.gData$Height), na.rm = TRUE)
+      svalue(f1g1_at_edt) <- min(as.numeric(.gData$Height), na.rm = TRUE)
 
       # Suggest a name for result.
       svalue(f2_save_edt) <- paste(val_obj, "_dropout", sep = "")
@@ -171,7 +171,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
       svalue(g0_samples_lbl) <- " 0 samples"
-      svalue(f1g1_ldt_edt) <- ""
+      svalue(f1g1_at_edt) <- ""
       svalue(f2_save_edt) <- ""
     }
   })
@@ -308,11 +308,11 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   f1g1 <- glayout(container = f1)
 
   f1g1[1, 1] <- glabel(
-    text = "Limit of detection threshold (LDT):",
+    text = "Analytical threshold (AT):",
     container = f1g1, anchor = c(-1, 0)
   )
 
-  f1g1[1, 2] <- f1g1_ldt_edt <- gedit(text = "", width = 6, container = f1g1)
+  f1g1[1, 2] <- f1g1_at_edt <- gedit(text = "", width = 6, container = f1g1)
 
   glabel(
     text = "Drop-out scoring method for modelling of drop-out probabilities:",
@@ -364,7 +364,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
     val_name_ref <- svalue(refset_drp)
     val_ignore_case <- svalue(f1_ignore_case_chk)
     val_h <- svalue(f1_h_chk)
-    val_threshold <- as.numeric(svalue(f1g1_ldt_edt))
+    val_threshold <- as.numeric(svalue(f1g1_at_edt))
     val_name <- svalue(f2_save_edt)
     val_kit <- svalue(kit_drp)
     val_method <- vector()
