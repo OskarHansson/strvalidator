@@ -69,7 +69,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnAdd <- "Add"
-  strBtnAddActive <- "Processing..."
+  strBtnProcessing <- "Processing..."
   
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
@@ -117,8 +117,8 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     strTmp <- dtStrings["strBtnAdd"]$Value
     strBtnAdd <- ifelse(is.na(strTmp), strBtnAdd, strTmp)
     
-    strTmp <- dtStrings["strBtnAddActive"]$Value
-    strBtnAddActive <- ifelse(is.na(strTmp), strBtnAddActive, strTmp)
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
   }
   
   # ---------------------------------------------------------------------------
@@ -305,7 +305,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
     # Change button.
     blockHandlers(add_btn)
-    svalue(add_btn) <- strBtnAddActive
+    svalue(add_btn) <- strBtnProcessing
     unblockHandlers(add_btn)
     enabled(add_btn) <- FALSE
 

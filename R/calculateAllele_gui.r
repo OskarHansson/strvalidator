@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 25.02.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -37,12 +38,93 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   .gData <- NULL
   .gDataName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- match.call()[[1]]
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Calculate summary statistics for alleles"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Select dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblRows <- "rows"
+  strFrmOptions <- "Options"
+  strLblThreshold <- "Peak height threshold: "
+  strTipThreshold <- "Peaks with heights below this value will be removed."
+  strChkSexMarkers <- "Remove sex markers defined in kit: "
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strMsgMessage <- "Select a dataset!"
+  strMsgTitle <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+
+    strTmp <- dtStrings["strLblRows"]$Value
+    strLblRows <- ifelse(is.na(strTmp), strLblRows, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strLblThreshold"]$Value
+    strLblThreshold <- ifelse(is.na(strTmp), strLblThreshold, strTmp)
+
+    strTmp <- dtStrings["strTipThreshold"]$Value
+    strTipThreshold <- ifelse(is.na(strTmp), strTipThreshold, strTmp)
+
+    strTmp <- dtStrings["strChkSexMarkers"]$Value
+    strChkSexMarkers <- ifelse(is.na(strTmp), strChkSexMarkers, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strMsgMessage"]$Value
+    strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
+
+    strTmp <- dtStrings["strMsgTitle"]$Value
+    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
+  }
+
+  # ---------------------------------------------------------------------------
+
   # Main window.
-  w <- gwindow(title = "Calculate allele", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -86,22 +168,22 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateAllele_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = "Dataset",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 10,
     container = gv
@@ -110,11 +192,11 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -127,7 +209,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   )
 
   f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
-    text = " 0 rows",
+    text = paste(" 0", strLblRows),
     container = f0g0
   )
 
@@ -147,7 +229,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      svalue(f0g0_data_col_lbl) <- paste(" ", nrow(.gData), " rows")
+      svalue(f0g0_data_col_lbl) <- paste(" ", nrow(.gData), strLblRows)
       svalue(f2_name) <- paste(.gDataName, "allele", sep = "_")
 
       # Autodetect kit.
@@ -158,26 +240,26 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- " 0 rows"
+      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
       svalue(f2_name) <- ""
     }
   })
 
   # OPTIONS ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 10, container = gv)
 
   f1g1 <- glayout(container = f1, spacing = 1)
 
   f1g1[1, 1] <- f1_threshold_lbl <- glabel(
-    text = "Peak height threshold: ",
+    text = strLblThreshold,
     container = f1g1
   )
   f1g1[1, 2] <- f1_threshold_edt <- gedit(text = "", width = 10, container = f1g1)
-  tooltip(f1_threshold_edt) <- "Peaks with heights below this value will be removed."
+  tooltip(f1_threshold_edt) <- strTipThreshold
 
   f1g1[2, 1:2] <- f1_sex_chk <- gcheckbox(
-    text = "Remove sex markers defined in kit: ",
+    text = strChkSexMarkers,
     checked = FALSE, container = f1g1
   )
 
@@ -200,22 +282,18 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # NAME ######################################################################
 
   f2 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 5,
     container = gv
   )
 
-  glabel(text = "Save as:", container = f2)
+  glabel(text = strLblSave, container = f2)
   f2_name <- gedit(text = "", width = 40, container = f2, expand = TRUE)
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  button_btn <- gbutton(text = "Calculate", container = gv)
+  button_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerChanged(button_btn, handler = function(h, ...) {
     val_data <- .gData
@@ -253,7 +331,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateAllele_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -262,7 +340,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
@@ -270,8 +348,8 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       dispose(w)
     } else {
       gmessage(
-        msg = "Select a datasets!",
-        title = "Error",
+        msg = strMsgMessage,
+        title = strMsgTitle,
         icon = "error"
       )
     }
