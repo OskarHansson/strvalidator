@@ -13,6 +13,8 @@
 #'
 #' @param key character key for value to return.
 #'
+#' @export
+#' 
 #' @importFrom data.table fread setkey
 #' 
 #' @return character the retrieved value or NA if not found.
@@ -35,15 +37,18 @@ getSetting <- function(key) {
   if (file.exists(filePath)) {
     
     # Read settings file.
-    dtable <- fread(file = filePath, sep = "auto",
-                    quote = "\"", header = "auto", 
+    dtable <- fread(file = filePath, sep = "=",
+                    quote = "\"", header = FALSE, 
                     col.names = c("Key", "Value"))
+    
+    
     
     # Set key column.
     setkey(dtable, key = "Key")
     
     # Get value.
     value <- dtable[key]$Value
+    message("Settings: ", key, "=", value)
     
   } else { # If file don't exist.
     

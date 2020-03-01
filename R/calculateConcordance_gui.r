@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 10.02.2019: Adjusted GUI for tcltk.
 # 10.02.2019: Fixed tcltk Error in structure(.External(.C_dotTclObjv, objv)
@@ -43,8 +44,131 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   # Global variables.
   .gData <- NULL
 
+  # Language ------------------------------------------------------------------
+  
+  # Get this functions name from call.
+  fnc <- match.call()[[1]]
+  
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
+  }
+  
+  # Default strings.
+  strWinTitle <- "Calculate concordance"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset and kit"
+  strLblDataset <- "Sample dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblKit <- "Kit:"
+  strBtnAdd <- "Add"
+  strFrmOptions <- "Options"
+  strLblDelimiter <- "Delimiter for alleles in genotype:"
+  strLblNoSample <- "String for missing samples:"
+  strLblNoMarker <- "String for missing markers:"
+  strChkInclude <- "Include missing samples in result."
+  strTipInclude <- "Samples not in all datasets will always be included in the result."
+  strFrmSelected <- "Selected datasets"
+  strLblSelected <- "Name for datasets to analyse (separated by comma):"
+  strLblUsedKits <- "Name for analysis kit (separated by comma):"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for discordance table:"
+  strLblSave2 <- "Name for concordance table:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgAddMessage <- "Data frame is NULL!\n\nMake sure to select a dataset"
+  strMsgTitleError <- "Error"
+  strMsgMessage <- "A dataset must be selected."
+  strMsgTitle <- "Datasets not selected"
+  
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+  
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+    
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+    
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+    
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+    
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+    
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+    
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+    
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+    
+    strTmp <- dtStrings["strLblKit"]$Value
+    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+    
+    strTmp <- dtStrings["strBtnAdd"]$Value
+    strBtnAdd <- ifelse(is.na(strTmp), strBtnAdd, strTmp)
+    
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+    
+    strTmp <- dtStrings["strLblDelimiter"]$Value
+    strLblDelimiter <- ifelse(is.na(strTmp), strLblDelimiter, strTmp)
+    
+    strTmp <- dtStrings["strLblNoSample"]$Value
+    strLblNoSample <- ifelse(is.na(strTmp), strLblNoSample, strTmp)
+    
+    strTmp <- dtStrings["strLblNoMarker"]$Value
+    strLblNoMarker <- ifelse(is.na(strTmp), strLblNoMarker, strTmp)
+    
+    strTmp <- dtStrings["strChkInclude"]$Value
+    strChkInclude <- ifelse(is.na(strTmp), strChkInclude, strTmp)
+    
+    strTmp <- dtStrings["strTipInclude"]$Value
+    strTipInclude <- ifelse(is.na(strTmp), strTipInclude, strTmp)
+    
+    strTmp <- dtStrings["strFrmSelected"]$Value
+    strFrmSelected <- ifelse(is.na(strTmp), strFrmSelected, strTmp)
+    
+    strTmp <- dtStrings["strLblSelected"]$Value
+    strLblSelected <- ifelse(is.na(strTmp), strLblSelected, strTmp)
+    
+    strTmp <- dtStrings["strLblUsedKits"]$Value
+    strLblUsedKits <- ifelse(is.na(strTmp), strLblUsedKits, strTmp)
+    
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+    
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+    
+    strTmp <- dtStrings["strLblSave2"]$Value
+    strLblSave2 <- ifelse(is.na(strTmp), strLblSave2, strTmp)
+    
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+    
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+    
+    strTmp <- dtStrings["strMsgAddMessage"]$Value
+    strMsgAddMessage <- ifelse(is.na(strTmp), strMsgAddMessage, strTmp)
+    
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+    
+    strTmp <- dtStrings["strMsgMessage"]$Value
+    strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
+    
+    strTmp <- dtStrings["strMsgTitle"]$Value
+    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
   }
 
   # WINDOW ####################################################################
@@ -54,7 +178,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   # Main window.
-  w <- gwindow(title = "Calculate concordance", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -97,34 +221,30 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateConcordance_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
-  if (debug) {
-    print("FRAME 0")
-  }
-
   f0 <- gframe(
-    text = "Dataset and kit", horizontal = FALSE,
+    text = strFrmDataset, horizontal = FALSE,
     spacing = 2, container = gv
   )
 
   f0g0 <- glayout(container = f0, expand = TRUE, fill = "both", spacing = 2)
 
-  f0g0[1, 1] <- glabel(text = "Dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
-  f0_list <- c("<Select dataset>", listObjects(env = env, obj.class = "data.frame"))
+  f0_list <- c(strDrpDefault, listObjects(env = env, obj.class = "data.frame"))
 
   f0g0[1, 2] <- dataset_drp <- gcombobox(
     items = f0_list, selected = 1,
@@ -132,9 +252,10 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(text = " (0 samples)", container = f0g0)
+  f0g0[1, 3] <- f0_samples_lbl <- glabel(text = paste(" 0", strLblSamples),
+                                         container = f0g0)
 
-  f0g0[2, 1] <- glabel(text = "Kit:", container = f0g0)
+  f0g0[2, 1] <- glabel(text = strLblKit, container = f0g0)
 
   f0g0[2, 2] <- kit_drp <- gcombobox(
     items = getKit(), selected = 1,
@@ -142,7 +263,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  f0_add_btn <- gbutton(text = "Add", container = f0)
+  f0_add_btn <- gbutton(text = strBtnAdd, container = f0)
 
   # HANDLERS ------------------------------------------------------------------
 
@@ -162,10 +283,9 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       # Get data.
       .gData <<- get(val_obj, envir = env)
 
-      svalue(f0_samples_lbl) <- paste(" (",
+      svalue(f0_samples_lbl) <- paste(
         length(unique(.gData$Sample.Name)),
-        " samples)",
-        sep = ""
+        strLblSamples
       )
 
       # Detect kit.
@@ -179,7 +299,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f4_save1_edt) <- ""
       svalue(f4_save2_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0_samples_lbl) <- " (0 samples)"
+      svalue(f0_samples_lbl) <- paste("0", strLblSamples)
     }
   })
 
@@ -212,9 +332,8 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f3_kit_edt) <- new
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset",
-        title = "Error",
+        msg = strMsgAddMessage,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -222,16 +341,12 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   # FRAME 1 ###################################################################
 
-  if (debug) {
-    print("FRAME 1")
-  }
-
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 10, container = gv)
 
   f1g0 <- glayout(container = f1, expand = TRUE, fill = "both", spacing = 2)
 
   f1g0[1, 1] <- glabel(
-    text = "Delimeter for alleles in genotype:",
+    text = strLblDelimiter,
     anchor = c(-1, 0), container = f1g0
   )
   f1g0[1, 2] <- f1_delimeter_edt <- gedit(
@@ -240,7 +355,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   f1g0[2, 1] <- glabel(
-    text = "String for missing samples:",
+    text = strLblNoSample,
     anchor = c(-1, 0), container = f1g0
   )
   f1g0[2, 2] <- f1_no_sample_edt <- gedit(
@@ -249,7 +364,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   f1g0[3, 1] <- glabel(
-    text = "String for missing markers:",
+    text = strLblNoMarker,
     anchor = c(-1, 0), container = f1g0
   )
   f1g0[3, 2] <- f1_no_marker_edt <- gedit(
@@ -258,30 +373,29 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   f1_all_chk <- gcheckbox(
-    text = "Include missing samples in result.",
+    text = strChkInclude,
     checked = FALSE, container = f1
   )
-  tooltip(f1_all_chk) <- "Samples not in all datasets will always be included in the result."
-
+  tooltip(f1_all_chk) <- strTipInclude
 
   # FRAME 3 ###################################################################
-
+  
   f3 <- gframe(
-    text = "Selected datasets",
+    text = strFrmSelected,
     horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
   glabel(
-    text = "Name for datasets to analyse (separated by comma):",
+    text = strLblSelected,
     anchor = c(-1, 0), container = f3
   )
 
   f3_dataset_edt <- gedit(container = f3)
 
   glabel(
-    text = "Name for analysis kit (separated by comma):",
+    text = strLblUsedKits,
     anchor = c(-1, 0), container = f3
   )
 
@@ -290,32 +404,24 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   # FRAME 4 ###################################################################
 
-  if (debug) {
-    print("FRAME 4")
-  }
-
   f4 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Name for discordance table:", anchor = c(-1, 0), container = f4)
+  glabel(text = strLblSave, anchor = c(-1, 0), container = f4)
 
   f4_save1_edt <- gedit(text = "table_discordance", container = f4)
 
-  glabel(text = "Name for concordance table:", anchor = c(-1, 0), container = f4)
+  glabel(text = strLblSave2, anchor = c(-1, 0), container = f4)
 
   f4_save2_edt <- gedit(text = "table_concordance", container = f4)
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
 
@@ -381,7 +487,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -409,13 +515,13 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       # Update audit trail.
       datanew[[1]] <- auditTrail(
         obj = datanew[[1]], key = keys, value = values,
-        label = "calculateConcordance_gui",
+        label = fnc,
         arguments = FALSE, package = "strvalidator"
       )
 
       datanew[[2]] <- auditTrail(
         obj = datanew[[2]], key = keys, value = values,
-        label = "calculateConcordance_gui",
+        label = fnc,
         arguments = FALSE, package = "strvalidator"
       )
 
@@ -426,17 +532,16 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       if (debug) {
         print(str(datanew))
         print(head(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset must be selected."
 
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(strMsgMessage,
+        title = strMsgTitle,
         icon = "error",
         parent = w
       )

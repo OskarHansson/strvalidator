@@ -61,7 +61,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   strChkGui <- "Save GUI settings"
   strBtnHelp <- "Help"
   strFrmDataset <- "Dataset and kit"
-  strLblDataset <- "Select dataset:"
+  strLblDataset <- "Sample dataset:"
   strDrpDefault <- "<Select dataset>"
   strLblSamples <- "samples"
   strLblKit <- "Kit:"

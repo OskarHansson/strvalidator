@@ -52,7 +52,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   strChkGui <- "Save GUI settings"
   strBtnHelp <- "Help"
   strFrmDataset <- "Dataset"
-  strLblDataset <- "Select dataset:"
+  strLblDataset <- "Sample dataset:"
   strDrpDefault <- "<Select dataset>"
   strLblRows <- "rows"
   strFrmOptions <- "Options"

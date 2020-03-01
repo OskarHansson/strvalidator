@@ -15,6 +15,8 @@
 #' @param gui character the function name for the gui to 'translate'.
 #' @param key character the key to 'translate'. Only used in combination with 'gui'.
 #'
+#' @export
+#' 
 #' @return character the retrieved value or NA if not found.
 #'
 
@@ -32,8 +34,11 @@ getStrings <- function(language = NA, gui = NA, key = NA) {
   languageFile <- paste(c(language, ".csv"), collapse = "")
   subFolder <- paste("extdata", "languages", sep = fileSep) # Sub folder in addition to package path.
 
+  # Get package path. Could use getPackageName()?
+  packagePath <- path.package("strvalidator", quiet = FALSE)
+  
   # Create path to language file.
-  langFilePath <- paste(packagePath, subFolder, languageFile, sep = .separator)
+  langFilePath <- paste(packagePath, subFolder, languageFile, sep = fileSep)
 
   # If file exist.
   if (file.exists(langFilePath)) {
@@ -49,14 +54,27 @@ getStrings <- function(language = NA, gui = NA, key = NA) {
 
     # If gui function is specified.
     if (!is.na(gui)) {
-
+      message("Get langugage strings for ", gui)
+      
       # Get strings for the specific function.
       dtRet <- dtRet[dtRet$Scope == gui, ]
+      
+      print(dtRet)
+      if(nrow(dtRet) == 0){
+        
+        message("No rows found for gui=", gui, ". Returning NA.")
+        
+        # Set NA as return value.
+        dtRet <- NA
+        
+      }
+      
     }
 
     # If gui function and key is specified.
-    if (!is.na(gui) && !is.na(key)) {
-
+    if (!is.na(dtRet) && !is.na(gui) && !is.na(key)) {
+      message("Get langugage strings for key", key)
+      
       # Get the specific gui function value by key.
       dtRet <- dtRet[key]$Value
     }

@@ -25,7 +25,6 @@ Imports:
     MASS
 Suggests:
     gWidgets2tcltk,
-    gWidgets2RGtk2,
     ResourceSelection,
     testthat
 Description: An open source platform for validation and process control.
@@ -38,5 +37,5 @@ Description: An open source platform for validation and process control.
     More information about each function can be found in the
     respective help documentation.
 License: GPL-2
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Encoding: UTF-8
