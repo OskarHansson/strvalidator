@@ -71,7 +71,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnAdd <- "Add"
-  strBtnAddActive <- "Processing..."
+  strBtnProcessing <- "Processing..."
 
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
@@ -122,8 +122,8 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     strTmp <- dtStrings["strBtnAdd"]$Value
     strBtnAdd <- ifelse(is.na(strTmp), strBtnAdd, strTmp)
 
-    strTmp <- dtStrings["strBtnAddActive"]$Value
-    strBtnAddActive <- ifelse(is.na(strTmp), strBtnAddActive, strTmp)
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
   }
 
   # ---------------------------------------------------------------------------
@@ -317,7 +317,7 @@ addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Change button.
     blockHandlers(add_btn)
-    svalue(add_btn) <- strBtnAddActive
+    svalue(add_btn) <- strBtnProcessing
     unblockHandlers(add_btn)
     enabled(add_btn) <- FALSE
 

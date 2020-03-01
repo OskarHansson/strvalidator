@@ -45,14 +45,14 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   .gData <- NULL
 
   # Language ------------------------------------------------------------------
-  
+
   # Get this functions name from call.
   fnc <- match.call()[[1]]
-  
+
   if (debug) {
     print(paste("IN:", fnc))
   }
-  
+
   # Default strings.
   strWinTitle <- "Calculate concordance"
   strChkGui <- "Save GUI settings"
@@ -81,101 +81,97 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleError <- "Error"
   strMsgMessage <- "A dataset must be selected."
   strMsgTitle <- "Datasets not selected"
-  
+
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
-  
+
   # If language file is found.
   if (!is.na(dtStrings)) {
     # Get language strings, use default if not found.
-    
+
     strTmp <- dtStrings["strWinTitle"]$Value
     strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
-    
+
     strTmp <- dtStrings["strChkGui"]$Value
     strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
-    
+
     strTmp <- dtStrings["strBtnHelp"]$Value
     strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
-    
+
     strTmp <- dtStrings["strFrmDataset"]$Value
     strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
-    
+
     strTmp <- dtStrings["strLblDataset"]$Value
     strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
-    
+
     strTmp <- dtStrings["strDrpDefault"]$Value
     strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
-    
+
     strTmp <- dtStrings["strLblSamples"]$Value
     strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
-    
+
     strTmp <- dtStrings["strLblKit"]$Value
     strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
-    
+
     strTmp <- dtStrings["strBtnAdd"]$Value
     strBtnAdd <- ifelse(is.na(strTmp), strBtnAdd, strTmp)
-    
+
     strTmp <- dtStrings["strFrmOptions"]$Value
     strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
-    
+
     strTmp <- dtStrings["strLblDelimiter"]$Value
     strLblDelimiter <- ifelse(is.na(strTmp), strLblDelimiter, strTmp)
-    
+
     strTmp <- dtStrings["strLblNoSample"]$Value
     strLblNoSample <- ifelse(is.na(strTmp), strLblNoSample, strTmp)
-    
+
     strTmp <- dtStrings["strLblNoMarker"]$Value
     strLblNoMarker <- ifelse(is.na(strTmp), strLblNoMarker, strTmp)
-    
+
     strTmp <- dtStrings["strChkInclude"]$Value
     strChkInclude <- ifelse(is.na(strTmp), strChkInclude, strTmp)
-    
+
     strTmp <- dtStrings["strTipInclude"]$Value
     strTipInclude <- ifelse(is.na(strTmp), strTipInclude, strTmp)
-    
+
     strTmp <- dtStrings["strFrmSelected"]$Value
     strFrmSelected <- ifelse(is.na(strTmp), strFrmSelected, strTmp)
-    
+
     strTmp <- dtStrings["strLblSelected"]$Value
     strLblSelected <- ifelse(is.na(strTmp), strLblSelected, strTmp)
-    
+
     strTmp <- dtStrings["strLblUsedKits"]$Value
     strLblUsedKits <- ifelse(is.na(strTmp), strLblUsedKits, strTmp)
-    
+
     strTmp <- dtStrings["strFrmSave"]$Value
     strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
-    
+
     strTmp <- dtStrings["strLblSave"]$Value
     strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
-    
+
     strTmp <- dtStrings["strLblSave2"]$Value
     strLblSave2 <- ifelse(is.na(strTmp), strLblSave2, strTmp)
-    
+
     strTmp <- dtStrings["strBtnCalculate"]$Value
     strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
-    
+
     strTmp <- dtStrings["strBtnProcessing"]$Value
     strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
-    
+
     strTmp <- dtStrings["strMsgAddMessage"]$Value
     strMsgAddMessage <- ifelse(is.na(strTmp), strMsgAddMessage, strTmp)
-    
+
     strTmp <- dtStrings["strMsgTitleError"]$Value
     strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
-    
+
     strTmp <- dtStrings["strMsgMessage"]$Value
     strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
-    
+
     strTmp <- dtStrings["strMsgTitle"]$Value
     strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
   }
 
   # WINDOW ####################################################################
-
-  if (debug) {
-    print("WINDOW")
-  }
 
   # Main window.
   w <- gwindow(title = strWinTitle, visible = FALSE)
@@ -252,8 +248,10 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(text = paste(" 0", strLblSamples),
-                                         container = f0g0)
+  f0g0[1, 3] <- f0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0g0
+  )
 
   f0g0[2, 1] <- glabel(text = strLblKit, container = f0g0)
 
@@ -379,7 +377,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   tooltip(f1_all_chk) <- strTipInclude
 
   # FRAME 3 ###################################################################
-  
+
   f3 <- gframe(
     text = strFrmSelected,
     horizontal = FALSE,
@@ -539,7 +537,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       .saveSettings()
       dispose(w)
     } else {
-
       gmessage(strMsgMessage,
         title = strMsgTitle,
         icon = "error",

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.03.2020: Added language support.
 # 10.01.2020: Changed "LDT" to "AT" following the book.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 17.07.2018: 'Save as' textbox expandable.
@@ -19,7 +20,6 @@
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
-# 16.01.2014: Adding 'option' for drop-out scoring method.
 
 #' @title Calculate Dropout Events
 #'
@@ -48,12 +48,146 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   .gData <- NULL
   .gRef <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- match.call()[[1]]
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Calculate dropout"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset and kit"
+  strLblDataset <- "Sample dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblRefDataset <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strLblKit <- "Kit:"
+  strFrmOptions <- "Options"
+  strChkIgnore <- "Ignore case"
+  strChkSex <- "Remove sex markers"
+  strChkSensors <- "Remove quality sensors"
+  strChkAverage <- "Calculate average peak height"
+  strLblAt <- "Analytical threshold (AT):"
+  strLblMethods <- "Select one or more dropout scoring methods:"
+  strChkMethod1 <- "Score dropout relative to the low molecular weight allele"
+  strChkMethod2 <- "Score dropout relative to the high molecular weight allele"
+  strChkMethodX <- "Score dropout relative to a random allele"
+  strChkMethodL <- "Score dropout per locus"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgMessage <- "A sample dataset and a reference dataset must be selected."
+  strMsgTitle <- "Dataset not selected"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset."
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strLblRefDataset"]$Value
+    strLblRefDataset <- ifelse(is.na(strTmp), strLblRefDataset, strTmp)
+
+    strTmp <- dtStrings["strLblRef"]$Value
+    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+
+    strTmp <- dtStrings["strLblKit"]$Value
+    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strChkIgnore"]$Value
+    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
+
+    strTmp <- dtStrings["strChkSex"]$Value
+    strChkSex <- ifelse(is.na(strTmp), strChkSex, strTmp)
+
+    strTmp <- dtStrings["strChkSensors"]$Value
+    strChkSensors <- ifelse(is.na(strTmp), strChkSensors, strTmp)
+
+    strTmp <- dtStrings["strChkAverage"]$Value
+    strChkAverage <- ifelse(is.na(strTmp), strChkAverage, strTmp)
+
+    strTmp <- dtStrings["strLblMethods"]$Value
+    strLblMethods <- ifelse(is.na(strTmp), strLblMethods, strTmp)
+
+    strTmp <- dtStrings["strChkMethod1"]$Value
+    strChkMethod1 <- ifelse(is.na(strTmp), strChkMethod1, strTmp)
+
+    strTmp <- dtStrings["strChkMethod2"]$Value
+    strChkMethod2 <- ifelse(is.na(strTmp), strChkMethod2, strTmp)
+
+    strTmp <- dtStrings["strChkMethodX"]$Value
+    strChkMethodX <- ifelse(is.na(strTmp), strChkMethodX, strTmp)
+
+    strTmp <- dtStrings["strChkMethodL"]$Value
+    strChkMethodL <- ifelse(is.na(strTmp), strChkMethodL, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgMessage"]$Value
+    strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
+
+    strTmp <- dtStrings["strMsgTitle"]$Value
+    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
+
+    strTmp <- dtStrings["strMsgCheck"]$Value
+    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+  }
+
+  # ---------------------------------------------------------------------------
+
   # Main window.
-  w <- gwindow(title = "Calculate drop-out", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -97,22 +231,22 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateDropout_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 5,
     container = gv
@@ -122,11 +256,11 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Datasets ------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
+  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
   g0[1, 2] <- dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -138,7 +272,10 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[1, 3] <- g0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -155,7 +292,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
       .gData <<- get(val_obj, envir = env)
       samples <- length(unique(.gData$Sample.Name))
-      svalue(g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(g0_samples_lbl) <- paste("", samples, strLblSamples)
       svalue(f1g1_at_edt) <- min(as.numeric(.gData$Height), na.rm = TRUE)
 
       # Suggest a name for result.
@@ -170,17 +307,17 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       # Reset components.
       .gData <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(g0_samples_lbl) <- " 0 samples"
+      svalue(g0_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(f1g1_at_edt) <- ""
       svalue(f2_save_edt) <- ""
     }
   })
 
-  g0[2, 1] <- glabel(text = "Select reference dataset:", container = g0)
+  g0[2, 1] <- glabel(text = strLblRefDataset, container = g0)
 
   g0[2, 2] <- refset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -192,7 +329,10 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[2, 3] <- g0_ref_lbl <- glabel(text = " 0 references", container = g0)
+  g0[2, 3] <- g0_ref_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = g0
+  )
 
   addHandlerChanged(refset_drp, handler = function(h, ...) {
     val_obj <- svalue(refset_drp)
@@ -209,23 +349,19 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
       .gRef <<- get(val_obj, envir = env)
       ref <- length(unique(.gRef$Sample.Name))
-      svalue(g0_ref_lbl) <- paste("", ref, "references")
+      svalue(g0_ref_lbl) <- paste("", ref, strLblRef)
     } else {
 
       # Reset components.
       .gRef <<- NULL
       svalue(refset_drp, index = TRUE) <- 1
-      svalue(g0_ref_lbl) <- " 0 references"
+      svalue(g0_ref_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  if (debug) {
-    print("CHECK")
-  }
-
-  g0[3, 2] <- g0_check_btn <- gbutton(text = "Check subsetting", container = g0)
+  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
 
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
 
@@ -236,7 +372,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinTitleCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -258,9 +394,8 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -268,7 +403,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Kit -----------------------------------------------------------------------
 
-  g0[4, 1] <- glabel(text = "Select the kit used:", container = g0)
+  g0[4, 1] <- glabel(text = strLblKit, container = g0)
 
   g0[4, 2] <- kit_drp <- gcombobox(
     items = getKit(), selected = 1,
@@ -279,83 +414,83 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 5,
     container = gv
   )
 
   f1_ignore_case_chk <- gcheckbox(
-    text = "Ignore case", checked = TRUE,
+    text = strChkIgnore, checked = TRUE,
     container = f1
   )
 
   f1_sex_chk <- gcheckbox(
-    text = "Remove sex markers", checked = FALSE,
+    text = strChkSex, checked = FALSE,
     container = f1
   )
 
   f1_qs_chk <- gcheckbox(
-    text = "Remove quality sensors", checked = TRUE,
+    text = strChkSensors, checked = TRUE,
     container = f1
   )
 
   f1_h_chk <- gcheckbox(
-    text = "Calculate average peak height", checked = TRUE,
+    text = strChkAverage, checked = TRUE,
     container = f1
   )
 
   f1g1 <- glayout(container = f1)
 
   f1g1[1, 1] <- glabel(
-    text = "Analytical threshold (AT):",
+    text = strLblAt,
     container = f1g1, anchor = c(-1, 0)
   )
 
   f1g1[1, 2] <- f1g1_at_edt <- gedit(text = "", width = 6, container = f1g1)
 
   glabel(
-    text = "Drop-out scoring method for modelling of drop-out probabilities:",
+    text = strLblMethods,
     container = f1, anchor = c(-1, 0)
   )
 
   f1_score1_chk <- gcheckbox(
-    text = "Score drop-out relative to the low molecular weight allele",
+    text = strChkMethod1,
     checked = TRUE, container = f1
   )
 
   f1_score2_chk <- gcheckbox(
-    text = "Score drop-out relative to the high molecular weight allele",
+    text = strChkMethod2,
     checked = TRUE, container = f1
   )
 
   f1_scorex_chk <- gcheckbox(
-    text = "Score drop-out relative to a random allele",
+    text = strChkMethodX,
     checked = TRUE, container = f1
   )
 
   f1_scorel_chk <- gcheckbox(
-    text = "Score drop-out per locus",
+    text = strChkMethodL,
     checked = TRUE, container = f1
   )
 
   # FRAME 2 ###################################################################
 
   f2 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 5,
     container = gv
   )
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = strLblSave, container = f2)
 
   f2_save_edt <- gedit(expand = TRUE, fill = TRUE, container = f2)
 
   # BUTTON ####################################################################
 
 
-  dropout_btn <- gbutton(text = "Calculate dropout", container = gv)
+  dropout_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(dropout_btn, handler = function(h, ...) {
     val_data <- .gData
@@ -420,7 +555,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(dropout_btn)
-      svalue(dropout_btn) <- "Processing..."
+      svalue(dropout_btn) <- strBtnProcessing
       unblockHandlers(dropout_btn)
       enabled(dropout_btn) <- FALSE
 
@@ -453,7 +588,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateDropout_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -488,17 +623,15 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
       if (debug) {
         print(head(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset and a reference dataset have to be selected."
-
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(strMsgMessage,
+        title = strMsgTitle,
         icon = "error",
         parent = w
       )
