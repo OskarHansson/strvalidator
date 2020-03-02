@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.03.2020: Added language support.
 # 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
 # 11.02.2019: Minor adjustments to tcltk gui.
 # 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -40,18 +41,165 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   .gData <- NULL
   .gRef <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- match.call()[[1]]
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
+  }
+
+  # Default strings.
+  strWinTitle <- "Calculate heterozygote balance"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Datasets"
+  strLblDataset <- "Sample dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblRefDataset <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strFrmOptions <- "Options"
+  strLblPre <- "Pre-processing:"
+  strChkSex <- "Remove sex markers"
+  strChkSensors <- "Remove quality sensors"
+  strLblHb <- "Define Hb as:"
+  strItemHMWoLMW <- "High molecular weight / low molecular weight"
+  strItemLMWoHMW <- "Low molecular weight / high molecular weight"
+  strItemSmloLrg <- "Smaller peak / larger peak"
+  strLblMatching <- "Sample name matching:"
+  strChkIgnore <- "Ignore case"
+  strChkWord <- "Add word boundaries"
+  strChkExact <- "Exact matching"
+  strLblPost <- "Post-processing:"
+  strChkAverage <- "Calculate average peak height"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strLblKit <- "Kit attribute:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgMessage <- "A sample dataset and a reference dataset must be selected."
+  strMsgTitle <- "Dataset not selected"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset."
+  strWinTitleCheck <- "Check subsetting"
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strLblRefDataset"]$Value
+    strLblRefDataset <- ifelse(is.na(strTmp), strLblRefDataset, strTmp)
+
+    strTmp <- dtStrings["strLblRef"]$Value
+    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strLblPre"]$Value
+    strLblPre <- ifelse(is.na(strTmp), strLblPre, strTmp)
+
+    strTmp <- dtStrings["strChkSex"]$Value
+    strChkSex <- ifelse(is.na(strTmp), strChkSex, strTmp)
+
+    strTmp <- dtStrings["strChkSensors"]$Value
+    strChkSensors <- ifelse(is.na(strTmp), strChkSensors, strTmp)
+
+    strTmp <- dtStrings["strLblHb"]$Value
+    strLblHb <- ifelse(is.na(strTmp), strLblHb, strTmp)
+
+    strTmp <- dtStrings["strItemHMWoLMW"]$Value
+    strItemHMWoLMW <- ifelse(is.na(strTmp), strItemHMWoLMW, strTmp)
+
+    strTmp <- dtStrings["strItemLMWoHMW"]$Value
+    strItemLMWoHMW <- ifelse(is.na(strTmp), strItemLMWoHMW, strTmp)
+
+    strTmp <- dtStrings["strItemSmloLrg"]$Value
+    strItemSmloLrg <- ifelse(is.na(strTmp), strItemSmloLrg, strTmp)
+
+    strTmp <- dtStrings["strLblMatching"]$Value
+    strLblMatching <- ifelse(is.na(strTmp), strLblMatching, strTmp)
+
+    strTmp <- dtStrings["strChkIgnore"]$Value
+    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
+
+    strTmp <- dtStrings["strChkWord"]$Value
+    strChkWord <- ifelse(is.na(strTmp), strChkWord, strTmp)
+
+    strTmp <- dtStrings["strChkExact"]$Value
+    strChkExact <- ifelse(is.na(strTmp), strChkExact, strTmp)
+
+    strTmp <- dtStrings["strLblPost"]$Value
+    strLblPost <- ifelse(is.na(strTmp), strLblPost, strTmp)
+
+    strTmp <- dtStrings["strChkAverage"]$Value
+    strChkAverage <- ifelse(is.na(strTmp), strChkAverage, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strLblKit"]$Value
+    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgMessage"]$Value
+    strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
+
+    strTmp <- dtStrings["strMsgTitle"]$Value
+    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
+
+    strTmp <- dtStrings["strMsgCheck"]$Value
+    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+
+    strTmp <- dtStrings["strWinTitleCheck"]$Value
+    strWinTitleCheck <- ifelse(is.na(strTmp), strWinTitleCheck, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
   }
 
   # WINDOW ####################################################################
 
-  if (debug) {
-    print("WINDOW")
-  }
-
   # Main window.
-  w <- gwindow(title = "Calculate heterozygote balance", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -92,24 +240,24 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
   savegui_chk <- gcheckbox(
-    text = "Save GUI settings",
+    text = strChkGui,
     checked = FALSE, container = gh
   )
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateHb_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets", horizontal = TRUE,
+    text = strFrmDataset, horizontal = TRUE,
     spacing = 5, container = gv
   )
 
@@ -117,10 +265,10 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Dataset -------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
+  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
   dfs <- c(
-    "<Select a dataset>",
+    strDrpDefault,
     listObjects(env = env, obj.class = "data.frame")
   )
 
@@ -130,7 +278,10 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[1, 3] <- g0_data_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_data_drp)
@@ -150,7 +301,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- get(val_obj, envir = env)
       svalue(g0_data_samples_lbl) <- paste(
         length(unique(.gData$Sample.Name)),
-        "samples."
+        strLblSamples
       )
 
       # Suggest a name for the result.
@@ -165,14 +316,14 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       # Reset components.
       .gData <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
-      svalue(g0_data_samples_lbl) <- " 0 samples"
+      svalue(g0_data_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(f4_save_edt) <- ""
     }
   })
 
   # Reference -----------------------------------------------------------------
 
-  g0[2, 1] <- glabel(text = "Select reference dataset:", container = g0)
+  g0[2, 1] <- glabel(text = strLblRefDataset, container = g0)
 
   # NB! dfs defined in previous section.
   g0[2, 2] <- g0_ref_drp <- gcombobox(
@@ -182,7 +333,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   g0[2, 3] <- g0_ref_samples_lbl <- glabel(
-    text = " 0 references",
+    text = paste(" 0", strLblRef),
     container = g0
   )
 
@@ -203,20 +354,20 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       .gRef <<- get(val_obj, envir = env)
       svalue(g0_ref_samples_lbl) <- paste(
         length(unique(.gRef$Sample.Name)),
-        "samples."
+        strLblRef
       )
     } else {
 
       # Reset components.
       .gRef <<- NULL
       svalue(g0_ref_drp, index = TRUE) <- 1
-      svalue(g0_ref_samples_lbl) <- " 0 references"
+      svalue(g0_ref_samples_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  g0[3, 2] <- g0_check_btn <- gbutton(text = "Check subsetting", container = g0)
+  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
 
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
 
@@ -228,7 +379,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinTitleCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -248,9 +399,8 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        message = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -259,28 +409,28 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options", horizontal = FALSE,
+    text = strFrmOptions, horizontal = FALSE,
     spacing = 5, container = gv
   )
 
-  glabel(text = "Pre-processing:", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblPre, anchor = c(-1, 0), container = f1)
 
   f1_sex_chk <- gcheckbox(
-    text = "Remove sex markers", checked = TRUE,
+    text = strChkSex, checked = TRUE,
     container = f1
   )
 
   f1_qs_chk <- gcheckbox(
-    text = "Remove quality sensors", checked = TRUE,
+    text = strChkSensors, checked = TRUE,
     container = f1
   )
 
-  glabel(text = "Define Hb as:", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblHb, anchor = c(-1, 0), container = f1)
 
   f1_methods <- c(
-    "High molecular weight / low molecular weight",
-    "Low molecular weight / high molecular weight",
-    "Smaller peak / larger peak"
+    strItemHMWoLMW,
+    strItemLMWoHMW,
+    strItemSmloLrg
   )
 
   f1_method_drp <- gcombobox(
@@ -288,27 +438,27 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
     expand = FALSE, container = f1, ellipsize = "none"
   )
 
-  glabel(text = "Sample name matching:", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblMatching, anchor = c(-1, 0), container = f1)
 
   f1_ignore_chk <- gcheckbox(
-    text = "Ignore case", checked = TRUE,
+    text = strChkIgnore, checked = TRUE,
     container = f1
   )
 
   f1_word_chk <- gcheckbox(
-    text = "Add word boundaries", checked = FALSE,
+    text = strChkWord, checked = FALSE,
     container = f1
   )
 
   f1_exact_chk <- gcheckbox(
-    text = "Exact matching", checked = FALSE,
+    text = strChkExact, checked = FALSE,
     container = f1
   )
 
-  glabel(text = "Post-processing:", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblPost, anchor = c(-1, 0), container = f1)
 
   f1_h_chk <- gcheckbox(
-    text = "Calculate average peak height",
+    text = strChkAverage,
     checked = TRUE, container = f1
   )
 
@@ -316,15 +466,15 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 4 ###################################################################
 
   f4 <- gframe(
-    text = "Save as", horizontal = TRUE,
+    text = strFrmSave, horizontal = TRUE,
     spacing = 5, container = gv
   )
 
-  glabel(text = "Name for result:", container = f4)
+  glabel(text = strLblSave, container = f4)
 
   f4_save_edt <- gedit(text = "", container = f4, expand = TRUE, fill = TRUE)
 
-  glabel(text = " Kit attribute:", container = f4)
+  glabel(text = strLblKit, container = f4)
 
   f4_kit_drp <- gcombobox(
     items = getKit(), selected = 1,
@@ -334,7 +484,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
 
@@ -358,7 +508,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -386,7 +536,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateHb_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -421,17 +571,16 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       if (debug) {
         print(str(datanew))
         print(head(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset and a reference dataset must be selected."
-
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(
+        msg = strMsgMessage,
+        title = strMsgTitle,
         icon = "error",
         parent = w
       )

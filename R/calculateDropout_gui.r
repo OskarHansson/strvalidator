@@ -86,6 +86,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   strBtnProcessing <- "Processing..."
   strMsgMessage <- "A sample dataset and a reference dataset must be selected."
   strMsgTitle <- "Dataset not selected"
+  strWinTitleCheck <- "Check subsetting"
   strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset."
   strMsgTitleError <- "Error"
 
@@ -179,6 +180,9 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
     strTmp <- dtStrings["strMsgCheck"]$Value
     strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+
+    strTmp <- dtStrings["strWinTitleCheck"]$Value
+    strWinTitleCheck <- ifelse(is.na(strTmp), strWinTitleCheck, strTmp)
 
     strTmp <- dtStrings["strMsgTitleError"]$Value
     strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
