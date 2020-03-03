@@ -72,8 +72,8 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
-  strMsgMessage <- "A 'Samples Table' dataset and a 'SamplePlotSizing' dataset have to be selected."
-  strMsgTitle <- "Datasets not selected"
+  strMsgDataset <- "A 'Samples Table' dataset and a 'SamplePlotSizing' dataset have to be selected."
+  strMsgTitleDataset <- "Datasets not selected"
 
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
@@ -130,11 +130,11 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
     strTmp <- dtStrings["strBtnCalculate"]$Value
     strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
 
-    strTmp <- dtStrings["strMsgMessage"]$Value
-    strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
 
-    strTmp <- dtStrings["strMsgTitle"]$Value
-    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
   }
 
   # WINDOW ####################################################################
@@ -413,10 +413,8 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       .saveSettings()
       dispose(w)
     } else {
-      message <- strMsgMessage
-
-      gmessage(message,
-        title = strMsgTitle,
+      gmessage(msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )

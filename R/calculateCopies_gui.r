@@ -78,8 +78,8 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
   strBtnProcessing <- "Processing..."
-  strMsgMessage <- "A dataset has to be selected."
-  strMsgTitle <- "Dataset not selected"
+  strMsgDataset <- "A dataset has to be selected."
+  strMsgTitleDataset <- "Dataset not selected"
 
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
@@ -139,11 +139,11 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
     strTmp <- dtStrings["strBtnProcessing"]$Value
     strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
 
-    strTmp <- dtStrings["strMsgMessage"]$Value
-    strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
 
-    strTmp <- dtStrings["strMsgTitle"]$Value
-    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
   }
 
   # ---------------------------------------------------------------------------
@@ -350,7 +350,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       dispose(w)
     } else {
       gmessage(
-        message = strMsgMessage, title = strMsgTitle,
+        msg = strMsgDataset, title = strMsgTitleDataset,
         icon = "error", parent = w
       )
     }

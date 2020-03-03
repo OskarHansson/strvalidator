@@ -80,7 +80,8 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   strLblSave <- "Name for result:"
   strBtnAdd <- "Add"
   strBtnAddActive <- "Processing..."
-  strMsgTitle <- "Datasets not selected"
+  strMsgDataset <- "A destination and source dataset must be selected."
+  strMsgTitleDataset <- "Datasets not selected"
 
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
@@ -146,6 +147,9 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     strTmp <- dtStrings["strBtnAddActive"]$Value
     strBtnAddActive <- ifelse(is.na(strTmp), strBtnAddActive, strTmp)
 
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+    
     strTmp <- dtStrings["strMsgTitle"]$Value
     strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
   }
@@ -546,17 +550,15 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A destination and a source dataset have to be selected."
-
-      gmessage(message,
-        title = strMsgTitle,
+      gmessage(msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )

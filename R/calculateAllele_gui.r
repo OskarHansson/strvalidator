@@ -63,8 +63,8 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
-  strMsgMessage <- "Select a dataset!"
-  strMsgTitle <- "Error"
+  strMsgDataset <- "Select a dataset!"
+  strMsgTitleDataset <- "Error"
 
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
@@ -115,11 +115,11 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     strTmp <- dtStrings["strBtnCalculate"]$Value
     strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
 
-    strTmp <- dtStrings["strMsgMessage"]$Value
-    strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
 
-    strTmp <- dtStrings["strMsgTitle"]$Value
-    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
   }
 
   # ---------------------------------------------------------------------------
@@ -349,8 +349,8 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgMessage,
-        title = strMsgTitle,
+        msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error"
       )
     }

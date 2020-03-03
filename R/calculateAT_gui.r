@@ -857,7 +857,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
         savegui = savegui, debug = debug
       )
     } else {
-      gmessage(strMsgPlot,
+      gmessage(msg = strMsgPlot,
         title = strMsgTitlePlot,
         icon = "info", parent = w
       )

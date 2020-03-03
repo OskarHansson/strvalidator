@@ -544,7 +544,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       dispose(w)
     } else {
 
-      gmessage(strMsgDataset,
+      gmessage(msg = strMsgDataset,
         title = strMsgTitleDataset,
         icon = "error",
         parent = w

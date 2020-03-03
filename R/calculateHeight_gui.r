@@ -96,8 +96,8 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
   strBtnProcessing <- "Processing..."
-  strMsgMessage <- "A sample dataset and a reference dataset must be selected."
-  strMsgTitle <- "Dataset not selected"
+  strMsgDataset <- "A sample dataset and a reference dataset must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
   strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset."
   strWinTitleCheck <- "Check subsetting"
   strMsgTitleError <- "Error"
@@ -190,11 +190,11 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     strTmp <- dtStrings["strBtnProcessing"]$Value
     strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
 
-    strTmp <- dtStrings["strMsgMessage"]$Value
-    strMsgMessage <- ifelse(is.na(strTmp), strMsgMessage, strTmp)
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
 
-    strTmp <- dtStrings["strMsgTitle"]$Value
-    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
 
     strTmp <- dtStrings["strMsgCheck"]$Value
     strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
@@ -206,7 +206,8 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
   }
 
-
+  # WINDOW ####################################################################
+  
   # Main window.
   w <- gwindow(title = strWinTitle, visible = FALSE)
 
@@ -596,8 +597,8 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .saveSettings()
       dispose(w)
     } else {
-      gmessage(strMsgMessage,
-        title = strMsgTitle,
+      gmessage(msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )
