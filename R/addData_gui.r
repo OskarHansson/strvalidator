@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
 # 23.02.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 06.05.2014: Implemented 'checkDataset'.
 # 31.07.2013: Added parameter 'ignoreCase'.
 # 18.07.2013: Check before overwrite object.
-# 11.07.2013: Added save GUI settings.
 
 #' @title Add Data
 #'
@@ -54,7 +54,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
-  fnc <- match.call()[[1]]
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
     print(paste("IN:", fnc))

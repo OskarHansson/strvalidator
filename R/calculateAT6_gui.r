@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
 # 27.02.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
@@ -48,7 +49,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   # Language ------------------------------------------------------------------
   
   # Get this functions name from call.
-  fnc <- match.call()[[1]]
+  fnc <- as.character(match.call()[[1]])
   
   if (debug) {
     print(paste("IN:", fnc))

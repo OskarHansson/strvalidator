@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
 # 01.03.2020: Added language support.
 # 10.01.2020: Changed "LDT" to "AT" following the book.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 13.12.2014: Added kit dropdown and kit attribute to result.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
-# 06.05.2014: Implemented 'checkDataset'.
 
 #' @title Calculate Dropout Events
 #'
@@ -51,7 +51,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
-  fnc <- match.call()[[1]]
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
     print(paste("IN:", fnc))

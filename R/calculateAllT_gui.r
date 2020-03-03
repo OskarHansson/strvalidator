@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
 # 25.02.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 25.07.2018: Added option to remove sex markers.
@@ -37,7 +38,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
-  fnc <- match.call()[[1]]
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
     print(paste("IN:", fnc))

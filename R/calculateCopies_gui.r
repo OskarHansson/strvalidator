@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
 # 01.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 24.05.2013: Improved error message for missing columns.
-# 20.05.2013: First version.
 
 #' @title Calculate Allele Copies
 #'
@@ -54,7 +54,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
-  fnc <- match.call()[[1]]
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
     print(paste("IN:", fnc))

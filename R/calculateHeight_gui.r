@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
 # 02.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 26.09.2014: Implemented text field for 'exclude'.
 # 12.09.2014: Implemented new options 'exclude OL'.
 # 28.06.2014: Added help button and moved save gui checkbox.
-# 25.02.2014: Implemented new options 'replace NA' and 'add to dataset'.
 
 #' @title Calculate Peak Height
 #'
@@ -62,8 +62,8 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
-  fnc <- match.call()[[1]]
-
+  fnc <- as.character(match.call()[[1]])
+  
   if (debug) {
     print(paste("IN:", fnc))
   }

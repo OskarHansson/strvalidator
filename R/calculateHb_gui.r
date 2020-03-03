@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
 # 01.03.2020: Added language support.
 # 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
 # 11.02.2019: Minor adjustments to tcltk gui.
@@ -44,7 +45,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
-  fnc <- match.call()[[1]]
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
     print(paste("IN:", fnc))
