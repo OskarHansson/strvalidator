@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 09.07.2018: Fixed blank drop-down menues after selecting a dataset.
 # 07.08.2017: Added audit trail.
@@ -41,22 +42,150 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   .gRef <- NULL
   .gDataName <- NULL
   .gRefName <- NULL
-  .datasetDropDefault <- "<Select dataset>"
-  .markerDropDefault <- "<Select marker>"
-  .groupDropDefault <- "<Select column>"
+
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
+  }
+
+  # Default strings.
+  strWinTitle <- "Calculate ratio"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Datasets"
+  strLblDataset <- "Sample dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblRefDataset <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strFrmOptions <- "Options"
+  strLblPre <- "Pre-processing:"
+  strChkOL <- "Remove off-ladder alleles"
+  strLblMethod <- "Calculate marker ratio:"
+  strLblNumerator <- "Select numerator markers:"
+  strLblDenominator <- "Select denominator markers:"
+  strLblGroupBy <- "Group by column:"
+  strLblMatching <- "Reference sample name matching:"
+  strChkIgnore <- "Ignore case"
+  strChkWord <- "Add word boundaries"
+  strChkExact <- "Exact matching"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgDataset <- "A sample dataset and a reference dataset must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset."
+  strWinTitleCheck <- "Check subsetting"
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$Value
+    strDrpDataset <- ifelse(is.na(strTmp), strDrpDataset, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strLblRefDataset"]$Value
+    strLblRefDataset <- ifelse(is.na(strTmp), strLblRefDataset, strTmp)
+
+    strTmp <- dtStrings["strLblRef"]$Value
+    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strLblPre"]$Value
+    strLblPre <- ifelse(is.na(strTmp), strLblPre, strTmp)
+
+    strTmp <- dtStrings["strChkOL"]$Value
+    strChkOL <- ifelse(is.na(strTmp), strChkOL, strTmp)
+
+    strTmp <- dtStrings["strLblMethod"]$Value
+    strLblMethod <- ifelse(is.na(strTmp), strLblMethod, strTmp)
+
+    strTmp <- dtStrings["strLblNumerator"]$Value
+    strLblNumerator <- ifelse(is.na(strTmp), strLblNumerator, strTmp)
+
+    strTmp <- dtStrings["strLblDenominator"]$Value
+    strLblDenominator <- ifelse(is.na(strTmp), strLblDenominator, strTmp)
+
+    strTmp <- dtStrings["strLblGroupBy"]$Value
+    strLblGroupBy <- ifelse(is.na(strTmp), strLblGroupBy, strTmp)
+
+    strTmp <- dtStrings["strLblMatching"]$Value
+    strLblMatching <- ifelse(is.na(strTmp), strLblMatching, strTmp)
+
+    strTmp <- dtStrings["strChkIgnore"]$Value
+    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
+
+    strTmp <- dtStrings["strChkWord"]$Value
+    strChkWord <- ifelse(is.na(strTmp), strChkWord, strTmp)
+
+    strTmp <- dtStrings["strChkExact"]$Value
+    strChkExact <- ifelse(is.na(strTmp), strChkExact, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgCheck"]$Value
+    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+
+    strTmp <- dtStrings["strWinTitleCheck"]$Value
+    strWinTitleCheck <- ifelse(is.na(strTmp), strWinTitleCheck, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
   }
 
   # WINDOW ####################################################################
 
-  if (debug) {
-    print("WINDOW")
-  }
-
   # Main window.
-  w <- gwindow(title = "Calculate ratio", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -99,26 +228,22 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateRatio_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
-  if (debug) {
-    print("FRAME 0")
-  }
-
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = TRUE,
     spacing = 5,
     container = gv
@@ -128,9 +253,9 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Dataset -------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
+  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
-  dfs <- c(.datasetDropDefault, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
 
   g0[1, 2] <- g0_data_drp <- gcombobox(
     items = dfs,
@@ -139,7 +264,10 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     container = g0,
     ellipsize = "none"
   )
-  g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[1, 3] <- g0_data_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_data_drp)
@@ -160,12 +288,12 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       .gDataName <<- val_obj
       svalue(g0_data_samples_lbl) <- paste(
         length(unique(.gData$Sample.Name)),
-        "samples."
+        strLblSamples
       )
       # Update dropdown menues.
-      f1_numerator_drp[, ] <- unique(c(.markerDropDefault, .gData$Marker))
-      f1_denominator_drp[, ] <- unique(c(.markerDropDefault, .gData$Marker))
-      f1_group_drp[, ] <- unique(c(.groupDropDefault, names(.gData)))
+      f1_numerator_drp[, ] <- unique(c(strDrpMarker, .gData$Marker))
+      f1_denominator_drp[, ] <- unique(c(strDrpMarker, .gData$Marker))
+      f1_group_drp[, ] <- unique(c(strDrpColumn, names(.gData)))
 
       # Select default value.
       svalue(f1_numerator_drp, index = TRUE) <- 1
@@ -173,20 +301,20 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f1_group_drp, index = TRUE) <- 1
 
       # Suggest a name for the result.
-      svalue(f4_save_edt) <- paste(val_obj, "_ratio", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_ratio", sep = "")
     } else {
 
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
-      svalue(g0_data_samples_lbl) <- " 0 samples"
-      svalue(f4_save_edt) <- ""
+      svalue(g0_data_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(save_edt) <- ""
 
       # Update dropdown menues.
-      f1_numerator_drp[, ] <- .markerDropDefault
-      f1_denominator_drp[, ] <- .markerDropDefault
-      f1_group_drp[, ] <- .groupDropDefault
+      f1_numerator_drp[, ] <- strDrpMarker
+      f1_denominator_drp[, ] <- strDrpMarker
+      f1_group_drp[, ] <- strDrpColumn
 
       # Select default value.
       svalue(f1_numerator_drp, index = TRUE) <- 1
@@ -197,7 +325,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Reference -----------------------------------------------------------------
 
-  g0[2, 1] <- glabel(text = "Select reference dataset:", container = g0)
+  g0[2, 1] <- glabel(text = strLblRefDataset, container = g0)
 
   # NB! dfs defined in previous section.
   g0[2, 2] <- g0_ref_drp <- gcombobox(
@@ -208,7 +336,10 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[2, 3] <- g0_ref_samples_lbl <- glabel(text = " 0 references", container = g0)
+  g0[2, 3] <- g0_ref_samples_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = g0
+  )
 
   addHandlerChanged(g0_ref_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_ref_drp)
@@ -228,7 +359,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       .gRefName <<- val_obj
       svalue(g0_ref_samples_lbl) <- paste(
         length(unique(.gRef$Sample.Name)),
-        "samples."
+        strLblRef
       )
     } else {
 
@@ -236,17 +367,13 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       .gRef <<- NULL
       .gRefName <<- NULL
       svalue(g0_ref_drp, index = TRUE) <- 1
-      svalue(g0_ref_samples_lbl) <- " 0 references"
+      svalue(g0_ref_samples_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  if (debug) {
-    print("CHECK")
-  }
-
-  g0[3, 2] <- g0_check_btn <- gbutton(text = "Check subsetting", container = g0)
+  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
 
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
 
@@ -258,7 +385,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinTitleCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -280,9 +407,8 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -290,56 +416,45 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
   # FRAME 1 ###################################################################
 
-  if (debug) {
-    print("FRAME 1")
-  }
-
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 10,
     container = gv
   )
 
+  # PRE-PROCESSING ------------------------------------------------------------
+
+  glabel(text = strLblPre, anchor = c(-1, 0), container = f1)
+
   f1_ol_chk <- gcheckbox(
-    text = "Remove off-ladder alleles", checked = TRUE,
+    text = strChkOL, checked = TRUE,
     container = f1
   )
 
-  f1_ignore_chk <- gcheckbox(
-    text = "Ignore case", checked = TRUE,
-    container = f1
-  )
+  # METHOD --------------------------------------------------------------------
 
-  f1_word_chk <- gcheckbox(
-    text = "Add word boundaries", checked = FALSE,
-    container = f1
-  )
-
-  f1_exact_chk <- gcheckbox(
-    text = "Exact matching", checked = FALSE,
-    container = f1
-  )
+  glabel(text = strLblMethod, anchor = c(-1, 0), container = f1)
 
   f1g1 <- glayout(container = f1)
 
-  f1g1[1, 1] <- glabel(text = "Select numerator markers:", container = f1g1)
+  f1g1[1, 1] <- glabel(text = strLblNumerator, container = f1g1)
   f1g1[1, 2] <- f1_numerator_drp <- gcombobox(
-    items = .markerDropDefault,
+    items = strDrpMarker,
     container = f1g1, ellipsize = "none"
   )
   f1g1[2, 1:2] <- f1_numerator_edt <- gedit(text = "", container = f1g1)
 
-  f1g1[3, 1] <- glabel(text = "Select denominator markers:", container = f1g1)
+  f1g1[3, 1] <- glabel(text = strLblDenominator, container = f1g1)
   f1g1[3, 2] <- f1_denominator_drp <- gcombobox(
-    items = .markerDropDefault,
+    items = strDrpMarker,
     container = f1g1, ellipsize = "none"
   )
   f1g1[4, 1:2] <- f1_denominator_edt <- gedit(text = "", container = f1g1)
 
-  f1g1[5, 1] <- glabel(text = "Group by column:", container = f1g1)
+  f1g1[5, 1] <- glabel(text = strLblGroupBy, container = f1g1)
   f1g1[5, 2] <- f1_group_drp <- gcombobox(
-    items = .groupDropDefault,
+    items = strDrpColumn,
     container = f1g1, ellipsize = "none"
   )
 
@@ -348,7 +463,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     val_value <- svalue(f1_numerator_edt)
 
     if (!is.null(val_marker)) {
-      if (val_marker != .markerDropDefault) {
+      if (val_marker != strDrpMarker) {
 
         # Add new value to selected.
         if (nchar(val_value) == 0) {
@@ -365,7 +480,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     val_value <- svalue(f1_denominator_edt)
 
     if (!is.null(val_marker)) {
-      if (val_marker != .markerDropDefault) {
+      if (val_marker != strDrpMarker) {
 
         # Add new value to selected.
         if (nchar(val_value) == 0) {
@@ -377,31 +492,36 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     }
   })
 
+  # MATCHING ------------------------------------------------------------------
 
-  # FRAME 4 ###################################################################
+  glabel(text = strLblMatching, anchor = c(-1, 0), container = f1)
 
-  if (debug) {
-    print("FRAME 4")
-  }
-
-  f4 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
+  f1_ignore_chk <- gcheckbox(
+    text = strChkIgnore, checked = TRUE,
+    container = f1
   )
 
-  glabel(text = "Name for result:", container = f4)
+  f1_word_chk <- gcheckbox(
+    text = strChkWord, checked = FALSE,
+    container = f1
+  )
 
-  f4_save_edt <- gedit(text = "", expand = TRUE, container = f4)
+  f1_exact_chk <- gcheckbox(
+    text = strChkExact, checked = FALSE,
+    container = f1
+  )
+
+  # SAVE ######################################################################
+
+  save_frame <- gframe(text = strFrmSave, container = gv)
+
+  glabel(text = strLblSave, container = save_frame)
+
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
 
@@ -414,12 +534,12 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     val_ignore <- svalue(f1_ignore_chk)
     val_word <- svalue(f1_word_chk)
     val_exact <- svalue(f1_exact_chk)
-    val_name <- svalue(f4_save_edt)
+    val_name <- svalue(save_edt)
     val_numerator <- svalue(f1_numerator_edt)
     val_denominator <- svalue(f1_denominator_edt)
     val_group <- svalue(f1_group_drp)
 
-    if (val_group == .groupDropDefault) {
+    if (val_group == strDrpColumn) {
       val_group <- NULL
     }
 
@@ -465,11 +585,9 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
         print(val_group)
       }
 
-
-
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -498,7 +616,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateRatio_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -508,17 +626,16 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       if (debug) {
         print(str(datanew))
         print(head(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset and a reference dataset have to be selected."
-
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(
+        msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )
