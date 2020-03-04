@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Added language support.
+# 03.03.2020: Expand scrollable checkbox view under RGtk2.
 # 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
@@ -44,12 +46,106 @@
 #' @seealso \code{\link{calculateOverlap}}
 
 calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
+
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Analyse bins overlap"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmKits <- "Select kits"
+  strFrmOptions <- "Options"
+  strChkMultiply <- "Multiply overlap with allele frequency"
+  strChkVirtual <- "Include virtual bins in analysis"
+  strTipVirtual <- "NB! Not all vendors specify which alleles are virtual in the bins file. This can be done manually in the kit.txt file."
+  strChkPenalty <- "Apply spectral channel penalty"
+  strFrmPenalty <- "Penalty"
+  strLblPenalty <- "Define penalty by the distance between dye channels  (1st neighbor to 5th neighbor)"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgColor <- "Kit color set must be identical for multiple kit comparison!\nAnalyse one kit at a time!"
+  strMsgKit <- "At least one kit must be selected."
+  strMsgTitleKit <- "No kit selected"
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmKits"]$Value
+    strFrmKits <- ifelse(is.na(strTmp), strFrmKits, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strChkMultiply"]$Value
+    strChkMultiply <- ifelse(is.na(strTmp), strChkMultiply, strTmp)
+
+    strTmp <- dtStrings["strChkVirtual"]$Value
+    strChkVirtual <- ifelse(is.na(strTmp), strChkVirtual, strTmp)
+
+    strTmp <- dtStrings["strTipVirtual"]$Value
+    strTipVirtual <- ifelse(is.na(strTmp), strTipVirtual, strTmp)
+
+    strTmp <- dtStrings["strChkPenalty"]$Value
+    strChkPenalty <- ifelse(is.na(strTmp), strChkPenalty, strTmp)
+
+    strTmp <- dtStrings["strFrmPenalty"]$Value
+    strFrmPenalty <- ifelse(is.na(strTmp), strFrmPenalty, strTmp)
+
+    strTmp <- dtStrings["strLblPenalty"]$Value
+    strLblPenalty <- ifelse(is.na(strTmp), strLblPenalty, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgColor"]$Value
+    strMsgColor <- ifelse(is.na(strTmp), strMsgColor, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+
+    strTmp <- dtStrings["strMsgKit"]$Value
+    strMsgKit <- ifelse(is.na(strTmp), strMsgKit, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleKit"]$Value
+    strMsgTitleKit <- ifelse(is.na(strTmp), strMsgTitleKit, strTmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Analyse bins overlap", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -92,25 +188,27 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateOverlap_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Select kits",
+    text = strFrmKits,
     horizontal = TRUE,
     spacing = 5,
-    container = gv
+    container = gv,
+    expand = TRUE,
+    fill = TRUE
   )
 
   scroll_view <- ggroup(
@@ -195,18 +293,15 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
         enabled(analyse_btn) <- TRUE
 
         # Suggest a save name.
-        svalue(f5_save_edt) <- paste(paste(val_kits, collapse = "_"),
+        svalue(save_edt) <- paste(paste(val_kits, collapse = "_"),
           "_overlap",
           sep = ""
         )
       } else {
         # Show error message.
-        message <- paste(
-          "Kit color set must be identical for multiple kit comparison!\n",
-          "Analyse one kit at a time!"
-        )
-        gmessage(message,
-          title = "Error",
+        gmessage(
+          msg = strMsgColor,
+          title = strMsgTitleError,
           icon = "error", parent = w
         )
 
@@ -226,21 +321,21 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       enabled(analyse_btn) <- FALSE
 
       # Empty save name.
-      svalue(f5_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 5,
     container = gv
   )
 
   f1_db_chk <- gcheckbox(
-    text = "Multiply overlap with allele frequency",
+    text = strChkMultiply,
     checked = TRUE,
     container = f1
   )
@@ -253,21 +348,16 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   )
 
   f1_virtual_chk <- gcheckbox(
-    text = "Include virtual bins in analysis",
+    text = strChkVirtual,
     checked = TRUE,
     container = f1
   )
+  tooltip(f1_virtual_chk) <- strTipVirtual
 
-  f1_msg <- paste(
-    "NB! Not all vendors specify which alleles are virtual",
-    "in the bins file.\n",
-    "This can be done manually in the kit.txt file."
-  )
   glabel(text = f1_msg, anchor = c(-1, 0), container = f1)
 
-
   f1_penalty_chk <- gcheckbox(
-    text = "Apply spectral channel penalty",
+    text = strChkPenalty,
     checked = TRUE,
     container = f1
   )
@@ -295,14 +385,14 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   # FRAME 2 ###################################################################
 
   f2 <- gframe(
-    text = "Penalty",
+    text = strFrmPenalty,
     horizontal = FALSE,
     spacing = 5,
     container = gv
   )
 
   glabel(
-    text = "Define penalty by the distance between dye channels  (1st neighbor to 5th neighbor)",
+    text = strLblPenalty,
     container = f2
   )
 
@@ -341,27 +431,20 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   enabled(f2_penalty4_spb) <- FALSE
   enabled(f2_penalty5_spb) <- FALSE
 
-  # FRAME 5 ###################################################################
+  # SAVE ######################################################################
 
-  f5 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = "Name for result:", container = f5)
+  glabel(text = strLblSave, container = save_frame)
 
-  f5_save_edt <- gedit(text = "", expand = TRUE, container = f5, fill = TRUE)
-
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-
-  analyse_btn <- gbutton(text = "Analyse", container = gv)
+  analyse_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(analyse_btn, handler = function(h, ...) {
-    val_name <- svalue(f5_save_edt)
+    val_name <- svalue(save_edt)
     val_kits <- svalue(kit_checkbox_group)
     val_kitData <- data.frame() # Filled further down.
     val_db_chk <- svalue(f1_db_chk)
@@ -375,7 +458,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
       # Change button.
       blockHandlers(analyse_btn)
-      svalue(analyse_btn) <- "Processing..."
+      svalue(analyse_btn) <- strBtnProcessing
       unblockHandlers(analyse_btn)
       enabled(analyse_btn) <- FALSE
 
@@ -444,7 +527,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateOverlap_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -455,17 +538,16 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "At least one kit has to be selected."
-
-      gmessage(message,
-        title = "Not kit selected",
+      gmessage(
+        msg = strMsgKit,
+        title = strMsgTitleKit,
         icon = "error",
         parent = w
       )

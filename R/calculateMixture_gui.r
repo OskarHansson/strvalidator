@@ -454,12 +454,12 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     checked = TRUE, container = f1
   )
 
-  # FRAME 4 ###################################################################
-
+  # SAVE ######################################################################
+  
   save_frame <- gframe(text = strFrmSave, container = gv)
-
+  
   glabel(text = strLblSave, container = save_frame)
-
+  
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################

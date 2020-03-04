@@ -67,7 +67,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
   strBtnProcessing <- "Processing..."
-  strMsgKit <- "At least one kit has to be selected."
+  strMsgKit <- "At least one kit must be selected."
   strMsgTitleKit <- "No kit selected"
 
   # Get strings from language file.
@@ -97,6 +97,9 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
     strTmp <- dtStrings["strChkVirtual"]$Value
     strChkVirtual <- ifelse(is.na(strTmp), strChkVirtual, strTmp)
+
+    strTmp <- dtStrings["strTipVirtual"]$Value
+    strTipVirtual <- ifelse(is.na(strTmp), strTipVirtual, strTmp)
 
     strTmp <- dtStrings["strFrmSave"]$Value
     strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
@@ -216,7 +219,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       enabled(analyse_btn) <- TRUE
 
       # Suggest a save name.
-      svalue(f5_save_edt) <- paste(paste(val_kits, collapse = "_"),
+      svalue(save_edt) <- paste(paste(val_kits, collapse = "_"),
         "_OL",
         sep = ""
       )
@@ -226,7 +229,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       enabled(analyse_btn) <- FALSE
 
       # Empty save name.
-      svalue(f5_save_edt) <- ""
+      svalue(save_edt) <- ""
     }
   })
 
@@ -264,19 +267,13 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     container = f1
   )
 
-  # FRAME 5 ###################################################################
+  # SAVE ######################################################################
 
-  f5 <- gframe(
-    text = strFrmSave,
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strLblSave, container = save_frame)
 
-  f5_save_edt <- gedit(expand = TRUE, container = f5, fill = TRUE)
-
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -284,7 +281,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   analyse_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(analyse_btn, handler = function(h, ...) {
-    val_name <- svalue(f5_save_edt)
+    val_name <- svalue(save_edt)
     val_kits <- svalue(kit_checkbox_group)
     val_kitData <- data.frame() # Filled further down.
     val_db_selected <- svalue(f1_db_drp)
