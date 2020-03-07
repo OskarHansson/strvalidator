@@ -63,7 +63,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   strBtnHelp <- "Help"
   strFrmDataset <- "Datasets"
   strLblDataset <- "Sample dataset:"
-  strDrpDefault <- "<Select dataset>"
+  strDrpDataset <- "<Select dataset>"
   strLblSamples <- "samples"
   strLblRefDataset <- "Reference dataset:"
   strTipRef <- "If provided, known alleles will be extracted from data"
@@ -122,8 +122,8 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     strTmp <- dtStrings["strLblDataset"]$Value
     strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
 
-    strTmp <- dtStrings["strDrpDefault"]$Value
-    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+    strTmp <- dtStrings["strDrpDataset"]$Value
+    strDrpDataset <- ifelse(is.na(strTmp), strDrpDataset, strTmp)
 
     strTmp <- dtStrings["strLblSamples"]$Value
     strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
@@ -303,7 +303,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
-  dfs <- c(strDrpDefault, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
 
   g0[1, 2] <- g0_data_drp <- gcombobox(
     items = dfs,
