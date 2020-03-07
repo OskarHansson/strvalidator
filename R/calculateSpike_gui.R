@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -33,11 +34,104 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   .gData <- NULL
   .gDataName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
-  w <- gwindow(title = "Detect spikes", visible = FALSE)
+  # Default strings.
+  strWinTitle <- "Calculate spikes"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Sample dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblKit <- "Kit:"
+  strFrmOptions <- "Options"
+  strLblThreshold <- "Threshold (number of peaks at similar size):"
+  strLblTolerance <- "Tolerance (bp):"
+  strChkQuick <- "Quick and dirty"
+  strTipQuick <- "NB! The quick method may not catch all spikes since two peaks can be separated by rounding e.g. 200.5 and 200.6 becomes 200 and 201 respectively!"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgDataset <- "A sample dataset must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$Value
+    strDrpDataset <- ifelse(is.na(strTmp), strDrpDataset, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strLblKit"]$Value
+    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strLblThreshold"]$Value
+    strLblThreshold <- ifelse(is.na(strTmp), strLblThreshold, strTmp)
+
+    strTmp <- dtStrings["strLblTolerance"]$Value
+    strLblTolerance <- ifelse(is.na(strTmp), strLblTolerance, strTmp)
+
+    strTmp <- dtStrings["strChkQuick"]$Value
+    strChkQuick <- ifelse(is.na(strTmp), strChkQuick, strTmp)
+
+    strTmp <- dtStrings["strTipQuick"]$Value
+    strTipQuick <- ifelse(is.na(strTmp), strTipQuick, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+  }
+
+  # WINDOW ####################################################################
+
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -80,22 +174,22 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateSpike_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Dataset",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 5,
     container = gv
@@ -105,11 +199,11 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   # Datasets ------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
+  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
   g0[1, 2] <- g0_dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -121,11 +215,14 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     ellipsize = "none"
   )
 
-  g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[1, 3] <- g0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
 
-  g0[1, 4] <- glabel(text = " and the kit used:", container = g0)
+  g0[2, 1] <- glabel(text = strLblKit, container = g0)
 
-  g0[1, 5] <- kit_drp <- gcombobox(
+  g0[2, 2] <- kit_drp <- gcombobox(
     items = getKit(),
     selected = 1,
     editable = FALSE,
@@ -150,7 +247,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(g0_samples_lbl) <- paste("", samples, strLblSamples)
       svalue(f2_save_edt) <- paste(.gDataName, "_spikes", sep = "")
 
       # Detect kit.
@@ -163,7 +260,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(g0_dataset_drp, index = TRUE) <- 1
-      svalue(g0_samples_lbl) <- " 0 samples"
+      svalue(g0_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(f2_save_edt) <- ""
     }
   })
@@ -171,7 +268,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 5,
     container = gv
@@ -180,7 +277,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   f1g1 <- glayout(container = f1, spacing = 1)
 
   f1g1[1, 1] <- glabel(
-    text = "Threshold (number of peaks at similar size):",
+    text = strLblThreshold,
     container = f1g1
   )
   f1g1[1, 2] <- f1_threshold_spn <- gspinbutton(
@@ -188,34 +285,30 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     value = 3, container = f1g1
   )
 
-  f1g1[2, 1] <- glabel(text = "Tolerance (bp):", container = f1g1)
+  f1g1[2, 1] <- glabel(text = strLblTolerance, container = f1g1)
   f1g1[2, 2] <- f1_tolerance_spn <- gspinbutton(
     from = 0, to = 10, by = 0.1,
     value = 2, container = f1g1
   )
 
   f1_quick_chk <- gcheckbox(
-    text = "Quick and dirty", checked = FALSE,
+    text = strChkQuick, checked = FALSE,
     container = f1
   )
-  tooltip(f1_quick_chk) <- paste(
-    "NB! The quick method may not catch all spikes",
-    "since two peaks can be separated by rounding e.g.",
-    "200.5 and 200.6 becomes 200 and 201 respectively!"
-  )
+  tooltip(f1_quick_chk) <- strTipQuick
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = "Save as", horizontal = TRUE, spacing = 5, container = gv)
+  f2 <- gframe(text = strFrmSave, horizontal = TRUE, spacing = 5, container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = strLblSave, container = f2)
 
   f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
 
   # BUTTON ####################################################################
 
 
-  calculate_btn <- gbutton(text = "Detect", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
 
@@ -232,7 +325,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -262,7 +355,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateSpike_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -271,17 +364,16 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
       if (debug) {
         print(str(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset must be selected."
-
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(
+        msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )
