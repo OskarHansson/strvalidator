@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG
+# 16.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -19,7 +20,6 @@
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 29.05.2013: Disabled button and adding "processing..." after press.
 # 24.05.2013: Improved error message for missing columns.
-# 21.05.2013: Fixed name on save as.
 
 #' @title Guess Profile
 #'
@@ -47,11 +47,100 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   .gData <- NULL
   .gDataName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
-  w <- gwindow(title = "Guess profile", visible = FALSE)
+  # Default strings.
+  strWinTitle <- "Guess profile"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Sample dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strFrmOptions <- "Options"
+  strLblRatio <- "Accepted peak height ratio >="
+  strLblHeight <- "Accepted peak height >="
+  strChkNA <- "Discard NA rows"
+  strChkOL <- "Ignore off-ladder (OL) alleles"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnGuess <- "Guess"
+  strBtnProcessing <- "Processing..."
+  strMsgDataset <- "A sample dataset must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strTmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+
+    strTmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strTmp <- dtStrings["strLblRatio"]$value
+    strLblRatio <- ifelse(is.na(strtmp), strLblRatio, strtmp)
+
+    strTmp <- dtStrings["strLblHeight"]$value
+    strLblHeight <- ifelse(is.na(strtmp), strLblHeight, strtmp)
+
+    strTmp <- dtStrings["strChkNA"]$value
+    strChkNA <- ifelse(is.na(strtmp), strChkNA, strtmp)
+
+    strTmp <- dtStrings["strChkOL"]$value
+    strChkOL <- ifelse(is.na(strtmp), strChkOL, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strTmp <- dtStrings["strBtnGuess"]$value
+    strBtnGuess <- ifelse(is.na(strtmp), strBtnGuess, strtmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$value
+    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$value
+    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
+  }
+
+  # WINDOW ####################################################################
+
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerDestroy(w, handler = function(h, ...) {
@@ -94,22 +183,22 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("guessProfile_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 2,
     container = gv
@@ -117,11 +206,11 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   f0g0[1, 2] <- f0g0_dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -134,7 +223,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   )
 
   f0g0[1, 3] <- f0g0_samples_lbl <- glabel(
-    text = " 0 samples",
+    text = paste(" 0", strLblSamples),
     container = f0g0
   )
 
@@ -154,14 +243,14 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(f0g0_samples_lbl) <- paste(" ", samples, "samples")
+      svalue(f0g0_samples_lbl) <- paste(" ", samples, strLblSamples)
       svalue(save_edt) <- paste(val_obj, "_profile", sep = "")
     } else {
 
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
-      svalue(f0g0_samples_lbl) <- " 0 samples"
+      svalue(f0g0_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(save_edt) <- ""
       svalue(f0g0_dataset_drp, index = TRUE) <- 1
     }
@@ -170,7 +259,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 2,
     container = gv
@@ -178,7 +267,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   f1g1 <- glayout(container = f1, spacing = 2)
 
-  f1g1[1, 1] <- glabel(text = "Accepted ratio >=", container = f1g1)
+  f1g1[1, 1] <- glabel(text = strLblRatio, container = f1g1)
 
   f1g1[1, 2] <- f1g1_ratio_spb <- gspinbutton(
     from = 0, to = 1,
@@ -186,33 +275,33 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     container = f1g1
   )
 
-  f1g1[2, 1] <- glabel(text = "Accepted peak height >=", container = f1g1)
+  f1g1[2, 1] <- glabel(text = strLblHeight, container = f1g1)
 
   f1g1[2, 2] <- f1g1_height_edt <- gedit(text = "100", width = 6, container = f1g1)
 
   f1g1[3, 1] <- f1g1_na_chk <- gcheckbox(
-    text = "Discard NA rows",
+    text = strChkNA,
     checked = FALSE,
     container = f1g1
   )
 
   f1g1[4, 1] <- f1g1_ol_chk <- gcheckbox(
-    text = "Ignore off-ladder (OL) alleles",
+    text = strChkOL,
     checked = FALSE,
     container = f1g1
   )
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = "Save as", container = gv)
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = "Name for result:", container = save_frame)
+  glabel(text = strLblSave, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  check_btn <- gbutton(text = "Guess", container = gv)
+  check_btn <- gbutton(text = strBtnGuess, container = gv)
 
   addHandlerClicked(check_btn, handler = function(h, ...) {
 
@@ -233,7 +322,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
       # Change button.
       blockHandlers(check_btn)
-      svalue(check_btn) <- "Processing..."
+      svalue(check_btn) <- strBtnProcessing
       unblockHandlers(check_btn)
       enabled(check_btn) <- FALSE
 
@@ -254,7 +343,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "guessProfile_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -263,7 +352,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
@@ -271,9 +360,8 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       dispose(w)
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error"
       )
     }
