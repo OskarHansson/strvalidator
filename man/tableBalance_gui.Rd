@@ -4,8 +4,12 @@
 \alias{tableBalance_gui}
 \title{Table Balance}
 \usage{
-tableBalance_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+tableBalance_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

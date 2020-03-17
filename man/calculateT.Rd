@@ -4,8 +4,13 @@
 \alias{calculateT}
 \title{Calculate Stochastic Threshold}
 \usage{
-calculateT(data, log.model = FALSE, p.dropout = 0.01,
-  pred.int = 0.95, debug = FALSE)
+calculateT(
+  data,
+  log.model = FALSE,
+  p.dropout = 0.01,
+  pred.int = 0.95,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame with dependent and explanatory values in columns named 'Dep' and 'Exp'.}

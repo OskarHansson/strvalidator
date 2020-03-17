@@ -4,9 +4,18 @@
 \alias{calculateHb}
 \title{Calculate Heterozygote Balance}
 \usage{
-calculateHb(data, ref, hb = 1, kit = NULL, sex.rm = FALSE,
-  qs.rm = FALSE, ignore.case = TRUE, exact = FALSE, word = FALSE,
-  debug = FALSE)
+calculateHb(
+  data,
+  ref,
+  hb = 1,
+  kit = NULL,
+  sex.rm = FALSE,
+  qs.rm = FALSE,
+  ignore.case = TRUE,
+  exact = FALSE,
+  word = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{a data frame containing at least

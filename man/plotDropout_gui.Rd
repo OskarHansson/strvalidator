@@ -4,8 +4,12 @@
 \alias{plotDropout_gui}
 \title{Plot Drop-out Events}
 \usage{
-plotDropout_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+plotDropout_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

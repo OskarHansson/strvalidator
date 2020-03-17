@@ -4,8 +4,15 @@
 \alias{editData_gui}
 \title{Edit or View Data Frames}
 \usage{
-editData_gui(env = parent.frame(), savegui = NULL, data = NULL,
-  name = NULL, edit = TRUE, debug = FALSE, parent = NULL)
+editData_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  data = NULL,
+  name = NULL,
+  edit = TRUE,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

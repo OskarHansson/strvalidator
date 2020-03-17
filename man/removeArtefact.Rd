@@ -4,8 +4,15 @@
 \alias{removeArtefact}
 \title{Remove Artefacts}
 \usage{
-removeArtefact(data, artefact = NULL, marker = NULL, allele = NULL,
-  threshold = NULL, na.rm = FALSE, debug = FALSE)
+removeArtefact(
+  data,
+  artefact = NULL,
+  marker = NULL,
+  allele = NULL,
+  threshold = NULL,
+  na.rm = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame with data to remove spikes from.}

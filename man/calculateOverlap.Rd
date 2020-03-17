@@ -4,8 +4,13 @@
 \alias{calculateOverlap}
 \title{Calculate Bins Overlap}
 \usage{
-calculateOverlap(data, db = NULL, penalty = NULL, virtual = TRUE,
-  debug = FALSE)
+calculateOverlap(
+  data,
+  db = NULL,
+  penalty = NULL,
+  virtual = TRUE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data frame providing kit information.}

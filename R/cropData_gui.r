@@ -74,6 +74,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   strLblSamples <- "samples,"
   strLblColumns <- "columns,"
   strLblRows <- "rows"
+  strFrmColumn <- "Column"
   strLblTargetCol <- "Target column:"
   strDrpColumn <- "<Select column>"
   strLblInfo <- "Info:"
@@ -101,6 +102,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   strRadNumeric <- "Numeric"
   strRadCharacter <- "Character"
   strBtnApply <- "Apply"
+  strBtnProcessing <- "Processing..."
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnSave <- "Save"
@@ -145,6 +147,9 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     strTmp <- dtStrings["strLblRows"]$Value
     strLblRows <- ifelse(is.na(strTmp), strLblRows, strTmp)
 
+    strTmp <- dtStrings["strFrmColumn"]$Value
+    strFrmColumn <- ifelse(is.na(strTmp), strFrmColumn, strTmp)
+    
     strTmp <- dtStrings["strLblTargetCol"]$Value
     strLblTargetCol <- ifelse(is.na(strTmp), strLblTargetCol, strTmp)
 
@@ -226,6 +231,9 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     strTmp <- dtStrings["strBtnApply"]$Value
     strBtnApply <- ifelse(is.na(strTmp), strBtnApply, strTmp)
 
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+    
     strTmp <- dtStrings["strFrmSave"]$Value
     strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
 
@@ -257,7 +265,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = ststrWinTitle, visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {

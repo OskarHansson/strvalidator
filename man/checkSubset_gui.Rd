@@ -4,8 +4,12 @@
 \alias{checkSubset_gui}
 \title{Check Subset}
 \usage{
-checkSubset_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+checkSubset_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

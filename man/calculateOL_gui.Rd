@@ -4,8 +4,12 @@
 \alias{calculateOL_gui}
 \title{Analyze Off-ladder Alleles}
 \usage{
-calculateOL_gui(env = parent.frame(), savegui = NULL, debug = TRUE,
-  parent = NULL)
+calculateOL_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = TRUE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

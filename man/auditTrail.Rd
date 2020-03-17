@@ -4,9 +4,18 @@
 \alias{auditTrail}
 \title{Log Audit Trail.}
 \usage{
-auditTrail(obj, f.call = NULL, key = NULL, value = NULL,
-  label = NULL, arguments = TRUE, exact = TRUE, remove = FALSE,
-  package = NULL, rversion = TRUE)
+auditTrail(
+  obj,
+  f.call = NULL,
+  key = NULL,
+  value = NULL,
+  label = NULL,
+  arguments = TRUE,
+  exact = TRUE,
+  remove = FALSE,
+  package = NULL,
+  rversion = TRUE
+)
 }
 \arguments{
 \item{obj}{object to add or update the audit trail.}

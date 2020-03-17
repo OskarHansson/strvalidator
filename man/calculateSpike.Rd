@@ -4,8 +4,14 @@
 \alias{calculateSpike}
 \title{Detect Spike}
 \usage{
-calculateSpike(data, threshold = NULL, tolerance = 2, kit = NULL,
-  quick = FALSE, debug = FALSE)
+calculateSpike(
+  data,
+  threshold = NULL,
+  tolerance = 2,
+  kit = NULL,
+  quick = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame with including columns 'Sample.Name', 'Marker', 'Size'.}

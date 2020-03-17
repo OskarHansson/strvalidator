@@ -4,8 +4,15 @@
 \alias{calculateAT6}
 \title{Calculate Analytical Threshold}
 \usage{
-calculateAT6(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05,
-  ignore.case = TRUE, debug = FALSE)
+calculateAT6(
+  data,
+  ref,
+  amount = NULL,
+  weighted = TRUE,
+  alpha = 0.05,
+  ignore.case = TRUE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame containing at least columns 'Sample.Name', 'Marker',

@@ -4,8 +4,13 @@
 \alias{calculateCopies}
 \title{Calculate Allele Copies}
 \usage{
-calculateCopies(data, observed = FALSE, copies = TRUE,
-  heterozygous = FALSE, debug = FALSE)
+calculateCopies(
+  data,
+  observed = FALSE,
+  copies = TRUE,
+  heterozygous = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{Data frame containing at least columns 'Sample.Name', 'Marker,

@@ -4,14 +4,21 @@
 \alias{getKit}
 \title{Get Kit}
 \usage{
-getKit(kit = NULL, what = NA, show.messages = FALSE,
-  .kit.info = NULL, debug = FALSE)
+getKit(
+  kit = NULL,
+  what = NA,
+  show.messages = FALSE,
+  .kit.info = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{kit}{string or integer to specify the kit.}
 
 \item{what}{string to specify which information to return. Default is 'NA' which return all info.
-Not case sensitive.}
+Not case sensitive. Possible values: "Index", "Panel", "Short.Name", "Full.Name",
+"Marker, "Allele", "Size", "Virtual", "Color", "Repeat", "Range", "Offset", "Sex.Marker",
+"Quality.Sensor". An unsupported value returns NA and a warning.}
 
 \item{show.messages}{logical, default TRUE for printing messages to the R prompt.}
 

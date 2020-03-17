@@ -4,8 +4,12 @@
 \alias{plotSlope_gui}
 \title{Plot Profile Slope}
 \usage{
-plotSlope_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+plotSlope_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

@@ -4,8 +4,12 @@
 \alias{tableCapillary_gui}
 \title{Table Capillary}
 \usage{
-tableCapillary_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+tableCapillary_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

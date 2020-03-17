@@ -4,8 +4,7 @@
 \alias{import_gui}
 \title{Import Data}
 \usage{
-import_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+import_gui(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment into which the object will be saved.

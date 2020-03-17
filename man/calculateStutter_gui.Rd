@@ -4,8 +4,12 @@
 \alias{calculateStutter_gui}
 \title{Calculate Stutter}
 \usage{
-calculateStutter_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+calculateStutter_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

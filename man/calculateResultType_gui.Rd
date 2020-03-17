@@ -4,8 +4,12 @@
 \alias{calculateResultType_gui}
 \title{Calculate Result Type}
 \usage{
-calculateResultType_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+calculateResultType_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

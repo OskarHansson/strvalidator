@@ -4,8 +4,12 @@
 \alias{calculateSpike_gui}
 \title{Detect Spike}
 \usage{
-calculateSpike_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+calculateSpike_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

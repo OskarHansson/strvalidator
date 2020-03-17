@@ -59,7 +59,6 @@ getStrings <- function(language = NA, gui = NA, key = NA) {
       # Get strings for the specific function.
       dtRet <- dtRet[dtRet$Scope == gui, ]
       
-      print(dtRet)
       if(nrow(dtRet) == 0){
         
         message("No rows found for gui=", gui, ". Returning NA.")

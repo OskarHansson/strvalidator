@@ -4,8 +4,7 @@
 \alias{columns_gui}
 \title{Column Actions}
 \usage{
-columns_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+columns_gui(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

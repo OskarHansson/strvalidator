@@ -4,8 +4,13 @@
 \alias{calculateAllele}
 \title{Calculate Allele}
 \usage{
-calculateAllele(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
-  debug = FALSE)
+calculateAllele(
+  data,
+  threshold = NULL,
+  sex.rm = FALSE,
+  kit = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame including columns 'Marker' and 'Allele', and

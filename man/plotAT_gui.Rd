@@ -4,8 +4,7 @@
 \alias{plotAT_gui}
 \title{Plot Analytical Threshold}
 \usage{
-plotAT_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+plotAT_gui(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

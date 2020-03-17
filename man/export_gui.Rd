@@ -4,9 +4,13 @@
 \alias{export_gui}
 \title{Export}
 \usage{
-export_gui(obj = listObjects(env = env, obj.class = c("data.frame",
-  "ggplot")), env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+export_gui(
+  obj = listObjects(env = env, obj.class = c("data.frame", "ggplot")),
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{obj}{character vector with object names.}

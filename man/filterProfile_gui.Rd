@@ -4,8 +4,12 @@
 \alias{filterProfile_gui}
 \title{Filter Profile}
 \usage{
-filterProfile_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+filterProfile_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

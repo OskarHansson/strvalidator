@@ -4,9 +4,15 @@
 \alias{calculateConcordance}
 \title{Calculate Concordance.}
 \usage{
-calculateConcordance(data, kit.name = NA, no.marker = "NO MARKER",
-  no.sample = "NO SAMPLE", delimeter = ",", list.all = FALSE,
-  debug = FALSE)
+calculateConcordance(
+  data,
+  kit.name = NA,
+  no.marker = "NO MARKER",
+  no.sample = "NO SAMPLE",
+  delimeter = ",",
+  list.all = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{list of data frames in 'slim' format with at least columns

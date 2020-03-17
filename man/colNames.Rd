@@ -4,8 +4,7 @@
 \alias{colNames}
 \title{Column Names}
 \usage{
-colNames(data, slim = TRUE, concatenate = NULL, numbered = TRUE,
-  debug = FALSE)
+colNames(data, slim = TRUE, concatenate = NULL, numbered = TRUE, debug = FALSE)
 }
 \arguments{
 \item{data}{data.frame.}

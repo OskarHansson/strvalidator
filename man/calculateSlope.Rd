@@ -4,8 +4,7 @@
 \alias{calculateSlope}
 \title{Calculate Profile Slope.}
 \usage{
-calculateSlope(data, ref, conf = 0.975, kit = NULL, debug = FALSE,
-  ...)
+calculateSlope(data, ref, conf = 0.975, kit = NULL, debug = FALSE, ...)
 }
 \arguments{
 \item{data}{data.frame with at least columns 'Sample.Name', 'Marker', and

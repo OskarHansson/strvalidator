@@ -4,9 +4,17 @@
 \alias{calculateDropout}
 \title{Calculate Drop-out Events}
 \usage{
-calculateDropout(data, ref, threshold = NULL, method = c("1", "2", "X",
-  "L"), ignore.case = TRUE, sex.rm = FALSE, qs.rm = TRUE,
-  kit = NULL, debug = FALSE)
+calculateDropout(
+  data,
+  ref,
+  threshold = NULL,
+  method = c("1", "2", "X", "L"),
+  ignore.case = TRUE,
+  sex.rm = FALSE,
+  qs.rm = TRUE,
+  kit = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data frame in GeneMapper format containing at least a column 'Allele'.}

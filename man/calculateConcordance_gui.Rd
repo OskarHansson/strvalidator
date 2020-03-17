@@ -4,8 +4,12 @@
 \alias{calculateConcordance_gui}
 \title{Calculate Concordance}
 \usage{
-calculateConcordance_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+calculateConcordance_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

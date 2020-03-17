@@ -4,10 +4,21 @@
 \alias{calculateLb}
 \title{Calculate Inter-locus Balance}
 \usage{
-calculateLb(data, ref = NULL, option = "prop", by.dye = FALSE,
-  ol.rm = TRUE, sex.rm = FALSE, qs.rm = FALSE, na = NULL,
-  kit = NULL, ignore.case = TRUE, word = FALSE, exact = FALSE,
-  debug = FALSE)
+calculateLb(
+  data,
+  ref = NULL,
+  option = "prop",
+  by.dye = FALSE,
+  ol.rm = TRUE,
+  sex.rm = FALSE,
+  qs.rm = FALSE,
+  na = NULL,
+  kit = NULL,
+  ignore.case = TRUE,
+  word = FALSE,
+  exact = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame containing at least

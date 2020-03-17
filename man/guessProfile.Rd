@@ -4,8 +4,14 @@
 \alias{guessProfile}
 \title{Guess Profile}
 \usage{
-guessProfile(data, ratio = 0.6, height = 50, na.rm = FALSE,
-  ol.rm = TRUE, debug = FALSE)
+guessProfile(
+  data,
+  ratio = 0.6,
+  height = 50,
+  na.rm = FALSE,
+  ol.rm = TRUE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{a data frame containing at least 'Sample.Name', 'Marker', 'Allele', Height'.}

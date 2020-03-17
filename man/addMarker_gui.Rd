@@ -4,8 +4,12 @@
 \alias{addMarker_gui}
 \title{Add Missing Markers}
 \usage{
-addMarker_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+addMarker_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

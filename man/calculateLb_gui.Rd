@@ -4,8 +4,12 @@
 \alias{calculateLb_gui}
 \title{Calculate Locus Balance}
 \usage{
-calculateLb_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+calculateLb_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

@@ -68,8 +68,10 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   strChkOL <- "Remove off-ladder alleles"
   strLblMethod <- "Calculate marker ratio:"
   strLblNumerator <- "Select numerator markers:"
+  strDrpMarker <- "<Select Marker>"
   strLblDenominator <- "Select denominator markers:"
   strLblGroupBy <- "Group by column:"
+  strDrpColumn <- "<Select Columns>"
   strLblMatching <- "Reference sample name matching:"
   strChkIgnore <- "Ignore case"
   strChkWord <- "Add word boundaries"
@@ -136,12 +138,18 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     strTmp <- dtStrings["strLblNumerator"]$Value
     strLblNumerator <- ifelse(is.na(strTmp), strLblNumerator, strTmp)
 
+    strTmp <- dtStrings["strDrpMarker"]$Value
+    strDrpMarker <- ifelse(is.na(strTmp), strDrpMarker, strTmp)
+    
     strTmp <- dtStrings["strLblDenominator"]$Value
     strLblDenominator <- ifelse(is.na(strTmp), strLblDenominator, strTmp)
 
     strTmp <- dtStrings["strLblGroupBy"]$Value
     strLblGroupBy <- ifelse(is.na(strTmp), strLblGroupBy, strTmp)
 
+    strTmp <- dtStrings["strDrpColumn"]$Value
+    strDrpColumn <- ifelse(is.na(strTmp), strDrpColumn, strTmp)
+    
     strTmp <- dtStrings["strLblMatching"]$Value
     strLblMatching <- ifelse(is.na(strTmp), strLblMatching, strTmp)
 
