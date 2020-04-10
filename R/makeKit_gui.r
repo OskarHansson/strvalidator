@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.03.2020: Added language support.
 # 14.03.2019: Fixed R-Check note.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 17.07.2017: Fixed changed arguments for 'delete'.
@@ -45,13 +46,8 @@
 #' @seealso \code{\link{readBinsFile}}, \code{\link{readPanelsFile}}, \code{\link{combineBinsAndPanels}}
 
 makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-  if (debug) {
-    print(paste("IN:", match.call()[[1]]))
-  }
 
   # Global variables.
-  .noQsMarkerString <- "<none>"
-  .noSexMarkerString <- "<none>"
   .f3g1 <- NULL
   .separator <- .Platform$file.sep # Platform dependent path separator.
   .packagePath <- path.package("strvalidator", quiet = FALSE)
@@ -62,6 +58,159 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   .kitInfo <- NULL
   .binsFiles <- NULL
   .panelsFiles <- NULL
+
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
+  if (debug) {
+    print(paste("IN:", fnc))
+  }
+
+  # Default strings.
+  strWinTitle <- "Manage kits"
+  strBtnHelp <- "Help"
+  strFrmAction <- "Action"
+  strRadEdit <- "Edit kit file"
+  strRadAdd <- "Add new kits"
+  strFrmFile <- "Path to current kit file"
+  strFrmNew <- "New kits"
+  strBtnBins <- "Select Bins file"
+  strBtnPanels <- "Select Panels file"
+  strBtnCombine <- "Combine"
+  strMsgFile <- "The kit file was not found"
+  strMsgTitleFile <- "File not found"
+  strLblSelectBins <- "Select Bins file..."
+  strLblSelectPanels <- "Select Panels file..."
+  strLblCombine <- "Reads and combines the Bins and Panels files"
+  strMsgCombine <- "One or several files was not found"
+  strLblSex <- "List sex markers (separate by comma)"
+  strLblSensors <- "List quality sensors (separate by comma)"
+  strLblRemove <- "Remove"
+  strLblPanel <- "Panel"
+  strLblShortName <- "Short name"
+  strLblFullName <- "Full name"
+  strLblNone <- "<none>"
+  strRadAppend <- "Append to kit file"
+  strRadOverwrite <- "Overwrite kit file"
+  strRadSave <- "Save as data frame"
+  strBtnSave <- "Save"
+  strBtnSaving <- "Saving..."
+  strMsgDuplicate1 <- "A kit with short name"
+  strMsgDuplicate2 <- "already exist!\n\nShort name must be unique!"
+  strMsgTitleDuplicate <- "Duplicate short name"
+  strMsgMissing <- "A short name must be provided for all new kits"
+  strMsgTitleMissing <- "Missing short name"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strFrmAction"]$value
+    strFrmAction <- ifelse(is.na(strtmp), strFrmAction, strtmp)
+
+    strTmp <- dtStrings["strRadEdit"]$value
+    strRadEdit <- ifelse(is.na(strtmp), strRadEdit, strtmp)
+
+    strTmp <- dtStrings["strRadAdd"]$value
+    strRadAdd <- ifelse(is.na(strtmp), strRadAdd, strtmp)
+
+    strTmp <- dtStrings["strFrmFile"]$value
+    strFrmFile <- ifelse(is.na(strtmp), strFrmFile, strtmp)
+
+    strTmp <- dtStrings["strFrmNew"]$value
+    strFrmNew <- ifelse(is.na(strtmp), strFrmNew, strtmp)
+
+    strTmp <- dtStrings["strBtnBins"]$value
+    strBtnBins <- ifelse(is.na(strtmp), strBtnBins, strtmp)
+
+    strTmp <- dtStrings["strBtnPanels"]$value
+    strBtnPanels <- ifelse(is.na(strtmp), strBtnPanels, strtmp)
+
+    strTmp <- dtStrings["strBtnCombine"]$value
+    strBtnCombine <- ifelse(is.na(strtmp), strBtnCombine, strtmp)
+
+    strTmp <- dtStrings["strMsgFile"]$value
+    strMsgFile <- ifelse(is.na(strtmp), strMsgFile, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleFile"]$value
+    strMsgTitleFile <- ifelse(is.na(strtmp), strMsgTitleFile, strtmp)
+
+    strTmp <- dtStrings["strLblSelectBins"]$value
+    strLblSelectBins <- ifelse(is.na(strtmp), strLblSelectBins, strtmp)
+
+    strTmp <- dtStrings["strLblSelectPanels"]$value
+    strLblSelectPanels <- ifelse(is.na(strtmp), strLblSelectPanels, strtmp)
+
+    strTmp <- dtStrings["strLblCombine"]$value
+    strLblCombine <- ifelse(is.na(strtmp), strLblCombine, strtmp)
+
+    strTmp <- dtStrings["strMsgCombine"]$value
+    strMsgCombine <- ifelse(is.na(strtmp), strMsgCombine, strtmp)
+
+    strTmp <- dtStrings["strLblSex"]$value
+    strLblSex <- ifelse(is.na(strtmp), strLblSex, strtmp)
+
+    strTmp <- dtStrings["strLblSensors"]$value
+    strLblSensors <- ifelse(is.na(strtmp), strLblSensors, strtmp)
+
+    strTmp <- dtStrings["strLblRemove"]$value
+    strLblRemove <- ifelse(is.na(strtmp), strLblRemove, strtmp)
+
+    strTmp <- dtStrings["strLblPanel"]$value
+    strLblPanel <- ifelse(is.na(strtmp), strLblPanel, strtmp)
+
+    strTmp <- dtStrings["strLblShortName"]$value
+    strLblShortName <- ifelse(is.na(strtmp), strLblShortName, strtmp)
+
+    strTmp <- dtStrings["strLblFullName"]$value
+    strLblFullName <- ifelse(is.na(strtmp), strLblFullName, strtmp)
+
+    strTmp <- dtStrings["strLblNone"]$value
+    strLblNone <- ifelse(is.na(strtmp), strLblNone, strtmp)
+
+    strTmp <- dtStrings["strRadAppend"]$value
+    strRadAppend <- ifelse(is.na(strtmp), strRadAppend, strtmp)
+
+    strTmp <- dtStrings["strRadOverwrite"]$value
+    strRadOverwrite <- ifelse(is.na(strtmp), strRadOverwrite, strtmp)
+
+    strTmp <- dtStrings["strRadSave"]$value
+    strRadSave <- ifelse(is.na(strtmp), strRadSave, strtmp)
+
+    strTmp <- dtStrings["strBtnSave"]$value
+    strBtnSave <- ifelse(is.na(strtmp), strBtnSave, strtmp)
+
+    strTmp <- dtStrings["strBtnSaving"]$value
+    strBtnSaving <- ifelse(is.na(strtmp), strBtnSaving, strtmp)
+
+    strTmp <- dtStrings["strMsgDuplicate1"]$value
+    strMsgDuplicate1 <- ifelse(is.na(strtmp), strMsgDuplicate1, strtmp)
+
+    strTmp <- dtStrings["strMsgDuplicate2"]$value
+    strMsgDuplicate2 <- ifelse(is.na(strtmp), strMsgDuplicate2, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleDuplicate"]$value
+    strMsgTitleDuplicate <- ifelse(is.na(strtmp), strMsgTitleDuplicate, strtmp)
+
+    strTmp <- dtStrings["strMsgMissing"]$value
+    strMsgMissing <- ifelse(is.na(strtmp), strMsgMissing, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleMissing"]$value
+    strMsgTitleMissing <- ifelse(is.na(strtmp), strMsgTitleMissing, strtmp)
+  }
+
+  # WINDOW ####################################################################
 
   if (debug) {
     print("File path")
@@ -139,25 +288,25 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("makeKit_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "STR Kits",
+    text = strFrmAction,
     horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
   kit_opt <- gradio(
-    items = c("Edit kit file", "Add new kits"),
+    items = c(strRadEdit, strRadAdd),
     selected = 2, container = f0
   )
 
@@ -168,7 +317,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Kit file",
+    text = strFrmFile,
     horizontal = TRUE,
     spacing = 2,
     container = gv
@@ -181,7 +330,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     text = .filePath, container = f1,
     expand = TRUE, fill = TRUE
   )
-  file_btn <- gbutton(text = "Load", container = f1)
+  file_btn <- gbutton(text = strBtnLoad, container = f1)
 
   addHandlerChanged(file_btn, handler = function(h, ...) {
     val_obj <- svalue(file_edt)
@@ -210,8 +359,8 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         .update(kitInfo = .newKitInfo, addKit = FALSE)
       } else {
         gmessage(
-          msg = "The kit file was not found",
-          title = "File not found",
+          msg = strMsgFile,
+          title = strMsgTitleFile,
           icon = "error",
           parent = w
         )
@@ -222,7 +371,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # FRAME 2 ###################################################################
 
   f2 <- gframe(
-    text = "New kits",
+    text = strFrmNew,
     horizontal = FALSE,
     spacing = 2,
     container = gv
@@ -233,7 +382,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # BINS ----------------------------------------------------------------------
 
   f2g1[1, 1] <- f2g1_bins_btn <- gbutton(
-    text = "Select Bins File",
+    text = strBtnBins,
     container = f2g1
   )
 
@@ -241,7 +390,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   addHandlerChanged(f2g1_bins_btn, handler = function(h, ...) {
     .binsFiles <<- gfile(
-      text = "Select Bins file...",
+      text = strLblSelectBins,
       type = "open",
       filter = list(
         "text files" = list(mime.types = c("text/plain")),
@@ -257,7 +406,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # PANELS --------------------------------------------------------------------
 
   f2g1[2, 1] <- f2g1_panels_btn <- gbutton(
-    text = "Select Panels File",
+    text = strBtnPanels,
     container = f2g1
   )
 
@@ -265,7 +414,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   addHandlerChanged(f2g1_panels_btn, handler = function(h, ...) {
     .panelsFiles <<- gfile(
-      text = "Select Panels file...",
+      text = strLblSelectPanels,
       type = "open",
       filter = list(
         "text files" = list(mime.types = c("text/plain")),
@@ -282,12 +431,12 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # READ AND COMBINE ----------------------------------------------------------
 
   f2g1[3, 1] <- f2g1_read_btn <- gbutton(
-    text = "Combine",
+    text = strBtnCombine,
     container = f2g1
   )
 
   f2g1[3, 2] <- glabel(
-    text = "Read and combine Bins and Panels files",
+    text = strLblCombine,
     container = f2g1
   )
 
@@ -315,8 +464,8 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .update(kitInfo = .newKitInfo, addKit = TRUE)
     } else {
       gmessage(
-        msg = "One or several files was not found",
-        title = "File not found",
+        msg = strMsgCombine,
+        title = strMsgTitleFile,
         icon = "error",
         parent = w
       )
@@ -366,18 +515,12 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     .f3g1 <<- glayout(container = f3, spacing = 2, expand = TRUE, fill = "both")
 
     # Add titles.
-    .f3g1[1, 1] <<- glabel(text = "Remove", container = .f3g1)
-    .f3g1[1, 2] <<- glabel(text = "Panel", container = .f3g1)
-    .f3g1[1, 3] <<- glabel(text = "Short.Name", container = .f3g1)
-    .f3g1[1, 4] <<- glabel(text = "Full.Name", container = .f3g1)
-    .f3g1[1, 5] <<- glabel(
-      text = "List sex markers (separate by comma)",
-      container = .f3g1
-    )
-    .f3g1[1, 6] <<- glabel(
-      text = "List quality sensors (separate by comma)",
-      container = .f3g1
-    )
+    .f3g1[1, 1] <<- glabel(text = strLblRemove, container = .f3g1)
+    .f3g1[1, 2] <<- glabel(text = strLblPanel, container = .f3g1)
+    .f3g1[1, 3] <<- glabel(text = strLblShortName, container = .f3g1)
+    .f3g1[1, 4] <<- glabel(text = strLblFullName, container = .f3g1)
+    .f3g1[1, 5] <<- glabel(text = strLblSex, container = .f3g1)
+    .f3g1[1, 6] <<- glabel(text = strLblSensor, container = .f3g1)
 
     # Loop over panel and add objects.
     for (p in seq(along = panel)) {
@@ -391,7 +534,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         # Try to autodetect sex marker.
         sexMarkers <- grep("AM|Y", markers, ignore.case = TRUE, value = TRUE)
         if (length(sexMarkers) == 0) {
-          sexMarkers <- .noSexMarkerString
+          sexMarkers <- strLblNone
         }
       } else {
         # Get current sex marker.
@@ -399,7 +542,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         & kitInfo$Sex.Marker])
         if (length(sexMarkers) == 0) {
           # If no matching marker, set to no sex marker string.
-          sexMarkers <- .noSexMarkerString
+          sexMarkers <- strLblNone
         }
       }
       # Collapse to string.
@@ -411,7 +554,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         # Try to autodetect quality sensors.
         qsMarkers <- grep("QS", markers, ignore.case = TRUE, value = TRUE)
         if (length(qsMarkers) == 0) {
-          qsMarkers <- .noQsMarkerString
+          qsMarkers <- strLblNone
         }
       } else {
         # Get current quality sensors.
@@ -419,7 +562,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         & kitInfo$Quality.Sensor])
         if (length(qsMarkers) == 0) {
           # If no matching marker, set to no qs marker string.
-          qsMarkers <- .noQsMarkerString
+          qsMarkers <- strLblNone
         }
       }
       # Collapse to string.
@@ -449,7 +592,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # FRAME 4 ###################################################################
 
   f4 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = FALSE,
     expand = FALSE,
     spacing = 2,
@@ -459,20 +602,14 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # SAVE ----------------------------------------------------------------------
 
   save_opt <- gradio(
-    items = c(
-      "Append to kit file",
-      "Overwrite kit file",
-      "Save as data frame"
-    ),
-    selected = 1,
-    horizontal = FALSE,
-    container = f4
+    items = c(strRadAppend, strRadOverwrite, strRadSave),
+    selected = 1, horizontal = FALSE, container = f4
   )
 
   save_edt <- gedit(expand = TRUE, container = f4)
   enabled(save_edt) <- FALSE
 
-  save_btn <- gbutton(text = "Save", expand = FALSE, container = f4)
+  save_btn <- gbutton(text = strBtnSave, expand = FALSE, container = f4)
 
 
   addHandlerChanged(save_opt, handler = function(h, ...) {
@@ -572,7 +709,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
           # Change button.
           blockHandlers(save_btn)
-          svalue(save_btn) <- "Saving..."
+          svalue(save_btn) <- strBtnSaving
           unblockHandlers(save_btn)
           enabled(save_btn) <- FALSE
 
@@ -600,7 +737,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
               .newKitInfo$Sex.Marker <<- NA # Create a new column.
             }
             currentSexMarkers <- unlist(strsplit(sexMarkers[p], split = ",", fixed = TRUE))
-            currentSexMarkers <- currentSexMarkers[currentSexMarkers != .noSexMarkerString]
+            currentSexMarkers <- currentSexMarkers[currentSexMarkers != strLblNone]
             selPanel <- .newKitInfo$Panel == panel[p]
             selMarker <- .newKitInfo$Marker %in% currentSexMarkers
             selection <- selPanel & selMarker
@@ -621,7 +758,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
               .newKitInfo$Quality.Sensor <<- NA # Create a new column.
             }
             currentQsMarkers <- unlist(strsplit(qsMarkers[p], split = ",", fixed = TRUE))
-            currentQsMarkers <- currentQsMarkers[currentQsMarkers != .noQsMarkerString]
+            currentQsMarkers <- currentQsMarkers[currentQsMarkers != strLblNone]
             selPanel <- .newKitInfo$Panel == panel[p]
             selMarker <- .newKitInfo$Marker %in% currentQsMarkers
             selection <- selPanel & selMarker
@@ -699,31 +836,28 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
           }
 
           if (debug) {
-            print(paste("EXIT:", match.call()[[1]]))
+            print(paste("EXIT:", fnc))
           }
 
           # Close GUI.
           # .saveSettings()
           dispose(w)
         } else {
-          message <- paste(
-            "A kit with short name",
-            shortName[exist][1],
-            "already exist!\n\n",
-            "Short name must be unique!"
-          )
-
-          gmessage(message,
-            title = "Duplicate short name",
+          gmessage(
+            msg = paste(
+              strMsgDuplicate1,
+              shortName[exist][1],
+              strMsgDplicate2
+            ),
+            title = strMsgTitleShortExist,
             icon = "error",
             parent = w
           )
         }
       } else {
-        message <- "A short name must be provided for all new kits"
-
-        gmessage(message,
-          title = "Missing short name",
+        gmessage(
+          msg = strMsgMissing,
+          title = strMsgTitleMissing,
           icon = "error",
           parent = w
         )
