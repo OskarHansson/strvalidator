@@ -155,7 +155,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   strChkGui <- "Save GUI settings"
   strBtnHelp <- "Help"
   strFrmDataset <- "Dataset"
-  strLblDataset <- "Sample dataset:"
+  strLblDataset <- "Dropout dataset:"
   strDrpDataset <- "<Select dataset>"
   strLblKit <- "and the kit used:"
   strFrmOptions <- "Options"
