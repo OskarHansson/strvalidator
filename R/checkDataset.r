@@ -1,16 +1,14 @@
 ################################################################################
-# TODO LIST
-# TODO: Change parameter names to format: lower.case
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.04.2020: Added language support.
+# 13.04.2020: Added @export.
 # 04.05.2015: 'slimcol' and 'stringcol' now accept vectors.
 # 06.05.2014: First version.
 
 #' @title Check Dataset
 #'
 #' @description
-#' Internal function to check a data.frame before analysis.
+#' Check a data.frame before analysis.
 #'
 #' @details Check that the object exist, there are rows, the required columns exist,
 #' if data.frame is 'fat', and if invalid strings exist. Show error message if not.
@@ -25,12 +23,41 @@
 #' @param parent parent gWidget.
 #' @param debug logical indicating printing debug information.
 #'
+#' @export
+#'
 
 checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
                          string = NULL, stringcol = NULL,
                          env = parent.frame(), parent = NULL, debug = FALSE) {
+
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
+  }
+
+  # Default strings.
+  strMsgNoRows <- "Dataset contain no rows!"
+  strMsgAdditionalCols <- "Additional columns required:\n"
+  strMsgFat1 <- "The dataset is too fat!\n\nThere can only be 1 column:"
+  strMsgFat2 <- "\nPlease slim the dataset."
+  strMsgDetected1 <- "detected in column"
+  strMsgDetected2 <- "Please make sure that data is clean/filtered.\n"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+  }
+
+  # FUNCTION ##################################################################
+
+  if (debug) {
     print("Parameters:")
     print("name")
     print(name)
@@ -60,7 +87,7 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
     if (nrow(df) == 0) {
 
       # Construct error message.
-      messageText <- c("Dataset contain no rows!")
+      messageText <- strMsgNoRows
 
       # Change flag.
       ok <- FALSE
@@ -70,7 +97,7 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
       missingCol <- reqcol[!reqcol %in% colnames(df)]
 
       # Construct error message.
-      messageText <- paste("Additional columns required:\n",
+      messageText <- paste(strMsgAdditionalCols,
         paste(missingCol, collapse = "\n"),
         sep = ""
       )
@@ -88,11 +115,7 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
         if (!slimmed) {
 
           # Construct error message.
-          messageText <- paste("The dataset is too fat!\n\n",
-            "There can only be 1", slimcol[c], "column\n",
-            "Slim the dataset",
-            sep = ""
-          )
+          messageText <- paste(strMsgFat1, slimcol[c], strMsgFat2)
 
           # Change flag.
           ok <- FALSE
@@ -105,8 +128,8 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
         if (any(string %in% df[, stringcol[c]])) {
 
           # Construct error message.
-          messageText <- paste("'", string, "' detected in column ", stringcol[c], "!\n",
-            "Please make sure that data is clean/filtered.\n",
+          messageText <- paste("'", string, "' ", strMsgDetected1, " ",
+            stringcol[c], "!\n", strMsgDetected2,
             sep = ""
           )
 
@@ -142,12 +165,15 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
       message(messageText)
     } else {
       # Show message box.
-      gmessage(messageText, title = "message", icon = "error", parent = parent)
+      gmessage(messageText,
+        title = fnc,
+        icon = "error", parent = parent
+      )
     }
   }
 
   if (debug) {
-    print(paste("EXIT:", match.call()[[1]]))
+    print(paste("EXIT:", fnc))
   }
 
   # Return result.

@@ -395,7 +395,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   f7 <- gframe(
     text = strFrmPlot,
-    horizontal = FALSE,
+    horizontal = TRUE,
     container = gv,
     spacing = 5
   )

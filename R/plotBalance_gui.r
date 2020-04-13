@@ -113,12 +113,19 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strLblJustification <- "Justification (v/h):"
   strFrmPlot <- "Plot balance data"
   strBtnHbVsHeight <- "Hb vs. Height"
+  strTipHbVsHeight <- "Plot heterozygote balance by mean marker peak height"
   strBtnHbVsDelta <- "Hb vs. Delta"
+  strTipHbVsDelta <- "Plot heterozygote balance by allele repeat difference"
   strBtnHbVsH <- "Hb vs. 'H'"
+  strTipHbVsH <- "Plot heterozygote balance by average profile peak height"
   strBtnHbVsMarker <- "Hb vs. Marker"
+  strTipHbVsMarker <- "Plot heterozygote balance by marker"
   strBtnLbVsHeight <- "Lb vs. Height"
+  strTipLbVsHeight <- "Plot locus balance by mean marker peak height"
   strBtnLbVsH <- "Lb vs. 'H'"
+  strTipLbVsH <- "Plot locus balance by average profile peak height"
   strBtnLbVsMarker <- "Lb vs. Marker"
+  strTipLbVsMarker <- "Plot locus balance by marker"
   strBtnProcessing <- "Processing..."
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
@@ -246,23 +253,44 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     strTmp <- dtStrings["strBtnHbVsHeight"]$value
     strBtnHbVsHeight <- ifelse(is.na(strtmp), strBtnHbVsHeight, strtmp)
 
+    strTmp <- dtStrings["strTipHbVsHeight"]$value
+    strTipHbVsHeight <- ifelse(is.na(strtmp), strTipHbVsHeight, strtmp)
+
     strTmp <- dtStrings["strBtnHbVsDelta"]$value
     strBtnHbVsDelta <- ifelse(is.na(strtmp), strBtnHbVsDelta, strtmp)
+
+    strTmp <- dtStrings["strTipHbVsDelta"]$value
+    strTipHbVsDelta <- ifelse(is.na(strtmp), strTipHbVsDelta, strtmp)
 
     strTmp <- dtStrings["strBtnHbVsH"]$value
     strBtnHbVsH <- ifelse(is.na(strtmp), strBtnHbVsH, strtmp)
 
+    strTmp <- dtStrings["strTipHbVsH"]$value
+    strTipHbVsH <- ifelse(is.na(strtmp), strTipHbVsH, strtmp)
+
     strTmp <- dtStrings["strBtnHbVsMarker"]$value
     strBtnHbVsMarker <- ifelse(is.na(strtmp), strBtnHbVsMarker, strtmp)
+
+    strTmp <- dtStrings["strTipHbVsMarker"]$value
+    strTipHbVsMarker <- ifelse(is.na(strtmp), strTipHbVsMarker, strtmp)
 
     strTmp <- dtStrings["strBtnLbVsHeight"]$value
     strBtnLbVsHeight <- ifelse(is.na(strtmp), strBtnLbVsHeight, strtmp)
 
+    strTmp <- dtStrings["strTipLbVsHeight"]$value
+    strTipLbVsHeight <- ifelse(is.na(strtmp), strTipLbVsHeight, strtmp)
+
     strTmp <- dtStrings["strBtnLbVsH"]$value
     strBtnLbVsH <- ifelse(is.na(strtmp), strBtnLbVsH, strtmp)
 
+    strTmp <- dtStrings["strTipLbVsH"]$value
+    strTipLbVsH <- ifelse(is.na(strtmp), strTipLbVsH, strtmp)
+
     strTmp <- dtStrings["strBtnLbVsMarker"]$value
     strBtnLbVsMarker <- ifelse(is.na(strtmp), strBtnLbVsMarker, strtmp)
+
+    strTmp <- dtStrings["strTipLbVsMarker"]$value
+    strTipLbVsMarker <- ifelse(is.na(strtmp), strTipLbVsMarker, strtmp)
 
     strTmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
