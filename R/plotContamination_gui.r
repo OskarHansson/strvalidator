@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 18.04.2020: Added language support.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
@@ -48,12 +49,129 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   .gData <- NULL
   .gPlot <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Plot contamination"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Contamination dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strFrmOptions <- "Options"
+  strChkOverride <- "Override automatic titles"
+  strLblTitlePlot <- "Plot title:"
+  strLblTitleX <- "X title:"
+  strLblTitleY <- "Y title:"
+  strLblTheme <- "Plot theme:"
+  strBtnPlot <- "Plot"
+  strBtnProcessing <- "Processing..."
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnSaveObject <- "Save as object"
+  strBtnSaveImage <- "Save as image"
+  strBtnObjectSaved <- "Object saved"
+  strLblMainTitle <- "Observed and expected number of peaks per profile (n="
+  strLblXTitle <- "Number of peaks per control"
+  strLblYTitle <- "Relative occurance"
+  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strTmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+
+    strTmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strTmp <- dtStrings["strChkOverride"]$value
+    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
+
+    strTmp <- dtStrings["strLblTitlePlot"]$value
+    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
+
+    strTmp <- dtStrings["strLblTitleX"]$value
+    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
+
+    strTmp <- dtStrings["strLblTitleY"]$value
+    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
+
+    strTmp <- dtStrings["strLblTheme"]$value
+    strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
+
+    strTmp <- dtStrings["strBtnPlot"]$value
+    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strTmp <- dtStrings["strBtnSaveObject"]$value
+    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
+
+    strTmp <- dtStrings["strBtnSaveImage"]$value
+    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
+
+    strTmp <- dtStrings["strBtnObjectSaved"]$value
+    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
+
+    strTmp <- dtStrings["strLblMainTitle"]$value
+    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
+
+    strTmp <- dtStrings["strLblXTitle"]$value
+    strLblXTitle <- ifelse(is.na(strtmp), strLblXTitle, strtmp)
+
+    strTmp <- dtStrings["strLblYTitle"]$value
+    strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
+
+    strTmp <- dtStrings["strMsgNull"]$value
+    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Plot contamination", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -97,32 +215,32 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("plotContamination_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Dataset",
+    text = strFrmDataset,
     horizontal = TRUE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Select dataset:", container = f0)
+  glabel(text = strLblDataset, container = f0)
 
   dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -134,7 +252,10 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     ellipsize = "none"
   )
 
-  f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
+  f0_samples_lbl <- glabel(
+    text = paste(" (0 ", strLblSamples, ")"),
+    container = f0
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -157,7 +278,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
       svalue(f0_samples_lbl) <- paste(" (",
         length(unique(.gData$Sample.Name)),
-        " samples)",
+        " ", strLblSamples, ")",
         sep = ""
       )
 
@@ -169,21 +290,21 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0_samples_lbl) <- " (0 samples)"
+      svalue(f0_samples_lbl) <- paste(" (0 ", strLblSamples, ")")
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = "Override automatic titles.",
+    text = strChkOverride,
     checked = FALSE, container = f1
   )
 
@@ -197,18 +318,18 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   )
 
   # Legends
-  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
 
   f1g2 <- glayout(container = f1)
-  f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
+  f1g2[1, 1] <- glabel(text = strLblTheme, anchor = c(-1, 0), container = f1g2)
   items_theme <- c(
     "theme_grey()", "theme_bw()", "theme_linedraw()",
     "theme_light()", "theme_dark()", "theme_minimal()",
@@ -224,7 +345,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   # BUTTON ####################################################################
 
   plot_poiss_btn <- gbutton(
-    text = "Plot", container = gv,
+    text = strBtnPlot, container = gv,
     expand = TRUE, fill = TRUE
   )
   tooltip(plot_poiss_btn) <- "Plot observed and expected contamination rate"
@@ -238,26 +359,26 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Name for result:", container = f5)
+  glabel(text = strLblSave, container = f5)
 
   f5_save_edt <- gedit(expand = TRUE, fill = TRUE, container = f5)
 
-  f5_save_btn <- gbutton(text = "Save as object", container = f5)
+  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
+  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Processing..."
+    svalue(f5_save_btn) <- strBtnProcessing
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -269,7 +390,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Object saved"
+    svalue(f5_save_btn) <- strBtnObjectSaved
     unblockHandlers(f5_save_btn)
   })
 
@@ -342,7 +463,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
       print(expected)
 
       # Prepare some plot settings.
-      title <- paste("Observed and expected number of peaks per profile (n=", totalSamples, ")", sep = "")
+      title <- paste(strLblMainTitle, totalSamples, ")", sep = "")
       legend <- model
       ymin <- floor(log10(min(DTtable$Proportion)))
       breaks <- 10^seq(1, ymin) # Pretty breaks.
@@ -378,8 +499,8 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
         gp <- .applyPlotSettings(
           gp = gp, theme = val_theme,
           main.title = title,
-          x.title = "Number of peaks per control",
-          y.title = "Relative occurance"
+          x.title = strLblXTitle,
+          y.title = strLblYTitle
         )
       }
 
@@ -390,12 +511,12 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
       .gPlot <<- gp
 
       # Change save button.
-      svalue(f5_save_btn) <- "Save as object"
+      svalue(f5_save_btn) <- strBtnSaveObject
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL or NA!",
-        title = "Error",
+        msg = strMsgNull,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -415,7 +536,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   }
 
   .applyPlotSettings <- function(gp, theme = "theme_grey()",
-                                   main.title = NULL, x.title = NULL, y.title = NULL) {
+                                 main.title = NULL, x.title = NULL, y.title = NULL) {
 
     # Apply theme.
     gp <- gp + eval(parse(text = theme))
