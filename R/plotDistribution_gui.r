@@ -679,7 +679,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   })
 
   f7_pdf_btn <- gbutton(text = strBtnPDF, container = f7)
-  totooltip(f7_pdf_btn) <- strTipPDF
+  tooltip(f7_pdf_btn) <- strTipPDF
 
   addHandlerChanged(f7_pdf_btn, handler = function(h, ...) {
     val_column <- svalue(f0_column_drp)
