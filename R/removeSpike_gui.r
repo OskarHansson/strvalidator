@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.05.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -37,12 +38,93 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   .gSpike <- NULL
   .gSpikeName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Remove spikes"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblRows <- "rows"
+  strLblSpikes <- "Spike list:"
+  strLblSamples <- "samples"
+  strFrmOptions <- "Options"
+  strChkInvert <- "Invert (remove all but spikes)"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strMsgNull <- "Select datasets!"
+  strMsgTitleError <- "Error"
+  strBtnRemove <- "Remove"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strTmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+
+    strTmp <- dtStrings["strLblRows"]$value
+    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
+
+    strTmp <- dtStrings["strLblSpikes"]$value
+    strLblSpikes <- ifelse(is.na(strtmp), strLblSpikes, strtmp)
+
+    strTmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strTmp <- dtStrings["strChkInvert"]$value
+    strChkInvert <- ifelse(is.na(strtmp), strChkInvert, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strTmp <- dtStrings["strMsgNull"]$value
+    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+
+    strTmp <- dtStrings["strBtnRemove"]$value
+    strBtnRemove <- ifelse(is.na(strtmp), strBtnRemove, strtmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Remove spikes", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -86,22 +168,22 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("removeSpike_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = "Dataset",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 10,
     container = gv
@@ -110,11 +192,11 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -127,7 +209,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   )
 
   f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
-    text = " 0 rows",
+    text = paste(" 0", strLblRows),
     container = f0g0
   )
 
@@ -152,16 +234,16 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- " 0 rows"
+      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
       svalue(f2_name) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = "Select spike list:", container = f0g0)
+  f0g0[2, 1] <- glabel(text = strLblSpikes, container = f0g0)
 
   f0g0[2, 2] <- f0g0_spike_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -174,7 +256,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   )
 
   f0g0[2, 3] <- f0g0_spike_col_lbl <- glabel(
-    text = " 0 samples",
+    text = paste(" 0", strLblSamples),
     container = f0g0
   )
 
@@ -195,22 +277,22 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gSpikeName <<- val_obj
 
       svalue(f0g0_spike_col_lbl) <- paste(
-        " ", length(unique(.gSpike$Id)),
-        " samples"
+        "", length(unique(.gSpike$Id)),
+        strLblSamples
       )
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- " 0 samples"
+      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblSamples)
     }
   })
 
   # OPTIONS ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 10, container = gv)
 
   f1_invert_chk <- gcheckbox(
-    text = "Invert (remove all but spikes)",
+    text = strChkInvert,
     checked = FALSE, container = f1
   )
 
@@ -218,22 +300,18 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # NAME ######################################################################
 
   f2 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 5,
     container = gv
   )
 
-  glabel(text = "Save as:", container = f2)
+  glabel(text = strLblSave, container = f2)
   f2_name <- gedit(text = "", width = 40, container = f2, expand = TRUE)
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  remove_btn <- gbutton(text = "Remove", container = gv)
+  remove_btn <- gbutton(text = strBtnRemove, container = gv)
 
   addHandlerChanged(remove_btn, handler = function(h, ...) {
     val_data <- .gData
@@ -258,7 +336,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "removeSpike_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -267,7 +345,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
@@ -275,8 +353,8 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       dispose(w)
     } else {
       gmessage(
-        msg = "Select a datasets!",
-        title = "Error",
+        msg = strMsgNull,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
