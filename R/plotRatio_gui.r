@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.05.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 13.07.2017: Fixed issue with button handlers.
@@ -42,13 +43,160 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   .gData <- NULL
   .gDataName <- NULL
   .gPlot <- NULL
+  .scales <- c("free_x", "free_y", "free")
+  .theme <- c(
+    "theme_grey()", "theme_bw()", "theme_linedraw()",
+    "theme_light()", "theme_dark()", "theme_minimal()",
+    "theme_classic()", "theme_void()"
+  )
+
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Plot marker ratios"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Marker ratio dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strFrmOptions <- "Options"
+  strLblScales <- "Scales:"
+  strChkOverride <- "Override automatic titles"
+  strLblTitlePlot <- "Plot title:"
+  strLblTitleX <- "X title:"
+  strLblTitleY <- "Y title:"
+  strLblTheme <- "Plot theme:"
+  strFrmPlot <- "Plot marker ratios"
+  strBtnBrowse <- "Brows"
+  strTipBrowse <- "Activate the console window and use Enter to step through the plots"
+  strBtnPlot <- "Plot"
+  strTipPlot <- "Plot all data in one plot, by group if available"
+  strBtnProcessing <- "Processing..."
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnSaveObject <- "Save as object"
+  strBtnSaveImage <- "Save as image"
+  strBtnObjectSaved <- "Object saved"
+  strLblMainTitle <- "Marker ratio"
+  strLblYTitle <- "Ratio"
+  strLblXTitleMarker <- "Marker"
+  strLblXTitlePair <- "Marker pair"
+  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strTmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+
+    strTmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strTmp <- dtStrings["strLblScales"]$value
+    strLblScales <- ifelse(is.na(strtmp), strLblScales, strtmp)
+
+    strTmp <- dtStrings["strChkOverride"]$value
+    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
+
+    strTmp <- dtStrings["strLblTitlePlot"]$value
+    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
+
+    strTmp <- dtStrings["strLblTitleX"]$value
+    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
+
+    strTmp <- dtStrings["strLblTitleY"]$value
+    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
+
+    strTmp <- dtStrings["strLblTheme"]$value
+    strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
+
+    strTmp <- dtStrings["strFrmPlot"]$value
+    strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
+
+    strTmp <- dtStrings["strBtnBrowse"]$value
+    strBtnBrowse <- ifelse(is.na(strtmp), strBtnBrowse, strtmp)
+
+    strTmp <- dtStrings["strTipBrowse"]$value
+    strTipBrowse <- ifelse(is.na(strtmp), strTipBrowse, strtmp)
+
+    strTmp <- dtStrings["strBtnPlot"]$value
+    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
+
+    strTmp <- dtStrings["strTipPlot"]$value
+    strTipPlot <- ifelse(is.na(strtmp), strTipPlot, strtmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strTmp <- dtStrings["strBtnSaveObject"]$value
+    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
+
+    strTmp <- dtStrings["strBtnSaveImage"]$value
+    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
+
+    strTmp <- dtStrings["strBtnObjectSaved"]$value
+    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
+
+    strTmp <- dtStrings["strLblMainTitle"]$value
+    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
+
+    strTmp <- dtStrings["strLblYTitle"]$value
+    strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
+
+    strTmp <- dtStrings["strLblXTitleMarker"]$value
+    strLblXTitleMarker <- ifelse(is.na(strtmp), strLblXTitleMarker, strtmp)
+
+    strTmp <- dtStrings["strLblXTitlePair"]$value
+    strLblXTitlePair <- ifelse(is.na(strtmp), strLblXTitlePair, strtmp)
+
+    strTmp <- dtStrings["strMsgNull"]$value
+    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Plot marker ratios", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -92,32 +240,32 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("plotRatio_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Dataset",
+    text = strFrmDataset,
     horizontal = TRUE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Select dataset:", container = f0)
+  glabel(text = strLblDataset, container = f0)
 
   dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -129,7 +277,10 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     ellipsize = "none"
   )
 
-  f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
+  f0_samples_lbl <- glabel(
+    text = paste(" (0 ", strLblSamples, ")", sep = ""),
+    container = f0
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -152,7 +303,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
       svalue(f0_samples_lbl) <- paste(" (",
         length(unique(.gData$Sample.Name)),
-        " samples)",
+        " ", strLblSamples, ")",
         sep = ""
       )
 
@@ -165,27 +316,27 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0_samples_lbl) <- " (0 samples)"
+      svalue(f0_samples_lbl) <- paste(" (0 ", strLblSamples, ")", sep = "")
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Axes scales:", container = f1)
+  glabel(text = strLblScales, container = f1)
   f1_scales_opt <- gradio(
-    items = c("free_x", "free_y", "free"),
+    items = .scales,
     selected = 1, container = f1
   )
 
   titles_chk <- gcheckbox(
-    text = "Override automatic titles.",
+    text = strChkOverride,
     checked = FALSE, container = f1
   )
 
@@ -200,25 +351,20 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   )
 
   # Legends
-  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
 
   f1g2 <- glayout(container = f1)
-  f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
-  items_theme <- c(
-    "theme_grey()", "theme_bw()", "theme_linedraw()",
-    "theme_light()", "theme_dark()", "theme_minimal()",
-    "theme_classic()", "theme_void()"
-  )
+  f1g2[1, 1] <- glabel(text = strLblTheme, anchor = c(-1, 0), container = f1g2)
   f1g2[1, 2] <- f1_theme_drp <- gcombobox(
-    items = items_theme,
+    items = .theme,
     selected = 1,
     container = f1g2,
     ellipsize = "none"
@@ -227,16 +373,16 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FRAME 7 ###################################################################
 
   f7 <- gframe(
-    text = "Plot marker ratios",
+    text = strFrmPlot,
     horizontal = TRUE,
     container = gv
   )
 
-  plot_browse_btn <- gbutton(text = "Browse", container = f7)
-  tooltip(plot_browse_btn) <- "Activate the console window and use Enter key to change plot"
+  plot_browse_btn <- gbutton(text = strBtnBrowse, container = f7)
+  tooltip(plot_browse_btn) <- strTipBrowse
 
-  plot_all_btn <- gbutton(text = "Plot", container = f7)
-  tooltip(plot_all_btn) <- "Plot all data in one plot, by group if available"
+  plot_all_btn <- gbutton(text = strBtnPlot, container = f7)
+  tooltip(plot_all_btn) <- strTipPlot
 
   addHandlerChanged(plot_browse_btn, handler = function(h, ...) {
     enabled(plot_browse_btn) <- FALSE
@@ -253,26 +399,26 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Name for result:", container = f5)
+  glabel(text = strLblSave, container = f5)
 
   f5_save_edt <- gedit(expand = TRUE, fill = TRUE, container = f5)
 
-  f5_save_btn <- gbutton(text = "Save as object", container = f5)
+  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
+  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Processing..."
+    svalue(f5_save_btn) <- strBtnProcessing
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -284,7 +430,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Object saved"
+    svalue(f5_save_btn) <- strBtnObjectSaved
     unblockHandlers(f5_save_btn)
   })
 
@@ -365,8 +511,8 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
               )
             } else {
               gp <- .applyPlotSettings(
-                gp = gp, theme = val_theme, main.title = "Marker ratio",
-                x.title = vecColNames[i], y.title = "Ratio"
+                gp = gp, theme = val_theme, main.title = strLblMainTitle,
+                x.title = vecColNames[i], y.title = strLblYTitle
               )
             }
           } else {
@@ -380,8 +526,8 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
               )
             } else {
               gp <- .applyPlotSettings(
-                gp = gp, theme = val_theme, main.title = "Marker ratio",
-                x.title = "Marker", y.title = "Ratio"
+                gp = gp, theme = val_theme, main.title = strLblMainTitle,
+                x.title = strLblXTitleMarker, y.title = strLblYTitle
               )
             }
           }
@@ -413,8 +559,8 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
             )
           } else {
             gp <- .applyPlotSettings(
-              gp = gp, theme = val_theme, main.title = "Marker ratio",
-              x.title = NULL, y.title = "Ratio"
+              gp = gp, theme = val_theme, main.title = strLblMainTitle,
+              x.title = NULL, y.title = strLblYTitle
             )
           }
         } else {
@@ -434,8 +580,8 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
             )
           } else {
             gp <- .applyPlotSettings(
-              gp = gp, theme = val_theme, main.title = "Marker ratio",
-              x.title = "Marker pair", y.title = "Ratio"
+              gp = gp, theme = val_theme, main.title = strLblMainTitle,
+              x.title = strLblXTitlePair, y.title = strLblYTitle
             )
           }
         }
@@ -448,12 +594,12 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       }
 
       # Change save button.
-      svalue(f5_save_btn) <- "Save as object"
+      svalue(f5_save_btn) <- strBtnSaveObject
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL or NA!",
-        title = "Error",
+        msg = strMsgNull,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -473,7 +619,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   }
 
   .applyPlotSettings <- function(gp, theme = "theme_grey()",
-                                   main.title = NULL, x.title = NULL, y.title = NULL) {
+                                 main.title = NULL, x.title = NULL, y.title = NULL) {
 
     # Apply theme.
     gp <- gp + eval(parse(text = theme))
