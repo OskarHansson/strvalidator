@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.05.2020: Added language support.
 # 07.09.2019: Added option to override labels and titles.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 05.01.2015: 'Save as object' now disabled when complex plot.
 # 14.12.2014: Option to drop sex markers.
 # 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
 
 #' @title Plot Stutter
 #'
@@ -63,13 +63,249 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   .gData <- NULL
   .gDataName <- NULL
   .gPlot <- NULL
+  .theme <- c(
+    "theme_grey()", "theme_bw()", "theme_linedraw()",
+    "theme_light()", "theme_dark()", "theme_minimal()",
+    "theme_classic()", "theme_void()"
+  )
+  .scales <- c("fixed", "free_x", "free_y", "free")
+
+
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Plot stutter ratios"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset and kit"
+  strLblDataset <- "Stutter dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblKit <- "and the kit used:"
+  strFrmOptions <- "Options"
+  strChkOverride <- "Override automatic titles"
+  strExpTitles <- "Titles"
+  strLblTitlePlot <- "Plot title:"
+  strLblTitleX <- "X title:"
+  strLblTitleY <- "Y title:"
+  strLblNB <- "NB! Title size, angle, vjust, and hjust does not always work as expected with different number of facets per row."
+  strLblTitleSettings <- "Main title size, angle, vjust, hjust:"
+  strLblXTitleSettings <- "X title size, angle, vjust, hjust:"
+  strLblYTitleSettings <- "Y title size, angle, vjust, hjust:"
+  strLblTheme <- "Plot theme:"
+  strChkSex <- "Exclude sex markers"
+  strChkMarker <- "Exclude markers with no data"
+  strExpPoints <- "Data points"
+  strLblShape <- "Shape:"
+  strLblAlpha <- "Alpha:"
+  strLblJitter <- "Jitter (width):"
+  strExpAxes <- "Axes"
+  strLblLimitY <- "Limit Y axis (min-max)"
+  strLblLimitX <- "Limit X axis (min-max)"
+  strLblScales <- "Scales:"
+  strChkOverrideLabels <- "Override default x/y/facet labels"
+  strExpXLabels <- "X labels"
+  strLblSize <- "Text size (pts):"
+  strLblAngle <- "Angle:"
+  strLblJustification <- "Justification (v/h):"
+  strExpYLabels <- "Y labels"
+  strExpFacets <- "Facets"
+  strLblSizeX <- "Text size X (pts):"
+  strLblSizeY <- "Text size Y (pts):"
+  strFrmPlot <- "Plot stutter data"
+  strBtnAllele <- "Ratio vs. Allele"
+  strBtnHeight <- "Ratio vs. Height"
+  strBtnProcessing <- "Processing..."
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnSaveObject <- "Save as object"
+  strBtnSaveImage <- "Save as image"
+  strBtnObjectSaved <- "Object saved"
+  strLblMainTitle <- "Stutter ratios"
+  strLblXTitleAllele <- "True allele"
+  strLblXTitleHeight <- "True allele (RFU)"
+  strLblYTitleRatio <- "Ratio"
+  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strTmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+
+    strTmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+
+    strTmp <- dtStrings["strLblKit"]$value
+    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strTmp <- dtStrings["strChkOverride"]$value
+    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
+
+    strTmp <- dtStrings["strExpTitles"]$value
+    strExpTitles <- ifelse(is.na(strtmp), strExpTitles, strtmp)
+
+    strTmp <- dtStrings["strLblTitlePlot"]$value
+    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
+
+    strTmp <- dtStrings["strLblTitleX"]$value
+    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
+
+    strTmp <- dtStrings["strLblTitleY"]$value
+    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
+
+    strTmp <- dtStrings["strLblNB"]$value
+    strLblNB <- ifelse(is.na(strtmp), strLblNB, strtmp)
+
+    strTmp <- dtStrings["strLblTitleSettings"]$value
+    strLblTitleSettings <- ifelse(is.na(strtmp), strLblTitleSettings, strtmp)
+
+    strTmp <- dtStrings["strLblXTitleSettings"]$value
+    strLblXTitleSettings <- ifelse(is.na(strtmp), strLblXTitleSettings, strtmp)
+
+    strTmp <- dtStrings["strLblYTitleSettings"]$value
+    strLblYTitleSettings <- ifelse(is.na(strtmp), strLblYTitleSettings, strtmp)
+
+    strTmp <- dtStrings["strLblTheme"]$value
+    strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
+
+    strTmp <- dtStrings["strChkSex"]$value
+    strChkSex <- ifelse(is.na(strtmp), strChkSex, strtmp)
+
+    strTmp <- dtStrings["strChkMarker"]$value
+    strChkMarker <- ifelse(is.na(strtmp), strChkMarker, strtmp)
+
+    strTmp <- dtStrings["strExpPoints"]$value
+    strExpPoints <- ifelse(is.na(strtmp), strExpPoints, strtmp)
+
+    strTmp <- dtStrings["strLblShape"]$value
+    strLblShape <- ifelse(is.na(strtmp), strLblShape, strtmp)
+
+    strTmp <- dtStrings["strLblAlpha"]$value
+    strLblAlpha <- ifelse(is.na(strtmp), strLblAlpha, strtmp)
+
+    strTmp <- dtStrings["strLblJitter"]$value
+    strLblJitter <- ifelse(is.na(strtmp), strLblJitter, strtmp)
+
+    strTmp <- dtStrings["strExpAxes"]$value
+    strExpAxes <- ifelse(is.na(strtmp), strExpAxes, strtmp)
+
+    strTmp <- dtStrings["strLblLimitY"]$value
+    strLblLimitY <- ifelse(is.na(strtmp), strLblLimitY, strtmp)
+
+    strTmp <- dtStrings["strLblLimitX"]$value
+    strLblLimitX <- ifelse(is.na(strtmp), strLblLimitX, strtmp)
+
+    strTmp <- dtStrings["strLblScales"]$value
+    strLblScales <- ifelse(is.na(strtmp), strLblScales, strtmp)
+
+    strTmp <- dtStrings["strChkOverrideLabels"]$value
+    strChkOverrideLabels <- ifelse(is.na(strtmp), strChkOverrideLabels, strtmp)
+
+    strTmp <- dtStrings["strExpXLabels"]$value
+    strExpXLabels <- ifelse(is.na(strtmp), strExpXLabels, strtmp)
+
+    strTmp <- dtStrings["strLblSize"]$value
+    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
+
+    strTmp <- dtStrings["strLblAngle"]$value
+    strLblAngle <- ifelse(is.na(strtmp), strLblAngle, strtmp)
+
+    strTmp <- dtStrings["strLblJustification"]$value
+    strLblJustification <- ifelse(is.na(strtmp), strLblJustification, strtmp)
+
+    strTmp <- dtStrings["strExpYLabels"]$value
+    strExpYLabels <- ifelse(is.na(strtmp), strExpYLabels, strtmp)
+
+    strTmp <- dtStrings["strExpFacets"]$value
+    strExpFacets <- ifelse(is.na(strtmp), strExpFacets, strtmp)
+
+    strTmp <- dtStrings["strLblSizeX"]$value
+    strLblSizeX <- ifelse(is.na(strtmp), strLblSizeX, strtmp)
+
+    strTmp <- dtStrings["strLblSizeY"]$value
+    strLblSizeY <- ifelse(is.na(strtmp), strLblSizeY, strtmp)
+
+    strTmp <- dtStrings["strFrmPlot"]$value
+    strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
+
+    strTmp <- dtStrings["strBtnAllele"]$value
+    strBtnAllele <- ifelse(is.na(strtmp), strBtnAllele, strtmp)
+
+    strTmp <- dtStrings["strBtnHeight"]$value
+    strBtnHeight <- ifelse(is.na(strtmp), strBtnHeight, strtmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strTmp <- dtStrings["strBtnSaveObject"]$value
+    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
+
+    strTmp <- dtStrings["strBtnSaveImage"]$value
+    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
+
+    strTmp <- dtStrings["strBtnObjectSaved"]$value
+    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
+
+    strTmp <- dtStrings["strLblMainTitle"]$value
+    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
+
+    strTmp <- dtStrings["strLblXTitleAllele"]$value
+    strLblXTitleAllele <- ifelse(is.na(strtmp), strLblXTitleAllele, strtmp)
+
+    strTmp <- dtStrings["strLblXTitleHeight"]$value
+    strLblXTitleHeight <- ifelse(is.na(strtmp), strLblXTitleHeight, strtmp)
+
+    strTmp <- dtStrings["strLblYTitleRatio"]$value
+    strLblYTitleRatio <- ifelse(is.na(strtmp), strLblYTitleRatio, strtmp)
+
+    strTmp <- dtStrings["strMsgNull"]$value
+    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Plot stutter ratios", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -113,32 +349,32 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("plotStutter_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Dataset and kit",
+    text = strFrmDataset,
     horizontal = TRUE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Select dataset:", container = f0)
+  glabel(text = strLblDataset, container = f0)
 
   dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -150,9 +386,12 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     ellipsize = "none"
   )
 
-  f0_samples_lbl <- glabel(text = " (0 samples)", container = f0)
+  f0_samples_lbl <- glabel(
+    text = paste(" (0 ", strLblSamples, ")", sep = ""),
+    container = f0
+  )
 
-  glabel(text = " and the kit used:", container = f0)
+  glabel(text = strLblKit, container = f0)
 
   kit_drp <- gcombobox(
     items = getKit(),
@@ -183,7 +422,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       svalue(f0_samples_lbl) <- paste(" (",
         length(unique(.gData$Sample.Name)),
-        " samples)",
+        " ", strLblSamples, ")",
         sep = ""
       )
 
@@ -200,21 +439,21 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0_samples_lbl) <- " (0 samples)"
+      svalue(f0_samples_lbl) <- paste(" (0 ", strLblSamples, ")", sep = "")
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = "Override automatic titles.",
+    text = strChkOverride,
     checked = FALSE, container = f1
   )
 
@@ -225,7 +464,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Titles --------------------------------------------------------------------
 
   titles_group <- gexpandgroup(
-    text = "Titles",
+    text = strExpTitles,
     horizontal = FALSE,
     container = f1
   )
@@ -233,24 +472,24 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Start collapsed.
   visible(titles_group) <- FALSE
 
-  glabel(text = "Plot title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = "X title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = "Y title:", container = titles_group, anchor = c(-1, 0))
+  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
   glabel(
-    text = "NB! Title size, angle, vjust, and hjust does not always work as expected with different number of facets per row.",
+    text = strLblNB,
     anchor = c(-1, 0), container = titles_group
   )
 
   titles_layout <- glayout(container = titles_group)
 
   title_lbl <- glabel(
-    text = "Title size, angle, vjust, hjust:",
+    text = strLblTitleSettings,
     anchor = c(-1, 0), container = titles_layout
   )
   title_size_txt <- gedit(
@@ -278,7 +517,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   titles_layout[1, 5] <- title_hjust_spb
 
   x_title_lbl <- glabel(
-    text = "X title size, angle, vjust, hjust:",
+    text = strLblXTitleSettings,
     anchor = c(-1, 0), container = titles_layout
   )
   x_title_size_txt <- gedit(
@@ -305,7 +544,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   titles_layout[2, 5] <- x_title_hjust_spb
 
   y_title_lbl <- glabel(
-    text = "Y title size, angle, vjust, hjust:",
+    text = strLblYTitleSettings,
     anchor = c(-1, 0), container = titles_layout
   )
   y_title_size_txt <- gedit(
@@ -334,27 +573,22 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Theme ---------------------------------------------------------------------
 
   f1g2 <- glayout(container = f1)
-  f1g2[1, 1] <- glabel(text = "Plot theme:", anchor = c(-1, 0), container = f1g2)
-  items_theme <- c(
-    "theme_grey()", "theme_bw()", "theme_linedraw()",
-    "theme_light()", "theme_dark()", "theme_minimal()",
-    "theme_classic()", "theme_void()"
-  )
+  f1g2[1, 1] <- glabel(text = strLblTheme, anchor = c(-1, 0), container = f1g2)
   f1g2[1, 2] <- f1_theme_drp <- gcombobox(
-    items = items_theme,
+    items = .theme,
     selected = 1,
     container = f1g2,
     ellipsize = "none"
   )
 
   f1_drop_chk <- gcheckbox(
-    text = "Drop sex markers",
+    text = strChkSex,
     checked = TRUE,
     container = f1
   )
 
   f1_levels_chk <- gcheckbox(
-    text = "Drop markers with no data",
+    text = strChkMarker,
     checked = FALSE,
     container = f1
   )
@@ -368,14 +602,14 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 7 ###################################################################
 
   f7 <- gframe(
-    text = "Plot stutter data",
+    text = strFrmPlot,
     horizontal = TRUE,
     container = gv
   )
 
-  plot_allele_btn <- gbutton(text = "Ratio vs. Allele", container = f7)
+  plot_allele_btn <- gbutton(text = strBtnAllele, container = f7)
 
-  plot_height_btn <- gbutton(text = "Ratio vs. Height", container = f7)
+  plot_height_btn <- gbutton(text = strBtnHeight, container = f7)
 
   addHandlerChanged(plot_allele_btn, handler = function(h, ...) {
     enabled(plot_allele_btn) <- FALSE
@@ -392,26 +626,26 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Name for result:", container = f5)
+  glabel(text = strLblSave, container = f5)
 
   f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = "Save as object", container = f5)
+  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
+  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Processing..."
+    svalue(f5_save_btn) <- strBtnProcessing
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -423,7 +657,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Object saved"
+    svalue(f5_save_btn) <- strBtnObjectSaved
     unblockHandlers(f5_save_btn)
   })
 
@@ -440,7 +674,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # ADVANCED OPTIONS ##########################################################
 
   e2 <- gexpandgroup(
-    text = "Data points",
+    text = strExpPoints,
     horizontal = FALSE,
     container = f1
   )
@@ -450,27 +684,27 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid2 <- glayout(container = e2)
 
-  grid2[1, 1] <- glabel(text = "Shape:", container = grid2)
+  grid2[1, 1] <- glabel(text = strLblShape, container = grid2)
   grid2[1, 2] <- shape_spb <- gspinbutton(
     from = 0, to = 25,
     by = 1, value = 18,
     container = grid2
   )
 
-  grid2[1, 3] <- glabel(text = "Alpha:", container = grid2)
+  grid2[1, 3] <- glabel(text = strLblAlpha, container = grid2)
   grid2[1, 4] <- alpha_spb <- gspinbutton(
     from = 0, to = 1,
     by = 0.01, value = 0.60,
     container = grid2
   )
 
-  grid2[1, 5] <- glabel(text = "Jitter (width):", container = grid2)
+  grid2[1, 5] <- glabel(text = strLblJitter, container = grid2)
   grid2[1, 6] <- jitter_txt <- gedit(text = "0.1", width = 4, container = grid2)
 
   # FRAME 3 ###################################################################
 
   e3 <- gexpandgroup(
-    text = "Axes",
+    text = strExpAxes,
     horizontal = FALSE,
     container = f1
   )
@@ -480,19 +714,19 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid3 <- glayout(container = e3, spacing = 1)
 
-  grid3[1, 1:2] <- glabel(text = "Limit Y axis (min-max)", container = grid3)
+  grid3[1, 1:2] <- glabel(text = strLblLimitY, container = grid3)
   grid3[2, 1] <- y_min_txt <- gedit(text = "", width = 5, container = grid3)
   grid3[2, 2] <- y_max_txt <- gedit(text = "", width = 5, container = grid3)
 
-  grid3[3, 1:2] <- glabel(text = "Limit X axis (min-max)", container = grid3)
+  grid3[3, 1:2] <- glabel(text = strLblLimitX, container = grid3)
   grid3[4, 1] <- x_min_txt <- gedit(text = "", width = 5, container = grid3)
   grid3[4, 2] <- x_max_txt <- gedit(text = "", width = 5, container = grid3)
 
   grid3[1, 3] <- glabel(text = "    ", container = grid3) # Add some space.
 
-  grid3[1, 4] <- glabel(text = "Scales:", container = grid3)
+  grid3[1, 4] <- glabel(text = strLblScales, container = grid3)
   grid3[2:4, 4] <- scales_opt <- gradio(
-    items = c("fixed", "free_x", "free_y", "free"),
+    items = .scales,
     selected = 2,
     horizontal = FALSE,
     container = grid3
@@ -508,7 +742,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 4 ###################################################################
 
   labels_chk <- gcheckbox(
-    text = "Override default x/y/facet labels",
+    text = strChkOverrideLabels,
     checked = FALSE,
     container = f1
   )
@@ -520,7 +754,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   })
 
   e4 <- gexpandgroup(
-    text = "X labels",
+    text = strExpXLabels,
     horizontal = FALSE,
     container = f1
   )
@@ -530,17 +764,17 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid4 <- glayout(container = e4)
 
-  grid4[1, 1] <- glabel(text = "Text size (pts):", container = grid4)
+  grid4[1, 1] <- glabel(text = strLblSize, container = grid4)
   grid4[1, 2] <- size_txt <- gedit(text = "8", width = 4, container = grid4)
 
-  grid4[1, 3] <- glabel(text = "Angle:", container = grid4)
+  grid4[1, 3] <- glabel(text = strLblAngle, container = grid4)
   grid4[1, 4] <- angle_spb <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 270,
     container = grid4
   )
 
-  grid4[2, 1] <- glabel(text = "Justification (v/h):", container = grid4)
+  grid4[2, 1] <- glabel(text = strLblJustification, container = grid4)
   grid4[2, 2] <- vjust_spb <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 0.5,
@@ -556,7 +790,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 5 ###################################################################
 
   e5 <- gexpandgroup(
-    text = "Y labels",
+    text = strExpYLabels,
     horizontal = FALSE,
     container = f1
   )
@@ -566,17 +800,17 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid5 <- glayout(container = e5)
 
-  grid5[1, 1] <- glabel(text = "Text size (pts):", container = grid5)
+  grid5[1, 1] <- glabel(text = strLblSize, container = grid5)
   grid5[1, 2] <- size_txt_y <- gedit(text = "8", width = 4, container = grid5)
 
-  grid5[1, 3] <- glabel(text = "Angle:", container = grid5)
+  grid5[1, 3] <- glabel(text = strLblAngle, container = grid5)
   grid5[1, 4] <- angle_spb_y <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 0,
     container = grid5
   )
 
-  grid5[2, 1] <- glabel(text = "Justification (v/h):", container = grid5)
+  grid5[2, 1] <- glabel(text = strLblJustification, container = grid5)
   grid5[2, 2] <- vjust_spb_y <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 0.5,
@@ -592,7 +826,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 6 ###################################################################
 
   e6 <- gexpandgroup(
-    text = "Facets",
+    text = strExpFacets,
     horizontal = FALSE,
     container = f1
   )
@@ -602,20 +836,20 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid6 <- glayout(container = e6)
 
-  grid6[1, 1] <- glabel(text = "Text size X (pts):", container = grid6)
+  grid6[1, 1] <- glabel(text = strLblSizeX, container = grid6)
   grid6[1, 2] <- size_txt_sx <- gedit(text = "10", width = 4, container = grid6)
 
-  grid6[1, 3] <- glabel(text = "Angle:", container = grid6)
+  grid6[1, 3] <- glabel(text = strLblAngle, container = grid6)
   grid6[1, 4] <- angle_spb_sx <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 0,
     container = grid6
   )
 
-  grid6[2, 1] <- glabel(text = "Text size Y (pts):", container = grid6)
+  grid6[2, 1] <- glabel(text = strLblSizeY, container = grid6)
   grid6[2, 2] <- size_txt_sy <- gedit(text = "10", width = 4, container = grid6)
 
-  grid6[2, 3] <- glabel(text = "Angle:", container = grid6)
+  grid6[2, 3] <- glabel(text = strLblAngle, container = grid6)
   grid6[2, 4] <- angle_spb_sy <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 0,
@@ -775,9 +1009,9 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           xTitle <- val_xtitle
           yTitle <- val_ytitle
         } else {
-          mainTitle <- "Stutter ratios"
-          xTitle <- "True allele"
-          yTitle <- "Ratio"
+          mainTitle <- strLblMainTitle
+          xTitle <- strLblXTitleAllele
+          yTitle <- strLblYTitleRatio
         }
 
         gp <- ggplot(.gData, aes_string(x = "Allele", y = "Ratio", colour = "Type"))
@@ -787,9 +1021,9 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           xTitle <- val_xtitle
           yTitle <- val_ytitle
         } else {
-          mainTitle <- "Stutter ratios"
-          xTitle <- "True allele (RFU)"
-          yTitle <- "Ratio"
+          mainTitle <- strLblMainTitle
+          xTitle <- strLblXTitleHeight
+          yTitle <- strLblYTitleRatio
         }
 
         gp <- ggplot(.gData, aes_string(x = "HeightA", y = "Ratio", colour = "Type"))
@@ -915,7 +1149,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         print(gp)
 
         # Change save button.
-        svalue(f5_save_btn) <- "Save as object"
+        svalue(f5_save_btn) <- strBtnSaveObject
         enabled(f5_save_btn) <- TRUE
       } else if (length(val_ncol) > 1) {
         # Complex plot, unequal number of markers per dye.
@@ -1133,7 +1367,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         gp <- gridExtra::arrangeGrob(g)
 
         # Change save button.
-        svalue(f5_save_btn) <- "Save as object"
+        svalue(f5_save_btn) <- strBtnSaveObject
         enabled(f5_save_btn) <- FALSE
       } else {
         # Not supported!
@@ -1145,8 +1379,8 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = "Data frame is NULL or NA!",
-        title = "Error",
+        msg = strMsgNull,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
