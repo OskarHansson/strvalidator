@@ -354,8 +354,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   )
   tooltip(f1_virtual_chk) <- strTipVirtual
 
-  glabel(text = f1_msg, anchor = c(-1, 0), container = f1)
-
   f1_penalty_chk <- gcheckbox(
     text = strChkPenalty,
     checked = TRUE,

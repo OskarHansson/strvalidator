@@ -106,8 +106,8 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     strTmp <- dtStrings["strLblTcons2"]$Value
     strLblTcons2 <- ifelse(is.na(strTmp), strLblTcons2, strTmp)
 
-    strTmp <- dtStrings["strChkSexMarker"]$Value
-    strChkSexMarker <- ifelse(is.na(strTmp), strChkSexMarker, strTmp)
+    strTmp <- dtStrings["strChkSexMarkers"]$Value
+    strChkSexMarkers <- ifelse(is.na(strTmp), strChkSexMarkers, strTmp)
 
     strTmp <- dtStrings["strFrmSave"]$Value
     strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)

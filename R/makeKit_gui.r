@@ -75,6 +75,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   strRadEdit <- "Edit kit file"
   strRadAdd <- "Add new kits"
   strFrmFile <- "Path to current kit file"
+  strBtnLoad <- "Load"
   strFrmNew <- "New kits"
   strBtnBins <- "Select Bins file"
   strBtnPanels <- "Select Panels file"
@@ -92,6 +93,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   strLblShortName <- "Short name"
   strLblFullName <- "Full name"
   strLblNone <- "<none>"
+  strFrmSave <- "Save"
   strRadAppend <- "Append to kit file"
   strRadOverwrite <- "Overwrite kit file"
   strRadSave <- "Save as data frame"
@@ -127,6 +129,9 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     strTmp <- dtStrings["strFrmFile"]$value
     strFrmFile <- ifelse(is.na(strtmp), strFrmFile, strtmp)
+
+    strTmp <- dtStrings["strBtnLoad"]$value
+    strBtnLoad <- ifelse(is.na(strtmp), strBtnLoad, strtmp)
 
     strTmp <- dtStrings["strFrmNew"]$value
     strFrmNew <- ifelse(is.na(strtmp), strFrmNew, strtmp)
@@ -178,6 +183,9 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     strTmp <- dtStrings["strLblNone"]$value
     strLblNone <- ifelse(is.na(strtmp), strLblNone, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
     strTmp <- dtStrings["strRadAppend"]$value
     strRadAppend <- ifelse(is.na(strtmp), strRadAppend, strtmp)
