@@ -4,8 +4,12 @@
 \alias{tablePrecision}
 \title{Calculate Precision}
 \usage{
-tablePrecision(data, key = c("Marker", "Allele"), target = c("Size"),
-  debug = FALSE)
+tablePrecision(
+  data,
+  key = c("Marker", "Allele"),
+  target = c("Size"),
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{Data frame containing at least columns defined in 'key' and 'target'.}

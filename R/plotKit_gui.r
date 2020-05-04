@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 26.04.2020: Added language support.
+# 26.04.2020: Fixed bug when no kit selected.
 # 04.08.2019: Expand scrollable checkbox view.
 # 24.02.2019: Adjusted plot button.
 # 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
@@ -43,12 +45,133 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Global variables.
   .gPlot <- NULL
 
+  # Language ------------------------------------------------------------------
+  
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+  
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
+  
+  # Default strings.
+  strWinTitle <- "Plot kit"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmKit <- "Select kits"
+  strFrmOptions <- "Options"
+  strLblTitlePlot <- "Plot title:"
+  strLblTitleX <- "X title:"
+  strLblSize <- "Size:"
+  strLblKitSize <- "Kit name size:"
+  strLblKitSpacing <- "Spacing between kits:"
+  strLblMarkerSize <- "Marker name size:"
+  strLblMarkerHeight <- "Marker height:"
+  strLblMarkerAlpha <- "Marker transparency:"
+  strTipMarker <- "Marker range fill color alpha"
+  strBtnPlot <- "Plot"
+  strTipPlot <- "Plot marker ranges for kit"
+  strBtnProcessing <- "Processing..."
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnSaveObject <- "Save as object"
+  strBtnSaveImage <- "Save as image"
+  strBtnObjectSaved <- "Object saved"
+  strLblMainTitle <- "Marker size range"
+  strLblXTitle <- "Size (bp)"
+  strMsgNull <- "At least one kit must be selected!"
+  strMsgTitleError <- "Error"
+  
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+  
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
 
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+    
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+    
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+    
+    strTmp <- dtStrings["strFrmKit"]$value
+    strFrmKit <- ifelse(is.na(strtmp), strFrmKit, strtmp)
+    
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+    
+    strTmp <- dtStrings["strLblTitlePlot"]$value
+    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
+    
+    strTmp <- dtStrings["strLblTitleX"]$value
+    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
+    
+    strTmp <- dtStrings["strLblSize"]$value
+    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
+    
+    strTmp <- dtStrings["strLblKitSize"]$value
+    strLblKitSize <- ifelse(is.na(strtmp), strLblKitSize, strtmp)
+    
+    strTmp <- dtStrings["strLblKitSpacing"]$value
+    strLblKitSpacing <- ifelse(is.na(strtmp), strLblKitSpacing, strtmp)
+    
+    strTmp <- dtStrings["strLblMarkerSize"]$value
+    strLblMarkerSize <- ifelse(is.na(strtmp), strLblMarkerSize, strtmp)
+    
+    strTmp <- dtStrings["strLblMarkerHeight"]$value
+    strLblMarkerHeight <- ifelse(is.na(strtmp), strLblMarkerHeight, strtmp)
+    
+    strTmp <- dtStrings["strLblMarkerAlpha"]$value
+    strLblMarkerAlpha <- ifelse(is.na(strtmp), strLblMarkerAlpha, strtmp)
+    
+    strTmp <- dtStrings["strTipMarker"]$value
+    strTipMarker <- ifelse(is.na(strtmp), strTipMarker, strtmp)
+    
+    strTmp <- dtStrings["strBtnPlot"]$value
+    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
+    
+    strTmp <- dtStrings["strTipPlot"]$value
+    strTipPlot <- ifelse(is.na(strtmp), strTipPlot, strtmp)
+    
+    strTmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+    
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+    
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+    
+    strTmp <- dtStrings["strBtnSaveObject"]$value
+    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
+    
+    strTmp <- dtStrings["strBtnSaveImage"]$value
+    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
+    
+    strTmp <- dtStrings["strBtnObjectSaved"]$value
+    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
+    
+    strTmp <- dtStrings["strLblMainTitle"]$value
+    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
+    
+    strTmp <- dtStrings["strLblXTitle"]$value
+    strLblXTitle <- ifelse(is.na(strtmp), strLblXTitle, strtmp)
+    
+    strTmp <- dtStrings["strMsgNull"]$value
+    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+  }
+  
+  # WINDOW ####################################################################
+  
   # Main window.
-  w <- gwindow(title = "Plot kit", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -92,22 +215,22 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("plotKit_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Select kits",
+    text = strFrmKit,
     horizontal = TRUE,
     spacing = 5,
     container = gv,
@@ -134,7 +257,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 5,
     container = gv
@@ -142,26 +265,26 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   f1g1 <- glayout(container = f1, spacing = 1)
 
-  f1g1[1, 1] <- glabel(text = "Plot title:", container = f1g1)
+  f1g1[1, 1] <- glabel(text = strLblTitlePlot, container = f1g1)
   f1g1[1, 2] <- title_edt <- gedit(
-    text = "Marker size range",
+    text = strLblMainTitle,
     width = 40,
     container = f1g1
   )
-  f1g1[1, 3] <- glabel(text = "Size:", container = f1g1)
+  f1g1[1, 3] <- glabel(text = strLblSize, container = f1g1)
   f1g1[1, 4] <- title_size_edt <- gedit(
     text = "20",
     width = 4,
     container = f1g1
   )
 
-  f1g1[2, 1] <- glabel(text = "X title:", container = f1g1)
+  f1g1[2, 1] <- glabel(text = strLblTitleX, container = f1g1)
   f1g1[2, 2] <- x_title_edt <- gedit(
-    text = "Size (bp)",
+    text = strLblXTitle,
     container = f1g1
   )
 
-  f1g1[2, 3] <- glabel(text = "Size:", container = f1g1)
+  f1g1[2, 3] <- glabel(text = strLblSize, container = f1g1)
   f1g1[2, 4] <- x_title_size_edt <- gedit(
     text = "10",
     width = 4,
@@ -170,35 +293,35 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   f1g2 <- glayout(container = f1, spacing = 1)
 
-  f1g2[1, 1] <- glabel(text = "Kit name size:", container = f1g2)
+  f1g2[1, 1] <- glabel(text = strLblKitSize, container = f1g2)
   f1g2[1, 2] <- kit_size_edt <- gedit(
     text = "4",
     width = 4,
     container = f1g2
   )
 
-  f1g2[2, 1] <- glabel(text = "Inter kit spacing:", container = f1g2)
+  f1g2[2, 1] <- glabel(text = strLblKitSpacing, container = f1g2)
   f1g2[2, 2] <- kit_spacing_spb <- gspinbutton(
     from = 1, to = 10, by = 1,
     value = 2,
     container = f1g2
   )
 
-  f1g2[3, 1] <- glabel(text = "Marker name size:", container = f1g2)
+  f1g2[3, 1] <- glabel(text = strLblMarkerSize, container = f1g2)
   f1g2[3, 2] <- marker_size_edt <- gedit(
     text = "3",
     width = 4,
     container = f1g2
   )
 
-  f1g2[4, 1] <- glabel(text = "Marker height:", container = f1g2)
+  f1g2[4, 1] <- glabel(text = strLblMarkerHeight, container = f1g2)
   f1g2[4, 2] <- marker_hight_spb <- gspinbutton(
     from = 0.1, to = 0.5, by = 0.1,
     value = 0.5,
     container = f1g2
   )
 
-  f1g2[5, 1] <- glabel(text = "Marker range alpha:", container = f1g2)
+  f1g2[5, 1] <- glabel(text = strLblMarkerAlpha, container = f1g2)
   f1g2[5, 2] <- marker_alpha_spb <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 1,
@@ -208,8 +331,8 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # BUTTON ####################################################################
 
-  plot_btn <- gbutton(text = "Plot", container = gv)
-  tooltip(plot_btn) <- "Plot marker ranges for kit"
+  plot_btn <- gbutton(text = strBtnPlot, container = gv)
+  tooltip(plot_btn) <- strTipPlot
 
   addHandlerClicked(plot_btn, handler = function(h, ...) {
     val_name <- svalue(plot_btn)
@@ -222,7 +345,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Change button.
     blockHandlers(plot_btn)
-    svalue(plot_btn) <- "Processing..."
+    svalue(plot_btn) <- strBtnProcessing
     unblockHandlers(plot_btn)
     enabled(plot_btn) <- FALSE
 
@@ -231,7 +354,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Change button.
     blockHandlers(plot_btn)
-    svalue(plot_btn) <- "Plot"
+    svalue(plot_btn) <- strBtnPlot
     unblockHandlers(plot_btn)
     enabled(plot_btn) <- TRUE
   })
@@ -239,26 +362,26 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 5,
     container = gv
   )
 
-  glabel(text = "Name for result:", container = f5)
+  glabel(text = strLblSave, container = f5)
 
   f5_save_edt <- gedit(text = "_ggplot", container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = "Save as object", container = f5)
+  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = "Save as image", container = f5)
+  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Processing..."
+    svalue(f5_save_btn) <- strBtnProcessing
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -270,7 +393,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- "Object saved"
+    svalue(f5_save_btn) <- strBtnObjectSaved
     unblockHandlers(f5_save_btn)
   })
 
@@ -324,7 +447,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
 
-    if (!is.na(selectedKits) && !is.null(selectedKits)) {
+    if (length(selectedKits)>0) {
 
       # Initiate:
       kitData <- NULL
@@ -417,8 +540,8 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = "Data frame is NULL or NA!",
-        title = "Error",
+        msg = strMsgNull,
+        title = strMsgTitleError,
         icon = "error"
       )
     }

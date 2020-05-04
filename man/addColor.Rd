@@ -4,8 +4,15 @@
 \alias{addColor}
 \title{Add Color Information.}
 \usage{
-addColor(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
-  ignore.case = FALSE, debug = FALSE)
+addColor(
+  data,
+  kit = NA,
+  have = NA,
+  need = NA,
+  overwrite = FALSE,
+  ignore.case = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data frame or vector.}

@@ -4,8 +4,12 @@
 \alias{plotRatio_gui}
 \title{Plot Ratio}
 \usage{
-plotRatio_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+plotRatio_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

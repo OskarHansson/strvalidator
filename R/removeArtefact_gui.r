@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.05.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
@@ -37,12 +38,93 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   .gArtefact <- NULL
   .gArtefactName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Remove artefacts"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblRows <- "rows"
+  strLblArtefacts <- "Artefact list:"
+  strFrmOptions <- "Options"
+  strChkRemoveNA <- "Remove Allele=NA"
+  strLblThreshold <- "Artefact threshold:"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strMsgNull <- "Select datasets!"
+  strMsgTitleError <- "Error"
+  strBtnRemove <- "Remove"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strTmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+
+    strTmp <- dtStrings["strLblRows"]$value
+    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
+
+    strTmp <- dtStrings["strLblArtefacts"]$value
+    strLblArtefacts <- ifelse(is.na(strtmp), strLblArtefacts, strtmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strTmp <- dtStrings["strChkRemoveNA"]$value
+    strChkRemoveNA <- ifelse(is.na(strtmp), strChkRemoveNA, strtmp)
+
+    strTmp <- dtStrings["strLblThreshold"]$value
+    strLblThreshold <- ifelse(is.na(strtmp), strLblThreshold, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strTmp <- dtStrings["strMsgNull"]$value
+    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+
+    strTmp <- dtStrings["strBtnRemove"]$value
+    strBtnRemove <- ifelse(is.na(strtmp), strBtnRemove, strtmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Remove artefacts", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -86,22 +168,22 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("removeArtefact_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = "Dataset",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 10,
     container = gv
@@ -110,11 +192,11 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -127,7 +209,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   )
 
   f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
-    text = " 0 rows",
+    text = paste(" 0", strLblRows),
     container = f0g0
   )
 
@@ -147,21 +229,21 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      svalue(f0g0_data_col_lbl) <- paste(" ", nrow(.gData), " rows")
+      svalue(f0g0_data_col_lbl) <- paste("", nrow(.gData), strLblRows)
       svalue(f2_name) <- paste(.gDataName, "no_artefacts", sep = "_")
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- " 0 rows"
+      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
       svalue(f2_name) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = "Select artefact list:", container = f0g0)
+  f0g0[2, 1] <- glabel(text = strLblArtefacts, container = f0g0)
 
   f0g0[2, 2] <- f0g0_spike_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -174,7 +256,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   )
 
   f0g0[2, 3] <- f0g0_spike_col_lbl <- glabel(
-    text = " 0 rows",
+    text = paste(" 0", strLblRows),
     container = f0g0
   )
 
@@ -194,26 +276,26 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gArtefact <<- get(val_obj, envir = env)
       .gArtefactName <<- val_obj
 
-      svalue(f0g0_spike_col_lbl) <- paste(" ", nrow(.gArtefact), " rows")
+      svalue(f0g0_spike_col_lbl) <- paste("", nrow(.gArtefact), strLblRows)
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- " 0 rows"
+      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
     }
   })
 
   # OPTIONS ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 10, container = gv)
 
   f1_na_chk <- gcheckbox(
-    text = "Remove Allele=NA",
+    text = strChkRemoveNA,
     checked = FALSE, container = f1
   )
 
   f1g1 <- glayout(container = f1, spacing = 1)
 
-  f1g1[1, 1] <- glabel(text = "Artefact threshold: ", container = f1g1)
+  f1g1[1, 1] <- glabel(text = strLblThreshold, container = f1g1)
   f1g1[1, 2] <- f1_threshold_spn <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     digits = 2, container = f1g1
@@ -222,22 +304,18 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # NAME ######################################################################
 
   f2 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 5,
     container = gv
   )
 
-  glabel(text = "Save as:", container = f2)
+  glabel(text = strLblSave, container = f2)
   f2_name <- gedit(text = "", width = 40, container = f2, expand = TRUE)
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  remove_btn <- gbutton(text = "Remove", container = gv)
+  remove_btn <- gbutton(text = strBtnRemove, container = gv)
 
   addHandlerChanged(remove_btn, handler = function(h, ...) {
     val_data <- .gData
@@ -264,7 +342,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "removeArtefact_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -273,7 +351,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
@@ -281,8 +359,8 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       dispose(w)
     } else {
       gmessage(
-        msg = "Select a datasets!",
-        title = "Error",
+        msg = strMsgNull,
+        title = strMsgTitleError,
         icon = "error"
       )
     }

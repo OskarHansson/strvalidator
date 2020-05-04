@@ -3,6 +3,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
+# 29.02.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 20.07.2018: Fixed dropdown gets blank when dataset is selected.
 # 06.08.2017: Added audit trail.
@@ -21,8 +23,6 @@
 # 11.11.2015: Added importFrom ggplot2.
 # 21.10.2015: Added attributes.
 # 28.08.2015: Added importFrom
-# 18.08.2015: Changed label for AT4 option.
-# 04.05.2015: First version.
 
 #' @title Calculate Analytical Threshold
 #'
@@ -62,18 +62,197 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   .gPlot <- NULL
   .gRef <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
+  }
+
+  # Default strings.
+  strWinTitle <- "Calculate analytical threshold"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Datasets"
+  strLblDataset <- "Sample dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblDatasetRef <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strLblKit <- "Kit:"
+  strTipKit <- "Only used to shade masked ranges in plot."
+  strFrmOptions <- "Options"
+  strChkIgnore <- "Ignore case"
+  strChkWord <- "Add word boundaries"
+  strChkMaskHigh <- "Mask high peaks"
+  strLblMaskHigh <- "Mask all peaks above (RFU): "
+  strChkMaskAllele <- "Mask sample alleles"
+  strLblDpAllele <- "Range (data points) around known alleles:"
+  strChkMaskDye <- "Mask sample alleles per dye channel"
+  strChkILS <- "Mask ILS peaks"
+  strLblDpPeak <- "Range (data points) around known peak: "
+  strLblConf <- "Confidence level 'k' (AT1, AT7): "
+  strLblRank <- "Percentile rank threshold (AT2): "
+  strLblAlpha <- "Upper confidence 'alpha' (AT4): "
+  strFrmPrepare <- "Prepare data and check masking"
+  strBtnMask <- "Prepare and mask"
+  strDrpDefault2 <- "<Select sample>"
+  strBtnSave <- "Save plot"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strLblSaveRank <- "Name for percentile rank list:"
+  strLblSaveMasked <- "Name for masked raw data:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strWinCheck <- "Check subsetting"
+  strMsgPlot <- "Click 'Prepare and mask' and select a sample before saving."
+  strMsgTitlePlot <- "No plot!"
+  strMsgTitleError <- "Error"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a dataset and a reference set"
+  strMsgDataset <- "A dataset and a reference dataset must be selected."
+  strMsgTitleDataset <- "Datasets not selected"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strLblDatasetRef"]$Value
+    strLblDatasetRef <- ifelse(is.na(strTmp), strLblDatasetRef, strTmp)
+
+    strTmp <- dtStrings["strLblRef"]$Value
+    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+
+    strTmp <- dtStrings["strLblKit"]$Value
+    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+
+    strTmp <- dtStrings["strTipKit"]$Value
+    strTipKit <- ifelse(is.na(strTmp), strTipKit, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strChkIgnore"]$Value
+    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
+
+    strTmp <- dtStrings["strChkWord"]$Value
+    strChkWord <- ifelse(is.na(strTmp), strChkWord, strTmp)
+
+    strTmp <- dtStrings["strChkMaskHigh"]$Value
+    strChkMaskHigh <- ifelse(is.na(strTmp), strChkMaskHigh, strTmp)
+
+    strTmp <- dtStrings["strLblMaskHigh"]$Value
+    strLblMaskHigh <- ifelse(is.na(strTmp), strLblMaskHigh, strTmp)
+
+    strTmp <- dtStrings["strChkMaskAllele"]$Value
+    strChkMaskAllele <- ifelse(is.na(strTmp), strChkMaskAllele, strTmp)
+
+    strTmp <- dtStrings["strLblDpAllele"]$Value
+    strLblDpAllele <- ifelse(is.na(strTmp), strLblDpAllele, strTmp)
+
+    strTmp <- dtStrings["strChkMaskDye"]$Value
+    strChkMaskDye <- ifelse(is.na(strTmp), strChkMaskDye, strTmp)
+
+    strTmp <- dtStrings["strChkILS"]$Value
+    strChkILS <- ifelse(is.na(strTmp), strChkILS, strTmp)
+
+    strTmp <- dtStrings["strLblDpPeak"]$Value
+    strLblDpPeak <- ifelse(is.na(strTmp), strLblDpPeak, strTmp)
+
+    strTmp <- dtStrings["strLblConf"]$Value
+    strLblConf <- ifelse(is.na(strTmp), strLblConf, strTmp)
+
+    strTmp <- dtStrings["strLblRank"]$Value
+    strLblRank <- ifelse(is.na(strTmp), strLblRank, strTmp)
+
+    strTmp <- dtStrings["strLblAlpha"]$Value
+    strLblAlpha <- ifelse(is.na(strTmp), strLblAlpha, strTmp)
+
+    strTmp <- dtStrings["strFrmPrepare"]$Value
+    strFrmPrepare <- ifelse(is.na(strTmp), strFrmPrepare, strTmp)
+
+    strTmp <- dtStrings["strBtnMask"]$Value
+    strBtnMask <- ifelse(is.na(strTmp), strBtnMask, strTmp)
+
+    strTmp <- dtStrings["strDrpDefault2"]$Value
+    strDrpDefault2 <- ifelse(is.na(strTmp), strDrpDefault2, strTmp)
+
+    strTmp <- dtStrings["strBtnSave"]$Value
+    strBtnSave <- ifelse(is.na(strTmp), strBtnSave, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strLblSaveRank"]$Value
+    strLblSaveRank <- ifelse(is.na(strTmp), strLblSaveRank, strTmp)
+
+    strTmp <- dtStrings["strLblSaveMasked"]$Value
+    strLblSaveMasked <- ifelse(is.na(strTmp), strLblSaveMasked, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgTitlePlot"]$Value
+    strMsgTitlePlot <- ifelse(is.na(strTmp), strMsgTitlePlot, strTmp)
+
+    strTmp <- dtStrings["strMsgPlot"]$Value
+    strMsgPlot <- ifelse(is.na(strTmp), strMsgPlot, strTmp)
+
+    strTmp <- dtStrings["strWinCheck"]$Value
+    strWinCheck <- ifelse(is.na(strTmp), strWinCheck, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+
+    strTmp <- dtStrings["strMsgCheck"]$Value
+    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
   }
 
   # WINDOW ####################################################################
 
-  if (debug) {
-    print("WINDOW")
-  }
-
   # Main window.
-  w <- gwindow(title = "Calculate analytical threshold", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -116,23 +295,19 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateAT_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
-
-  if (debug) {
-    print("FRAME 0")
-  }
 
   f0 <- gframe(
     text = "Datasets",
@@ -145,9 +320,9 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Dataset -------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
+  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
-  dfs <- c("<Select a dataset>", listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strDrpDefault, listObjects(env = env, obj.class = "data.frame"))
 
   g0[1, 2] <- g0_data_drp <- gcombobox(
     items = dfs,
@@ -156,7 +331,10 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
     container = g0,
     ellipsize = "none"
   )
-  g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[1, 3] <- g0_data_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_data_drp)
@@ -179,7 +357,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- get(val_obj, envir = env)
       svalue(g0_data_samples_lbl) <- paste(
         length(unique(.gData$Sample.File.Name)),
-        "samples."
+        strLblSamples
       )
       .refresh_sample_drp()
       .gDataPrep <- NULL # Erase any previously prepared data.
@@ -198,7 +376,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       # Reset components.
       .gData <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
-      svalue(g0_data_samples_lbl) <- " 0 samples"
+      svalue(g0_data_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(f4_save1_edt) <- ""
       svalue(f4_save2_edt) <- ""
       svalue(f4_save3_edt) <- ""
@@ -209,7 +387,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Reference -----------------------------------------------------------------
 
-  g0[2, 1] <- glabel(text = "Select reference dataset:", container = g0)
+  g0[2, 1] <- glabel(text = strLblDatasetRef, container = g0)
 
   # NB! dfs defined in previous section.
   g0[2, 2] <- g0_ref_drp <- gcombobox(
@@ -220,7 +398,10 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[2, 3] <- g0_ref_samples_lbl <- glabel(text = " 0 references", container = g0)
+  g0[2, 3] <- g0_ref_samples_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = g0
+  )
 
   addHandlerChanged(g0_ref_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_ref_drp)
@@ -239,24 +420,20 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       .gRef <<- get(val_obj, envir = env)
       svalue(g0_ref_samples_lbl) <- paste(
         length(unique(.gRef$Sample.Name)),
-        "samples."
+        strLblSamples
       )
     } else {
 
       # Reset components.
       .gRef <<- NULL
       svalue(g0_ref_drp, index = TRUE) <- 1
-      svalue(g0_ref_samples_lbl) <- " 0 references"
+      svalue(g0_ref_samples_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  if (debug) {
-    print("CHECK")
-  }
-
-  g0[3, 2] <- g0_check_btn <- gbutton(text = "Check subsetting", container = g0)
+  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
 
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
 
@@ -268,7 +445,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -290,9 +467,8 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -300,7 +476,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Kit -----------------------------------------------------------------------
 
-  g0[4, 1] <- glabel(text = "Select the kit used:", container = g0)
+  g0[4, 1] <- glabel(text = strLblKit, container = g0)
 
   # NB! dfs defined in previous section.
   g0[4, 2] <- g0_kit_drp <- gcombobox(
@@ -310,29 +486,25 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
     container = g0,
     ellipsize = "none"
   )
-  tooltip(g0_kit_drp) <- "Only used to shad masked ranges in plot."
+  tooltip(g0_kit_drp) <- strTipKit
 
   # FRAME 1 ###################################################################
 
-  if (debug) {
-    print("FRAME 1")
-  }
-
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 10,
     container = gv
   )
 
   f1_ignore_chk <- gcheckbox(
-    text = "Ignore case",
+    text = strChkIgnore,
     checked = TRUE,
     container = f1
   )
 
   f1_word_chk <- gcheckbox(
-    text = "Add word boundaries",
+    text = strChkWord,
     checked = FALSE,
     container = f1
   )
@@ -342,43 +514,43 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   f1g1 <- glayout(container = f1, spacing = 1)
 
   f1g1[1, 1] <- f1_mask_h_chk <- gcheckbox(
-    text = "Mask high peaks",
+    text = strChkMaskHigh,
     checked = TRUE, container = f1g1
   )
-  f1g1[1, 2] <- glabel(text = "Mask all peaks above (RFU): ", anchor = c(-1, 0), container = f1g1)
+  f1g1[1, 2] <- glabel(text = strLblMaskHigh, anchor = c(-1, 0), container = f1g1)
 
   f1g1[1, 3] <- f1_mask_h_edt <- gedit(text = "200", width = 6, container = f1g1)
 
   f1g1[2, 1] <- f1_mask_chk <- gcheckbox(
-    text = "Mask sample alleles",
+    text = strChkMaskAllele,
     checked = TRUE, container = f1g1
   )
   f1g1[3, 1] <- f1_mask_d_chk <- gcheckbox(
-    text = "Mask sample alleles per dye channel",
+    text = strChkMaskDye,
     checked = TRUE, container = f1g1
   )
-  f1g1[2, 2] <- glabel(text = "Range (data points) around known alleles:", anchor = c(-1, 0), container = f1g1)
+  f1g1[2, 2] <- glabel(text = strLblDpAllele, anchor = c(-1, 0), container = f1g1)
   f1g1[2, 3] <- f1_mask_spb <- gspinbutton(from = 0, to = 100, by = 10, value = 50, container = f1g1)
 
   f1g1[4, 1] <- f1_mask_ils_chk <- gcheckbox(
-    text = "Mask ILS peaks",
+    text = strChkILS,
     checked = TRUE, container = f1g1
   )
-  f1g1[4, 2] <- glabel(text = "Range (data points) around known peak: ", anchor = c(-1, 0), container = f1g1)
+  f1g1[4, 2] <- glabel(text = strLblDpPeak, anchor = c(-1, 0), container = f1g1)
   f1g1[4, 3] <- f1_mask_ils_spb <- gspinbutton(from = 0, to = 100, by = 20, value = 10, container = f1g1)
 
   # LAYOUT --------------------------------------------------------------------
 
   f1g2 <- glayout(container = f1, spacing = 1)
 
-  f1g2[1, 1] <- glabel(text = "Confidence level 'k' (AT1, AT7): ", container = f1g2)
+  f1g2[1, 1] <- glabel(text = strLblConf, container = f1g2)
   f1g2[1, 2] <- f1_k_spb <- gspinbutton(from = 0, to = 100, by = 1, value = 3, container = f1g2)
 
 
-  f1g2[2, 1] <- glabel(text = "Percentile rank threshold (AT2): ", container = f1g2)
+  f1g2[2, 1] <- glabel(text = strLblRank, container = f1g2)
   f1g2[2, 2] <- f1_t_spb <- gspinbutton(from = 0, to = 1, by = 0.01, value = 0.99, container = f1g2)
 
-  f1g2[3, 1] <- glabel(text = "Upper confidence 'alpha' (AT4): ", container = f1g2)
+  f1g2[3, 1] <- glabel(text = strLblAlpha, container = f1g2)
   f1g2[3, 2] <- f1_a_spb <- gspinbutton(from = 0, to = 1, by = 0.01, value = 0.01, container = f1g2)
 
   # Handlers ------------------------------------------------------------------
@@ -402,28 +574,23 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   })
 
 
-
   # FRAME 3 ###################################################################
 
-  if (debug) {
-    print("FRAME 3")
-  }
-
   f3 <- gframe(
-    text = "Prepare data and check masking",
+    text = strFrmPrepare,
     horizontal = TRUE,
     spacing = 5,
     container = gv
   )
 
-  mask_btn <- gbutton(text = "Prepare and mask", container = f3)
+  mask_btn <- gbutton(text = strBtnMask, container = f3)
 
   f3_sample_drp <- gcombobox(
-    items = "<Select sample>", selected = 1,
+    items = strDrpDefault2, selected = 1,
     editable = FALSE, container = f3, ellipsize = "none"
   )
 
-  save_btn <- gbutton(text = "Save plot", container = f3)
+  save_btn <- gbutton(text = strBtnSave, container = f3)
 
   addHandlerClicked(mask_btn, handler = function(h, ...) {
 
@@ -464,7 +631,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Change button.
     blockHandlers(mask_btn)
-    svalue(mask_btn) <- "Processing..."
+    svalue(mask_btn) <- strBtnProcessing
     unblockHandlers(mask_btn)
     enabled(mask_btn) <- FALSE
     enabled(f3_sample_drp) <- FALSE
@@ -486,7 +653,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Change button.
     blockHandlers(mask_btn)
-    svalue(mask_btn) <- "Prepare and mask"
+    svalue(mask_btn) <- strBtnMask
     unblockHandlers(mask_btn)
     enabled(mask_btn) <- TRUE
     enabled(f3_sample_drp) <- TRUE
@@ -573,10 +740,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
           gp <- gp + geom_point(aes_string(x = "Data.Point", y = "Height"))
         }
 
-        if (debug) {
-          print("Plot created!")
-        }
-
         if (val_mask_ils) {
 
           # ILS masking data frame for plot:
@@ -604,11 +767,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
               fill = addColor(ilsDye, have = "Dye", need = "Color")
             )
           }
-
-          if (debug) {
-            print(str(dfMask))
-            print("ILS masked!")
-          }
         }
 
         if (val_mask) {
@@ -632,10 +790,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
                 Xmin = dpMin, Xmax = dpMax
               )
 
-              if (debug) {
-                print(dfMask)
-              }
-
               if (nrow(dfMask) > 0) {
 
                 # Add masking range to plot.
@@ -647,10 +801,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
                   ),
                   alpha = 0.2, fill = colorsKit[d]
                 )
-              }
-
-              if (debug) {
-                print("Sample masked per dye!")
               }
             }
           } else {
@@ -682,11 +832,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
                 alpha = 0.2, fill = "red"
               )
             }
-
-            if (debug) {
-              print(dfMask)
-              print("Sample masked across dyes!")
-            }
           }
         }
 
@@ -712,9 +857,8 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
         savegui = savegui, debug = debug
       )
     } else {
-      message <- "Click 'Prepare and mask' and select a sample before saving."
-      gmessage(message,
-        title = "No plot!",
+      gmessage(msg = strMsgPlot,
+        title = strMsgTitlePlot,
         icon = "info", parent = w
       )
     }
@@ -723,37 +867,29 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
   # FRAME 4 ###################################################################
 
-  if (debug) {
-    print("FRAME 4")
-  }
-
   f4 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = FALSE,
     spacing = 5,
     container = gv
   )
 
-  glabel(text = "Name for result:", anchor = c(-1, 0), container = f4)
+  glabel(text = strLblSave, anchor = c(-1, 0), container = f4)
 
   f4_save1_edt <- gedit(text = "", container = f4, expand = TRUE)
 
-  glabel(text = "Name for percentile rank list:", anchor = c(-1, 0), container = f4)
+  glabel(text = strLblSaveRank, anchor = c(-1, 0), container = f4)
 
   f4_save2_edt <- gedit(text = "", container = f4, expand = TRUE)
 
-  glabel(text = "Name for masked raw data:", anchor = c(-1, 0), container = f4)
+  glabel(text = strLblSaveMasked, anchor = c(-1, 0), container = f4)
 
   f4_save3_edt <- gedit(text = "", container = f4, expand = TRUE)
 
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
 
@@ -823,7 +959,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -864,19 +1000,19 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       # Update audit trail.
       datanew[[1]] <- auditTrail(
         obj = datanew[[1]], key = keys, value = values,
-        label = "calculateAT_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
       datanew[[2]] <- auditTrail(
         obj = datanew[[2]], key = keys, value = values,
-        label = "calculateAT_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
       datanew[[3]] <- auditTrail(
         obj = datanew[[3]], key = keys, value = values,
-        label = "calculateAT_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -888,17 +1024,17 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       if (debug) {
         print(str(datanew))
         print(head(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset must be selected."
+      message <- strMsgDataset
 
       gmessage(message,
-        title = "Datasets not selected",
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )
@@ -908,9 +1044,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   # INTERNAL FUNCTIONS ########################################################
 
   .refresh_sample_drp <- function() {
-    if (debug) {
-      print("Refresh sample dropdown")
-    }
 
     # Get data frames in global workspace.
     samples <- unique(.gData$Sample.File.Name)
@@ -918,25 +1051,17 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(samples)) {
 
       # Populate drop list.
-      f3_sample_drp[] <- c("<Select sample>", samples)
+      f3_sample_drp[] <- c(strDrpDefault2, samples)
       svalue(f3_sample_drp, index = TRUE) <- 1
     } else {
 
       # Populate drop list.
-      f3_sample_drp[] <- c("<Select sample>")
+      f3_sample_drp[] <- c(strDrpDefault2)
       svalue(f3_sample_drp, index = TRUE) <- 1
-    }
-
-    if (debug) {
-      print("Samples dropdown refreshed!")
     }
   }
 
   .refresh_options <- function() {
-    if (debug) {
-      print("Refresh options")
-    }
-
     val_mask_h <- svalue(f1_mask_h_chk)
     val_mask <- svalue(f1_mask_chk)
     val_mask_d <- svalue(f1_mask_d_chk)
@@ -963,10 +1088,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       enabled(f1_mask_ils_spb) <- TRUE
     } else {
       enabled(f1_mask_ils_spb) <- FALSE
-    }
-
-    if (debug) {
-      print("Options refreshed!")
     }
   }
 

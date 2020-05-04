@@ -4,10 +4,20 @@
 \alias{export}
 \title{Export}
 \usage{
-export(object, name = NA, use.object.name = is.na(name),
-  env = parent.frame(), path = NA, ext = "auto", delim = "\\t",
-  width = 3000, height = 2000, res = 250, overwrite = FALSE,
-  debug = FALSE)
+export(
+  object,
+  name = NA,
+  use.object.name = is.na(name),
+  env = parent.frame(),
+  path = NA,
+  ext = "auto",
+  delim = "\\t",
+  width = 3000,
+  height = 2000,
+  res = 250,
+  overwrite = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{object}{string, list or vector containing object names to be exported.}

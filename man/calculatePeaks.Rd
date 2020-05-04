@@ -4,8 +4,14 @@
 \alias{calculatePeaks}
 \title{Calculate Peaks}
 \usage{
-calculatePeaks(data, bins = c(0, 2, 3), labels = NULL, ol.rm = FALSE,
-  by.marker = FALSE, debug = FALSE)
+calculatePeaks(
+  data,
+  bins = c(0, 2, 3),
+  labels = NULL,
+  ol.rm = FALSE,
+  by.marker = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data frame containing at least the columns

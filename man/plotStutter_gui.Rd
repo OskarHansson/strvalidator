@@ -4,8 +4,12 @@
 \alias{plotStutter_gui}
 \title{Plot Stutter}
 \usage{
-plotStutter_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+plotStutter_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

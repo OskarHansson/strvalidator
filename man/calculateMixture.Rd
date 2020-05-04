@@ -4,8 +4,14 @@
 \alias{calculateMixture}
 \title{Calculate Mixture.}
 \usage{
-calculateMixture(data, ref1, ref2, ol.rm = TRUE, ignore.dropout = TRUE,
-  debug = FALSE)
+calculateMixture(
+  data,
+  ref1,
+  ref2,
+  ol.rm = TRUE,
+  ignore.dropout = TRUE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{list of data frames in 'slim' format with at least columns

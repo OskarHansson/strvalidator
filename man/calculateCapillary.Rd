@@ -4,8 +4,7 @@
 \alias{calculateCapillary}
 \title{Calculate Capillary Balance}
 \usage{
-calculateCapillary(samples.table, plot.table, sq = 0, run = "",
-  debug = FALSE)
+calculateCapillary(samples.table, plot.table, sq = 0, run = "", debug = FALSE)
 }
 \arguments{
 \item{samples.table}{data frame containing at least the columns

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -48,18 +49,165 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   .gRef <- NULL
   .gRefName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
+  }
+
+  # Default strings.
+  strWinTitle <- "Calculate spectral pull-up"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Datasets"
+  strLblDataset <- "Sample dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblRefDataset <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strFrmOptions <- "Options"
+  strLblPre <- "Pre-processing:"
+  strChkOL <- "Remove off-ladder peaks"
+  strLblMethod <- "Pull-up settings:"
+  strLblRange <- "Pull-up analysis range (data points) around known alleles:"
+  strLblBlock <- "Blocking range (data points) around known alleles:"
+  strLblDiscard <- "Discard pull-ups with ratio >"
+  strLblMatching <- "Reference sample name matching:"
+  strChkIgnore <- "Ignore case"
+  strChkWord <- "Add word boundaries"
+  strLblPost <- "Post-processing:"
+  strChkDiscard <- "Discard alleles with no pull-up from the result table"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strLblKit <- "Kit attribute:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgDataset <- "A sample dataset and a reference dataset must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset."
+  strWinTitleCheck <- "Check subsetting"
+  strMsgTitleError <- "Error"
+  strMsgNA <- "'NA' in 'Dye' column. \nUse add dye function to fix."
+  strMsgTitleNA <- "NA detected!"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strLblRefDataset"]$Value
+    strLblRefDataset <- ifelse(is.na(strTmp), strLblRefDataset, strTmp)
+
+    strTmp <- dtStrings["strLblRef"]$Value
+    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strLblPre"]$Value
+    strLblPre <- ifelse(is.na(strTmp), strLblPre, strTmp)
+
+    strTmp <- dtStrings["strChkOL"]$Value
+    strChkOL <- ifelse(is.na(strTmp), strChkOL, strTmp)
+
+    strTmp <- dtStrings["strLblMethod"]$Value
+    strLblMethod <- ifelse(is.na(strTmp), strLblMethod, strTmp)
+
+    strTmp <- dtStrings["strLblRange"]$Value
+    strLblRange <- ifelse(is.na(strTmp), strLblRange, strTmp)
+
+    strTmp <- dtStrings["strLblBlock"]$Value
+    strLblBlock <- ifelse(is.na(strTmp), strLblBlock, strTmp)
+
+    strTmp <- dtStrings["strLblDiscard"]$Value
+    strLblDiscard <- ifelse(is.na(strTmp), strLblDiscard, strTmp)
+
+    strTmp <- dtStrings["strLblMatching"]$Value
+    strLblMatching <- ifelse(is.na(strTmp), strLblMatching, strTmp)
+
+    strTmp <- dtStrings["strChkIgnore"]$Value
+    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
+
+    strTmp <- dtStrings["strChkWord"]$Value
+    strChkWord <- ifelse(is.na(strTmp), strChkWord, strTmp)
+
+    strTmp <- dtStrings["strLblPost"]$Value
+    strLblPost <- ifelse(is.na(strTmp), strLblPost, strTmp)
+
+    strTmp <- dtStrings["strChkDiscard"]$Value
+    strChkDiscard <- ifelse(is.na(strTmp), strChkDiscard, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strLblKit"]$Value
+    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgCheck"]$Value
+    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+
+    strTmp <- dtStrings["strWinTitleCheck"]$Value
+    strWinTitleCheck <- ifelse(is.na(strTmp), strWinTitleCheck, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+
+    strTmp <- dtStrings["strMsgNA"]$Value
+    strMsgNA <- ifelse(is.na(strTmp), strMsgNA, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleNA"]$Value
+    strMsgTitleNA <- ifelse(is.na(strTmp), strMsgTitleNA, strTmp)
   }
 
   # WINDOW ####################################################################
 
-  if (debug) {
-    print("WINDOW")
-  }
-
   # Main window.
-  w <- gwindow(title = "Calculate spectral pull-up", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -102,26 +250,22 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculatePullup_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
-  if (debug) {
-    print("FRAME 0")
-  }
-
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = TRUE,
     spacing = 5,
     container = gv
@@ -131,9 +275,9 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Dataset -------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
+  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
-  dfs <- c("<Select a dataset>", listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strDrpDefault, listObjects(env = env, obj.class = "data.frame"))
 
   g0[1, 2] <- g0_data_drp <- gcombobox(
     items = dfs,
@@ -142,7 +286,10 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     container = g0,
     ellipsize = "none"
   )
-  g0[1, 3] <- g0_data_samples_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[1, 3] <- g0_data_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_data_drp)
@@ -163,30 +310,30 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       .gDataName <<- val_obj
       svalue(g0_data_samples_lbl) <- paste(
         length(unique(.gData$Sample.Name)),
-        "samples."
+        strLblSamples
       )
 
       # Suggest a name for result.
-      svalue(f4_save_edt) <- paste(val_obj, "_pullup", sep = "")
+      svalue(save_edt) <- paste(val_obj, "_pullup", sep = "")
 
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
       # Select in dropdown.
-      svalue(f4_kit_drp, index = TRUE) <- kitIndex
+      svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
 
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
-      svalue(g0_data_samples_lbl) <- " 0 samples"
-      svalue(f4_save_edt) <- ""
+      svalue(g0_data_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(save_edt) <- ""
     }
   })
 
   # Reference -----------------------------------------------------------------
 
-  g0[2, 1] <- glabel(text = "Select reference dataset:", container = g0)
+  g0[2, 1] <- glabel(text = strLblRefDataset, container = g0)
 
   # NB! dfs defined in previous section.
   g0[2, 2] <- g0_ref_drp <- gcombobox(
@@ -197,7 +344,10 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[2, 3] <- g0_ref_samples_lbl <- glabel(text = " 0 references", container = g0)
+  g0[2, 3] <- g0_ref_samples_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = g0
+  )
 
   addHandlerChanged(g0_ref_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_ref_drp)
@@ -217,7 +367,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       .gRefName <<- val_obj
       svalue(g0_ref_samples_lbl) <- paste(
         length(unique(.gRef$Sample.Name)),
-        "samples."
+        strLblRef
       )
     } else {
 
@@ -225,17 +375,13 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       .gRef <<- NULL
       .gRefName <<- NULL
       svalue(g0_ref_drp, index = TRUE) <- 1
-      svalue(g0_ref_samples_lbl) <- " 0 references"
+      svalue(g0_ref_samples_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  if (debug) {
-    print("CHECK")
-  }
-
-  g0[3, 2] <- g0_check_btn <- gbutton(text = "Check subsetting", container = g0)
+  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
 
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
 
@@ -247,7 +393,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinTitleCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -269,9 +415,8 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -279,85 +424,82 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
   # FRAME 1 ###################################################################
 
-  if (debug) {
-    print("FRAME 1")
-  }
-
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 10,
     container = gv
   )
 
+  # PRE-PROCESSING ------------------------------------------------------------
+
+  glabel(text = strLblPre, anchor = c(-1, 0), container = f1)
+
+  f1_ol_chk <- gcheckbox(
+    text = strChkOL,
+    checked = FALSE,
+    container = f1
+  )
+
+  # METHOD --------------------------------------------------------------------
+
+  glabel(text = strLblMethod, anchor = c(-1, 0), container = f1)
+
+  f1g1 <- glayout(container = f1, anchor = c(-1, 0), spacing = 1)
+
+  f1g1[1, 1] <- glabel(text = strLblRange, anchor = c(-1, 0), container = f1g1)
+  f1g1[1, 2] <- f1_pullup_spb <- gspinbutton(from = 0, to = 1000, by = 10, value = 6, container = f1g1)
+
+  f1g1[2, 1] <- glabel(text = strLblBlock, anchor = c(-1, 0), container = f1g1)
+  f1g1[2, 2] <- f1_block_spb <- gspinbutton(from = 0, to = 1000, by = 10, value = 70, container = f1g1)
+
+  f1g1[3, 1] <- glabel(text = strLblDiscard, anchor = c(-1, 0), container = f1g1)
+  f1g1[3, 2] <- f1_limit_spb <- gspinbutton(from = 0, to = 10, by = 0.1, value = 1, container = f1g1)
+
+  # MATCHING ------------------------------------------------------------------
+
+  glabel(text = strLblMatching, anchor = c(-1, 0), container = f1)
+
   f1_ignore_chk <- gcheckbox(
-    text = "Ignore case",
+    text = strChkIgnore,
     checked = TRUE,
     container = f1
   )
 
   f1_word_chk <- gcheckbox(
-    text = "Add word boundaries",
+    text = strChkWord,
     checked = FALSE,
     container = f1
   )
 
-  f1_ol_chk <- gcheckbox(
-    text = "Remove off-ladder peaks",
-    checked = FALSE,
-    container = f1
-  )
+  # POST-PROCESSING -----------------------------------------------------------
 
-  # LAYOUT --------------------------------------------------------------------
-
-  f1g1 <- glayout(container = f1, spacing = 1)
-
-  f1g1[1, 1] <- glabel(text = "Pullup analysis range (data points) around known alleles: ", container = f1g1)
-  f1g1[1, 2] <- f1_pullup_spb <- gspinbutton(from = 0, to = 1000, by = 10, value = 6, container = f1g1)
-
-  f1g1[2, 1] <- glabel(text = "Blocking range (data points) around known alleles: ", container = f1g1)
-  f1g1[2, 2] <- f1_block_spb <- gspinbutton(from = 0, to = 1000, by = 10, value = 70, container = f1g1)
-
-  f1g1[3, 1] <- glabel(text = "Discard pull-ups with ratio: > ", container = f1g1)
-  f1g1[3, 2] <- f1_limit_spb <- gspinbutton(from = 0, to = 10, by = 0.1, value = 1, container = f1g1)
+  glabel(text = strLblPost, anchor = c(-1, 0), container = f1)
 
   f1_discard_chk <- gcheckbox(
-    text = "Discard alleles with no pullup from the result table",
+    text = strChkDiscard,
     checked = FALSE,
     container = f1
   )
 
-  # FRAME 4 ###################################################################
+  # SAVE ######################################################################
 
-  if (debug) {
-    print("FRAME 4")
-  }
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  f4 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  glabel(text = strLblSave, container = save_frame)
 
-  glabel(text = "Name for result:", container = f4)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
-  f4_save_edt <- gedit(text = "", container = f4, expand = TRUE, fill = TRUE)
+  glabel(text = strLblKit, container = save_frame)
 
-  glabel(text = " Kit attribute:", container = f4)
-
-  f4_kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
-    editable = FALSE, container = f4, ellipsize = "none"
+  kit_drp <- gcombobox(
+    items = getKit(), container = save_frame,
+    ellipsize = "none"
   )
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
 
@@ -373,8 +515,8 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     val_block <- svalue(f1_block_spb)
     val_limit <- svalue(f1_limit_spb)
     val_discard <- svalue(f1_discard_chk)
-    val_name <- svalue(f4_save_edt)
-    val_kit <- svalue(f4_kit_drp)
+    val_name <- svalue(save_edt)
+    val_kit <- svalue(kit_drp)
 
     if (debug) {
       print("Read Values:")
@@ -406,7 +548,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Change button.
         blockHandlers(calculate_btn)
-        svalue(calculate_btn) <- "Processing..."
+        svalue(calculate_btn) <- strBtnProcessing
         unblockHandlers(calculate_btn)
         enabled(calculate_btn) <- FALSE
 
@@ -440,7 +582,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         # Update audit trail.
         datanew <- auditTrail(
           obj = datanew, key = keys, value = values,
-          label = "calculatePullup_gui", arguments = FALSE,
+          label = fnc, arguments = FALSE,
           package = "strvalidator"
         )
 
@@ -450,26 +592,24 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         if (debug) {
           print(str(datanew))
           print(head(datanew))
-          print(paste("EXIT:", match.call()[[1]]))
+          print(paste("EXIT:", fnc))
         }
 
         # Close GUI.
         .saveSettings()
         dispose(w)
       } else {
-        message <- "'NA' in 'Dye' column. \nUse add dye function to fix."
-
-        gmessage(message,
-          title = "NA detected!",
+        gmessage(
+          msg = strMsgNA,
+          title = strMsgTitleNA,
           icon = "error",
           parent = w
         )
       }
     } else {
-      message <- "A dataset and a reference dataset have to be selected."
-
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(
+        msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )

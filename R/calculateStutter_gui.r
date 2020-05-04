@@ -1,5 +1,11 @@
+# NOTE: As of version 2.2.0 of strvalidator gdf generates an error when gui is closed.
+# (R version 3.6.2, gWidgets2RGtk2_1.0-7, gWidgets2_1.0-8, RGtk2_2.20.36)
+# (rsession.exe:20768): Gtk-CRITICAL **: gtk_tree_view_unref_tree_helper: assertion `node != NULL' failed
+# Issue reported here: https://github.com/jverzani/gWidgets2/issues/11
+
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -19,7 +25,6 @@
 # 18.07.2013: Check before overwrite object.
 # 17.07.2013: Added save GUI settings.
 # 17.07.2013: 'false' allele checkboxes replaced by gdf table.
-# 17.07.2013: Added check subsetting.
 
 #' @title Calculate Stutter
 #'
@@ -52,12 +57,149 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   .gDataName <- NULL
   .gRefName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Calculate stutter ratio"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Datasets"
+  strLblDataset <- "Sample dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblRefDataset <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strLblKit <- "Kit:"
+  strFrmOptions <- "Options"
+  strLblRange <- "Calculate stutter ratio within the following analysis range:"
+  strLblBack <- "back stutters to"
+  strLblForward <- "forward stutters."
+  strLblNB <- "NB! Additive effects outside the analysis range cannot be controlled.\nA narrow range like 0 to 1 can be greately affected by neighbouring -1 stutters."
+  strLblInterference <- "Level of interference within the given range:"
+  strRadNone <- "no overlap between stutters and alleles"
+  strRadStutter <- "stutter-stutter overlap allowed"
+  strRadAllele <- "stutter-allele overlap allowed"
+  strLblReplace <- "Replace 'false' stutters:"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgDataset <- "A sample dataset and a reference dataset must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset."
+  strWinTitleCheck <- "Check subsetting"
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$Value
+    strDrpDataset <- ifelse(is.na(strTmp), strDrpDataset, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strLblRefDataset"]$Value
+    strLblRefDataset <- ifelse(is.na(strTmp), strLblRefDataset, strTmp)
+
+    strTmp <- dtStrings["strLblRef"]$Value
+    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+
+    strTmp <- dtStrings["strLblKit"]$Value
+    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strLblRange"]$Value
+    strLblRange <- ifelse(is.na(strTmp), strLblRange, strTmp)
+
+    strTmp <- dtStrings["strLblBack"]$Value
+    strLblBack <- ifelse(is.na(strTmp), strLblBack, strTmp)
+
+    strTmp <- dtStrings["strLblForward"]$Value
+    strLblForward <- ifelse(is.na(strTmp), strLblForward, strTmp)
+
+    strTmp <- dtStrings["strLblNB"]$Value
+    strLblNB <- ifelse(is.na(strTmp), strLblNB, strTmp)
+
+    strTmp <- dtStrings["strLblInterference"]$Value
+    strLblInterference <- ifelse(is.na(strTmp), strLblInterference, strTmp)
+
+    strTmp <- dtStrings["strRadNone"]$Value
+    strRadNone <- ifelse(is.na(strTmp), strRadNone, strTmp)
+
+    strTmp <- dtStrings["strRadStutter"]$Value
+    strRadStutter <- ifelse(is.na(strTmp), strRadStutter, strTmp)
+
+    strTmp <- dtStrings["strRadAllele"]$Value
+    strRadAllele <- ifelse(is.na(strTmp), strRadAllele, strTmp)
+
+    strTmp <- dtStrings["strLblReplace"]$Value
+    strLblReplace <- ifelse(is.na(strTmp), strLblReplace, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgCheck"]$Value
+    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+
+    strTmp <- dtStrings["strWinTitleCheck"]$Value
+    strWinTitleCheck <- ifelse(is.na(strTmp), strWinTitleCheck, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Calculate stutter ratio", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -101,22 +243,22 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateStutter_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 5,
     container = gv
@@ -126,11 +268,11 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   # Datasets ------------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   f0g0[1, 2] <- f0_dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -142,7 +284,10 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     ellipsize = "none"
   )
 
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(text = " 0 samples", container = f0g0)
+  f0g0[1, 3] <- f0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0g0
+  )
 
   addHandlerChanged(f0_dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(f0_dataset_drp)
@@ -160,28 +305,28 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(f0_samples_lbl) <- paste("", samples, "samples")
-      svalue(f2_save_edt) <- paste(val_obj, "_stutter", sep = "")
+      svalue(f0_samples_lbl) <- paste("", samples, strLblSamples)
+      svalue(save_edt) <- paste(val_obj, "_stutter", sep = "")
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
       # Select in dropdown.
-      svalue(f2_kit_drp, index = TRUE) <- kitIndex
+      svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
 
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(f0_dataset_drp, index = TRUE) <- 1
-      svalue(f0_samples_lbl) <- " 0 samples"
-      svalue(f2_save_edt) <- ""
+      svalue(f0_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(save_edt) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = "Select reference dataset:", container = f0g0)
+  f0g0[2, 1] <- glabel(text = strLblRefDataset, container = f0g0)
 
   f0g0[2, 2] <- f0_refset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -193,7 +338,10 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     ellipsize = "none"
   )
 
-  f0g0[2, 3] <- f0_ref_lbl <- glabel(text = " 0 references", container = f0g0)
+  f0g0[2, 3] <- f0_ref_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = f0g0
+  )
 
   addHandlerChanged(f0_refset_drp, handler = function(h, ...) {
     val_obj <- svalue(f0_refset_drp)
@@ -211,24 +359,20 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
       refs <- length(unique(.gRef$Sample.Name))
-      svalue(f0_ref_lbl) <- paste("", refs, "references")
+      svalue(f0_ref_lbl) <- paste("", refs, strLblRef)
     } else {
 
       # Reset components.
       .gRef <<- NULL
       .gRefName <<- NULL
       svalue(f0_refset_drp, index = TRUE) <- 1
-      svalue(f0_ref_lbl) <- " 0 references"
+      svalue(f0_ref_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  if (debug) {
-    print("CHECK")
-  }
-
-  f0g0[3, 2] <- f0_check_btn <- gbutton(text = "Check subsetting", container = f0g0)
+  f0g0[3, 2] <- f0_check_btn <- gbutton(text = strBtnCheck, container = f0g0)
 
   addHandlerChanged(f0_check_btn, handler = function(h, ...) {
 
@@ -238,7 +382,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinTitleCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -260,29 +404,37 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
   })
 
-  # FRAME 1 ###################################################################
+  # Kit -----------------------------------------------------------------------
 
-  f1 <- gframe("Options", horizontal = FALSE, container = gv)
+  f0g0[4, 1] <- glabel(text = strLblKit, container = f0g0)
 
-  glabel(
-    text = "Calculate stutter ratio within the the following analysis range:",
-    container = f1, anchor = c(-1, 0)
+  f0g0[4, 2] <- kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = f0g0,
+    ellipsize = "none"
   )
+
+  # OPTIONS ###################################################################
+
+  f1 <- gframe(strFrmOptions,
+    horizontal = FALSE, container = gv,
+    expand = TRUE, fill = TRUE
+  )
+
+  glabel(text = strLblRange, container = f1, anchor = c(-1, 0))
 
   f1g1 <- ggroup(
     horizontal = TRUE,
     spacing = 5,
     use.scrollwindow = FALSE,
-    container = f1,
-    expand = FALSE
+    container = f1
   )
 
   f1g1_range_b_spb <- gspinbutton(
@@ -291,7 +443,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     container = f1g1
   )
 
-  glabel(text = "backward stutters to", container = f1g1, anchor = c(-1, 0))
+  glabel(text = strLblBack, container = f1g1, anchor = c(-1, 0))
 
   f1g1_range_f_spb <- gspinbutton(
     from = 0, to = 3, by = 1,
@@ -299,89 +451,58 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     container = f1g1
   )
 
-  glabel(text = "forward stutters.", container = f1g1, anchor = c(-1, 0))
+  glabel(text = strLblForward, container = f1g1, anchor = c(-1, 0))
 
-  glabel(
-    text = "NB! Additive effects outside the analysis range cannot be controlled.",
-    container = f1, anchor = c(-1, 0)
-  )
-  glabel(
-    text = "A narrow range like 0 to +1 can be greately affected by neighbouring -1 stutters.",
-    container = f1, anchor = c(-1, 0)
-  )
+  glabel(text = strLblNB, container = f1, anchor = c(-1, 0))
 
-  interference_f <- gframe("Level of interference within the given range",
-    horizontal = FALSE, container = gv
-  )
+  # INTERFERENCE --------------------------------------------------------------
 
-  options <- c(
-    "no overlap between stutters and alleles",
-    "stutter-stutter interference allowed",
-    "stutter-allele interference allowed"
-  )
+  glabel(text = "", container = f1, anchor = c(-1, 0))
+
+  glabel(text = strLblInterference, container = f1, anchor = c(-1, 0))
+
+  options <- c(strRadNone, strRadStutter, strRadAllele)
 
   interference_opt <- gradio(
-    items = options,
-    selected = 1,
-    horizontal = FALSE,
-    container = interference_f
+    items = options, selected = 1,
+    horizontal = FALSE, container = f1
   )
 
-  # FRAME 3 ###################################################################
+  # FALSE STUTTERS ------------------------------------------------------------
 
-  f3 <- gframe("Replace 'false' stutters", horizontal = FALSE, expand = TRUE, container = gv)
+  glabel(text = "", container = f1, anchor = c(-1, 0))
 
-  f3g1 <- ggroup(
-    horizontal = FALSE,
-    spacing = 5,
-    use.scrollwindow = FALSE,
-    container = f3,
-    expand = TRUE
-  )
+  glabel(text = strLblReplace, container = f1, anchor = c(-1, 0))
 
   # Create default data frame.
-  f3_replace_val <- c(-1.9, -1.8, -1.7, -0.9, -0.8, -0.7, 0.9, 0.8, 0.7)
-  f3_by_val <- c(-1.3, -1.2, -1.1, -0.3, -0.2, -0.1, 0.3, 0.2, 0.1)
-  f3_default <- data.frame(
-    False.Stutter = f3_replace_val,
-    True.Stutter = f3_by_val,
+  replace_val <- c(-1.9, -1.8, -1.7, -0.9, -0.8, -0.7, 0.9, 0.8, 0.7)
+  by_val <- c(-1.3, -1.2, -1.1, -0.3, -0.2, -0.1, 0.3, 0.2, 0.1)
+  default <- data.frame(
+    False.Stutter = replace_val,
+    True.Stutter = by_val,
     Replace = TRUE,
     stringsAsFactors = FALSE
   )
 
-  f3_default_gdf <- gdf(items = f3_default, container = f3g1, expand = TRUE)
+  # gdf generates an error when gui is closed.
+  # (rsession.exe:20768): Gtk-CRITICAL **: gtk_tree_view_unref_tree_helper: assertion `node != NULL' failed
+  # Issue reported here: https://github.com/jverzani/gWidgets2/issues/11
+  default_gdf <- gdf(items = default, container = f1, expand = TRUE)
 
   # Set initial minimum size.
-  size(f3_default_gdf) <- c(100, 100)
+  size(default_gdf) <- c(100, 100)
 
-  # FRAME 2 ###################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = "Save as",
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = strLblSave, container = save_frame)
 
-  f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
-
-  glabel(text = " Kit attribute:", container = f2)
-
-  f2_kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
-    editable = FALSE, container = f2, ellipsize = "none"
-  )
-
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
 
@@ -393,12 +514,12 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     val_ref <- .gRef
     val_name_data <- .gDataName
     val_name_ref <- .gRefName
-    val_name <- svalue(f2_save_edt)
-    val_replace_df <- f3_default_gdf[]
+    val_name <- svalue(save_edt)
+    val_replace_df <- default_gdf[]
     val_chk <- val_replace_df$Replace
     val_replace <- val_replace_df$False.Stutter
     val_by <- val_replace_df$True.Stutter
-    val_kit <- svalue(f2_kit_drp)
+    val_kit <- svalue(kit_drp)
 
     # Get selected values.
     val_replace <- val_replace[val_chk]
@@ -430,7 +551,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -461,7 +582,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateStutter_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -471,17 +592,16 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       if (debug) {
         print("datanew")
         print(head(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset and a reference dataset must be selected."
-
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(
+        msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )
@@ -524,7 +644,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         svalue(interference_opt) <- get(".strvalidator_calculateStutter_gui_interference", envir = env)
       }
       if (exists(".strvalidator_calculateStutter_gui_replace", envir = env, inherits = FALSE)) {
-        f3_default_gdf[, ] <- get(".strvalidator_calculateStutter_gui_replace", envir = env)
+        default_gdf[, ] <- get(".strvalidator_calculateStutter_gui_replace", envir = env)
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -540,7 +660,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       assign(x = ".strvalidator_calculateStutter_gui_back", value = svalue(f1g1_range_b_spb), envir = env)
       assign(x = ".strvalidator_calculateStutter_gui_forward", value = svalue(f1g1_range_f_spb), envir = env)
       assign(x = ".strvalidator_calculateStutter_gui_interference", value = svalue(interference_opt), envir = env)
-      assign(x = ".strvalidator_calculateStutter_gui_replace", value = f3_default_gdf[], envir = env)
+      assign(x = ".strvalidator_calculateStutter_gui_replace", value = default_gdf[], envir = env)
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateStutter_gui_savegui", envir = env, inherits = FALSE)) {

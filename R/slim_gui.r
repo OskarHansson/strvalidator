@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.05.2020: Added language support.
 # 02.03.2019: Fixed expansion of widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -19,7 +20,6 @@
 # 06.08.2013: Added rows and columns to info.
 # 18.07.2013: Check before overwrite object.
 # 16.07.2013: Added save GUI settings.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 
 #' @title Slim Data Frames
 #'
@@ -50,12 +50,125 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   .gData <- data.frame(No.Data = NA)
   .gDataName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Slim dataset"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblColumns <- "columns"
+  strLblRows <- "rows"
+  strFrmOptions <- "Options"
+  strChkKeep <- "Keep rows in fixed columns even if no data in stacked columns"
+  strLblKeep <- "(i.e. keep one row per marker for each sample even if no peak)"
+  strTipColumns <- "Tip: Manually edit the columns to fix and stack (e.g. stack='Allele' will stack 'Allele.1', 'Allele.2'...)"
+  strFrmFix <- "Fix"
+  strLblFix <- "Columns to keep fixed (separate by pipe |):"
+  strEdtMsg <- "Doubleklick or drag column names to list"
+  strFrmStack <- "Stack"
+  strLblStack <- "Columns to stack (separate by pipe |):"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strMsgName <- "A file name must be provided!"
+  strBtnSlim <- "Slim dataset"
+  strBtnProcessing <- "Processing..."
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strTmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+
+    strTmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+
+    strTmp <- dtStrings["strLblColumns"]$value
+    strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
+
+    strTmp <- dtStrings["strLblRows"]$value
+    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strTmp <- dtStrings["strChkKeep"]$value
+    strChkKeep <- ifelse(is.na(strtmp), strChkKeep, strtmp)
+
+    strTmp <- dtStrings["strLblKeep"]$value
+    strLblKeep <- ifelse(is.na(strtmp), strLblKeep, strtmp)
+
+    strTmp <- dtStrings["strTipColumns"]$value
+    strTipColumns <- ifelse(is.na(strtmp), strTipColumns, strtmp)
+
+    strTmp <- dtStrings["strFrmFix"]$value
+    strFrmFix <- ifelse(is.na(strtmp), strFrmFix, strtmp)
+
+    strTmp <- dtStrings["strLblFix"]$value
+    strLblFix <- ifelse(is.na(strtmp), strLblFix, strtmp)
+
+    strTmp <- dtStrings["strEdtMsg"]$value
+    strEdtMsg <- ifelse(is.na(strtmp), strEdtMsg, strtmp)
+
+    strTmp <- dtStrings["strFrmStack"]$value
+    strFrmStack <- ifelse(is.na(strtmp), strFrmStack, strtmp)
+
+    strTmp <- dtStrings["strLblStack"]$value
+    strLblStack <- ifelse(is.na(strtmp), strLblStack, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strTmp <- dtStrings["strMsgName"]$value
+    strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
+
+    strTmp <- dtStrings["strBtnSlim"]$value
+    strBtnSlim <- ifelse(is.na(strtmp), strBtnSlim, strtmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Slim dataset", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -99,16 +212,16 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("slim_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
 
@@ -146,7 +259,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 2,
     container = g0
@@ -154,11 +267,11 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   f0g0[1, 2] <- dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -170,9 +283,18 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(text = " 0 samples,", container = f0g0)
-  f0g0[1, 4] <- f0_columns_lbl <- glabel(text = " 0 columns,", container = f0g0)
-  f0g0[1, 5] <- f0_rows_lbl <- glabel(text = " 0 rows", container = f0g0)
+  f0g0[1, 3] <- f0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0g0
+  )
+  f0g0[1, 4] <- f0_columns_lbl <- glabel(
+    text = paste(" 0", strLblColumns),
+    container = f0g0
+  )
+  f0g0[1, 5] <- f0_rows_lbl <- glabel(
+    text = paste(" 0", strLblRows),
+    container = f0g0
+  )
 
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
@@ -198,23 +320,41 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       # Info.
       if ("Sample.Name" %in% names(.gData)) {
         samples <- length(unique(.gData$Sample.Name))
-        svalue(f0_samples_lbl) <- paste(" ", samples, "samples,")
+        svalue(f0_samples_lbl) <- paste(" ", samples, " ",
+          strLblSamples, ", ",
+          sep = ""
+        )
       } else {
-        svalue(f0_samples_lbl) <- paste(" ", "<NA>", "samples,")
+        svalue(f0_samples_lbl) <- paste(" ", "<NA> ",
+          strLblSamples, ", ",
+          sep = ""
+        )
       }
-      svalue(f0_columns_lbl) <- paste(" ", ncol(.gData), "columns,")
-      svalue(f0_rows_lbl) <- paste(" ", nrow(.gData), "rows")
+      svalue(f0_columns_lbl) <- paste(" ", ncol(.gData), " ",
+        strLblColumns, ", ",
+        sep = ""
+      )
+      svalue(f0_rows_lbl) <- paste(" ", nrow(.gData), " ",
+        strLblRows, ", ",
+        sep = ""
+      )
       # Result name.
       svalue(save_edt) <- paste(val_obj, "_slim", sep = "")
 
       # Guess column names to keep fixed.
-      svalue(fix_edt) <- colNames(data = .gData, slim = TRUE, numbered = TRUE, concatenate = "|")
+      svalue(fix_edt) <- colNames(
+        data = .gData, slim = TRUE,
+        numbered = TRUE, concatenate = "|"
+      )
 
       # Guess column names to stack.
-      svalue(stack_edt) <- colNames(data = .gData, slim = FALSE, numbered = TRUE, concatenate = "|")
+      svalue(stack_edt) <- colNames(
+        data = .gData, slim = FALSE,
+        numbered = TRUE, concatenate = "|"
+      )
 
       # Reset button.
-      svalue(slim_btn) <- "Slim dataset"
+      svalue(slim_btn) <- strBtnSlim
       enabled(slim_btn) <- TRUE
     } else {
 
@@ -225,36 +365,47 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(stack_edt) <- ""
       .refresh_fix_tbl()
       .refresh_stack_tbl()
-      svalue(f0_samples_lbl) <- paste(" ", "<NA>", "samples,")
-      svalue(f0_columns_lbl) <- paste(" ", "<NA>", "columns,")
-      svalue(f0_rows_lbl) <- paste(" ", "<NA>", "rows")
+      svalue(f0_samples_lbl) <- paste(" ", "<NA> ",
+        strLblSamples, ", ",
+        sep = ""
+      )
+      svalue(f0_columns_lbl) <- paste(" ", "<NA> ",
+        strLblColumns, ", ",
+        sep = ""
+      )
+      svalue(f0_rows_lbl) <- paste(" ", "<NA> ",
+        strLblRows, ", ",
+        sep = ""
+      )
       svalue(save_edt) <- ""
     }
   })
 
-  # SAMPLES ###################################################################
+  # FIX #######################################################################
 
   if (debug) {
-    print("SAMPLES")
-    print(unique(.gData$Sample.Name))
+    print("COLUMNS")
+    print(names(.gData))
   }
 
-  fix_f <- gframe("Fix",
+  fix_f <- gframe(
+    text = strFrmFix,
     horizontal = FALSE, container = g1,
     expand = TRUE, fill = TRUE
   )
 
   fix_lbl <- glabel(
-    text = "Columns to keep fixed (separate by pipe |):",
+    text = strLblFix,
     container = fix_f,
     anchor = c(-1, 0)
   )
 
   fix_edt <- gedit(
-    initial.msg = "Doubleklick or drag column names to list",
+    initial.msg = strEdtMsg,
     width = 40,
     container = fix_f
   )
+  tooltip(fix_edt) <- strTipColumns
 
   fix_tbl <- gWidgets2::gtable(
     items = names(.gData),
@@ -290,28 +441,30 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     fix_tbl[, ] <- tmp_tbl # Update table.
   })
 
-  # COLUMNS ###################################################################
+  # STACK #####################################################################
 
   if (debug) {
     print("STACK")
   }
 
-  stack_f <- gframe("Stack",
+  stack_f <- gframe(
+    text = strFrmStack,
     horizontal = FALSE, container = g1,
     expand = TRUE, fill = TRUE
   )
 
   stack_lbl <- glabel(
-    text = "Columns to stack (separate by pipe |):",
+    text = strLblStack,
     container = stack_f,
     anchor = c(-1, 0)
   )
 
   stack_edt <- gedit(
-    initial.msg = "Doubleklick or drag column names to list",
+    initial.msg = strEdtMsg,
     width = 40,
     container = stack_f
   )
+  tooltip(stack_edt) <- strTipColumns
 
   stack_tbl <- gWidgets2::gtable(
     items = names(.gData),
@@ -340,46 +493,25 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     stack_tbl[, ] <- tmp_tbl # Update table.
   })
 
-  # FRAME 1 ###################################################################
+  # OPTIONS ###################################################################
 
-  if (debug) {
-    print("OPTIONS")
-  }
+  option_frm <- gframe(text = strFrmOptions, horizontal = FALSE, container = g0)
 
-  f1 <- gframe("Options", horizontal = FALSE, container = g0)
+  keep_chk <- gcheckbox(text = strChkKeep, checked = TRUE, container = option_frm)
 
-  f1_keep_chk <- gcheckbox(
-    text = "Keep rows in fixed columns even if no data in stacked columns",
-    checked = TRUE,
-    container = f1
-  )
-
-  glabel(
-    text = paste("(i.e. keep one row per marker for each sample even if no peak)"),
-    container = f1, anchor = c(-1, 0)
-  )
-
-  glabel(
-    text = paste(
-      "\nTip:",
-      "Manually edit the columns to fix and stack.\n",
-      "e.g. 'Allele' will stack 'Allele.1', 'Allele.2'..."
-    ),
-    container = f1,
-    anchor = c(-1, 0)
-  )
+  glabel(text = strLblKeep, container = option_frm, anchor = c(-1, 0))
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = "Save as", container = g2)
+  save_frame <- gframe(text = strFrmSave, container = g2)
 
-  glabel(text = "Name for result:", container = save_frame)
+  glabel(text = strLblSave, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  slim_btn <- gbutton(text = "Slim dataset", container = g2)
+  slim_btn <- gbutton(text = strBtnSlim, container = g2)
 
   addHandlerClicked(slim_btn, handler = function(h, ...) {
 
@@ -393,7 +525,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       # Get values.
       fix_val <- svalue(fix_edt)
       stack_val <- svalue(stack_edt)
-      keep_val <- svalue(f1_keep_chk)
+      keep_val <- svalue(keep_chk)
 
       # Slim require a vector of strings.
       fix_val <- unlist(strsplit(fix_val, "|", fixed = TRUE))
@@ -412,7 +544,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(slim_btn)
-      svalue(slim_btn) <- "Processing..."
+      svalue(slim_btn) <- strBtnProcessing
       unblockHandlers(slim_btn)
       enabled(slim_btn) <- FALSE
 
@@ -429,7 +561,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "slim_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -437,15 +569,16 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       saveObject(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      gmessage("A file name must be provided!",
-        title = "Error",
+      gmessage(
+        msg = strMsgName,
+        title = strMsgTitleError,
         icon = "error",
         parent = w
       )
@@ -557,7 +690,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     # Then load settings if true.
     if (svalue(savegui_chk)) {
       if (exists(".strvalidator_slim_gui_title", envir = env, inherits = FALSE)) {
-        svalue(f1_keep_chk) <- get(".strvalidator_slim_gui_title", envir = env)
+        svalue(keep_chk) <- get(".strvalidator_slim_gui_title", envir = env)
       }
 
       if (debug) {
@@ -571,7 +704,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_slim_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_slim_gui_title", value = svalue(f1_keep_chk), envir = env)
+      assign(x = ".strvalidator_slim_gui_title", value = svalue(keep_chk), envir = env)
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_slim_gui_savegui", envir = env, inherits = FALSE)) {

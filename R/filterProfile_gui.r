@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.03.2020: Added language support and minor gui adjustments.
 # 02.03.2019: Tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -19,7 +20,6 @@
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 12.01.2014: Replaced 'subset' with native code.
-# 15.12.2013: Fixed filter by kit bins.
 
 #' @title Filter Profile
 #'
@@ -52,12 +52,196 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   .gRef <- NULL
   .gRefName <- NULL
 
+  # Language ------------------------------------------------------------------
+  
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+  
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
-
-
-  w <- gwindow(title = "Filter profile", visible = FALSE)
+  
+  # Default strings.
+  strWinTitle <- "Filter profile"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Datasets"
+  strLblDataset <- "Sample dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblRefDataset <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strLblKit <- "Kit:"
+  strChkVirtual <- "Exclude virtual bins"
+  strFrmOptions <- "Options"
+  strLblPre <- "Pre-processing:"
+  strChkSex <- "Remove sex markers"
+  strTipSex <- "Removes sex markers defined in the selected kit."
+  strChkSensors <- "Remove quality sensors"
+  strTipSensors <- "Removes quality sensors defined in the selected kit."
+  strLblMethod <- "Filter options:"
+  strRadRef <- "Filter by reference profiles"
+  strRadBins <- "Filter by kit bins (allelic ladder)"
+  strChkInvert <- "Invert (remove peaks matching)"
+  strLblMatching <- "Reference sample name matching:"
+  strChkIgnore <- "Ignore case"
+  strTipIgnore <- "'A' will match 'A', 'B-a.2', and 'A2'"
+  strChkWord <- "Add word boundaries"
+  strTipWord <- "'A' will match 'A', 'B-A.2', and 'A 2' but not 'A2'"
+  strChkExact <- "Exact matching"
+  strTipExact <- "'A' will match 'A' but not 'B-A.2', 'A 2', or 'A2'"
+  strLblPost <- "Post-processing:"
+  strChkAdd <- "Add missing loci (markers)"
+  strTipAdd <- "This option will be slower."
+  strChkKeep <- "Keep loci/sample even if no matching allele"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnFilter <- "Filter"
+  strBtnProcessing <- "Processing..."
+  strMsgDataset <- "A sample dataset and a reference dataset must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset."
+  strWinTitleCheck <- "Check subsetting"
+  strMsgTitleError <- "Error"
+  
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+  
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+    
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+    
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+    
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+    
+    strTmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+    
+    strTmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+    
+    strTmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+    
+    strTmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+    
+    strTmp <- dtStrings["strLblRefDataset"]$value
+    strLblRefDataset <- ifelse(is.na(strtmp), strLblRefDataset, strtmp)
+    
+    strTmp <- dtStrings["strLblRef"]$value
+    strLblRef <- ifelse(is.na(strtmp), strLblRef, strtmp)
+    
+    strTmp <- dtStrings["strBtnCheck"]$value
+    strBtnCheck <- ifelse(is.na(strtmp), strBtnCheck, strtmp)
+    
+    strTmp <- dtStrings["strLblKit"]$value
+    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
+    
+    strTmp <- dtStrings["strChkVirtual"]$value
+    strChkVirtual <- ifelse(is.na(strtmp), strChkVirtual, strtmp)
+    
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+    
+    strTmp <- dtStrings["strLblPre"]$value
+    strLblPre <- ifelse(is.na(strtmp), strLblPre, strtmp)
+    
+    strTmp <- dtStrings["strChkSex"]$value
+    strChkSex <- ifelse(is.na(strtmp), strChkSex, strtmp)
+    
+    strTmp <- dtStrings["strTipSex"]$value
+    strTipSex <- ifelse(is.na(strtmp), strTipSex, strtmp)
+    
+    strTmp <- dtStrings["strChkSensors"]$value
+    strChkSensors <- ifelse(is.na(strtmp), strChkSensors, strtmp)
+    
+    strTmp <- dtStrings["strTipSensors"]$value
+    strTipSensors <- ifelse(is.na(strtmp), strTipSensors, strtmp)
+    
+    strTmp <- dtStrings["strLblMethod"]$value
+    strLblMethod <- ifelse(is.na(strtmp), strLblMethod, strtmp)
+    
+    strTmp <- dtStrings["strRadRef"]$value
+    strRadRef <- ifelse(is.na(strtmp), strRadRef, strtmp)
+    
+    strTmp <- dtStrings["strRadBins"]$value
+    strRadBins <- ifelse(is.na(strtmp), strRadBins, strtmp)
+    
+    strTmp <- dtStrings["strChkInvert"]$value
+    strChkInvert <- ifelse(is.na(strtmp), strChkInvert, strtmp)
+    
+    strTmp <- dtStrings["strLblMatching"]$value
+    strLblMatching <- ifelse(is.na(strtmp), strLblMatching, strtmp)
+    
+    strTmp <- dtStrings["strChkIgnore"]$value
+    strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
+    
+    strTmp <- dtStrings["strTipIgnore"]$value
+    strTipIgnore <- ifelse(is.na(strtmp), strTipIgnore, strtmp)
+    
+    strTmp <- dtStrings["strChkWord"]$value
+    strChkWord <- ifelse(is.na(strtmp), strChkWord, strtmp)
+    
+    strTmp <- dtStrings["strTipWord"]$value
+    strTipWord <- ifelse(is.na(strtmp), strTipWord, strtmp)
+    
+    strTmp <- dtStrings["strChkExact"]$value
+    strChkExact <- ifelse(is.na(strtmp), strChkExact, strtmp)
+    
+    strTmp <- dtStrings["strTipExact"]$value
+    strTipExact <- ifelse(is.na(strtmp), strTipExact, strtmp)
+    
+    strTmp <- dtStrings["strLblPost"]$value
+    strLblPost <- ifelse(is.na(strtmp), strLblPost, strtmp)
+    
+    strTmp <- dtStrings["strChkAdd"]$value
+    strChkAdd <- ifelse(is.na(strtmp), strChkAdd, strtmp)
+    
+    strTmp <- dtStrings["strTipAdd"]$value
+    strTipAdd <- ifelse(is.na(strtmp), strTipAdd, strtmp)
+    
+    strTmp <- dtStrings["strChkKeep"]$value
+    strChkKeep <- ifelse(is.na(strtmp), strChkKeep, strtmp)
+    
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+    
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+    
+    strTmp <- dtStrings["strBtnFilter"]$value
+    strBtnFilter <- ifelse(is.na(strtmp), strBtnFilter, strtmp)
+    
+    strTmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+    
+    strTmp <- dtStrings["strMsgDataset"]$value
+    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
+    
+    strTmp <- dtStrings["strMsgTitleDataset"]$value
+    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
+    
+    strTmp <- dtStrings["strMsgCheck"]$value
+    strMsgCheck <- ifelse(is.na(strtmp), strMsgCheck, strtmp)
+    
+    strTmp <- dtStrings["strWinTitleCheck"]$value
+    strWinTitleCheck <- ifelse(is.na(strtmp), strWinTitleCheck, strtmp)
+    
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+  }
+  
+  # WINDOW ####################################################################
+  
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -100,22 +284,22 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("filterProfile_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 2,
     container = gv
@@ -125,11 +309,11 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # Datasets ------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
+  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
   g0[1, 2] <- g0_dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -141,7 +325,10 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     ellipsize = "none"
   )
 
-  g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[1, 3] <- g0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
 
   addHandlerChanged(g0_dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_dataset_drp)
@@ -160,7 +347,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(g0_samples_lbl) <- paste("", samples, strLblSamples)
       svalue(save_edt) <- paste(.gDataName, "_filter", sep = "")
 
       # Detect kit.
@@ -172,16 +359,19 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       # Reset components.
       .gData <<- NULL
       svalue(g0_dataset_drp, index = TRUE) <- 1
-      svalue(g0_samples_lbl) <- " 0 samples"
+      svalue(g0_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(save_edt) <- ""
     }
   })
 
-  g0[2, 1] <- g0_refset_lbl <- glabel(text = "Select reference:", container = g0)
+  g0[2, 1] <- g0_refset_lbl <- glabel(
+    text = strLblRefDataset,
+    container = g0
+  )
 
   g0[2, 2] <- g0_refset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -193,7 +383,10 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     ellipsize = "none"
   )
 
-  g0[2, 3] <- g0_ref_lbl <- glabel(text = " 0 references", container = g0)
+  g0[2, 3] <- g0_ref_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = g0
+  )
 
   addHandlerChanged(g0_refset_drp, handler = function(h, ...) {
     val_obj <- svalue(g0_refset_drp)
@@ -212,19 +405,19 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
-      svalue(g0_ref_lbl) <- paste("", ref, "references")
+      svalue(g0_ref_lbl) <- paste("", ref, strLblRef)
     } else {
 
       # Reset components.
       .gRef <<- NULL
       svalue(g0_refset_drp, index = TRUE) <- 1
-      svalue(g0_ref_lbl) <- " 0 references"
+      svalue(g0_ref_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  g0[3, 2] <- g0_check_btn <- gbutton(text = "Check subsetting", container = g0)
+  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
 
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
 
@@ -237,7 +430,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinTitleCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -260,9 +453,8 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -270,7 +462,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # Kit -------------------------------------------------------------------
 
-  g0[4, 1] <- g0_kit_lbl <- glabel(text = "Select kit:", container = g0)
+  g0[4, 1] <- g0_kit_lbl <- glabel(text = strLblKit, container = g0)
 
   g0[4, 2] <- g0_kit_drp <- gcombobox(
     items = getKit(),
@@ -281,74 +473,89 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   )
 
   g0[4, 3] <- g0_kit_chk <- gcheckbox(
-    text = "Exclude virtual bins.",
+    text = strChkVirtual,
     checked = TRUE,
     container = g0
   )
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
-
-  glabel(text = "Filter options:", anchor = c(-1, 0), container = f1)
-
-  f1_options <- c(
-    "Filter by reference dataset",
-    "Filter by kit bins (allelic ladder)"
+  f1 <- gframe(
+    text = strFrmOptions, horizontal = FALSE,
+    spacing = 2, container = gv
   )
+
+  # PRE-PROCESSING ------------------------------------------------------------
+  
+  glabel(text = strLblPre, anchor = c(-1, 0), container = f1)
+  
+  f1_sex_chk <- gcheckbox(
+    text = strChkSex,
+    checked = FALSE, container = f1
+  )
+  tooltip(f1_sex_chk) <- strTipSex
+  
+  f1_qs_chk <- gcheckbox(
+    text = strChkSensors,
+    checked = FALSE, container = f1
+  )
+  tooltip(f1_qs_chk) <- strTipSensors
+
+  # METHOD --------------------------------------------------------------------
+  
+  glabel(text = "", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblMethod, anchor = c(-1, 0), container = f1)
+
+  f1_options <- c(strRadRef, strRadBins)
 
   f1_filter_opt <- gradio(
     items = f1_options, selected = 1,
     horizontal = FALSE, container = f1
   )
 
-  f1_sex_chk <- gcheckbox(
-    text = "Remove sex markers",
-    checked = FALSE, container = f1
-  )
-  tooltip(f1_sex_chk) <- "Removes sex markers defined in the selected kit."
-
-  f1_qs_chk <- gcheckbox(
-    text = "Remove quality sensors",
-    checked = FALSE, container = f1
-  )
-  tooltip(f1_qs_chk) <- "Removes quality sensors defined in the selected kit."
-
   f1_invert_chk <- gcheckbox(
-    text = "Invert (remove peaks matching reference)",
+    text = strChkInvert,
     checked = FALSE, container = f1
   )
-
-  f1_add_missing_loci_chk <- gcheckbox(
-    text = "Add missing loci",
-    checked = TRUE, container = f1
-  )
-  tooltip(f1_add_missing_loci_chk) <- "This option will be slower."
 
   f1_keep_na_chk <- gcheckbox(
-    text = "Keep loci/sample even if no matching allele",
+    text = strChkKeep,
     checked = TRUE, container = f1
   )
 
-  glabel(text = "Sample name matching:", anchor = c(-1, 0), container = f1)
+  # MATCHING ------------------------------------------------------------------
+  
+  glabel(text = "", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblMatching, anchor = c(-1, 0), container = f1)
 
   f1_ignore_case_chk <- gcheckbox(
-    text = "Ignore case ",
+    text = strChkIgnore,
     checked = TRUE, container = f1
   )
-  tooltip(f1_ignore_case_chk) <- "'A' will match 'A', 'B-a.2', and 'A2'"
+  tooltip(f1_ignore_case_chk) <- strTipIgnore
 
   f1_exact_chk <- gcheckbox(
-    text = "Exact matching ",
+    text = strChkExact,
     checked = FALSE, container = f1
   )
-  tooltip(f1_exact_chk) <- "'A' will match 'A' but not 'B-A.2', 'A 2', or 'A2'"
+  tooltip(f1_exact_chk) <- strTipExact
 
   f1_word_chk <- gcheckbox(
-    text = "Add word boundaries ",
+    text = strChkWord,
     checked = FALSE, container = f1
   )
-  tooltip(f1_word_chk) <- "'A' will match 'A', 'B-A.2', and 'A 2' but not 'A2'"
+  tooltip(f1_word_chk) <- strTipWord
+
+  # POST-PROCESSING -----------------------------------------------------------
+
+  glabel(text = "", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblPost, anchor = c(-1, 0), container = f1)
+  
+  f1_add_missing_loci_chk <- gcheckbox(
+    text = strChkAdd,
+    checked = TRUE, container = f1
+  )
+  tooltip(f1_add_missing_loci_chk) <- strTipAdd
 
   # HANDLERS ------------------------------------------------------------------
 
@@ -362,15 +569,15 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = "Save as", container = gv)
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = "Name for result:", container = save_frame)
+  glabel(text = strLblSave, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  filter_btn <- gbutton(text = "Filter profile", container = gv)
+  filter_btn <- gbutton(text = strBtnFilter, container = gv)
 
   addHandlerClicked(filter_btn, handler = function(h, ...) {
     val_data <- .gData
@@ -406,7 +613,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
       # Change button.
       blockHandlers(filter_btn)
-      svalue(filter_btn) <- "Processing..."
+      svalue(filter_btn) <- strBtnProcessing
       unblockHandlers(filter_btn)
       enabled(filter_btn) <- FALSE
 
@@ -444,7 +651,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "filterProfile_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -453,17 +660,16 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
       if (debug) {
         print(str(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset and a reference dataset have to be selected."
-
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(
+        msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )

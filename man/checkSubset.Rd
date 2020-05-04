@@ -4,8 +4,15 @@
 \alias{checkSubset}
 \title{Check Subset}
 \usage{
-checkSubset(data, ref, console = TRUE, ignore.case = TRUE,
-  word = FALSE, exact = FALSE, debug = FALSE)
+checkSubset(
+  data,
+  ref,
+  console = TRUE,
+  ignore.case = TRUE,
+  word = FALSE,
+  exact = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{a data frame in GeneMapper format containing column 'Sample.Name'.}

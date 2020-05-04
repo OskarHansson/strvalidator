@@ -4,8 +4,12 @@
 \alias{removeSpike_gui}
 \title{Remove Spike}
 \usage{
-removeSpike_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+removeSpike_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

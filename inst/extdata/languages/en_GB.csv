@@ -1,0 +1,101 @@
+Scope	Order	Key	Value
+addData_gui	1	strWinTitle 	Add data
+addData_gui	2	strChkGui	Save GUI settings
+addData_gui	3	strBtnHelp	Help
+addData_gui	4	strFrmDataset	Datasets
+addData_gui	5	strLblDestination	Select destination dataset:
+addData_gui	6	strDrpDefault	<Select column>
+addData_gui	7	strLblSamples	samples
+addData_gui	8	strLblSource	Select source dataset:
+addData_gui	9	strFrmOptions	Options
+addData_gui	10	strChkExact	Exact key matching
+addData_gui	11	strChkIgnore	Ignore case in marker name
+addData_gui	12	strLblKey1	Select primary key column:
+addData_gui	13	strLblKey2	Select secondary key column (optional):
+addData_gui	14	strLblColumns	Select columns to add to the new dataset:
+addData_gui	15	strEdtMsg	Default is all columns
+addData_gui	16	strFrmSave	Save as
+addData_gui	17	strLblSave	Name for result:
+addData_gui	18	strBtnAdd	Add
+addData_gui	19	 strBtnAddActive 	Processing...
+addData_gui	20	 strMsgTitle 	Datasets not selected
+addDye_gui	1	strWinTitle	Add dye to dataset
+addDye_gui	2	strChkGui	Save GUI settings
+addDye_gui	3	strBtnHelp	Help
+addDye_gui	4	strFrmDataset	Dataset and kit
+addDye_gui	5	strLblDataset	Select dataset:
+addDye_gui	6	strDrpDefault	<Select dataset>
+addDye_gui	7	strLblSamples	samples
+addDye_gui	8	strLblKit	Kit:
+addDye_gui	9	strFrmOptions	Options
+addDye_gui	10	strChkIgnore	Ignore case in marker name
+addDye_gui	11	strChkDye	Add dye information
+addDye_gui	12	strChkColor	Add color information
+addDye_gui	13	strChkR	Add R color information
+addDye_gui	14	strChkMarker	Add marker order
+addDye_gui	15	strFrmSave	Save as
+addDye_gui	16	strLblSave	Name for result:
+addDye_gui	17	strBtnAdd	Add
+addDye_gui	18	strBtnAddActive	Processing...
+addMarker_gui	1	strWinTitle	Add missing markers to dataset
+addMarker_gui	2	strChkGui	Save GUI settings
+addMarker_gui	3	strBtnHelp	Help
+addMarker_gui	4	strFrmDataset	Dataset and kit
+addMarker_gui	5	strLblDataset	Select dataset:
+addMarker_gui	6	strDrpDefault	<Select dataset>
+addMarker_gui	7	strLblSamples	samples
+addMarker_gui	8	strLblKit	Kit:
+addMarker_gui	9	strFrmOptions	Options
+addMarker_gui	10	strChkIgnore	Ignore case in marker name
+addMarker_gui	11	strFrmSave	Save as
+addMarker_gui	12	strLblSave	Name for result:
+addMarker_gui	13	strBtnAdd	Add
+addMarker_gui	14	strBtnAddActive	Processing...
+addSize_gui	1	strWinTitle	Add size to dataset
+addSize_gui	2	strChkGui	Save GUI settings
+addSize_gui	3	strBtnHelp	Help
+addSize_gui	4	strFrmDataset	Dataset and kit
+addSize_gui	5	strLblDataset	Select dataset:
+addSize_gui	6	strDrpDefault	<Select dataset>
+addSize_gui	7	strLblSamples	samples
+addSize_gui	8	strLblKit	Kit:
+addSize_gui	9	strFrmOptions	Options
+addSize_gui	10	strRadItem1	Get size as defined in bins file (NA if not defined)
+addSize_gui	11	strRadItem2	Calculate an estimate from locus offset and number of repeats
+addSize_gui	12	strFrmSave	Save as
+addSize_gui	13	strLblSave	Name for result:
+addSize_gui	14	strBtnAdd	Add
+addSize_gui	15	strBtnAddActive	Processing...
+calculateAllele_gui	1	strWinTitle	Calculate summary statistics for alleles
+calculateAllele_gui	2	strChkGui	Save GUI settings
+calculateAllele_gui	3	strBtnHelp	Help
+calculateAllele_gui	4	strFrmDataset	Dataset
+calculateAllele_gui	5	strLblDataset	Select dataset:
+calculateAllele_gui	6	strDrpDefault	<Select dataset>
+calculateAllele_gui	7	strLblRows	rows
+calculateAllele_gui	8	strFrmOptions	Options
+calculateAllele_gui	9	strLblThreshold	Peak height threshold: 
+calculateAllele_gui	10	strTipThreshold	Peaks with heights below this value will be removed.
+calculateAllele_gui	11	strChkSexMarkers	Remove sex markers defined in kit: 
+calculateAllele_gui	12	strFrmSave	Save as
+calculateAllele_gui	13	strLblSave	Name for result:
+calculateAllele_gui	14	strBtnCalculate	Calculate
+calculateAllele_gui	15	strMsgMessage	Select a dataset!
+calculateAllele_gui	16	strMsgTitle	Error
+calculateAllT_gui	1	strWinTitle	Calculate stochastic thresholds
+calculateAllT_gui	2	strChkGui	Save GUI settings
+calculateAllT_gui	3	strBtnHelp	Help
+calculateAllT_gui	4	strFrmDataset	Dataset and kit
+calculateAllT_gui	5	strLblDataset	Select dataset:
+calculateAllT_gui	6	strDrpDefault	<Select dataset>
+calculateAllT_gui	7	strLblSamples	samples
+calculateAllT_gui	8	strLblKit	Kit:
+calculateAllT_gui	9	strFrmOptions	Options
+calculateAllT_gui	10	strLblT	Calculate point estimates at P(dropout)=
+calculateAllT_gui	11	strLblTcons1	Calculate conservative point estimates at P(dropout>
+calculateAllT_gui	12	strLblTcons2	)<
+calculateAllT_gui	13	strChkSex	Remove sex markers
+calculateAllT_gui	14	strFrmSave	Save as
+calculateAllT_gui	15	strLblSave	Name for result:
+calculateAllT_gui	16	strBtnCalculate	Calculate
+calculateAllT_gui	17	strBtnCalculateActive	Processing...

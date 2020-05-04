@@ -4,8 +4,13 @@
 \alias{addOrder}
 \title{Add Marker Order.}
 \usage{
-addOrder(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
-  debug = FALSE)
+addOrder(
+  data,
+  kit = NULL,
+  overwrite = FALSE,
+  ignore.case = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data frame or vector.}

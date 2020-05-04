@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.03.2020: Added language support.
 # 17.03.2019: Fixed widgets not enabled.
 # 01.03.2019: Rearranged widgets and changed visibility for more intuitive options.
 # 22.02.2019: Compressed tcltk gui.
@@ -19,7 +20,6 @@
 # 23.05.2015: Added new options available in 'import'.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
-# 20.01.2014: Remove redundant "overwrite?" message dialog.
 
 #' @title Import Data
 #'
@@ -46,9 +46,6 @@
 
 
 import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-  if (debug) {
-    print(paste("IN:", match.call()[[1]]))
-  }
 
   # Define variables.
   .default_file_dir <- NA
@@ -59,11 +56,178 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   .selectedFolder <- NULL
   .batchImport <- TRUE
 
-  .selectedLabel <- "Selected for import: "
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
+  if (debug) {
+    print(paste("IN:", fnc))
+  }
+
+  # Default strings.
+  strWinTitle <- "Import from files"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strBtnFile <- "Select file"
+  strTipFile <- "Import of a single file into one dataset."
+  strMsgFile <- "Select a file..."
+  strBtnFolder <- "Select folder"
+  strTipFolder <- "Batch import of multiple files into one dataset."
+  strMsgFolder <- "Select a folder..."
+  strLblSelected <- "Selected for import:"
+  strFrmOptions <- "Options"
+  strExpMultiple <- "Multiple files options"
+  strChkIgnore <- "Ignore case"
+  strLblPrefix <- "Prefix:"
+  strLblSuffix <- "Suffix:"
+  strLblExtension <- "Extension:"
+  strChkName <- "Save file name"
+  strChkTime <- "Save file time stamp"
+  strLblDelimiter <- "Delimiter:"
+  strDrpTab <- "TAB"
+  strDrpSpace <- "SPACE"
+  strDrpComma <- "COMMA"
+  strDrpSemicolon <- "SEMICOLON"
+  strLblNA <- "NA strings (separated by comma):"
+  strChkTrim <- "Auto trim samples"
+  strLblTrim <- "Trim samples containing the word (separate by pipe |):"
+  strChkInvert <- "Invert (remove matching samples"
+  strChkSlim <- "Auto slim repeated columns"
+  strChkKeep <- "Keep all fixed (keep a row even if no data)"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for dataset:"
+  strMsgSave <- "Name for new dataset"
+  strBtnImport <- "Import"
+  strBtnProcessing <- "Processing..."
+  strMsgName <- "A name for the dataset must be provided."
+  strMsgDataset <- "Dataset empty!\nCheck your file filter."
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strBtnFile"]$value
+    strBtnFile <- ifelse(is.na(strtmp), strBtnFile, strtmp)
+
+    strTmp <- dtStrings["strTipFile"]$value
+    strTipFile <- ifelse(is.na(strtmp), strTipFile, strtmp)
+
+    strTmp <- dtStrings["strMsgFile"]$value
+    strMsgFile <- ifelse(is.na(strtmp), strMsgFile, strtmp)
+
+    strTmp <- dtStrings["strBtnFolder"]$value
+    strBtnFolder <- ifelse(is.na(strtmp), strBtnFolder, strtmp)
+
+    strTmp <- dtStrings["strTipFolder"]$value
+    strTipFolder <- ifelse(is.na(strtmp), strTipFolder, strtmp)
+
+    strTmp <- dtStrings["strMsgFolder"]$value
+    strMsgFolder <- ifelse(is.na(strtmp), strMsgFolder, strtmp)
+
+    strTmp <- dtStrings["strLblSelected"]$value
+    strLblSelected <- ifelse(is.na(strtmp), strLblSelected, strtmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strTmp <- dtStrings["strExpMultiple"]$value
+    strExpMultiple <- ifelse(is.na(strtmp), strExpMultiple, strtmp)
+
+    strTmp <- dtStrings["strChkIgnore"]$value
+    strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
+
+    strTmp <- dtStrings["strLblPrefix"]$value
+    strLblPrefix <- ifelse(is.na(strtmp), strLblPrefix, strtmp)
+
+    strTmp <- dtStrings["strLblSuffix"]$value
+    strLblSuffix <- ifelse(is.na(strtmp), strLblSuffix, strtmp)
+
+    strTmp <- dtStrings["strLblExtension"]$value
+    strLblExtension <- ifelse(is.na(strtmp), strLblExtension, strtmp)
+
+    strTmp <- dtStrings["strChkName"]$value
+    strChkName <- ifelse(is.na(strtmp), strChkName, strtmp)
+
+    strTmp <- dtStrings["strChkTime"]$value
+    strChkTime <- ifelse(is.na(strtmp), strChkTime, strtmp)
+
+    strTmp <- dtStrings["strLblDelimiter"]$value
+    strLblDelimiter <- ifelse(is.na(strtmp), strLblDelimiter, strtmp)
+
+    strTmp <- dtStrings["strDrpTab"]$value
+    strDrpTab <- ifelse(is.na(strtmp), strDrpTab, strtmp)
+
+    strTmp <- dtStrings["strDrpSpace"]$value
+    strDrpSpace <- ifelse(is.na(strtmp), strDrpSpace, strtmp)
+
+    strTmp <- dtStrings["strDrpComma"]$value
+    strDrpComma <- ifelse(is.na(strtmp), strDrpComma, strtmp)
+
+    strTmp <- dtStrings["strDrpSemicolon"]$value
+    strDrpSemicolon <- ifelse(is.na(strtmp), strDrpSemicolon, strtmp)
+
+    strTmp <- dtStrings["strLblNA"]$value
+    strLblNA <- ifelse(is.na(strtmp), strLblNA, strtmp)
+
+    strTmp <- dtStrings["strChkTrim"]$value
+    strChkTrim <- ifelse(is.na(strtmp), strChkTrim, strtmp)
+
+    strTmp <- dtStrings["strLblTrim"]$value
+    strLblTrim <- ifelse(is.na(strtmp), strLblTrim, strtmp)
+
+    strTmp <- dtStrings["strChkInvert"]$value
+    strChkInvert <- ifelse(is.na(strtmp), strChkInvert, strtmp)
+
+    strTmp <- dtStrings["strChkSlim"]$value
+    strChkSlim <- ifelse(is.na(strtmp), strChkSlim, strtmp)
+
+    strTmp <- dtStrings["strChkKeep"]$value
+    strChkKeep <- ifelse(is.na(strtmp), strChkKeep, strtmp)
+
+    strTmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strTmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strTmp <- dtStrings["strMsgSave"]$value
+    strMsgSave <- ifelse(is.na(strtmp), strMsgSave, strtmp)
+
+    strTmp <- dtStrings["strBtnImport"]$value
+    strBtnImport <- ifelse(is.na(strtmp), strBtnImport, strtmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+
+    strTmp <- dtStrings["strMsgName"]$value
+    strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$value
+    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+  }
+
+  # WINDOW ####################################################################
 
   # Main window.
   w <- gwindow(
-    title = "Import from files",
+    title = strWinTitle,
     visible = FALSE
   )
 
@@ -109,23 +273,23 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = TRUE)
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("import_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # GUI #######################################################################
 
   # Button for single file import.
-  select_file <- gbutton(text = "Select file", container = gv)
-  tooltip(select_file) <- "Import of a single file into one dataset."
+  select_file <- gbutton(text = strBtnFile, container = gv)
+  tooltip(select_file) <- strTipFile
 
   addHandlerClicked(select_file, handler = function(h, ...) {
 
@@ -147,7 +311,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Open file selector.
     .selectedFile <<- gfile(
-      text = "Select a file...", type = "open",
+      text = strMsgFile, type = "open",
       initial.filename = m_filename,
       initial.dir = m_file_dir
     )
@@ -159,12 +323,12 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     }
 
     # Update current selection.
-    svalue(selected_lbl) <- paste0(c(.selectedLabel, .selectedFile))
+    svalue(selected_lbl) <- paste0(c(strLblSelected, .selectedFile))
   })
 
   # Button for multiple files import.
-  select_folder <- gbutton(text = "Select folder", container = gv)
-  tooltip(select_folder) <- "Batch import of multiple files into one dataset."
+  select_folder <- gbutton(text = strBtnFolder, container = gv)
+  tooltip(select_folder) <- strTipFolder
 
   addHandlerClicked(select_folder, handler = function(h, ...) {
 
@@ -183,7 +347,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Open folder selector.
     .selectedFolder <<- gfile(
-      text = "Select a folder...", type = "selectdir",
+      text = strMsgFolder, type = "selectdir",
       initial.dir = m_dir
     )
 
@@ -193,23 +357,23 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     }
 
     # Update current selection.
-    svalue(selected_lbl) <- paste0(c(.selectedLabel, .selectedFolder))
+    svalue(selected_lbl) <- paste0(c(strLblSelected, .selectedFolder))
   })
 
   # Selected status label.
-  selected_lbl <- glabel(text = .selectedLabel, container = gv, anchor = c(-1, 0))
+  selected_lbl <- glabel(text = strLblSelected, container = gv, anchor = c(-1, 0))
 
   # OPTIONS -------------------------------------------------------------------
 
   opt_frm <- gframe(
-    text = "Options", pos = 0, horizontal = FALSE,
+    text = strFrmOptions, pos = 0, horizontal = FALSE,
     spacing = 2, container = gv
   )
 
   # MULTIPLE FILES OPTIONS ----------------------------------------------------
 
   multi_frm <- gexpandgroup(
-    text = "Multiple files options",
+    text = strExpMultiple,
     horizontal = FALSE, container = opt_frm
   )
 
@@ -217,17 +381,17 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   visible(multi_frm) <- FALSE
 
   multi_case_chk <- gcheckbox(
-    text = "Ignore case", checked = TRUE,
+    text = strChkIgnore, checked = TRUE,
     container = multi_frm
   )
 
-  glabel(text = "Prefix:", container = multi_frm, anchor = c(-1, 0))
+  glabel(text = strLblPrefix, container = multi_frm, anchor = c(-1, 0))
   multi_pre_edt <- gedit(container = multi_frm, expand = TRUE, fill = TRUE)
 
-  glabel(text = "Suffix:", container = multi_frm, anchor = c(-1, 0))
+  glabel(text = strLblSuffix, container = multi_frm, anchor = c(-1, 0))
   multi_suf_edt <- gedit(container = multi_frm, expand = TRUE, fill = TRUE)
 
-  glabel(text = "Extension:", container = multi_frm, anchor = c(-1, 0))
+  glabel(text = strLblExtension, container = multi_frm, anchor = c(-1, 0))
   multi_ext_edt <- gedit(
     text = "txt", container = multi_frm,
     expand = TRUE, fill = TRUE
@@ -236,26 +400,26 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # INFO ----------------------------------------------------------------------
 
   opt_file_chk <- gcheckbox(
-    text = "Save file name", checked = TRUE,
+    text = strChkName, checked = TRUE,
     container = opt_frm
   )
 
   opt_time_chk <- gcheckbox(
-    text = "Save file time stamp", checked = TRUE,
+    text = strChkTime, checked = TRUE,
     container = opt_frm
   )
 
   # DELIMITER -----------------------------------------------------------------
 
-  glabel(text = "Delimiter:", container = opt_frm, anchor = c(-1, 0))
+  glabel(text = strLblDelimiter, container = opt_frm, anchor = c(-1, 0))
   opt_sep_drp <- gcombobox(
-    items = c("TAB", "SPACE", "COMMA", "SEMICOLON"),
+    items = c(strDrpTab, strDrpSpace, strDrpComma, strDrpSemicolon),
     selected = 1, editable = FALSE, container = opt_frm,
     ellipsize = "none"
   )
 
   glabel(
-    text = "NA strings (separated by comma):",
+    text = strLblNA,
     container = opt_frm, anchor = c(-1, 0)
   )
   opt_na_edt <- gedit(text = "NA,,", container = opt_frm)
@@ -263,7 +427,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # TRIM ----------------------------------------------------------------------
 
   opt_trim_chk <- gcheckbox(
-    text = "Auto trim samples", checked = FALSE,
+    text = strChkTrim, checked = FALSE,
     container = opt_frm
   )
 
@@ -275,7 +439,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   enabled(trim_grp) <- FALSE
 
   glabel(
-    text = "Trim samples containing the word (separate by pipe |):",
+    text = strLblTrim,
     container = trim_grp, anchor = c(-1, 0)
   )
 
@@ -285,14 +449,14 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   )
 
   trim_invert_chk <- gcheckbox(
-    text = "Invert (remove matching samples)", checked = TRUE,
+    text = strChkInvert, checked = TRUE,
     container = trim_grp
   )
 
   # SLIM ----------------------------------------------------------------------
 
   opt_slim_chk <- gcheckbox(
-    text = "Auto slim repeated columns",
+    text = strChkSlim,
     checked = FALSE, container = opt_frm
   )
 
@@ -305,26 +469,26 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   enabled(slim_grp) <- FALSE
 
   slim_fix_chk <- gcheckbox(
-    text = "Keep all fixed (keep a row even if no data)",
+    text = strChkKeep,
     checked = TRUE, container = slim_grp
   )
 
   # SAVE --------------------------------------------------------------------
 
   save_frm <- gframe(
-    text = "Save options", pos = 0,
+    text = strFrmSave, pos = 0,
     horizontal = FALSE, container = gv
   )
 
-  glabel(text = "Name:", container = save_frm, anchor = c(-1, 0))
+  glabel(text = strLblSave, container = save_frm, anchor = c(-1, 0))
   import_edt <- gedit(
-    initial.msg = "Name for new dataset",
+    initial.msg = strMsgSave,
     container = save_frm, expand = TRUE, fill = TRUE
   )
 
   # IMPORT --------------------------------------------------------------------
 
-  import_btn <- gbutton(text = "Import", container = gv)
+  import_btn <- gbutton(text = strBtnImport, container = gv)
 
 
   addHandlerClicked(import_btn, handler = function(h, ...) {
@@ -368,8 +532,9 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Check that a name has been provided for the new data object.
     if (nchar(val_name) == 0) {
-      gmessage("A name for the dataset must be provided.",
-        title = "Error", icon = "error", parent = w
+      gmessage(
+        msg = strMsgName,
+        title = strMsgTitleError, icon = "error", parent = w
       )
 
       ok <- FALSE
@@ -432,7 +597,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
       # Change button.
       blockHandlers(import_btn)
-      svalue(import_btn) <- "Processing..."
+      svalue(import_btn) <- strBtnProcessing
       unblockHandlers(import_btn)
       enabled(import_btn) <- FALSE
 
@@ -461,15 +626,15 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
         # Show warning.
         gmessage(
-          msg = "Dataset empty!\nCheck your file filter.",
-          title = "Error",
+          msg = strMsgDataset,
+          title = strMsgTitleError,
           icon = "error",
           parent = w
         )
 
         # Change button.
         blockHandlers(import_btn)
-        svalue(import_btn) <- "Import"
+        svalue(import_btn) <- strBtnImport
         unblockHandlers(import_btn)
         enabled(import_btn) <- TRUE
       } else {
@@ -492,7 +657,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         # Update audit trail.
         datanew <- auditTrail(
           obj = datanew, key = keys, value = values,
-          label = "import_gui", arguments = FALSE,
+          label = fnc, arguments = FALSE,
           package = "strvalidator"
         )
 

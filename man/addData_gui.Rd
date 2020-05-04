@@ -4,8 +4,7 @@
 \alias{addData_gui}
 \title{Add Data}
 \usage{
-addData_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+addData_gui(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

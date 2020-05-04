@@ -4,8 +4,14 @@
 \alias{calculateAllT}
 \title{Calculate Stochastic Thresholds}
 \usage{
-calculateAllT(data, kit, p.dropout = 0.01, p.conservative = 0.05,
-  rm.sex = TRUE, debug = FALSE)
+calculateAllT(
+  data,
+  kit,
+  p.dropout = 0.01,
+  p.conservative = 0.05,
+  rm.sex = TRUE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{output from \code{\link{calculateDropout}}.}

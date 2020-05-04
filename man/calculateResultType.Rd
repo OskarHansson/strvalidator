@@ -4,9 +4,17 @@
 \alias{calculateResultType}
 \title{Calculate Result Type}
 \usage{
-calculateResultType(data, kit = NULL, add.missing.marker = TRUE,
-  threshold = NULL, mixture.limits = NULL, partial.limits = NULL,
-  subset.name = NA, marker.subset = NULL, debug = FALSE)
+calculateResultType(
+  data,
+  kit = NULL,
+  add.missing.marker = TRUE,
+  threshold = NULL,
+  mixture.limits = NULL,
+  partial.limits = NULL,
+  subset.name = NA,
+  marker.subset = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{a data frame containing at least the column 'Sample.Name'.}

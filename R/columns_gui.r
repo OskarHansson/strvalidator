@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 01.03.2019: Compacting gui and made text box expand (tcltk)
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -41,15 +42,111 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
-  .columnActionDefault <- "<Select action>"
-  .columnDropDefault <- "<Select column>"
+
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
 
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Column actions"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Dataset:"
+  strDrpDataset <- "<Select dataset>"
+  strLblColumns <- "columns"
+  strFrmColumns <- "Columns"
+  strLblCol1 <- "Column 1:"
+  strLblCol2 <- "Column 2:"
+  strDrpColumn <- "<Select column>"
+  strFrmOptions <- "Options"
+  strLblFixed <- "Fixed value:"
+  strLblNew <- "Column for new values:"
+  strLblAction <- "Action:"
+  strDrpAction <- "<Select action>"
+  strLblStart <- "Start position:"
+  strLblStop <- "Stop position:"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Execute"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$Value
+    strDrpDataset <- ifelse(is.na(strTmp), strDrpDataset, strTmp)
+
+    strTmp <- dtStrings["strLblColumns"]$Value
+    strLblColumns <- ifelse(is.na(strTmp), strLblColumns, strTmp)
+
+    strTmp <- dtStrings["strLblCol1"]$Value
+    strLblCol1 <- ifelse(is.na(strTmp), strLblCol1, strTmp)
+
+    strTmp <- dtStrings["strLblCol2"]$Value
+    strLblCol2 <- ifelse(is.na(strTmp), strLblCol2, strTmp)
+
+    strTmp <- dtStrings["strDrpColumn"]$Value
+    strDrpColumn <- ifelse(is.na(strTmp), strDrpColumn, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strLblFixed"]$Value
+    strLblFixed <- ifelse(is.na(strTmp), strLblFixed, strTmp)
+
+    strTmp <- dtStrings["strLblNew"]$Value
+    strLblNew <- ifelse(is.na(strTmp), strLblNew, strTmp)
+
+    strTmp <- dtStrings["strLblAction"]$Value
+    strLblAction <- ifelse(is.na(strTmp), strLblAction, strTmp)
+
+    strTmp <- dtStrings["strDrpAction"]$Value
+    strDrpAction <- ifelse(is.na(strTmp), strDrpAction, strTmp)
+
+    strTmp <- dtStrings["strLblStart"]$Value
+    strLblStart <- ifelse(is.na(strTmp), strLblStart, strTmp)
+
+    strTmp <- dtStrings["strLblStop"]$Value
+    strLblStop <- ifelse(is.na(strTmp), strLblStop, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Column actions", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -93,22 +190,22 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("columns_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = "Dataset",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 2,
     container = gv
@@ -117,11 +214,11 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -134,7 +231,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   )
 
   f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
-    text = " 0 columns",
+    text = paste(" 0", strLblColumns),
     container = f0g0
   )
 
@@ -150,45 +247,45 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      svalue(f0g0_data_col_lbl) <- paste(" ", ncol(.gData), " columns")
+      svalue(f0g0_data_col_lbl) <- paste(" ", ncol(.gData), strLblColumns)
       svalue(save_edt) <- paste(.gDataName, "new", sep = "_")
 
-      f1g1_col1_drp[] <- c(.columnDropDefault, names(.gData))
+      f1g1_col1_drp[] <- c(strDrpColumn, names(.gData))
       svalue(f1g1_col1_drp, index = TRUE) <- 1
-      f1g1_col2_drp[] <- c(.columnDropDefault, names(.gData))
+      f1g1_col2_drp[] <- c(strDrpColumn, names(.gData))
       svalue(f1g1_col2_drp, index = TRUE) <- 1
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- " 0 columns"
+      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblColumns)
       svalue(save_edt) <- ""
 
-      f1g1_col1_drp[] <- c(.columnDropDefault)
+      f1g1_col1_drp[] <- c(strDrpColumn)
       svalue(f1g1_col1_drp, index = TRUE) <- 1
-      f1g1_col2_drp[] <- c(.columnDropDefault)
+      f1g1_col2_drp[] <- c(strDrpColumn)
       svalue(f1g1_col2_drp, index = TRUE) <- 1
     }
   })
 
   # COLUMNS ###################################################################
 
-  f1 <- gframe(text = "Columns", horizontal = FALSE, spacing = 2, container = gv)
+  f1 <- gframe(text = strFrmColumns, horizontal = FALSE, spacing = 2, container = gv)
 
   f1g1 <- glayout(container = f1, spacing = 1)
 
-  f1g1[1, 1] <- glabel(text = "Select column 1:", container = f1g1)
+  f1g1[1, 1] <- glabel(text = strLblCol1, container = f1g1)
 
   f1g1[1, 2] <- f1g1_col1_drp <- gcombobox(
-    items = c(.columnDropDefault),
+    items = c(strDrpColumn),
     editable = FALSE,
     container = f1g1,
     ellipsize = "none"
   )
 
-  f1g1[2, 1] <- glabel(text = "Select column 2:", container = f1g1)
+  f1g1[2, 1] <- glabel(text = strLblCol2, container = f1g1)
 
   f1g1[2, 2] <- f1g1_col2_drp <- gcombobox(
-    items = c(.columnDropDefault),
+    items = c(strDrpColumn),
     editable = FALSE,
     container = f1g1,
     ellipsize = "none"
@@ -227,32 +324,35 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # OPTIONS ###################################################################
 
-  f3 <- gframe(text = "Options", horizontal = FALSE, spacing = 2, container = gv)
+  f3 <- gframe(
+    text = strFrmOptions, horizontal = FALSE, spacing = 2,
+    container = gv
+  )
 
   f3g1 <- glayout(container = f3, spacing = 1)
 
-  f3g1[1, 1] <- glabel(text = "Fixed value:", container = f3g1)
+  f3g1[1, 1] <- glabel(text = strLblFixed, container = f3g1)
 
   f3g1[1, 2] <- f3g1_val_edt <- gedit(text = "", width = 25, container = f3g1)
 
-  f3g1[2, 1] <- glabel(text = "Column for new values:", container = f3g1)
+  f3g1[2, 1] <- glabel(text = strLblNew, container = f3g1)
 
   f3g1[2, 2] <- f3g1_col_edt <- gedit(text = "", width = 25, container = f3g1)
 
-  f3g1[3, 1] <- glabel(text = "Action:", container = f3g1)
+  f3g1[3, 1] <- glabel(text = strLblAction, container = f3g1)
 
-  action_items <- c(.columnActionDefault, "&", "+", "*", "-", "/", "substr")
+  action_items <- c(strDrpAction, "&", "+", "*", "-", "/", "substr")
   f3g1[3, 2] <- f3g1_action_drp <- gcombobox(
     items = action_items, selected = 1,
     editable = FALSE, container = f3g1,
     ellipsize = "none"
   )
 
-  f3g1[4, 1] <- glabel(text = "Start position:", container = f3g1)
+  f3g1[4, 1] <- glabel(text = strLblStart, container = f3g1)
 
   f3g1[4, 2] <- f3g1_start_edt <- gedit(text = "1", width = 25, container = f3g1)
 
-  f3g1[5, 1] <- glabel(text = "Stop position:", container = f3g1)
+  f3g1[5, 1] <- glabel(text = strLblStop, container = f3g1)
 
   f3g1[5, 2] <- f3g1_stop_edt <- gedit(text = "1", width = 25, container = f3g1)
 
@@ -269,19 +369,15 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = "Save as", container = gv)
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = "Name for result:", container = save_frame)
+  glabel(text = strLblSave, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  combine_btn <- gbutton(text = "Execute", container = gv)
+  combine_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerChanged(combine_btn, handler = function(h, ...) {
     val_col1 <- svalue(f1g1_col1_drp)
@@ -296,10 +392,10 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     val_data <- .gData
 
     # Check values.
-    if (val_col1 == .columnDropDefault) {
+    if (val_col1 == strDrpColumn) {
       val_col1 <- NA
     }
-    if (val_col2 == .columnDropDefault) {
+    if (val_col2 == strDrpColumn) {
       val_col2 <- NA
     }
 
@@ -324,7 +420,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     # Update audit trail.
     datanew <- auditTrail(
       obj = datanew, key = keys, value = values,
-      label = "columns_gui", arguments = FALSE,
+      label = fnc, arguments = FALSE,
       package = "strvalidator"
     )
 
@@ -333,7 +429,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     if (debug) {
       print(datanew)
-      print(paste("EXIT:", match.call()[[1]]))
+      print(paste("EXIT:", fnc))
     }
 
     # Close GUI.
@@ -345,7 +441,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   .updateGui <- function() {
     substr_selected <- svalue(f3g1_action_drp) %in% "substr"
-    no_action <- svalue(f3g1_action_drp) %in% .columnActionDefault
+    no_action <- svalue(f3g1_action_drp) %in% strDrpAction
     second_col_selected <- svalue(f1g1_col2_drp) %in% names(.gData)
 
     if (substr_selected || second_col_selected) {

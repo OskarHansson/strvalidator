@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
+# 02.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
@@ -18,8 +20,6 @@
 # 26.09.2014: Implemented text field for 'exclude'.
 # 12.09.2014: Implemented new options 'exclude OL'.
 # 28.06.2014: Added help button and moved save gui checkbox.
-# 25.02.2014: Implemented new options 'replace NA' and 'add to dataset'.
-# 18.07.2013: Check before overwrite object.
 
 #' @title Calculate Peak Height
 #'
@@ -59,12 +59,157 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   .gRef <- NULL
   .gRefName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+  
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Calculate peak height"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Datasets"
+  strLblDataset <- "Sample dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblRefDataset <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strLblKit <- "Kit:"
+  strFrmOptions <- "Options"
+  strLblPre <- "Pre-processing:"
+  strChkSex <- "Remove sex markers"
+  strChkSensors <- "Remove quality sensors"
+  strChkExclude <- "Exclude values in 'Allele' column"
+  strChkExcludeInfo <- "Case sensitive values separated by comma:"
+  strLblMatching <- "Reference sample name matching:"
+  strChkIgnore <- "Ignore case"
+  strChkExact <- "Exact matching"
+  strLblPost <- "Post-processing:"
+  strChkReplace <- "Replace NA in the result with 0"
+  strChkAdd <- "Add result to dataset"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgDataset <- "A sample dataset and a reference dataset must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset."
+  strWinTitleCheck <- "Check subsetting"
+  strMsgTitleError <- "Error"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strLblRefDataset"]$Value
+    strLblRefDataset <- ifelse(is.na(strTmp), strLblRefDataset, strTmp)
+
+    strTmp <- dtStrings["strLblRef"]$Value
+    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+
+    strTmp <- dtStrings["strLblKit"]$Value
+    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strLblPre"]$Value
+    strLblPre <- ifelse(is.na(strTmp), strLblPre, strTmp)
+
+    strTmp <- dtStrings["strChkSex"]$Value
+    strChkSex <- ifelse(is.na(strTmp), strChkSex, strTmp)
+
+    strTmp <- dtStrings["strChkSensors"]$Value
+    strChkSensors <- ifelse(is.na(strTmp), strChkSensors, strTmp)
+
+    strTmp <- dtStrings["strChkExclude"]$Value
+    strChkExclude <- ifelse(is.na(strTmp), strChkExclude, strTmp)
+
+    strTmp <- dtStrings["strChkExcludeInfo"]$Value
+    strChkExcludeInfo <- ifelse(is.na(strTmp), strChkExcludeInfo, strTmp)
+
+    strTmp <- dtStrings["strLblMatching"]$Value
+    strLblMatching <- ifelse(is.na(strTmp), strLblMatching, strTmp)
+
+    strTmp <- dtStrings["strChkIgnore"]$Value
+    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
+
+    strTmp <- dtStrings["strChkExact"]$Value
+    strChkExact <- ifelse(is.na(strTmp), strChkExact, strTmp)
+
+    strTmp <- dtStrings["strLblPost"]$Value
+    strLblPost <- ifelse(is.na(strTmp), strLblPost, strTmp)
+
+    strTmp <- dtStrings["strChkReplace"]$Value
+    strChkReplace <- ifelse(is.na(strTmp), strChkReplace, strTmp)
+
+    strTmp <- dtStrings["strChkAdd"]$Value
+    strChkAdd <- ifelse(is.na(strTmp), strChkAdd, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgCheck"]$Value
+    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+
+    strTmp <- dtStrings["strWinTitleCheck"]$Value
+    strWinTitleCheck <- ifelse(is.na(strTmp), strWinTitleCheck, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+  }
+
+  # WINDOW ####################################################################
+  
   # Main window.
-  w <- gwindow(title = "Calculate peak height", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -108,22 +253,22 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateHeight_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 2,
     container = gv
@@ -133,11 +278,11 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   # Datasets ------------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   f0g0[1, 2] <- dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -148,7 +293,10 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     ellipsize = "none"
   )
 
-  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(text = " 0 samples", container = f0g0)
+  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0g0
+  )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -167,7 +315,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(f0g0_samples_lbl) <- paste("", samples, strLblSamples)
 
       # Suggest name for the result.
       svalue(save_edt) <- paste(val_obj, "_height", sep = "")
@@ -182,16 +330,16 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0g0_samples_lbl) <- " 0 samples"
+      svalue(f0g0_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(save_edt) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = "Select reference:", container = f0g0)
+  f0g0[2, 1] <- glabel(text = strLblRefDataset, container = f0g0)
 
   f0g0[2, 2] <- refset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -202,7 +350,10 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     ellipsize = "none"
   )
 
-  f0g0[2, 3] <- f0g0_ref_lbl <- glabel(text = " 0 references", container = f0g0)
+  f0g0[2, 3] <- f0g0_ref_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = f0g0
+  )
 
   addHandlerChanged(refset_drp, handler = function(h, ...) {
     val_obj <- svalue(refset_drp)
@@ -221,19 +372,19 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
-      svalue(f0g0_ref_lbl) <- paste("", ref, "references")
+      svalue(f0g0_ref_lbl) <- paste("", ref, strLblRef)
     } else {
 
       # Reset components.
       .gRef <<- NULL
       svalue(refset_drp, index = TRUE) <- 1
-      svalue(f0g0_ref_lbl) <- " 0 references"
+      svalue(f0g0_ref_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  f0g0[3, 2] <- check_btn <- gbutton(text = "Check subsetting", container = f0g0)
+  f0g0[3, 2] <- check_btn <- gbutton(text = strBtnCheck, container = f0g0)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
 
@@ -246,7 +397,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinTitleCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -269,9 +420,8 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -279,7 +429,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   # Kit -----------------------------------------------------------------------
 
-  f0g0[4, 1] <- glabel(text = "Select the kit used:", container = f0g0)
+  f0g0[4, 1] <- glabel(text = strLblKit, container = f0g0)
 
   f0g0[4, 2] <- kit_drp <- gcombobox(
     items = getKit(), selected = 1,
@@ -290,57 +440,57 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = "Pre-processing:", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblPre, anchor = c(-1, 0), container = f1)
 
   f1_sex_chk <- gcheckbox(
-    text = "Remove sex markers",
+    text = strChkSex,
     checked = FALSE, container = f1
   )
 
   f1_qs_chk <- gcheckbox(
-    text = "Remove quality sensors",
+    text = strChkSensors,
     checked = TRUE, container = f1
   )
 
   f1_exclude_chk <- gcheckbox(
-    text = "Exclude values in 'Allele' column",
+    text = strChkExclude,
     checked = TRUE, container = f1
   )
 
   f1_exclude_lbl <- glabel(
-    text = "Case sensitive values separated by comma:",
+    text = strChkExcludeInfo,
     anchor = c(-1, 0), container = f1
   )
 
   f1_exclude_edt <- gedit(text = "OL", container = f1)
 
-  glabel(text = "Reference sample name matching:", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblMatching, anchor = c(-1, 0), container = f1)
 
   f1_ignore_chk <- gcheckbox(
-    text = "Ignore case in sample name matching",
+    text = strChkIgnore,
     checked = TRUE, container = f1
   )
 
   f1_exact_chk <- gcheckbox(
-    text = "Exact sample name matching",
+    text = strChkExact,
     checked = FALSE, container = f1
   )
 
-  glabel(text = "Post-processing:", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblPost, anchor = c(-1, 0), container = f1)
 
   f1_replace_chk <- gcheckbox(
-    text = "Replace NA in the result with 0",
+    text = strChkReplace,
     checked = TRUE, container = f1
   )
 
   f1_add_chk <- gcheckbox(
-    text = "Add result to dataset",
+    text = strChkAdd,
     checked = TRUE, container = f1
   )
 
@@ -356,16 +506,16 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = "Save as", container = gv)
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = "Name for result:", container = save_frame)
+  glabel(text = strLblSave, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
 
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     val_data <- .gData
@@ -401,7 +551,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -430,7 +580,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateHeight_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -440,17 +590,15 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset and a reference dataset have to be selected."
-
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )

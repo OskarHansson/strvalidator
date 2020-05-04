@@ -4,8 +4,15 @@
 \alias{saveObject}
 \title{Save Object}
 \usage{
-saveObject(name = NULL, object, parent = NULL, suggest = "",
-  env = parent.frame(), remove = NULL, debug = FALSE)
+saveObject(
+  name = NULL,
+  object,
+  parent = NULL,
+  suggest = "",
+  env = parent.frame(),
+  remove = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{name}{character giving the name of the object to save.

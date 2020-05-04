@@ -4,8 +4,12 @@
 \alias{plotContamination_gui}
 \title{Plot Contamination}
 \usage{
-plotContamination_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+plotContamination_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

@@ -4,8 +4,12 @@
 \alias{calculateMixture_gui}
 \title{Calculate Mixture}
 \usage{
-calculateMixture_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+calculateMixture_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

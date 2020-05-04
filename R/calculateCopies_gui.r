@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
+# 01.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
@@ -18,7 +20,6 @@
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 24.05.2013: Improved error message for missing columns.
-# 20.05.2013: First version.
 
 #' @title Calculate Allele Copies
 #'
@@ -50,12 +51,105 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   .gData <- NULL
   .gDataName <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Calculate allele copies"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblDataset <- "Sample dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strFrmOptions <- "Options"
+  strChkObserved <- "Add number of unique alleles (count number of peaks)"
+  strChkCopies <- "Add number of allele copies (for known complete profiles)"
+  strTipCopies <- "'1' for heterozygotes and '2' for homozygotes."
+  strChkHeterozygosity <- "Add heterozygote indicator (for known complete profiles)"
+  strTipHeterozygosity <- "'1' for heterozygous loci and '0' for homozygous loci."
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strMsgDataset <- "A dataset has to be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+
+    strTmp <- dtStrings["strChkObserved"]$Value
+    strChkObserved <- ifelse(is.na(strTmp), strChkObserved, strTmp)
+
+    strTmp <- dtStrings["strChkCopies"]$Value
+    strChkCopies <- ifelse(is.na(strTmp), strChkCopies, strTmp)
+
+    strTmp <- dtStrings["strTipCopies"]$Value
+    strTipCopies <- ifelse(is.na(strTmp), strTipCopies, strTmp)
+
+    strTmp <- dtStrings["strChkHeterozygosity"]$Value
+    strChkHeterozygosity <- ifelse(is.na(strTmp), strChkHeterozygosity, strTmp)
+
+    strTmp <- dtStrings["strTipHeterozygosity"]$Value
+    strTipHeterozygosity <- ifelse(is.na(strTmp), strTipHeterozygosity, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+  }
+
+  # ---------------------------------------------------------------------------
+
   # Main window.
-  w <- gwindow(title = "Calculate allele copies", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -100,25 +194,25 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
   savegui_chk <- gcheckbox(
-    text = "Save GUI settings", checked = FALSE,
+    text = strChkGui, checked = FALSE,
     container = gh
   )
   enabled(savegui_chk) <- FALSE
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateCopies_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets", horizontal = FALSE, spacing = 2,
+    text = strFrmDataset, horizontal = FALSE, spacing = 2,
     container = gv
   )
 
@@ -126,11 +220,11 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Datasets ------------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = "Select dataset:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
 
   dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -141,7 +235,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   )
   f0g0[1, 2] <- dataset_drp
 
-  f0g0_samples_lbl <- glabel(text = " 0 samples", container = f0g0)
+  f0g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = f0g0)
   f0g0[1, 3] <- f0g0_samples_lbl
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
@@ -160,7 +254,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(f0g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(f0g0_samples_lbl) <- paste(" ", samples, strLblSamples)
       svalue(save_edt) <- paste(val_obj, "_cop", sep = "")
     } else {
 
@@ -168,7 +262,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0g0_samples_lbl) <- " 0 samples"
+      svalue(f0g0_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(save_edt) <- ""
     }
   })
@@ -176,38 +270,38 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options", horizontal = FALSE,
+    text = strFrmOptions, horizontal = FALSE,
     spacing = 2, container = gv
   )
 
   f1_observed_chk <- gcheckbox(
-    text = "Add number of unique alleles (count number of peaks)",
+    text = strChkObserved,
     checked = FALSE, container = f1
   )
 
   f1_copies_chk <- gcheckbox(
-    text = "Add number of allele copies (for known complete profiles)",
+    text = strChkCopies,
     checked = TRUE, container = f1
   )
-  tooltip(f1_copies_chk) <- "'1' for heterozygotes and '2' for homozygotes."
+  tooltip(f1_copies_chk) <- strTipCopies
 
   f1_het_chk <- gcheckbox(
-    text = "Add heterozygote indicator (for known complete profiles)",
+    text = strChkHeterozygosity,
     checked = FALSE, container = f1
   )
-  tooltip(f1_het_chk) <- "'1' for heterozygous loci and '0' for homozygous loci."
+  tooltip(f1_het_chk) <- strTipHeterozygosity
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = "Save as", container = gv)
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = "Name for result:", container = save_frame)
+  glabel(text = strLblSave, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     val_name <- svalue(save_edt)
@@ -221,7 +315,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -239,7 +333,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateCopies_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -248,17 +342,15 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset has to be selected."
-
       gmessage(
-        message = message, title = "Dataset not selected",
+        msg = strMsgDataset, title = strMsgTitleDataset,
         icon = "error", parent = w
       )
     }

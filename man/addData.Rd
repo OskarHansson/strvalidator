@@ -4,8 +4,16 @@
 \alias{addData}
 \title{Adds New Data Columns to a Data Frame}
 \usage{
-addData(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
-  ignore.case = TRUE, what = NULL, debug = FALSE)
+addData(
+  data,
+  new.data,
+  by.col,
+  then.by.col = NULL,
+  exact = TRUE,
+  ignore.case = TRUE,
+  what = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{Data frame containing your main data.}

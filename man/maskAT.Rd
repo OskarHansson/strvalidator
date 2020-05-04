@@ -4,10 +4,20 @@
 \alias{maskAT}
 \title{Mask And Prepare Data To Analyze Analytical Threshold}
 \usage{
-maskAT(data, ref = NULL, mask.height = TRUE, height = 500,
-  mask.sample = TRUE, per.dye = TRUE, range.sample = 20,
-  mask.ils = TRUE, range.ils = 10, ignore.case = TRUE,
-  word = FALSE, debug = FALSE)
+maskAT(
+  data,
+  ref = NULL,
+  mask.height = TRUE,
+  height = 500,
+  mask.sample = TRUE,
+  per.dye = TRUE,
+  range.sample = 20,
+  mask.ils = TRUE,
+  range.ils = 10,
+  ignore.case = TRUE,
+  word = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{a data frame containing at least 'Dye.Sample.Peak',

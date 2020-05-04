@@ -4,8 +4,16 @@
 \alias{calculateStutter}
 \title{Calculate Stutter}
 \usage{
-calculateStutter(data, ref, back = 2, forward = 1, interference = 0,
-  replace.val = NULL, by.val = NULL, debug = FALSE)
+calculateStutter(
+  data,
+  ref,
+  back = 2,
+  forward = 1,
+  interference = 0,
+  replace.val = NULL,
+  by.val = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data frame with genotype data.

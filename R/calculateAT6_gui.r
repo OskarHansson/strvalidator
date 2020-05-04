@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.03.2020: Fixed reference to function name.
+# 27.02.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
 # 13.07.2017: Fixed issue with button handlers.
@@ -44,12 +46,138 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   .gNameRef <- NULL
   .gNameAm <- NULL
 
+  # Language ------------------------------------------------------------------
+  
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+  
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
+  }
+  
+  # Default strings.
+  strWinTitle <- "Calculate analytical threshold"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Datasets"
+  strLblDataset <- "Sample dataset:"
+  strDrpDefault <- "<Select dataset>"
+  strLblSamples <- "samples"
+  strLblDatasetRef <- "Reference dataset:"
+  strLblRef <- "references"
+  strBtnCheck <- "Check subsetting"
+  strLblAmount <- "Amount dataset:"
+  strFrmOptions <- "Options"
+  strLblText1 <- "NB! This is an indirect method not recommended."
+  strLblText2 <- "See 'Help' or reference for limitations."
+  strChkIgnore <- "Ignore case"
+  strRadItem1 <- "Linear regression"
+  strRadItem2 <- "Weighted linear regression"
+  strLblLevel <- "Significance level:"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
+  strWinCheck <- "Check subsetting"
+  strMsgTitleError <- "Error"
+  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a dataset and a reference set"
+  strMsgDataset <- "A dataset and a reference dataset must be selected."
+  strMsgTitleDataset <- "Datasets not selected"
+  
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+  
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+    
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+    
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+    
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+    
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+    
+    strTmp <- dtStrings["strLblDataset"]$Value
+    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+    
+    strTmp <- dtStrings["strDrpDefault"]$Value
+    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+    
+    strTmp <- dtStrings["strLblSamples"]$Value
+    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+    
+    strTmp <- dtStrings["strLblDatasetRef"]$Value
+    strLblDatasetRef <- ifelse(is.na(strTmp), strLblDatasetRef, strTmp)
+
+    strTmp <- dtStrings["strLblRef"]$Value
+    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+    
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+
+    strTmp <- dtStrings["strLblAmount"]$Value
+    strLblAmount <- ifelse(is.na(strTmp), strLblAmount, strTmp)
+    
+    strTmp <- dtStrings["strFrmOptions"]$Value
+    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+    
+    strTmp <- dtStrings["strLblText1"]$Value
+    strLblText1 <- ifelse(is.na(strTmp), strLblText1, strTmp)
+    
+    strTmp <- dtStrings["strLblText1"]$Value
+    strLblText1 <- ifelse(is.na(strTmp), strLblText1, strTmp)
+    
+    strTmp <- dtStrings["strChkIgnore"]$Value
+    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
+    
+    strTmp <- dtStrings["strRadItem1"]$Value
+    strRadItem1 <- ifelse(is.na(strTmp), strRadItem1, strTmp)
+    
+    strTmp <- dtStrings["strRadItem2"]$Value
+    strRadItem2 <- ifelse(is.na(strTmp), strRadItem2, strTmp)
+    
+    strTmp <- dtStrings["strLblLevel"]$Value
+    strLblLevel <- ifelse(is.na(strTmp), strLblLevel, strTmp)
+    
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+    
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+    
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+    
+    strTmp <- dtStrings["strBtnProcessing"]$Value
+    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+    
+    strTmp <- dtStrings["strWinCheck"]$Value
+    strWinCheck <- ifelse(is.na(strTmp), strWinCheck, strTmp)
+    
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+    
+    strTmp <- dtStrings["strMsgCheck"]$Value
+    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+    
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+    
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+    
   }
 
+  # ---------------------------------------------------------------------------
+  
   # Main window.
-  w <- gwindow(title = "Calculate analytical threshold", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -93,22 +221,22 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("calculateAT6_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 5,
     container = gv
@@ -118,11 +246,11 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Datasets ------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = "Select dataset:", container = g0)
+  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 
   g0[1, 2] <- dataset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -134,7 +262,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[1, 3] <- g0_samples_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[1, 3] <- g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -152,7 +280,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- get(val_obj, envir = env)
       .gNameData <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(g0_samples_lbl) <- paste("", samples, "samples")
+      svalue(g0_samples_lbl) <- paste("", samples, strLblSamples)
 
       # Suggest a name for result.
       svalue(f2_save_edt) <- paste(val_obj, "_at6", sep = "")
@@ -162,16 +290,16 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- NULL
       .gNameData <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(g0_samples_lbl) <- " 0 samples"
+      svalue(g0_samples_lbl) <- paste(" 0", strLblSamples)
       svalue(f2_save_edt) <- ""
     }
   })
 
-  g0[2, 1] <- glabel(text = "Select reference dataset:", container = g0)
+  g0[2, 1] <- glabel(text = strLblDatasetRef, container = g0)
 
   g0[2, 2] <- refset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -183,7 +311,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[2, 3] <- g0_ref_lbl <- glabel(text = " 0 references", container = g0)
+  g0[2, 3] <- g0_ref_lbl <- glabel(text = paste(" 0", strLblRef), container = g0)
 
   addHandlerChanged(refset_drp, handler = function(h, ...) {
     val_obj <- svalue(refset_drp)
@@ -201,24 +329,20 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       .gRef <<- get(val_obj, envir = env)
       .gNameRef <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
-      svalue(g0_ref_lbl) <- paste("", ref, "references")
+      svalue(g0_ref_lbl) <- paste("", ref, strLblRef)
     } else {
 
       # Reset components.
       .gRef <<- NULL
       .gNameRef <<- NULL
       svalue(refset_drp, index = TRUE) <- 1
-      svalue(g0_ref_lbl) <- " 0 references"
+      svalue(g0_ref_lbl) <- paste(" 0", strLblRef)
     }
   })
 
   # CHECK ---------------------------------------------------------------------
 
-  if (debug) {
-    print("CHECK")
-  }
-
-  g0[3, 2] <- g0_check_btn <- gbutton(text = "Check subsetting", container = g0)
+  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
 
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
 
@@ -229,7 +353,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = "Check subsetting",
+        title = strWinCheck,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -251,9 +375,8 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = "Data frame is NULL!\n\n
-               Make sure to select a dataset and a reference set",
-        title = "Error",
+        msg = strMsgCheck,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -261,11 +384,11 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
 
   # AMOUNT --------------------------------------------------------------------
 
-  g0[4, 1] <- glabel(text = "Select amount dataset:", container = g0)
+  g0[4, 1] <- glabel(text = strLblAmount, container = g0)
 
   g0[4, 2] <- amset_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDefault,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -277,7 +400,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
     ellipsize = "none"
   )
 
-  g0[4, 3] <- g0_am_lbl <- glabel(text = " 0 samples", container = g0)
+  g0[4, 3] <- g0_am_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
 
   addHandlerChanged(amset_drp, handler = function(h, ...) {
     val_obj <- svalue(amset_drp)
@@ -295,62 +418,62 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       .gAm <<- get(val_obj, envir = env)
       .gNameAm <<- val_obj
       am <- length(unique(.gAm$Sample.Name))
-      svalue(g0_am_lbl) <- paste("", am, "samples")
+      svalue(g0_am_lbl) <- paste("", am, strLblSamples)
     } else {
 
       # Reset components.
       .gAm <<- NULL
       .gNameAm <<- NULL
       svalue(amset_drp, index = TRUE) <- 1
-      svalue(g0_am_lbl) <- " 0 samples"
+      svalue(g0_am_lbl) <- paste(" 0", strLblSamples)
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = "Options",
+    text = strFrmOptions,
     horizontal = FALSE,
     spacing = 5,
     container = gv
   )
 
   glabel(
-    text = "NB! This is an indirect method not recommended.",
+    text = strLblText1,
     anchor = c(-1, 0), container = f1
   )
   glabel(
-    text = "See 'Help' or reference for limitations.",
+    text = strLblText2,
     anchor = c(-1, 0), container = f1
   )
 
   f1_ignore_case_chk <- gcheckbox(
-    text = "Ignore case", checked = TRUE,
+    text = strChkIgnore, checked = TRUE,
     container = f1
   )
 
-  f1_items <- c("Linear regression", "Weighted linear regression")
+  f1_items <- c(strRadItem1, strRadItem2)
   f1_weighted_opt <- gradio(items = f1_items, selected = 2, container = f1)
 
-  glabel(text = "Significance level:", anchor = c(-1, 0), container = f1)
+  glabel(text = strLblLevel, anchor = c(-1, 0), container = f1)
   f1_alpha_spn <- gspinbutton(from = 0, to = 1, by = 0.01, value = 0.05, container = f1)
 
   # FRAME 2 ###################################################################
 
   f2 <- gframe(
-    text = "Save as",
+    text = strFrmSave,
     horizontal = TRUE,
     spacing = 5,
     container = gv
   )
 
-  glabel(text = "Name for result:", container = f2)
+  glabel(text = strLblSave, container = f2)
 
   f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = "Calculate", container = gv)
+  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     val_ignore_case <- svalue(f1_ignore_case_chk)
@@ -377,7 +500,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- "Processing..."
+      svalue(calculate_btn) <- strBtnProcessing
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -405,7 +528,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "calculateAT6_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -413,18 +536,16 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       saveObject(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
-        print(head(datanew))
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       .saveSettings()
       dispose(w)
     } else {
-      message <- "A dataset and a reference dataset must be selected."
 
-      gmessage(message,
-        title = "Datasets not selected",
+      gmessage(msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error",
         parent = w
       )

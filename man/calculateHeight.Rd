@@ -4,9 +4,20 @@
 \alias{calculateHeight}
 \title{Calculate Peak Height.}
 \usage{
-calculateHeight(data, ref = NULL, na.replace = NULL, add = TRUE,
-  exclude = NULL, sex.rm = FALSE, qs.rm = FALSE, kit = NULL,
-  ignore.case = TRUE, exact = FALSE, word = FALSE, debug = FALSE)
+calculateHeight(
+  data,
+  ref = NULL,
+  na.replace = NULL,
+  add = TRUE,
+  exclude = NULL,
+  sex.rm = FALSE,
+  qs.rm = FALSE,
+  kit = NULL,
+  ignore.case = TRUE,
+  exact = FALSE,
+  word = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame with at least columns 'Sample.Name' and 'Height'.}

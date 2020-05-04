@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.03.2020: Added check for data selected.
+# 08.03.2020: Added language support.
 # 16.03.2019: Fixed R Check note.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -50,12 +52,89 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   .gData1Name <- NULL
   .gData2Name <- NULL
 
+  # Language ------------------------------------------------------------------
+
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    print(paste("IN:", fnc))
   }
 
+  # Default strings.
+  strWinTitle <- "Combine datasets"
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strFrmDataset <- "Dataset"
+  strLblSet1 <- "Dataset 1:"
+  strDrpDataset <- "<Select dataset>"
+  strLblColumns <- "columns"
+  strLblSet2 <- "Dataset 2:"
+  strFrmSave <- "Save as"
+  strLblSave <- "Name for result:"
+  strBtnCalculate <- "Combine"
+  strMsgColumns <- "Datasets must have identical column names!"
+  strMsgTitleError <- "Error"
+  strMsgDataset <- "Two datasets must be selected."
+  strMsgTitleDataset <- "Dataset not selected"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strWinTitle"]$Value
+    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+
+    strTmp <- dtStrings["strFrmDataset"]$Value
+    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+
+    strTmp <- dtStrings["strLblSet1"]$Value
+    strLblSet1 <- ifelse(is.na(strTmp), strLblSet1, strTmp)
+
+    strTmp <- dtStrings["strDrpDataset"]$Value
+    strDrpDataset <- ifelse(is.na(strTmp), strDrpDataset, strTmp)
+
+    strTmp <- dtStrings["strLblColumns"]$Value
+    strLblColumns <- ifelse(is.na(strTmp), strLblColumns, strTmp)
+
+    strTmp <- dtStrings["strLblSet2"]$Value
+    strLblSet2 <- ifelse(is.na(strTmp), strLblSet2, strTmp)
+
+    strTmp <- dtStrings["strFrmSave"]$Value
+    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+
+    strTmp <- dtStrings["strLblSave"]$Value
+    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+
+    strTmp <- dtStrings["strMsgColumns"]$Value
+    strMsgColumns <- ifelse(is.na(strTmp), strMsgColumns, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+
+    strTmp <- dtStrings["strMsgDataset"]$Value
+    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+
+    strTmp <- dtStrings["strMsgTitleDataset"]$Value
+    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+  }
+
+  # WINDOW ####################################################################
+
   # Main window.
-  w <- gwindow(title = "Combine", visible = FALSE)
+  w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -99,22 +178,22 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("combine_gui", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = "Datasets",
+    text = strFrmDataset,
     horizontal = FALSE,
     spacing = 2,
     container = gv
@@ -123,11 +202,11 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
   f0g0 <- glayout(container = f0, spacing = 1)
 
-  f0g0[1, 1] <- glabel(text = "Select dataset 1:", container = f0g0)
+  f0g0[1, 1] <- glabel(text = strLblSet1, container = f0g0)
 
   f0g0[1, 2] <- f0g0_data1_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -140,7 +219,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   )
 
   f0g0[1, 3] <- f0g0_data1_col_lbl <- glabel(
-    text = " 0 columns",
+    text = paste(" 0", strLblColumns),
     container = f0g0
   )
 
@@ -159,21 +238,21 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       .gData1 <<- get(val_obj, envir = env)
       .gData1Name <<- val_obj
 
-      svalue(f0g0_data1_col_lbl) <- paste(" ", ncol(.gData1), " columns")
+      svalue(f0g0_data1_col_lbl) <- paste(" ", ncol(.gData1), strLblColumns)
       svalue(save_edt) <- paste(.gData1Name, .gData2Name, sep = "_")
     } else {
       .gData1 <<- NULL
       .gData1Name <<- NULL
-      svalue(f0g0_data1_col_lbl) <- " 0 columns"
+      svalue(f0g0_data1_col_lbl) <- paste(" 0", strLblColumns)
       svalue(save_edt) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = "Select dataset 2:", container = f0g0)
+  f0g0[2, 1] <- glabel(text = strLblSet2, container = f0g0)
 
   f0g0[2, 2] <- f0g0_data2_drp <- gcombobox(
     items = c(
-      "<Select dataset>",
+      strDrpDataset,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -186,7 +265,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   )
 
   f0g0[2, 3] <- f0g0_data2_col_lbl <- glabel(
-    text = " 0 columns",
+    text = paste(" 0", strLblColumns),
     container = f0g0
   )
 
@@ -197,12 +276,12 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       .gData2 <<- get(val_obj, envir = env)
       .gData2Name <<- val_obj
 
-      svalue(f0g0_data2_col_lbl) <- paste(" ", ncol(.gData2), " columns")
+      svalue(f0g0_data2_col_lbl) <- paste(" ", ncol(.gData2), strLblColumns)
       svalue(save_edt) <- paste(.gData1Name, .gData2Name, sep = "_")
     } else {
       .gData2 <<- NULL
       .gData1Name <<- NULL
-      svalue(f0g0_data2_col_lbl) <- " 0 samples"
+      svalue(f0g0_data2_col_lbl) <- paste(" 0", strLblColumns)
       svalue(save_edt) <- ""
     }
   })
@@ -215,27 +294,24 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = "Save as", container = gv)
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = "Name for result:", container = save_frame)
+  glabel(text = strLblSave, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  if (debug) {
-    print("BUTTON")
-  }
-
-  combine_btn <- gbutton(text = "Combine", container = gv)
+  combine_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerChanged(combine_btn, handler = function(h, ...) {
+    datOk <- all(!is.null(.gData1), !is.null(.gData2))
     colOk <- all(names(.gData1) %in% names(.gData2))
     val_data_1 <- .gData1Name
     val_data_2 <- .gData2Name
     val_name <- svalue(save_edt)
 
-    if (colOk) {
+    if (colOk && datOk) {
 
       # Combine the datasets.
       datanew <- plyr::rbind.fill(.gData1, .gData2)
@@ -248,7 +324,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       # Update audit trail.
       datanew <- auditTrail(
         obj = datanew, key = keys, value = values,
-        label = "combine_gui", arguments = FALSE,
+        label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
@@ -257,16 +333,22 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
       if (debug) {
         print(datanew)
-        print(paste("EXIT:", match.call()[[1]]))
+        print(paste("EXIT:", fnc))
       }
 
       # Close GUI.
       # .saveSettings()
       dispose(w)
-    } else {
+    } else if (!colOk) {
       gmessage(
-        msg = "Datasets must have identical columns!",
-        title = "Error",
+        msg = strMsgColumns,
+        title = strMsgTitleError,
+        icon = "error"
+      )
+    } else if (!datOk) {
+      gmessage(
+        msg = strMsgDataset,
+        title = strMsgTitleDataset,
         icon = "error"
       )
     }

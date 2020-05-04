@@ -4,8 +4,12 @@
 \alias{calculateSlope_gui}
 \title{Calculate Profile Slope}
 \usage{
-calculateSlope_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+calculateSlope_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

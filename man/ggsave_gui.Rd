@@ -4,8 +4,14 @@
 \alias{ggsave_gui}
 \title{Save Image}
 \usage{
-ggsave_gui(ggplot = NULL, name = "", env = parent.frame(),
-  savegui = NULL, debug = FALSE, parent = NULL)
+ggsave_gui(
+  ggplot = NULL,
+  name = "",
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{ggplot}{plot object.}

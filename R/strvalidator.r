@@ -28,6 +28,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.05.2020: Added language support.
 # 06.09.2019: Changed new.env() to new.env(parent = emptyenv())
 # 16.03.2019: Added button to YouTube channel.
 # 14.03.2019: Updated about. Fixed R-Check note.
@@ -47,7 +48,6 @@
 # 17.07.2017: Changed notebook argument 'pageno' to 'page.no'.
 # 17.07.2017: Removed some unnecessary calls to .refreshLoaded() and blocked handlers.
 # 17.07.2017: Fixed "Error in paste(...) : argument "msg" is missing, with no default".
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -77,31 +77,14 @@
 #' \dontrun{
 #' strvalidator()
 #' }
-#' 
+#'
 strvalidator <- function(debug = FALSE) {
-  if (debug) {
-    print(paste("IN:", match.call()[[1]]))
-  }
 
   # Global variables.
   .strvalidator_env <- new.env(parent = emptyenv())
   .separator <- .Platform$file.sep # Platform dependent path separator.
   .save_gui <- TRUE
   .ws_last_open_dir <- getwd()
-  .start_tab_name <- "Welcome"
-  .file_tab_name <- "Workspace"
-  .project_tab_name <- "Projects"
-  .drylab_tab_name <- "DryLab"
-  .edit_tab_name <- "Tools"
-  .at_tab_name <- "AT"
-  .stutter_tab_name <- "Stutter"
-  .balance_tab_name <- "Balance"
-  .concordance_tab_name <- "Concordance"
-  .drop_tab_name <- "Dropout"
-  .mixture_tab_name <- "Mixture"
-  .result_tab_name <- "Result"
-  .precision_tab_name <- "Precision"
-  .pullup_tab_name <- "Pull-up"
   .object_classes_view <- c("data.frame", "ggplot")
   .object_classes_import <- c("data.frame", "ggplot")
   .project_description_variable <- ".strvalidator_project_description"
@@ -111,8 +94,758 @@ strvalidator <- function(debug = FALSE) {
   .ws_name_variable <- ".strvalidator_project_name"
   .ws_path_variable <- ".strvalidator_project_path"
 
+  # Language ------------------------------------------------------------------
 
-  # MAIN WINDOW  ##############################################################
+  # Get this functions name from call.
+  fnc <- as.character(match.call()[[1]])
+
+  if (debug) {
+    print(paste("IN:", fnc))
+  }
+
+  # Default strings.
+  strChkGui <- "Save GUI settings"
+  strBtnHelp <- "Help"
+  strBtnCalculate <- "Calculate"
+  strTabWelcome <- "Welcome"
+  strTabWorkspace <- "Workspace"
+  strTabProject <- "Projects"
+  strTabDryLab <- "DryLab"
+  strTabTools <- "Tools"
+  strTabAT <- "AT"
+  strTabStutter <- "Stutter"
+  strTabBalance <- "Balance"
+  strTabConcordance <- "Concordance"
+  strTabDroput <- "Dropout"
+  strTabMixture <- "Mixture"
+  strTabResult <- "Result"
+  strTabPrecision <- "Precision"
+  strTabPullup <- "Pull-up"
+  strBtnWebpage <- "STR-validator website"
+  strTipWebpage <- "General information, workshops, and tutorials"
+  strBtnVideo <- "Video tutorials"
+  strTipVideo <- "STR-validator YouTube channel"
+  strBtnFacebook <- "Facebook page"
+  strTipFacebook <- "News, tips, and other information"
+  strBtnSupport <- "Support forum"
+  strTipSupport <- "Get help from the Facebook user community"
+  strBtnReport <- "Report bugs"
+  strTipReport <- "Report bugs, errors, and issues"
+  strBtnSource <- "Source code"
+  strTipSource <- "Take a look at future, current, and past source code"
+  strBtnCran <- "CRAN page"
+  strTipCran <- "Official CRAN page with address to maintainer and version archive"
+  strBtnLicense <- "License"
+  strLblFolder <- "Folder:"
+  strFrmProject <- "Projects"
+  strBtnOpen <- "Open"
+  strTipOpen <- "Open selected project"
+  strBtnAdd <- "Add"
+  strTipAdd <- "Merge a project with the current project"
+  strBtnDelete <- "Delete"
+  strTipDelete <- "Delete selected project from the file system"
+  strLblProject <- "Project:"
+  strStrNoProject <- "[No project found]"
+  strStrDescription <- "Write a project description here!"
+  strStrProjectDescription <- "[Project description]"
+  strBtnSave <- "Save"
+  strTipSaveDescription <- "Save project description"
+  strBtnNew <- "New"
+  strTipNewProject <- "Create a new project"
+  strTipOpenProject <- "Open project"
+  strTipSaveProject <- "Save project"
+  strBtnSaveAs <- "Save As"
+  strTipSaveAs <- "Choose a location and save project"
+  strBtnImport <- "Import"
+  strTipImport <- "Import data from file"
+  strBtnExport <- "Export"
+  strTipExport <- "Open the export dialogue with the selected objects"
+  strBtnRefresh <- "Refresh"
+  strTipRefresh <- "Refresh the workspace"
+  strTipDeleteObject <- "Delete selected object"
+  strBtnRename <- "Rename"
+  strTipRenameObject <- "Rename selected object"
+  strBtnView <- "View"
+  strTipView <- "View selected object"
+  strMsgNew <- "Are you sure you want to create a new project?\nAny changes to current project since last save will be lost!"
+  strMsgRename <- "Currently you can only rename one object at a time!"
+  strMsgSelectWorkspace <- "Select a saved workspace or dataset"
+  strMsgNotFound <- "The workspace file was not found"
+  strMsgTitleNotFound <- "File not found"
+  strMsgExport <- "Please select the objects to export!"
+  strMsgNoObjectSelected <- "No object selected!"
+  strMsgTitleError <- "Error"
+  strMsgTypeNotSupported <- "object type not supported!"
+  strMsgTitleNotSupported <- "Unable to view object"
+  strMsgSelectObject <- "Please select an object!"
+  strMsgProjectSaved <- "Project saved!\n\n"
+  strMsgDirNotFound <- "The project directory was not found"
+  strMsgTitleDirNotFound <- "Directory not found"
+  strMsgFileNameMissing <- "A file name must be provided"
+  strMsgFileNameRequired <- "File name required"
+  strMsgUseSaveAs <- "No project name or path!\nUse 'Save As' instead"
+  strMsgPropertyNotFound <- "Property not found"
+  strMsgSelectDirSave <- "Select a directory to save project in"
+  strMsgInputProject <- "Input project name"
+  strMsgTitleSaveAs <- "Save as"
+  strMsgOverwrite <- "\nalready exist!\n\n Overwrite?"
+  strMsgTitleConfirm <- "Confirm"
+  strMsgProjectNotSaved <- "Project was not saved!"
+  strMsgTitleInfo <- "Info"
+  strFrmRworkspace <- "Load objects from R workspace"
+  strBtnLoad <- "Load object"
+  strDrpObject <- "<Select object>"
+  strLblViewDataset <- "View a dataset"
+  strBtnKits <- "Kits"
+  strLblKits <- "Add new kits or edit kits file"
+  strBtnPlotKit <- "Plot Kit"
+  strLblPlotKit <- "Plot marker ranges for kits"
+  strBtnBins <- "Analyse Overlap"
+  strLblBins <- "Compare bins overlap for kits"
+  strBtnOl <- "Analyse OL"
+  strLblOl <- "Compare risk of getting off-ladder alleles for kits"
+  strBtnEdit <- "Edit"
+  strLblEdit <- "Edit a dataset"
+  strBtnTrim <- "Trim"
+  strLblTrim <- "Trim/discard samples or columns from a dataset"
+  strBtnSlim <- "Slim"
+  strLblSlim <- "Slim a dataset to 'long' format"
+  strBtnFilter <- "Filter"
+  strLblFilter <- "Filter a dataset using a reference set"
+  strBtnCrop <- "Crop"
+  strLblCrop <- "Discard, or replace data"
+  strBtnGuess <- "Guess"
+  strLblGuess <- "Guess the profile from raw DNA result"
+  strBtnDye <- "Dye"
+  strLblDye <- "Add dye information according to kit"
+  strBtnMarker <- "Marker"
+  strLblMarker <- "Add missing markers to dataset"
+  strBtnSize <- "Size"
+  strLblSize <- "Add approximate size to alleles in a dataset"
+  strBtnData <- "Data"
+  strLblData <- "Add new information to a dataset"
+  strBtnCheck <- "Check"
+  strLblCheck <- "Check the subsetting of a dataset"
+  strBtnCombine <- "Combine"
+  strLblCombine <- "Combine two datasets"
+  strBtnColumns <- "Columns"
+  strLblColumns <- "Perform actions on columns"
+  strBtnCopies <- "Copies"
+  strLblCopies <- "Calculate allele copies"
+  strBtnHeight <- "Height"
+  strLblHeight <- "Calculate peak height metrics"
+  strBtnEPG <- "EPG"
+  strLblEPG <- "Generate EPG like plot"
+  strLblAT <- "Calculate analytical threshold (AT1, AT2, AT4, AT7)"
+  strLblAT6 <- "Calculate analytical threshold (AT6)"
+  strBtnPlot <- "Plot"
+  strLblPlotAT6 <- "Create plots for analysed data (AT6)"
+  strLblStutter <- "Calculate stutters for a dataset"
+  strLblPlotStutter <- "Create plots for stutter data"
+  strBtnStatistics <- "Statistics"
+  strLblStatStutter <- "Calculate summary statistics for stutter data"
+  strFrmBalance <- "Intra-locus and inter-locus balance"
+  strLblHb <- "Calculate intra-locus balance (heterozygote balance)"
+  strLblLb <- "Calculate inter-locus balance (profile balance)"
+  strLblPlotBalance <- "Create plots for analysed data"
+  strLblStatBalance <- "Calculate summary statistics for balance data"
+  strFrmCapillary <- "Capillary balance"
+  strLblCapillary <- "Calculate capillary balance for a dataset"
+  strLblPlotCapillary <- "Create plots for capillary balance data"
+  strLblStatCapillary <- "Create summary statistics for capillary balance data"
+  strFrmRatio <- "Marker peak height ratio"
+  strLblRatio <- "Calculate locus ratio for a dataset"
+  strLblPlotRatio <- "Create plots for marker ratio data"
+  strLblConcordance <- "Calculate concordance between multiple datasets"
+  strBtnScore <- "Score"
+  strLblScore <- "Score dropouts for a dataset"
+  strLblDropout <- "Calculate stochastic thresholds"
+  strBtnModel <- "Model"
+  strLblModel <- "Model and plot dropout risk"
+  strLblPlotDropout <- "Create plots for analysed data"
+  strLblMixture <- "Calculate mixture for a dataset"
+  strFrmType <- "Result types"
+  strLblType <- "Calculate result types for a dataset"
+  strLblPlotType <- "Create plots for result type data"
+  strFrmPeaks <- "Number of peaks"
+  strLblPeaks <- "Count the number of peaks in sample"
+  strLblPlotPeaks <- "Create plots for peak data"
+  strFrmHeight <- "Peak height metrics"
+  strFrmDistribution <- "Distributions"
+  strLblDistribution <- "Plot distributions for data"
+  strLblGroups <- "Plot cumulative distribution for multiple groups"
+  strFrmDropin <- "Drop-in tools"
+  strLblSpikes <- "Identify possible spikes"
+  strLblFilterSpikes <- "Remove spikes"
+  strLblArtefacts <- "Identify possible artefacts"
+  strLblFilterArtefacts <- "Remove artefacts"
+  strLblPlotContamination <- "Plot contamination"
+  strFrmSlope <- "Profile slope"
+  strLblSlope <- "Calculate the profile slope"
+  strLblPlotSlope <- "Plot slope data"
+  strLblPrecision <- "Create precision plots"
+  strLblStatPrecision <- "Calculate summary statistics for precision"
+  strLblPullup <- "Calculate spectral pull-up/bleed-through"
+  strLblPlotPullup <- "Create plots for pull-up data"
+
+  # Get strings from language file.
+  dtStrings <- getStrings(gui = fnc)
+
+  # If language file is found.
+  if (!is.na(dtStrings)) {
+    # Get language strings, use default if not found.
+
+    strTmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strTmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strTmp <- dtStrings["strBtnCalculate"]$value
+    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
+
+    strTmp <- dtStrings["strTabWelcome"]$value
+    strTabWelcome <- ifelse(is.na(strtmp), strTabWelcome, strtmp)
+
+    strTmp <- dtStrings["strTabWorkspace"]$value
+    strTabWorkspace <- ifelse(is.na(strtmp), strTabWorkspace, strtmp)
+
+    strTmp <- dtStrings["strTabProject"]$value
+    strTabProject <- ifelse(is.na(strtmp), strTabProject, strtmp)
+
+    strTmp <- dtStrings["strTabDryLab"]$value
+    strTabDryLab <- ifelse(is.na(strtmp), strTabDryLab, strtmp)
+
+    strTmp <- dtStrings["strTabTools"]$value
+    strTabTools <- ifelse(is.na(strtmp), strTabTools, strtmp)
+
+    strTmp <- dtStrings["strTabAT"]$value
+    strTabAT <- ifelse(is.na(strtmp), strTabAT, strtmp)
+
+    strTmp <- dtStrings["strTabStutter"]$value
+    strTabStutter <- ifelse(is.na(strtmp), strTabStutter, strtmp)
+
+    strTmp <- dtStrings["strTabBalance"]$value
+    strTabBalance <- ifelse(is.na(strtmp), strTabBalance, strtmp)
+
+    strTmp <- dtStrings["strTabConcordance"]$value
+    strTabConcordance <- ifelse(is.na(strtmp), strTabConcordance, strtmp)
+
+    strTmp <- dtStrings["strTabDroput"]$value
+    strTabDroput <- ifelse(is.na(strtmp), strTabDroput, strtmp)
+
+    strTmp <- dtStrings["strTabMixture"]$value
+    strTabMixture <- ifelse(is.na(strtmp), strTabMixture, strtmp)
+
+    strTmp <- dtStrings["strTabResult"]$value
+    strTabResult <- ifelse(is.na(strtmp), strTabResult, strtmp)
+
+    strTmp <- dtStrings["strTabPrecision"]$value
+    strTabPrecision <- ifelse(is.na(strtmp), strTabPrecision, strtmp)
+
+    strTmp <- dtStrings["strTabPullup"]$value
+    strTabPullup <- ifelse(is.na(strtmp), strTabPullup, strtmp)
+
+    strTmp <- dtStrings["strBtnWebpage"]$value
+    strBtnWebpage <- ifelse(is.na(strtmp), strBtnWebpage, strtmp)
+
+    strTmp <- dtStrings["strTipWebpage"]$value
+    strTipWebpage <- ifelse(is.na(strtmp), strTipWebpage, strtmp)
+
+    strTmp <- dtStrings["strBtnVideo"]$value
+    strBtnVideo <- ifelse(is.na(strtmp), strBtnVideo, strtmp)
+
+    strTmp <- dtStrings["strTipVideo"]$value
+    strTipVideo <- ifelse(is.na(strtmp), strTipVideo, strtmp)
+
+    strTmp <- dtStrings["strBtnFacebook"]$value
+    strBtnFacebook <- ifelse(is.na(strtmp), strBtnFacebook, strtmp)
+
+    strTmp <- dtStrings["strTipFacebook"]$value
+    strTipFacebook <- ifelse(is.na(strtmp), strTipFacebook, strtmp)
+
+    strTmp <- dtStrings["strBtnSupport"]$value
+    strBtnSupport <- ifelse(is.na(strtmp), strBtnSupport, strtmp)
+
+    strTmp <- dtStrings["strTipSupport"]$value
+    strTipSupport <- ifelse(is.na(strtmp), strTipSupport, strtmp)
+
+    strTmp <- dtStrings["strBtnReport"]$value
+    strBtnReport <- ifelse(is.na(strtmp), strBtnReport, strtmp)
+
+    strTmp <- dtStrings["strTipReport"]$value
+    strTipReport <- ifelse(is.na(strtmp), strTipReport, strtmp)
+
+    strTmp <- dtStrings["strBtnSource"]$value
+    strBtnSource <- ifelse(is.na(strtmp), strBtnSource, strtmp)
+
+    strTmp <- dtStrings["strTipSource"]$value
+    strTipSource <- ifelse(is.na(strtmp), strTipSource, strtmp)
+
+    strTmp <- dtStrings["strBtnCran"]$value
+    strBtnCran <- ifelse(is.na(strtmp), strBtnCran, strtmp)
+
+    strTmp <- dtStrings["strTipCran"]$value
+    strTipCran <- ifelse(is.na(strtmp), strTipCran, strtmp)
+
+    strTmp <- dtStrings["strBtnLicense"]$value
+    strBtnLicense <- ifelse(is.na(strtmp), strBtnLicense, strtmp)
+
+    strTmp <- dtStrings["strLblFolder"]$value
+    strLblFolder <- ifelse(is.na(strtmp), strLblFolder, strtmp)
+
+    strTmp <- dtStrings["strFrmProject"]$value
+    strFrmProject <- ifelse(is.na(strtmp), strFrmProject, strtmp)
+
+    strTmp <- dtStrings["strBtnOpen"]$value
+    strBtnOpen <- ifelse(is.na(strtmp), strBtnOpen, strtmp)
+
+    strTmp <- dtStrings["strTipOpen"]$value
+    strTipOpen <- ifelse(is.na(strtmp), strTipOpen, strtmp)
+
+    strTmp <- dtStrings["strBtnAdd"]$value
+    strBtnAdd <- ifelse(is.na(strtmp), strBtnAdd, strtmp)
+
+    strTmp <- dtStrings["strTipAdd"]$value
+    strTipAdd <- ifelse(is.na(strtmp), strTipAdd, strtmp)
+
+    strTmp <- dtStrings["strBtnDelete"]$value
+    strBtnDelete <- ifelse(is.na(strtmp), strBtnDelete, strtmp)
+
+    strTmp <- dtStrings["strTipDelete"]$value
+    strTipDelete <- ifelse(is.na(strtmp), strTipDelete, strtmp)
+
+    strTmp <- dtStrings["strLblProject"]$value
+    strLblProject <- ifelse(is.na(strtmp), strLblProject, strtmp)
+
+    strTmp <- dtStrings["strStrNoProject"]$value
+    strStrNoProject <- ifelse(is.na(strtmp), strStrNoProject, strtmp)
+
+    strTmp <- dtStrings["strStrDescription"]$value
+    strStrDescription <- ifelse(is.na(strtmp), strStrDescription, strtmp)
+
+    strTmp <- dtStrings["strStrProjectDescription"]$value
+    strStrProjectDescription <- ifelse(is.na(strtmp), strStrProjectDescription, strtmp)
+
+    strTmp <- dtStrings["strBtnSave"]$value
+    strBtnSave <- ifelse(is.na(strtmp), strBtnSave, strtmp)
+
+    strTmp <- dtStrings["strTipSaveDescription"]$value
+    strTipSaveDescription <- ifelse(is.na(strtmp), strTipSaveDescription, strtmp)
+
+    strTmp <- dtStrings["strBtnNew"]$value
+    strBtnNew <- ifelse(is.na(strtmp), strBtnNew, strtmp)
+
+    strTmp <- dtStrings["strTipNewProject"]$value
+    strTipNewProject <- ifelse(is.na(strtmp), strTipNewProject, strtmp)
+
+    strTmp <- dtStrings["strTipOpenProject"]$value
+    strTipOpenProject <- ifelse(is.na(strtmp), strTipOpenProject, strtmp)
+
+    strTmp <- dtStrings["strTipSaveProject"]$value
+    strTipSaveProject <- ifelse(is.na(strtmp), strTipSaveProject, strtmp)
+
+    strTmp <- dtStrings["strBtnSaveAs"]$value
+    strBtnSaveAs <- ifelse(is.na(strtmp), strBtnSaveAs, strtmp)
+
+    strTmp <- dtStrings["strTipSaveAs"]$value
+    strTipSaveAs <- ifelse(is.na(strtmp), strTipSaveAs, strtmp)
+
+    strTmp <- dtStrings["strBtnImport"]$value
+    strBtnImport <- ifelse(is.na(strtmp), strBtnImport, strtmp)
+
+    strTmp <- dtStrings["strTipImport"]$value
+    strTipImport <- ifelse(is.na(strtmp), strTipImport, strtmp)
+
+    strTmp <- dtStrings["strBtnExport"]$value
+    strBtnExport <- ifelse(is.na(strtmp), strBtnExport, strtmp)
+
+    strTmp <- dtStrings["strTipExport"]$value
+    strTipExport <- ifelse(is.na(strtmp), strTipExport, strtmp)
+
+    strTmp <- dtStrings["strBtnRefresh"]$value
+    strBtnRefresh <- ifelse(is.na(strtmp), strBtnRefresh, strtmp)
+
+    strTmp <- dtStrings["strTipRefresh"]$value
+    strTipRefresh <- ifelse(is.na(strtmp), strTipRefresh, strtmp)
+
+    strTmp <- dtStrings["strTipDeleteObject"]$value
+    strTipDeleteObject <- ifelse(is.na(strtmp), strTipDeleteObject, strtmp)
+
+    strTmp <- dtStrings["strBtnRename"]$value
+    strBtnRename <- ifelse(is.na(strtmp), strBtnRename, strtmp)
+
+    strTmp <- dtStrings["strTipRenameObject"]$value
+    strTipRenameObject <- ifelse(is.na(strtmp), strTipRenameObject, strtmp)
+
+    strTmp <- dtStrings["strBtnView"]$value
+    strBtnView <- ifelse(is.na(strtmp), strBtnView, strtmp)
+
+    strTmp <- dtStrings["strTipView"]$value
+    strTipView <- ifelse(is.na(strtmp), strTipView, strtmp)
+
+    strTmp <- dtStrings["strMsgNew"]$value
+    strMsgNew <- ifelse(is.na(strtmp), strMsgNew, strtmp)
+
+    strTmp <- dtStrings["strMsgRename"]$value
+    strMsgRename <- ifelse(is.na(strtmp), strMsgRename, strtmp)
+
+    strTmp <- dtStrings["strMsgSelectWorkspace"]$value
+    strMsgSelectWorkspace <- ifelse(is.na(strtmp), strMsgSelectWorkspace, strtmp)
+
+    strTmp <- dtStrings["strMsgNotFound"]$value
+    strMsgNotFound <- ifelse(is.na(strtmp), strMsgNotFound, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleNotFound"]$value
+    strMsgTitleNotFound <- ifelse(is.na(strtmp), strMsgTitleNotFound, strtmp)
+
+    strTmp <- dtStrings["strMsgExport"]$value
+    strMsgExport <- ifelse(is.na(strtmp), strMsgExport, strtmp)
+
+    strTmp <- dtStrings["strMsgNoObjectSelected"]$value
+    strMsgNoObjectSelected <- ifelse(is.na(strtmp), strMsgNoObjectSelected, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+
+    strTmp <- dtStrings["strMsgTypeNotSupported"]$value
+    strMsgTypeNotSupported <- ifelse(is.na(strtmp), strMsgTypeNotSupported, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleNotSupported"]$value
+    strMsgTitleNotSupported <- ifelse(is.na(strtmp), strMsgTitleNotSupported, strtmp)
+
+    strTmp <- dtStrings["strMsgSelectObject"]$value
+    strMsgSelectObject <- ifelse(is.na(strtmp), strMsgSelectObject, strtmp)
+
+    strTmp <- dtStrings["strMsgProjectSaved"]$value
+    strMsgProjectSaved <- ifelse(is.na(strtmp), strMsgProjectSaved, strtmp)
+
+    strTmp <- dtStrings["strMsgDirNotFound"]$value
+    strMsgDirNotFound <- ifelse(is.na(strtmp), strMsgDirNotFound, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleDirNotFound"]$value
+    strMsgTitleDirNotFound <- ifelse(is.na(strtmp), strMsgTitleDirNotFound, strtmp)
+
+    strTmp <- dtStrings["strMsgFileNameMissing"]$value
+    strMsgFileNameMissing <- ifelse(is.na(strtmp), strMsgFileNameMissing, strtmp)
+
+    strTmp <- dtStrings["strMsgFileNameRequired"]$value
+    strMsgFileNameRequired <- ifelse(is.na(strtmp), strMsgFileNameRequired, strtmp)
+
+    strTmp <- dtStrings["strMsgUseSaveAs"]$value
+    strMsgUseSaveAs <- ifelse(is.na(strtmp), strMsgUseSaveAs, strtmp)
+
+    strTmp <- dtStrings["strMsgPropertyNotFound"]$value
+    strMsgPropertyNotFound <- ifelse(is.na(strtmp), strMsgPropertyNotFound, strtmp)
+
+    strTmp <- dtStrings["strMsgSelectDirSave"]$value
+    strMsgSelectDirSave <- ifelse(is.na(strtmp), strMsgSelectDirSave, strtmp)
+
+    strTmp <- dtStrings["strMsgInputProject"]$value
+    strMsgInputProject <- ifelse(is.na(strtmp), strMsgInputProject, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleSaveAs"]$value
+    strMsgTitleSaveAs <- ifelse(is.na(strtmp), strMsgTitleSaveAs, strtmp)
+
+    strTmp <- dtStrings["strMsgOverwrite"]$value
+    strMsgOverwrite <- ifelse(is.na(strtmp), strMsgOverwrite, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleConfirm"]$value
+    strMsgTitleConfirm <- ifelse(is.na(strtmp), strMsgTitleConfirm, strtmp)
+
+    strTmp <- dtStrings["strMsgProjectNotSaved"]$value
+    strMsgProjectNotSaved <- ifelse(is.na(strtmp), strMsgProjectNotSaved, strtmp)
+
+    strTmp <- dtStrings["strMsgTitleInfo"]$value
+    strMsgTitleInfo <- ifelse(is.na(strtmp), strMsgTitleInfo, strtmp)
+
+    strTmp <- dtStrings["strFrmRworkspace"]$value
+    strFrmRworkspace <- ifelse(is.na(strtmp), strFrmRworkspace, strtmp)
+
+    strTmp <- dtStrings["strBtnLoad"]$value
+    strBtnLoad <- ifelse(is.na(strtmp), strBtnLoad, strtmp)
+
+    strTmp <- dtStrings["strDrpObject"]$value
+    strDrpObject <- ifelse(is.na(strtmp), strDrpObject, strtmp)
+
+    strTmp <- dtStrings["strLblViewDataset"]$value
+    strLblViewDataset <- ifelse(is.na(strtmp), strLblViewDataset, strtmp)
+
+    strTmp <- dtStrings["strBtnKits"]$value
+    strBtnKits <- ifelse(is.na(strtmp), strBtnKits, strtmp)
+
+    strTmp <- dtStrings["strLblKits"]$value
+    strLblKits <- ifelse(is.na(strtmp), strLblKits, strtmp)
+
+    strTmp <- dtStrings["strBtnPlotKit"]$value
+    strBtnPlotKit <- ifelse(is.na(strtmp), strBtnPlotKit, strtmp)
+
+    strTmp <- dtStrings["strLblPlotKit"]$value
+    strLblPlotKit <- ifelse(is.na(strtmp), strLblPlotKit, strtmp)
+
+    strTmp <- dtStrings["strBtnBins"]$value
+    strBtnBins <- ifelse(is.na(strtmp), strBtnBins, strtmp)
+
+    strTmp <- dtStrings["strLblBins"]$value
+    strLblBins <- ifelse(is.na(strtmp), strLblBins, strtmp)
+
+    strTmp <- dtStrings["strBtnOl"]$value
+    strBtnOl <- ifelse(is.na(strtmp), strBtnOl, strtmp)
+
+    strTmp <- dtStrings["strLblOl"]$value
+    strLblOl <- ifelse(is.na(strtmp), strLblOl, strtmp)
+
+    strTmp <- dtStrings["strBtnEdit"]$value
+    strBtnEdit <- ifelse(is.na(strtmp), strBtnEdit, strtmp)
+
+    strTmp <- dtStrings["strLblEdit"]$value
+    strLblEdit <- ifelse(is.na(strtmp), strLblEdit, strtmp)
+
+    strTmp <- dtStrings["strBtnTrim"]$value
+    strBtnTrim <- ifelse(is.na(strtmp), strBtnTrim, strtmp)
+
+    strTmp <- dtStrings["strLblTrim"]$value
+    strLblTrim <- ifelse(is.na(strtmp), strLblTrim, strtmp)
+
+    strTmp <- dtStrings["strBtnSlim"]$value
+    strBtnSlim <- ifelse(is.na(strtmp), strBtnSlim, strtmp)
+
+    strTmp <- dtStrings["strLblSlim"]$value
+    strLblSlim <- ifelse(is.na(strtmp), strLblSlim, strtmp)
+
+    strTmp <- dtStrings["strBtnFilter"]$value
+    strBtnFilter <- ifelse(is.na(strtmp), strBtnFilter, strtmp)
+
+    strTmp <- dtStrings["strLblFilter"]$value
+    strLblFilter <- ifelse(is.na(strtmp), strLblFilter, strtmp)
+
+    strTmp <- dtStrings["strBtnCrop"]$value
+    strBtnCrop <- ifelse(is.na(strtmp), strBtnCrop, strtmp)
+
+    strTmp <- dtStrings["strLblCrop"]$value
+    strLblCrop <- ifelse(is.na(strtmp), strLblCrop, strtmp)
+
+    strTmp <- dtStrings["strBtnGuess"]$value
+    strBtnGuess <- ifelse(is.na(strtmp), strBtnGuess, strtmp)
+
+    strTmp <- dtStrings["strLblGuess"]$value
+    strLblGuess <- ifelse(is.na(strtmp), strLblGuess, strtmp)
+
+    strTmp <- dtStrings["strBtnDye"]$value
+    strBtnDye <- ifelse(is.na(strtmp), strBtnDye, strtmp)
+
+    strTmp <- dtStrings["strLblDye"]$value
+    strLblDye <- ifelse(is.na(strtmp), strLblDye, strtmp)
+
+    strTmp <- dtStrings["strBtnMarker"]$value
+    strBtnMarker <- ifelse(is.na(strtmp), strBtnMarker, strtmp)
+
+    strTmp <- dtStrings["strLblMarker"]$value
+    strLblMarker <- ifelse(is.na(strtmp), strLblMarker, strtmp)
+
+    strTmp <- dtStrings["strBtnSize"]$value
+    strBtnSize <- ifelse(is.na(strtmp), strBtnSize, strtmp)
+
+    strTmp <- dtStrings["strLblSize"]$value
+    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
+
+    strTmp <- dtStrings["strBtnData"]$value
+    strBtnData <- ifelse(is.na(strtmp), strBtnData, strtmp)
+
+    strTmp <- dtStrings["strLblData"]$value
+    strLblData <- ifelse(is.na(strtmp), strLblData, strtmp)
+
+    strTmp <- dtStrings["strBtnCheck"]$value
+    strBtnCheck <- ifelse(is.na(strtmp), strBtnCheck, strtmp)
+
+    strTmp <- dtStrings["strLblCheck"]$value
+    strLblCheck <- ifelse(is.na(strtmp), strLblCheck, strtmp)
+
+    strTmp <- dtStrings["strBtnCombine"]$value
+    strBtnCombine <- ifelse(is.na(strtmp), strBtnCombine, strtmp)
+
+    strTmp <- dtStrings["strLblCombine"]$value
+    strLblCombine <- ifelse(is.na(strtmp), strLblCombine, strtmp)
+
+    strTmp <- dtStrings["strBtnColumns"]$value
+    strBtnColumns <- ifelse(is.na(strtmp), strBtnColumns, strtmp)
+
+    strTmp <- dtStrings["strLblColumns"]$value
+    strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
+
+    strTmp <- dtStrings["strBtnCopies"]$value
+    strBtnCopies <- ifelse(is.na(strtmp), strBtnCopies, strtmp)
+
+    strTmp <- dtStrings["strLblCopies"]$value
+    strLblCopies <- ifelse(is.na(strtmp), strLblCopies, strtmp)
+
+    strTmp <- dtStrings["strBtnHeight"]$value
+    strBtnHeight <- ifelse(is.na(strtmp), strBtnHeight, strtmp)
+
+    strTmp <- dtStrings["strLblHeight"]$value
+    strLblHeight <- ifelse(is.na(strtmp), strLblHeight, strtmp)
+
+    strTmp <- dtStrings["strBtnEPG"]$value
+    strBtnEPG <- ifelse(is.na(strtmp), strBtnEPG, strtmp)
+
+    strTmp <- dtStrings["strLblEPG"]$value
+    strLblEPG <- ifelse(is.na(strtmp), strLblEPG, strtmp)
+
+    strTmp <- dtStrings["strLblAT"]$value
+    strLblAT <- ifelse(is.na(strtmp), strLblAT, strtmp)
+
+    strTmp <- dtStrings["strLblAT6"]$value
+    strLblAT6 <- ifelse(is.na(strtmp), strLblAT6, strtmp)
+
+    strTmp <- dtStrings["strBtnPlot"]$value
+    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
+
+    strTmp <- dtStrings["strLblPlotAT6"]$value
+    strLblPlotAT6 <- ifelse(is.na(strtmp), strLblPlotAT6, strtmp)
+
+    strTmp <- dtStrings["strLblStutter"]$value
+    strLblStutter <- ifelse(is.na(strtmp), strLblStutter, strtmp)
+
+    strTmp <- dtStrings["strLblPlotStutter"]$value
+    strLblPlotStutter <- ifelse(is.na(strtmp), strLblPlotStutter, strtmp)
+
+    strTmp <- dtStrings["strBtnStatistics"]$value
+    strBtnStatistics <- ifelse(is.na(strtmp), strBtnStatistics, strtmp)
+
+    strTmp <- dtStrings["strLblStatStutter"]$value
+    strLblStatStutter <- ifelse(is.na(strtmp), strLblStatStutter, strtmp)
+
+    strTmp <- dtStrings["strFrmBalance"]$value
+    strFrmBalance <- ifelse(is.na(strtmp), strFrmBalance, strtmp)
+
+    strTmp <- dtStrings["strLblHb"]$value
+    strLblHb <- ifelse(is.na(strtmp), strLblHb, strtmp)
+
+    strTmp <- dtStrings["strLblLb"]$value
+    strLblLb <- ifelse(is.na(strtmp), strLblLb, strtmp)
+
+    strTmp <- dtStrings["strLblPlotBalance"]$value
+    strLblPlotBalance <- ifelse(is.na(strtmp), strLblPlotBalance, strtmp)
+
+    strTmp <- dtStrings["strLblStatBalance"]$value
+    strLblStatBalance <- ifelse(is.na(strtmp), strLblStatBalance, strtmp)
+
+    strTmp <- dtStrings["strFrmCapillary"]$value
+    strFrmCapillary <- ifelse(is.na(strtmp), strFrmCapillary, strtmp)
+
+    strTmp <- dtStrings["strLblCapillary"]$value
+    strLblCapillary <- ifelse(is.na(strtmp), strLblCapillary, strtmp)
+
+    strTmp <- dtStrings["strLblPlotCapillary"]$value
+    strLblPlotCapillary <- ifelse(is.na(strtmp), strLblPlotCapillary, strtmp)
+
+    strTmp <- dtStrings["strLblStatCapillary"]$value
+    strLblStatCapillary <- ifelse(is.na(strtmp), strLblStatCapillary, strtmp)
+
+    strTmp <- dtStrings["strFrmRatio"]$value
+    strFrmRatio <- ifelse(is.na(strtmp), strFrmRatio, strtmp)
+
+    strTmp <- dtStrings["strLblRatio"]$value
+    strLblRatio <- ifelse(is.na(strtmp), strLblRatio, strtmp)
+
+    strTmp <- dtStrings["strLblPlotRatio"]$value
+    strLblPlotRatio <- ifelse(is.na(strtmp), strLblPlotRatio, strtmp)
+
+    strTmp <- dtStrings["strLblConcordance"]$value
+    strLblConcordance <- ifelse(is.na(strtmp), strLblConcordance, strtmp)
+
+    strTmp <- dtStrings["strBtnScore"]$value
+    strBtnScore <- ifelse(is.na(strtmp), strBtnScore, strtmp)
+
+    strTmp <- dtStrings["strLblScore"]$value
+    strLblScore <- ifelse(is.na(strtmp), strLblScore, strtmp)
+
+    strTmp <- dtStrings["strLblDropout"]$value
+    strLblDropout <- ifelse(is.na(strtmp), strLblDropout, strtmp)
+
+    strTmp <- dtStrings["strBtnModel"]$value
+    strBtnModel <- ifelse(is.na(strtmp), strBtnModel, strtmp)
+
+    strTmp <- dtStrings["strLblModel"]$value
+    strLblModel <- ifelse(is.na(strtmp), strLblModel, strtmp)
+
+    strTmp <- dtStrings["strLblPlotDropout"]$value
+    strLblPlotDropout <- ifelse(is.na(strtmp), strLblPlotDropout, strtmp)
+
+    strTmp <- dtStrings["strLblMixture"]$value
+    strLblMixture <- ifelse(is.na(strtmp), strLblMixture, strtmp)
+
+    strTmp <- dtStrings["strFrmType"]$value
+    strFrmType <- ifelse(is.na(strtmp), strFrmType, strtmp)
+
+    strTmp <- dtStrings["strLblType"]$value
+    strLblType <- ifelse(is.na(strtmp), strLblType, strtmp)
+
+    strTmp <- dtStrings["strLblPlotType"]$value
+    strLblPlotType <- ifelse(is.na(strtmp), strLblPlotType, strtmp)
+
+    strTmp <- dtStrings["strFrmPeaks"]$value
+    strFrmPeaks <- ifelse(is.na(strtmp), strFrmPeaks, strtmp)
+
+    strTmp <- dtStrings["strLblPeaks"]$value
+    strLblPeaks <- ifelse(is.na(strtmp), strLblPeaks, strtmp)
+
+    strTmp <- dtStrings["strLblPlotPeaks"]$value
+    strLblPlotPeaks <- ifelse(is.na(strtmp), strLblPlotPeaks, strtmp)
+
+    strTmp <- dtStrings["strFrmHeight"]$value
+    strFrmHeight <- ifelse(is.na(strtmp), strFrmHeight, strtmp)
+
+    strTmp <- dtStrings["strFrmDistribution"]$value
+    strFrmDistribution <- ifelse(is.na(strtmp), strFrmDistribution, strtmp)
+
+    strTmp <- dtStrings["strLblDistribution"]$value
+    strLblDistribution <- ifelse(is.na(strtmp), strLblDistribution, strtmp)
+
+    strTmp <- dtStrings["strLblGroups"]$value
+    strLblGroups <- ifelse(is.na(strtmp), strLblGroups, strtmp)
+
+    strTmp <- dtStrings["strFrmDropin"]$value
+    strFrmDropin <- ifelse(is.na(strtmp), strFrmDropin, strtmp)
+
+    strTmp <- dtStrings["strLblSpikes"]$value
+    strLblSpikes <- ifelse(is.na(strtmp), strLblSpikes, strtmp)
+
+    strTmp <- dtStrings["strLblFilterSpikes"]$value
+    strLblFilterSpikes <- ifelse(is.na(strtmp), strLblFilterSpikes, strtmp)
+
+    strTmp <- dtStrings["strLblArtefacts"]$value
+    strLblArtefacts <- ifelse(is.na(strtmp), strLblArtefacts, strtmp)
+
+    strTmp <- dtStrings["strLblFilterArtefacts"]$value
+    strLblFilterArtefacts <- ifelse(is.na(strtmp), strLblFilterArtefacts, strtmp)
+
+    strTmp <- dtStrings["strLblPlotContamination"]$value
+    strLblPlotContamination <- ifelse(is.na(strtmp), strLblPlotContamination, strtmp)
+
+    strTmp <- dtStrings["strFrmSlope"]$value
+    strFrmSlope <- ifelse(is.na(strtmp), strFrmSlope, strtmp)
+
+    strTmp <- dtStrings["strLblSlope"]$value
+    strLblSlope <- ifelse(is.na(strtmp), strLblSlope, strtmp)
+
+    strTmp <- dtStrings["strLblPlotSlope"]$value
+    strLblPlotSlope <- ifelse(is.na(strtmp), strLblPlotSlope, strtmp)
+
+    strTmp <- dtStrings["strLblPrecision"]$value
+    strLblPrecision <- ifelse(is.na(strtmp), strLblPrecision, strtmp)
+
+    strTmp <- dtStrings["strLblStatPrecision"]$value
+    strLblStatPrecision <- ifelse(is.na(strtmp), strLblStatPrecision, strtmp)
+
+    strTmp <- dtStrings["strLblPullup"]$value
+    strLblPullup <- ifelse(is.na(strtmp), strLblPullup, strtmp)
+
+    strTmp <- dtStrings["strLblPlotPullup"]$value
+    strLblPlotPullup <- ifelse(is.na(strtmp), strLblPlotPullup, strtmp)
+  }
+
+  # WINDOW ####################################################################
 
   # Main window.
   w <- gwindow(
@@ -135,7 +868,7 @@ strvalidator <- function(debug = FALSE) {
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = "Save GUI settings", checked = TRUE, container = gh)
+  savegui_chk <- gcheckbox(text = strChkGui, checked = TRUE, container = gh)
 
   addHandlerChanged(savegui_chk, handler = function(h, ...) {
 
@@ -145,12 +878,12 @@ strvalidator <- function(debug = FALSE) {
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = "Help", container = gh)
+  help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
 
     # Open help page for function.
-    print(help("strvalidator", help_type = "html"))
+    print(help(fnc, help_type = "html"))
   })
 
   # Main client area.
@@ -169,7 +902,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .start_tab_name,
+    label = strTabWelcome,
     index = 1
   )
 
@@ -178,7 +911,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .project_tab_name,
+    label = strTabProject,
     index = 2
   )
 
@@ -187,7 +920,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .file_tab_name,
+    label = strTabWorkspace,
     index = 3
   )
 
@@ -196,7 +929,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .drylab_tab_name,
+    label = strTabDryLab,
     index = 4
   )
 
@@ -205,7 +938,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 5,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .edit_tab_name,
+    label = strTabTools,
     index = 5
   )
 
@@ -214,7 +947,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .at_tab_name,
+    label = strTabAT,
     index = 6
   )
 
@@ -223,7 +956,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .stutter_tab_name,
+    label = strTabStutter,
     index = 7
   )
 
@@ -232,7 +965,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 5,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .balance_tab_name,
+    label = strTabBalance,
     index = 8
   )
 
@@ -241,7 +974,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .concordance_tab_name,
+    label = strTabConcordance,
     index = 9
   )
 
@@ -250,7 +983,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .drop_tab_name,
+    label = strTabDroput,
     index = 10
   )
 
@@ -259,7 +992,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .mixture_tab_name,
+    label = strTabMixture,
     index = 11
   )
 
@@ -268,7 +1001,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .result_tab_name,
+    label = strTabResult,
     index = 12
   )
 
@@ -277,7 +1010,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .precision_tab_name,
+    label = strTabPrecision,
     index = 13
   )
 
@@ -286,7 +1019,7 @@ strvalidator <- function(debug = FALSE) {
     spacing = 10,
     use.scrollwindow = FALSE,
     container = nb,
-    label = .pullup_tab_name,
+    label = strTabPullup,
     index = 14
   )
 
@@ -345,56 +1078,56 @@ strvalidator <- function(debug = FALSE) {
 
   button_group <- ggroup(container = start_f1)
 
-  webpage_btn <- gbutton(text = "STR-validator website", container = button_group)
-  tooltip(webpage_btn) <- "General information, workshops, and tutorials"
+  webpage_btn <- gbutton(text = strBtnWebpage, container = button_group)
+  tooltip(webpage_btn) <- strTipWebpage
 
   addHandlerChanged(webpage_btn, handler = function(h, ...) {
     browseURL("https://sites.google.com/site/forensicapps/strvalidator")
   })
-  
-  youtube_btn <- gbutton(text = "Video tutorials", container = button_group)
-  tooltip(youtube_btn) <- "STR-validator YouTube channel"
-  
+
+  youtube_btn <- gbutton(text = strBtnVideo, container = button_group)
+  tooltip(youtube_btn) <- strTipVideo
+
   addHandlerChanged(youtube_btn, handler = function(h, ...) {
     browseURL("https://www.youtube.com/channel/UCs7TxzK21OKvWebQygxAHHA")
   })
-  
-  facebook_btn <- gbutton(text = "Facebook page", container = button_group)
-  tooltip(facebook_btn) <- "News, tips, and other information"
+
+  facebook_btn <- gbutton(text = strBtnFacebook, container = button_group)
+  tooltip(facebook_btn) <- strTipFacebook
 
   addHandlerChanged(facebook_btn, handler = function(h, ...) {
     browseURL("https://www.facebook.com/STRvalidator")
   })
 
-  community_btn <- gbutton(text = "Support forum", container = button_group)
-  tooltip(community_btn) <- "Get help from the Facebook user community"
+  community_btn <- gbutton(text = strBtnSupport, container = button_group)
+  tooltip(community_btn) <- strTipSupport
 
   addHandlerChanged(community_btn, handler = function(h, ...) {
     browseURL("https://www.facebook.com/groups/strvalidator/")
   })
 
-  report_btn <- gbutton(text = "Report bugs", container = button_group)
-  tooltip(report_btn) <- "Report bugs, errors, and issues"
+  report_btn <- gbutton(text = strBtnReport, container = button_group)
+  tooltip(report_btn) <- strTipReport
 
   addHandlerChanged(report_btn, handler = function(h, ...) {
     browseURL("https://github.com/OskarHansson/strvalidator/issues")
   })
 
-  source_btn <- gbutton(text = "Source code", container = button_group)
-  tooltip(source_btn) <- "Take a look at future, current, and past source code"
+  source_btn <- gbutton(text = strBtnSource, container = button_group)
+  tooltip(source_btn) <- strTipSource
 
   addHandlerChanged(source_btn, handler = function(h, ...) {
     browseURL("https://github.com/OskarHansson/strvalidator")
   })
 
-  cran_btn <- gbutton(text = "CRAN page", container = button_group)
-  tooltip(cran_btn) <- "Official CRAN page with address to maintainer and version archive"
+  cran_btn <- gbutton(text = strBtnCran, container = button_group)
+  tooltip(cran_btn) <- strTipCran
 
   addHandlerChanged(cran_btn, handler = function(h, ...) {
     browseURL("https://cran.r-project.org/web/packages/strvalidator/index.html")
   })
 
-  start_license_btn <- gbutton(text = "License", container = button_group, expand = FALSE)
+  start_license_btn <- gbutton(text = strBtnLicense, container = button_group, expand = FALSE)
 
   addHandlerChanged(start_license_btn, handler = function(h, ...) {
     license_txt <- paste("Copyright (C) 2013 Oskar Hansson\n\n",
@@ -433,7 +1166,7 @@ strvalidator <- function(debug = FALSE) {
 
   # FOLDER --------------------------------------------------------------------
 
-  glabel(text = "Folder:", anchor = c(-1, 0), container = project_f1)
+  glabel(text = strLblFolder, anchor = c(-1, 0), container = project_f1)
 
   project_fb <- gfilebrowse(
     type = "selectdir", quote = FALSE,
@@ -448,7 +1181,7 @@ strvalidator <- function(debug = FALSE) {
 
   # Horizontal main group.
   project_f2 <- gframe(
-    text = "Projects",
+    text = strFrmProject,
     horizontal = TRUE,
     spacing = 5,
     container = project_f1,
@@ -463,14 +1196,14 @@ strvalidator <- function(debug = FALSE) {
     expand = FALSE
   )
 
-  project_open_btn <- gbutton(text = "Open", container = project_g1)
-  tooltip(project_open_btn) <- "Open selected project"
+  project_open_btn <- gbutton(text = strBtnOpen, container = project_g1)
+  tooltip(project_open_btn) <- strTipOpen
 
-  project_add_btn <- gbutton(text = "Add", container = project_g1)
-  tooltip(project_add_btn) <- "Merge with current project"
+  project_add_btn <- gbutton(text = strBtnAdd, container = project_g1)
+  tooltip(project_add_btn) <- strTipAdd
 
-  project_delete_btn <- gbutton(text = "Delete", container = project_g1)
-  tooltip(project_delete_btn) <- "Delete selected project from the file system"
+  project_delete_btn <- gbutton(text = strBtnDelete, container = project_g1)
+  tooltip(project_delete_btn) <- strTipDelete
 
   addSpring(project_g1)
 
@@ -502,7 +1235,7 @@ strvalidator <- function(debug = FALSE) {
         load(file = val_prj, envir = val_env, verbose = FALSE)
 
         # Move to workspace tab.
-        svalue(nb) <- match(.file_tab_name, names(nb))
+        svalue(nb) <- match(strTabWorkspace, names(nb))
       }
     }
   })
@@ -555,7 +1288,7 @@ strvalidator <- function(debug = FALSE) {
         .updateProjectList()
 
         # Clear description box.
-        svalue(proj_info_lbl) <- paste("Project:")
+        svalue(proj_info_lbl) <- strLblProject
         svalue(proj_info_txt) <- ""
       }
     }
@@ -573,7 +1306,7 @@ strvalidator <- function(debug = FALSE) {
   # Projects list.
   project_tbl <- gWidgets2::gtable(
     items = data.frame(
-      Name = "[No project found]", Date = "",
+      Name = strStrNoProject, Date = "",
       Size = "", Id = "",
       stringsAsFactors = FALSE
     ),
@@ -614,18 +1347,18 @@ strvalidator <- function(debug = FALSE) {
         if (exists(x = val_obj, envir = val_env, inherits = FALSE)) {
           description <- get(x = val_obj, envir = val_env, inherits = FALSE)
         } else {
-          description <- "Write a project description here!"
+          description <- strStrDescription
         }
 
         # Load description.
-        svalue(proj_info_lbl) <- paste("Project:", val_name)
+        svalue(proj_info_lbl) <- paste(strLblProject, val_name)
         svalue(proj_info_txt) <- description
       }
     } else {
 
       # Reset description.
-      svalue(proj_info_lbl) <- "Project:"
-      svalue(proj_info_txt) <- "[Project description]"
+      svalue(proj_info_lbl) <- strLblProject
+      svalue(proj_info_txt) <- strStrProjectDescription
     }
   })
 
@@ -646,8 +1379,8 @@ strvalidator <- function(debug = FALSE) {
     container = project_f3, expand = FALSE
   )
 
-  project_save_btn <- gbutton(text = "Save", container = project_g3)
-  tooltip(project_save_btn) <- "Save project description"
+  project_save_btn <- gbutton(text = strBtnSave, container = project_g3)
+  tooltip(project_save_btn) <- strTipSaveDescription
 
   addHandlerChanged(project_save_btn, handler = function(h, ...) {
     enabled(project_save_btn) <- FALSE
@@ -688,11 +1421,11 @@ strvalidator <- function(debug = FALSE) {
 
   # Project description window.
   proj_info_lbl <- glabel(
-    text = "Project:", anchor = c(-1, 0),
+    text = strLblProject, anchor = c(-1, 0),
     container = project_g4
   )
   proj_info_txt <- gtext(
-    text = "[Project description]", height = 50, expand = TRUE,
+    text = strStrProjectDescription, height = 50, expand = TRUE,
     wrap = TRUE, container = project_g4, fill = TRUE
   )
 
@@ -701,7 +1434,7 @@ strvalidator <- function(debug = FALSE) {
   # LOADED DATASETS -----------------------------------------------------------
 
   workspace_f1 <- gframe(
-    text = "Project",
+    text = strFrmProject,
     markup = FALSE,
     pos = 0,
     horizontal = TRUE,
@@ -716,38 +1449,38 @@ strvalidator <- function(debug = FALSE) {
     expand = FALSE
   )
 
-  ws_new_btn <- gbutton(text = "New", container = workspace_f1g1)
-  tooltip(ws_new_btn) <- "Create a new project"
+  ws_new_btn <- gbutton(text = strBtnNew, container = workspace_f1g1)
+  tooltip(ws_new_btn) <- strTipNewProject
 
-  ws_open_btn <- gbutton(text = "Open", container = workspace_f1g1)
-  tooltip(ws_open_btn) <- "Open project"
+  ws_open_btn <- gbutton(text = strBtnOpen, container = workspace_f1g1)
+  tooltip(ws_open_btn) <- strTipOpenProject
 
-  ws_save_btn <- gbutton(text = "Save", container = workspace_f1g1)
-  tooltip(ws_save_btn) <- "Save project"
+  ws_save_btn <- gbutton(text = strBtnSave, container = workspace_f1g1)
+  tooltip(ws_save_btn) <- strTipSaveProject
 
-  ws_saveas_btn <- gbutton(text = "Save As", container = workspace_f1g1)
-  tooltip(ws_saveas_btn) <- "Choose a location and save project"
+  ws_saveas_btn <- gbutton(text = strBtnSaveAs, container = workspace_f1g1)
+  tooltip(ws_saveas_btn) <- strTipSaveAs
 
-  ws_import_btn <- gbutton(text = "Import", container = workspace_f1g1)
-  tooltip(ws_import_btn) <- "Import data from file"
+  ws_import_btn <- gbutton(text = strBtnImport, container = workspace_f1g1)
+  tooltip(ws_import_btn) <- strTipImport
 
-  ws_export_btn <- gbutton(text = "Export", container = workspace_f1g1)
-  tooltip(ws_export_btn) <- "Open the export dialogue with the selected objects"
+  ws_export_btn <- gbutton(text = strBtnExport, container = workspace_f1g1)
+  tooltip(ws_export_btn) <- strTipExport
 
-  ws_add_btn <- gbutton(text = "Add", container = workspace_f1g1)
-  tooltip(ws_add_btn) <- "Merge a project with the current project"
+  ws_add_btn <- gbutton(text = strBtnAdd, container = workspace_f1g1)
+  tooltip(ws_add_btn) <- strTipAdd
 
-  ws_refresh_btn <- gbutton(text = "Refresh", container = workspace_f1g1)
-  tooltip(ws_refresh_btn) <- "Refresh the workspace"
+  ws_refresh_btn <- gbutton(text = strBtnRefresh, container = workspace_f1g1)
+  tooltip(ws_refresh_btn) <- strTipRefresh
 
-  ws_remove_btn <- gbutton(text = "Delete", container = workspace_f1g1)
-  tooltip(ws_remove_btn) <- "Delete selected object"
+  ws_remove_btn <- gbutton(text = strBtnDelete, container = workspace_f1g1)
+  tooltip(ws_remove_btn) <- strTipDeleteObject
 
-  ws_rename_btn <- gbutton(text = "Rename", container = workspace_f1g1)
-  tooltip(ws_rename_btn) <- "Rename selected object"
+  ws_rename_btn <- gbutton(text = strBtnRename, container = workspace_f1g1)
+  tooltip(ws_rename_btn) <- strTipRenameObject
 
-  ws_view_btn <- gbutton(text = "View", container = workspace_f1g1)
-  tooltip(ws_view_btn) <- "View selected object"
+  ws_view_btn <- gbutton(text = strBtnView, container = workspace_f1g1)
+  tooltip(ws_view_btn) <- strTipView
 
   ws_loaded_tbl <- gWidgets2::gtable(
     items = data.frame(
@@ -760,15 +1493,9 @@ strvalidator <- function(debug = FALSE) {
     container = workspace_f1
   )
 
-
   addHandlerChanged(ws_new_btn, handler = function(h, ...) {
-    msg <- paste("Are you sure you want to create a new project?\n",
-      "Any changes to current project since last save will be lost!",
-      sep = ""
-    )
-
     blockHandlers(w)
-    response <- gconfirm(msg = msg)
+    response <- gconfirm(msg = strMsgNew)
     unblockHandlers(w)
 
     if (response) {
@@ -797,8 +1524,8 @@ strvalidator <- function(debug = FALSE) {
       .refreshLoaded()
     } else {
       gmessage(
-        msg = "Currently you can only rename one object at a time!",
-        title = "Error",
+        msg = strMsgRename,
+        title = strMsgTitleError,
         icon = "error",
         parent = w
       )
@@ -810,7 +1537,7 @@ strvalidator <- function(debug = FALSE) {
 
     blockHandlers(w)
     ws_path <- gfile(
-      text = "Select a saved workspace or dataset", type = "open",
+      text = strMsgSelectWorkspace, type = "open",
       filter = list("R files" = list(patterns = c("*.R", "*.Rdata"))),
       multi = FALSE, initial.dir = .ws_last_open_dir
     )
@@ -835,8 +1562,8 @@ strvalidator <- function(debug = FALSE) {
         } else {
           blockHandlers(w)
           gmessage(
-            msg = "The workspace file was not found",
-            title = "File not found",
+            msg = strMsgNotFound,
+            title = strMsgTitleNotFound,
             icon = "error",
             parent = w
           )
@@ -851,7 +1578,7 @@ strvalidator <- function(debug = FALSE) {
 
     blockHandlers(w)
     ws_path <- gfile(
-      text = "Select a saved workspace or dataset", type = "open",
+      text = strMsgSelectWorkspace, type = "open",
       filter = list("R files" = list(patterns = c("*.R", "*.Rdata"))),
       multi = FALSE, initial.dir = .ws_last_open_dir
     )
@@ -870,8 +1597,8 @@ strvalidator <- function(debug = FALSE) {
         } else {
           blockHandlers(w)
           gmessage(
-            msg = "The workspace file was not found",
-            title = "File not found",
+            msg = strMsgNotFound,
+            title = strMsgTitleNotFound,
             icon = "error",
             parent = w
           )
@@ -905,8 +1632,8 @@ strvalidator <- function(debug = FALSE) {
     } else {
       blockHandlers(w)
       gmessage(
-        msg = "Please select the objects to export!",
-        title = "No object selected", icon = "info", parent = w
+        msg = strMsgExport,
+        title = strMsgNoObjectSelected, icon = "info", parent = w
       )
       unblockHandlers(w)
     }
@@ -950,16 +1677,16 @@ strvalidator <- function(debug = FALSE) {
       } else {
         blockHandlers(w)
         gmessage(
-          msg = paste("Object of type", val_class, "not supported!"),
-          title = "Unable to view object", icon = "error", parent = w
+          msg = paste(val_class, strMsgTypeNotSupported),
+          title = strMsgTitleNotSupported, icon = "error", parent = w
         )
         unblockHandlers(w)
       }
     } else {
       blockHandlers(w)
       gmessage(
-        msg = "Please select an object!",
-        title = "No object selected", icon = "info", parent = w
+        msg = strMsgSelectObject,
+        title = strMsgNoObjectSelected, icon = "info", parent = w
       )
       unblockHandlers(w)
     }
@@ -986,7 +1713,7 @@ strvalidator <- function(debug = FALSE) {
     } else if (length(val_obj) == 0) {
       blockHandlers(w)
       gmessage(
-        msg = "No object selected!", title = "Error",
+        msg = strMsgNoObjectSelected, title = strMsgTitleError,
         icon = "error", parent = w
       )
       unblockHandlers(w)
@@ -1041,7 +1768,7 @@ strvalidator <- function(debug = FALSE) {
 
           blockHandlers(w)
           gmessage(
-            msg = paste("Project saved!\n\n", ws_full_name),
+            msg = paste(strMsgProjectSaved, ws_full_name),
             title = "STR-validator",
             icon = "info",
             parent = w
@@ -1052,8 +1779,8 @@ strvalidator <- function(debug = FALSE) {
         } else {
           blockHandlers(w)
           gmessage(
-            msg = "The project directory was not found",
-            title = "Directory not found",
+            msg = strMsgDirNotFound,
+            title = strMsgTitleDirNotFound,
             icon = "error",
             parent = w
           )
@@ -1062,8 +1789,8 @@ strvalidator <- function(debug = FALSE) {
       } else {
         blockHandlers(w)
         gmessage(
-          msg = "A file name must be given",
-          title = "File name required",
+          msg = strMsgFileNameMissing,
+          title = strMsgFileNameRequired,
           icon = "error",
           parent = w
         )
@@ -1072,8 +1799,8 @@ strvalidator <- function(debug = FALSE) {
     } else {
       blockHandlers(w)
       gmessage(
-        msg = "No project name or path!\nUse 'Save As' instead.",
-        title = "Property not found",
+        msg = strMsgUseSaveAs,
+        title = strMsgPropertyNotFound,
         icon = "error",
         parent = w
       )
@@ -1089,7 +1816,7 @@ strvalidator <- function(debug = FALSE) {
     # Pick save location.
     blockHandlers(w)
     ws_save_path <- gfile(
-      text = "Select a directory to save project in",
+      text = strMsgSelectDirSave,
       type = "selectdir",
       filter = list("R files" = list(patterns = c("*.R", "*.Rdata"))),
       multi = FALSE
@@ -1099,9 +1826,9 @@ strvalidator <- function(debug = FALSE) {
     # Ask for project name.
     blockHandlers(w)
     ws_name <- ginput(
-      msg = "Input project name",
+      msg = strMsgInputProject,
       text = "",
-      title = "Save as",
+      title = strMsgTitleSaveAs,
       icon = "info",
       parent = w
     )
@@ -1125,9 +1852,9 @@ strvalidator <- function(debug = FALSE) {
         ok <- gconfirm(
           msg = paste(
             ws_full_name,
-            "\nalready exist!\n\n Overwrite?"
+            strMsgOverwrite
           ),
-          title = "Confirm", icon = "question", parent = w
+          title = strMsgTitleConfirm, icon = "question", parent = w
         )
         unblockHandlers(w)
       }
@@ -1154,7 +1881,7 @@ strvalidator <- function(debug = FALSE) {
 
           blockHandlers(w)
           gmessage(
-            msg = paste("Project saved!\n\n", ws_full_name),
+            msg = paste(strMsgProjectSaved, ws_full_name),
             title = "STR-validator",
             icon = "info",
             parent = w
@@ -1163,8 +1890,8 @@ strvalidator <- function(debug = FALSE) {
         } else {
           blockHandlers(w)
           gmessage(
-            msg = "The project directory was not found",
-            title = "Directory not found",
+            msg = strMsgDirNotFound,
+            title = strMsgTitleDirNotFound,
             icon = "error",
             parent = w
           )
@@ -1173,8 +1900,8 @@ strvalidator <- function(debug = FALSE) {
       } else {
         blockHandlers(w)
         gmessage(
-          msg = "Project was not saved!",
-          title = "Info",
+          msg = strMsgPrjectNotSaved,
+          title = strMsgTitleInfo,
           icon = "info",
           parent = w
         )
@@ -1183,8 +1910,8 @@ strvalidator <- function(debug = FALSE) {
     } else {
       blockHandlers(w)
       gmessage(
-        msg = "A file name must be given",
-        title = "File name required",
+        msg = strMsgFileNameMissing,
+        title = strMsgFileNameRequired,
         icon = "error",
         parent = w
       )
@@ -1196,7 +1923,7 @@ strvalidator <- function(debug = FALSE) {
   # DATASETS ------------------------------------------------------------------
 
   workspace_f2 <- gframe(
-    text = "Load objects from R workspace",
+    text = strFrmRworkspace,
     markup = FALSE,
     pos = 0,
     horizontal = TRUE,
@@ -1210,13 +1937,13 @@ strvalidator <- function(debug = FALSE) {
     expand = FALSE
   )
 
-  ws_r_refresh_btn <- gbutton(text = "Refresh dropdown", container = workspace_f2g1)
+  ws_r_refresh_btn <- gbutton(text = strBtnRefresh, container = workspace_f2g1)
 
-  ws_r_load_btn <- gbutton(text = "Load object", container = workspace_f2g1)
+  ws_r_load_btn <- gbutton(text = strBtnLoad, container = workspace_f2g1)
 
   ws_r_drp <- gcombobox(
     items = c(
-      "<Select object>",
+      strDrpObject,
       listObjects(
         env = .strvalidator_env,
         obj.class = .object_classes_import
@@ -1259,10 +1986,10 @@ strvalidator <- function(debug = FALSE) {
 
   # VIEW ----------------------------------------------------------------------
 
-  dry_grid[1, 1] <- dry_view_btn <- gbutton(text = "View", container = dry_grid)
+  dry_grid[1, 1] <- dry_view_btn <- gbutton(text = strBtnView, container = dry_grid)
 
   dry_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = dry_grid,
     anchor = c(-1, 0)
   )
@@ -1278,40 +2005,43 @@ strvalidator <- function(debug = FALSE) {
 
   # MAKE KIT ------------------------------------------------------------------
 
-  dry_grid[2, 1] <- dry_kit_btn <- gbutton(text = "Kits", container = dry_grid)
+  dry_grid[2, 1] <- dry_kit_btn <- gbutton(text = strBtnKits, container = dry_grid)
 
   dry_grid[2, 2] <- glabel(
-    text = "Add new kits or edit kits file.",
+    text = strLblKits,
     container = dry_grid,
     anchor = c(-1, 0)
   )
 
   dry_grid[3, 1] <- dry_plot_kit_btn <- gbutton(
-    text = "Plot Kit",
+    text = strBtnPlotKit,
     container = dry_grid
   )
 
   dry_grid[3, 2] <- glabel(
-    text = "Plot marker ranges for kits.",
+    text = strLblPlotKit,
     container = dry_grid,
     anchor = c(-1, 0)
   )
 
   dry_grid[4, 1] <- dry_bins_btn <- gbutton(
-    text = "Analyse Overlap",
+    text = strBtnBins,
     container = dry_grid
   )
 
   dry_grid[4, 2] <- glabel(
-    text = "Compare bins overlap for kits.",
+    text = strLblBins,
     container = dry_grid,
     anchor = c(-1, 0)
   )
 
-  dry_grid[5, 1] <- dry_ol_btn <- gbutton(text = "Analyse OL", container = dry_grid)
+  dry_grid[5, 1] <- dry_ol_btn <- gbutton(
+    text = strBtnOl,
+    container = dry_grid
+  )
 
   dry_grid[5, 2] <- glabel(
-    text = "Compare risk of getting off-ladder alleles for kits.",
+    text = strLblOl,
     container = dry_grid,
     anchor = c(-1, 0)
   )
@@ -1347,12 +2077,12 @@ strvalidator <- function(debug = FALSE) {
   # EDIT ----------------------------------------------------------------------
 
   edit_grid[1, 1] <- edit_view_btn <- gbutton(
-    text = "Edit",
+    text = strBtnEdit,
     container = edit_grid
   )
 
   edit_grid[1, 2] <- glabel(
-    text = "Edit a dataset.",
+    text = strLblEdit,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1369,12 +2099,12 @@ strvalidator <- function(debug = FALSE) {
   # TRIM ----------------------------------------------------------------------
 
   edit_grid[2, 1] <- edit_trim_btn <- gbutton(
-    text = "Trim",
+    text = strBtnTrim,
     container = edit_grid
   )
 
   edit_grid[2, 2] <- glabel(
-    text = "Trim/discard samples or columns from a dataset.",
+    text = strLblTrim,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1389,12 +2119,12 @@ strvalidator <- function(debug = FALSE) {
   # SLIM ----------------------------------------------------------------------
 
   edit_grid[3, 1] <- edit_slim_btn <- gbutton(
-    text = "Slim",
+    text = strBtnSlim,
     container = edit_grid
   )
 
   edit_grid[3, 2] <- glabel(
-    text = "Slim a dataset to 'long' format.",
+    text = strLblSlim,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1409,12 +2139,12 @@ strvalidator <- function(debug = FALSE) {
   # FILTER --------------------------------------------------------------------
 
   edit_grid[4, 1] <- edit_filter_btn <- gbutton(
-    text = "Filter",
+    text = strBtnFilter,
     container = edit_grid
   )
 
   edit_grid[4, 2] <- glabel(
-    text = "Filter a dataset using a reference set.",
+    text = strLblFilter,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1427,12 +2157,12 @@ strvalidator <- function(debug = FALSE) {
   # CROP ----------------------------------------------------------------------
 
   edit_grid[5, 1] <- edit_crop_btn <- gbutton(
-    text = "Crop",
+    text = strBtnCrop,
     container = edit_grid
   )
 
   edit_grid[5, 2] <- glabel(
-    text = "Discard, or replace data.",
+    text = strLblCrop,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1447,12 +2177,12 @@ strvalidator <- function(debug = FALSE) {
   # GUESS ---------------------------------------------------------------------
 
   edit_grid[6, 1] <- edit_guess_btn <- gbutton(
-    text = "Guess",
+    text = strBtnGuess,
     container = edit_grid
   )
 
   edit_grid[6, 2] <- glabel(
-    text = "Guess the profile from raw DNA result.",
+    text = strLblGuess,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1465,12 +2195,12 @@ strvalidator <- function(debug = FALSE) {
   # DYE -----------------------------------------------------------------------
 
   edit_grid[7, 1] <- edit_addDye_btn <- gbutton(
-    text = "Dye",
+    text = strBtnDye,
     container = edit_grid
   )
 
   edit_grid[7, 2] <- glabel(
-    text = "Add dye information according to kit.",
+    text = strLblDye,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1484,12 +2214,12 @@ strvalidator <- function(debug = FALSE) {
   # ADD MARKER ----------------------------------------------------------------
 
   edit_grid[8, 1] <- edit_addMarker_btn <- gbutton(
-    text = "Marker",
+    text = strBtnMarker,
     container = edit_grid
   )
 
   edit_grid[8, 2] <- glabel(
-    text = "Add missing markers to dataset.",
+    text = strLblMarker,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1503,12 +2233,12 @@ strvalidator <- function(debug = FALSE) {
   # ADD SIZE ------------------------------------------------------------------
 
   edit_grid[9, 1] <- edit_addSize_btn <- gbutton(
-    text = "Size",
+    text = strBtnSize,
     container = edit_grid
   )
 
   edit_grid[9, 2] <- glabel(
-    text = "Add approximate size to alleles in a dataset.",
+    text = strLblSize,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1522,12 +2252,12 @@ strvalidator <- function(debug = FALSE) {
   # ADD DATA -------------------------------------------------------------------
 
   edit_grid[10, 1] <- edit_addData_btn <- gbutton(
-    text = "Data",
+    text = strBtnData,
     container = edit_grid
   )
 
   edit_grid[10, 2] <- glabel(
-    text = "Add new information to a dataset.",
+    text = strLblData,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1541,12 +2271,12 @@ strvalidator <- function(debug = FALSE) {
   # CHECK SUBSET --------------------------------------------------------------
 
   edit_grid[11, 1] <- edit_check_btn <- gbutton(
-    text = "Check",
+    text = strBtnCheck,
     container = edit_grid
   )
 
   edit_grid[11, 2] <- glabel(
-    text = "Check the subsetting of a dataset.",
+    text = strLblCheck,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1563,12 +2293,12 @@ strvalidator <- function(debug = FALSE) {
   # COMBINE -------------------------------------------------------------------
 
   edit_grid[12, 1] <- edit_combine_btn <- gbutton(
-    text = "Combine",
+    text = strBtnCombine,
     container = edit_grid
   )
 
   edit_grid[12, 2] <- glabel(
-    text = "Combine two datasets.",
+    text = strLblCombine,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1582,12 +2312,12 @@ strvalidator <- function(debug = FALSE) {
   # COLUMNS -------------------------------------------------------------------
 
   edit_grid[13, 1] <- edit_columns_btn <- gbutton(
-    text = "Columns",
+    text = strBtnColumns,
     container = edit_grid
   )
 
   edit_grid[13, 2] <- glabel(
-    text = "Perform actions on columns.",
+    text = strLblColumns,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1601,12 +2331,12 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE HETEROZYGOUS ----------------------------------------------------
 
   edit_grid[14, 1] <- edit_copies_btn <- gbutton(
-    text = "Copies",
+    text = strBtnCopies,
     container = edit_grid
   )
 
   edit_grid[14, 2] <- glabel(
-    text = "Calculate allele copies.",
+    text = strLblCopies,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1623,12 +2353,12 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE H ---------------------------------------------------------------
 
   edit_grid[15, 1] <- edit_h_btn <- gbutton(
-    text = "Height",
+    text = strBtnHeight,
     container = edit_grid
   )
 
   edit_grid[15, 2] <- glabel(
-    text = "Calculate peak height metrics.",
+    text = strLblHeight,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1644,10 +2374,13 @@ strvalidator <- function(debug = FALSE) {
 
   # GENERATE EPG --------------------------------------------------------------
 
-  edit_grid[16, 1] <- edit_epg_btn <- gbutton(text = "EPG", container = edit_grid)
+  edit_grid[16, 1] <- edit_epg_btn <- gbutton(
+    text = strBtnEPG,
+    container = edit_grid
+  )
 
   edit_grid[16, 2] <- glabel(
-    text = "Generate EPG like plot.",
+    text = strLblEPG,
     container = edit_grid,
     anchor = c(-1, 0)
   )
@@ -1660,16 +2393,15 @@ strvalidator <- function(debug = FALSE) {
 
   # AT  #######################################################################
 
-
   at_grid <- glayout(container = at_tab, spacing = 5)
 
 
   # VIEW ----------------------------------------------------------------------
 
-  at_grid[1, 1] <- at_view_btn <- gbutton(text = "View", container = at_grid)
+  at_grid[1, 1] <- at_view_btn <- gbutton(text = strBtnView, container = at_grid)
 
   at_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = at_grid, anchor = c(-1, 0)
   )
 
@@ -1685,15 +2417,14 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   at_grid[3, 1] <- at_calculate_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = at_grid
   )
 
   at_grid[3, 2] <- glabel(
-    text = "Calculate analytical threshold (AT1, AT2, AT4, AT7).",
+    text = strLblAT,
     container = at_grid, anchor = c(-1, 0)
   )
-
 
   addHandlerChanged(at_calculate_btn, handler = function(h, ...) {
 
@@ -1707,12 +2438,12 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   at_grid[4, 1] <- at6_calculate_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = at_grid
   )
 
   at_grid[4, 2] <- glabel(
-    text = "Calculate analytical threshold (AT6).",
+    text = strLblAT6,
     container = at_grid, anchor = c(-1, 0)
   )
 
@@ -1727,10 +2458,10 @@ strvalidator <- function(debug = FALSE) {
 
   # PLOT AT -------------------------------------------------------------------
 
-  at_grid[5, 1] <- at_plot_btn <- gbutton(text = "Plot", container = at_grid)
+  at_grid[5, 1] <- at_plot_btn <- gbutton(text = strBtnPlot, container = at_grid)
 
   at_grid[5, 2] <- glabel(
-    text = "Create plots for analysed data (AT6).",
+    text = strLblPlotAT6,
     container = at_grid
   )
 
@@ -1749,12 +2480,12 @@ strvalidator <- function(debug = FALSE) {
   # VIEW ----------------------------------------------------------------------
 
   stutter_grid[1, 1] <- stutter_view_btn <- gbutton(
-    text = "View",
+    text = strBtnView,
     container = stutter_grid
   )
 
   stutter_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = stutter_grid,
     anchor = c(-1, 0)
   )
@@ -1771,16 +2502,15 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   stutter_grid[3, 1] <- stutter_calculate_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = stutter_grid
   )
 
   stutter_grid[3, 2] <- glabel(
-    text = "Calculate stutters for a dataset.",
+    text = strLblStutter,
     container = stutter_grid,
     anchor = c(-1, 0)
   )
-
 
   addHandlerChanged(stutter_calculate_btn, handler = function(h, ...) {
 
@@ -1794,12 +2524,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT STUTTER --------------------------------------------------------------
 
   stutter_grid[4, 1] <- stutter_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = stutter_grid
   )
 
   stutter_grid[4, 2] <- glabel(
-    text = "Create plots for analysed data.",
+    text = strLblPlotStutter,
     container = stutter_grid
   )
 
@@ -1816,12 +2546,12 @@ strvalidator <- function(debug = FALSE) {
   # SUMMARY TABLE -------------------------------------------------------------
 
   stutter_grid[5, 1] <- stutter_table_btn <- gbutton(
-    text = "Summarize",
+    text = strBtnStatistics,
     container = stutter_grid
   )
 
   stutter_grid[5, 2] <- glabel(
-    text = "Summarize stutter data in a table.",
+    text = strLblStatStutter,
     container = stutter_grid
   )
 
@@ -1843,12 +2573,12 @@ strvalidator <- function(debug = FALSE) {
   # VIEW ----------------------------------------------------------------------
 
   balance_g1[1, 1] <- balance_view_btn <- gbutton(
-    text = "View",
+    text = strBtnView,
     container = balance_g1
   )
 
   balance_g1[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = balance_g1,
     anchor = c(-1, 0)
   )
@@ -1865,7 +2595,7 @@ strvalidator <- function(debug = FALSE) {
   # ALLELE BALANCE ============================================================
 
   balance_f2 <- gframe(
-    text = "Intra-locus and inter-locus balance",
+    text = strFrmBalance,
     horizontal = FALSE, container = balance_tab
   )
 
@@ -1875,15 +2605,14 @@ strvalidator <- function(debug = FALSE) {
 
   # FUNCTION 1.
   balance_g2[1, 1] <- balance_g2_calc_1_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = balance_g2
   )
 
   balance_g2[1, 2] <- glabel(
-    text = "Calculate intra-locus balance (heterozygote balance).",
+    text = strLblHb,
     container = balance_g2
   )
-
 
   addHandlerChanged(balance_g2_calc_1_btn, handler = function(h, ...) {
 
@@ -1896,12 +2625,12 @@ strvalidator <- function(debug = FALSE) {
 
   # FUNCTION 2.
   balance_g2[2, 1] <- balance_g2_calc_2_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = balance_g2
   )
 
   balance_g2[2, 2] <- glabel(
-    text = "Calculate inter-locus balance (profile balance).",
+    text = strLblLb,
     container = balance_g2
   )
 
@@ -1918,12 +2647,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT ----------------------------------------------------------------------
 
   balance_g2[3, 1] <- balance_g2_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = balance_g2
   )
 
   balance_g2[3, 2] <- glabel(
-    text = "Create plots for analysed data",
+    text = strLblPlotBalance,
     container = balance_g2
   )
 
@@ -1939,12 +2668,12 @@ strvalidator <- function(debug = FALSE) {
   # SUMMARY TABLE -------------------------------------------------------------
 
   balance_g2[4, 1] <- balance_table_btn <- gbutton(
-    text = "Summarize",
+    text = strBtnStatistics,
     container = balance_g2
   )
 
   balance_g2[4, 2] <- glabel(
-    text = "Calculate summary statistics for balance data.",
+    text = strLblStatBalance,
     container = balance_g2
   )
 
@@ -1957,7 +2686,7 @@ strvalidator <- function(debug = FALSE) {
   # CAPILLARY BALANCE =========================================================
 
   balance_f3 <- gframe(
-    text = "Capillary balance",
+    text = strFrmCapillary,
     horizontal = FALSE, container = balance_tab
   )
 
@@ -1967,12 +2696,12 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   balance_g3[1, 1] <- balance_g3_calc_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = balance_g3
   )
 
   balance_g3[1, 2] <- glabel(
-    text = "Calculate capillary balance for a dataset.",
+    text = strLblCapillary,
     container = balance_g3
   )
 
@@ -1989,12 +2718,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT ----------------------------------------------------------------------
 
   balance_g3[2, 1] <- balance_g3_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = balance_g3
   )
 
   balance_g3[2, 2] <- glabel(
-    text = "Create plots for analysed data",
+    text = strLblPlotCapillary,
     container = balance_g3
   )
 
@@ -2010,12 +2739,12 @@ strvalidator <- function(debug = FALSE) {
   # SUMMARY -------------------------------------------------------------------
 
   balance_g3[3, 1] <- balance_g3_tab_btn <- gbutton(
-    text = "Summarize",
+    text = strBtnStatistics,
     container = balance_g3
   )
 
   balance_g3[3, 2] <- glabel(
-    text = "Create summary table for analysed data",
+    text = strLblStatCapillary,
     container = balance_g3
   )
 
@@ -2031,7 +2760,7 @@ strvalidator <- function(debug = FALSE) {
   # MARKER RATIO ==============================================================
 
   balance_f4 <- gframe(
-    text = "Marker peak height ratio",
+    text = strFrmRatio,
     horizontal = FALSE, container = balance_tab
   )
 
@@ -2040,15 +2769,14 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   balance_g4[1, 1] <- balance_g4_calc_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = balance_g4
   )
 
   balance_g4[1, 2] <- glabel(
-    text = "Calculate locus ratio for a dataset.",
+    text = strLblRatio,
     container = balance_g4
   )
-
 
   addHandlerChanged(balance_g4_calc_btn, handler = function(h, ...) {
 
@@ -2062,12 +2790,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT ----------------------------------------------------------------------
 
   balance_g4[2, 1] <- balance_g4_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = balance_g4
   )
 
   balance_g4[2, 2] <- glabel(
-    text = "Create plots for analysed data",
+    text = strLblPlotRatio,
     container = balance_g4
   )
 
@@ -2087,10 +2815,13 @@ strvalidator <- function(debug = FALSE) {
 
   # VIEW ----------------------------------------------------------------------
 
-  conc_grid[1, 1] <- conc_view_btn <- gbutton(text = "View", container = conc_grid)
+  conc_grid[1, 1] <- conc_view_btn <- gbutton(
+    text = strBtnView,
+    container = conc_grid
+  )
 
   conc_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = conc_grid,
     anchor = c(-1, 0)
   )
@@ -2107,16 +2838,15 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   conc_grid[2, 1] <- conc_calculate_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = conc_grid
   )
 
   conc_grid[2, 2] <- glabel(
-    text = "Calculate concordance for multiple datasets.",
+    text = strLblConcordance,
     container = conc_grid,
     anchor = c(-1, 0)
   )
-
 
   addHandlerChanged(conc_calculate_btn, handler = function(h, ...) {
 
@@ -2135,12 +2865,12 @@ strvalidator <- function(debug = FALSE) {
   # VIEW ----------------------------------------------------------------------
 
   drop_grid[1, 1] <- drop_view_btn <- gbutton(
-    text = "View",
+    text = strBtnView,
     container = drop_grid
   )
 
   drop_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = drop_grid,
     anchor = c(-1, 0)
   )
@@ -2157,12 +2887,12 @@ strvalidator <- function(debug = FALSE) {
   # SCORE -----------------------------------------------------------------.---
 
   drop_grid[2, 1] <- drop_score_btn <- gbutton(
-    text = "Score",
+    text = strBtnScore,
     container = drop_grid
   )
 
   drop_grid[2, 2] <- glabel(
-    text = "Score dropouts for a dataset.",
+    text = strLblScore,
     container = drop_grid,
     anchor = c(-1, 0)
   )
@@ -2180,12 +2910,12 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE ------------------------------------------------------------------
 
   drop_grid[3, 1] <- drop_calculate_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = drop_grid
   )
 
   drop_grid[3, 2] <- glabel(
-    text = "Calculate stochastic thresholds.",
+    text = strLblDropout,
     container = drop_grid,
     anchor = c(-1, 0)
   )
@@ -2200,17 +2930,15 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
-
-
   # LOGISTIC REGRESSION -------------------------------------------------------
 
   drop_grid[4, 1] <- drop_model_btn <- gbutton(
-    text = "Model",
+    text = strBtnModel,
     container = drop_grid
   )
 
   drop_grid[4, 2] <- glabel(
-    text = "Model and plot dropout risk",
+    text = strLblModel,
     container = drop_grid
   )
 
@@ -2226,12 +2954,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT DROPOUT --------------------------------------------------------------
 
   drop_grid[5, 1] <- drop_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = drop_grid
   )
 
   drop_grid[5, 2] <- glabel(
-    text = "Create plots for analysed data.",
+    text = strLblPlotDropout,
     container = drop_grid
   )
 
@@ -2254,10 +2982,13 @@ strvalidator <- function(debug = FALSE) {
 
   # VIEW ----------------------------------------------------------------------
 
-  mix_grid[1, 1] <- mix_view_btn <- gbutton(text = "View", container = mix_grid)
+  mix_grid[1, 1] <- mix_view_btn <- gbutton(
+    text = strBtnView,
+    container = mix_grid
+  )
 
   mix_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = mix_grid,
     anchor = c(-1, 0)
   )
@@ -2274,16 +3005,15 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   mix_grid[2, 1] <- mix_calculate_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = mix_grid
   )
 
   mix_grid[2, 2] <- glabel(
-    text = "Calculate mixture for a dataset.",
+    text = strLblMixture,
     container = mix_grid,
     anchor = c(-1, 0)
   )
-
 
   addHandlerChanged(mix_calculate_btn, handler = function(h, ...) {
 
@@ -2306,12 +3036,12 @@ strvalidator <- function(debug = FALSE) {
   # VIEW ----------------------------------------------------------------------
 
   result_grid[1, 1] <- result_view_btn <- gbutton(
-    text = "View",
+    text = strBtnView,
     container = result_grid
   )
 
   result_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = result_grid,
     anchor = c(-1, 0)
   )
@@ -2328,7 +3058,7 @@ strvalidator <- function(debug = FALSE) {
   # RESULT TYPE ===============================================================
 
   result_f1 <- gframe(
-    text = "Result types",
+    text = strFrmType,
     horizontal = FALSE, container = result_tab
   )
 
@@ -2338,12 +3068,12 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   result_g1[1, 1] <- result_g1_calc_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = result_g1
   )
 
   result_g1[1, 2] <- glabel(
-    text = "Calculate result types for a dataset.",
+    text = strLblType,
     container = result_g1,
     anchor = c(-1, 0)
   )
@@ -2361,12 +3091,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT RESULT TYPE ----------------------------------------------------------
 
   result_g1[2, 1] <- result_g1_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = result_g1
   )
 
   result_g1[2, 2] <- glabel(
-    text = "Create plots for analysed data",
+    text = strLblPlotType,
     container = result_g1
   )
 
@@ -2382,7 +3112,7 @@ strvalidator <- function(debug = FALSE) {
   # PEAKS =====================================================================
 
   result_f2 <- gframe(
-    text = "Number of peaks",
+    text = strFrmPeaks,
     horizontal = FALSE, container = result_tab
   )
 
@@ -2392,16 +3122,15 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   result_g2[1, 1] <- result_g2_calc_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = result_g2
   )
 
   result_g2[1, 2] <- glabel(
-    text = "Count the number of peaks in sample.",
+    text = strLblPeaks,
     container = result_g2,
     anchor = c(-1, 0)
   )
-
 
   addHandlerChanged(result_g2_calc_btn, handler = function(h, ...) {
 
@@ -2415,12 +3144,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT PEAKS ----------------------------------------------------------------
 
   result_g2[2, 1] <- result_g2_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = result_g2
   )
 
   result_g2[2, 2] <- glabel(
-    text = "Create plots for analysed data",
+    text = strLblPlotPeaks,
     container = result_g2
   )
 
@@ -2437,7 +3166,7 @@ strvalidator <- function(debug = FALSE) {
   # PEAK HEIGHT ===============================================================
 
   result_f3 <- gframe(
-    text = "Peak height metrics",
+    text = strFrmHeight,
     horizontal = FALSE, container = result_tab
   )
 
@@ -2446,12 +3175,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT PEAKS ----------------------------------------------------------------
 
   result_g3[1, 1] <- result_g3_calc_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = result_g3
   )
 
   result_g3[1, 2] <- glabel(
-    text = "Calculate average and total peak height",
+    text = strLblHeight,
     container = result_g3
   )
 
@@ -2468,7 +3197,7 @@ strvalidator <- function(debug = FALSE) {
   # DISTRIBUTIONS =============================================================
 
   result_f4 <- gframe(
-    text = "Distributions",
+    text = strFrmDistribution,
     horizontal = FALSE, container = result_tab
   )
 
@@ -2477,12 +3206,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT PEAKS ----------------------------------------------------------------
 
   result_g4[1, 1] <- result_g4_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = result_g4
   )
 
   result_g4[1, 2] <- glabel(
-    text = "Plot distributions for analysed data",
+    text = strLblDistribution,
     container = result_g4
   )
 
@@ -2498,12 +3227,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT GROUPS ---------------------------------------------------------------
 
   result_g4[1, 3] <- result_g4_group_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = result_g4
   )
 
   result_g4[1, 4] <- glabel(
-    text = "Plot cumulative distribution for multiple groups",
+    text = strLblGroups,
     container = result_g4
   )
 
@@ -2520,7 +3249,7 @@ strvalidator <- function(debug = FALSE) {
   # DROPIN ====================================================================
 
   result_f5 <- gframe(
-    text = "Drop-in tools",
+    text = strFrmDropin,
     horizontal = FALSE, container = result_tab
   )
 
@@ -2530,16 +3259,15 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   result_g5[1, 1] <- result_g5_calc_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = result_g5
   )
 
   result_g5[1, 2] <- glabel(
-    text = "Identify possible spikes.",
+    text = strLblSpikes,
     container = result_g5,
     anchor = c(-1, 0)
   )
-
 
   addHandlerChanged(result_g5_calc_btn, handler = function(h, ...) {
 
@@ -2553,12 +3281,12 @@ strvalidator <- function(debug = FALSE) {
   # FILTER PEAKS --------------------------------------------------------------
 
   result_g5[1, 3] <- result_g5_filter_btn <- gbutton(
-    text = "Filter",
+    text = strBtnFilter,
     container = result_g5
   )
 
   result_g5[1, 4] <- glabel(
-    text = "Remove spikes.",
+    text = strLblFilterSpikes,
     container = result_g5
   )
 
@@ -2574,12 +3302,12 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE ALLELE ----------------------------------------------------------
 
   result_g5[2, 1] <- result_g5_allele_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = result_g5
   )
 
   result_g5[2, 2] <- glabel(
-    text = "Identify possible artefacts.",
+    text = strLblArtefacts,
     container = result_g5
   )
 
@@ -2595,12 +3323,12 @@ strvalidator <- function(debug = FALSE) {
   # REMOVE ARTEFACTS ----------------------------------------------------------
 
   result_g5[2, 3] <- result_g5_artefact_btn <- gbutton(
-    text = "Filter",
+    text = strBtnFilter,
     container = result_g5
   )
 
   result_g5[2, 4] <- glabel(
-    text = "Remove artefacts.",
+    text = strLblFilterArtefacts,
     container = result_g5
   )
 
@@ -2616,12 +3344,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT CONTAMINATION --------------------------------------------------------
 
   result_g5[3, 1] <- result_g5_cont_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = result_g5
   )
 
   result_g5[3, 2] <- glabel(
-    text = "Plot contamination.",
+    text = strLblPlotContamination,
     container = result_g5
   )
 
@@ -2638,26 +3366,24 @@ strvalidator <- function(debug = FALSE) {
   # SLOPE =====================================================================
 
   result_f6 <- gframe(
-    text = "Profile slope",
+    text = strFrmSlope,
     horizontal = FALSE, container = result_tab
   )
 
   result_g6 <- glayout(container = result_f6, spacing = 5)
 
-
   # CALCULATE -----------------------------------------------------------------
 
   result_g6[1, 1] <- result_g6_calc_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = result_g6
   )
 
   result_g6[1, 2] <- glabel(
-    text = "Calculate the profile slope.",
+    text = strLblSlope,
     container = result_g6,
     anchor = c(-1, 0)
   )
-
 
   addHandlerChanged(result_g6_calc_btn, handler = function(h, ...) {
 
@@ -2671,12 +3397,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT ----------------------------------------------------------------------
 
   result_g6[2, 1] <- result_g6_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = result_g6
   )
 
   result_g6[2, 2] <- glabel(
-    text = "Plot slope data.",
+    text = strLblPlotSlope,
     container = result_g6
   )
 
@@ -2697,12 +3423,12 @@ strvalidator <- function(debug = FALSE) {
   # VIEW ----------------------------------------------------------------------
 
   precision_grid[1, 1] <- precision_view_btn <- gbutton(
-    text = "View",
+    text = strBtnView,
     container = precision_grid
   )
 
   precision_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = precision_grid,
     anchor = c(-1, 0)
   )
@@ -2719,12 +3445,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT RESULT TYPE ----------------------------------------------------------
 
   precision_grid[2, 1] <- precision_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = precision_grid
   )
 
   precision_grid[2, 2] <- glabel(
-    text = "Create plots for analysed data",
+    text = strLblPrecision,
     container = precision_grid
   )
 
@@ -2740,12 +3466,12 @@ strvalidator <- function(debug = FALSE) {
   # SUMMARY TABLE -------------------------------------------------------------
 
   precision_grid[3, 1] <- precision_table_btn <- gbutton(
-    text = "Summarize",
+    text = strBtnStatistics,
     container = precision_grid
   )
 
   precision_grid[3, 2] <- glabel(
-    text = "Summarize precision data in a table.",
+    text = strLblStatPrecision,
     container = precision_grid,
     anchor = c(-1, 0)
   )
@@ -2762,18 +3488,17 @@ strvalidator <- function(debug = FALSE) {
 
   # PULLUP  ###################################################################
 
-
   pull_grid <- glayout(container = pullup_tab, spacing = 5)
 
   # VIEW ----------------------------------------------------------------------
 
   pull_grid[1, 1] <- pull_view_btn <- gbutton(
-    text = "View",
+    text = strBtnView,
     container = pull_grid
   )
 
   pull_grid[1, 2] <- glabel(
-    text = "View a dataset.",
+    text = strLblViewDataset,
     container = pull_grid,
     anchor = c(-1, 0)
   )
@@ -2790,12 +3515,12 @@ strvalidator <- function(debug = FALSE) {
   # CALCULATE -----------------------------------------------------------------
 
   pull_grid[2, 1] <- pull_calculate_btn <- gbutton(
-    text = "Calculate",
+    text = strBtnCalculate,
     container = pull_grid
   )
 
   pull_grid[2, 2] <- glabel(
-    text = "Calculate spectral pull-up (aka. bleed-through).",
+    text = strLblPullup,
     container = pull_grid,
     anchor = c(-1, 0)
   )
@@ -2812,12 +3537,12 @@ strvalidator <- function(debug = FALSE) {
   # PLOT PULLUP ---------------------------------------------------------------
 
   pull_grid[3, 1] <- pull_plot_btn <- gbutton(
-    text = "Plot",
+    text = strBtnPlot,
     container = pull_grid
   )
 
   pull_grid[3, 2] <- glabel(
-    text = "Create plots for analysed data",
+    text = strLblPlotPullup,
     container = pull_grid
   )
 
@@ -2844,12 +3569,12 @@ strvalidator <- function(debug = FALSE) {
 
     # Check if a tab name exist and then perform tasks.
     if (length(tabName) != 0) {
-      if (tabName == .file_tab_name) {
+      if (tabName == strTabWorkspace) {
         .refreshLoaded()
         .refreshWs()
       }
 
-      if (tabName == .project_tab_name) {
+      if (tabName == strTabProject) {
         .updateProjectList()
       }
     } # End check.
@@ -2867,7 +3592,7 @@ strvalidator <- function(debug = FALSE) {
 
     # Check if a tab name exist and then perform tasks.
     if (length(tabName) != 0) {
-      if (tabName == .file_tab_name) {
+      if (tabName == strTabWorkspace) {
         .refreshLoaded()
         .refreshWs()
       }
@@ -2936,7 +3661,7 @@ strvalidator <- function(debug = FALSE) {
       blockHandler(ws_r_drp)
 
       # Populate drop list.
-      ws_r_drp[] <- c("<Select dataframe>", dfs)
+      ws_r_drp[] <- c(strDrpObject, dfs)
 
       # Select first item.
       svalue(ws_r_drp, index = TRUE) <- 1
@@ -3024,7 +3749,7 @@ strvalidator <- function(debug = FALSE) {
 
       # Reset projects list.
       project_tbl[, ] <- data.frame(
-        Name = "[No project found]", Date = "",
+        Name = strStrNoProject, Date = "",
         Size = "", Id = "",
         stringsAsFactors = FALSE
       )
@@ -3032,8 +3757,8 @@ strvalidator <- function(debug = FALSE) {
       message("No 'RData' files found in ", projectdir)
 
       # Reset description.
-      svalue(proj_info_lbl) <- "Project:"
-      svalue(proj_info_txt) <- "[Project description]"
+      svalue(proj_info_lbl) <- strLblProject
+      svalue(proj_info_txt) <- strStrProjectDescription
     }
   }
 

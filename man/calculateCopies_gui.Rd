@@ -4,8 +4,12 @@
 \alias{calculateCopies_gui}
 \title{Calculate Allele Copies}
 \usage{
-calculateCopies_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+calculateCopies_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

@@ -4,9 +4,18 @@
 \alias{calculatePullup}
 \title{Calculate Spectral Pull-up}
 \usage{
-calculatePullup(data, ref, pullup.range = 6, block.range = 12,
-  ol.rm = FALSE, ignore.case = TRUE, word = FALSE, discard = FALSE,
-  limit = 1, debug = FALSE)
+calculatePullup(
+  data,
+  ref,
+  pullup.range = 6,
+  block.range = 12,
+  ol.rm = FALSE,
+  ignore.case = TRUE,
+  word = FALSE,
+  discard = FALSE,
+  limit = 1,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{a data frame containing at least 'Sample.Name', 'Marker', 'Height',

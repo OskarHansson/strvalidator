@@ -4,8 +4,7 @@
 \alias{trim_gui}
 \title{Trim Data}
 \usage{
-trim_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+trim_gui(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}

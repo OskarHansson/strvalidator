@@ -4,8 +4,12 @@
 \alias{cropData_gui}
 \title{Crop Or Replace}
 \usage{
-cropData_gui(env = parent.frame(), savegui = NULL, debug = FALSE,
-  parent = NULL)
+cropData_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

@@ -4,12 +4,25 @@
 \alias{import}
 \title{Import Data}
 \usage{
-import(folder = TRUE, extension = "txt", suffix = NA, prefix = NA,
-  import.file = NA, folder.name = NA, file.name = TRUE,
-  time.stamp = TRUE, separator = "\\t", ignore.case = TRUE,
-  auto.trim = FALSE, trim.samples = NULL, trim.invert = FALSE,
-  auto.slim = FALSE, slim.na = TRUE, na.strings = c("NA", ""),
-  debug = FALSE)
+import(
+  folder = TRUE,
+  extension = "txt",
+  suffix = NA,
+  prefix = NA,
+  import.file = NA,
+  folder.name = NA,
+  file.name = TRUE,
+  time.stamp = TRUE,
+  separator = "\\t",
+  ignore.case = TRUE,
+  auto.trim = FALSE,
+  trim.samples = NULL,
+  trim.invert = FALSE,
+  auto.slim = FALSE,
+  slim.na = TRUE,
+  na.strings = c("NA", ""),
+  debug = FALSE
+)
 }
 \arguments{
 \item{folder}{logical, TRUE all files in folder will be imported,

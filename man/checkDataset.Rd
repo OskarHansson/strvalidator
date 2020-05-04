@@ -4,9 +4,17 @@
 \alias{checkDataset}
 \title{Check Dataset}
 \usage{
-checkDataset(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
-  string = NULL, stringcol = NULL, env = parent.frame(),
-  parent = NULL, debug = FALSE)
+checkDataset(
+  name,
+  reqcol = NULL,
+  slim = FALSE,
+  slimcol = NULL,
+  string = NULL,
+  stringcol = NULL,
+  env = parent.frame(),
+  parent = NULL,
+  debug = FALSE
+)
 }
 \arguments{
 \item{name}{character name of data.frame.}

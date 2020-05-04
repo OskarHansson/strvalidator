@@ -4,8 +4,17 @@
 \alias{columns}
 \title{Column Actions}
 \usage{
-columns(data, col1 = NA, col2 = NA, operator = "&", fixed = NA,
-  target = NA, start = 1, stop = 1, debug = FALSE)
+columns(
+  data,
+  col1 = NA,
+  col2 = NA,
+  operator = "&",
+  fixed = NA,
+  target = NA,
+  start = 1,
+  stop = 1,
+  debug = FALSE
+)
 }
 \arguments{
 \item{data}{a data frame.}

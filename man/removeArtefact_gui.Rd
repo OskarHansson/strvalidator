@@ -4,8 +4,12 @@
 \alias{removeArtefact_gui}
 \title{Remove Artefact}
 \usage{
-removeArtefact_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+removeArtefact_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames.}

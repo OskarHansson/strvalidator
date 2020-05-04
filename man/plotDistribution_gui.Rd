@@ -4,8 +4,12 @@
 \alias{plotDistribution_gui}
 \title{Plot Distribution}
 \usage{
-plotDistribution_gui(env = parent.frame(), savegui = NULL,
-  debug = FALSE, parent = NULL)
+plotDistribution_gui(
+  env = parent.frame(),
+  savegui = NULL,
+  debug = FALSE,
+  parent = NULL
+)
 }
 \arguments{
 \item{env}{environment in which to search for data frames and save result.}
