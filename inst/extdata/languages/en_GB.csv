@@ -1,101 +1,2042 @@
-Scope	Order	Key	Value
-addData_gui	1	strWinTitle 	Add data
-addData_gui	2	strChkGui	Save GUI settings
-addData_gui	3	strBtnHelp	Help
-addData_gui	4	strFrmDataset	Datasets
-addData_gui	5	strLblDestination	Select destination dataset:
-addData_gui	6	strDrpDefault	<Select column>
-addData_gui	7	strLblSamples	samples
-addData_gui	8	strLblSource	Select source dataset:
-addData_gui	9	strFrmOptions	Options
-addData_gui	10	strChkExact	Exact key matching
-addData_gui	11	strChkIgnore	Ignore case in marker name
-addData_gui	12	strLblKey1	Select primary key column:
-addData_gui	13	strLblKey2	Select secondary key column (optional):
-addData_gui	14	strLblColumns	Select columns to add to the new dataset:
-addData_gui	15	strEdtMsg	Default is all columns
-addData_gui	16	strFrmSave	Save as
-addData_gui	17	strLblSave	Name for result:
-addData_gui	18	strBtnAdd	Add
-addData_gui	19	 strBtnAddActive 	Processing...
-addData_gui	20	 strMsgTitle 	Datasets not selected
-addDye_gui	1	strWinTitle	Add dye to dataset
-addDye_gui	2	strChkGui	Save GUI settings
-addDye_gui	3	strBtnHelp	Help
-addDye_gui	4	strFrmDataset	Dataset and kit
-addDye_gui	5	strLblDataset	Select dataset:
-addDye_gui	6	strDrpDefault	<Select dataset>
-addDye_gui	7	strLblSamples	samples
-addDye_gui	8	strLblKit	Kit:
-addDye_gui	9	strFrmOptions	Options
-addDye_gui	10	strChkIgnore	Ignore case in marker name
-addDye_gui	11	strChkDye	Add dye information
-addDye_gui	12	strChkColor	Add color information
-addDye_gui	13	strChkR	Add R color information
-addDye_gui	14	strChkMarker	Add marker order
-addDye_gui	15	strFrmSave	Save as
-addDye_gui	16	strLblSave	Name for result:
-addDye_gui	17	strBtnAdd	Add
-addDye_gui	18	strBtnAddActive	Processing...
-addMarker_gui	1	strWinTitle	Add missing markers to dataset
-addMarker_gui	2	strChkGui	Save GUI settings
-addMarker_gui	3	strBtnHelp	Help
-addMarker_gui	4	strFrmDataset	Dataset and kit
-addMarker_gui	5	strLblDataset	Select dataset:
-addMarker_gui	6	strDrpDefault	<Select dataset>
-addMarker_gui	7	strLblSamples	samples
-addMarker_gui	8	strLblKit	Kit:
-addMarker_gui	9	strFrmOptions	Options
-addMarker_gui	10	strChkIgnore	Ignore case in marker name
-addMarker_gui	11	strFrmSave	Save as
-addMarker_gui	12	strLblSave	Name for result:
-addMarker_gui	13	strBtnAdd	Add
-addMarker_gui	14	strBtnAddActive	Processing...
-addSize_gui	1	strWinTitle	Add size to dataset
-addSize_gui	2	strChkGui	Save GUI settings
-addSize_gui	3	strBtnHelp	Help
-addSize_gui	4	strFrmDataset	Dataset and kit
-addSize_gui	5	strLblDataset	Select dataset:
-addSize_gui	6	strDrpDefault	<Select dataset>
-addSize_gui	7	strLblSamples	samples
-addSize_gui	8	strLblKit	Kit:
-addSize_gui	9	strFrmOptions	Options
-addSize_gui	10	strRadItem1	Get size as defined in bins file (NA if not defined)
-addSize_gui	11	strRadItem2	Calculate an estimate from locus offset and number of repeats
-addSize_gui	12	strFrmSave	Save as
-addSize_gui	13	strLblSave	Name for result:
-addSize_gui	14	strBtnAdd	Add
-addSize_gui	15	strBtnAddActive	Processing...
-calculateAllele_gui	1	strWinTitle	Calculate summary statistics for alleles
-calculateAllele_gui	2	strChkGui	Save GUI settings
-calculateAllele_gui	3	strBtnHelp	Help
-calculateAllele_gui	4	strFrmDataset	Dataset
-calculateAllele_gui	5	strLblDataset	Select dataset:
-calculateAllele_gui	6	strDrpDefault	<Select dataset>
-calculateAllele_gui	7	strLblRows	rows
-calculateAllele_gui	8	strFrmOptions	Options
-calculateAllele_gui	9	strLblThreshold	Peak height threshold: 
-calculateAllele_gui	10	strTipThreshold	Peaks with heights below this value will be removed.
-calculateAllele_gui	11	strChkSexMarkers	Remove sex markers defined in kit: 
-calculateAllele_gui	12	strFrmSave	Save as
-calculateAllele_gui	13	strLblSave	Name for result:
-calculateAllele_gui	14	strBtnCalculate	Calculate
-calculateAllele_gui	15	strMsgMessage	Select a dataset!
-calculateAllele_gui	16	strMsgTitle	Error
-calculateAllT_gui	1	strWinTitle	Calculate stochastic thresholds
-calculateAllT_gui	2	strChkGui	Save GUI settings
-calculateAllT_gui	3	strBtnHelp	Help
-calculateAllT_gui	4	strFrmDataset	Dataset and kit
-calculateAllT_gui	5	strLblDataset	Select dataset:
-calculateAllT_gui	6	strDrpDefault	<Select dataset>
-calculateAllT_gui	7	strLblSamples	samples
-calculateAllT_gui	8	strLblKit	Kit:
-calculateAllT_gui	9	strFrmOptions	Options
-calculateAllT_gui	10	strLblT	Calculate point estimates at P(dropout)=
-calculateAllT_gui	11	strLblTcons1	Calculate conservative point estimates at P(dropout>
-calculateAllT_gui	12	strLblTcons2	)<
-calculateAllT_gui	13	strChkSex	Remove sex markers
-calculateAllT_gui	14	strFrmSave	Save as
-calculateAllT_gui	15	strLblSave	Name for result:
-calculateAllT_gui	16	strBtnCalculate	Calculate
-calculateAllT_gui	17	strBtnCalculateActive	Processing...
+Scope	Order	Key	Value	
+addData_gui	1	strWinTitle 	Add data	
+addData_gui	2	strChkGui	Save GUI settings	
+addData_gui	3	strBtnHelp	Help	
+addData_gui	4	strFrmDataset	Datasets	
+addData_gui	5	strLblDestination	Select destination dataset:	
+addData_gui	6	strDrpDefault	<Select column>	
+addData_gui	7	strLblSamples	samples	
+addData_gui	8	strLblSource	Select source dataset:	
+addData_gui	9	strFrmOptions	Options	
+addData_gui	10	strChkExact	Exact key matching	
+addData_gui	11	strChkIgnore	Ignore case in marker name	
+addData_gui	12	strLblKey1	Select primary key column:	
+addData_gui	13	strLblKey2	Select secondary key column (optional):	
+addData_gui	14	strLblColumns	Select columns to add to the new dataset:	
+addData_gui	15	strEdtMsg	Default is all columns	
+addData_gui	16	strFrmSave	Save as	
+addData_gui	17	strLblSave	Name for result:	
+addData_gui	18	strBtnAdd	Add	
+addData_gui	19	 strBtnAddActive 	Processing...	
+addData_gui	20	strMsgDataset	A destination and source dataset must be selected.	
+addData_gui	21	 strMsgTitle 	Datasets not selected	
+addDye_gui	1	strWinTitle	Add dye to dataset	
+addDye_gui	2	strChkGui	Save GUI settings	
+addDye_gui	3	strBtnHelp	Help	
+addDye_gui	4	strFrmDataset	Dataset and kit	
+addDye_gui	5	strLblDataset	Sample dataset:	
+addDye_gui	6	strDrpDefault	<Select dataset>	
+addDye_gui	7	strLblSamples	samples	
+addDye_gui	8	strLblKit	Kit:	
+addDye_gui	9	strFrmOptions	Options	
+addDye_gui	10	strChkIgnore	Ignore case in marker name	
+addDye_gui	11	strChkDye	Add dye information	
+addDye_gui	12	strChkColor	Add color information	
+addDye_gui	13	strChkR	Add R color information	
+addDye_gui	14	strChkMarker	Add marker order	
+addDye_gui	15	strFrmSave	Save as	
+addDye_gui	16	strLblSave	Name for result:	
+addDye_gui	17	strBtnAdd	Add	
+addDye_gui	18	strBtnAddActive	Processing...	
+addMarker_gui	1	strWinTitle	Add missing markers to dataset	
+addMarker_gui	2	strChkGui	Save GUI settings	
+addMarker_gui	3	strBtnHelp	Help	
+addMarker_gui	4	strFrmDataset	Dataset and kit	
+addMarker_gui	5	strLblDataset	Sample dataset:	
+addMarker_gui	6	strDrpDefault	<Select dataset>	
+addMarker_gui	7	strLblSamples	samples	
+addMarker_gui	8	strLblKit	Kit:	
+addMarker_gui	9	strFrmOptions	Options	
+addMarker_gui	10	strChkIgnore	Ignore case in marker name	
+addMarker_gui	11	strFrmSave	Save as	
+addMarker_gui	12	strLblSave	Name for result:	
+addMarker_gui	13	strBtnAdd	Add	
+addMarker_gui	14	strBtnAddActive	Processing...	
+addSize_gui	1	strWinTitle	Add size to dataset	
+addSize_gui	2	strChkGui	Save GUI settings	
+addSize_gui	3	strBtnHelp	Help	
+addSize_gui	4	strFrmDataset	Dataset and kit	
+addSize_gui	5	strLblDataset	Sample dataset:	
+addSize_gui	6	strDrpDefault	<Select dataset>	
+addSize_gui	7	strLblSamples	samples	
+addSize_gui	8	strLblKit	Kit:	
+addSize_gui	9	strFrmOptions	Options	
+addSize_gui	10	strRadItem1	Get size as defined in bins file (NA if not defined)	
+addSize_gui	11	strRadItem2	Calculate an estimate from locus offset and number of repeats	
+addSize_gui	12	strFrmSave	Save as	
+addSize_gui	13	strLblSave	Name for result:	
+addSize_gui	14	strBtnAdd	Add	
+addSize_gui	15	strBtnProcessing	Processing...	
+calculateAllele_gui	1	strWinTitle	Calculate summary statistics for alleles	
+calculateAllele_gui	2	strChkGui	Save GUI settings	
+calculateAllele_gui	3	strBtnHelp	Help	
+calculateAllele_gui	4	strFrmDataset	Dataset	
+calculateAllele_gui	5	strLblDataset	Sample dataset:	
+calculateAllele_gui	6	strDrpDefault	<Select dataset>	
+calculateAllele_gui	7	strLblRows	rows	
+calculateAllele_gui	8	strFrmOptions	Options	
+calculateAllele_gui	9	strLblThreshold	Peak height threshold: 	
+calculateAllele_gui	10	strTipThreshold	Peaks with heights below this value will be removed.	
+calculateAllele_gui	11	strChkSexMarkers	Remove sex markers defined in kit: 	
+calculateAllele_gui	12	strFrmSave	Save as	
+calculateAllele_gui	13	strLblSave	Name for result:	
+calculateAllele_gui	14	strBtnCalculate	Calculate	
+calculateAllele_gui	15	strMsgDataset	Select a dataset!	
+calculateAllele_gui	16	strMsgTitleDataset	Error	
+calculateAllT_gui	1	strWinTitle	Calculate stochastic thresholds	
+calculateAllT_gui	2	strChkGui	Save GUI settings	
+calculateAllT_gui	3	strBtnHelp	Help	
+calculateAllT_gui	4	strFrmDataset	Dataset and kit	
+calculateAllT_gui	5	strLblDataset	Sample dataset:	
+calculateAllT_gui	6	strDrpDefault	<Select dataset>	
+calculateAllT_gui	7	strLblSamples	samples	
+calculateAllT_gui	8	strLblKit	Kit:	
+calculateAllT_gui	9	strFrmOptions	Options	
+calculateAllT_gui	10	strLblT	Calculate point estimates at P(dropout)=	
+calculateAllT_gui	11	strLblTcons	Calculate conservative point estimates at P(dropout>	
+calculateAllT_gui	12	strChkSexMarkers	Remove sex markers	
+calculateAllT_gui	13	strFrmSave	Save as	
+calculateAllT_gui	14	strLblSave	Name for result:	
+calculateAllT_gui	15	strBtnCalculate	Calculate	
+calculateAllT_gui	16	strBtnCalculateActive	Processing...	
+calculateAT_gui	1	strWinTitle	Calculate analytical threshold	
+calculateAT_gui	2	strChkGui	Save GUI settings	
+calculateAT_gui	3	strBtnHelp	Help	
+calculateAT_gui	4	strFrmDataset	Datasets	
+calculateAT_gui	5	strLblDataset	Sample dataset:	
+calculateAT_gui	6	strDrpDefault	<Select dataset>	
+calculateAT_gui	7	strLblSamples	samples	
+calculateAT_gui	8	strLblDatasetRef	Reference dataset:	
+calculateAT_gui	9	strLblRef	references	
+calculateAT_gui	10	strBtnCheck	Check subsetting	
+calculateAT_gui	11	strLblKit	Kit:	
+calculateAT_gui	12	strTipKit	Only used to shade masked ranges in plot.	
+calculateAT_gui	13	strFrmOptions	Options	
+calculateAT_gui	14	strChkIgnore	Ignore case	
+calculateAT_gui	15	strChkWord	Add word boundaries	
+calculateAT_gui	16	strChkMaskHigh	Mask high peaks	
+calculateAT_gui	17	strLblMaskHigh	Mask all peaks above (RFU): 	
+calculateAT_gui	18	strChkMaskAllele	Mask sample alleles	
+calculateAT_gui	19	strLblDpAllele	Range (data points) around known alleles:	
+calculateAT_gui	20	strChkMaskDye	Mask sample alleles per dye channel	
+calculateAT_gui	21	strChkILS	Mask ILS peaks	
+calculateAT_gui	22	strLblDpPeak	Range (data points) around known peak: 	
+calculateAT_gui	23	strLblConf	Confidence level 'k' (AT1, AT7): 	
+calculateAT_gui	24	strLblRank	Percentile rank threshold (AT2): 	
+calculateAT_gui	25	strLblAlpha	Upper confidence 'alpha' (AT4): 	
+calculateAT_gui	26	strFrmPrepare	Prepare data and check masking	
+calculateAT_gui	27	strBtnMask	Prepare and mask	
+calculateAT_gui	28	strDrpDefault2	<Select sample>	
+calculateAT_gui	29	strBtnSave	Save plot	
+calculateAT_gui	30	strFrmSave	Save as	
+calculateAT_gui	31	strLblSave	Name for result:	
+calculateAT_gui	32	strLblSaveRank	Name for percentile rank list:	
+calculateAT_gui	33	strLblSaveMasked	Name for masked raw data:	
+calculateAT_gui	34	strBtnCalculate	Calculate	
+calculateAT_gui	35	strBtnProcessing	Processing...	
+calculateAT_gui	36	strWinCheck	Check subsetting	
+calculateAT_gui	37	strMsgPlot	Click 'Prepare and mask' and select a sample before saving.	
+calculateAT_gui	38	strMsgTitlePlot	No plot!	
+calculateAT_gui	39	strMsgTitleError	Error	
+calculateAT_gui	40	strMsgCheck	Data frame is NULL!\n\nMake sure to select a dataset and a reference set	
+calculateAT_gui	41	strMsgDataset	A dataset and a reference dataset must be selected.	
+calculateAT_gui	42	strMsgTitleDataset	Datasets not selected	
+calculateAT6_gui	1	strWinTitle	Calculate analytical threshold	
+calculateAT6_gui	2	strChkGui	Save GUI settings	
+calculateAT6_gui	3	strBtnHelp	Help	
+calculateAT6_gui	4	strFrmDataset	Datasets	
+calculateAT6_gui	5	strLblDataset	Sample dataset:	
+calculateAT6_gui	6	strDrpDefault	<Select dataset>	
+calculateAT6_gui	7	strLblSamples	samples	
+calculateAT6_gui	8	strLblDatasetRef	Reference dataset:	
+calculateAT6_gui	9	strLblRef	references	
+calculateAT6_gui	10	strBtnCheck	Check subsetting	
+calculateAT6_gui	11	strLblAmount	Amount dataset:	
+calculateAT6_gui	12	strFrmOptions	Options	
+calculateAT6_gui	13	strLblText1	NB! This is an indirect method not recommended.	
+calculateAT6_gui	14	strLblText2	See 'Help' or reference for limitations.	
+calculateAT6_gui	15	strChkIgnore	Ignore case	
+calculateAT6_gui	16	strRadItem1	Linear regression	
+calculateAT6_gui	17	strRadItem2	Weighted linear regression	
+calculateAT6_gui	18	strLblLevel	Significance level:	
+calculateAT6_gui	19	strFrmSave	Save as	
+calculateAT6_gui	20	strLblSave	Name for result:	
+calculateAT6_gui	21	strBtnCalculate	Calculate	
+calculateAT6_gui	22	strBtnCalculateActive	Processing...	
+calculateAT6_gui	23	strWinCheck	Check subsetting	
+calculateAT6_gui	24	strMsgTitleError	Error	
+calculateAT6_gui	25	strMsgCheck	Data frame is NULL!\n\nMake sure to select a dataset and a reference set	
+calculateAT6_gui	26	strMsgDataset	A dataset and a reference dataset must be selected.	
+calculateAT6_gui	27	strMsgTitleDataset	Datasets not selected	
+calculateCapillary_gui	1	strWinTitle	Calculate capillary balance	
+calculateCapillary_gui	2	strChkGui	Save GUI settings	
+calculateCapillary_gui	3	strBtnHelp	Help	
+calculateCapillary_gui	4	strFrmDataset	Dataset	
+calculateCapillary_gui	5	strLblDataSample	Samples Table:	
+calculateCapillary_gui	6	strDrpDefault	<Select dataset>	
+calculateCapillary_gui	7	strLblSamples	samples	
+calculateCapillary_gui	8	strLblDataSizing	Sample Plot Sizing Table:	
+calculateCapillary_gui	9	strLblSampleFiles	sample files	
+calculateCapillary_gui	10	strFrmOptions	Options	
+calculateCapillary_gui	11	strLblRun	Run name:	
+calculateCapillary_gui	12	strLblRunMsg	Optional run name	
+calculateCapillary_gui	13	strLblThreshold	Sizing quality threshold:	
+calculateCapillary_gui	14	strFrmSave	Save as	
+calculateCapillary_gui	15	strLblSave	Name for result:	
+calculateCapillary_gui	16	strBtnCalculate	Calculate	
+calculateCapillary_gui	17	strMsgDataset	A 'Samples Table' dataset and a 'SamplePlotSizing' dataset have to be selected.	
+calculateCapillary_gui	18	strMsgTitleDataset	Datasets not selected	
+calculateConcordance_gui	1	strWinTitle	Calculate concordance	
+calculateConcordance_gui	2	strChkGui	Save GUI settings	
+calculateConcordance_gui	3	strBtnHelp	Help	
+calculateConcordance_gui	4	strFrmDataset	Dataset and kit	
+calculateConcordance_gui	5	strLblDataset	Sample dataset:	
+calculateConcordance_gui	6	strDrpDefault	<Select dataset>	
+calculateConcordance_gui	7	strLblSamples	samples	
+calculateConcordance_gui	8	strLblKit	Kit:	
+calculateConcordance_gui	9	strBtnAdd	Add	
+calculateConcordance_gui	10	strFrmOptions	Options	
+calculateConcordance_gui	11	strLblDelimiter	Delimiter for alleles in genotype:	
+calculateConcordance_gui	12	strLblNoSample	String for missing samples:	
+calculateConcordance_gui	13	strLblNoMarker	String for missing markers:	
+calculateConcordance_gui	14	strChkInclude	Include missing samples in result.	
+calculateConcordance_gui	15	strTipInclude	Samples not in all datasets will always be included in the result.	
+calculateConcordance_gui	16	strFrmSelected	Selected datasets	
+calculateConcordance_gui	17	strLblSelected	Name for datasets to analyse (separated by comma):	
+calculateConcordance_gui	18	strLblUsedKits	Name for analysis kit (separated by comma):	
+calculateConcordance_gui	19	strFrmSave	Save as	
+calculateConcordance_gui	20	strLblSave	Name for discordance table:	
+calculateConcordance_gui	21	strLblSave2	Name for concordance table:	
+calculateConcordance_gui	22	strBtnCalculate	Calculate	
+calculateConcordance_gui	23	strBtnProcessing	Processing...	
+calculateConcordance_gui	24	strMsgAddMessage	Data frame is NULL!\n\nMake sure to select a dataset	
+calculateConcordance_gui	25	strMsgTitleError	Error	
+calculateConcordance_gui	26	strMsgDataset	A dataset must be selected.	
+calculateConcordance_gui	27	strMsgTitleDataset	Datasets not selected	
+calculateCopies_gui	1	strWinTitle	Calculate allele copies	
+calculateCopies_gui	2	strChkGui	Save GUI settings	
+calculateCopies_gui	3	strBtnHelp	Help	
+calculateCopies_gui	4	strFrmDataset	Dataset	
+calculateCopies_gui	5	strLblDataset	Sample dataset:	
+calculateCopies_gui	6	strDrpDefault	<Select dataset>	
+calculateCopies_gui	7	strLblSamples	samples	
+calculateCopies_gui	8	strFrmOptions	Options	
+calculateCopies_gui	9	strChkObserved	Add number of unique alleles (count number of peaks)	
+calculateCopies_gui	10	strChkCopies	Add number of allele copies (for known complete profiles)	
+calculateCopies_gui	11	strTipCopies	'1' for heterozygotes and '2' for homozygotes.	
+calculateCopies_gui	12	strChkHeterozygosity	Add heterozygote indicator (for known complete profiles)	
+calculateCopies_gui	13	strTipHeterozygosity	'1' for heterozygous loci and '0' for homozygous loci.	
+calculateCopies_gui	14	strFrmSave	Save as	
+calculateCopies_gui	15	strLblSave	Name for result:	
+calculateCopies_gui	16	strBtnCalculate	Calculate	
+calculateCopies_gui	17	strBtnProcessing	Processing...	
+calculateCopies_gui	18	strMsgDataset	A dataset has to be selected.	
+calculateCopies_gui	19	strMsgTitleDataset	Dataset not selected	
+calculateDropout_gui	1	strWinTitle	Calculate dropout	
+calculateDropout_gui	2	strChkGui	Save GUI settings	
+calculateDropout_gui	3	strBtnHelp	Help	
+calculateDropout_gui	4	strFrmDataset	Dataset and kit	
+calculateDropout_gui	5	strLblDataset	Sample dataset:	
+calculateDropout_gui	6	strDrpDefault	<Select dataset>	
+calculateDropout_gui	7	strLblSamples	samples	
+calculateDropout_gui	8	strLblRefDataset	Reference dataset:	
+calculateDropout_gui	9	strLblRef	references	
+calculateDropout_gui	10	strBtnCheck	Check subsetting	
+calculateDropout_gui	11	strLblKit	Kit:	
+calculateDropout_gui	12	strFrmOptions	Options	
+calculateDropout_gui	13	strChkIgnore	Ignore case	
+calculateDropout_gui	14	strChkSex	Remove sex markers	
+calculateDropout_gui	15	strChkSensors	Remove quality sensors	
+calculateDropout_gui	16	strChkAverage	Calculate average peak height	
+calculateDropout_gui	17	strLblAt	Analytical threshold (AT):	
+calculateDropout_gui	18	strLblMethods	Select one or more dropout scoring methods:	
+calculateDropout_gui	19	strChkMethod1	Score dropout relative to the low molecular weight allele	
+calculateDropout_gui	20	strChkMethod2	Score dropout relative to the high molecular weight allele	
+calculateDropout_gui	21	strChkMethodX	Score dropout relative to a random allele	
+calculateDropout_gui	22	strChkMethodL	Score dropout per locus	
+calculateDropout_gui	23	strFrmSave	Save as	
+calculateDropout_gui	24	strLblSave	Name for result:	
+calculateDropout_gui	25	strBtnCalculate	Calculate	
+calculateDropout_gui	26	strBtnProcessing	Processing...	
+calculateDropout_gui	27	strMsgDataset	A sample dataset and a reference dataset must be selected.	
+calculateDropout_gui	28	strMsgTitleDataset	Dataset not selected	
+calculateDropout_gui	29	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset.	
+calculateDropout_gui	30	strMsgTitleError	Error	
+calculateHb_gui	1	strWinTitle	Calculate heterozygote balance	
+calculateHb_gui	2	strChkGui	Save GUI settings	
+calculateHb_gui	3	strBtnHelp	Help	
+calculateHb_gui	4	strFrmDataset	Datasets	
+calculateHb_gui	5	strLblDataset	Sample dataset:	
+calculateHb_gui	6	strDrpDefault	<Select dataset>	
+calculateHb_gui	7	strLblSamples	samples	
+calculateHb_gui	8	strLblRefDataset	Reference dataset:	
+calculateHb_gui	9	strLblRef	references	
+calculateHb_gui	10	strBtnCheck	Check subsetting	
+calculateHb_gui	11	strFrmOptions	Options	
+calculateHb_gui	12	strLblPre	Pre-processing:	
+calculateHb_gui	13	strChkSex	Remove sex markers	
+calculateHb_gui	14	strChkSensors	Remove quality sensors	
+calculateHb_gui	15	strLblHb	Define Hb as:	
+calculateHb_gui	16	strItemHMWoLMW	High molecular weight / low molecular weight	
+calculateHb_gui	17	strItemLMWoHMW	Low molecular weight / high molecular weight	
+calculateHb_gui	18	strItemSmloLrg	Smaller peak / larger peak	
+calculateHb_gui	19	strLblMatching	Sample name matching:	
+calculateHb_gui	20	strChkIgnore	Ignore case	
+calculateHb_gui	21	strChkWord	Add word boundaries	
+calculateHb_gui	22	strChkExact	Exact matching	
+calculateHb_gui	23	strLblPost	Post-processing:	
+calculateHb_gui	24	strChkAverage	Calculate average peak height	
+calculateHb_gui	25	strFrmSave	Save as	
+calculateHb_gui	26	strLblSave	Name for result:	
+calculateHb_gui	27	strLblKit	Kit attribute:	
+calculateHb_gui	28	strBtnCalculate	Calculate	
+calculateHb_gui	29	strBtnProcessing	Processing...	
+calculateHb_gui	30	strMsgDataset	A sample dataset and a reference dataset must be selected.	
+calculateHb_gui	31	strMsgTitleDataset	Dataset not selected	
+calculateHb_gui	32	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset.	
+calculateHb_gui	33	strWinTitleCheck	Check subsetting	
+calculateHb_gui	34	strMsgTitleError	Error	
+calculateHeight_gui	1	strWinTitle	Calculate peak height	
+calculateHeight_gui	2	strChkGui	Save GUI settings	
+calculateHeight_gui	3	strBtnHelp	Help	
+calculateHeight_gui	4	strFrmDataset	Datasets	
+calculateHeight_gui	5	strLblDataset	Sample dataset:	
+calculateHeight_gui	6	strDrpDefault	<Select dataset>	
+calculateHeight_gui	7	strLblSamples	samples	
+calculateHeight_gui	8	strLblRefDataset	Reference dataset:	
+calculateHeight_gui	9	strLblRef	references	
+calculateHeight_gui	10	strBtnCheck	Check subsetting	
+calculateHeight_gui	11	strLblKit	Kit:	
+calculateHeight_gui	12	strFrmOptions	Options	
+calculateHeight_gui	13	strLblPre	Pre-processing:	
+calculateHeight_gui	14	strChkSex	Remove sex markers	
+calculateHeight_gui	15	strChkSensors	Remove quality sensors	
+calculateHeight_gui	16	strChkExclude	Exclude values in 'Allele' column	
+calculateHeight_gui	17	strChkExcludeInfo	Case sensitive values separated by comma:	
+calculateHeight_gui	18	strLblMatching	Reference sample name matching:	
+calculateHeight_gui	19	strChkIgnore	Ignore case	
+calculateHeight_gui	20	strChkExact	Exact matching	
+calculateHeight_gui	21	strLblPost	Post-processing:	
+calculateHeight_gui	22	strChkReplace	Replace NA in the result with 0	
+calculateHeight_gui	23	strChkAdd	Add result to dataset	
+calculateHeight_gui	24	strFrmSave	Save as	
+calculateHeight_gui	25	strLblSave	Name for result:	
+calculateHeight_gui	26	strBtnCalculate	Calculate	
+calculateHeight_gui	27	strBtnProcessing	Processing...	
+calculateHeight_gui	28	strMsgMessage	A sample dataset and a reference dataset must be selected.	
+calculateHeight_gui	29	strMsgTitle	Dataset not selected	
+calculateHeight_gui	30	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset.	
+calculateHeight_gui	31	strWinTitleCheck	Check subsetting	
+calculateHeight_gui	32	strMsgTitleError	Error	
+calculateLb_gui	1	strWinTitle	Calculate locus balance	
+calculateLb_gui	2	strChkGui	Save GUI settings	
+calculateLb_gui	3	strBtnHelp	Help	
+calculateLb_gui	4	strFrmDataset	Datasets	
+calculateLb_gui	5	strLblDataset	Sample dataset:	
+calculateLb_gui	6	strDrpDefault	<Select dataset>	
+calculateLb_gui	7	strLblSamples	samples	
+calculateLb_gui	8	strLblRefDataset	Reference dataset:	
+calculateLb_gui	9	strTipRef	If provided, known alleles will be extracted from data	
+calculateLb_gui	10	strLblRef	references	
+calculateLb_gui	11	strBtnCheck	Check subsetting	
+calculateLb_gui	12	strLblKit	Kit:	
+calculateLb_gui	13	strFrmOptions	Options	
+calculateLb_gui	14	strLblPre	Pre-processing:	
+calculateLb_gui	15	strChkOL	Remove off-ladder alleles	
+calculateLb_gui	16	strChkSex	Remove sex markers	
+calculateLb_gui	17	strChkSensors	Remove quality sensors	
+calculateLb_gui	18	strLblMissing	Replace missing data with peak height:	
+calculateLb_gui	19	strLblMethod	Calculate locus balance:	
+calculateLb_gui	20	strRadProp	Proportional	
+calculateLb_gui	21	strRadNorm	Normalised	
+calculateLb_gui	22	strRadCent	Centred Quantities	
+calculateLb_gui	23	strRadRatio	Peak Ratio	
+calculateLb_gui	24	strChkDye	Calculate Lb by dye channel	
+calculateLb_gui	25	strLblMatching	Reference sample name matching:	
+calculateLb_gui	26	strChkIgnore	Ignore case	
+calculateLb_gui	27	strChkWord	Add word boundaries	
+calculateLb_gui	28	strChkExact	Exact matching	
+calculateLb_gui	29	strLblPost	Post-processing:	
+calculateLb_gui	30	strChkAverage	Calculate average peak height	
+calculateLb_gui	31	strFrmSave	Save as	
+calculateLb_gui	32	strLblSave	Name for result:	
+calculateLb_gui	33	strBtnCalculate	Calculate	
+calculateLb_gui	34	strBtnProcessing	Processing...	
+calculateLb_gui	35	strMsgDataset	A sample dataset and a reference dataset must be selected.	
+calculateLb_gui	36	strMsgTitleDataset	Dataset not selected	
+calculateLb_gui	37	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.	
+calculateLb_gui	38	strWinTitleCheck	Check subsetting	
+calculateLb_gui	39	strMsgTitleError	Error	
+calculateLb_gui	40	strMsgNA	'NA' in 'Dye' column. \nUse add dye function to fix.	
+calculateLb_gui	41	strMsgTitleNA	NA detected!	
+calculateMixture_gui	1	strWinTitle	Calculate Mixture	
+calculateMixture_gui	2	strChkGui	Save GUI settings	
+calculateMixture_gui	3	strBtnHelp	Help	
+calculateMixture_gui	4	strFrmDataset	Datasets	
+calculateMixture_gui	5	strLblDataset	Sample dataset:	
+calculateMixture_gui	6	strDrpDefault	<Select dataset>	
+calculateMixture_gui	7	strLblSamples	samples	
+calculateMixture_gui	8	strLblRefMajor	Reference dataset (major):	
+calculateMixture_gui	9	strLblRefMinor	Reference dataset (minor):	
+calculateMixture_gui	10	strLblRef	references	
+calculateMixture_gui	11	strBtnCheck	Check subsetting	
+calculateMixture_gui	12	strFrmOptions	Options	
+calculateMixture_gui	13	strChkOL	Remove off-ladder alleles (affects number of drop-in)	
+calculateMixture_gui	14	strChkDrop	Ignore drop-out (calculate Mx anyway)	
+calculateMixture_gui	15	strFrmSave	Save as	
+calculateMixture_gui	16	strLblSave	Name for result:	
+calculateMixture_gui	17	strBtnCalculate	Calculate	
+calculateMixture_gui	18	strBtnProcessing	Processing...	
+calculateMixture_gui	19	strMsgDataset	A sample dataset and two reference datasets must be selected.	
+calculateMixture_gui	20	strMsgTitleDataset	Dataset not selected	
+calculateMixture_gui	21	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.	
+calculateMixture_gui	22	strWinTitleCheck	Check subsetting	
+calculateMixture_gui	23	strMsgTitleError	Error	
+calculateOL_gui	1	strWinTitle	Analyse off-ladder alleles	
+calculateOL_gui	2	strChkGui	Save GUI settings	
+calculateOL_gui	3	strBtnHelp	Help	
+calculateOL_gui	4	strFrmKits	Select kits	
+calculateOL_gui	5	strFrmOptions	Options	
+calculateOL_gui	6	strLblDatabase	Select allele frequency database:	
+calculateOL_gui	7	strChkVirtual	Include virtual bins in analysis	
+calculateOL_gui	8	strTipVirtual	NB! Not all vendors specify which alleles are virtual in the bins file. This can be done manually in the kit.txt file.	
+calculateOL_gui	9	strChkLowFreq	Limit small frequencies to 5/2N	
+calculateOL_gui	10	strFrmSave	Save as	
+calculateOL_gui	11	strLblSave	Name for result:	
+calculateOL_gui	12	strBtnCalculate	Calculate	
+calculateOL_gui	13	strBtnProcessing	Processing...	
+calculateOL_gui	14	strMsgKit	At least one kit has to be selected.	
+calculateOL_gui	15	strMsgTitleKit	No kit selected	
+calculateOverlap_gui	1	strWinTitle	Analyse bins overlap	
+calculateOverlap_gui	2	strChkGui	Save GUI settings	
+calculateOverlap_gui	3	strBtnHelp	Help	
+calculateOverlap_gui	4	strFrmKits	Select kits	
+calculateOverlap_gui	5	strFrmOptions	Options	
+calculateOverlap_gui	6	strChkMultiply	Multiply overlap with allele frequency	
+calculateOverlap_gui	7	strChkVirtual	Include virtual bins in analysis	
+calculateOverlap_gui	8	strTipVirtual	NB! Not all vendors specify which alleles are virtual in the bins file. This can be done manually in the kit.txt file.	
+calculateOverlap_gui	9	strChkPenalty	Apply spectral channel penalty	
+calculateOverlap_gui	10	strFrmPenalty	Penalty	
+calculateOverlap_gui	11	strLblPenalty	Define penalty by the distance between dye channels  (1st neighbor to 5th neighbor)	
+calculateOverlap_gui	12	strFrmSave	Save as	
+calculateOverlap_gui	13	strLblSave	Name for result:	
+calculateOverlap_gui	14	strBtnCalculate	Calculate	
+calculateOverlap_gui	15	strBtnProcessing	Processing...	
+calculateOverlap_gui	16	strMsgColor	Kit color set must be identical for multiple kit comparison!\nAnalyse one kit at a time!	
+calculateOverlap_gui	17	strMsgKit	At least one kit must be selected.	
+calculateOverlap_gui	18	strMsgTitleKit	No kit selected	
+calculateOverlap_gui	19	strMsgTitleError	Error	
+calculatePeaks_gui	1	strWinTitle	Calculate peaks	
+calculatePeaks_gui	2	strChkGui	Save GUI settings	
+calculatePeaks_gui	3	strBtnHelp	Help	
+calculatePeaks_gui	4	strFrmDataset	Dataset	
+calculatePeaks_gui	5	strLblDataset	Sample dataset:	
+calculatePeaks_gui	6	strDrpDefault	<Select dataset>	
+calculatePeaks_gui	7	strLblSamples	samples	
+calculatePeaks_gui	8	strFrmOptions	Options	
+calculatePeaks_gui	9	strChkExcludeOL	Exclude off-ladder peaks (OL alleles).	
+calculatePeaks_gui	10	strRadBySample	Count peaks by sample	
+calculatePeaks_gui	11	strRadByMarker	Count peaks by marker	
+calculatePeaks_gui	12	strLblGroups	Define group labels (separated by comma):	
+calculatePeaks_gui	13	strTipGroups	Number labels must be one more than the number of cut-off points. The last group is defined by > than the last cut-off point.	
+calculatePeaks_gui	14	strLblCutOff	Define cut-off points (<=) for the groups (separated by comma):	
+calculatePeaks_gui	15	strTipCutOff	Number of cut-off points must be one less than the number of group labels. The last group is defined by > than the last cut-off point.	
+calculatePeaks_gui	16	strFrmSave	Save as	
+calculatePeaks_gui	17	strLblSave	Name for result:	
+calculatePeaks_gui	18	strBtnCalculate	Calculate	
+calculatePeaks_gui	19	strBtnProcessing	Processing...	
+calculatePeaks_gui	20	strMsgDataset	A sample dataset must be selected.	
+calculatePeaks_gui	21	strMsgTitleDataset	Dataset not selected	
+calculatePullup_gui	1	strWinTitle	Calculate spectral pull-up	
+calculatePullup_gui	2	strChkGui	Save GUI settings	
+calculatePullup_gui	3	strBtnHelp	Help	
+calculatePullup_gui	4	strFrmDataset	Datasets	
+calculatePullup_gui	5	strLblDataset	Sample dataset:	
+calculatePullup_gui	6	strDrpDefault	<Select dataset>	
+calculatePullup_gui	7	strLblSamples	samples	
+calculatePullup_gui	8	strLblRefDataset	Reference dataset:	
+calculatePullup_gui	9	strLblRef	references	
+calculatePullup_gui	10	strBtnCheck	Check subsetting	
+calculatePullup_gui	11	strFrmOptions	Options	
+calculatePullup_gui	12	strLblPre	Pre-processing:	
+calculatePullup_gui	13	strChkOL	Remove off-ladder peaks	
+calculatePullup_gui	14	strLblMethod	Pull-up settings:	
+calculatePullup_gui	15	strLblRange	Pull-up analysis range (data points) around known alleles:	
+calculatePullup_gui	16	strLblBlock	Blocking range (data points) around known alleles:	
+calculatePullup_gui	17	strLblDiscard	Discard pull-ups with ratio >	
+calculatePullup_gui	18	strLblMatching	Reference sample name matching:	
+calculatePullup_gui	19	strChkIgnore	Ignore case	
+calculatePullup_gui	20	strChkWord	Add word boundaries	
+calculatePullup_gui	21	strLblPost	Post-processing:	
+calculatePullup_gui	22	strChkDiscard	Discard alleles with no pull-up from the result table	
+calculatePullup_gui	23	strFrmSave	Save as	
+calculatePullup_gui	24	strLblSave	Name for result:	
+calculatePullup_gui	25	strLblKit	Kit attribute:	
+calculatePullup_gui	26	strBtnCalculate	Calculate	
+calculatePullup_gui	27	strBtnProcessing	Processing...	
+calculatePullup_gui	28	strMsgDataset	A sample dataset and a reference dataset must be selected.	
+calculatePullup_gui	29	strMsgTitleDataset	Dataset not selected	
+calculatePullup_gui	30	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.	
+calculatePullup_gui	31	strWinTitleCheck	Check subsetting	
+calculatePullup_gui	32	strMsgTitleError	Error	
+calculatePullup_gui	33	strMsgNA	'NA' in 'Dye' column. \nUse add dye function to fix.	
+calculatePullup_gui	34	strMsgTitleNA	NA detected!	
+calculateRatio_gui	1	strWinTitle	Calculate ratio	
+calculateRatio_gui	2	strChkGui	Save GUI settings	
+calculateRatio_gui	3	strBtnHelp	Help	
+calculateRatio_gui	4	strFrmDataset	Datasets	
+calculateRatio_gui	5	strLblDataset	Sample dataset:	
+calculateRatio_gui	6	strDrpDataset	<Select dataset>	
+calculateRatio_gui	7	strLblSamples	samples	
+calculateRatio_gui	8	strLblRefDataset	Reference dataset:	
+calculateRatio_gui	9	strLblRef	references	
+calculateRatio_gui	10	strBtnCheck	Check subsetting	
+calculateRatio_gui	11	strFrmOptions	Options	
+calculateRatio_gui	12	strLblPre	Pre-processing:	
+calculateRatio_gui	13	strChkOL	Remove off-ladder alleles	
+calculateRatio_gui	14	strLblMethod	Calculate marker ratio:	
+calculateRatio_gui	15	strLblNumerator	Select numerator markers:	
+calculateRatio_gui	16	strDrpMarker	<Select marker>	
+calculateRatio_gui	17	strLblDenominator	Select denominator markers:	
+calculateRatio_gui	18	strLblGroupBy	Group by column:	
+calculateRatio_gui	19	strDrpColumn	<Select column>	
+calculateRatio_gui	20	strLblMatching	Reference sample name matching:	
+calculateRatio_gui	21	strChkIgnore	Ignore case	
+calculateRatio_gui	22	strChkWord	Add word boundaries	
+calculateRatio_gui	23	strChkExact	Exact matching	
+calculateRatio_gui	24	strFrmSave	Save as	
+calculateRatio_gui	25	strLblSave	Name for result:	
+calculateRatio_gui	26	strBtnCalculate	Calculate	
+calculateRatio_gui	27	strBtnProcessing	Processing...	
+calculateRatio_gui	28	strMsgDataset	A sample dataset and a reference dataset must be selected.	
+calculateRatio_gui	29	strMsgTitleDataset	Dataset not selected	
+calculateRatio_gui	30	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.	
+calculateRatio_gui	31	strWinTitleCheck	Check subsetting	
+calculateRatio_gui	32	strMsgTitleError	Error	
+calculateResultType_gui	1	strWinTitle	Calculate result type	
+calculateResultType_gui	2	strChkGui	Save GUI settings	
+calculateResultType_gui	3	strBtnHelp	Help	
+calculateResultType_gui	4	strFrmDataset	Dataset and kit	
+calculateResultType_gui	5	strLblDataset	Sample dataset:	
+calculateResultType_gui	6	strDrpDataset	<Select dataset>	
+calculateResultType_gui	7	strLblSamples	samples	
+calculateResultType_gui	8	strLblKit	Kit:	
+calculateResultType_gui	9	strFrmOptions	Options	
+calculateResultType_gui	10	strLblNB	NB! All markers must be present in each sample for correct results.	
+calculateResultType_gui	11	strLblPre	Pre-processing:	
+calculateResultType_gui	12	strChkMissing	Add missing markers (can be slow on large datasets)	
+calculateResultType_gui	13	strLblMethod	Calculate result type:	
+calculateResultType_gui	14	strLblHeight	Define subtypes of complete profiles by all peaks > peak height threshold (RFU):	
+calculateResultType_gui	15	strTipHeight	Complete >[RFU]	
+calculateResultType_gui	16	strLblMarker	Define subtypes of mixtures by number of markers with > 2 detected peaks:	
+calculateResultType_gui	17	strTipMarker	Mixture >[markers]	
+calculateResultType_gui	18	strLblPeak	Define subtypes of partial profiles by number of detected peaks:	
+calculateResultType_gui	19	strTipPeak	Partial >[peaks]	
+calculateResultType_gui	20	strLblFullKit	Define subtypes of partial profiles by kit:	
+calculateResultType_gui	21	strDrpKit	<Select kit>	
+calculateResultType_gui	22	strTipFullKit	Partial Complete [kit]	
+calculateResultType_gui	23	strFrmSave	Save as	
+calculateResultType_gui	24	strLblSave	Name for result:	
+calculateResultType_gui	25	strBtnCalculate	Calculate	
+calculateResultType_gui	26	strBtnProcessing	Processing...	
+calculateResultType_gui	27	strMsgDataset	A sample dataset must be selected.	
+calculateResultType_gui	28	strMsgTitleDataset	Dataset not selected	
+calculateSlope_gui	1	strWinTitle	Calculate profile slope	
+calculateSlope_gui	2	strChkGui	Save GUI settings	
+calculateSlope_gui	3	strBtnHelp	Help	
+calculateSlope_gui	4	strFrmDataset	Dataset	
+calculateSlope_gui	5	strLblDataset	Sample dataset:	
+calculateSlope_gui	6	strDrpDataset	<Select dataset>	
+calculateSlope_gui	7	strLblSamples	samples	
+calculateSlope_gui	8	strLblRefDataset	Reference dataset:	
+calculateSlope_gui	9	strLblRef	references	
+calculateSlope_gui	10	strBtnCheck	Check subsetting	
+calculateSlope_gui	11	strFrmOptions	Options	
+calculateSlope_gui	12	strLblGroups	Groups:	
+calculateSlope_gui	13	strLblConf	Confidence limit:	
+calculateSlope_gui	14	strLblKit	Kit to calculate size from:	
+calculateSlope_gui	15	strChkKit	Autodetect	
+calculateSlope_gui	16	strTipKit	Must be checked for multiple kits.	
+calculateSlope_gui	17	strTipKitDrp	Not needed if 'Size' is provided in the dataset.	
+calculateSlope_gui	18	strLblMatching	Reference sample name matching:	
+calculateSlope_gui	19	strChkIgnore	Ignore case	
+calculateSlope_gui	20	strChkWord	Add word boundaries	
+calculateSlope_gui	21	strChkExact	Exact matching	
+calculateSlope_gui	22	strFrmSave	Save as	
+calculateSlope_gui	23	strLblSave	Name for result:	
+calculateSlope_gui	24	strBtnCalculate	Calculate	
+calculateSlope_gui	25	strBtnProcessing	Processing...	
+calculateSlope_gui	26	strMsgDataset	A sample dataset and a reference dataset must be selected.	
+calculateSlope_gui	27	strMsgTitleDataset	Dataset not selected	
+calculateSlope_gui	28	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset.	
+calculateSlope_gui	29	strWinTitleCheck	Check subsetting	
+calculateSlope_gui	30	strMsgTitleError	Error	
+calculateSpike_gui	1	strWinTitle	Calculate spikes	
+calculateSpike_gui	2	strChkGui	Save GUI settings	
+calculateSpike_gui	3	strBtnHelp	Help	
+calculateSpike_gui	4	strFrmDataset	Dataset	
+calculateSpike_gui	5	strLblDataset	Sample dataset:	
+calculateSpike_gui	6	strDrpDataset	<Select dataset>	
+calculateSpike_gui	7	strLblSamples	samples	
+calculateSpike_gui	8	strLblKit	Kit:	
+calculateSpike_gui	9	strFrmOptions	Options	
+calculateSpike_gui	10	strLblThreshold	Threshold (number of peaks at similar size):	
+calculateSpike_gui	11	strLblTolerance	Tolerance (bp):	
+calculateSpike_gui	12	strChkQuick	Quick and dirty	
+calculateSpike_gui	13	strTipQuick	NB! The quick method may not catch all spikes since two peaks can be separated by rounding e.g. 200.5 and 200.6 becomes 200 and 201 respectively!	
+calculateSpike_gui	14	strFrmSave	Save as	
+calculateSpike_gui	15	strLblSave	Name for result:	
+calculateSpike_gui	16	strBtnCalculate	Calculate	
+calculateSpike_gui	17	strBtnProcessing	Processing...	
+calculateSpike_gui	18	strMsgDataset	A sample dataset must be selected.	
+calculateSpike_gui	19	strMsgTitleDataset	Dataset not selected	
+calculateStutter_gui	1	strWinTitle	Calculate stutter ratio	
+calculateStutter_gui	2	strChkGui	Save GUI settings	
+calculateStutter_gui	3	strBtnHelp	Help	
+calculateStutter_gui	4	strFrmDataset	Datasets	
+calculateStutter_gui	5	strLblDataset	Sample dataset:	
+calculateStutter_gui	6	strDrpDataset	<Select dataset>	
+calculateStutter_gui	7	strLblSamples	samples	
+calculateStutter_gui	8	strLblRefDataset	Reference dataset:	
+calculateStutter_gui	9	strLblRef	references	
+calculateStutter_gui	10	strBtnCheck	Check subsetting	
+calculateStutter_gui	11	strLblKit	Kit:	
+calculateStutter_gui	12	strFrmOptions	Options	
+calculateStutter_gui	13	strLblRange	Calculate stutter ratio within the following analysis range:	
+calculateStutter_gui	14	strLblBack	back stutters to	
+calculateStutter_gui	15	strLblForward	forward stutters.	
+calculateStutter_gui	16	strLblNB	NB! Additive effects outside the analysis range cannot be controlled.\nA narrow range like 0 to 1 can be greately affected by neighbouring -1 stutters.	
+calculateStutter_gui	17	strLblInterference	Level of interference within the given range:	
+calculateStutter_gui	18	strRadNone	no overlap between stutters and alleles	
+calculateStutter_gui	19	strRadStutter	stutter-stutter overlap allowed	
+calculateStutter_gui	20	strRadAllele	stutter-allele overlap allowed	
+calculateStutter_gui	21	strLblReplace	Replace 'false' stutters:	
+calculateStutter_gui	22	strFrmSave	Save as	
+calculateStutter_gui	23	strLblSave	Name for result:	
+calculateStutter_gui	24	strBtnCalculate	Calculate	
+calculateStutter_gui	25	strBtnProcessing	Processing...	
+calculateStutter_gui	26	strMsgDataset	A sample dataset and a reference dataset must be selected.	
+calculateStutter_gui	27	strMsgTitleDataset	Dataset not selected	
+calculateStutter_gui	28	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.	
+calculateStutter_gui	29	strWinTitleCheck	Check subsetting	
+calculateStutter_gui	30	strMsgTitleError	Error	
+checkDataset	1	strMsgNoRows	Dataset contain no rows!	
+checkDataset	2	strMsgAdditionalCols	Additional columns required:\n	
+checkDataset	3	strMsgFat1	The dataset is too fat!\n\nThere can only be 1 column:	
+checkDataset	4	strMsgFat2	\nPlease slim the dataset.	
+checkDataset	5	strMsgDetected1	detected in column	
+checkDataset	6	strMsgDetected2	Please make sure that data is clean/filtered.\n	
+checkSubset_gui	1	strWinTitle	Check subsetting	
+checkSubset_gui	2	strChkGui	Save GUI settings	
+checkSubset_gui	3	strBtnHelp	Help	
+checkSubset_gui	4	strFrmDataset	Datasets	
+checkSubset_gui	5	strLblDataset	Sample dataset:	
+checkSubset_gui	6	strDrpDataset	<Select dataset>	
+checkSubset_gui	7	strLblSamples	samples	
+checkSubset_gui	8	strLblRefDataset	Reference dataset:	
+checkSubset_gui	9	strLblRef	references	
+checkSubset_gui	10	strLblManual	Or type a reference name:	
+checkSubset_gui	11	strFrmOptions	Options	
+checkSubset_gui	12	strLblMatching	Reference sample name matching:	
+checkSubset_gui	13	strChkIgnore	Ignore case ('A' will match 'A', 'B-a.2', and 'A2')	
+checkSubset_gui	14	strChkWord	Add word boundaries ('A' will match 'A', 'B-A.2', and 'A 2' but not 'A2')	
+checkSubset_gui	15	strChkExact	Exact matching ('A' will match 'A' but not 'B-A.2', 'A 2', or 'A2')	
+checkSubset_gui	16	strFrmSave	Save as	
+checkSubset_gui	17	strLblSave	Name for result:	
+checkSubset_gui	18	strBtnCalculate	Subset	
+checkSubset_gui	19	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset, or type a reference name	
+checkSubset_gui	20	strWinTitleCheck	Check subsetting	
+checkSubset_gui	21	strMsgTitleError	Error	
+columns_gui	1	strWinTitle	Column actions	
+columns_gui	2	strChkGui	Save GUI settings	
+columns_gui	3	strBtnHelp	Help	
+columns_gui	4	strFrmDataset	Dataset	
+columns_gui	5	strLblDataset	Dataset:	
+columns_gui	6	strDrpDataset	<Select dataset>	
+columns_gui	7	strLblColumns	columns	
+columns_gui	8	strFrmColumns	Columns	
+columns_gui	9	strLblCol1	Column 1:	
+columns_gui	10	strLblCol2	Column 2:	
+columns_gui	11	strDrpColumn	<Select column>	
+columns_gui	12	strFrmOptions	Options	
+columns_gui	13	strLblFixed	Fixed value:	
+columns_gui	14	strLblNew	Column for new values:	
+columns_gui	15	strLblAction	Action:	
+columns_gui	16	strDrpAction	<Select action>	
+columns_gui	17	strLblStart	Start position:	
+columns_gui	18	strLblStop	Stop position:	
+columns_gui	19	strFrmSave	Save as	
+columns_gui	20	strLblSave	Name for result:	
+columns_gui	21	strBtnCalculate	Execute	
+combine_gui	1	strWinTitle	Combine datasets	
+combine_gui	2	strChkGui	Save GUI settings	
+combine_gui	3	strBtnHelp	Help	
+combine_gui	4	strFrmDataset	Dataset	
+combine_gui	5	strLblSet1	Dataset 1:	
+combine_gui	6	strDrpDataset	<Select dataset>	
+combine_gui	7	strLblColumns	columns	
+combine_gui	8	strLblSet2	Dataset 2:	
+combine_gui	9	strFrmSave	Save as	
+combine_gui	10	strLblSave	Name for result:	
+combine_gui	11	strBtnCalculate	Combine	
+combine_gui	12	strMsgColumns	Datasets must have identical column names!	
+combine_gui	13	strMsgTitleError	Error	
+combine_gui	14	strMsgDataset	Two datasets must be selected.	
+combine_gui	15	strMsgTitleDataset	Dataset not selected	
+cropData_gui	1	strWinTitle	Crop or replace data	
+cropData_gui	2	strChkGui	Save GUI settings	
+cropData_gui	3	strBtnHelp	Help	
+cropData_gui	4	strFrmDataset	Dataset	
+cropData_gui	5	strLblDataset	Dataset:	
+cropData_gui	6	strDrpDataset	<Select dataset>	
+cropData_gui	7	strLblSamples	samples,	
+cropData_gui	8	strLblColumns	columns,	
+cropData_gui	9	strLblRows	rows	
+cropData_gui	10	strFrmColumns	Column:	
+cropData_gui	11	strLblTargetCol	Target column:	
+cropData_gui	12	strDrpColumn	<Select column>	
+cropData_gui	13	strLblInfo	Info:	
+cropData_gui	14	strLblMin	Min:	
+cropData_gui	15	strLblMax	Max:	
+cropData_gui	16	strChkNa	Ignore NA in info	
+cropData_gui	17	strFrmOptions	Options	
+cropData_gui	18	strChkRemNA	Remove NA	
+cropData_gui	19	strLblAction	Action:	
+cropData_gui	20	strRadDiscard	Discard values	
+cropData_gui	21	strRadReplace	Replace values	
+cropData_gui	22	strDrpAbove	above	
+cropData_gui	23	strDrpAboveEqual	above or equal to	
+cropData_gui	24	strDrpBelow	below	
+cropData_gui	25	strDrpBelowEqual	below or equal to	
+cropData_gui	26	strDrpEqual	equal to	
+cropData_gui	27	strDrpNotEqual	not equal to	
+cropData_gui	28	strDrpNA	is NA	
+cropData_gui	29	strDrpNotNA	is not NA	
+cropData_gui	30	strDrpContain	containing	
+cropData_gui	31	strDrpNotContain	not containing	
+cropData_gui	32	strDrpTarget	<Target value>	
+cropData_gui	33	strLblWith	with	
+cropData_gui	34	strLblTarget	Target column contain data of type:	
+cropData_gui	35	strRadNumeric	Numeric	
+cropData_gui	36	strRadCharacter	Character	
+cropData_gui	37	strBtnApply	Apply	
+cropData_gui	38	strBtnProcessing	Processing...	
+cropData_gui	37	strFrmSave	Save as	
+cropData_gui	38	strLblSave	Name for result:	
+cropData_gui	39	strBtnSave	Save	
+cropData_gui	40	strBtnSaved	Saved!	
+cropData_gui	41	strMsgDrop	Do not make subsets of a drop-out dataset before modelling!\n1) Make a subset from the original data.\n2) Run calculate dropout on that subset.\n3) Model drop-out from the new drop-out dataset.	
+cropData_gui	42	strMsgTitleDrop	Warning!	
+cropData_gui	43	strMsgDataset	A dataset must be selected.	
+cropData_gui	44	strMsgTitleDataset	Dataset not selected	
+cropData_gui	45	strMsgTitleError	Error	
+editData_gui	1	strWinTitleEdit	Edit or view dataset	
+editData_gui	2	strWinTitleView	View dataset	
+editData_gui	3	strWinTitleAttributes	Attributes	
+editData_gui	4	strChkGui	Save GUI settings	
+editData_gui	5	strBtnHelp	Help	
+editData_gui	6	strFrmDataset	Dataset	
+editData_gui	7	strLblDataset	Dataset:	
+editData_gui	8	strDrpDataset	<Select dataset>	
+editData_gui	9	strLblSamples	samples,	
+editData_gui	10	strLblColumns	columns,	
+editData_gui	11	strLblRows	rows	
+editData_gui	12	strFrmOptions	Options	
+editData_gui	13	strChkAttributes	Show attributes (separate window)	
+editData_gui	14	strChkLimit	Limit number of rows to:	
+editData_gui	15	strTipLimit	NB! Sorting will only be performed on the loaded data.	
+editData_gui	16	strBtnCopy	Copy	
+editData_gui	17	strTipCopy	Copy to clipboard (NB! large datasets might get truncated).	
+editData_gui	18	strBtnCopying	Copying...	
+editData_gui	19	strBtnExport	Export	
+editData_gui	20	strTipExport	Opens the export dialog.	
+editData_gui	21	strBtnSave	Save as	
+editData_gui	22	strTipSave	Save as new dataset in this project.	
+editData_gui	23	strBtnSaving	Saving...	
+editData_gui	24	strFrmSave	Copy|Export|Save	
+editData_gui	25	strLblNoData	There is no data	
+editData_gui	26	strMsgSave	A name must be provided.	
+editData_gui	27	strMsgTitleError	Error	
+editData_gui	28	strLblTcltk	The tcltk gui toolkit does not handle NA values in tables.\nNA values will be replaced with empty strings.\nIf you edit the table, NA values will be permanently replaced.	
+editData_gui	29	strChkShow	Don't show this message again.	
+editData_gui	30	strMsgTitleWarning	Warning	
+export_gui	1	strWinTitle	Export objects as files or images	
+export_gui	2	strChkGui	Save GUI settings	
+export_gui	3	strBtnHelp	Help	
+export_gui	4	strFrmObjects	Objects	
+export_gui	5	strLblObjects	objects selected for export:	
+export_gui	6	strLblValues	Values	
+export_gui	7	strFrmOptions	Options	
+export_gui	8	strLblFiles	Files	
+export_gui	9	strChkNames	Use object names as file names	
+export_gui	10	strLblNames	File names (separated by | or ,):	
+export_gui	11	strChkOverwrite	Overwrite existing files	
+export_gui	12	strLblExtension	File extension:	
+export_gui	13	strLblDelimiter	Delimiter:	
+export_gui	14	strDrpTab	TAB	
+export_gui	15	strDrpSpace	SPACE	
+export_gui	16	strDrpComma	COMMA	
+export_gui	17	strLblSettings	Image settings:	
+export_gui	18	strLblWidth	Width:	
+export_gui	19	strLblHeight	Height:	
+export_gui	20	strLblResolution	Resolution:	
+export_gui	21	strLblLocation	Save files to path:	
+export_gui	22	strBtnOpen	Open	
+export_gui	23	strBtnExport	Export	
+export_gui	24	strBtnProcessing	Processing...	
+export_gui	25	strMsgObject	At least one object must be selected.\nFile name and path must be provided.\n\nThis error may also occur the first time the function is used.\nPlease locate the folder using the 'Open' button.	
+export_gui	26	strMsgTitleError	Error	
+export_gui	27	strMsgFailed	\nThe following objects were not saved because the file names existed.\nMake sure to exit the last edited cell before continuing.	
+export_gui	28	strMsgTitleFailed	Export failed!	
+export_gui	29	strLblObject	Object	
+export_gui	30	strLblNewName	New.Name	
+export_gui	31	strBtnCancel	Cancel	
+export_gui	32	strBtnOverwrite	Overwrite	
+export_gui	33	strBtnRetry	Retry	
+filterProfile_gui	1	strWinTitle	Filter profile	
+filterProfile_gui	2	strChkGui	Save GUI settings	
+filterProfile_gui	3	strBtnHelp	Help	
+filterProfile_gui	4	strFrmDataset	Datasets	
+filterProfile_gui	5	strLblDataset	Sample dataset:	
+filterProfile_gui	6	strDrpDataset	<Select dataset>	
+filterProfile_gui	7	strLblSamples	samples	
+filterProfile_gui	8	strLblRefDataset	Reference dataset:	
+filterProfile_gui	9	strLblRef	references	
+filterProfile_gui	10	strBtnCheck	Check subsetting	
+filterProfile_gui	11	strLblKit	Kit:	
+filterProfile_gui	12	strChkVirtual	Exclude virtual bins	
+filterProfile_gui	13	strFrmOptions	Options	
+filterProfile_gui	14	strLblPre	Pre-processing:	
+filterProfile_gui	15	strChkSex	Remove sex markers	
+filterProfile_gui	16	strTipSex	Removes sex markers defined in the selected kit.	
+filterProfile_gui	17	strChkSensors	Remove quality sensors	
+filterProfile_gui	18	strTipSensors	Removes quality sensors defined in the selected kit.	
+filterProfile_gui	19	strLblMethod	Filter options:	
+filterProfile_gui	20	strRadRef	Filter by reference profiles	
+filterProfile_gui	21	strRadBins	Filter by kit bins (allelic ladder)	
+filterProfile_gui	22	strChkInvert	Invert (remove peaks matching)	
+filterProfile_gui	23	strLblMatching	Reference sample name matching:	
+filterProfile_gui	24	strChkIgnore	Ignore case	
+filterProfile_gui	25	strTipIgnore	'A' will match 'A', 'B-a.2', and 'A2'	
+filterProfile_gui	26	strChkWord	Add word boundaries	
+filterProfile_gui	27	strTipWord	'A' will match 'A', 'B-A.2', and 'A 2' but not 'A2'	
+filterProfile_gui	28	strChkExact	Exact matching	
+filterProfile_gui	29	strTipExact	'A' will match 'A' but not 'B-A.2', 'A 2', or 'A2'	
+filterProfile_gui	30	strLblPost	Post-processing:	
+filterProfile_gui	31	strChkAdd	Add missing loci (markers)	
+filterProfile_gui	32	strTipAdd	This option will be slower.	
+filterProfile_gui	33	strChkKeep	Keep loci/sample even if no matching allele	
+filterProfile_gui	34	strFrmSave	Save as	
+filterProfile_gui	35	strLblSave	Name for result:	
+filterProfile_gui	36	strBtnFilter	Filter	
+filterProfile_gui	37	strBtnProcessing	Processing...	
+filterProfile_gui	38	strMsgDataset	A sample dataset and a reference dataset must be selected.	
+filterProfile_gui	39	strMsgTitleDataset	Dataset not selected	
+filterProfile_gui	40	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.	
+filterProfile_gui	41	strWinTitleCheck	Check subsetting	
+filterProfile_gui	42	strMsgTitleError	Error	
+generateEPG_gui	1	strWinTitle	Generate electropherogram (EPG)	
+generateEPG_gui	2	strChkGui	Save GUI settings	
+generateEPG_gui	3	strBtnHelp	Help	
+generateEPG_gui	4	strFrmDataset	Datasets	
+generateEPG_gui	5	strLblDataset	Sample dataset:	
+generateEPG_gui	6	strDrpDataset	<Select dataset>	
+generateEPG_gui	7	strLblSamples	samples	
+generateEPG_gui	8	strLblSample	Sample:	
+generateEPG_gui	9	strDrpSample	<Select sample>	
+generateEPG_gui	10	strLblKit	Kit:	
+generateEPG_gui	11	strFrmOptions	Options	
+generateEPG_gui	12	strLblPlot	Plot title:	
+generateEPG_gui	13	strLblScales	Axis scales:	
+generateEPG_gui	14	strLblSize	Allele label text size:	
+generateEPG_gui	15	strLblJustV	Vertical justification:	
+generateEPG_gui	16	strLblAngle	Allele label angle:	
+generateEPG_gui	17	strLblJustH	Horizontal justification:	
+generateEPG_gui	18	strLblArea	Plot area expansion:	
+generateEPG_gui	19	strLblAT	Analytical threshold:	
+generateEPG_gui	20	strChkIgnore	Ignore case in marker names	
+generateEPG_gui	21	strChkWrap	Wrap by dye and add marker ranges and allele names	
+generateEPG_gui	22	strChkFix	Fix x-axis to size range	
+generateEPG_gui	23	strChkCollapse	Collapse (add peak heights of identical alleles. Discards OL)	
+generateEPG_gui	24	strChkBox	Plot peak height distribution (boxplot)	
+generateEPG_gui	25	strChkPeaks	Plot mean peak height for distributions	
+generateEPG_gui	26	strFrmSave	Plot mean peak height for distributions	
+generateEPG_gui	27	strLblSave	Name for result:	
+generateEPG_gui	28	strBtnSaveObject	Save as object	
+generateEPG_gui	29	strBtnSaveImage	Save as image	
+generateEPG_gui	30	strBtnObjectSaved	Object saved	
+generateEPG_gui	31	strBtnGenerate	Generate EPG	
+generateEPG_gui	32	strBtnProcessing	Processing...	
+generateEPG_gui	33	strMsgDataset	A dataset must be selected. Sample is optional.	
+generateEPG_gui	34	strMsgTitleDataset	Datasets not selected	
+ggsave_gui	1	strWinTitle	Save as image	
+ggsave_gui	2	strChkGui	Save GUI settings	
+ggsave_gui	3	strBtnHelp	Help	
+ggsave_gui	4	strFrmOptions	Options	
+ggsave_gui	5	strLblFileName	File name and extension:	
+ggsave_gui	6	strChkOverwrite	Overwrite existing file	
+ggsave_gui	7	strChkSize	Load size from plot device	
+ggsave_gui	8	strBtnSize	Get size from plot device	
+ggsave_gui	9	strLblSettings	Image settings:	
+ggsave_gui	10	strLblUnit	Unit:	
+ggsave_gui	11	strLblWidth	Width:	
+ggsave_gui	12	strLblPixels	pixels	
+ggsave_gui	13	strLblHeight	Height:	
+ggsave_gui	14	strLblRes	Resolution:	
+ggsave_gui	15	strLblScale	Scaling factor	
+ggsave_gui	16	strLblPath	Save file to path:	
+ggsave_gui	17	strBtnSave	Save	
+ggsave_gui	18	strBtnProcessing	Processing...	
+ggsave_gui	19	strMsgSave	Plot object, file name and path must be provided.\n\nThis error may also occur the first time the function is used.\nPlease locate the folder using the 'Open' button.	
+ggsave_gui	20	strMsgTitleError	Error	
+ggsave_gui	21	strMsgTitleSaveError	Save error	
+ggsave_gui	22	strMsgFileExist	The file already exist!/n/nChose to cancel, overwrite or give a new name.	
+ggsave_gui	23	strBtnCancel	Cancel	
+ggsave_gui	24	strBtnOverwrite	Overwrite	
+ggsave_gui	25	strBtnRetry	Retry	
+guessProfile_gui	1	strWinTitle	Guess profile	
+guessProfile_gui	2	strChkGui	Save GUI settings	
+guessProfile_gui	3	strBtnHelp	Help	
+guessProfile_gui	4	strFrmDataset	Dataset	
+guessProfile_gui	5	strLblDataset	Sample dataset:	
+guessProfile_gui	6	strDrpDataset	<Select dataset>	
+guessProfile_gui	7	strLblSamples	samples	
+guessProfile_gui	8	strFrmOptions	Options	
+guessProfile_gui	9	strLblRatio	Accepted peak height ratio >=	
+guessProfile_gui	10	strLblHeight	Accepted peak height >=	
+guessProfile_gui	11	strChkNA	Discard NA rows	
+guessProfile_gui	12	strChkOL	Ignore off-ladder (OL) alleles	
+guessProfile_gui	13	strFrmSave	Save as	
+guessProfile_gui	14	strLblSave	Name for result:	
+guessProfile_gui	15	strBtnGuess	Guess	
+guessProfile_gui	16	strBtnProcessing	Processing...	
+guessProfile_gui	17	strMsgDataset	A sample dataset must be selected.	
+guessProfile_gui	18	strMsgTitleDataset	Dataset not selected	
+import_gui	1	strWinTitle	Import from files	
+import_gui	2	strChkGui	Save GUI settings	
+import_gui	3	strBtnHelp	Help	
+import_gui	4	strBtnFile	Select file	
+import_gui	5	strTipFile	Import of a single file into one dataset.	
+import_gui	6	strMsgFile	Select a file...	
+import_gui	7	strBtnFolder	Select folder	
+import_gui	8	strTipFolder	Batch import of multiple files into one dataset.	
+import_gui	9	strMsgFolder	Select a folder...	
+import_gui	10	strLblSelected	Selected for import:	
+import_gui	11	strFrmOptions	Options	
+import_gui	12	strExpMultiple	Multiple files options	
+import_gui	13	strChkIgnore	Ignore case	
+import_gui	14	strLblPrefix	Prefix:	
+import_gui	15	strLblSuffix	Suffix:	
+import_gui	16	strLblExtension	Extension:	
+import_gui	17	strChkName	Save file name	
+import_gui	18	strChkTime	Save file time stamp	
+import_gui	19	strLblDelimiter	Delimiter:	
+import_gui	20	strDrpTab	TAB	
+import_gui	21	strDrpSpace	SPACE	
+import_gui	22	strDrpComma	COMMA	
+import_gui	23	strDrpSemicolon	SEMICOLON	
+import_gui	24	strLblNA	NA strings (separated by comma):	
+import_gui	25	strChkTrim	Auto trim samples	
+import_gui	26	strLblTrim	Trim samples containing the word (separate by pipe |):	
+import_gui	27	strChkInvert	Invert (remove matching samples	
+import_gui	28	strChkSlim	Auto slim repeated columns	
+import_gui	29	strChkKeep	Keep all fixed (keep a row even if no data)	
+import_gui	30	strFrmSave	Save as	
+import_gui	31	strLblSave	Name for dataset:	
+import_gui	32	strMsgSave	Name for new dataset	
+import_gui	33	strBtnImport	Import	
+import_gui	34	strBtnProcessing	Processing...	
+import_gui	35	strMsgName	A name for the dataset must be provided.	
+import_gui	36	strMsgDataset	Dataset empty!\nCheck your file filter.	
+import_gui	37	strMsgTitleError	Error	
+makeKit_gui	1	strWinTitle	Manage kits	
+makeKit_gui	2	strBtnHelp	Help	
+makeKit_gui	3	strFrmAction	Action	
+makeKit_gui	4	strRadEdit	Edit kit file	
+makeKit_gui	5	strRadAdd	Add new kits	
+makeKit_gui	6	strFrmFile	Path to current kit file	
+makeKit_gui	7	strBtnLoad	Load	
+makeKit_gui	8	strFrmNew	New kits	
+makeKit_gui	9	strBtnBins	Select Bins file	
+makeKit_gui	10	strBtnPanels	Select Panels file	
+makeKit_gui	11	strBtnCombine	Combine	
+makeKit_gui	12	strMsgFile	The kit file was not found	
+makeKit_gui	13	strMsgTitleFile	File not found	
+makeKit_gui	14	strLblSelectBins	Select Bins file...	
+makeKit_gui	15	strLblSelectPanels	Select Panels file...	
+makeKit_gui	16	strLblCombine	Reads and combines the Bins and Panels files	
+makeKit_gui	17	strMsgCombine	One or several files was not found	
+makeKit_gui	18	strLblSex	List sex markers (separate by comma)	
+makeKit_gui	19	strLblSensors	List quality sensors (separate by comma)	
+makeKit_gui	20	strLblRemove	Remove	
+makeKit_gui	21	strLblPanel	Panel	
+makeKit_gui	22	strLblShortName	Short name	
+makeKit_gui	23	strLblFullName	Full name	
+makeKit_gui	24	strLblNone	<none>	
+makeKit_gui	25	strFrmSave	Save	
+makeKit_gui	26	strRadAppend	Append to kit file	
+makeKit_gui	27	strRadOverwrite	Overwrite kit file	
+makeKit_gui	28	strRadSave	Save as data frame	
+makeKit_gui	29	strBtnSave	Save	
+makeKit_gui	30	strBtnSaving	Saving...	
+makeKit_gui	31	strMsgDuplicate1	A kit with short name	
+makeKit_gui	32	strMsgDuplicate2	already exist!\n\nShort name must be unique!	
+makeKit_gui	33	strMsgTitleDuplicate	Duplicate short name	
+makeKit_gui	34	strMsgMissing	A short name must be provided for all new kits	
+makeKit_gui	35	strMsgTitleMissing	Missing short name	
+modelDropout_gui	1	strWinTitle	Plot dropout prediction	
+modelDropout_gui	2	strChkGui	Save GUI settings	
+modelDropout_gui	3	strBtnHelp	Help	
+modelDropout_gui	4	strFrmDataset	Dataset	
+modelDropout_gui	5	strLblDataset	Sample dataset:	
+modelDropout_gui	6	strDrpDataset	<Select dataset>	
+modelDropout_gui	7	strLblKit	and the kit used:	
+modelDropout_gui	8	strFrmOptions	Options	
+modelDropout_gui	9	strChkOverride	Override automatic titles	
+modelDropout_gui	10	strLblTitlePlot	Plot title:	
+modelDropout_gui	11	strLblTitleX	X title:	
+modelDropout_gui	12	strLblTitleY	Y title:	
+modelDropout_gui	13	strLblRange	Dataset peak height range:	
+modelDropout_gui	14	strChkLog	Log (Height)	
+modelDropout_gui	15	strChkSex	Exclude sex markers	
+modelDropout_gui	16	strLblNote	NB! Currently, the recommended methods are the first three options.\nThe fourth alternative has not been evaluated by the DNA Commission.\nSee 'Details' in 'Help' for more information.	
+modelDropout_gui	17	strLblModels	Model drop-out from scoring method:	
+modelDropout_gui	18	strRadRandom	Relative a random allele and peak height of surviving allele	
+modelDropout_gui	19	strRadLMW	Relative the low molecular weight allele and peak height of surviving allele	
+modelDropout_gui	20	strRadHMW	Relative the high molecular weight allele and peak height of surviving allele	
+modelDropout_gui	21	strRadLocus	Relative the locus and peak height of surviving allele, or mean locus peak height	
+modelDropout_gui	22	strChkAverage	Use average peak height 'H' instead of allele/locus peak hight	
+modelDropout_gui	23	strChkPrint	Print model	
+modelDropout_gui	24	strChkDump	Dump model input	
+modelDropout_gui	25	strExpThreshold	Drop-out prediction and threshold	
+modelDropout_gui	26	strChkThreshold	Mark threshold @ P(D):	
+modelDropout_gui	27	strLblLineType	Line type	
+modelDropout_gui	28	strLblBlank	blank	
+modelDropout_gui	29	strLblSolid	solid	
+modelDropout_gui	30	strLblDashed	dashed	
+modelDropout_gui	31	strLblDotted	dotted	
+modelDropout_gui	32	strLblDotDash	dotdash	
+modelDropout_gui	33	strLblLongDash	longdash	
+modelDropout_gui	34	strLblTwoDash	twodash	
+modelDropout_gui	35	strLblLineColour	Line colour	
+modelDropout_gui	36	strChkPrintT	Print threshold value	
+modelDropout_gui	37	strLblPredictionInterval	Prediction interval:	
+modelDropout_gui	38	strChkPrintTcons	Print conservative T value	
+modelDropout_gui	39	strChkPredictionInterval	Draw prediction interval:	
+modelDropout_gui	40	strLblAlpha	Alpha:	
+modelDropout_gui	41	strLblFill	Fill colour:	
+modelDropout_gui	42	strExpPoints	Data points	
+modelDropout_gui	43	strChkPoints	Plot data points	
+modelDropout_gui	44	strLblShape	Shape:	
+modelDropout_gui	45	strLblJitter	Jitter (h/v):	
+modelDropout_gui	46	strExpAxes	Axes	
+modelDropout_gui	47	strChkScaleLog	Use log10 scale at Y axis	
+modelDropout_gui	48	strLblNbMinMax	NB! Must provide both min and max value.	
+modelDropout_gui	49	strLblLimitY	Limit Y axis (min-max)	
+modelDropout_gui	50	strLblLimitX	Limit X axis (min-max)	
+modelDropout_gui	51	strExpLabels	X labels	
+modelDropout_gui	52	strLblSize	Text size (pts):	
+modelDropout_gui	53	strLblAngle	Angle:	
+modelDropout_gui	54	strLblJustification	Justification (v/h):	
+modelDropout_gui	55	strBtnPlot	Plot predicted drop-out probability	
+modelDropout_gui	56	strBtnProcessing	Processing...	
+modelDropout_gui	57	strFrmSave	Save as	
+modelDropout_gui	58	strLblSave	Name for result:	
+modelDropout_gui	59	strBtnSaveObject	Save as object	
+modelDropout_gui	60	strBtnSaveImage	Save as image	
+modelDropout_gui	61	strBtnObjectSaved	Object saved	
+modelDropout_gui	62	strLblMainTitleAverage	Drop-out probability as a function of average peak height	
+modelDropout_gui	63	strLblXTitleAverage	Average peak height 'H', (RFU)	
+modelDropout_gui	64	strLblMainTitleHeight	Drop-out probability as a function of present-allele height	
+modelDropout_gui	65	strLblXTitleHeight	Peak height, (RFU)	
+modelDropout_gui	66	strLblYTitle	Drop-out probability, P(D)	
+modelDropout_gui	67	strLblLegend	Model parameters:	
+modelDropout_gui	68	strLblHosmer	\nHosmer-Lemeshow test: p = 	
+modelDropout_gui	69	strMsgDataset	A dataset must be selected.	
+modelDropout_gui	70	strMsgTitleDataset	Dataset not selected	
+modelDropout_gui	71	strMsgNull	Data frame is NULL or NA!	
+modelDropout_gui	72	strMsgTitleError	Error	
+modelDropout_gui	73	strMsgIncomplete1	Dataset is ok for drop-out analysis.\nHowever, additional columns are required for this analysis:\n	
+modelDropout_gui	74	strMsgIncomplete2	\n\nPlease try modeling using another scoring method.	
+modelDropout_gui	75	strMsgTitleIncomplete	Incomplete dataset	
+plotAT_gui	1	strWinTitle	Plot analytical threshold	
+plotAT_gui	2	strChkGui	Save GUI settings	
+plotAT_gui	3	strBtnHelp	Help	
+plotAT_gui	4	strFrmDataset	Dataset	
+plotAT_gui	5	strLblDataset	AT6 dataset:	
+plotAT_gui	6	strDrpDataset	<Select dataset>	
+plotAT_gui	7	strLblSamples	samples	
+plotAT_gui	8	strFrmOptions	Options	
+plotAT_gui	9	strChkOverride	Override automatic titles	
+plotAT_gui	10	strLblTitlePlot	Plot title:	
+plotAT_gui	11	strLblTitleX	X title:	
+plotAT_gui	12	strLblTitleY	Y title:	
+plotAT_gui	13	strLblTheme	Plot theme:	
+plotAT_gui	14	strExpPoints	Data points	
+plotAT_gui	15	strLblShape	Shape:	
+plotAT_gui	16	strLblAlpha	Alpha:	
+plotAT_gui	17	strLblJitter	Jitter (width):	
+plotAT_gui	18	strExpAxes	Axes	
+plotAT_gui	19	strLblLimitY	Limit Y axis (min-max)	
+plotAT_gui	20	strLblLimitX	Limit X axis (min-max)	
+plotAT_gui	21	strLblScales	Scales:	
+plotAT_gui	22	strExpLabels	X labels	
+plotAT_gui	23	strLblSize	Text size (pts):	
+plotAT_gui	24	strLblAngle	Angle:	
+plotAT_gui	25	strLblJustification	Justification (v/h):	
+plotAT_gui	26	strFrmPlot	Plot analytical threshold data	
+plotAT_gui	27	strBtnPlot	Plot AT6	
+plotAT_gui	28	strBtnProcessing	Processing...	
+plotAT_gui	29	strFrmSave	Save as	
+plotAT_gui	30	strLblSave	Name for result:	
+plotAT_gui	31	strBtnSaveObject	Save as object	
+plotAT_gui	32	strBtnSaveImage	Save as image	
+plotAT_gui	33	strBtnObjectSaved	Object saved	
+plotAT_gui	34	strLblMainTitleLinear	Linear regression	
+plotAT_gui	35	strLblMainTitleWeighted	Weighted linear regression	
+plotAT_gui	36	strLblXTitle	Amount (pg)	
+plotAT_gui	37	strLblYTitle	Average Peak Height (RFU)	
+plotAT_gui	38	strMsgNull	Data frame is NULL or NA!	
+plotAT_gui	39	strMsgTitleError	Error	
+plotBalance_gui	1	strWinTitle	Plot balance	
+plotBalance_gui	2	strChkGui	Save GUI settings	
+plotBalance_gui	3	strBtnHelp	Help	
+plotBalance_gui	4	strFrmDataset	Dataset and kit	
+plotBalance_gui	5	strLblDataset	Balance dataset:	
+plotBalance_gui	6	strDrpDataset	<Select dataset>	
+plotBalance_gui	7	strLblSamples	samples	
+plotBalance_gui	8	strLblKit	and the kit used:	
+plotBalance_gui	9	strFrmOptions	Options	
+plotBalance_gui	10	strChkOverride	Override automatic titles	
+plotBalance_gui	11	strLblTitlePlot	Plot title:	
+plotBalance_gui	12	strLblTitleX	X title:	
+plotBalance_gui	13	strLblTitleY	Y title:	
+plotBalance_gui	14	strLblTheme	Plot theme:	
+plotBalance_gui	15	strChkSex	Exclude sex markers	
+plotBalance_gui	16	strChkLog	Log (balance)	
+plotBalance_gui	17	strRadNone	Do not facet or wrap	
+plotBalance_gui	18	strRadWrap	Wrap by Dye	
+plotBalance_gui	19	strRadFacetWrap	Facet by Marker and wrap by Dye	
+plotBalance_gui	20	strExpPoints	Data points	
+plotBalance_gui	21	strLblShape	Shape:	
+plotBalance_gui	22	strLblAlpha	Alpha:	
+plotBalance_gui	23	strLblJitter	Jitter (width):	
+plotBalance_gui	24	strExpAxes	Axes	
+plotBalance_gui	25	strChkScaleLog	Use log10 scale at Y axis	
+plotBalance_gui	26	strLblLimitY	Limit Y axis (min-max)	
+plotBalance_gui	27	strLblLimitX	Limit X axis (min-max)	
+plotBalance_gui	28	strLblScales	Scales:	
+plotBalance_gui	29	strExpLabels	X labels	
+plotBalance_gui	30	strLblSize	Text size (pts):	
+plotBalance_gui	31	strLblAngle	Angle:	
+plotBalance_gui	32	strLblJustification	Justification (v/h):	
+plotBalance_gui	33	strFrmPlot	Plot balance data	
+plotBalance_gui	34	strBtnHbVsHeight	Hb vs. Height	
+plotBalance_gui	35	strTipHbVsHeight	Plot heterozygote balance by mean marker peak height	
+plotBalance_gui	36	strBtnHbVsDelta	Hb vs. Delta	
+plotBalance_gui	37	strTipHbVsDelta	Plot heterozygote balance by allele repeat difference	
+plotBalance_gui	38	strBtnHbVsH	Hb vs. 'H'	
+plotBalance_gui	39	strTipHbVsH	Plot heterozygote balance by average profile peak height	
+plotBalance_gui	40	strBtnHbVsMarker	Hb vs. Marker	
+plotBalance_gui	41	strTipHbVsMarker	Plot heterozygote balance by marker	
+plotBalance_gui	42	strBtnLbVsHeight	Lb vs. Height	
+plotBalance_gui	43	strTipLbVsHeight	Plot locus balance by mean marker peak height	
+plotBalance_gui	44	strBtnLbVsH	Lb vs. 'H'	
+plotBalance_gui	45	strTipLbVsH	Plot locus balance by average profile peak height	
+plotBalance_gui	46	strBtnLbVsMarker	Lb vs. Marker	
+plotBalance_gui	47	strTipLbVsMarker	Plot locus balance by marker	
+plotBalance_gui	48	strBtnProcessing	Processing...	
+plotBalance_gui	49	strFrmSave	Save as	
+plotBalance_gui	50	strLblSave	Name for result:	
+plotBalance_gui	51	strBtnSaveObject	Save as object	
+plotBalance_gui	52	strBtnSaveImage	Save as image	
+plotBalance_gui	53	strBtnObjectSaved	Object saved	
+plotBalance_gui	54	strLblMainTitleHb	Heterozygous balance	
+plotBalance_gui	55	strLblMainTitleLb	Locus balance	
+plotBalance_gui	56	strLblXTitleMean	Mean peak height (RFU)	
+plotBalance_gui	57	strLblXTitleDelta	Repeat difference	
+plotBalance_gui	58	strLblXTitleAverage	Average peak height 'H' (RFU)	
+plotBalance_gui	59	strLblXTitleLocus	Locus	
+plotBalance_gui	60	strLblXTitleLocusHeight	Locus peak height (RFU)	
+plotBalance_gui	61	strLblYTitleLog	Log(Ratio)	
+plotBalance_gui	62	strLblYTitle	Ratio	
+plotBalance_gui	63	strMsgNull	Data frame is NULL or NA!	
+plotBalance_gui	64	strMsgTitleError	Error	
+plotCapillary_gui	1	strWinTitle	Plot capillary balance	
+plotCapillary_gui	2	strChkGui	Save GUI settings	
+plotCapillary_gui	3	strBtnHelp	Help	
+plotCapillary_gui	4	strFrmDataset	Dataset	
+plotCapillary_gui	5	strLblDataset	Dataset:	
+plotCapillary_gui	6	strDrpDataset	<Select dataset>	
+plotCapillary_gui	7	strLblRows	rows	
+plotCapillary_gui	8	strFrmOptions	Options	
+plotCapillary_gui	9	strChkOverride	Override automatic titles	
+plotCapillary_gui	10	strLblTitlePlot	Plot title:	
+plotCapillary_gui	11	strLblTitleSub	Sub title:	
+plotCapillary_gui	12	strLblTitleX	X title:	
+plotCapillary_gui	13	strLblTitleY	Y title:	
+plotCapillary_gui	14	strExpPoints	Data points	
+plotCapillary_gui	15	strLblShape	Shape:	
+plotCapillary_gui	16	strLblAlpha	Alpha:	
+plotCapillary_gui	17	strExpAxes	Axes	
+plotCapillary_gui	18	strLblLimitY	Limit Y axis (min-max)	
+plotCapillary_gui	19	strFrmPlot	Plot capillary balance data	
+plotCapillary_gui	20	strBtnDotplot	Dotplot	
+plotCapillary_gui	21	strBtnBoxplot	Boxplot	
+plotCapillary_gui	22	strBtnDistribution	Distribution	
+plotCapillary_gui	23	strBtnProcessing	Processing...	
+plotCapillary_gui	24	strFrmSave	Save as	
+plotCapillary_gui	25	strLblSave	Name for result:	
+plotCapillary_gui	26	strBtnSaveObject	Save as object	
+plotCapillary_gui	27	strBtnSaveImage	Save as image	
+plotCapillary_gui	28	strBtnObjectSaved	Object saved	
+plotCapillary_gui	29	strLblMainTitleDotplot	Mean peak height grouped by capillary for	
+plotCapillary_gui	30	strLblMainTitleBoxplot	Mean peak height by capillary for	
+plotCapillary_gui	31	strLblMainTitleDistribution	Mean peak height for 	
+plotCapillary_gui	32	strLblMainSubTitleDotplot	[dotted blue line indicate global mean, red line indicate median per capillary]	
+plotCapillary_gui	33	strLblXTitleInjection	Injection	
+plotCapillary_gui	34	strLblXTitleCapillary	Capillary	
+plotCapillary_gui	35	strLblXTitleDensity	Density	
+plotCapillary_gui	36	strLblYTitleMean	Mean peak height (RFU)	
+plotCapillary_gui	37	strMsgNull	Data frame is NULL or NA!	
+plotCapillary_gui	38	strMsgTitleError	Error	
+plotContamination_gui	1	strWinTitle	Plot contamination	
+plotContamination_gui	2	strChkGui	Save GUI settings	
+plotContamination_gui	3	strBtnHelp	Help	
+plotContamination_gui	4	strFrmDataset	Dataset	
+plotContamination_gui	5	strLblDataset	Contamination dataset:	
+plotContamination_gui	6	strDrpDataset	<Select dataset>	
+plotContamination_gui	7	strLblSamples	samples	
+plotContamination_gui	8	strFrmOptions	Options	
+plotContamination_gui	9	strChkOverride	Override automatic titles	
+plotContamination_gui	10	strLblTitlePlot	Plot title:	
+plotContamination_gui	11	strLblTitleX	X title:	
+plotContamination_gui	12	strLblTitleY	Y title:	
+plotContamination_gui	13	strLblTheme	Plot theme:	
+plotContamination_gui	14	strBtnPlot	Plot	
+plotContamination_gui	15	strBtnProcessing	Processing...	
+plotContamination_gui	16	strFrmSave	Save as	
+plotContamination_gui	17	strLblSave	Name for result:	
+plotContamination_gui	18	strBtnSaveObject	Save as object	
+plotContamination_gui	19	strBtnSaveImage	Save as image	
+plotContamination_gui	20	strBtnObjectSaved	Object saved	
+plotContamination_gui	21	strLblMainTitle	Observed and expected number of peaks per profile (n=	
+plotContamination_gui	22	strLblXTitle	Number of peaks per control	
+plotContamination_gui	23	strLblYTitle	Relative occurance	
+plotContamination_gui	24	strMsgNull	Data frame is NULL or NA!	
+plotContamination_gui	25	strMsgTitleError	Error	
+plotDistribution_gui	1	strWinTitle	Plot distribution	
+plotDistribution_gui	2	strChkGui	Save GUI settings	
+plotDistribution_gui	3	strBtnHelp	Help	
+plotDistribution_gui	4	strFrmDataset	Dataset	
+plotDistribution_gui	5	strLblDataset	Dataset:	
+plotDistribution_gui	6	strLblGroup	Group:	
+plotDistribution_gui	7	strLblColumn	Column:	
+plotDistribution_gui	8	strDrpDataset	<Select dataset>	
+plotDistribution_gui	9	strDrpGroup	<Select group>	
+plotDistribution_gui	10	strDrpColumn	<Select column>	
+plotDistribution_gui	11	strLblRows	rows	
+plotDistribution_gui	12	strFrmOptions	Options	
+plotDistribution_gui	13	strChkOverride	Override automatic titles	
+plotDistribution_gui	14	strLblTitlePlot	Plot title:	
+plotDistribution_gui	15	strLblTitleX	X title:	
+plotDistribution_gui	16	strLblTitleY	Y title:	
+plotDistribution_gui	17	strLblTheme	Plot theme:	
+plotDistribution_gui	18	strChkBoxplot	Overlay boxplot	
+plotDistribution_gui	19	strLblWidth	Width of boxplot:	
+plotDistribution_gui	20	strChkLog	Transform to logarithms.	
+plotDistribution_gui	21	strLblBase	Base:	
+plotDistribution_gui	22	strTipBase	Default is the natural logarithm, approximately 2.718282. Other common values are 10 for the common logarithm, and 2 for binary logarithms.	
+plotDistribution_gui	23	strExpDistribution	Distribution function	
+plotDistribution_gui	24	strLblSmoothing	Smoothing kernel:	
+plotDistribution_gui	25	strLblBandwidth	Adjust bandwidth:	
+plotDistribution_gui	26	strExpHistogram	Distribution function	
+plotDistribution_gui	27	strLblBinwidth	Adjust bindwidth:	
+plotDistribution_gui	28	strTipBin	The width of the bins. The default is to use 30 bins, that cover the range of the data. You should always override this value, exploring multiple widths to find the best to illustrate your data. Leave empty to use 'bins'.	
+plotDistribution_gui	29	strLblBins	Number of bins:	
+plotDistribution_gui	30	strTipBins	Overridden by binwidth. Defaults to 30.	
+plotDistribution_gui	31	strExpAxes	Axes	
+plotDistribution_gui	32	strLblNB	NB! Must provide both min and max value.	
+plotDistribution_gui	33	strLblLimitY	Limit Y axis (min-max)	
+plotDistribution_gui	34	strLblLimitX	Limit X axis (min-max)	
+plotDistribution_gui	35	strFrmPlot	Plot distribution	
+plotDistribution_gui	36	strBtnCDF	CDF	
+plotDistribution_gui	37	strTipCDF	Cumulative density function	
+plotDistribution_gui	38	strBtnPDF	PDF	
+plotDistribution_gui	39	strTipPDF	Probability density function	
+plotDistribution_gui	40	strBtnHistogram	Histogram	
+plotDistribution_gui	41	strBtnProcessing	Processing...	
+plotDistribution_gui	42	strFrmSave	Save as	
+plotDistribution_gui	43	strLblSave	Name for result:	
+plotDistribution_gui	44	strBtnSaveObject	Save as object	
+plotDistribution_gui	45	strBtnSaveImage	Save as image	
+plotDistribution_gui	46	strBtnObjectSaved	Object saved	
+plotDistribution_gui	47	strLblMainTitleCDF	Cumulative density function	
+plotDistribution_gui	48	strLblMainTitlePDF	Probability density function	
+plotDistribution_gui	49	strLblMainTitleHistogram	Histogram	
+plotDistribution_gui	50	strLblYTitleDensity	Density	
+plotDistribution_gui	51	strLblYTitleCount	Count	
+plotDistribution_gui	52	strLblXTitleHeight	Peak height (RFU)	
+plotDistribution_gui	53	strLblXTitleSize	Fragment size (bp)	
+plotDistribution_gui	54	strLblXTitleDataPoint	Data point	
+plotDistribution_gui	55	strLblObservations	observations	
+plotDistribution_gui	56	strMsgColumn	A data column must be specified!	
+plotDistribution_gui	57	strMsgNull	Data frame is NULL or NA!	
+plotDistribution_gui	58	strMsgTitleError	Error	
+plotDropout_gui	1	strWinTitle	Plot dropout data	
+plotDropout_gui	2	strChkGui	Save GUI settings	
+plotDropout_gui	3	strBtnHelp	Help	
+plotDropout_gui	4	strFrmDataset	Dataset and kit	
+plotDropout_gui	5	strLblDataset	Dataset:	
+plotDropout_gui	6	strLblKit	Kit:	
+plotDropout_gui	7	strDrpDataset	<Select dataset>	
+plotDropout_gui	8	strFrmOptions	Options	
+plotDropout_gui	9	strChkOverride	Override automatic titles	
+plotDropout_gui	10	strLblTitlePlot	Plot title:	
+plotDropout_gui	11	strLblTitleX	X title:	
+plotDropout_gui	12	strLblTitleY	Y title:	
+plotDropout_gui	13	strExpAxes	Axes (applies to continous axes)	
+plotDropout_gui	14	strLblNB	NB! Must provide both min and max value.	
+plotDropout_gui	15	strLblLimitY	Limit Y axis (min-max)	
+plotDropout_gui	16	strLblLimitX	Limit X axis (min-max)	
+plotDropout_gui	17	strExpLabels	X labels	
+plotDropout_gui	18	strLblRound	Round to digits:	
+plotDropout_gui	19	strLblSize	Text size (pts):	
+plotDropout_gui	20	strLblAngle	Angle:	
+plotDropout_gui	21	strLblJustification	Justification (v/h):	
+plotDropout_gui	22	strFrmPlot	Plot heatmap by	
+plotDropout_gui	23	strBtnH	Average peak height	
+plotDropout_gui	24	strBtnAmount	Amount	
+plotDropout_gui	25	strBtnConcentration	Concentration	
+plotDropout_gui	26	strBtnSample	Sample	
+plotDropout_gui	27	strBtnProcessing	Processing...	
+plotDropout_gui	28	strFrmOther	Other plots	
+plotDropout_gui	29	strBtnECDP	ecdp	
+plotDropout_gui	30	strTipECDP	Empirical cumulative distribution plot	
+plotDropout_gui	31	strChkHom	Plot homozygous peaks.	
+plotDropout_gui	32	strBtnDot	Dotplot	
+plotDropout_gui	33	strFrmSave	Save as	
+plotDropout_gui	34	strLblSave	Name for result:	
+plotDropout_gui	35	strBtnSaveObject	Save as object	
+plotDropout_gui	36	strBtnSaveImage	Save as image	
+plotDropout_gui	37	strBtnObjectSaved	Object saved	
+plotDropout_gui	38	strLblMainTitle	Allele and locus dropout	
+plotDropout_gui	39	strLblMainTitleECDP	Empirical cumulative distribution for	
+plotDropout_gui	40	strLblMainTitleAnd	and	
+plotDropout_gui	41	strLblMainTitleHeterozygous	heterozygous alleles (with dropout of the sister allele)	
+plotDropout_gui	42	strLblMainTitleHomozygous	homozygous peaks	
+plotDropout_gui	43	strLblXTitleAverage	Average peak height	
+plotDropout_gui	44	strLblXTitleAmount	Amount amplified DNA	
+plotDropout_gui	45	strLblXTitleConcentration	Concentration	
+plotDropout_gui	46	strLblXTitleSample	Sample name	
+plotDropout_gui	47	strLblXTitleHeight	Peak height (RFU)	
+plotDropout_gui	48	strLblXTitleSurvivingHeight	Peak height of surviving allele (RFU)	
+plotDropout_gui	49	strLblYTitleMarker	Marker	
+plotDropout_gui	50	strLblYTitleCP	Cumulative probability	
+plotDropout_gui	51	strMsgNull	Data frame is NULL or NA!	
+plotDropout_gui	52	strMsgTitleError	Error	
+plotGroups_gui	1	strWinTitle	Plot groups	
+plotGroups_gui	2	strChkGui	Save GUI settings	
+plotGroups_gui	3	strBtnHelp	Help	
+plotGroups_gui	4	strFrmDataset	Dataset	
+plotGroups_gui	5	strLblDataset	Dataset:	
+plotGroups_gui	6	strLblColumn	Flat data by:	
+plotGroups_gui	7	strLblGroup	Group data by:	
+plotGroups_gui	8	strLblPlot	Plot data by:	
+plotGroups_gui	9	strDrpDataset	<Select dataset>	
+plotGroups_gui	10	strDrpColumn	<Select column>	
+plotGroups_gui	11	strDrpGroup	<Select group>	
+plotGroups_gui	12	strLblRows	rows	
+plotGroups_gui	13	strFrmOptions	Options	
+plotGroups_gui	14	strChkOverride	Override automatic titles	
+plotGroups_gui	15	strLblTitlePlot	Plot title:	
+plotGroups_gui	16	strLblTitleX	X title:	
+plotGroups_gui	17	strLblTitleY	Y title:	
+plotGroups_gui	18	strLblLabels	Group labels:	
+plotGroups_gui	19	strTipLabels	Separate by comma	
+plotGroups_gui	20	strLblTheme	Plot theme:	
+plotGroups_gui	21	strExpAxes	Axes	
+plotGroups_gui	22	strLblNB	NB! Must provide both min and max value.	
+plotGroups_gui	23	strLblLimitY	Limit Y axis (min-max)	
+plotGroups_gui	24	strLblLimitX	Limit X axis (min-max)	
+plotGroups_gui	25	strBtnPlot	Plot	
+plotGroups_gui	26	strTipPlot	Empirical cumulative distribution function	
+plotGroups_gui	27	strBtnProcessing	Processing...	
+plotGroups_gui	28	strFrmSave	Save as	
+plotGroups_gui	29	strLblSave	Name for result:	
+plotGroups_gui	30	strBtnSaveObject	Save as object	
+plotGroups_gui	31	strBtnSaveImage	Save as image	
+plotGroups_gui	32	strBtnObjectSaved	Object saved	
+plotGroups_gui	33	strLblMainTitle	Empirical cumulative distribution function	
+plotGroups_gui	34	strLblObservations	observations	
+plotGroups_gui	35	strMsgColumn	A data column must be specified!	
+plotGroups_gui	36	strMsgNull	Data frame is NULL or NA!	
+plotGroups_gui	37	strMsgTitleError	Error	
+plotKit_gui	1	strWinTitle	Plot kit	
+plotKit_gui	2	strChkGui	Save GUI settings	
+plotKit_gui	3	strBtnHelp	Help	
+plotKit_gui	4	strFrmKit	Select kits	
+plotKit_gui	5	strFrmOptions	Options	
+plotKit_gui	6	strLblTitlePlot	Plot title:	
+plotKit_gui	7	strLblTitleX	X title:	
+plotKit_gui	8	strLblSize	Size:	
+plotKit_gui	9	strLblKitSize	Kit name size:	
+plotKit_gui	10	strLblKitSpacing	Spacing between kits:	
+plotKit_gui	11	strLblMarkerSize	Marker name size:	
+plotKit_gui	12	strLblMarkerHeight	Marker height:	
+plotKit_gui	13	strLblMarkerAlpha	Marker transparency:	
+plotKit_gui	14	strTipMarker	Marker range fill color alpha	
+plotKit_gui	15	strBtnPlot	Plot	
+plotKit_gui	16	strTipPlot	Plot marker ranges for kit	
+plotKit_gui	17	strBtnProcessing	Processing...	
+plotKit_gui	18	strFrmSave	Save as	
+plotKit_gui	19	strLblSave	Name for result:	
+plotKit_gui	20	strBtnSaveObject	Save as object	
+plotKit_gui	21	strBtnSaveImage	Save as image	
+plotKit_gui	22	strBtnObjectSaved	Object saved	
+plotKit_gui	23	strLblMainTitle	Marker size range	
+plotKit_gui	24	strLblXTitle	Size (bp)	
+plotKit_gui	25	strMsgNull	At least one kit must be selected!	
+plotKit_gui	26	strMsgTitleError	Error	
+plotPeaks_gui	1	strWinTitle	Plot peaks	
+plotPeaks_gui	2	strChkGui	Save GUI settings	
+plotPeaks_gui	3	strBtnHelp	Help	
+plotPeaks_gui	4	strFrmDataset	Dataset	
+plotPeaks_gui	5	strLblDataset	Dataset:	
+plotPeaks_gui	6	strDrpDataset	<Select dataset>	
+plotPeaks_gui	7	strLblSamples	samples	
+plotPeaks_gui	8	strFrmOptions	Options	
+plotPeaks_gui	9	strChkOverride	Override automatic titles	
+plotPeaks_gui	10	strLblTitlePlot	Plot title:	
+plotPeaks_gui	11	strLblTitleX	X title:	
+plotPeaks_gui	12	strLblTitleY	Y title:	
+plotPeaks_gui	13	strChkProportion	Plot proportion	
+plotPeaks_gui	14	strLblBaseSize	Base font size (pts):	
+plotPeaks_gui	15	strLblPalette	Color palette:	
+plotPeaks_gui	16	strChkLabels	Print value as bar labels	
+plotPeaks_gui	17	strLblLabelDecimals	Bar label decimals:	
+plotPeaks_gui	18	strLblLabelSize	Bar label font size (pts):	
+plotPeaks_gui	19	strBtnPlot	Plot	
+plotPeaks_gui	20	strBtnProcessing	Processing...	
+plotPeaks_gui	21	strFrmSave	Save as	
+plotPeaks_gui	22	strLblSave	Name for result:	
+plotPeaks_gui	23	strBtnSaveObject	Save as object	
+plotPeaks_gui	24	strBtnSaveImage	Save as image	
+plotPeaks_gui	25	strBtnObjectSaved	Object saved	
+plotPeaks_gui	26	strLblMainTitle	Analysis of peaks from	
+plotPeaks_gui	27	strLblXTitle	Group	
+plotPeaks_gui	28	strLblYTitleProp	Proportion	
+plotPeaks_gui	29	strLblYTitleCount	Count	
+plotPeaks_gui	30	strMsgNull	Data frame is NULL or NA!	
+plotPeaks_gui	31	strMsgTitleError	Error	
+plotPrecision_gui	1	strWinTitle	Plot precision	
+plotPrecision_gui	2	strChkGui	Save GUI settings	
+plotPrecision_gui	3	strBtnHelp	Help	
+plotPrecision_gui	4	strFrmDataset	Dataset and kit	
+plotPrecision_gui	5	strLblDataset	Precision dataset:	
+plotPrecision_gui	6	strDrpDataset	<Select dataset>	
+plotPrecision_gui	7	strLblKit	and the kit used:	
+plotPrecision_gui	8	strFrmOptions	Options	
+plotPrecision_gui	9	strChkOverride	Override automatic titles	
+plotPrecision_gui	10	strExpTitles	Titles	
+plotPrecision_gui	11	strLblTitlePlot	Plot title:	
+plotPrecision_gui	12	strLblTitleX	X title:	
+plotPrecision_gui	13	strLblTitleY	Y title:	
+plotPrecision_gui	14	strLblNB	NB! Title size, angle, vjust, and hjust does not always work as expected with different number of facets per row.	
+plotPrecision_gui	15	strLblTitleSettings	Main title size, angle, vjust, hjust:	
+plotPrecision_gui	16	strLblXTitleSettings	X title size, angle, vjust, hjust:	
+plotPrecision_gui	17	strLblYTitleSettings	Y title size, angle, vjust, hjust:	
+plotPrecision_gui	18	strChkByMarker	Plot by marker	
+plotPrecision_gui	19	strLblXAxis	X axis:	
+plotPrecision_gui	20	strRadMean	Mean	
+plotPrecision_gui	21	strRadAllele	Allele	
+plotPrecision_gui	22	strLblTheme	Plot theme:	
+plotPrecision_gui	23	strExpPoints	Data points	
+plotPrecision_gui	24	strLblShape	Shape:	
+plotPrecision_gui	25	strLblAlpha	Alpha:	
+plotPrecision_gui	26	strLblColor	Colour:	
+plotPrecision_gui	27	strExpAxes	Axes	
+plotPrecision_gui	28	strLblLimitY	Limit Y axis (min-max)	
+plotPrecision_gui	29	strLblLimitX	Limit X axis (min-max)	
+plotPrecision_gui	30	strLblScales	Scales:	
+plotPrecision_gui	31	strChkOverrideLabels	Override default x/y/facet labels	
+plotPrecision_gui	32	strExpXLabels	X labels	
+plotPrecision_gui	33	strLblSize	Text size (pts):	
+plotPrecision_gui	34	strLblAngle	Angle:	
+plotPrecision_gui	35	strLblJustification	Justification (v/h):	
+plotPrecision_gui	36	strExpYLabels	Y labels	
+plotPrecision_gui	37	strExpFacets	Facets	
+plotPrecision_gui	38	strLblSizeX	Text size X (pts):	
+plotPrecision_gui	39	strLblSizeY	Text size Y (pts):	
+plotPrecision_gui	40	strFrmPlotDot	Plot precision data as dotplot	
+plotPrecision_gui	41	strBtnSize	Size	
+plotPrecision_gui	42	strBtnHeight	Height	
+plotPrecision_gui	43	strBtnPoint	Data point	
+plotPrecision_gui	44	strFrmPlotBox	Plot precision data as boxplot	
+plotPrecision_gui	45	strBtnProcessing	Processing...	
+plotPrecision_gui	46	strFrmSave	Save as	
+plotPrecision_gui	47	strLblSave	Name for result:	
+plotPrecision_gui	48	strBtnSaveObject	Save as object	
+plotPrecision_gui	49	strBtnSaveImage	Save as image	
+plotPrecision_gui	50	strBtnObjectSaved	Object saved	
+plotPrecision_gui	51	strLblMainTitleSize	Allele size range	
+plotPrecision_gui	52	strLblMainTitleHeight	Allele height range	
+plotPrecision_gui	53	strLblMainTitlePoint	Allele data point range	
+plotPrecision_gui	54	strLblYTitleSize	Deviation from mean (bp)	
+plotPrecision_gui	55	strLblYTitleHeight	Deviation from mean (RFU)	
+plotPrecision_gui	56	strLblYTitlePoint	Deviation from mean (data point)	
+plotPrecision_gui	57	strLblXTitleSize	Mean size in basepairs (bp)	
+plotPrecision_gui	58	strLblXTitleHeight	Mean height in relative fluorescent units (RFU)	
+plotPrecision_gui	59	strLblXTitlePoints	Mean scan number in data points	
+plotPrecision_gui	60	strLblXTitleAllele	Allele	
+plotPrecision_gui	61	strMsgNull	Data frame is NULL or NA!	
+plotPrecision_gui	62	strMsgTitleError	Error	
+plotPullup_gui	1	strWinTitle	Plot pull-up	
+plotPullup_gui	2	strChkGui	Save GUI settings	
+plotPullup_gui	3	strBtnHelp	Help	
+plotPullup_gui	4	strFrmDataset	Dataset and kit	
+plotPullup_gui	5	strLblDataset	Pull-up dataset:	
+plotPullup_gui	6	strDrpDataset	<Select dataset>	
+plotPullup_gui	7	strLblSamples	samples	
+plotPullup_gui	8	strLblKit	and the kit used:	
+plotPullup_gui	9	strFrmOptions	Options	
+plotPullup_gui	10	strChkOverride	Override automatic titles	
+plotPullup_gui	11	strLblTitlePlot	Plot title:	
+plotPullup_gui	12	strLblTitleX	X title:	
+plotPullup_gui	13	strLblTitleY	Y title:	
+plotPullup_gui	14	strLblTheme	Plot theme:	
+plotPullup_gui	15	strChkSex	Exclude sex markers	
+plotPullup_gui	16	strExpPoints	Data points	
+plotPullup_gui	17	strLblShape	Shape:	
+plotPullup_gui	18	strLblAlpha	Alpha:	
+plotPullup_gui	19	strLblJitter	Jitter (width):	
+plotPullup_gui	20	strExpAxes	Axes	
+plotPullup_gui	21	strLblLimitY	Limit Y axis (min-max)	
+plotPullup_gui	22	strLblLimitX	Limit X axis (min-max)	
+plotPullup_gui	23	strLblScales	Scales:	
+plotPullup_gui	24	strExpLabels	X labels	
+plotPullup_gui	25	strLblSize	Text size (pts):	
+plotPullup_gui	26	strLblAngle	Angle:	
+plotPullup_gui	27	strLblJustification	Justification (v/h):	
+plotPullup_gui	28	strFrmPlot	Plot pull-up data	
+plotPullup_gui	29	strBtnRatioVsHeight	Ratio vs. Height	
+plotPullup_gui	30	strBtnRatioVsAllele	Ratio vs. Allele	
+plotPullup_gui	31	strBtnProcessing	Processing...	
+plotPullup_gui	32	strFrmSave	Save as	
+plotPullup_gui	33	strLblSave	Name for result:	
+plotPullup_gui	34	strBtnSaveObject	Save as object	
+plotPullup_gui	35	strBtnSaveImage	Save as image	
+plotPullup_gui	36	strBtnObjectSaved	Object saved	
+plotPullup_gui	37	strLblMainTitle	Pull-up ratio	
+plotPullup_gui	38	strLblYTitle	Ratio	
+plotPullup_gui	39	strLblXTitleHeight	Allele peak height (RFU)	
+plotPullup_gui	40	strLblXTitleAllele	Allele designation	
+plotPullup_gui	41	strMsgNull	Data frame is NULL or NA!	
+plotPullup_gui	42	strMsgTitleError	Error	
+plotRatio_gui	1	strWinTitle	Plot marker ratios	
+plotRatio_gui	2	strChkGui	Save GUI settings	
+plotRatio_gui	3	strBtnHelp	Help	
+plotRatio_gui	4	strFrmDataset	Dataset	
+plotRatio_gui	5	strLblDataset	Marker ratio dataset:	
+plotRatio_gui	6	strDrpDataset	<Select dataset>	
+plotRatio_gui	7	strLblSamples	samples	
+plotRatio_gui	8	strFrmOptions	Options	
+plotRatio_gui	9	strLblScales	Scales:	
+plotRatio_gui	10	strChkOverride	Override automatic titles	
+plotRatio_gui	11	strLblTitlePlot	Plot title:	
+plotRatio_gui	12	strLblTitleX	X title:	
+plotRatio_gui	13	strLblTitleY	Y title:	
+plotRatio_gui	14	strLblTheme	Plot theme:	
+plotRatio_gui	15	strFrmPlot	Plot marker ratios	
+plotRatio_gui	16	strBtnBrowse	Brows	
+plotRatio_gui	17	strTipBrowse	Activate the console window and use Enter to step through the plots	
+plotRatio_gui	18	strBtnPlot	Plot	
+plotRatio_gui	19	strTipPlot	Plot all data in one plot, by group if available	
+plotRatio_gui	20	strBtnProcessing	Processing...	
+plotRatio_gui	21	strFrmSave	Save as	
+plotRatio_gui	22	strLblSave	Name for result:	
+plotRatio_gui	23	strBtnSaveObject	Save as object	
+plotRatio_gui	24	strBtnSaveImage	Save as image	
+plotRatio_gui	25	strBtnObjectSaved	Object saved	
+plotRatio_gui	26	strLblMainTitle	Marker ratio	
+plotRatio_gui	27	strLblYTitle	Ratio	
+plotRatio_gui	28	strLblXTitleMarker	Marker	
+plotRatio_gui	29	strLblXTitlePair	Marker pair	
+plotRatio_gui	30	strMsgNull	Data frame is NULL or NA!	
+plotRatio_gui	31	strMsgTitleError	Error	
+plotResultType_gui	1	strWinTitle	Plot result type	
+plotResultType_gui	2	strChkGui	Save GUI settings	
+plotResultType_gui	3	strBtnHelp	Help	
+plotResultType_gui	4	strFrmDataset	Dataset	
+plotResultType_gui	5	strLblDataset	Result type dataset:	
+plotResultType_gui	6	strDrpDataset	<Select dataset>	
+plotResultType_gui	7	strLblSamples	samples	
+plotResultType_gui	8	strFrmOptions	Options	
+plotResultType_gui	9	strLblScales	Scales:	
+plotResultType_gui	10	strChkOverride	Override automatic titles	
+plotResultType_gui	11	strLblTitlePlot	Plot title:	
+plotResultType_gui	12	strLblTitleX	X title:	
+plotResultType_gui	13	strLblTitleY	Y title:	
+plotResultType_gui	14	strChkProportion	Plot proportion	
+plotResultType_gui	15	strLblBaseSize	Base font size (pts):	
+plotResultType_gui	16	strLblPalette	Color palette:	
+plotResultType_gui	17	strChkLabels	Print values as bar labels	
+plotResultType_gui	18	strLblLabelDecimals	Bar label decimals:	Bar label decimals:
+plotResultType_gui	19	strLblLabelSize	Bar label font size (pts):	Bar label font size (pts):
+plotResultType_gui	20	strBtnPlot	Plot	
+plotResultType_gui	21	strBtnProcessing	Processing...	
+plotResultType_gui	22	strFrmSave	Save as	
+plotResultType_gui	23	strLblSave	Name for result:	
+plotResultType_gui	24	strBtnSaveObject	Save as object	
+plotResultType_gui	25	strBtnSaveImage	Save as image	
+plotResultType_gui	26	strBtnObjectSaved	Object saved	
+plotResultType_gui	27	strLblMainTitle	samples analysed	
+plotResultType_gui	28	strLblXTitleType	Result type	
+plotResultType_gui	29	strLblYTitleProportion	Proportion	
+plotResultType_gui	30	strLblYTitleCount	Count	
+plotResultType_gui	31	strMsgNull	Data frame is NULL or NA!	
+plotResultType_gui	32	strMsgTitleError	Error	
+plotSlope_gui	1	strWinTitle	Plot slope	
+plotSlope_gui	2	strChkGui	Save GUI settings	
+plotSlope_gui	3	strBtnHelp	Help	
+plotSlope_gui	4	strFrmDataset	Dataset	
+plotSlope_gui	5	strLblDataset	Slope dataset:	
+plotSlope_gui	6	strDrpDataset	<Select dataset>	
+plotSlope_gui	7	strLblSamples	samples	
+plotSlope_gui	8	strFrmOptions	Options	
+plotSlope_gui	9	strChkOverride	Override automatic titles	
+plotSlope_gui	10	strLblTitlePlot	Plot title:	
+plotSlope_gui	11	strLblTitleX	X title:	
+plotSlope_gui	12	strLblTitleY	Y title:	
+plotSlope_gui	13	strLblTheme	Plot theme:	
+plotSlope_gui	14	strExpLabels	X labels	
+plotSlope_gui	15	strLblSize	Text size (pts):	
+plotSlope_gui	16	strLblAngle	Angle:	
+plotSlope_gui	17	strLblJustification	Justification (v/h):	
+plotSlope_gui	18	strFrmPlot	Plot slope data	
+plotSlope_gui	19	strBtnPlot	Slope vs. Sample	
+plotSlope_gui	20	strBtnProcessing	Processing...	
+plotSlope_gui	21	strFrmSave	Save as	
+plotSlope_gui	22	strLblSave	Name for result:	
+plotSlope_gui	23	strBtnSaveObject	Save as object	
+plotSlope_gui	24	strBtnSaveImage	Save as image	
+plotSlope_gui	25	strBtnObjectSaved	Object saved	
+plotSlope_gui	26	strLblMainTitle	Profile slope	
+plotSlope_gui	27	strLblXTitle	Sample	
+plotSlope_gui	28	strLblYTitle	Slope	
+plotSlope_gui	29	strMsgNull	Data frame is NULL or NA!	
+plotSlope_gui	30	strMsgTitleError	Error	
+plotStutter_gui	1	strWinTitle	Plot stutter ratios	
+plotStutter_gui	2	strChkGui	Save GUI settings	
+plotStutter_gui	3	strBtnHelp	Help	
+plotStutter_gui	4	strFrmDataset	Dataset and kit	
+plotStutter_gui	5	strLblDataset	Stutter dataset:	
+plotStutter_gui	6	strDrpDataset	<Select dataset>	
+plotStutter_gui	7	strLblSamples	samples	
+plotStutter_gui	8	strLblKit	and the kit used:	
+plotStutter_gui	9	strFrmOptions	Options	
+plotStutter_gui	10	strChkOverride	Override automatic titles	
+plotStutter_gui	11	strExpTitles	Titles	
+plotStutter_gui	12	strLblTitlePlot	Plot title:	
+plotStutter_gui	13	strLblTitleX	X title:	
+plotStutter_gui	14	strLblTitleY	Y title:	
+plotStutter_gui	15	strLblNB	NB! Title size, angle, vjust, and hjust does not always work as expected with different number of facets per row.	
+plotStutter_gui	16	strLblTitleSettings	Main title size, angle, vjust, hjust:	
+plotStutter_gui	17	strLblXTitleSettings	X title size, angle, vjust, hjust:	
+plotStutter_gui	18	strLblYTitleSettings	Y title size, angle, vjust, hjust:	
+plotStutter_gui	19	strLblTheme	Plot theme:	
+plotStutter_gui	20	strChkSex	Exclude sex markers	
+plotStutter_gui	21	strChkMarker	Exclude markers with no data	
+plotStutter_gui	22	strExpPoints	Data points	
+plotStutter_gui	23	strLblShape	Shape:	
+plotStutter_gui	24	strLblAlpha	Alpha:	
+plotStutter_gui	25	strLblJitter	Jitter (width):	
+plotStutter_gui	26	strExpAxes	Axes	
+plotStutter_gui	27	strLblLimitY	Limit Y axis (min-max)	
+plotStutter_gui	28	strLblLimitX	Limit X axis (min-max)	
+plotStutter_gui	29	strLblScales	Scales:	
+plotStutter_gui	30	strChkOverrideLabels	Override default x/y/facet labels	
+plotStutter_gui	31	strExpXLabels	X labels	
+plotStutter_gui	32	strLblSize	Text size (pts):	
+plotStutter_gui	33	strLblAngle	Angle:	
+plotStutter_gui	34	strLblJustification	Justification (v/h):	
+plotStutter_gui	35	strExpYLabels	Y labels	
+plotStutter_gui	36	strExpFacets	Facets	
+plotStutter_gui	37	strLblSizeX	Text size X (pts):	
+plotStutter_gui	38	strLblSizeY	Text size Y (pts):	
+plotStutter_gui	39	strFrmPlot	Plot stutter data	
+plotStutter_gui	40	strBtnAllele	Ratio vs. Allele	
+plotStutter_gui	41	strBtnHeight	Ratio vs. Height	
+plotStutter_gui	42	strBtnProcessing	Processing...	
+plotStutter_gui	43	strFrmSave	Save as	
+plotStutter_gui	44	strLblSave	Name for result:	
+plotStutter_gui	45	strBtnSaveObject	Save as object	
+plotStutter_gui	46	strBtnSaveImage	Save as image	
+plotStutter_gui	47	strBtnObjectSaved	Object saved	
+plotStutter_gui	48	strLblMainTitle	Stutter ratios	
+plotStutter_gui	49	strLblXTitleAllele	True allele	
+plotStutter_gui	50	strLblXTitleHeight	True allele (RFU)	
+plotStutter_gui	51	strLblYTitleRatio	Ratio	
+plotStutter_gui	52	strMsgNull	Data frame is NULL or NA!	
+plotStutter_gui	53	strMsgTitleError	Error	
+removeArtefact_gui	1	strWinTitle	Remove artefacts	
+removeArtefact_gui	2	strChkGui	Save GUI settings	
+removeArtefact_gui	3	strBtnHelp	Help	
+removeArtefact_gui	4	strFrmDataset	Dataset	
+removeArtefact_gui	5	strLblDataset	Dataset:	
+removeArtefact_gui	6	strDrpDataset	<Select dataset>	
+removeArtefact_gui	7	strLblRows	rows	
+removeArtefact_gui	8	strLblArtefacts	Artefact list:	
+removeArtefact_gui	9	strFrmOptions	Options	
+removeArtefact_gui	10	strChkRemoveNA	Remove Allele=NA	
+removeArtefact_gui	11	strLblThreshold	Artefact threshold:	
+removeArtefact_gui	12	strFrmSave	Save as	
+removeArtefact_gui	13	strLblSave	Name for result:	
+removeArtefact_gui	14	strMsgNull	Select datasets!	
+removeArtefact_gui	15	strMsgTitleError	Error	
+removeArtefact_gui	16	strBtnRemove	Remove	
+removeSpike_gui	1	strWinTitle	Remove spikes	
+removeSpike_gui	2	strChkGui	Save GUI settings	
+removeSpike_gui	3	strBtnHelp	Help	
+removeSpike_gui	4	strFrmDataset	Dataset	
+removeSpike_gui	5	strLblDataset	Dataset:	
+removeSpike_gui	6	strDrpDataset	<Select dataset>	
+removeSpike_gui	7	strLblRows	rows	
+removeSpike_gui	8	strLblSpikes	Spike list:	
+removeSpike_gui	9	strLblSamples	samples	
+removeSpike_gui	10	strFrmOptions	Options	
+removeSpike_gui	11	strChkInvert	Invert (remove all but spikes)	
+removeSpike_gui	12	strFrmSave	Save as	
+removeSpike_gui	13	strLblSave	Name for result:	
+removeSpike_gui	14	strMsgNull	Select datasets!	
+removeSpike_gui	15	strMsgTitleError	Error	
+removeSpike_gui	16	strBtnRemove	Remove	
+saveObject	1	strMsgName	Enter name	
+saveObject	2	strMsgSyntax	is not a syntactically valid name!\n\nThe object will be saved as:	
+saveObject	3	strMsgExists	already exist.\n\nDo you want to overwrite?	
+saveObject	4	strMsgNewName	New name	
+saveObject	5	strMsgMissing	A name must be provided.	
+saveObject	6	strMsgTitleInput	Input	
+saveObject	7	strMsgTitleInvalid	Invalid name	
+saveObject	8	strMsgTitleWarning	Warning!	
+saveObject	9	strMsgTitleError	Error	
+slim_gui	1	strWinTitle	Slim dataset	
+slim_gui	2	strChkGui	Save GUI settings	
+slim_gui	3	strBtnHelp	Help	
+slim_gui	4	strFrmDataset	Dataset	
+slim_gui	5	strLblDataset	Dataset:	
+slim_gui	6	strDrpDataset	<Select dataset>	
+slim_gui	7	strLblSamples	samples	
+slim_gui	8	strLblColumns	columns	
+slim_gui	9	strLblRows	rows	
+slim_gui	10	strFrmOptions	Options	
+slim_gui	11	strChkKeep	Keep rows in fixed columns even if no data in stacked columns	
+slim_gui	12	strLblKeep	(i.e. keep one row per marker for each sample even if no peak)	
+slim_gui	13	strTipColumns	Tip: Manually edit the columns to fix and stack (e.g. stack='Allele' will stack 'Allele.1', 'Allele.2'...)	
+slim_gui	14	strFrmFix	Fix	
+slim_gui	15	strLblFix	Columns to keep fixed (separate by pipe |):	
+slim_gui	16	strEdtMsg	Doubleklick or drag column names to list	
+slim_gui	17	strFrmStack	Stack	
+slim_gui	18	strLblStack	Columns to stack (separate by pipe |):	
+slim_gui	19	strFrmSave	Save as	
+slim_gui	20	strLblSave	Name for result:	
+slim_gui	21	strMsgName	A file name must be provided!	
+slim_gui	22	strBtnSlim	Slim dataset	
+slim_gui	23	strBtnProcessing	Processing...	
+slim_gui	24	strMsgTitleError	Error	
+strvalidator	1	strChkGui	Save GUI settings	
+strvalidator	2	strBtnHelp	Help	
+strvalidator	3	strBtnCalculate	Calculate	
+strvalidator	4	strTabWelcome	Welcome	
+strvalidator	5	strTabWorkspace	Workspace	
+strvalidator	6	strTabProject	Projects	
+strvalidator	7	strTabDryLab	DryLab	
+strvalidator	8	strTabTools	Tools	
+strvalidator	9	strTabAT	AT	
+strvalidator	10	strTabStutter	Stutter	
+strvalidator	11	strTabBalance	Balance	
+strvalidator	12	strTabConcordance	Concordance	
+strvalidator	13	strTabDroput	Dropout	
+strvalidator	14	strTabMixture	Mixture	
+strvalidator	15	strTabResult	Result	
+strvalidator	16	strTabPrecision	Precision	
+strvalidator	17	strTabPullup	Pull-up	
+strvalidator	18	strBtnWebpage	STR-validator website	
+strvalidator	19	strTipWebpage	General information, workshops, and tutorials	
+strvalidator	20	strBtnVideo	Video tutorials	
+strvalidator	21	strTipVideo	STR-validator YouTube channel	
+strvalidator	22	strBtnFacebook	Facebook page	
+strvalidator	23	strTipFacebook	News, tips, and other information	
+strvalidator	24	strBtnSupport	Support forum	
+strvalidator	25	strTipSupport	Get help from the Facebook user community	
+strvalidator	26	strBtnReport	Report bugs	
+strvalidator	27	strTipReport	Report bugs, errors, and issues	
+strvalidator	28	strBtnSource	Source code	
+strvalidator	29	strTipSource	Take a look at future, current, and past source code	
+strvalidator	30	strBtnCran	CRAN page	
+strvalidator	31	strTipCran	Official CRAN page with address to maintainer and version archive	
+strvalidator	32	strBtnLicense	License	
+strvalidator	33	strLblFolder	Folder:	
+strvalidator	34	strFrmProject	Projects	
+strvalidator	35	strBtnOpen	Open	
+strvalidator	36	strTipOpen	Open selected project	
+strvalidator	37	strBtnAdd	Add	
+strvalidator	38	strTipAdd	Merge a project with the current project	
+strvalidator	39	strBtnDelete	Delete	
+strvalidator	40	strTipDelete	Delete selected project from the file system	
+strvalidator	41	strLblProject	Project:	
+strvalidator	42	strStrNoProject	[No project found]	
+strvalidator	43	strStrDescription	Write a project description here!	
+strvalidator	44	strStrProjectDescription	[Project description]	
+strvalidator	45	strBtnSave	Save	
+strvalidator	46	strTipSaveDescription	Save project description	
+strvalidator	47	strBtnNew	New	
+strvalidator	48	strTipNewProject	Create a new project	
+strvalidator	49	strTipOpenProject	Open project	
+strvalidator	50	strTipSaveProject	Save project	
+strvalidator	51	strBtnSaveAs	Save As	
+strvalidator	52	strTipSaveAs	Choose a location and save project	
+strvalidator	53	strBtnImport	Import	
+strvalidator	54	strTipImport	Import data from file	
+strvalidator	55	strBtnExport	Export	
+strvalidator	56	strTipExport	Open the export dialogue with the selected objects	
+strvalidator	57	strBtnRefresh	Refresh	
+strvalidator	58	strTipRefresh	Refresh the workspace	
+strvalidator	59	strTipDeleteObject	Delete selected object	
+strvalidator	60	strBtnRename	Rename	
+strvalidator	61	strTipRenameObject	Rename selected object	
+strvalidator	62	strBtnView	View	
+strvalidator	63	strTipView	View selected object	
+strvalidator	64	strMsgNew	Are you sure you want to create a new project?\nAny changes to current project since last save will be lost!	
+strvalidator	65	strMsgRename	Currently you can only rename one object at a time!	
+strvalidator	66	strMsgSelectWorkspace	Select a saved workspace or dataset	
+strvalidator	67	strMsgNotFound	The workspace file was not found	
+strvalidator	68	strMsgTitleNotFound	File not found	
+strvalidator	69	strMsgExport	Please select the objects to export!	
+strvalidator	70	strMsgNoObjectSelected	No object selected!	
+strvalidator	71	strMsgTitleError	Error	
+strvalidator	72	strMsgTypeNotSupported	object type not supported!	
+strvalidator	73	strMsgTitleNotSupported	Unable to view object	
+strvalidator	74	strMsgSelectObject	Please select an object!	
+strvalidator	75	strMsgProjectSaved	Project saved!\n\n	
+strvalidator	76	strMsgDirNotFound	The project directory was not found	
+strvalidator	77	strMsgTitleDirNotFound	Directory not found	
+strvalidator	78	strMsgFileNameMissing	A file name must be provided	
+strvalidator	79	strMsgFileNameRequired	File name required	
+strvalidator	80	strMsgUseSaveAs	No project name or path!\nUse 'Save As' instead	
+strvalidator	81	strMsgPropertyNotFound	Property not found	
+strvalidator	82	strMsgSelectDirSave	Select a directory to save project in	
+strvalidator	83	strMsgInputProject	Input project name	
+strvalidator	84	strMsgTitleSaveAs	Save as	
+strvalidator	85	strMsgOverwrite	\nalready exist!\n\n Overwrite?	
+strvalidator	86	strMsgTitleConfirm	Confirm	
+strvalidator	87	strMsgProjectNotSaved	Project was not saved!	
+strvalidator	88	strMsgTitleInfo	Info	
+strvalidator	89	strFrmRworkspace	Load objects from R workspace	
+strvalidator	90	strBtnLoad	Load object	
+strvalidator	91	strDrpObject	<Select object>	
+strvalidator	92	strLblViewDataset	View a dataset	
+strvalidator	93	strBtnKits	Kits	
+strvalidator	94	strLblKits	Add new kits or edit kits file	
+strvalidator	95	strBtnPlotKit	Plot Kit	
+strvalidator	96	strLblPlotKit	Plot marker ranges for kits	
+strvalidator	97	strBtnBins	Analyse Overlap	
+strvalidator	98	strLblBins	Compare bins overlap for kits	
+strvalidator	99	strBtnOl	Analyse OL	
+strvalidator	100	strLblOl	Compare risk of getting off-ladder alleles for kits	
+strvalidator	101	strBtnEdit	Edit	
+strvalidator	102	strLblEdit	Edit a dataset	
+strvalidator	103	strBtnTrim	Trim	
+strvalidator	104	strLblTrim	Trim/discard samples or columns from a dataset	
+strvalidator	105	strBtnSlim	Slim	
+strvalidator	106	strLblSlim	Slim a dataset to 'long' format	
+strvalidator	107	strBtnFilter	Filter	
+strvalidator	108	strLblFilter	Filter a dataset using a reference set	
+strvalidator	109	strBtnCrop	Crop	
+strvalidator	110	strLblCrop	Discard, or replace data	
+strvalidator	111	strBtnGuess	Guess	
+strvalidator	112	strLblGuess	Guess the profile from raw DNA result	
+strvalidator	113	strBtnDye	Dye	
+strvalidator	114	strLblDye	Add dye information according to kit	
+strvalidator	115	strBtnMarker	Marker	
+strvalidator	116	strLblMarker	Add missing markers to dataset	
+strvalidator	117	strBtnSize	Size	
+strvalidator	118	strLblSize	Add approximate size to alleles in a dataset	
+strvalidator	119	strBtnData	Data	
+strvalidator	120	strLblData	Add new information to a dataset	
+strvalidator	121	strBtnCheck	Check	
+strvalidator	122	strLblCheck	Check the subsetting of a dataset	
+strvalidator	123	strBtnCombine	Combine	
+strvalidator	124	strLblCombine	Combine two datasets	
+strvalidator	125	strBtnColumns	Columns	
+strvalidator	126	strLblColumns	Perform actions on columns	
+strvalidator	127	strBtnCopies	Copies	
+strvalidator	128	strLblCopies	Calculate allele copies	
+strvalidator	129	strBtnHeight	Height	
+strvalidator	130	strLblHeight	Calculate peak height metrics	
+strvalidator	131	strBtnEPG	EPG	
+strvalidator	132	strLblEPG	Generate EPG like plot	
+strvalidator	133	strLblAT	Calculate analytical threshold (AT1, AT2, AT4, AT7)	
+strvalidator	134	strLblAT6	Calculate analytical threshold (AT6)	
+strvalidator	135	strBtnPlot	Plot	
+strvalidator	136	strLblPlotAT6	Create plots for analysed data (AT6)	
+strvalidator	137	strLblStutter	Calculate stutters for a dataset	
+strvalidator	138	strLblPlotStutter	Create plots for stutter data	
+strvalidator	139	strBtnStatistics	Statistics	
+strvalidator	140	strLblStatStutter	Calculate summary statistics for stutter data	
+strvalidator	141	strFrmBalance	Intra-locus and inter-locus balance	
+strvalidator	142	strLblHb	Calculate intra-locus balance (heterozygote balance)	
+strvalidator	143	strLblLb	Calculate inter-locus balance (profile balance)	
+strvalidator	144	strLblPlotBalance	Create plots for analysed data	
+strvalidator	145	strLblStatBalance	Calculate summary statistics for balance data	
+strvalidator	146	strFrmCapillary	Capillary balance	
+strvalidator	147	strLblCapillary	Calculate capillary balance for a dataset	
+strvalidator	148	strLblPlotCapillary	Create plots for capillary balance data	
+strvalidator	149	strLblStatCapillary	Create summary statistics for capillary balance data	
+strvalidator	150	strFrmRatio	Marker peak height ratio	
+strvalidator	151	strLblRatio	Calculate locus ratio for a dataset	
+strvalidator	152	strLblPlotRatio	Create plots for marker ratio data	
+strvalidator	153	strLblConcordance	Calculate concordance between multiple datasets	
+strvalidator	154	strBtnScore	Score	
+strvalidator	155	strLblScore	Score dropouts for a dataset	
+strvalidator	156	strLblDropout	Calculate stochastic thresholds	
+strvalidator	157	strBtnModel	Model	
+strvalidator	158	strLblModel	Model and plot dropout risk	
+strvalidator	159	strLblPlotDropout	Create plots for analysed data	
+strvalidator	160	strLblMixture	Calculate mixture for a dataset	
+strvalidator	161	strFrmType	Result types	
+strvalidator	162	strLblType	Calculate result types for a dataset	
+strvalidator	163	strLblPlotType	Create plots for result type data	
+strvalidator	164	strFrmPeaks	Number of peaks	
+strvalidator	165	strLblPeaks	Count the number of peaks in sample	
+strvalidator	166	strLblPlotPeaks	Create plots for peak data	
+strvalidator	167	strFrmHeight	Peak height metrics	
+strvalidator	168	strFrmDistribution	Distributions	
+strvalidator	169	strLblDistribution	Plot distributions for data	
+strvalidator	170	strLblGroups	Plot cumulative distribution for multiple groups	
+strvalidator	171	strFrmDropin	Drop-in tools	
+strvalidator	172	strLblSpikes	Identify possible spikes	
+strvalidator	173	strLblFilterSpikes	Remove spikes	
+strvalidator	174	strLblArtefacts	Identify possible artefacts	
+strvalidator	175	strLblFilterArtefacts	Remove artefacts	
+strvalidator	176	strLblPlotContamination	Plot contamination	
+strvalidator	177	strFrmSlope	Profile slope	
+strvalidator	178	strLblSlope	Calculate the profile slope	
+strvalidator	179	strLblPlotSlope	Plot slope data	
+strvalidator	180	strLblPrecision	Create precision plots	
+strvalidator	181	strLblStatPrecision	Calculate summary statistics for precision	
+strvalidator	182	strLblPullup	Calculate spectral pull-up/bleed-through	
+strvalidator	183	strLblPlotPullup	Create plots for pull-up data	
+tableBalance_gui	1	strWinTitle	Calculate summary statistics for balance	
+tableBalance_gui	2	strChkGui	Save GUI settings	
+tableBalance_gui	3	strBtnHelp	Help	
+tableBalance_gui	4	strFrmDataset	Dataset	
+tableBalance_gui	5	strLblDataset	Dataset:	
+tableBalance_gui	6	strDrpDataset	<Select dataset>	
+tableBalance_gui	7	strLblSamples	samples	
+tableBalance_gui	8	strFrmOptions	Options	
+tableBalance_gui	9	strLblQuantile	Calculate quantile	
+tableBalance_gui	10	strLblBy	Statistics to calculate	
+tableBalance_gui	11	strRadGlobal	global	
+tableBalance_gui	12	strRadMarker	marker	
+tableBalance_gui	13	strFrmSave	Save as	
+tableBalance_gui	14	strLblSave	Name for result:	
+tableBalance_gui	15	strBtnCalculate	Calculate	
+tableBalance_gui	16	strBtnProcessing	Processing...	
+tableBalance_gui	17	strMsgNull	Data frame is NULL or NA!	
+tableBalance_gui	18	strMsgTitleError	Error	
+tableCapillary_gui	1	strWinTitle	Calculate summary statistics for capillary balance	
+tableCapillary_gui	2	strChkGui	Save GUI settings	
+tableCapillary_gui	3	strBtnHelp	Help	
+tableCapillary_gui	4	strFrmDataset	Dataset	
+tableCapillary_gui	5	strLblDataset	Dataset:	
+tableCapillary_gui	6	strDrpDataset	<Select dataset>	
+tableCapillary_gui	7	strLblRows	rows	
+tableCapillary_gui	8	strFrmOptions	Options	
+tableCapillary_gui	9	strLblBy	Statistics to calculate	
+tableCapillary_gui	10	strRadCapillary	capillary	
+tableCapillary_gui	11	strRadInjection	injection	
+tableCapillary_gui	12	strRadRow	plate row	
+tableCapillary_gui	13	strRadRun	run	
+tableCapillary_gui	14	strRadInstrument	instrument	
+tableCapillary_gui	15	strFrmSave	Save as	
+tableCapillary_gui	16	strLblSave	Name for result:	
+tableCapillary_gui	17	strBtnCalculate	Calculate	
+tableCapillary_gui	18	strBtnProcessing	Processing...	
+tableCapillary_gui	19	strMsgNull	Data frame is NULL or NA!	
+tableCapillary_gui	20	strMsgTitleError	Error	
+tablePrecision_gui	1	strWinTitle	Calculate summary statistics for precision	
+tablePrecision_gui	2	strChkGui	Save GUI settings	
+tablePrecision_gui	3	strBtnHelp	Help	
+tablePrecision_gui	4	strFrmDataset	Dataset	
+tablePrecision_gui	5	strLblDataset	Dataset:	
+tablePrecision_gui	6	strDrpDataset	<Select dataset>	
+tablePrecision_gui	7	strLblSamples	samples	
+tablePrecision_gui	8	strFrmOptions	Options	
+tablePrecision_gui	9	strRadReference	Filter by reference dataset	
+tablePrecision_gui	10	strRadBins	Filter by kit bins	
+tablePrecision_gui	11	strRadNone	Do not filter	
+tablePrecision_gui	12	strLblReference	Reference dataset:	
+tablePrecision_gui	13	strChkIgnore	Ignore case	
+tablePrecision_gui	14	strBtnCheck	Check subsetting	
+tablePrecision_gui	15	strLblKit	Kit:	
+tablePrecision_gui	16	strChkExclude	Exclude virtual bins	
+tablePrecision_gui	17	strFrmKey	Create key from columns	
+tablePrecision_gui	18	strEdtMessage	Doubleklick or drag column names to list	
+tablePrecision_gui	19	strFrmTarget	Calculate precision for target columns	
+tablePrecision_gui	20	strFrmSave	Save as	
+tablePrecision_gui	21	strLblSave	Name for result:	
+tablePrecision_gui	22	strBtnCalculate	Calculate	
+tablePrecision_gui	23	strBtnProcessing	Processing...	
+tablePrecision_gui	24	strMsgDataset	A dataset and a reference dataset have to be selected.	
+tablePrecision_gui	25	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.	
+tablePrecision_gui	26	strMsgTitleDataset	Datasets not selected	
+tablePrecision_gui	27	strWinTitleCheck	Check subsetting	
+tablePrecision_gui	28	strMsgTitleError	Error	
+tableStutter_gui	1	strWinTitle	Calculate summary statistics for stutters	
+tableStutter_gui	2	strChkGui	Save GUI settings	
+tableStutter_gui	3	strBtnHelp	Help	
+tableStutter_gui	4	strFrmDataset	Dataset	
+tableStutter_gui	5	strLblDataset	Dataset:	
+tableStutter_gui	6	strDrpDataset	<Select dataset>	
+tableStutter_gui	7	strLblSamples	samples	
+tableStutter_gui	8	strFrmOptions	Options	
+tableStutter_gui	9	strLblQuantile	Calculate quantile	
+tableStutter_gui	10	strLblBy	Statistics to calculate	
+tableStutter_gui	11	strRadGlobal	global	
+tableStutter_gui	12	strRadMarker	marker	
+tableStutter_gui	13	strRadStutter	stutter	
+tableStutter_gui	14	strFrmSave	Save as	
+tableStutter_gui	15	strLblSave	Name for result:	
+tableStutter_gui	16	strBtnCalculate	Calculate	
+tableStutter_gui	17	strBtnProcessing	Processing...	
+tableStutter_gui	18	strMsgNull	Data frame is NULL or NA!	
+tableStutter_gui	19	strMsgTitleError	Error	
+trim_gui	1	strWinTitle	Trim dataset	
+trim_gui	2	strChkGui	Save GUI settings	
+trim_gui	3	strBtnHelp	Help	
+trim_gui	4	strFrmDataset	Dataset	
+trim_gui	5	strLblDataset	Dataset:	
+trim_gui	6	strDrpDataset	<Select dataset>	
+trim_gui	7	strLblSamples	samples	
+trim_gui	8	strLblColumns	columns	
+trim_gui	9	strLblRows	rows	
+trim_gui	10	strFrmSamples	Samples	
+trim_gui	11	strLblSelectedSamples	Selected samples (separate by pipe |):	
+trim_gui	12	strEdtMsg	Doubleklick or drag sample names to list	
+trim_gui	13	strRadKeep	Keep	
+trim_gui	14	strRadRemove	Remove	
+trim_gui	15	strFrmColumns	Columns	
+trim_gui	16	strLblSelectedColumns	Selected columns (separate by pipe |):	
+trim_gui	17	strFrmOptions	Options	
+trim_gui	18	strChkColumns	Remove empty columns	
+trim_gui	19	strChkNA	Remove NA columns	
+trim_gui	20	strChkWord	Add word boundaries	
+trim_gui	21	strChkIgnore	Ignore case	
+trim_gui	22	strLblReplace	Replace missing values with:	
+trim_gui	23	strFrmSave	Save as	
+trim_gui	24	strLblSave	Name for result:	
+trim_gui	25	strMsgName	A file name must be provided!	
+trim_gui	26	strBtnTrim	Trim dataset	
+trim_gui	27	strBtnProcessing	Processing...	
+trim_gui	28	strMsgTitleError	Error	
