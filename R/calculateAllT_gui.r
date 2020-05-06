@@ -55,8 +55,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   strLblKit <- "Kit:"
   strFrmOptions <- "Options"
   strLblT <- "Calculate point estimates at P(dropout)="
-  strLblTcons1 <- "Calculate conservative point estimates at P(dropout>"
-  strLblTcons2 <- ")<"
+  strLblTcons <- "Calculate conservative point estimates at P(dropout>"
   strChkSexMarkers <- "Remove sex markers"
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
@@ -100,11 +99,8 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     strTmp <- dtStrings["strLblT"]$Value
     strLblT <- ifelse(is.na(strTmp), strLblT, strTmp)
 
-    strTmp <- dtStrings["strLblTcons1"]$Value
-    strLblTcons1 <- ifelse(is.na(strTmp), strLblTcons1, strTmp)
-
-    strTmp <- dtStrings["strLblTcons2"]$Value
-    strLblTcons2 <- ifelse(is.na(strTmp), strLblTcons2, strTmp)
+    strTmp <- dtStrings["strLblTcons"]$Value
+    strLblTcons <- ifelse(is.na(strTmp), strLblTcons, strTmp)
 
     strTmp <- dtStrings["strChkSexMarkers"]$Value
     strChkSexMarkers <- ifelse(is.na(strTmp), strChkSexMarkers, strTmp)
@@ -270,8 +266,8 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   label_init <- svalue(f1_p_dropout)
   label_conservative <- glabel(
-    text = paste(strLblTcons1, label_init,
-      strLblTcons2,
+    text = paste(strLblTcons, label_init,
+      ")<",
       sep = ""
     ),
     container = f1g2
@@ -288,8 +284,8 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   addHandlerChanged(f1_p_dropout, handler = function(h, ...) {
     label_p <- svalue(f1_p_dropout)
-    svalue(label_conservative) <- paste(strLblTcons1, label_p,
-      strLblTcons2,
+    svalue(label_conservative) <- paste(strLblTcons, label_p,
+      ")<",
       sep = ""
     )
   })
