@@ -28,6 +28,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.05.2020: Fixed bugs in language support.
 # 04.05.2020: Added language support.
 # 06.09.2019: Changed new.env() to new.env(parent = emptyenv())
 # 16.03.2019: Added button to YouTube channel.
@@ -47,7 +48,6 @@
 # 17.07.2017: Fixed problems with updating the project list.
 # 17.07.2017: Changed notebook argument 'pageno' to 'page.no'.
 # 17.07.2017: Removed some unnecessary calls to .refreshLoaded() and blocked handlers.
-# 17.07.2017: Fixed "Error in paste(...) : argument "msg" is missing, with no default".
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -295,554 +295,554 @@ strvalidator <- function(debug = FALSE) {
   if (!is.na(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+    strTmp <- dtStrings["strChkGui"]$Value
+    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+    strTmp <- dtStrings["strBtnHelp"]$Value
+    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
 
-    strTmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
+    strTmp <- dtStrings["strBtnCalculate"]$Value
+    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
 
-    strTmp <- dtStrings["strTabWelcome"]$value
-    strTabWelcome <- ifelse(is.na(strtmp), strTabWelcome, strtmp)
+    strTmp <- dtStrings["strTabWelcome"]$Value
+    strTabWelcome <- ifelse(is.na(strTmp), strTabWelcome, strTmp)
 
-    strTmp <- dtStrings["strTabWorkspace"]$value
-    strTabWorkspace <- ifelse(is.na(strtmp), strTabWorkspace, strtmp)
+    strTmp <- dtStrings["strTabWorkspace"]$Value
+    strTabWorkspace <- ifelse(is.na(strTmp), strTabWorkspace, strTmp)
 
-    strTmp <- dtStrings["strTabProject"]$value
-    strTabProject <- ifelse(is.na(strtmp), strTabProject, strtmp)
+    strTmp <- dtStrings["strTabProject"]$Value
+    strTabProject <- ifelse(is.na(strTmp), strTabProject, strTmp)
 
-    strTmp <- dtStrings["strTabDryLab"]$value
-    strTabDryLab <- ifelse(is.na(strtmp), strTabDryLab, strtmp)
+    strTmp <- dtStrings["strTabDryLab"]$Value
+    strTabDryLab <- ifelse(is.na(strTmp), strTabDryLab, strTmp)
 
-    strTmp <- dtStrings["strTabTools"]$value
-    strTabTools <- ifelse(is.na(strtmp), strTabTools, strtmp)
+    strTmp <- dtStrings["strTabTools"]$Value
+    strTabTools <- ifelse(is.na(strTmp), strTabTools, strTmp)
 
-    strTmp <- dtStrings["strTabAT"]$value
-    strTabAT <- ifelse(is.na(strtmp), strTabAT, strtmp)
+    strTmp <- dtStrings["strTabAT"]$Value
+    strTabAT <- ifelse(is.na(strTmp), strTabAT, strTmp)
 
-    strTmp <- dtStrings["strTabStutter"]$value
-    strTabStutter <- ifelse(is.na(strtmp), strTabStutter, strtmp)
+    strTmp <- dtStrings["strTabStutter"]$Value
+    strTabStutter <- ifelse(is.na(strTmp), strTabStutter, strTmp)
 
-    strTmp <- dtStrings["strTabBalance"]$value
-    strTabBalance <- ifelse(is.na(strtmp), strTabBalance, strtmp)
+    strTmp <- dtStrings["strTabBalance"]$Value
+    strTabBalance <- ifelse(is.na(strTmp), strTabBalance, strTmp)
 
-    strTmp <- dtStrings["strTabConcordance"]$value
-    strTabConcordance <- ifelse(is.na(strtmp), strTabConcordance, strtmp)
+    strTmp <- dtStrings["strTabConcordance"]$Value
+    strTabConcordance <- ifelse(is.na(strTmp), strTabConcordance, strTmp)
 
-    strTmp <- dtStrings["strTabDroput"]$value
-    strTabDroput <- ifelse(is.na(strtmp), strTabDroput, strtmp)
+    strTmp <- dtStrings["strTabDroput"]$Value
+    strTabDroput <- ifelse(is.na(strTmp), strTabDroput, strTmp)
 
-    strTmp <- dtStrings["strTabMixture"]$value
-    strTabMixture <- ifelse(is.na(strtmp), strTabMixture, strtmp)
+    strTmp <- dtStrings["strTabMixture"]$Value
+    strTabMixture <- ifelse(is.na(strTmp), strTabMixture, strTmp)
 
-    strTmp <- dtStrings["strTabResult"]$value
-    strTabResult <- ifelse(is.na(strtmp), strTabResult, strtmp)
+    strTmp <- dtStrings["strTabResult"]$Value
+    strTabResult <- ifelse(is.na(strTmp), strTabResult, strTmp)
 
-    strTmp <- dtStrings["strTabPrecision"]$value
-    strTabPrecision <- ifelse(is.na(strtmp), strTabPrecision, strtmp)
+    strTmp <- dtStrings["strTabPrecision"]$Value
+    strTabPrecision <- ifelse(is.na(strTmp), strTabPrecision, strTmp)
 
-    strTmp <- dtStrings["strTabPullup"]$value
-    strTabPullup <- ifelse(is.na(strtmp), strTabPullup, strtmp)
+    strTmp <- dtStrings["strTabPullup"]$Value
+    strTabPullup <- ifelse(is.na(strTmp), strTabPullup, strTmp)
 
-    strTmp <- dtStrings["strBtnWebpage"]$value
-    strBtnWebpage <- ifelse(is.na(strtmp), strBtnWebpage, strtmp)
+    strTmp <- dtStrings["strBtnWebpage"]$Value
+    strBtnWebpage <- ifelse(is.na(strTmp), strBtnWebpage, strTmp)
 
-    strTmp <- dtStrings["strTipWebpage"]$value
-    strTipWebpage <- ifelse(is.na(strtmp), strTipWebpage, strtmp)
+    strTmp <- dtStrings["strTipWebpage"]$Value
+    strTipWebpage <- ifelse(is.na(strTmp), strTipWebpage, strTmp)
 
-    strTmp <- dtStrings["strBtnVideo"]$value
-    strBtnVideo <- ifelse(is.na(strtmp), strBtnVideo, strtmp)
+    strTmp <- dtStrings["strBtnVideo"]$Value
+    strBtnVideo <- ifelse(is.na(strTmp), strBtnVideo, strTmp)
 
-    strTmp <- dtStrings["strTipVideo"]$value
-    strTipVideo <- ifelse(is.na(strtmp), strTipVideo, strtmp)
+    strTmp <- dtStrings["strTipVideo"]$Value
+    strTipVideo <- ifelse(is.na(strTmp), strTipVideo, strTmp)
 
-    strTmp <- dtStrings["strBtnFacebook"]$value
-    strBtnFacebook <- ifelse(is.na(strtmp), strBtnFacebook, strtmp)
+    strTmp <- dtStrings["strBtnFacebook"]$Value
+    strBtnFacebook <- ifelse(is.na(strTmp), strBtnFacebook, strTmp)
 
-    strTmp <- dtStrings["strTipFacebook"]$value
-    strTipFacebook <- ifelse(is.na(strtmp), strTipFacebook, strtmp)
+    strTmp <- dtStrings["strTipFacebook"]$Value
+    strTipFacebook <- ifelse(is.na(strTmp), strTipFacebook, strTmp)
 
-    strTmp <- dtStrings["strBtnSupport"]$value
-    strBtnSupport <- ifelse(is.na(strtmp), strBtnSupport, strtmp)
+    strTmp <- dtStrings["strBtnSupport"]$Value
+    strBtnSupport <- ifelse(is.na(strTmp), strBtnSupport, strTmp)
 
-    strTmp <- dtStrings["strTipSupport"]$value
-    strTipSupport <- ifelse(is.na(strtmp), strTipSupport, strtmp)
+    strTmp <- dtStrings["strTipSupport"]$Value
+    strTipSupport <- ifelse(is.na(strTmp), strTipSupport, strTmp)
 
-    strTmp <- dtStrings["strBtnReport"]$value
-    strBtnReport <- ifelse(is.na(strtmp), strBtnReport, strtmp)
+    strTmp <- dtStrings["strBtnReport"]$Value
+    strBtnReport <- ifelse(is.na(strTmp), strBtnReport, strTmp)
 
-    strTmp <- dtStrings["strTipReport"]$value
-    strTipReport <- ifelse(is.na(strtmp), strTipReport, strtmp)
+    strTmp <- dtStrings["strTipReport"]$Value
+    strTipReport <- ifelse(is.na(strTmp), strTipReport, strTmp)
 
-    strTmp <- dtStrings["strBtnSource"]$value
-    strBtnSource <- ifelse(is.na(strtmp), strBtnSource, strtmp)
+    strTmp <- dtStrings["strBtnSource"]$Value
+    strBtnSource <- ifelse(is.na(strTmp), strBtnSource, strTmp)
 
-    strTmp <- dtStrings["strTipSource"]$value
-    strTipSource <- ifelse(is.na(strtmp), strTipSource, strtmp)
+    strTmp <- dtStrings["strTipSource"]$Value
+    strTipSource <- ifelse(is.na(strTmp), strTipSource, strTmp)
 
-    strTmp <- dtStrings["strBtnCran"]$value
-    strBtnCran <- ifelse(is.na(strtmp), strBtnCran, strtmp)
+    strTmp <- dtStrings["strBtnCran"]$Value
+    strBtnCran <- ifelse(is.na(strTmp), strBtnCran, strTmp)
 
-    strTmp <- dtStrings["strTipCran"]$value
-    strTipCran <- ifelse(is.na(strtmp), strTipCran, strtmp)
+    strTmp <- dtStrings["strTipCran"]$Value
+    strTipCran <- ifelse(is.na(strTmp), strTipCran, strTmp)
 
-    strTmp <- dtStrings["strBtnLicense"]$value
-    strBtnLicense <- ifelse(is.na(strtmp), strBtnLicense, strtmp)
+    strTmp <- dtStrings["strBtnLicense"]$Value
+    strBtnLicense <- ifelse(is.na(strTmp), strBtnLicense, strTmp)
 
-    strTmp <- dtStrings["strLblFolder"]$value
-    strLblFolder <- ifelse(is.na(strtmp), strLblFolder, strtmp)
+    strTmp <- dtStrings["strLblFolder"]$Value
+    strLblFolder <- ifelse(is.na(strTmp), strLblFolder, strTmp)
 
-    strTmp <- dtStrings["strFrmProject"]$value
-    strFrmProject <- ifelse(is.na(strtmp), strFrmProject, strtmp)
+    strTmp <- dtStrings["strFrmProject"]$Value
+    strFrmProject <- ifelse(is.na(strTmp), strFrmProject, strTmp)
 
-    strTmp <- dtStrings["strBtnOpen"]$value
-    strBtnOpen <- ifelse(is.na(strtmp), strBtnOpen, strtmp)
+    strTmp <- dtStrings["strBtnOpen"]$Value
+    strBtnOpen <- ifelse(is.na(strTmp), strBtnOpen, strTmp)
 
-    strTmp <- dtStrings["strTipOpen"]$value
-    strTipOpen <- ifelse(is.na(strtmp), strTipOpen, strtmp)
+    strTmp <- dtStrings["strTipOpen"]$Value
+    strTipOpen <- ifelse(is.na(strTmp), strTipOpen, strTmp)
 
-    strTmp <- dtStrings["strBtnAdd"]$value
-    strBtnAdd <- ifelse(is.na(strtmp), strBtnAdd, strtmp)
+    strTmp <- dtStrings["strBtnAdd"]$Value
+    strBtnAdd <- ifelse(is.na(strTmp), strBtnAdd, strTmp)
 
-    strTmp <- dtStrings["strTipAdd"]$value
-    strTipAdd <- ifelse(is.na(strtmp), strTipAdd, strtmp)
+    strTmp <- dtStrings["strTipAdd"]$Value
+    strTipAdd <- ifelse(is.na(strTmp), strTipAdd, strTmp)
 
-    strTmp <- dtStrings["strBtnDelete"]$value
-    strBtnDelete <- ifelse(is.na(strtmp), strBtnDelete, strtmp)
+    strTmp <- dtStrings["strBtnDelete"]$Value
+    strBtnDelete <- ifelse(is.na(strTmp), strBtnDelete, strTmp)
 
-    strTmp <- dtStrings["strTipDelete"]$value
-    strTipDelete <- ifelse(is.na(strtmp), strTipDelete, strtmp)
+    strTmp <- dtStrings["strTipDelete"]$Value
+    strTipDelete <- ifelse(is.na(strTmp), strTipDelete, strTmp)
 
-    strTmp <- dtStrings["strLblProject"]$value
-    strLblProject <- ifelse(is.na(strtmp), strLblProject, strtmp)
+    strTmp <- dtStrings["strLblProject"]$Value
+    strLblProject <- ifelse(is.na(strTmp), strLblProject, strTmp)
 
-    strTmp <- dtStrings["strStrNoProject"]$value
-    strStrNoProject <- ifelse(is.na(strtmp), strStrNoProject, strtmp)
+    strTmp <- dtStrings["strStrNoProject"]$Value
+    strStrNoProject <- ifelse(is.na(strTmp), strStrNoProject, strTmp)
 
-    strTmp <- dtStrings["strStrDescription"]$value
-    strStrDescription <- ifelse(is.na(strtmp), strStrDescription, strtmp)
+    strTmp <- dtStrings["strStrDescription"]$Value
+    strStrDescription <- ifelse(is.na(strTmp), strStrDescription, strTmp)
 
-    strTmp <- dtStrings["strStrProjectDescription"]$value
-    strStrProjectDescription <- ifelse(is.na(strtmp), strStrProjectDescription, strtmp)
+    strTmp <- dtStrings["strStrProjectDescription"]$Value
+    strStrProjectDescription <- ifelse(is.na(strTmp), strStrProjectDescription, strTmp)
 
-    strTmp <- dtStrings["strBtnSave"]$value
-    strBtnSave <- ifelse(is.na(strtmp), strBtnSave, strtmp)
+    strTmp <- dtStrings["strBtnSave"]$Value
+    strBtnSave <- ifelse(is.na(strTmp), strBtnSave, strTmp)
 
-    strTmp <- dtStrings["strTipSaveDescription"]$value
-    strTipSaveDescription <- ifelse(is.na(strtmp), strTipSaveDescription, strtmp)
+    strTmp <- dtStrings["strTipSaveDescription"]$Value
+    strTipSaveDescription <- ifelse(is.na(strTmp), strTipSaveDescription, strTmp)
 
-    strTmp <- dtStrings["strBtnNew"]$value
-    strBtnNew <- ifelse(is.na(strtmp), strBtnNew, strtmp)
+    strTmp <- dtStrings["strBtnNew"]$Value
+    strBtnNew <- ifelse(is.na(strTmp), strBtnNew, strTmp)
 
-    strTmp <- dtStrings["strTipNewProject"]$value
-    strTipNewProject <- ifelse(is.na(strtmp), strTipNewProject, strtmp)
+    strTmp <- dtStrings["strTipNewProject"]$Value
+    strTipNewProject <- ifelse(is.na(strTmp), strTipNewProject, strTmp)
 
-    strTmp <- dtStrings["strTipOpenProject"]$value
-    strTipOpenProject <- ifelse(is.na(strtmp), strTipOpenProject, strtmp)
+    strTmp <- dtStrings["strTipOpenProject"]$Value
+    strTipOpenProject <- ifelse(is.na(strTmp), strTipOpenProject, strTmp)
 
-    strTmp <- dtStrings["strTipSaveProject"]$value
-    strTipSaveProject <- ifelse(is.na(strtmp), strTipSaveProject, strtmp)
+    strTmp <- dtStrings["strTipSaveProject"]$Value
+    strTipSaveProject <- ifelse(is.na(strTmp), strTipSaveProject, strTmp)
 
-    strTmp <- dtStrings["strBtnSaveAs"]$value
-    strBtnSaveAs <- ifelse(is.na(strtmp), strBtnSaveAs, strtmp)
+    strTmp <- dtStrings["strBtnSaveAs"]$Value
+    strBtnSaveAs <- ifelse(is.na(strTmp), strBtnSaveAs, strTmp)
 
-    strTmp <- dtStrings["strTipSaveAs"]$value
-    strTipSaveAs <- ifelse(is.na(strtmp), strTipSaveAs, strtmp)
+    strTmp <- dtStrings["strTipSaveAs"]$Value
+    strTipSaveAs <- ifelse(is.na(strTmp), strTipSaveAs, strTmp)
 
-    strTmp <- dtStrings["strBtnImport"]$value
-    strBtnImport <- ifelse(is.na(strtmp), strBtnImport, strtmp)
+    strTmp <- dtStrings["strBtnImport"]$Value
+    strBtnImport <- ifelse(is.na(strTmp), strBtnImport, strTmp)
 
-    strTmp <- dtStrings["strTipImport"]$value
-    strTipImport <- ifelse(is.na(strtmp), strTipImport, strtmp)
+    strTmp <- dtStrings["strTipImport"]$Value
+    strTipImport <- ifelse(is.na(strTmp), strTipImport, strTmp)
 
-    strTmp <- dtStrings["strBtnExport"]$value
-    strBtnExport <- ifelse(is.na(strtmp), strBtnExport, strtmp)
+    strTmp <- dtStrings["strBtnExport"]$Value
+    strBtnExport <- ifelse(is.na(strTmp), strBtnExport, strTmp)
 
-    strTmp <- dtStrings["strTipExport"]$value
-    strTipExport <- ifelse(is.na(strtmp), strTipExport, strtmp)
+    strTmp <- dtStrings["strTipExport"]$Value
+    strTipExport <- ifelse(is.na(strTmp), strTipExport, strTmp)
 
-    strTmp <- dtStrings["strBtnRefresh"]$value
-    strBtnRefresh <- ifelse(is.na(strtmp), strBtnRefresh, strtmp)
+    strTmp <- dtStrings["strBtnRefresh"]$Value
+    strBtnRefresh <- ifelse(is.na(strTmp), strBtnRefresh, strTmp)
 
-    strTmp <- dtStrings["strTipRefresh"]$value
-    strTipRefresh <- ifelse(is.na(strtmp), strTipRefresh, strtmp)
+    strTmp <- dtStrings["strTipRefresh"]$Value
+    strTipRefresh <- ifelse(is.na(strTmp), strTipRefresh, strTmp)
 
-    strTmp <- dtStrings["strTipDeleteObject"]$value
-    strTipDeleteObject <- ifelse(is.na(strtmp), strTipDeleteObject, strtmp)
+    strTmp <- dtStrings["strTipDeleteObject"]$Value
+    strTipDeleteObject <- ifelse(is.na(strTmp), strTipDeleteObject, strTmp)
 
-    strTmp <- dtStrings["strBtnRename"]$value
-    strBtnRename <- ifelse(is.na(strtmp), strBtnRename, strtmp)
+    strTmp <- dtStrings["strBtnRename"]$Value
+    strBtnRename <- ifelse(is.na(strTmp), strBtnRename, strTmp)
 
-    strTmp <- dtStrings["strTipRenameObject"]$value
-    strTipRenameObject <- ifelse(is.na(strtmp), strTipRenameObject, strtmp)
+    strTmp <- dtStrings["strTipRenameObject"]$Value
+    strTipRenameObject <- ifelse(is.na(strTmp), strTipRenameObject, strTmp)
 
-    strTmp <- dtStrings["strBtnView"]$value
-    strBtnView <- ifelse(is.na(strtmp), strBtnView, strtmp)
+    strTmp <- dtStrings["strBtnView"]$Value
+    strBtnView <- ifelse(is.na(strTmp), strBtnView, strTmp)
 
-    strTmp <- dtStrings["strTipView"]$value
-    strTipView <- ifelse(is.na(strtmp), strTipView, strtmp)
+    strTmp <- dtStrings["strTipView"]$Value
+    strTipView <- ifelse(is.na(strTmp), strTipView, strTmp)
 
-    strTmp <- dtStrings["strMsgNew"]$value
-    strMsgNew <- ifelse(is.na(strtmp), strMsgNew, strtmp)
+    strTmp <- dtStrings["strMsgNew"]$Value
+    strMsgNew <- ifelse(is.na(strTmp), strMsgNew, strTmp)
 
-    strTmp <- dtStrings["strMsgRename"]$value
-    strMsgRename <- ifelse(is.na(strtmp), strMsgRename, strtmp)
+    strTmp <- dtStrings["strMsgRename"]$Value
+    strMsgRename <- ifelse(is.na(strTmp), strMsgRename, strTmp)
 
-    strTmp <- dtStrings["strMsgSelectWorkspace"]$value
-    strMsgSelectWorkspace <- ifelse(is.na(strtmp), strMsgSelectWorkspace, strtmp)
+    strTmp <- dtStrings["strMsgSelectWorkspace"]$Value
+    strMsgSelectWorkspace <- ifelse(is.na(strTmp), strMsgSelectWorkspace, strTmp)
 
-    strTmp <- dtStrings["strMsgNotFound"]$value
-    strMsgNotFound <- ifelse(is.na(strtmp), strMsgNotFound, strtmp)
+    strTmp <- dtStrings["strMsgNotFound"]$Value
+    strMsgNotFound <- ifelse(is.na(strTmp), strMsgNotFound, strTmp)
 
-    strTmp <- dtStrings["strMsgTitleNotFound"]$value
-    strMsgTitleNotFound <- ifelse(is.na(strtmp), strMsgTitleNotFound, strtmp)
+    strTmp <- dtStrings["strMsgTitleNotFound"]$Value
+    strMsgTitleNotFound <- ifelse(is.na(strTmp), strMsgTitleNotFound, strTmp)
 
-    strTmp <- dtStrings["strMsgExport"]$value
-    strMsgExport <- ifelse(is.na(strtmp), strMsgExport, strtmp)
+    strTmp <- dtStrings["strMsgExport"]$Value
+    strMsgExport <- ifelse(is.na(strTmp), strMsgExport, strTmp)
 
-    strTmp <- dtStrings["strMsgNoObjectSelected"]$value
-    strMsgNoObjectSelected <- ifelse(is.na(strtmp), strMsgNoObjectSelected, strtmp)
+    strTmp <- dtStrings["strMsgNoObjectSelected"]$Value
+    strMsgNoObjectSelected <- ifelse(is.na(strTmp), strMsgNoObjectSelected, strTmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+    strTmp <- dtStrings["strMsgTitleError"]$Value
+    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
 
-    strTmp <- dtStrings["strMsgTypeNotSupported"]$value
-    strMsgTypeNotSupported <- ifelse(is.na(strtmp), strMsgTypeNotSupported, strtmp)
+    strTmp <- dtStrings["strMsgTypeNotSupported"]$Value
+    strMsgTypeNotSupported <- ifelse(is.na(strTmp), strMsgTypeNotSupported, strTmp)
 
-    strTmp <- dtStrings["strMsgTitleNotSupported"]$value
-    strMsgTitleNotSupported <- ifelse(is.na(strtmp), strMsgTitleNotSupported, strtmp)
+    strTmp <- dtStrings["strMsgTitleNotSupported"]$Value
+    strMsgTitleNotSupported <- ifelse(is.na(strTmp), strMsgTitleNotSupported, strTmp)
 
-    strTmp <- dtStrings["strMsgSelectObject"]$value
-    strMsgSelectObject <- ifelse(is.na(strtmp), strMsgSelectObject, strtmp)
+    strTmp <- dtStrings["strMsgSelectObject"]$Value
+    strMsgSelectObject <- ifelse(is.na(strTmp), strMsgSelectObject, strTmp)
 
-    strTmp <- dtStrings["strMsgProjectSaved"]$value
-    strMsgProjectSaved <- ifelse(is.na(strtmp), strMsgProjectSaved, strtmp)
+    strTmp <- dtStrings["strMsgProjectSaved"]$Value
+    strMsgProjectSaved <- ifelse(is.na(strTmp), strMsgProjectSaved, strTmp)
 
-    strTmp <- dtStrings["strMsgDirNotFound"]$value
-    strMsgDirNotFound <- ifelse(is.na(strtmp), strMsgDirNotFound, strtmp)
+    strTmp <- dtStrings["strMsgDirNotFound"]$Value
+    strMsgDirNotFound <- ifelse(is.na(strTmp), strMsgDirNotFound, strTmp)
 
-    strTmp <- dtStrings["strMsgTitleDirNotFound"]$value
-    strMsgTitleDirNotFound <- ifelse(is.na(strtmp), strMsgTitleDirNotFound, strtmp)
+    strTmp <- dtStrings["strMsgTitleDirNotFound"]$Value
+    strMsgTitleDirNotFound <- ifelse(is.na(strTmp), strMsgTitleDirNotFound, strTmp)
 
-    strTmp <- dtStrings["strMsgFileNameMissing"]$value
-    strMsgFileNameMissing <- ifelse(is.na(strtmp), strMsgFileNameMissing, strtmp)
+    strTmp <- dtStrings["strMsgFileNameMissing"]$Value
+    strMsgFileNameMissing <- ifelse(is.na(strTmp), strMsgFileNameMissing, strTmp)
 
-    strTmp <- dtStrings["strMsgFileNameRequired"]$value
-    strMsgFileNameRequired <- ifelse(is.na(strtmp), strMsgFileNameRequired, strtmp)
+    strTmp <- dtStrings["strMsgFileNameRequired"]$Value
+    strMsgFileNameRequired <- ifelse(is.na(strTmp), strMsgFileNameRequired, strTmp)
 
-    strTmp <- dtStrings["strMsgUseSaveAs"]$value
-    strMsgUseSaveAs <- ifelse(is.na(strtmp), strMsgUseSaveAs, strtmp)
+    strTmp <- dtStrings["strMsgUseSaveAs"]$Value
+    strMsgUseSaveAs <- ifelse(is.na(strTmp), strMsgUseSaveAs, strTmp)
 
-    strTmp <- dtStrings["strMsgPropertyNotFound"]$value
-    strMsgPropertyNotFound <- ifelse(is.na(strtmp), strMsgPropertyNotFound, strtmp)
+    strTmp <- dtStrings["strMsgPropertyNotFound"]$Value
+    strMsgPropertyNotFound <- ifelse(is.na(strTmp), strMsgPropertyNotFound, strTmp)
 
-    strTmp <- dtStrings["strMsgSelectDirSave"]$value
-    strMsgSelectDirSave <- ifelse(is.na(strtmp), strMsgSelectDirSave, strtmp)
+    strTmp <- dtStrings["strMsgSelectDirSave"]$Value
+    strMsgSelectDirSave <- ifelse(is.na(strTmp), strMsgSelectDirSave, strTmp)
 
-    strTmp <- dtStrings["strMsgInputProject"]$value
-    strMsgInputProject <- ifelse(is.na(strtmp), strMsgInputProject, strtmp)
+    strTmp <- dtStrings["strMsgInputProject"]$Value
+    strMsgInputProject <- ifelse(is.na(strTmp), strMsgInputProject, strTmp)
 
-    strTmp <- dtStrings["strMsgTitleSaveAs"]$value
-    strMsgTitleSaveAs <- ifelse(is.na(strtmp), strMsgTitleSaveAs, strtmp)
+    strTmp <- dtStrings["strMsgTitleSaveAs"]$Value
+    strMsgTitleSaveAs <- ifelse(is.na(strTmp), strMsgTitleSaveAs, strTmp)
 
-    strTmp <- dtStrings["strMsgOverwrite"]$value
-    strMsgOverwrite <- ifelse(is.na(strtmp), strMsgOverwrite, strtmp)
+    strTmp <- dtStrings["strMsgOverwrite"]$Value
+    strMsgOverwrite <- ifelse(is.na(strTmp), strMsgOverwrite, strTmp)
 
-    strTmp <- dtStrings["strMsgTitleConfirm"]$value
-    strMsgTitleConfirm <- ifelse(is.na(strtmp), strMsgTitleConfirm, strtmp)
+    strTmp <- dtStrings["strMsgTitleConfirm"]$Value
+    strMsgTitleConfirm <- ifelse(is.na(strTmp), strMsgTitleConfirm, strTmp)
 
-    strTmp <- dtStrings["strMsgProjectNotSaved"]$value
-    strMsgProjectNotSaved <- ifelse(is.na(strtmp), strMsgProjectNotSaved, strtmp)
+    strTmp <- dtStrings["strMsgProjectNotSaved"]$Value
+    strMsgProjectNotSaved <- ifelse(is.na(strTmp), strMsgProjectNotSaved, strTmp)
 
-    strTmp <- dtStrings["strMsgTitleInfo"]$value
-    strMsgTitleInfo <- ifelse(is.na(strtmp), strMsgTitleInfo, strtmp)
+    strTmp <- dtStrings["strMsgTitleInfo"]$Value
+    strMsgTitleInfo <- ifelse(is.na(strTmp), strMsgTitleInfo, strTmp)
 
-    strTmp <- dtStrings["strFrmRworkspace"]$value
-    strFrmRworkspace <- ifelse(is.na(strtmp), strFrmRworkspace, strtmp)
+    strTmp <- dtStrings["strFrmRworkspace"]$Value
+    strFrmRworkspace <- ifelse(is.na(strTmp), strFrmRworkspace, strTmp)
 
-    strTmp <- dtStrings["strBtnLoad"]$value
-    strBtnLoad <- ifelse(is.na(strtmp), strBtnLoad, strtmp)
+    strTmp <- dtStrings["strBtnLoad"]$Value
+    strBtnLoad <- ifelse(is.na(strTmp), strBtnLoad, strTmp)
 
-    strTmp <- dtStrings["strDrpObject"]$value
-    strDrpObject <- ifelse(is.na(strtmp), strDrpObject, strtmp)
+    strTmp <- dtStrings["strDrpObject"]$Value
+    strDrpObject <- ifelse(is.na(strTmp), strDrpObject, strTmp)
 
-    strTmp <- dtStrings["strLblViewDataset"]$value
-    strLblViewDataset <- ifelse(is.na(strtmp), strLblViewDataset, strtmp)
+    strTmp <- dtStrings["strLblViewDataset"]$Value
+    strLblViewDataset <- ifelse(is.na(strTmp), strLblViewDataset, strTmp)
 
-    strTmp <- dtStrings["strBtnKits"]$value
-    strBtnKits <- ifelse(is.na(strtmp), strBtnKits, strtmp)
+    strTmp <- dtStrings["strBtnKits"]$Value
+    strBtnKits <- ifelse(is.na(strTmp), strBtnKits, strTmp)
 
-    strTmp <- dtStrings["strLblKits"]$value
-    strLblKits <- ifelse(is.na(strtmp), strLblKits, strtmp)
+    strTmp <- dtStrings["strLblKits"]$Value
+    strLblKits <- ifelse(is.na(strTmp), strLblKits, strTmp)
 
-    strTmp <- dtStrings["strBtnPlotKit"]$value
-    strBtnPlotKit <- ifelse(is.na(strtmp), strBtnPlotKit, strtmp)
+    strTmp <- dtStrings["strBtnPlotKit"]$Value
+    strBtnPlotKit <- ifelse(is.na(strTmp), strBtnPlotKit, strTmp)
 
-    strTmp <- dtStrings["strLblPlotKit"]$value
-    strLblPlotKit <- ifelse(is.na(strtmp), strLblPlotKit, strtmp)
+    strTmp <- dtStrings["strLblPlotKit"]$Value
+    strLblPlotKit <- ifelse(is.na(strTmp), strLblPlotKit, strTmp)
 
-    strTmp <- dtStrings["strBtnBins"]$value
-    strBtnBins <- ifelse(is.na(strtmp), strBtnBins, strtmp)
+    strTmp <- dtStrings["strBtnBins"]$Value
+    strBtnBins <- ifelse(is.na(strTmp), strBtnBins, strTmp)
 
-    strTmp <- dtStrings["strLblBins"]$value
-    strLblBins <- ifelse(is.na(strtmp), strLblBins, strtmp)
+    strTmp <- dtStrings["strLblBins"]$Value
+    strLblBins <- ifelse(is.na(strTmp), strLblBins, strTmp)
 
-    strTmp <- dtStrings["strBtnOl"]$value
-    strBtnOl <- ifelse(is.na(strtmp), strBtnOl, strtmp)
+    strTmp <- dtStrings["strBtnOl"]$Value
+    strBtnOl <- ifelse(is.na(strTmp), strBtnOl, strTmp)
 
-    strTmp <- dtStrings["strLblOl"]$value
-    strLblOl <- ifelse(is.na(strtmp), strLblOl, strtmp)
+    strTmp <- dtStrings["strLblOl"]$Value
+    strLblOl <- ifelse(is.na(strTmp), strLblOl, strTmp)
 
-    strTmp <- dtStrings["strBtnEdit"]$value
-    strBtnEdit <- ifelse(is.na(strtmp), strBtnEdit, strtmp)
+    strTmp <- dtStrings["strBtnEdit"]$Value
+    strBtnEdit <- ifelse(is.na(strTmp), strBtnEdit, strTmp)
 
-    strTmp <- dtStrings["strLblEdit"]$value
-    strLblEdit <- ifelse(is.na(strtmp), strLblEdit, strtmp)
+    strTmp <- dtStrings["strLblEdit"]$Value
+    strLblEdit <- ifelse(is.na(strTmp), strLblEdit, strTmp)
 
-    strTmp <- dtStrings["strBtnTrim"]$value
-    strBtnTrim <- ifelse(is.na(strtmp), strBtnTrim, strtmp)
+    strTmp <- dtStrings["strBtnTrim"]$Value
+    strBtnTrim <- ifelse(is.na(strTmp), strBtnTrim, strTmp)
 
-    strTmp <- dtStrings["strLblTrim"]$value
-    strLblTrim <- ifelse(is.na(strtmp), strLblTrim, strtmp)
+    strTmp <- dtStrings["strLblTrim"]$Value
+    strLblTrim <- ifelse(is.na(strTmp), strLblTrim, strTmp)
 
-    strTmp <- dtStrings["strBtnSlim"]$value
-    strBtnSlim <- ifelse(is.na(strtmp), strBtnSlim, strtmp)
+    strTmp <- dtStrings["strBtnSlim"]$Value
+    strBtnSlim <- ifelse(is.na(strTmp), strBtnSlim, strTmp)
 
-    strTmp <- dtStrings["strLblSlim"]$value
-    strLblSlim <- ifelse(is.na(strtmp), strLblSlim, strtmp)
+    strTmp <- dtStrings["strLblSlim"]$Value
+    strLblSlim <- ifelse(is.na(strTmp), strLblSlim, strTmp)
 
-    strTmp <- dtStrings["strBtnFilter"]$value
-    strBtnFilter <- ifelse(is.na(strtmp), strBtnFilter, strtmp)
+    strTmp <- dtStrings["strBtnFilter"]$Value
+    strBtnFilter <- ifelse(is.na(strTmp), strBtnFilter, strTmp)
 
-    strTmp <- dtStrings["strLblFilter"]$value
-    strLblFilter <- ifelse(is.na(strtmp), strLblFilter, strtmp)
+    strTmp <- dtStrings["strLblFilter"]$Value
+    strLblFilter <- ifelse(is.na(strTmp), strLblFilter, strTmp)
 
-    strTmp <- dtStrings["strBtnCrop"]$value
-    strBtnCrop <- ifelse(is.na(strtmp), strBtnCrop, strtmp)
+    strTmp <- dtStrings["strBtnCrop"]$Value
+    strBtnCrop <- ifelse(is.na(strTmp), strBtnCrop, strTmp)
 
-    strTmp <- dtStrings["strLblCrop"]$value
-    strLblCrop <- ifelse(is.na(strtmp), strLblCrop, strtmp)
+    strTmp <- dtStrings["strLblCrop"]$Value
+    strLblCrop <- ifelse(is.na(strTmp), strLblCrop, strTmp)
 
-    strTmp <- dtStrings["strBtnGuess"]$value
-    strBtnGuess <- ifelse(is.na(strtmp), strBtnGuess, strtmp)
+    strTmp <- dtStrings["strBtnGuess"]$Value
+    strBtnGuess <- ifelse(is.na(strTmp), strBtnGuess, strTmp)
 
-    strTmp <- dtStrings["strLblGuess"]$value
-    strLblGuess <- ifelse(is.na(strtmp), strLblGuess, strtmp)
+    strTmp <- dtStrings["strLblGuess"]$Value
+    strLblGuess <- ifelse(is.na(strTmp), strLblGuess, strTmp)
 
-    strTmp <- dtStrings["strBtnDye"]$value
-    strBtnDye <- ifelse(is.na(strtmp), strBtnDye, strtmp)
+    strTmp <- dtStrings["strBtnDye"]$Value
+    strBtnDye <- ifelse(is.na(strTmp), strBtnDye, strTmp)
 
-    strTmp <- dtStrings["strLblDye"]$value
-    strLblDye <- ifelse(is.na(strtmp), strLblDye, strtmp)
+    strTmp <- dtStrings["strLblDye"]$Value
+    strLblDye <- ifelse(is.na(strTmp), strLblDye, strTmp)
 
-    strTmp <- dtStrings["strBtnMarker"]$value
-    strBtnMarker <- ifelse(is.na(strtmp), strBtnMarker, strtmp)
+    strTmp <- dtStrings["strBtnMarker"]$Value
+    strBtnMarker <- ifelse(is.na(strTmp), strBtnMarker, strTmp)
 
-    strTmp <- dtStrings["strLblMarker"]$value
-    strLblMarker <- ifelse(is.na(strtmp), strLblMarker, strtmp)
+    strTmp <- dtStrings["strLblMarker"]$Value
+    strLblMarker <- ifelse(is.na(strTmp), strLblMarker, strTmp)
 
-    strTmp <- dtStrings["strBtnSize"]$value
-    strBtnSize <- ifelse(is.na(strtmp), strBtnSize, strtmp)
+    strTmp <- dtStrings["strBtnSize"]$Value
+    strBtnSize <- ifelse(is.na(strTmp), strBtnSize, strTmp)
 
-    strTmp <- dtStrings["strLblSize"]$value
-    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
+    strTmp <- dtStrings["strLblSize"]$Value
+    strLblSize <- ifelse(is.na(strTmp), strLblSize, strTmp)
 
-    strTmp <- dtStrings["strBtnData"]$value
-    strBtnData <- ifelse(is.na(strtmp), strBtnData, strtmp)
+    strTmp <- dtStrings["strBtnData"]$Value
+    strBtnData <- ifelse(is.na(strTmp), strBtnData, strTmp)
 
-    strTmp <- dtStrings["strLblData"]$value
-    strLblData <- ifelse(is.na(strtmp), strLblData, strtmp)
+    strTmp <- dtStrings["strLblData"]$Value
+    strLblData <- ifelse(is.na(strTmp), strLblData, strTmp)
 
-    strTmp <- dtStrings["strBtnCheck"]$value
-    strBtnCheck <- ifelse(is.na(strtmp), strBtnCheck, strtmp)
+    strTmp <- dtStrings["strBtnCheck"]$Value
+    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
 
-    strTmp <- dtStrings["strLblCheck"]$value
-    strLblCheck <- ifelse(is.na(strtmp), strLblCheck, strtmp)
+    strTmp <- dtStrings["strLblCheck"]$Value
+    strLblCheck <- ifelse(is.na(strTmp), strLblCheck, strTmp)
 
-    strTmp <- dtStrings["strBtnCombine"]$value
-    strBtnCombine <- ifelse(is.na(strtmp), strBtnCombine, strtmp)
+    strTmp <- dtStrings["strBtnCombine"]$Value
+    strBtnCombine <- ifelse(is.na(strTmp), strBtnCombine, strTmp)
 
-    strTmp <- dtStrings["strLblCombine"]$value
-    strLblCombine <- ifelse(is.na(strtmp), strLblCombine, strtmp)
+    strTmp <- dtStrings["strLblCombine"]$Value
+    strLblCombine <- ifelse(is.na(strTmp), strLblCombine, strTmp)
 
-    strTmp <- dtStrings["strBtnColumns"]$value
-    strBtnColumns <- ifelse(is.na(strtmp), strBtnColumns, strtmp)
+    strTmp <- dtStrings["strBtnColumns"]$Value
+    strBtnColumns <- ifelse(is.na(strTmp), strBtnColumns, strTmp)
 
-    strTmp <- dtStrings["strLblColumns"]$value
-    strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
+    strTmp <- dtStrings["strLblColumns"]$Value
+    strLblColumns <- ifelse(is.na(strTmp), strLblColumns, strTmp)
 
-    strTmp <- dtStrings["strBtnCopies"]$value
-    strBtnCopies <- ifelse(is.na(strtmp), strBtnCopies, strtmp)
+    strTmp <- dtStrings["strBtnCopies"]$Value
+    strBtnCopies <- ifelse(is.na(strTmp), strBtnCopies, strTmp)
 
-    strTmp <- dtStrings["strLblCopies"]$value
-    strLblCopies <- ifelse(is.na(strtmp), strLblCopies, strtmp)
+    strTmp <- dtStrings["strLblCopies"]$Value
+    strLblCopies <- ifelse(is.na(strTmp), strLblCopies, strTmp)
 
-    strTmp <- dtStrings["strBtnHeight"]$value
-    strBtnHeight <- ifelse(is.na(strtmp), strBtnHeight, strtmp)
+    strTmp <- dtStrings["strBtnHeight"]$Value
+    strBtnHeight <- ifelse(is.na(strTmp), strBtnHeight, strTmp)
 
-    strTmp <- dtStrings["strLblHeight"]$value
-    strLblHeight <- ifelse(is.na(strtmp), strLblHeight, strtmp)
+    strTmp <- dtStrings["strLblHeight"]$Value
+    strLblHeight <- ifelse(is.na(strTmp), strLblHeight, strTmp)
 
-    strTmp <- dtStrings["strBtnEPG"]$value
-    strBtnEPG <- ifelse(is.na(strtmp), strBtnEPG, strtmp)
+    strTmp <- dtStrings["strBtnEPG"]$Value
+    strBtnEPG <- ifelse(is.na(strTmp), strBtnEPG, strTmp)
 
-    strTmp <- dtStrings["strLblEPG"]$value
-    strLblEPG <- ifelse(is.na(strtmp), strLblEPG, strtmp)
+    strTmp <- dtStrings["strLblEPG"]$Value
+    strLblEPG <- ifelse(is.na(strTmp), strLblEPG, strTmp)
 
-    strTmp <- dtStrings["strLblAT"]$value
-    strLblAT <- ifelse(is.na(strtmp), strLblAT, strtmp)
+    strTmp <- dtStrings["strLblAT"]$Value
+    strLblAT <- ifelse(is.na(strTmp), strLblAT, strTmp)
 
-    strTmp <- dtStrings["strLblAT6"]$value
-    strLblAT6 <- ifelse(is.na(strtmp), strLblAT6, strtmp)
+    strTmp <- dtStrings["strLblAT6"]$Value
+    strLblAT6 <- ifelse(is.na(strTmp), strLblAT6, strTmp)
 
-    strTmp <- dtStrings["strBtnPlot"]$value
-    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
+    strTmp <- dtStrings["strBtnPlot"]$Value
+    strBtnPlot <- ifelse(is.na(strTmp), strBtnPlot, strTmp)
 
-    strTmp <- dtStrings["strLblPlotAT6"]$value
-    strLblPlotAT6 <- ifelse(is.na(strtmp), strLblPlotAT6, strtmp)
+    strTmp <- dtStrings["strLblPlotAT6"]$Value
+    strLblPlotAT6 <- ifelse(is.na(strTmp), strLblPlotAT6, strTmp)
 
-    strTmp <- dtStrings["strLblStutter"]$value
-    strLblStutter <- ifelse(is.na(strtmp), strLblStutter, strtmp)
+    strTmp <- dtStrings["strLblStutter"]$Value
+    strLblStutter <- ifelse(is.na(strTmp), strLblStutter, strTmp)
 
-    strTmp <- dtStrings["strLblPlotStutter"]$value
-    strLblPlotStutter <- ifelse(is.na(strtmp), strLblPlotStutter, strtmp)
+    strTmp <- dtStrings["strLblPlotStutter"]$Value
+    strLblPlotStutter <- ifelse(is.na(strTmp), strLblPlotStutter, strTmp)
 
-    strTmp <- dtStrings["strBtnStatistics"]$value
-    strBtnStatistics <- ifelse(is.na(strtmp), strBtnStatistics, strtmp)
+    strTmp <- dtStrings["strBtnStatistics"]$Value
+    strBtnStatistics <- ifelse(is.na(strTmp), strBtnStatistics, strTmp)
 
-    strTmp <- dtStrings["strLblStatStutter"]$value
-    strLblStatStutter <- ifelse(is.na(strtmp), strLblStatStutter, strtmp)
+    strTmp <- dtStrings["strLblStatStutter"]$Value
+    strLblStatStutter <- ifelse(is.na(strTmp), strLblStatStutter, strTmp)
 
-    strTmp <- dtStrings["strFrmBalance"]$value
-    strFrmBalance <- ifelse(is.na(strtmp), strFrmBalance, strtmp)
+    strTmp <- dtStrings["strFrmBalance"]$Value
+    strFrmBalance <- ifelse(is.na(strTmp), strFrmBalance, strTmp)
 
-    strTmp <- dtStrings["strLblHb"]$value
-    strLblHb <- ifelse(is.na(strtmp), strLblHb, strtmp)
+    strTmp <- dtStrings["strLblHb"]$Value
+    strLblHb <- ifelse(is.na(strTmp), strLblHb, strTmp)
 
-    strTmp <- dtStrings["strLblLb"]$value
-    strLblLb <- ifelse(is.na(strtmp), strLblLb, strtmp)
+    strTmp <- dtStrings["strLblLb"]$Value
+    strLblLb <- ifelse(is.na(strTmp), strLblLb, strTmp)
 
-    strTmp <- dtStrings["strLblPlotBalance"]$value
-    strLblPlotBalance <- ifelse(is.na(strtmp), strLblPlotBalance, strtmp)
+    strTmp <- dtStrings["strLblPlotBalance"]$Value
+    strLblPlotBalance <- ifelse(is.na(strTmp), strLblPlotBalance, strTmp)
 
-    strTmp <- dtStrings["strLblStatBalance"]$value
-    strLblStatBalance <- ifelse(is.na(strtmp), strLblStatBalance, strtmp)
+    strTmp <- dtStrings["strLblStatBalance"]$Value
+    strLblStatBalance <- ifelse(is.na(strTmp), strLblStatBalance, strTmp)
 
-    strTmp <- dtStrings["strFrmCapillary"]$value
-    strFrmCapillary <- ifelse(is.na(strtmp), strFrmCapillary, strtmp)
+    strTmp <- dtStrings["strFrmCapillary"]$Value
+    strFrmCapillary <- ifelse(is.na(strTmp), strFrmCapillary, strTmp)
 
-    strTmp <- dtStrings["strLblCapillary"]$value
-    strLblCapillary <- ifelse(is.na(strtmp), strLblCapillary, strtmp)
+    strTmp <- dtStrings["strLblCapillary"]$Value
+    strLblCapillary <- ifelse(is.na(strTmp), strLblCapillary, strTmp)
 
-    strTmp <- dtStrings["strLblPlotCapillary"]$value
-    strLblPlotCapillary <- ifelse(is.na(strtmp), strLblPlotCapillary, strtmp)
+    strTmp <- dtStrings["strLblPlotCapillary"]$Value
+    strLblPlotCapillary <- ifelse(is.na(strTmp), strLblPlotCapillary, strTmp)
 
-    strTmp <- dtStrings["strLblStatCapillary"]$value
-    strLblStatCapillary <- ifelse(is.na(strtmp), strLblStatCapillary, strtmp)
+    strTmp <- dtStrings["strLblStatCapillary"]$Value
+    strLblStatCapillary <- ifelse(is.na(strTmp), strLblStatCapillary, strTmp)
 
-    strTmp <- dtStrings["strFrmRatio"]$value
-    strFrmRatio <- ifelse(is.na(strtmp), strFrmRatio, strtmp)
+    strTmp <- dtStrings["strFrmRatio"]$Value
+    strFrmRatio <- ifelse(is.na(strTmp), strFrmRatio, strTmp)
 
-    strTmp <- dtStrings["strLblRatio"]$value
-    strLblRatio <- ifelse(is.na(strtmp), strLblRatio, strtmp)
+    strTmp <- dtStrings["strLblRatio"]$Value
+    strLblRatio <- ifelse(is.na(strTmp), strLblRatio, strTmp)
 
-    strTmp <- dtStrings["strLblPlotRatio"]$value
-    strLblPlotRatio <- ifelse(is.na(strtmp), strLblPlotRatio, strtmp)
+    strTmp <- dtStrings["strLblPlotRatio"]$Value
+    strLblPlotRatio <- ifelse(is.na(strTmp), strLblPlotRatio, strTmp)
 
-    strTmp <- dtStrings["strLblConcordance"]$value
-    strLblConcordance <- ifelse(is.na(strtmp), strLblConcordance, strtmp)
+    strTmp <- dtStrings["strLblConcordance"]$Value
+    strLblConcordance <- ifelse(is.na(strTmp), strLblConcordance, strTmp)
 
-    strTmp <- dtStrings["strBtnScore"]$value
-    strBtnScore <- ifelse(is.na(strtmp), strBtnScore, strtmp)
+    strTmp <- dtStrings["strBtnScore"]$Value
+    strBtnScore <- ifelse(is.na(strTmp), strBtnScore, strTmp)
 
-    strTmp <- dtStrings["strLblScore"]$value
-    strLblScore <- ifelse(is.na(strtmp), strLblScore, strtmp)
+    strTmp <- dtStrings["strLblScore"]$Value
+    strLblScore <- ifelse(is.na(strTmp), strLblScore, strTmp)
 
-    strTmp <- dtStrings["strLblDropout"]$value
-    strLblDropout <- ifelse(is.na(strtmp), strLblDropout, strtmp)
+    strTmp <- dtStrings["strLblDropout"]$Value
+    strLblDropout <- ifelse(is.na(strTmp), strLblDropout, strTmp)
 
-    strTmp <- dtStrings["strBtnModel"]$value
-    strBtnModel <- ifelse(is.na(strtmp), strBtnModel, strtmp)
+    strTmp <- dtStrings["strBtnModel"]$Value
+    strBtnModel <- ifelse(is.na(strTmp), strBtnModel, strTmp)
 
-    strTmp <- dtStrings["strLblModel"]$value
-    strLblModel <- ifelse(is.na(strtmp), strLblModel, strtmp)
+    strTmp <- dtStrings["strLblModel"]$Value
+    strLblModel <- ifelse(is.na(strTmp), strLblModel, strTmp)
 
-    strTmp <- dtStrings["strLblPlotDropout"]$value
-    strLblPlotDropout <- ifelse(is.na(strtmp), strLblPlotDropout, strtmp)
+    strTmp <- dtStrings["strLblPlotDropout"]$Value
+    strLblPlotDropout <- ifelse(is.na(strTmp), strLblPlotDropout, strTmp)
 
-    strTmp <- dtStrings["strLblMixture"]$value
-    strLblMixture <- ifelse(is.na(strtmp), strLblMixture, strtmp)
+    strTmp <- dtStrings["strLblMixture"]$Value
+    strLblMixture <- ifelse(is.na(strTmp), strLblMixture, strTmp)
 
-    strTmp <- dtStrings["strFrmType"]$value
-    strFrmType <- ifelse(is.na(strtmp), strFrmType, strtmp)
+    strTmp <- dtStrings["strFrmType"]$Value
+    strFrmType <- ifelse(is.na(strTmp), strFrmType, strTmp)
 
-    strTmp <- dtStrings["strLblType"]$value
-    strLblType <- ifelse(is.na(strtmp), strLblType, strtmp)
+    strTmp <- dtStrings["strLblType"]$Value
+    strLblType <- ifelse(is.na(strTmp), strLblType, strTmp)
 
-    strTmp <- dtStrings["strLblPlotType"]$value
-    strLblPlotType <- ifelse(is.na(strtmp), strLblPlotType, strtmp)
+    strTmp <- dtStrings["strLblPlotType"]$Value
+    strLblPlotType <- ifelse(is.na(strTmp), strLblPlotType, strTmp)
 
-    strTmp <- dtStrings["strFrmPeaks"]$value
-    strFrmPeaks <- ifelse(is.na(strtmp), strFrmPeaks, strtmp)
+    strTmp <- dtStrings["strFrmPeaks"]$Value
+    strFrmPeaks <- ifelse(is.na(strTmp), strFrmPeaks, strTmp)
 
-    strTmp <- dtStrings["strLblPeaks"]$value
-    strLblPeaks <- ifelse(is.na(strtmp), strLblPeaks, strtmp)
+    strTmp <- dtStrings["strLblPeaks"]$Value
+    strLblPeaks <- ifelse(is.na(strTmp), strLblPeaks, strTmp)
 
-    strTmp <- dtStrings["strLblPlotPeaks"]$value
-    strLblPlotPeaks <- ifelse(is.na(strtmp), strLblPlotPeaks, strtmp)
+    strTmp <- dtStrings["strLblPlotPeaks"]$Value
+    strLblPlotPeaks <- ifelse(is.na(strTmp), strLblPlotPeaks, strTmp)
 
-    strTmp <- dtStrings["strFrmHeight"]$value
-    strFrmHeight <- ifelse(is.na(strtmp), strFrmHeight, strtmp)
+    strTmp <- dtStrings["strFrmHeight"]$Value
+    strFrmHeight <- ifelse(is.na(strTmp), strFrmHeight, strTmp)
 
-    strTmp <- dtStrings["strFrmDistribution"]$value
-    strFrmDistribution <- ifelse(is.na(strtmp), strFrmDistribution, strtmp)
+    strTmp <- dtStrings["strFrmDistribution"]$Value
+    strFrmDistribution <- ifelse(is.na(strTmp), strFrmDistribution, strTmp)
 
-    strTmp <- dtStrings["strLblDistribution"]$value
-    strLblDistribution <- ifelse(is.na(strtmp), strLblDistribution, strtmp)
+    strTmp <- dtStrings["strLblDistribution"]$Value
+    strLblDistribution <- ifelse(is.na(strTmp), strLblDistribution, strTmp)
 
-    strTmp <- dtStrings["strLblGroups"]$value
-    strLblGroups <- ifelse(is.na(strtmp), strLblGroups, strtmp)
+    strTmp <- dtStrings["strLblGroups"]$Value
+    strLblGroups <- ifelse(is.na(strTmp), strLblGroups, strTmp)
 
-    strTmp <- dtStrings["strFrmDropin"]$value
-    strFrmDropin <- ifelse(is.na(strtmp), strFrmDropin, strtmp)
+    strTmp <- dtStrings["strFrmDropin"]$Value
+    strFrmDropin <- ifelse(is.na(strTmp), strFrmDropin, strTmp)
 
-    strTmp <- dtStrings["strLblSpikes"]$value
-    strLblSpikes <- ifelse(is.na(strtmp), strLblSpikes, strtmp)
+    strTmp <- dtStrings["strLblSpikes"]$Value
+    strLblSpikes <- ifelse(is.na(strTmp), strLblSpikes, strTmp)
 
-    strTmp <- dtStrings["strLblFilterSpikes"]$value
-    strLblFilterSpikes <- ifelse(is.na(strtmp), strLblFilterSpikes, strtmp)
+    strTmp <- dtStrings["strLblFilterSpikes"]$Value
+    strLblFilterSpikes <- ifelse(is.na(strTmp), strLblFilterSpikes, strTmp)
 
-    strTmp <- dtStrings["strLblArtefacts"]$value
-    strLblArtefacts <- ifelse(is.na(strtmp), strLblArtefacts, strtmp)
+    strTmp <- dtStrings["strLblArtefacts"]$Value
+    strLblArtefacts <- ifelse(is.na(strTmp), strLblArtefacts, strTmp)
 
-    strTmp <- dtStrings["strLblFilterArtefacts"]$value
-    strLblFilterArtefacts <- ifelse(is.na(strtmp), strLblFilterArtefacts, strtmp)
+    strTmp <- dtStrings["strLblFilterArtefacts"]$Value
+    strLblFilterArtefacts <- ifelse(is.na(strTmp), strLblFilterArtefacts, strTmp)
 
-    strTmp <- dtStrings["strLblPlotContamination"]$value
-    strLblPlotContamination <- ifelse(is.na(strtmp), strLblPlotContamination, strtmp)
+    strTmp <- dtStrings["strLblPlotContamination"]$Value
+    strLblPlotContamination <- ifelse(is.na(strTmp), strLblPlotContamination, strTmp)
 
-    strTmp <- dtStrings["strFrmSlope"]$value
-    strFrmSlope <- ifelse(is.na(strtmp), strFrmSlope, strtmp)
+    strTmp <- dtStrings["strFrmSlope"]$Value
+    strFrmSlope <- ifelse(is.na(strTmp), strFrmSlope, strTmp)
 
-    strTmp <- dtStrings["strLblSlope"]$value
-    strLblSlope <- ifelse(is.na(strtmp), strLblSlope, strtmp)
+    strTmp <- dtStrings["strLblSlope"]$Value
+    strLblSlope <- ifelse(is.na(strTmp), strLblSlope, strTmp)
 
-    strTmp <- dtStrings["strLblPlotSlope"]$value
-    strLblPlotSlope <- ifelse(is.na(strtmp), strLblPlotSlope, strtmp)
+    strTmp <- dtStrings["strLblPlotSlope"]$Value
+    strLblPlotSlope <- ifelse(is.na(strTmp), strLblPlotSlope, strTmp)
 
-    strTmp <- dtStrings["strLblPrecision"]$value
-    strLblPrecision <- ifelse(is.na(strtmp), strLblPrecision, strtmp)
+    strTmp <- dtStrings["strLblPrecision"]$Value
+    strLblPrecision <- ifelse(is.na(strTmp), strLblPrecision, strTmp)
 
-    strTmp <- dtStrings["strLblStatPrecision"]$value
-    strLblStatPrecision <- ifelse(is.na(strtmp), strLblStatPrecision, strtmp)
+    strTmp <- dtStrings["strLblStatPrecision"]$Value
+    strLblStatPrecision <- ifelse(is.na(strTmp), strLblStatPrecision, strTmp)
 
-    strTmp <- dtStrings["strLblPullup"]$value
-    strLblPullup <- ifelse(is.na(strtmp), strLblPullup, strtmp)
+    strTmp <- dtStrings["strLblPullup"]$Value
+    strLblPullup <- ifelse(is.na(strTmp), strLblPullup, strTmp)
 
-    strTmp <- dtStrings["strLblPlotPullup"]$value
-    strLblPlotPullup <- ifelse(is.na(strtmp), strLblPlotPullup, strtmp)
+    strTmp <- dtStrings["strLblPlotPullup"]$Value
+    strLblPlotPullup <- ifelse(is.na(strTmp), strLblPlotPullup, strTmp)
   }
 
   # WINDOW ####################################################################
