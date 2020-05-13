@@ -3,6 +3,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.05.2020: Added 'peak' in parameter description. 
 # 20.03.2019: Added new definition of balance (Issue:#14).
 # 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
@@ -45,7 +46,7 @@
 #' If provided alleles matching 'ref' will be extracted from 'data'
 #' (see \code{\link{filterProfile}}).
 #' @param option character: 'prop' for proportional Lb, 'norm' for normalized
-#' LB, and 'cent' for centred Lb.
+#' LB, 'cent' for centred Lb, and 'peak' for the min and max peak height ratio.
 #' @param by.dye logical. Default is FALSE for global Lb, if TRUE Lb is calculated
 #' within each dye channel.
 #' @param ol.rm logical. Default is TRUE indicating that off-ladder 'OL' alleles
