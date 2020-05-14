@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 12.05.2020: Fixed encoding (è -> Ã¨).
 # 22.02.2020: First version.
 
 #' @title Get Language Strings.
@@ -44,7 +45,8 @@ getStrings <- function(language = NA, gui = NA, key = NA) {
   if (file.exists(langFilePath)) {
 
     # Read file.
-    dtAll <- fread(file = langFilePath, sep = "auto", quote = "\"", header = "auto")
+    dtAll <- fread(file = langFilePath, sep = "auto", 
+                   header = "auto", encoding="UTF-8")
 
     # Set key column.
     setkey(dtAll, key = "Key")
