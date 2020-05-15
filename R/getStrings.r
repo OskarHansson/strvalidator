@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.05.2020: Return NULL instead of NA to fix warning when vector.
 # 12.05.2020: Fixed encoding (è -> Ã¨).
 # 22.02.2020: First version.
 
@@ -17,8 +18,8 @@
 #' @param key character the key to 'translate'. Only used in combination with 'gui'.
 #'
 #' @export
-#' 
-#' @return character the retrieved value or NA if not found.
+#'
+#' @return character the retrieved values or NULL if not found.
 #'
 
 getStrings <- function(language = NA, gui = NA, key = NA) {
@@ -37,7 +38,7 @@ getStrings <- function(language = NA, gui = NA, key = NA) {
 
   # Get package path. Could use getPackageName()?
   packagePath <- path.package("strvalidator", quiet = FALSE)
-  
+
   # Create path to language file.
   langFilePath <- paste(packagePath, subFolder, languageFile, sep = fileSep)
 
@@ -45,8 +46,10 @@ getStrings <- function(language = NA, gui = NA, key = NA) {
   if (file.exists(langFilePath)) {
 
     # Read file.
-    dtAll <- fread(file = langFilePath, sep = "auto", 
-                   header = "auto", encoding="UTF-8")
+    dtAll <- fread(
+      file = langFilePath, sep = "auto",
+      header = "auto", encoding = "UTF-8"
+    )
 
     # Set key column.
     setkey(dtAll, key = "Key")
@@ -57,37 +60,33 @@ getStrings <- function(language = NA, gui = NA, key = NA) {
     # If gui function is specified.
     if (!is.na(gui)) {
       message("Get langugage strings for ", gui)
-      
+
       # Get strings for the specific function.
       dtRet <- dtRet[dtRet$Scope == gui, ]
-      
-      if(nrow(dtRet) == 0){
-        
-        message("No rows found for gui=", gui, ". Returning NA.")
-        
-        # Set NA as return value.
-        dtRet <- NA
-        
+
+      if (nrow(dtRet) == 0) {
+        message("No rows found for gui=", gui, ". Returning NULL.")
+
+        # Set NULL as return value.
+        dtRet <- NULL
       }
-      
     }
 
     # If gui function and key is specified.
     if (!is.na(dtRet) && !is.na(gui) && !is.na(key)) {
       message("Get langugage strings for key", key)
-      
+
       # Get the specific gui function value by key.
       dtRet <- dtRet[key]$Value
     }
-  } else { # If file don't exist.
+  } else { # If file doesn't exist.
 
     # Show file not found message.
-    message("File ", langFilePath, " not found. Returning NA.")
+    message("File ", langFilePath, " not found. Returning NULL.")
 
-    # Set NA as return value.
-    dtRet <- NA
+    # Set NULL as return value.
+    dtRet <- NULL
   }
 
   return(dtRet)
 }
-
