@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.05.2020: Added parameters 'encoding' and 'about'.
+# 15.05.2020: Changed file extension from .csv to .txt.
 # 15.05.2020: Return NULL instead of NA to fix warning when vector.
 # 12.05.2020: Fixed encoding (è -> Ã¨).
 # 22.02.2020: First version.
@@ -16,13 +18,18 @@
 #' @param language character name of the language.
 #' @param gui character the function name for the gui to 'translate'.
 #' @param key character the key to 'translate'. Only used in combination with 'gui'.
+#' @param encoding character encoding to be assumed for input strings.
+#' @param about logical FALSE (default) to read key value pairs,
+#' TRUE to read about as plain text.
 #'
 #' @export
 #'
-#' @return character the retrieved values or NULL if not found.
+#' @return character vector or data.table with the retrieved values.
+#' NULL if file or scope was not found.
 #'
 
-getStrings <- function(language = NA, gui = NA, key = NA) {
+getStrings <- function(language = NA, gui = NA, key = NA,
+                       encoding = NA, about = FALSE) {
 
   # If language is not specified.
   if (is.na(language)) {
@@ -31,62 +38,91 @@ getStrings <- function(language = NA, gui = NA, key = NA) {
     language <- getSetting("language")
   }
 
+  # If encoding is not specified.
+  if (is.na(encoding)) {
+
+    # Get language from settings.
+    encoding <- getSetting("encoding")
+  }
+
   # Constants.
   fileSep <- .Platform$file.sep # Platform dependent path separator.
-  languageFile <- paste(c(language, ".csv"), collapse = "")
+  languageFile <- paste(c(language, ".txt"), collapse = "")
+  aboutFile <- paste(c(language, "_about", ".txt"), collapse = "")
   subFolder <- paste("extdata", "languages", sep = fileSep) # Sub folder in addition to package path.
 
   # Get package path. Could use getPackageName()?
   packagePath <- path.package("strvalidator", quiet = FALSE)
 
-  # Create path to language file.
-  langFilePath <- paste(packagePath, subFolder, languageFile, sep = fileSep)
+  if (about) {
 
-  # If file exist.
-  if (file.exists(langFilePath)) {
+    # Create path to language files.
+    aboutFilePath <- paste(packagePath, subFolder, aboutFile, sep = fileSep)
 
-    # Read file.
-    dtAll <- fread(
-      file = langFilePath, sep = "auto",
-      header = "auto", encoding = "UTF-8"
-    )
+    # If file exist.
+    if (file.exists(aboutFilePath)) {
 
-    # Set key column.
-    setkey(dtAll, key = "Key")
+      # Read file.
+      result <- readLines(con = aboutFilePath, encoding = encoding)
+    } else { # If file doesn't exist.
 
-    # Return all data as default.
-    dtRet <- dtAll
+      # Show file not found message.
+      message("File ", aboutFilePath, " not found. Returning NULL.")
 
-    # If gui function is specified.
-    if (!is.na(gui)) {
-      message("Get langugage strings for ", gui)
+      # Set NULL as return value.
+      result <- NULL
+    }
+  } else {
 
-      # Get strings for the specific function.
-      dtRet <- dtRet[dtRet$Scope == gui, ]
+    # Create path to language files.
+    langFilePath <- paste(packagePath, subFolder, languageFile, sep = fileSep)
 
-      if (nrow(dtRet) == 0) {
-        message("No rows found for gui=", gui, ". Returning NULL.")
+    # If file exist.
+    if (file.exists(langFilePath)) {
 
-        # Set NULL as return value.
-        dtRet <- NULL
+      # Read file.
+      dtAll <- fread(
+        file = langFilePath, sep = "auto",
+        header = "auto", encoding = encoding
+      )
+
+      # Set key column.
+      setkey(dtAll, key = "Key")
+
+      # Return all data as default.
+      result <- dtAll
+
+      # If gui function is specified.
+      if (!is.na(gui)) {
+        message("Get langugage strings for ", gui)
+
+        # Get strings for the specific function.
+        result <- result[result$Scope == gui, ]
+
+        if (nrow(result) == 0) {
+          message("No rows found for gui=", gui, ". Returning NULL.")
+
+          # Set NULL as return value.
+          result <- NULL
+        }
       }
+
+      # If gui function and key is specified.
+      if (!is.na(result) && !is.na(gui) && !is.na(key)) {
+        message("Get langugage strings for key", key)
+
+        # Get the specific gui function value by key.
+        result <- result[key]$Value
+      }
+    } else { # If file doesn't exist.
+
+      # Show file not found message.
+      message("File ", langFilePath, " not found. Returning NULL.")
+
+      # Set NULL as return value.
+      result <- NULL
     }
-
-    # If gui function and key is specified.
-    if (!is.na(dtRet) && !is.na(gui) && !is.na(key)) {
-      message("Get langugage strings for key", key)
-
-      # Get the specific gui function value by key.
-      dtRet <- dtRet[key]$Value
-    }
-  } else { # If file doesn't exist.
-
-    # Show file not found message.
-    message("File ", langFilePath, " not found. Returning NULL.")
-
-    # Set NULL as return value.
-    dtRet <- NULL
   }
 
-  return(dtRet)
+  return(result)
 }
