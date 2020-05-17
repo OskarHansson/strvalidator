@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.05.2020: Added gsub to fix new line coming out as \n.
 # 15.05.2020: Added parameters 'encoding' and 'about'.
 # 15.05.2020: Changed file extension from .csv to .txt.
 # 15.05.2020: Return NULL instead of NA to fix warning when vector.
@@ -12,15 +13,17 @@
 #' Accepts a language code and gui. Returns the corresponding language strings.
 #'
 #' @details
-#' Accepts a language code and gui. Returns the corresponding language strings
-#' for the specified gui function from a text file named as the language code.
+#' Accepts a language code, gui, and key. Returns the corresponding language strings
+#' for the specified gui function or key from a text file named as the language code.
+#' Replaces backslash + n with new line character.
+#' 
 #'
 #' @param language character name of the language.
 #' @param gui character the function name for the gui to 'translate'.
 #' @param key character the key to 'translate'. Only used in combination with 'gui'.
 #' @param encoding character encoding to be assumed for input strings.
 #' @param about logical FALSE (default) to read key value pairs,
-#' TRUE to read about as plain text.
+#' TRUE to read about file as plain text.
 #'
 #' @export
 #'
@@ -82,12 +85,15 @@ getStrings <- function(language = NA, gui = NA, key = NA,
 
       # Read file.
       dtAll <- fread(
-        file = langFilePath, sep = "auto",
+        file = langFilePath, sep = "\t",
         header = "auto", encoding = encoding
       )
 
       # Set key column.
-      setkey(dtAll, key = "Key")
+      setkey(dtAll, key = "key")
+
+      # Fix new line character.
+      dtAll[, value := gsub("\\n", "\n", value, fixed = TRUE)]
 
       # Return all data as default.
       result <- dtAll
@@ -97,7 +103,7 @@ getStrings <- function(language = NA, gui = NA, key = NA,
         message("Get langugage strings for ", gui)
 
         # Get strings for the specific function.
-        result <- result[result$Scope == gui, ]
+        result <- result[result$scope == gui, ]
 
         if (nrow(result) == 0) {
           message("No rows found for gui=", gui, ". Returning NULL.")
@@ -112,7 +118,7 @@ getStrings <- function(language = NA, gui = NA, key = NA,
         message("Get langugage strings for key", key)
 
         # Get the specific gui function value by key.
-        result <- result[key]$Value
+        result <- result[key]$value
       }
     } else { # If file doesn't exist.
 
