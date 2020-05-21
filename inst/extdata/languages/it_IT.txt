@@ -1,4 +1,4 @@
-Scope	Order	Key	Value
+scope	order	key	value
 addData_gui	1	strWinTitle 	Aggiungi dati
 addData_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 addData_gui	3	strBtnHelp	Aiuto
@@ -890,7 +890,7 @@ ggsave_gui	18	strBtnProcessing	In elaborazione?
 ggsave_gui	19	strMsgSave	Rendi graficamente l'oggetto,  devono essere forniti nome e percorso del file.\n\nQuesto errore potrebbe verificarsio la prima volta che si usa la funzione.\nTrovare la cartella usando il pulsante 'Apri'.
 ggsave_gui	20	strMsgTitleError	Errore
 ggsave_gui	21	strMsgTitleSaveError	Errore di salvataggio
-ggsave_gui	22	strMsgFileExist	Il file esiste già!/n/nScegliere di cancellare, sovrascrivere o dare un nuovo nome
+ggsave_gui	22	strMsgFileExist	Il file esiste già!\n\nScegliere di cancellare, sovrascrivere o dare un nuovo nome
 ggsave_gui	23	strBtnCancel	Cancella
 ggsave_gui	24	strBtnOverwrite	Sovrascrivi
 ggsave_gui	25	strBtnRetry	Riprova

@@ -90,109 +90,109 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$value
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmDataset"]$value
+    strtmp <- dtStrings["strFrmDataset"]$value
     strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
 
-    strTmp <- dtStrings["strLblDataset"]$value
+    strtmp <- dtStrings["strLblDataset"]$value
     strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
 
-    strTmp <- dtStrings["strDrpDataset"]$value
+    strtmp <- dtStrings["strDrpDataset"]$value
     strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
 
-    strTmp <- dtStrings["strLblSamples"]$value
+    strtmp <- dtStrings["strLblSamples"]$value
     strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
 
-    strTmp <- dtStrings["strLblSample"]$value
+    strtmp <- dtStrings["strLblSample"]$value
     strLblSample <- ifelse(is.na(strtmp), strLblSample, strtmp)
 
-    strTmp <- dtStrings["strDrpSample"]$value
+    strtmp <- dtStrings["strDrpSample"]$value
     strDrpSample <- ifelse(is.na(strtmp), strDrpSample, strtmp)
 
-    strTmp <- dtStrings["strLblKit"]$value
+    strtmp <- dtStrings["strLblKit"]$value
     strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$value
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strLblPlot"]$value
+    strtmp <- dtStrings["strLblPlot"]$value
     strLblPlot <- ifelse(is.na(strtmp), strLblPlot, strtmp)
 
-    strTmp <- dtStrings["strLblScales"]$value
+    strtmp <- dtStrings["strLblScales"]$value
     strLblScales <- ifelse(is.na(strtmp), strLblScales, strtmp)
 
-    strTmp <- dtStrings["strLblSize"]$value
+    strtmp <- dtStrings["strLblSize"]$value
     strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
 
-    strTmp <- dtStrings["strLblJustV"]$value
+    strtmp <- dtStrings["strLblJustV"]$value
     strLblJustV <- ifelse(is.na(strtmp), strLblJustV, strtmp)
 
-    strTmp <- dtStrings["strLblAngle"]$value
+    strtmp <- dtStrings["strLblAngle"]$value
     strLblAngle <- ifelse(is.na(strtmp), strLblAngle, strtmp)
 
-    strTmp <- dtStrings["strLblJustH"]$value
+    strtmp <- dtStrings["strLblJustH"]$value
     strLblJustH <- ifelse(is.na(strtmp), strLblJustH, strtmp)
 
-    strTmp <- dtStrings["strLblArea"]$value
+    strtmp <- dtStrings["strLblArea"]$value
     strLblArea <- ifelse(is.na(strtmp), strLblArea, strtmp)
 
-    strTmp <- dtStrings["strLblAT"]$value
+    strtmp <- dtStrings["strLblAT"]$value
     strLblAT <- ifelse(is.na(strtmp), strLblAT, strtmp)
 
-    strTmp <- dtStrings["strChkIgnore"]$value
+    strtmp <- dtStrings["strChkIgnore"]$value
     strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
 
-    strTmp <- dtStrings["strChkWrap"]$value
+    strtmp <- dtStrings["strChkWrap"]$value
     strChkWrap <- ifelse(is.na(strtmp), strChkWrap, strtmp)
 
-    strTmp <- dtStrings["strChkFix"]$value
+    strtmp <- dtStrings["strChkFix"]$value
     strChkFix <- ifelse(is.na(strtmp), strChkFix, strtmp)
 
-    strTmp <- dtStrings["strChkCollapse"]$value
+    strtmp <- dtStrings["strChkCollapse"]$value
     strChkCollapse <- ifelse(is.na(strtmp), strChkCollapse, strtmp)
 
-    strTmp <- dtStrings["strChkBox"]$value
+    strtmp <- dtStrings["strChkBox"]$value
     strChkBox <- ifelse(is.na(strtmp), strChkBox, strtmp)
 
-    strTmp <- dtStrings["strChkPeaks"]$value
+    strtmp <- dtStrings["strChkPeaks"]$value
     strChkPeaks <- ifelse(is.na(strtmp), strChkPeaks, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$value
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-    
-    strTmp <- dtStrings["strLblSave"]$value
+
+    strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-    
-    strTmp <- dtStrings["strBtnSaveObject"]$value
+
+    strtmp <- dtStrings["strBtnSaveObject"]$value
     strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
 
-    strTmp <- dtStrings["strBtnSaveImage"]$value
+    strtmp <- dtStrings["strBtnSaveImage"]$value
     strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
 
-    strTmp <- dtStrings["strBtnObjectSaved"]$value
+    strtmp <- dtStrings["strBtnObjectSaved"]$value
     strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
 
-    strTmp <- dtStrings["strBtnGenerate"]$value
+    strtmp <- dtStrings["strBtnGenerate"]$value
     strBtnGenerate <- ifelse(is.na(strtmp), strBtnGenerate, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$value
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strMsgDataset"]$value
+    strtmp <- dtStrings["strMsgDataset"]$value
     strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleDataset"]$value
+    strtmp <- dtStrings["strMsgTitleDataset"]$value
     strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
   }
 

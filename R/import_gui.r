@@ -108,118 +108,118 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$value
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strBtnFile"]$value
+    strtmp <- dtStrings["strBtnFile"]$value
     strBtnFile <- ifelse(is.na(strtmp), strBtnFile, strtmp)
 
-    strTmp <- dtStrings["strTipFile"]$value
+    strtmp <- dtStrings["strTipFile"]$value
     strTipFile <- ifelse(is.na(strtmp), strTipFile, strtmp)
 
-    strTmp <- dtStrings["strMsgFile"]$value
+    strtmp <- dtStrings["strMsgFile"]$value
     strMsgFile <- ifelse(is.na(strtmp), strMsgFile, strtmp)
 
-    strTmp <- dtStrings["strBtnFolder"]$value
+    strtmp <- dtStrings["strBtnFolder"]$value
     strBtnFolder <- ifelse(is.na(strtmp), strBtnFolder, strtmp)
 
-    strTmp <- dtStrings["strTipFolder"]$value
+    strtmp <- dtStrings["strTipFolder"]$value
     strTipFolder <- ifelse(is.na(strtmp), strTipFolder, strtmp)
 
-    strTmp <- dtStrings["strMsgFolder"]$value
+    strtmp <- dtStrings["strMsgFolder"]$value
     strMsgFolder <- ifelse(is.na(strtmp), strMsgFolder, strtmp)
 
-    strTmp <- dtStrings["strLblSelected"]$value
+    strtmp <- dtStrings["strLblSelected"]$value
     strLblSelected <- ifelse(is.na(strtmp), strLblSelected, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$value
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strExpMultiple"]$value
+    strtmp <- dtStrings["strExpMultiple"]$value
     strExpMultiple <- ifelse(is.na(strtmp), strExpMultiple, strtmp)
 
-    strTmp <- dtStrings["strChkIgnore"]$value
+    strtmp <- dtStrings["strChkIgnore"]$value
     strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
 
-    strTmp <- dtStrings["strLblPrefix"]$value
+    strtmp <- dtStrings["strLblPrefix"]$value
     strLblPrefix <- ifelse(is.na(strtmp), strLblPrefix, strtmp)
 
-    strTmp <- dtStrings["strLblSuffix"]$value
+    strtmp <- dtStrings["strLblSuffix"]$value
     strLblSuffix <- ifelse(is.na(strtmp), strLblSuffix, strtmp)
 
-    strTmp <- dtStrings["strLblExtension"]$value
+    strtmp <- dtStrings["strLblExtension"]$value
     strLblExtension <- ifelse(is.na(strtmp), strLblExtension, strtmp)
 
-    strTmp <- dtStrings["strChkName"]$value
+    strtmp <- dtStrings["strChkName"]$value
     strChkName <- ifelse(is.na(strtmp), strChkName, strtmp)
 
-    strTmp <- dtStrings["strChkTime"]$value
+    strtmp <- dtStrings["strChkTime"]$value
     strChkTime <- ifelse(is.na(strtmp), strChkTime, strtmp)
 
-    strTmp <- dtStrings["strLblDelimiter"]$value
+    strtmp <- dtStrings["strLblDelimiter"]$value
     strLblDelimiter <- ifelse(is.na(strtmp), strLblDelimiter, strtmp)
 
-    strTmp <- dtStrings["strDrpTab"]$value
+    strtmp <- dtStrings["strDrpTab"]$value
     strDrpTab <- ifelse(is.na(strtmp), strDrpTab, strtmp)
 
-    strTmp <- dtStrings["strDrpSpace"]$value
+    strtmp <- dtStrings["strDrpSpace"]$value
     strDrpSpace <- ifelse(is.na(strtmp), strDrpSpace, strtmp)
 
-    strTmp <- dtStrings["strDrpComma"]$value
+    strtmp <- dtStrings["strDrpComma"]$value
     strDrpComma <- ifelse(is.na(strtmp), strDrpComma, strtmp)
 
-    strTmp <- dtStrings["strDrpSemicolon"]$value
+    strtmp <- dtStrings["strDrpSemicolon"]$value
     strDrpSemicolon <- ifelse(is.na(strtmp), strDrpSemicolon, strtmp)
 
-    strTmp <- dtStrings["strLblNA"]$value
+    strtmp <- dtStrings["strLblNA"]$value
     strLblNA <- ifelse(is.na(strtmp), strLblNA, strtmp)
 
-    strTmp <- dtStrings["strChkTrim"]$value
+    strtmp <- dtStrings["strChkTrim"]$value
     strChkTrim <- ifelse(is.na(strtmp), strChkTrim, strtmp)
 
-    strTmp <- dtStrings["strLblTrim"]$value
+    strtmp <- dtStrings["strLblTrim"]$value
     strLblTrim <- ifelse(is.na(strtmp), strLblTrim, strtmp)
 
-    strTmp <- dtStrings["strChkInvert"]$value
+    strtmp <- dtStrings["strChkInvert"]$value
     strChkInvert <- ifelse(is.na(strtmp), strChkInvert, strtmp)
 
-    strTmp <- dtStrings["strChkSlim"]$value
+    strtmp <- dtStrings["strChkSlim"]$value
     strChkSlim <- ifelse(is.na(strtmp), strChkSlim, strtmp)
 
-    strTmp <- dtStrings["strChkKeep"]$value
+    strtmp <- dtStrings["strChkKeep"]$value
     strChkKeep <- ifelse(is.na(strtmp), strChkKeep, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$value
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strLblSave"]$value
+    strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strTmp <- dtStrings["strMsgSave"]$value
+    strtmp <- dtStrings["strMsgSave"]$value
     strMsgSave <- ifelse(is.na(strtmp), strMsgSave, strtmp)
 
-    strTmp <- dtStrings["strBtnImport"]$value
+    strtmp <- dtStrings["strBtnImport"]$value
     strBtnImport <- ifelse(is.na(strtmp), strBtnImport, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$value
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strMsgName"]$value
+    strtmp <- dtStrings["strMsgName"]$value
     strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
 
-    strTmp <- dtStrings["strMsgDataset"]$value
+    strtmp <- dtStrings["strMsgDataset"]$value
     strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$value
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
 

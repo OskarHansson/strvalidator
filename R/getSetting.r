@@ -14,50 +14,49 @@
 #' @param key character key for value to return.
 #'
 #' @export
-#' 
+#'
 #' @importFrom data.table fread setkey
-#' 
+#'
 #' @return character the retrieved value or NA if not found.
 #'
 
 getSetting <- function(key) {
-  
+
   # Constants
   fileName <- "settings.txt" # Name of settings file with file extension.
   subFolder <- "extdata" # Sub folder in addition to package path.
   fileSep <- .Platform$file.sep # Platform dependent path separator.
-  
+
   # Get package path. Could use getPackageName()?
   packagePath <- path.package("strvalidator", quiet = FALSE)
-  
+
   # Create path to settings file.
   filePath <- paste(packagePath, subFolder, fileName, sep = fileSep)
-  
+
   # If file exist.
   if (file.exists(filePath)) {
-    
+
     # Read settings file.
-    dtable <- fread(file = filePath, sep = "=",
-                    quote = "\"", header = FALSE, 
-                    col.names = c("Key", "Value"))
-    
-    
-    
+    dtable <- fread(
+      file = filePath, sep = "=",
+      quote = "\"", header = FALSE,
+      col.names = c("key", "value")
+    )
+
     # Set key column.
-    setkey(dtable, key = "Key")
-    
+    setkey(dtable, key = "key")
+
     # Get value.
-    value <- dtable[key]$Value
+    value <- dtable[key]$value
     message("Settings: ", key, "=", value)
-    
   } else { # If file don't exist.
-    
+
     # Show file not found message.
     message("File ", filePath, " not found. Returning NA.")
-    
+
     # Set NA as return value.
     value <- NA
   }
-  
+
   return(value)
 }

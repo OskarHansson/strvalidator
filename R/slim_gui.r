@@ -89,79 +89,79 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$value
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmDataset"]$value
+    strtmp <- dtStrings["strFrmDataset"]$value
     strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
 
-    strTmp <- dtStrings["strLblDataset"]$value
+    strtmp <- dtStrings["strLblDataset"]$value
     strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
 
-    strTmp <- dtStrings["strDrpDataset"]$value
+    strtmp <- dtStrings["strDrpDataset"]$value
     strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
 
-    strTmp <- dtStrings["strLblSamples"]$value
+    strtmp <- dtStrings["strLblSamples"]$value
     strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
 
-    strTmp <- dtStrings["strLblColumns"]$value
+    strtmp <- dtStrings["strLblColumns"]$value
     strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
 
-    strTmp <- dtStrings["strLblRows"]$value
+    strtmp <- dtStrings["strLblRows"]$value
     strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$value
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strChkKeep"]$value
+    strtmp <- dtStrings["strChkKeep"]$value
     strChkKeep <- ifelse(is.na(strtmp), strChkKeep, strtmp)
 
-    strTmp <- dtStrings["strLblKeep"]$value
+    strtmp <- dtStrings["strLblKeep"]$value
     strLblKeep <- ifelse(is.na(strtmp), strLblKeep, strtmp)
 
-    strTmp <- dtStrings["strTipColumns"]$value
+    strtmp <- dtStrings["strTipColumns"]$value
     strTipColumns <- ifelse(is.na(strtmp), strTipColumns, strtmp)
 
-    strTmp <- dtStrings["strFrmFix"]$value
+    strtmp <- dtStrings["strFrmFix"]$value
     strFrmFix <- ifelse(is.na(strtmp), strFrmFix, strtmp)
 
-    strTmp <- dtStrings["strLblFix"]$value
+    strtmp <- dtStrings["strLblFix"]$value
     strLblFix <- ifelse(is.na(strtmp), strLblFix, strtmp)
 
-    strTmp <- dtStrings["strEdtMsg"]$value
+    strtmp <- dtStrings["strEdtMsg"]$value
     strEdtMsg <- ifelse(is.na(strtmp), strEdtMsg, strtmp)
 
-    strTmp <- dtStrings["strFrmStack"]$value
+    strtmp <- dtStrings["strFrmStack"]$value
     strFrmStack <- ifelse(is.na(strtmp), strFrmStack, strtmp)
 
-    strTmp <- dtStrings["strLblStack"]$value
+    strtmp <- dtStrings["strLblStack"]$value
     strLblStack <- ifelse(is.na(strtmp), strLblStack, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$value
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strLblSave"]$value
+    strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strTmp <- dtStrings["strMsgName"]$value
+    strtmp <- dtStrings["strMsgName"]$value
     strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
 
-    strTmp <- dtStrings["strBtnSlim"]$value
+    strtmp <- dtStrings["strBtnSlim"]$value
     strBtnSlim <- ifelse(is.na(strtmp), strBtnSlim, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$value
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$value
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
 

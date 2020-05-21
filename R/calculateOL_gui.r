@@ -74,50 +74,50 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$Value
-    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+    strtmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$Value
-    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+    strtmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$Value
-    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+    strtmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmKits"]$Value
-    strFrmKits <- ifelse(is.na(strTmp), strFrmKits, strTmp)
+    strtmp <- dtStrings["strFrmKits"]$value
+    strFrmKits <- ifelse(is.na(strtmp), strFrmKits, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$Value
-    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+    strtmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strLblDatabase"]$Value
-    strLblDatabase <- ifelse(is.na(strTmp), strLblDatabase, strTmp)
+    strtmp <- dtStrings["strLblDatabase"]$value
+    strLblDatabase <- ifelse(is.na(strtmp), strLblDatabase, strtmp)
 
-    strTmp <- dtStrings["strChkVirtual"]$Value
-    strChkVirtual <- ifelse(is.na(strTmp), strChkVirtual, strTmp)
+    strtmp <- dtStrings["strChkVirtual"]$value
+    strChkVirtual <- ifelse(is.na(strtmp), strChkVirtual, strtmp)
 
-    strTmp <- dtStrings["strTipVirtual"]$Value
-    strTipVirtual <- ifelse(is.na(strTmp), strTipVirtual, strTmp)
+    strtmp <- dtStrings["strTipVirtual"]$value
+    strTipVirtual <- ifelse(is.na(strtmp), strTipVirtual, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$Value
-    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+    strtmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strLblSave"]$Value
-    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+    strtmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strTmp <- dtStrings["strBtnCalculate"]$Value
-    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+    strtmp <- dtStrings["strBtnCalculate"]$value
+    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$Value
-    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+    strtmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strMsgKit"]$Value
-    strMsgKit <- ifelse(is.na(strTmp), strMsgKit, strTmp)
+    strtmp <- dtStrings["strMsgKit"]$value
+    strMsgKit <- ifelse(is.na(strtmp), strMsgKit, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleKit"]$Value
-    strMsgTitleKit <- ifelse(is.na(strTmp), strMsgTitleKit, strTmp)
+    strtmp <- dtStrings["strMsgTitleKit"]$value
+    strMsgTitleKit <- ifelse(is.na(strtmp), strMsgTitleKit, strtmp)
   }
 
   # WINDOW ####################################################################

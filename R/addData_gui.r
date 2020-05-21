@@ -87,71 +87,71 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$Value
-    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+    strtmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$Value
-    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+    strtmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$Value
-    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+    strtmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmDataset"]$Value
-    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+    strtmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
 
-    strTmp <- dtStrings["strLblDestination"]$Value
-    strLblDestination <- ifelse(is.na(strTmp), strLblDestination, strTmp)
+    strtmp <- dtStrings["strLblDestination"]$value
+    strLblDestination <- ifelse(is.na(strtmp), strLblDestination, strtmp)
 
-    strTmp <- dtStrings["strDrpDefault"]$Value
-    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
+    strtmp <- dtStrings["strDrpDefault"]$value
+    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
 
-    strTmp <- dtStrings["strLblSamples"]$Value
-    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+    strtmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
 
-    strTmp <- dtStrings["strLblSource"]$Value
-    strLblSource <- ifelse(is.na(strTmp), strLblSource, strTmp)
+    strtmp <- dtStrings["strLblSource"]$value
+    strLblSource <- ifelse(is.na(strtmp), strLblSource, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$Value
-    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+    strtmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strChkExact"]$Value
-    strChkExact <- ifelse(is.na(strTmp), strChkExact, strTmp)
+    strtmp <- dtStrings["strChkExact"]$value
+    strChkExact <- ifelse(is.na(strtmp), strChkExact, strtmp)
 
-    strTmp <- dtStrings["strChkIgnore"]$Value
-    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
+    strtmp <- dtStrings["strChkIgnore"]$value
+    strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
 
-    strTmp <- dtStrings["strLblKey1"]$Value
-    strLblKey1 <- ifelse(is.na(strTmp), strLblKey1, strTmp)
+    strtmp <- dtStrings["strLblKey1"]$value
+    strLblKey1 <- ifelse(is.na(strtmp), strLblKey1, strtmp)
 
-    strTmp <- dtStrings["strLblKey2"]$Value
-    strLblKey2 <- ifelse(is.na(strTmp), strLblKey2, strTmp)
+    strtmp <- dtStrings["strLblKey2"]$value
+    strLblKey2 <- ifelse(is.na(strtmp), strLblKey2, strtmp)
 
-    strTmp <- dtStrings["strLblColumns"]$Value
-    strLblColumns <- ifelse(is.na(strTmp), strLblColumns, strTmp)
+    strtmp <- dtStrings["strLblColumns"]$value
+    strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
 
-    strTmp <- dtStrings["strEdtMsg"]$Value
-    strEdtMsg <- ifelse(is.na(strTmp), strEdtMsg, strTmp)
+    strtmp <- dtStrings["strEdtMsg"]$value
+    strEdtMsg <- ifelse(is.na(strtmp), strEdtMsg, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$Value
-    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+    strtmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strLblSave"]$Value
-    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+    strtmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strTmp <- dtStrings["strBtnAdd"]$Value
-    strBtnAdd <- ifelse(is.na(strTmp), strBtnAdd, strTmp)
+    strtmp <- dtStrings["strBtnAdd"]$value
+    strBtnAdd <- ifelse(is.na(strtmp), strBtnAdd, strtmp)
 
-    strTmp <- dtStrings["strBtnAddActive"]$Value
-    strBtnAddActive <- ifelse(is.na(strTmp), strBtnAddActive, strTmp)
+    strtmp <- dtStrings["strBtnAddActive"]$value
+    strBtnAddActive <- ifelse(is.na(strtmp), strBtnAddActive, strtmp)
 
-    strTmp <- dtStrings["strMsgDataset"]$Value
-    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
-    
-    strTmp <- dtStrings["strMsgTitle"]$Value
-    strMsgTitle <- ifelse(is.na(strTmp), strMsgTitle, strTmp)
+    strtmp <- dtStrings["strMsgDataset"]$value
+    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
+
+    strtmp <- dtStrings["strMsgTitle"]$value
+    strMsgTitle <- ifelse(is.na(strtmp), strMsgTitle, strtmp)
   }
 
   # ---------------------------------------------------------------------------
@@ -557,7 +557,8 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .saveSettings()
       dispose(w)
     } else {
-      gmessage(msg = strMsgDataset,
+      gmessage(
+        msg = strMsgDataset,
         title = strMsgTitleDataset,
         icon = "error",
         parent = w

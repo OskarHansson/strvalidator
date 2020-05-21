@@ -53,14 +53,14 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   .gRefName <- NULL
 
   # Language ------------------------------------------------------------------
-  
+
   # Get this functions name from call.
   fnc <- as.character(match.call()[[1]])
-  
+
   if (debug) {
     print(paste("IN:", fnc))
   }
-  
+
   # Default strings.
   strWinTitle <- "Filter profile"
   strChkGui <- "Save GUI settings"
@@ -104,143 +104,143 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset."
   strWinTitleCheck <- "Check subsetting"
   strMsgTitleError <- "Error"
-  
+
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
-  
+
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
-    
-    strTmp <- dtStrings["strWinTitle"]$value
+
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-    
-    strTmp <- dtStrings["strChkGui"]$value
+
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-    
-    strTmp <- dtStrings["strBtnHelp"]$value
+
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-    
-    strTmp <- dtStrings["strFrmDataset"]$value
+
+    strtmp <- dtStrings["strFrmDataset"]$value
     strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-    
-    strTmp <- dtStrings["strLblDataset"]$value
+
+    strtmp <- dtStrings["strLblDataset"]$value
     strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-    
-    strTmp <- dtStrings["strDrpDataset"]$value
+
+    strtmp <- dtStrings["strDrpDataset"]$value
     strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-    
-    strTmp <- dtStrings["strLblSamples"]$value
+
+    strtmp <- dtStrings["strLblSamples"]$value
     strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-    
-    strTmp <- dtStrings["strLblRefDataset"]$value
+
+    strtmp <- dtStrings["strLblRefDataset"]$value
     strLblRefDataset <- ifelse(is.na(strtmp), strLblRefDataset, strtmp)
-    
-    strTmp <- dtStrings["strLblRef"]$value
+
+    strtmp <- dtStrings["strLblRef"]$value
     strLblRef <- ifelse(is.na(strtmp), strLblRef, strtmp)
-    
-    strTmp <- dtStrings["strBtnCheck"]$value
+
+    strtmp <- dtStrings["strBtnCheck"]$value
     strBtnCheck <- ifelse(is.na(strtmp), strBtnCheck, strtmp)
-    
-    strTmp <- dtStrings["strLblKit"]$value
+
+    strtmp <- dtStrings["strLblKit"]$value
     strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-    
-    strTmp <- dtStrings["strChkVirtual"]$value
+
+    strtmp <- dtStrings["strChkVirtual"]$value
     strChkVirtual <- ifelse(is.na(strtmp), strChkVirtual, strtmp)
-    
-    strTmp <- dtStrings["strFrmOptions"]$value
+
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-    
-    strTmp <- dtStrings["strLblPre"]$value
+
+    strtmp <- dtStrings["strLblPre"]$value
     strLblPre <- ifelse(is.na(strtmp), strLblPre, strtmp)
-    
-    strTmp <- dtStrings["strChkSex"]$value
+
+    strtmp <- dtStrings["strChkSex"]$value
     strChkSex <- ifelse(is.na(strtmp), strChkSex, strtmp)
-    
-    strTmp <- dtStrings["strTipSex"]$value
+
+    strtmp <- dtStrings["strTipSex"]$value
     strTipSex <- ifelse(is.na(strtmp), strTipSex, strtmp)
-    
-    strTmp <- dtStrings["strChkSensors"]$value
+
+    strtmp <- dtStrings["strChkSensors"]$value
     strChkSensors <- ifelse(is.na(strtmp), strChkSensors, strtmp)
-    
-    strTmp <- dtStrings["strTipSensors"]$value
+
+    strtmp <- dtStrings["strTipSensors"]$value
     strTipSensors <- ifelse(is.na(strtmp), strTipSensors, strtmp)
-    
-    strTmp <- dtStrings["strLblMethod"]$value
+
+    strtmp <- dtStrings["strLblMethod"]$value
     strLblMethod <- ifelse(is.na(strtmp), strLblMethod, strtmp)
-    
-    strTmp <- dtStrings["strRadRef"]$value
+
+    strtmp <- dtStrings["strRadRef"]$value
     strRadRef <- ifelse(is.na(strtmp), strRadRef, strtmp)
-    
-    strTmp <- dtStrings["strRadBins"]$value
+
+    strtmp <- dtStrings["strRadBins"]$value
     strRadBins <- ifelse(is.na(strtmp), strRadBins, strtmp)
-    
-    strTmp <- dtStrings["strChkInvert"]$value
+
+    strtmp <- dtStrings["strChkInvert"]$value
     strChkInvert <- ifelse(is.na(strtmp), strChkInvert, strtmp)
-    
-    strTmp <- dtStrings["strLblMatching"]$value
+
+    strtmp <- dtStrings["strLblMatching"]$value
     strLblMatching <- ifelse(is.na(strtmp), strLblMatching, strtmp)
-    
-    strTmp <- dtStrings["strChkIgnore"]$value
+
+    strtmp <- dtStrings["strChkIgnore"]$value
     strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
-    
-    strTmp <- dtStrings["strTipIgnore"]$value
+
+    strtmp <- dtStrings["strTipIgnore"]$value
     strTipIgnore <- ifelse(is.na(strtmp), strTipIgnore, strtmp)
-    
-    strTmp <- dtStrings["strChkWord"]$value
+
+    strtmp <- dtStrings["strChkWord"]$value
     strChkWord <- ifelse(is.na(strtmp), strChkWord, strtmp)
-    
-    strTmp <- dtStrings["strTipWord"]$value
+
+    strtmp <- dtStrings["strTipWord"]$value
     strTipWord <- ifelse(is.na(strtmp), strTipWord, strtmp)
-    
-    strTmp <- dtStrings["strChkExact"]$value
+
+    strtmp <- dtStrings["strChkExact"]$value
     strChkExact <- ifelse(is.na(strtmp), strChkExact, strtmp)
-    
-    strTmp <- dtStrings["strTipExact"]$value
+
+    strtmp <- dtStrings["strTipExact"]$value
     strTipExact <- ifelse(is.na(strtmp), strTipExact, strtmp)
-    
-    strTmp <- dtStrings["strLblPost"]$value
+
+    strtmp <- dtStrings["strLblPost"]$value
     strLblPost <- ifelse(is.na(strtmp), strLblPost, strtmp)
-    
-    strTmp <- dtStrings["strChkAdd"]$value
+
+    strtmp <- dtStrings["strChkAdd"]$value
     strChkAdd <- ifelse(is.na(strtmp), strChkAdd, strtmp)
-    
-    strTmp <- dtStrings["strTipAdd"]$value
+
+    strtmp <- dtStrings["strTipAdd"]$value
     strTipAdd <- ifelse(is.na(strtmp), strTipAdd, strtmp)
-    
-    strTmp <- dtStrings["strChkKeep"]$value
+
+    strtmp <- dtStrings["strChkKeep"]$value
     strChkKeep <- ifelse(is.na(strtmp), strChkKeep, strtmp)
-    
-    strTmp <- dtStrings["strFrmSave"]$value
+
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-    
-    strTmp <- dtStrings["strLblSave"]$value
+
+    strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-    
-    strTmp <- dtStrings["strBtnFilter"]$value
+
+    strtmp <- dtStrings["strBtnFilter"]$value
     strBtnFilter <- ifelse(is.na(strtmp), strBtnFilter, strtmp)
-    
-    strTmp <- dtStrings["strBtnProcessing"]$value
+
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-    
-    strTmp <- dtStrings["strMsgDataset"]$value
+
+    strtmp <- dtStrings["strMsgDataset"]$value
     strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-    
-    strTmp <- dtStrings["strMsgTitleDataset"]$value
+
+    strtmp <- dtStrings["strMsgTitleDataset"]$value
     strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-    
-    strTmp <- dtStrings["strMsgCheck"]$value
+
+    strtmp <- dtStrings["strMsgCheck"]$value
     strMsgCheck <- ifelse(is.na(strtmp), strMsgCheck, strtmp)
-    
-    strTmp <- dtStrings["strWinTitleCheck"]$value
+
+    strtmp <- dtStrings["strWinTitleCheck"]$value
     strWinTitleCheck <- ifelse(is.na(strtmp), strWinTitleCheck, strtmp)
-    
-    strTmp <- dtStrings["strMsgTitleError"]$value
+
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
-  
+
   # WINDOW ####################################################################
-  
+
   w <- gwindow(title = strWinTitle, visible = FALSE)
 
   # Runs when window is closed.
@@ -486,15 +486,15 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   )
 
   # PRE-PROCESSING ------------------------------------------------------------
-  
+
   glabel(text = strLblPre, anchor = c(-1, 0), container = f1)
-  
+
   f1_sex_chk <- gcheckbox(
     text = strChkSex,
     checked = FALSE, container = f1
   )
   tooltip(f1_sex_chk) <- strTipSex
-  
+
   f1_qs_chk <- gcheckbox(
     text = strChkSensors,
     checked = FALSE, container = f1
@@ -502,7 +502,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   tooltip(f1_qs_chk) <- strTipSensors
 
   # METHOD --------------------------------------------------------------------
-  
+
   glabel(text = "", anchor = c(-1, 0), container = f1)
   glabel(text = strLblMethod, anchor = c(-1, 0), container = f1)
 
@@ -524,7 +524,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   )
 
   # MATCHING ------------------------------------------------------------------
-  
+
   glabel(text = "", anchor = c(-1, 0), container = f1)
   glabel(text = strLblMatching, anchor = c(-1, 0), container = f1)
 
@@ -550,7 +550,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   glabel(text = "", anchor = c(-1, 0), container = f1)
   glabel(text = strLblPost, anchor = c(-1, 0), container = f1)
-  
+
   f1_add_missing_loci_chk <- gcheckbox(
     text = strChkAdd,
     checked = TRUE, container = f1

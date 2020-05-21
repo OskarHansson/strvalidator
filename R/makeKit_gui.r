@@ -109,112 +109,112 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmAction"]$value
+    strtmp <- dtStrings["strFrmAction"]$value
     strFrmAction <- ifelse(is.na(strtmp), strFrmAction, strtmp)
 
-    strTmp <- dtStrings["strRadEdit"]$value
+    strtmp <- dtStrings["strRadEdit"]$value
     strRadEdit <- ifelse(is.na(strtmp), strRadEdit, strtmp)
 
-    strTmp <- dtStrings["strRadAdd"]$value
+    strtmp <- dtStrings["strRadAdd"]$value
     strRadAdd <- ifelse(is.na(strtmp), strRadAdd, strtmp)
 
-    strTmp <- dtStrings["strFrmFile"]$value
+    strtmp <- dtStrings["strFrmFile"]$value
     strFrmFile <- ifelse(is.na(strtmp), strFrmFile, strtmp)
 
-    strTmp <- dtStrings["strBtnLoad"]$value
+    strtmp <- dtStrings["strBtnLoad"]$value
     strBtnLoad <- ifelse(is.na(strtmp), strBtnLoad, strtmp)
 
-    strTmp <- dtStrings["strFrmNew"]$value
+    strtmp <- dtStrings["strFrmNew"]$value
     strFrmNew <- ifelse(is.na(strtmp), strFrmNew, strtmp)
 
-    strTmp <- dtStrings["strBtnBins"]$value
+    strtmp <- dtStrings["strBtnBins"]$value
     strBtnBins <- ifelse(is.na(strtmp), strBtnBins, strtmp)
 
-    strTmp <- dtStrings["strBtnPanels"]$value
+    strtmp <- dtStrings["strBtnPanels"]$value
     strBtnPanels <- ifelse(is.na(strtmp), strBtnPanels, strtmp)
 
-    strTmp <- dtStrings["strBtnCombine"]$value
+    strtmp <- dtStrings["strBtnCombine"]$value
     strBtnCombine <- ifelse(is.na(strtmp), strBtnCombine, strtmp)
 
-    strTmp <- dtStrings["strMsgFile"]$value
+    strtmp <- dtStrings["strMsgFile"]$value
     strMsgFile <- ifelse(is.na(strtmp), strMsgFile, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleFile"]$value
+    strtmp <- dtStrings["strMsgTitleFile"]$value
     strMsgTitleFile <- ifelse(is.na(strtmp), strMsgTitleFile, strtmp)
 
-    strTmp <- dtStrings["strLblSelectBins"]$value
+    strtmp <- dtStrings["strLblSelectBins"]$value
     strLblSelectBins <- ifelse(is.na(strtmp), strLblSelectBins, strtmp)
 
-    strTmp <- dtStrings["strLblSelectPanels"]$value
+    strtmp <- dtStrings["strLblSelectPanels"]$value
     strLblSelectPanels <- ifelse(is.na(strtmp), strLblSelectPanels, strtmp)
 
-    strTmp <- dtStrings["strLblCombine"]$value
+    strtmp <- dtStrings["strLblCombine"]$value
     strLblCombine <- ifelse(is.na(strtmp), strLblCombine, strtmp)
 
-    strTmp <- dtStrings["strMsgCombine"]$value
+    strtmp <- dtStrings["strMsgCombine"]$value
     strMsgCombine <- ifelse(is.na(strtmp), strMsgCombine, strtmp)
 
-    strTmp <- dtStrings["strLblSex"]$value
+    strtmp <- dtStrings["strLblSex"]$value
     strLblSex <- ifelse(is.na(strtmp), strLblSex, strtmp)
 
-    strTmp <- dtStrings["strLblSensors"]$value
+    strtmp <- dtStrings["strLblSensors"]$value
     strLblSensors <- ifelse(is.na(strtmp), strLblSensors, strtmp)
 
-    strTmp <- dtStrings["strLblRemove"]$value
+    strtmp <- dtStrings["strLblRemove"]$value
     strLblRemove <- ifelse(is.na(strtmp), strLblRemove, strtmp)
 
-    strTmp <- dtStrings["strLblPanel"]$value
+    strtmp <- dtStrings["strLblPanel"]$value
     strLblPanel <- ifelse(is.na(strtmp), strLblPanel, strtmp)
 
-    strTmp <- dtStrings["strLblShortName"]$value
+    strtmp <- dtStrings["strLblShortName"]$value
     strLblShortName <- ifelse(is.na(strtmp), strLblShortName, strtmp)
 
-    strTmp <- dtStrings["strLblFullName"]$value
+    strtmp <- dtStrings["strLblFullName"]$value
     strLblFullName <- ifelse(is.na(strtmp), strLblFullName, strtmp)
 
-    strTmp <- dtStrings["strLblNone"]$value
+    strtmp <- dtStrings["strLblNone"]$value
     strLblNone <- ifelse(is.na(strtmp), strLblNone, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$value
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strRadAppend"]$value
+    strtmp <- dtStrings["strRadAppend"]$value
     strRadAppend <- ifelse(is.na(strtmp), strRadAppend, strtmp)
 
-    strTmp <- dtStrings["strRadOverwrite"]$value
+    strtmp <- dtStrings["strRadOverwrite"]$value
     strRadOverwrite <- ifelse(is.na(strtmp), strRadOverwrite, strtmp)
 
-    strTmp <- dtStrings["strRadSave"]$value
+    strtmp <- dtStrings["strRadSave"]$value
     strRadSave <- ifelse(is.na(strtmp), strRadSave, strtmp)
 
-    strTmp <- dtStrings["strBtnSave"]$value
+    strtmp <- dtStrings["strBtnSave"]$value
     strBtnSave <- ifelse(is.na(strtmp), strBtnSave, strtmp)
 
-    strTmp <- dtStrings["strBtnSaving"]$value
+    strtmp <- dtStrings["strBtnSaving"]$value
     strBtnSaving <- ifelse(is.na(strtmp), strBtnSaving, strtmp)
 
-    strTmp <- dtStrings["strMsgDuplicate1"]$value
+    strtmp <- dtStrings["strMsgDuplicate1"]$value
     strMsgDuplicate1 <- ifelse(is.na(strtmp), strMsgDuplicate1, strtmp)
 
-    strTmp <- dtStrings["strMsgDuplicate2"]$value
+    strtmp <- dtStrings["strMsgDuplicate2"]$value
     strMsgDuplicate2 <- ifelse(is.na(strtmp), strMsgDuplicate2, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleDuplicate"]$value
+    strtmp <- dtStrings["strMsgTitleDuplicate"]$value
     strMsgTitleDuplicate <- ifelse(is.na(strtmp), strMsgTitleDuplicate, strtmp)
 
-    strTmp <- dtStrings["strMsgMissing"]$value
+    strtmp <- dtStrings["strMsgMissing"]$value
     strMsgMissing <- ifelse(is.na(strtmp), strMsgMissing, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleMissing"]$value
+    strtmp <- dtStrings["strMsgTitleMissing"]$value
     strMsgTitleMissing <- ifelse(is.na(strtmp), strMsgTitleMissing, strtmp)
   }
 

@@ -141,181 +141,181 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$value
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmDataset"]$value
+    strtmp <- dtStrings["strFrmDataset"]$value
     strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
 
-    strTmp <- dtStrings["strLblDataset"]$value
+    strtmp <- dtStrings["strLblDataset"]$value
     strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
 
-    strTmp <- dtStrings["strLblGroup"]$value
+    strtmp <- dtStrings["strLblGroup"]$value
     strLblGroup <- ifelse(is.na(strtmp), strLblGroup, strtmp)
 
-    strTmp <- dtStrings["strLblColumn"]$value
+    strtmp <- dtStrings["strLblColumn"]$value
     strLblColumn <- ifelse(is.na(strtmp), strLblColumn, strtmp)
 
-    strTmp <- dtStrings["strDrpDataset"]$value
+    strtmp <- dtStrings["strDrpDataset"]$value
     strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
 
-    strTmp <- dtStrings["strDrpGroup"]$value
+    strtmp <- dtStrings["strDrpGroup"]$value
     strDrpGroup <- ifelse(is.na(strtmp), strDrpGroup, strtmp)
 
-    strTmp <- dtStrings["strDrpColumn"]$value
+    strtmp <- dtStrings["strDrpColumn"]$value
     strDrpColumn <- ifelse(is.na(strtmp), strDrpColumn, strtmp)
 
-    strTmp <- dtStrings["strLblRows"]$value
+    strtmp <- dtStrings["strLblRows"]$value
     strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$value
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strChkOverride"]$value
+    strtmp <- dtStrings["strChkOverride"]$value
     strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
 
-    strTmp <- dtStrings["strLblTitlePlot"]$value
+    strtmp <- dtStrings["strLblTitlePlot"]$value
     strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
 
-    strTmp <- dtStrings["strLblTitleX"]$value
+    strtmp <- dtStrings["strLblTitleX"]$value
     strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
 
-    strTmp <- dtStrings["strLblTitleY"]$value
+    strtmp <- dtStrings["strLblTitleY"]$value
     strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
 
-    strTmp <- dtStrings["strLblTheme"]$value
+    strtmp <- dtStrings["strLblTheme"]$value
     strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
 
-    strTmp <- dtStrings["strChkBoxplot"]$value
+    strtmp <- dtStrings["strChkBoxplot"]$value
     strChkBoxplot <- ifelse(is.na(strtmp), strChkBoxplot, strtmp)
 
-    strTmp <- dtStrings["strLblWidth"]$value
+    strtmp <- dtStrings["strLblWidth"]$value
     strLblWidth <- ifelse(is.na(strtmp), strLblWidth, strtmp)
 
-    strTmp <- dtStrings["strChkLog"]$value
+    strtmp <- dtStrings["strChkLog"]$value
     strChkLog <- ifelse(is.na(strtmp), strChkLog, strtmp)
 
-    strTmp <- dtStrings["strLblBase"]$value
+    strtmp <- dtStrings["strLblBase"]$value
     strLblBase <- ifelse(is.na(strtmp), strLblBase, strtmp)
 
-    strTmp <- dtStrings["strTipBase"]$value
+    strtmp <- dtStrings["strTipBase"]$value
     strTipBase <- ifelse(is.na(strtmp), strTipBase, strtmp)
 
-    strTmp <- dtStrings["strExpDistribution"]$value
+    strtmp <- dtStrings["strExpDistribution"]$value
     strExpDistribution <- ifelse(is.na(strtmp), strExpDistribution, strtmp)
 
-    strTmp <- dtStrings["strLblSmoothing"]$value
+    strtmp <- dtStrings["strLblSmoothing"]$value
     strLblSmoothing <- ifelse(is.na(strtmp), strLblSmoothing, strtmp)
 
-    strTmp <- dtStrings["strLblBandwidth"]$value
+    strtmp <- dtStrings["strLblBandwidth"]$value
     strLblBandwidth <- ifelse(is.na(strtmp), strLblBandwidth, strtmp)
 
-    strTmp <- dtStrings["strExpHistogram"]$value
+    strtmp <- dtStrings["strExpHistogram"]$value
     strExpHistogram <- ifelse(is.na(strtmp), strExpHistogram, strtmp)
 
-    strTmp <- dtStrings["strLblBinwidth"]$value
+    strtmp <- dtStrings["strLblBinwidth"]$value
     strLblBinwidth <- ifelse(is.na(strtmp), strLblBinwidth, strtmp)
 
-    strTmp <- dtStrings["strTipBin"]$value
+    strtmp <- dtStrings["strTipBin"]$value
     strTipBin <- ifelse(is.na(strtmp), strTipBin, strtmp)
 
-    strTmp <- dtStrings["strLblBins"]$value
+    strtmp <- dtStrings["strLblBins"]$value
     strLblBins <- ifelse(is.na(strtmp), strLblBins, strtmp)
 
-    strTmp <- dtStrings["strTipBins"]$value
+    strtmp <- dtStrings["strTipBins"]$value
     strTipBins <- ifelse(is.na(strtmp), strTipBins, strtmp)
 
-    strTmp <- dtStrings["strExpAxes"]$value
+    strtmp <- dtStrings["strExpAxes"]$value
     strExpAxes <- ifelse(is.na(strtmp), strExpAxes, strtmp)
 
-    strTmp <- dtStrings["strLblNB"]$value
+    strtmp <- dtStrings["strLblNB"]$value
     strLblNB <- ifelse(is.na(strtmp), strLblNB, strtmp)
 
-    strTmp <- dtStrings["strLblLimitY"]$value
+    strtmp <- dtStrings["strLblLimitY"]$value
     strLblLimitY <- ifelse(is.na(strtmp), strLblLimitY, strtmp)
 
-    strTmp <- dtStrings["strLblLimitX"]$value
+    strtmp <- dtStrings["strLblLimitX"]$value
     strLblLimitX <- ifelse(is.na(strtmp), strLblLimitX, strtmp)
 
-    strTmp <- dtStrings["strFrmPlot"]$value
+    strtmp <- dtStrings["strFrmPlot"]$value
     strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
 
-    strTmp <- dtStrings["strBtnCDF"]$value
+    strtmp <- dtStrings["strBtnCDF"]$value
     strBtnCDF <- ifelse(is.na(strtmp), strBtnCDF, strtmp)
 
-    strTmp <- dtStrings["strTipCDF"]$value
+    strtmp <- dtStrings["strTipCDF"]$value
     strTipCDF <- ifelse(is.na(strtmp), strTipCDF, strtmp)
 
-    strTmp <- dtStrings["strBtnPDF"]$value
+    strtmp <- dtStrings["strBtnPDF"]$value
     strBtnPDF <- ifelse(is.na(strtmp), strBtnPDF, strtmp)
 
-    strTmp <- dtStrings["strTipPDF"]$value
+    strtmp <- dtStrings["strTipPDF"]$value
     strTipPDF <- ifelse(is.na(strtmp), strTipPDF, strtmp)
 
-    strTmp <- dtStrings["strBtnHistogram"]$value
+    strtmp <- dtStrings["strBtnHistogram"]$value
     strBtnHistogram <- ifelse(is.na(strtmp), strBtnHistogram, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$value
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$value
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strLblSave"]$value
+    strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strTmp <- dtStrings["strBtnSaveObject"]$value
+    strtmp <- dtStrings["strBtnSaveObject"]$value
     strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
 
-    strTmp <- dtStrings["strBtnSaveImage"]$value
+    strtmp <- dtStrings["strBtnSaveImage"]$value
     strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
 
-    strTmp <- dtStrings["strBtnObjectSaved"]$value
+    strtmp <- dtStrings["strBtnObjectSaved"]$value
     strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
 
-    strTmp <- dtStrings["strLblMainTitleCDF"]$value
+    strtmp <- dtStrings["strLblMainTitleCDF"]$value
     strLblMainTitleCDF <- ifelse(is.na(strtmp), strLblMainTitleCDF, strtmp)
 
-    strTmp <- dtStrings["strLblMainTitlePDF"]$value
+    strtmp <- dtStrings["strLblMainTitlePDF"]$value
     strLblMainTitlePDF <- ifelse(is.na(strtmp), strLblMainTitlePDF, strtmp)
 
-    strTmp <- dtStrings["strLblMainTitleHistogram"]$value
+    strtmp <- dtStrings["strLblMainTitleHistogram"]$value
     strLblMainTitleHistogram <- ifelse(is.na(strtmp), strLblMainTitleHistogram, strtmp)
 
-    strTmp <- dtStrings["strLblYTitleDensity"]$value
+    strtmp <- dtStrings["strLblYTitleDensity"]$value
     strLblYTitleDensity <- ifelse(is.na(strtmp), strLblYTitleDensity, strtmp)
 
-    strTmp <- dtStrings["strLblYTitleCount"]$value
+    strtmp <- dtStrings["strLblYTitleCount"]$value
     strLblYTitleCount <- ifelse(is.na(strtmp), strLblYTitleCount, strtmp)
 
-    strTmp <- dtStrings["strLblXTitleHeight"]$value
+    strtmp <- dtStrings["strLblXTitleHeight"]$value
     strLblXTitleHeight <- ifelse(is.na(strtmp), strLblXTitleHeight, strtmp)
 
-    strTmp <- dtStrings["strLblXTitleSize"]$value
+    strtmp <- dtStrings["strLblXTitleSize"]$value
     strLblXTitleSize <- ifelse(is.na(strtmp), strLblXTitleSize, strtmp)
 
-    strTmp <- dtStrings["strLblXTitleDataPoint"]$value
+    strtmp <- dtStrings["strLblXTitleDataPoint"]$value
     strLblXTitleDataPoint <- ifelse(is.na(strtmp), strLblXTitleDataPoint, strtmp)
 
-    strTmp <- dtStrings["strLblObservations"]$value
+    strtmp <- dtStrings["strLblObservations"]$value
     strLblObservations <- ifelse(is.na(strtmp), strLblObservations, strtmp)
 
-    strTmp <- dtStrings["strMsgColumn"]$value
+    strtmp <- dtStrings["strMsgColumn"]$value
     strMsgColumn <- ifelse(is.na(strtmp), strMsgColumn, strtmp)
 
-    strTmp <- dtStrings["strMsgNull"]$value
+    strtmp <- dtStrings["strMsgNull"]$value
     strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$value
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
 

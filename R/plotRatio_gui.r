@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.05.2020: Fixed spelling error.
 # 02.05.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -75,7 +76,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   strLblTitleY <- "Y title:"
   strLblTheme <- "Plot theme:"
   strFrmPlot <- "Plot marker ratios"
-  strBtnBrowse <- "Brows"
+  strBtnBrowse <- "Browse"
   strTipBrowse <- "Activate the console window and use Enter to step through the plots"
   strBtnPlot <- "Plot"
   strTipPlot <- "Plot all data in one plot, by group if available"
@@ -96,100 +97,100 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$value
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmDataset"]$value
+    strtmp <- dtStrings["strFrmDataset"]$value
     strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
 
-    strTmp <- dtStrings["strLblDataset"]$value
+    strtmp <- dtStrings["strLblDataset"]$value
     strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
 
-    strTmp <- dtStrings["strDrpDataset"]$value
+    strtmp <- dtStrings["strDrpDataset"]$value
     strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
 
-    strTmp <- dtStrings["strLblSamples"]$value
+    strtmp <- dtStrings["strLblSamples"]$value
     strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$value
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strLblScales"]$value
+    strtmp <- dtStrings["strLblScales"]$value
     strLblScales <- ifelse(is.na(strtmp), strLblScales, strtmp)
 
-    strTmp <- dtStrings["strChkOverride"]$value
+    strtmp <- dtStrings["strChkOverride"]$value
     strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
 
-    strTmp <- dtStrings["strLblTitlePlot"]$value
+    strtmp <- dtStrings["strLblTitlePlot"]$value
     strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
 
-    strTmp <- dtStrings["strLblTitleX"]$value
+    strtmp <- dtStrings["strLblTitleX"]$value
     strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
 
-    strTmp <- dtStrings["strLblTitleY"]$value
+    strtmp <- dtStrings["strLblTitleY"]$value
     strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
 
-    strTmp <- dtStrings["strLblTheme"]$value
+    strtmp <- dtStrings["strLblTheme"]$value
     strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
 
-    strTmp <- dtStrings["strFrmPlot"]$value
+    strtmp <- dtStrings["strFrmPlot"]$value
     strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
 
-    strTmp <- dtStrings["strBtnBrowse"]$value
+    strtmp <- dtStrings["strBtnBrowse"]$value
     strBtnBrowse <- ifelse(is.na(strtmp), strBtnBrowse, strtmp)
 
-    strTmp <- dtStrings["strTipBrowse"]$value
+    strtmp <- dtStrings["strTipBrowse"]$value
     strTipBrowse <- ifelse(is.na(strtmp), strTipBrowse, strtmp)
 
-    strTmp <- dtStrings["strBtnPlot"]$value
+    strtmp <- dtStrings["strBtnPlot"]$value
     strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
 
-    strTmp <- dtStrings["strTipPlot"]$value
+    strtmp <- dtStrings["strTipPlot"]$value
     strTipPlot <- ifelse(is.na(strtmp), strTipPlot, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$value
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$value
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strLblSave"]$value
+    strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strTmp <- dtStrings["strBtnSaveObject"]$value
+    strtmp <- dtStrings["strBtnSaveObject"]$value
     strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
 
-    strTmp <- dtStrings["strBtnSaveImage"]$value
+    strtmp <- dtStrings["strBtnSaveImage"]$value
     strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
 
-    strTmp <- dtStrings["strBtnObjectSaved"]$value
+    strtmp <- dtStrings["strBtnObjectSaved"]$value
     strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
 
-    strTmp <- dtStrings["strLblMainTitle"]$value
+    strtmp <- dtStrings["strLblMainTitle"]$value
     strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
 
-    strTmp <- dtStrings["strLblYTitle"]$value
+    strtmp <- dtStrings["strLblYTitle"]$value
     strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
 
-    strTmp <- dtStrings["strLblXTitleMarker"]$value
+    strtmp <- dtStrings["strLblXTitleMarker"]$value
     strLblXTitleMarker <- ifelse(is.na(strtmp), strLblXTitleMarker, strtmp)
 
-    strTmp <- dtStrings["strLblXTitlePair"]$value
+    strtmp <- dtStrings["strLblXTitlePair"]$value
     strLblXTitlePair <- ifelse(is.na(strtmp), strLblXTitlePair, strtmp)
 
-    strTmp <- dtStrings["strMsgNull"]$value
+    strtmp <- dtStrings["strMsgNull"]$value
     strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$value
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
 

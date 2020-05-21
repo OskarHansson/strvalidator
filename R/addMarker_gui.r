@@ -48,14 +48,14 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   .gKit <- 1
 
   # Language ------------------------------------------------------------------
-  
+
   # Get this functions name from call.
   fnc <- as.character(match.call()[[1]])
-  
+
   if (debug) {
     print(paste("IN:", fnc))
   }
-  
+
   # Default strings.
   strWinTitle <- "Add missing markers to dataset"
   strChkGui <- "Save GUI settings"
@@ -71,57 +71,57 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   strLblSave <- "Name for result:"
   strBtnAdd <- "Add"
   strBtnProcessing <- "Processing..."
-  
+
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
-  
+
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
-    
-    strTmp <- dtStrings["strWinTitle"]$Value
-    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
-    
-    strTmp <- dtStrings["strChkGui"]$Value
-    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
-    
-    strTmp <- dtStrings["strBtnHelp"]$Value
-    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
-    
-    strTmp <- dtStrings["strFrmDataset"]$Value
-    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
-    
-    strTmp <- dtStrings["strLblDataset"]$Value
-    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
-    
-    strTmp <- dtStrings["strDrpDefault"]$Value
-    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
-    
-    strTmp <- dtStrings["strLblSamples"]$Value
-    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
-    
-    strTmp <- dtStrings["strLblKit"]$Value
-    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
-    
-    strTmp <- dtStrings["strFrmOptions"]$Value
-    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
-    
-    strTmp <- dtStrings["strChkIgnore"]$Value
-    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
-    
-    strTmp <- dtStrings["strFrmSave"]$Value
-    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
-    
-    strTmp <- dtStrings["strLblSave"]$Value
-    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
-    
-    strTmp <- dtStrings["strBtnAdd"]$Value
-    strBtnAdd <- ifelse(is.na(strTmp), strBtnAdd, strTmp)
-    
-    strTmp <- dtStrings["strBtnProcessing"]$Value
-    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+
+    strtmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strtmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strtmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strtmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strtmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strtmp <- dtStrings["strDrpDefault"]$value
+    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
+
+    strtmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+
+    strtmp <- dtStrings["strLblKit"]$value
+    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
+
+    strtmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strtmp <- dtStrings["strChkIgnore"]$value
+    strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
+
+    strtmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strtmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strtmp <- dtStrings["strBtnAdd"]$value
+    strBtnAdd <- ifelse(is.na(strtmp), strBtnAdd, strtmp)
+
+    strtmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
   }
-  
+
   # ---------------------------------------------------------------------------
   # Main window.
   w <- gwindow(title = strWinTitle, visible = FALSE)
@@ -235,7 +235,6 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gKit <<- detectKit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
       svalue(save_edt) <- paste(.gDataName, "_marker", sep = "")
-
     } else {
 
       # Reset components.

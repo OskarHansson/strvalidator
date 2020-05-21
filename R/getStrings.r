@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 21.05.2020: Added gsub to about.
 # 17.05.2020: Added gsub to fix new line coming out as \n.
 # 15.05.2020: Added parameters 'encoding' and 'about'.
 # 15.05.2020: Changed file extension from .csv to .txt.
@@ -15,8 +16,8 @@
 #' @details
 #' Accepts a language code, gui, and key. Returns the corresponding language strings
 #' for the specified gui function or key from a text file named as the language code.
-#' Replaces backslash + n with new line character.
-#' 
+#' Replaces backslash + n with new line character (only if 'gui' is specified).
+#'
 #'
 #' @param language character name of the language.
 #' @param gui character the function name for the gui to 'translate'.
@@ -28,7 +29,7 @@
 #' @export
 #'
 #' @return character vector or data.table with the retrieved values.
-#' NULL if file or scope was not found.
+#' NULL if file or gui was not found.
 #'
 
 getStrings <- function(language = NA, gui = NA, key = NA,
@@ -67,6 +68,10 @@ getStrings <- function(language = NA, gui = NA, key = NA,
 
       # Read file.
       result <- readLines(con = aboutFilePath, encoding = encoding)
+      
+      # Fix new line character.
+      result <- gsub("\\n", "\n", result, fixed = TRUE)
+      
     } else { # If file doesn't exist.
 
       # Show file not found message.
@@ -92,33 +97,39 @@ getStrings <- function(language = NA, gui = NA, key = NA,
       # Set key column.
       setkey(dtAll, key = "key")
 
-      # Fix new line character.
-      dtAll[, value := gsub("\\n", "\n", value, fixed = TRUE)]
-
       # Return all data as default.
       result <- dtAll
 
       # If gui function is specified.
       if (!is.na(gui)) {
-        message("Get langugage strings for ", gui)
+        message("Get langugage strings for gui = ", gui)
 
         # Get strings for the specific function.
-        result <- result[result$scope == gui, ]
+        result <- result[scope == gui, ] 
+        # Note: variable named as column name does not work i.e. scope == scope.
 
         if (nrow(result) == 0) {
-          message("No rows found for gui=", gui, ". Returning NULL.")
+          message("No rows found for gui = ", gui, ". Returning NULL.")
 
           # Set NULL as return value.
           result <- NULL
+        } else {
+
+          # Fix new line character.
+          result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
         }
       }
 
       # If gui function and key is specified.
       if (!is.na(result) && !is.na(gui) && !is.na(key)) {
-        message("Get langugage strings for key", key)
+        message("Get langugage strings for key = ", key)
 
         # Get the specific gui function value by key.
         result <- result[key]$value
+      } else {
+
+        # Fix new line character.
+        result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
       }
     } else { # If file doesn't exist.
 

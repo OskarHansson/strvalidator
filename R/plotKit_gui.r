@@ -46,14 +46,14 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   .gPlot <- NULL
 
   # Language ------------------------------------------------------------------
-  
+
   # Get this functions name from call.
   fnc <- as.character(match.call()[[1]])
-  
+
   if (debug) {
     print(paste("IN:", fnc))
   }
-  
+
   # Default strings.
   strWinTitle <- "Plot kit"
   strChkGui <- "Save GUI settings"
@@ -81,95 +81,95 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   strLblXTitle <- "Size (bp)"
   strMsgNull <- "At least one kit must be selected!"
   strMsgTitleError <- "Error"
-  
+
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
-  
+
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-    
-    strTmp <- dtStrings["strChkGui"]$value
+
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-    
-    strTmp <- dtStrings["strBtnHelp"]$value
+
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-    
-    strTmp <- dtStrings["strFrmKit"]$value
+
+    strtmp <- dtStrings["strFrmKit"]$value
     strFrmKit <- ifelse(is.na(strtmp), strFrmKit, strtmp)
-    
-    strTmp <- dtStrings["strFrmOptions"]$value
+
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-    
-    strTmp <- dtStrings["strLblTitlePlot"]$value
+
+    strtmp <- dtStrings["strLblTitlePlot"]$value
     strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-    
-    strTmp <- dtStrings["strLblTitleX"]$value
+
+    strtmp <- dtStrings["strLblTitleX"]$value
     strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-    
-    strTmp <- dtStrings["strLblSize"]$value
+
+    strtmp <- dtStrings["strLblSize"]$value
     strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
-    
-    strTmp <- dtStrings["strLblKitSize"]$value
+
+    strtmp <- dtStrings["strLblKitSize"]$value
     strLblKitSize <- ifelse(is.na(strtmp), strLblKitSize, strtmp)
-    
-    strTmp <- dtStrings["strLblKitSpacing"]$value
+
+    strtmp <- dtStrings["strLblKitSpacing"]$value
     strLblKitSpacing <- ifelse(is.na(strtmp), strLblKitSpacing, strtmp)
-    
-    strTmp <- dtStrings["strLblMarkerSize"]$value
+
+    strtmp <- dtStrings["strLblMarkerSize"]$value
     strLblMarkerSize <- ifelse(is.na(strtmp), strLblMarkerSize, strtmp)
-    
-    strTmp <- dtStrings["strLblMarkerHeight"]$value
+
+    strtmp <- dtStrings["strLblMarkerHeight"]$value
     strLblMarkerHeight <- ifelse(is.na(strtmp), strLblMarkerHeight, strtmp)
-    
-    strTmp <- dtStrings["strLblMarkerAlpha"]$value
+
+    strtmp <- dtStrings["strLblMarkerAlpha"]$value
     strLblMarkerAlpha <- ifelse(is.na(strtmp), strLblMarkerAlpha, strtmp)
-    
-    strTmp <- dtStrings["strTipMarker"]$value
+
+    strtmp <- dtStrings["strTipMarker"]$value
     strTipMarker <- ifelse(is.na(strtmp), strTipMarker, strtmp)
-    
-    strTmp <- dtStrings["strBtnPlot"]$value
+
+    strtmp <- dtStrings["strBtnPlot"]$value
     strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
-    
-    strTmp <- dtStrings["strTipPlot"]$value
+
+    strtmp <- dtStrings["strTipPlot"]$value
     strTipPlot <- ifelse(is.na(strtmp), strTipPlot, strtmp)
-    
-    strTmp <- dtStrings["strBtnProcessing"]$value
+
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-    
-    strTmp <- dtStrings["strFrmSave"]$value
+
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-    
-    strTmp <- dtStrings["strLblSave"]$value
+
+    strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-    
-    strTmp <- dtStrings["strBtnSaveObject"]$value
+
+    strtmp <- dtStrings["strBtnSaveObject"]$value
     strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-    
-    strTmp <- dtStrings["strBtnSaveImage"]$value
+
+    strtmp <- dtStrings["strBtnSaveImage"]$value
     strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-    
-    strTmp <- dtStrings["strBtnObjectSaved"]$value
+
+    strtmp <- dtStrings["strBtnObjectSaved"]$value
     strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-    
-    strTmp <- dtStrings["strLblMainTitle"]$value
+
+    strtmp <- dtStrings["strLblMainTitle"]$value
     strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
-    
-    strTmp <- dtStrings["strLblXTitle"]$value
+
+    strtmp <- dtStrings["strLblXTitle"]$value
     strLblXTitle <- ifelse(is.na(strtmp), strLblXTitle, strtmp)
-    
-    strTmp <- dtStrings["strMsgNull"]$value
+
+    strtmp <- dtStrings["strMsgNull"]$value
     strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
-    
-    strTmp <- dtStrings["strMsgTitleError"]$value
+
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
-  
+
   # WINDOW ####################################################################
-  
+
   # Main window.
   w <- gwindow(title = strWinTitle, visible = FALSE)
 
@@ -447,7 +447,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
 
-    if (length(selectedKits)>0) {
+    if (length(selectedKits) > 0) {
 
       # Initiate:
       kitData <- NULL

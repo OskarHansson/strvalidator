@@ -102,98 +102,98 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$Value
-    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
+    strtmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$Value
-    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
+    strtmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$Value
-    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
+    strtmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmDataset"]$Value
-    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
+    strtmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
 
-    strTmp <- dtStrings["strLblDataset"]$Value
-    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
+    strtmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
 
-    strTmp <- dtStrings["strDrpDataset"]$Value
-    strDrpDataset <- ifelse(is.na(strTmp), strDrpDataset, strTmp)
+    strtmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
 
-    strTmp <- dtStrings["strLblSamples"]$Value
-    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
+    strtmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
 
-    strTmp <- dtStrings["strLblRefDataset"]$Value
-    strLblRefDataset <- ifelse(is.na(strTmp), strLblRefDataset, strTmp)
+    strtmp <- dtStrings["strLblRefDataset"]$value
+    strLblRefDataset <- ifelse(is.na(strtmp), strLblRefDataset, strtmp)
 
-    strTmp <- dtStrings["strLblRef"]$Value
-    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
+    strtmp <- dtStrings["strLblRef"]$value
+    strLblRef <- ifelse(is.na(strtmp), strLblRef, strtmp)
 
-    strTmp <- dtStrings["strBtnCheck"]$Value
-    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+    strtmp <- dtStrings["strBtnCheck"]$value
+    strBtnCheck <- ifelse(is.na(strtmp), strBtnCheck, strtmp)
 
-    strTmp <- dtStrings["strLblKit"]$Value
-    strLblKit <- ifelse(is.na(strTmp), strLblKit, strTmp)
+    strtmp <- dtStrings["strLblKit"]$value
+    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$Value
-    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
+    strtmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strLblRange"]$Value
-    strLblRange <- ifelse(is.na(strTmp), strLblRange, strTmp)
+    strtmp <- dtStrings["strLblRange"]$value
+    strLblRange <- ifelse(is.na(strtmp), strLblRange, strtmp)
 
-    strTmp <- dtStrings["strLblBack"]$Value
-    strLblBack <- ifelse(is.na(strTmp), strLblBack, strTmp)
+    strtmp <- dtStrings["strLblBack"]$value
+    strLblBack <- ifelse(is.na(strtmp), strLblBack, strtmp)
 
-    strTmp <- dtStrings["strLblForward"]$Value
-    strLblForward <- ifelse(is.na(strTmp), strLblForward, strTmp)
+    strtmp <- dtStrings["strLblForward"]$value
+    strLblForward <- ifelse(is.na(strtmp), strLblForward, strtmp)
 
-    strTmp <- dtStrings["strLblNB"]$Value
-    strLblNB <- ifelse(is.na(strTmp), strLblNB, strTmp)
+    strtmp <- dtStrings["strLblNB"]$value
+    strLblNB <- ifelse(is.na(strtmp), strLblNB, strtmp)
 
-    strTmp <- dtStrings["strLblInterference"]$Value
-    strLblInterference <- ifelse(is.na(strTmp), strLblInterference, strTmp)
+    strtmp <- dtStrings["strLblInterference"]$value
+    strLblInterference <- ifelse(is.na(strtmp), strLblInterference, strtmp)
 
-    strTmp <- dtStrings["strRadNone"]$Value
-    strRadNone <- ifelse(is.na(strTmp), strRadNone, strTmp)
+    strtmp <- dtStrings["strRadNone"]$value
+    strRadNone <- ifelse(is.na(strtmp), strRadNone, strtmp)
 
-    strTmp <- dtStrings["strRadStutter"]$Value
-    strRadStutter <- ifelse(is.na(strTmp), strRadStutter, strTmp)
+    strtmp <- dtStrings["strRadStutter"]$value
+    strRadStutter <- ifelse(is.na(strtmp), strRadStutter, strtmp)
 
-    strTmp <- dtStrings["strRadAllele"]$Value
-    strRadAllele <- ifelse(is.na(strTmp), strRadAllele, strTmp)
+    strtmp <- dtStrings["strRadAllele"]$value
+    strRadAllele <- ifelse(is.na(strtmp), strRadAllele, strtmp)
 
-    strTmp <- dtStrings["strLblReplace"]$Value
-    strLblReplace <- ifelse(is.na(strTmp), strLblReplace, strTmp)
+    strtmp <- dtStrings["strLblReplace"]$value
+    strLblReplace <- ifelse(is.na(strtmp), strLblReplace, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$Value
-    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
+    strtmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strLblSave"]$Value
-    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
+    strtmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strTmp <- dtStrings["strBtnCalculate"]$Value
-    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
+    strtmp <- dtStrings["strBtnCalculate"]$value
+    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$Value
-    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
+    strtmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strMsgDataset"]$Value
-    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
+    strtmp <- dtStrings["strMsgDataset"]$value
+    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleDataset"]$Value
-    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
+    strtmp <- dtStrings["strMsgTitleDataset"]$value
+    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
 
-    strTmp <- dtStrings["strMsgCheck"]$Value
-    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
+    strtmp <- dtStrings["strMsgCheck"]$value
+    strMsgCheck <- ifelse(is.na(strtmp), strMsgCheck, strtmp)
 
-    strTmp <- dtStrings["strWinTitleCheck"]$Value
-    strWinTitleCheck <- ifelse(is.na(strTmp), strWinTitleCheck, strTmp)
+    strtmp <- dtStrings["strWinTitleCheck"]$value
+    strWinTitleCheck <- ifelse(is.na(strtmp), strWinTitleCheck, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$Value
-    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
+    strtmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
 
   # WINDOW ####################################################################

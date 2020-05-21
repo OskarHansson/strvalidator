@@ -47,14 +47,14 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   .gNameAm <- NULL
 
   # Language ------------------------------------------------------------------
-  
+
   # Get this functions name from call.
   fnc <- as.character(match.call()[[1]])
-  
+
   if (debug) {
     print(paste("IN:", fnc))
   }
-  
+
   # Default strings.
   strWinTitle <- "Calculate analytical threshold"
   strChkGui <- "Save GUI settings"
@@ -83,99 +83,98 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a dataset and a reference set"
   strMsgDataset <- "A dataset and a reference dataset must be selected."
   strMsgTitleDataset <- "Datasets not selected"
-  
+
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
-  
+
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
-    
-    strTmp <- dtStrings["strWinTitle"]$Value
-    strWinTitle <- ifelse(is.na(strTmp), strWinTitle, strTmp)
-    
-    strTmp <- dtStrings["strChkGui"]$Value
-    strChkGui <- ifelse(is.na(strTmp), strChkGui, strTmp)
-    
-    strTmp <- dtStrings["strBtnHelp"]$Value
-    strBtnHelp <- ifelse(is.na(strTmp), strBtnHelp, strTmp)
-    
-    strTmp <- dtStrings["strFrmDataset"]$Value
-    strFrmDataset <- ifelse(is.na(strTmp), strFrmDataset, strTmp)
-    
-    strTmp <- dtStrings["strLblDataset"]$Value
-    strLblDataset <- ifelse(is.na(strTmp), strLblDataset, strTmp)
-    
-    strTmp <- dtStrings["strDrpDefault"]$Value
-    strDrpDefault <- ifelse(is.na(strTmp), strDrpDefault, strTmp)
-    
-    strTmp <- dtStrings["strLblSamples"]$Value
-    strLblSamples <- ifelse(is.na(strTmp), strLblSamples, strTmp)
-    
-    strTmp <- dtStrings["strLblDatasetRef"]$Value
-    strLblDatasetRef <- ifelse(is.na(strTmp), strLblDatasetRef, strTmp)
 
-    strTmp <- dtStrings["strLblRef"]$Value
-    strLblRef <- ifelse(is.na(strTmp), strLblRef, strTmp)
-    
-    strTmp <- dtStrings["strBtnCheck"]$Value
-    strBtnCheck <- ifelse(is.na(strTmp), strBtnCheck, strTmp)
+    strtmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strLblAmount"]$Value
-    strLblAmount <- ifelse(is.na(strTmp), strLblAmount, strTmp)
-    
-    strTmp <- dtStrings["strFrmOptions"]$Value
-    strFrmOptions <- ifelse(is.na(strTmp), strFrmOptions, strTmp)
-    
-    strTmp <- dtStrings["strLblText1"]$Value
-    strLblText1 <- ifelse(is.na(strTmp), strLblText1, strTmp)
-    
-    strTmp <- dtStrings["strLblText1"]$Value
-    strLblText1 <- ifelse(is.na(strTmp), strLblText1, strTmp)
-    
-    strTmp <- dtStrings["strChkIgnore"]$Value
-    strChkIgnore <- ifelse(is.na(strTmp), strChkIgnore, strTmp)
-    
-    strTmp <- dtStrings["strRadItem1"]$Value
-    strRadItem1 <- ifelse(is.na(strTmp), strRadItem1, strTmp)
-    
-    strTmp <- dtStrings["strRadItem2"]$Value
-    strRadItem2 <- ifelse(is.na(strTmp), strRadItem2, strTmp)
-    
-    strTmp <- dtStrings["strLblLevel"]$Value
-    strLblLevel <- ifelse(is.na(strTmp), strLblLevel, strTmp)
-    
-    strTmp <- dtStrings["strFrmSave"]$Value
-    strFrmSave <- ifelse(is.na(strTmp), strFrmSave, strTmp)
-    
-    strTmp <- dtStrings["strLblSave"]$Value
-    strLblSave <- ifelse(is.na(strTmp), strLblSave, strTmp)
-    
-    strTmp <- dtStrings["strBtnCalculate"]$Value
-    strBtnCalculate <- ifelse(is.na(strTmp), strBtnCalculate, strTmp)
-    
-    strTmp <- dtStrings["strBtnProcessing"]$Value
-    strBtnProcessing <- ifelse(is.na(strTmp), strBtnProcessing, strTmp)
-    
-    strTmp <- dtStrings["strWinCheck"]$Value
-    strWinCheck <- ifelse(is.na(strTmp), strWinCheck, strTmp)
-    
-    strTmp <- dtStrings["strMsgTitleError"]$Value
-    strMsgTitleError <- ifelse(is.na(strTmp), strMsgTitleError, strTmp)
-    
-    strTmp <- dtStrings["strMsgCheck"]$Value
-    strMsgCheck <- ifelse(is.na(strTmp), strMsgCheck, strTmp)
-    
-    strTmp <- dtStrings["strMsgDataset"]$Value
-    strMsgDataset <- ifelse(is.na(strTmp), strMsgDataset, strTmp)
-    
-    strTmp <- dtStrings["strMsgTitleDataset"]$Value
-    strMsgTitleDataset <- ifelse(is.na(strTmp), strMsgTitleDataset, strTmp)
-    
+    strtmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strtmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strtmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strtmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strtmp <- dtStrings["strDrpDefault"]$value
+    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
+
+    strtmp <- dtStrings["strLblSamples"]$value
+    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
+
+    strtmp <- dtStrings["strLblDatasetRef"]$value
+    strLblDatasetRef <- ifelse(is.na(strtmp), strLblDatasetRef, strtmp)
+
+    strtmp <- dtStrings["strLblRef"]$value
+    strLblRef <- ifelse(is.na(strtmp), strLblRef, strtmp)
+
+    strtmp <- dtStrings["strBtnCheck"]$value
+    strBtnCheck <- ifelse(is.na(strtmp), strBtnCheck, strtmp)
+
+    strtmp <- dtStrings["strLblAmount"]$value
+    strLblAmount <- ifelse(is.na(strtmp), strLblAmount, strtmp)
+
+    strtmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strtmp <- dtStrings["strLblText1"]$value
+    strLblText1 <- ifelse(is.na(strtmp), strLblText1, strtmp)
+
+    strtmp <- dtStrings["strLblText1"]$value
+    strLblText1 <- ifelse(is.na(strtmp), strLblText1, strtmp)
+
+    strtmp <- dtStrings["strChkIgnore"]$value
+    strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
+
+    strtmp <- dtStrings["strRadItem1"]$value
+    strRadItem1 <- ifelse(is.na(strtmp), strRadItem1, strtmp)
+
+    strtmp <- dtStrings["strRadItem2"]$value
+    strRadItem2 <- ifelse(is.na(strtmp), strRadItem2, strtmp)
+
+    strtmp <- dtStrings["strLblLevel"]$value
+    strLblLevel <- ifelse(is.na(strtmp), strLblLevel, strtmp)
+
+    strtmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strtmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strtmp <- dtStrings["strBtnCalculate"]$value
+    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
+
+    strtmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+
+    strtmp <- dtStrings["strWinCheck"]$value
+    strWinCheck <- ifelse(is.na(strtmp), strWinCheck, strtmp)
+
+    strtmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+
+    strtmp <- dtStrings["strMsgCheck"]$value
+    strMsgCheck <- ifelse(is.na(strtmp), strMsgCheck, strtmp)
+
+    strtmp <- dtStrings["strMsgDataset"]$value
+    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
+
+    strtmp <- dtStrings["strMsgTitleDataset"]$value
+    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
   }
 
   # ---------------------------------------------------------------------------
-  
+
   # Main window.
   w <- gwindow(title = strWinTitle, visible = FALSE)
 
@@ -543,8 +542,8 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       .saveSettings()
       dispose(w)
     } else {
-
-      gmessage(msg = strMsgDataset,
+      gmessage(
+        msg = strMsgDataset,
         title = strMsgTitleDataset,
         icon = "error",
         parent = w

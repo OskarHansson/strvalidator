@@ -1,0 +1,22 @@
+strvalidator è un pacchetto sviluppato per la validazione ed il controllo di processo di metodi e apparecchiature in un laboratorio di genetica forense. L'interfaccia grafica utente di STR-validator rende facile analizzare i dati secondo le linee guida di validazione di European Network of Forensic Science Institutes (ENFSI) e Scientific Working Group on DNA Analysis Methods (SWGDAM).\n\n
+
+Allo scopo di assicurare risultati corretti, la maggior parte delle funzioni principali sono estensivamente validate usando il pacchetto 'testthat' prima del rilascio di una nuova versione (vedi la pagina web di STR-validator per i dettagli).\n\n
+
+STR-validator è un prodotto del lavoro di PhD fatto da Oskar Hansson (tesi disponibile sul sito di STR-validatorw) che è stato parzialmente finanziato dall'European Union seventh Framework Programme (FP7/2007-2013) con la borsa di studio numero 285487 (EUROFORGEN-NoE).\n\n
+
+Si prega di citare come:\n
+Hansson O, Gill P, Egeland T (2014), "STR-validator: An open source platform for validation and process control", Forensic Science International: Genetics, 13, 154-166. doi: 10.1016/j.fsigen.2014.07.009\n\n 
+
+Contributi al pacchetto strvalidator o alla comunità di utenti sono più che benvenuti. Contattatare lo sviluppatore (vedi pagina CRAN) per:\n
+ - migliorare le funzionalità esistenti o aggiungerne di nuove\n
+ - tradurre il materiale dei corsi, i manuali o i tutorial\n
+ - collaborare per implementare nuove funzioni\n
+ - aggiungere test per validare funzioni\n\n
+ 
+Creato e mantenuto da:\n
+Oskar Hansson, Forensic Genetics (Oslo University Hospital, Norway)\n\n
+
+This graphical user interface is available in the following languages (changed in  .../strvalidator/extdata/settings.txt):\n
+English (en_GB), Oskar Hansson\n
+Italian (it_IT), Massimiliano Stabile\ns
+Spanish (es_ES), Lourdes Prieto

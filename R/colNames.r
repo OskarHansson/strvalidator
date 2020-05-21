@@ -82,7 +82,7 @@ colNames <- function(data, slim = TRUE, concatenate = NULL, numbered = TRUE, deb
     namesCount <- table(baseNames)
     matches <- rep(NA, length(baseNames))
     for (n in seq(along = namesCount)) {
-      matches[baseNames == names(namesCount[n]) ] <- namesCount[[n]]
+      matches[baseNames == names(namesCount[n])] <- namesCount[[n]]
     }
 
     # Indicate column names ending with a number.

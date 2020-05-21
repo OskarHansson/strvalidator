@@ -107,121 +107,121 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$value
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmDataset"]$value
+    strtmp <- dtStrings["strFrmDataset"]$value
     strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
 
-    strTmp <- dtStrings["strLblDataset"]$value
+    strtmp <- dtStrings["strLblDataset"]$value
     strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
 
-    strTmp <- dtStrings["strDrpDataset"]$value
+    strtmp <- dtStrings["strDrpDataset"]$value
     strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
 
-    strTmp <- dtStrings["strLblRows"]$value
+    strtmp <- dtStrings["strLblRows"]$value
     strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$value
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strChkOverride"]$value
+    strtmp <- dtStrings["strChkOverride"]$value
     strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
 
-    strTmp <- dtStrings["strLblTitlePlot"]$value
+    strtmp <- dtStrings["strLblTitlePlot"]$value
     strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
 
-    strTmp <- dtStrings["strLblTitleSub"]$value
+    strtmp <- dtStrings["strLblTitleSub"]$value
     strLblTitleSub <- ifelse(is.na(strtmp), strLblTitleSub, strtmp)
 
-    strTmp <- dtStrings["strLblTitleX"]$value
+    strtmp <- dtStrings["strLblTitleX"]$value
     strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
 
-    strTmp <- dtStrings["strLblTitleY"]$value
+    strtmp <- dtStrings["strLblTitleY"]$value
     strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
 
-    strTmp <- dtStrings["strExpPoints"]$value
+    strtmp <- dtStrings["strExpPoints"]$value
     strExpPoints <- ifelse(is.na(strtmp), strExpPoints, strtmp)
 
-    strTmp <- dtStrings["strLblShape"]$value
+    strtmp <- dtStrings["strLblShape"]$value
     strLblShape <- ifelse(is.na(strtmp), strLblShape, strtmp)
 
-    strTmp <- dtStrings["strLblAlpha"]$value
+    strtmp <- dtStrings["strLblAlpha"]$value
     strLblAlpha <- ifelse(is.na(strtmp), strLblAlpha, strtmp)
 
-    strTmp <- dtStrings["strExpAxes"]$value
+    strtmp <- dtStrings["strExpAxes"]$value
     strExpAxes <- ifelse(is.na(strtmp), strExpAxes, strtmp)
 
-    strTmp <- dtStrings["strLblLimitY"]$value
+    strtmp <- dtStrings["strLblLimitY"]$value
     strLblLimitY <- ifelse(is.na(strtmp), strLblLimitY, strtmp)
 
-    strTmp <- dtStrings["strFrmPlot"]$value
+    strtmp <- dtStrings["strFrmPlot"]$value
     strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
 
-    strTmp <- dtStrings["strBtnDotplot"]$value
+    strtmp <- dtStrings["strBtnDotplot"]$value
     strBtnDotplot <- ifelse(is.na(strtmp), strBtnDotplot, strtmp)
 
-    strTmp <- dtStrings["strBtnBoxplot"]$value
+    strtmp <- dtStrings["strBtnBoxplot"]$value
     strBtnBoxplot <- ifelse(is.na(strtmp), strBtnBoxplot, strtmp)
 
-    strTmp <- dtStrings["strBtnDistribution"]$value
+    strtmp <- dtStrings["strBtnDistribution"]$value
     strBtnDistribution <- ifelse(is.na(strtmp), strBtnDistribution, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$value
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strFrmSave"]$value
+    strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
-    strTmp <- dtStrings["strLblSave"]$value
+    strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strTmp <- dtStrings["strBtnSaveObject"]$value
+    strtmp <- dtStrings["strBtnSaveObject"]$value
     strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
 
-    strTmp <- dtStrings["strBtnSaveImage"]$value
+    strtmp <- dtStrings["strBtnSaveImage"]$value
     strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
 
-    strTmp <- dtStrings["strBtnObjectSaved"]$value
+    strtmp <- dtStrings["strBtnObjectSaved"]$value
     strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
 
-    strTmp <- dtStrings["strLblMainTitleDotplot"]$value
+    strtmp <- dtStrings["strLblMainTitleDotplot"]$value
     strLblMainTitleDotplot <- ifelse(is.na(strtmp), strLblMainTitleDotplot, strtmp)
 
-    strTmp <- dtStrings["strLblMainTitleBoxplot"]$value
+    strtmp <- dtStrings["strLblMainTitleBoxplot"]$value
     strLblMainTitleBoxplot <- ifelse(is.na(strtmp), strLblMainTitleBoxplot, strtmp)
 
-    strTmp <- dtStrings["strLblMainTitleDistribution"]$value
+    strtmp <- dtStrings["strLblMainTitleDistribution"]$value
     strLblMainTitleDistribution <- ifelse(is.na(strtmp), strLblMainTitleDistribution, strtmp)
 
-    strTmp <- dtStrings["strLblMainSubTitleDotplot"]$value
+    strtmp <- dtStrings["strLblMainSubTitleDotplot"]$value
     strLblMainSubTitleDotplot <- ifelse(is.na(strtmp), strLblMainSubTitleDotplot, strtmp)
 
-    strTmp <- dtStrings["strLblXTitleInjection"]$value
+    strtmp <- dtStrings["strLblXTitleInjection"]$value
     strLblXTitleInjection <- ifelse(is.na(strtmp), strLblXTitleInjection, strtmp)
 
-    strTmp <- dtStrings["strLblXTitleCapillary"]$value
+    strtmp <- dtStrings["strLblXTitleCapillary"]$value
     strLblXTitleCapillary <- ifelse(is.na(strtmp), strLblXTitleCapillary, strtmp)
 
-    strTmp <- dtStrings["strLblXTitleDensity"]$value
+    strtmp <- dtStrings["strLblXTitleDensity"]$value
     strLblXTitleDensity <- ifelse(is.na(strtmp), strLblXTitleDensity, strtmp)
 
-    strTmp <- dtStrings["strLblYTitleMean"]$value
+    strtmp <- dtStrings["strLblYTitleMean"]$value
     strLblYTitleMean <- ifelse(is.na(strtmp), strLblYTitleMean, strtmp)
 
-    strTmp <- dtStrings["strMsgNull"]$value
+    strtmp <- dtStrings["strMsgNull"]$value
     strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$value
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
 

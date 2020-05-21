@@ -1,1 +1,2 @@
 language=en_GB
+encoding=UTF-8

@@ -36,7 +36,7 @@
 #' # List functions in the workspace.
 #' listObjects(obj.class = "function")
 #' }
-#' 
+#'
 listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))

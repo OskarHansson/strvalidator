@@ -1,4 +1,4 @@
-Scope	Order	Key	Value	
+scope	order	key	value	
 addData_gui	1	strWinTitle 	Add data	
 addData_gui	2	strChkGui	Save GUI settings	
 addData_gui	3	strBtnHelp	Help	
@@ -890,7 +890,7 @@ ggsave_gui	18	strBtnProcessing	Processing...
 ggsave_gui	19	strMsgSave	Plot object, file name and path must be provided.\n\nThis error may also occur the first time the function is used.\nPlease locate the folder using the 'Open' button.	
 ggsave_gui	20	strMsgTitleError	Error	
 ggsave_gui	21	strMsgTitleSaveError	Save error	
-ggsave_gui	22	strMsgFileExist	The file already exist!/n/nChose to cancel, overwrite or give a new name.	
+ggsave_gui	22	strMsgFileExist	The file already exist!\n\nChose to cancel, overwrite or give a new name.	
 ggsave_gui	23	strBtnCancel	Cancel	
 ggsave_gui	24	strBtnOverwrite	Overwrite	
 ggsave_gui	25	strBtnRetry	Retry	
@@ -1548,7 +1548,7 @@ plotRatio_gui	12	strLblTitleX	X title:
 plotRatio_gui	13	strLblTitleY	Y title:	
 plotRatio_gui	14	strLblTheme	Plot theme:	
 plotRatio_gui	15	strFrmPlot	Plot marker ratios	
-plotRatio_gui	16	strBtnBrowse	Brows	
+plotRatio_gui	16	strBtnBrowse	Browse	
 plotRatio_gui	17	strTipBrowse	Activate the console window and use Enter to step through the plots	
 plotRatio_gui	18	strBtnPlot	Plot	
 plotRatio_gui	19	strTipPlot	Plot all data in one plot, by group if available	

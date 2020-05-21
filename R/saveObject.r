@@ -60,34 +60,34 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strMsgName"]$value
+    strtmp <- dtStrings["strMsgName"]$value
     strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
 
-    strTmp <- dtStrings["strMsgSyntax"]$value
+    strtmp <- dtStrings["strMsgSyntax"]$value
     strMsgSyntax <- ifelse(is.na(strtmp), strMsgSyntax, strtmp)
 
-    strTmp <- dtStrings["strMsgExists"]$value
+    strtmp <- dtStrings["strMsgExists"]$value
     strMsgExists <- ifelse(is.na(strtmp), strMsgExists, strtmp)
 
-    strTmp <- dtStrings["strMsgNewName"]$value
+    strtmp <- dtStrings["strMsgNewName"]$value
     strMsgNewName <- ifelse(is.na(strtmp), strMsgNewName, strtmp)
 
-    strTmp <- dtStrings["strMsgMissing"]$value
+    strtmp <- dtStrings["strMsgMissing"]$value
     strMsgMissing <- ifelse(is.na(strtmp), strMsgMissing, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleInput"]$value
+    strtmp <- dtStrings["strMsgTitleInput"]$value
     strMsgTitleInput <- ifelse(is.na(strtmp), strMsgTitleInput, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleInvalid"]$value
+    strtmp <- dtStrings["strMsgTitleInvalid"]$value
     strMsgTitleInvalid <- ifelse(is.na(strtmp), strMsgTitleInvalid, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleWarning"]$value
+    strtmp <- dtStrings["strMsgTitleWarning"]$value
     strMsgTitleWarning <- ifelse(is.na(strtmp), strMsgTitleWarning, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$value
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
 

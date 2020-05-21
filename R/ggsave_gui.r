@@ -94,82 +94,82 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
 
-    strTmp <- dtStrings["strWinTitle"]$value
+    strtmp <- dtStrings["strWinTitle"]$value
     strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
 
-    strTmp <- dtStrings["strChkGui"]$value
+    strtmp <- dtStrings["strChkGui"]$value
     strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
 
-    strTmp <- dtStrings["strBtnHelp"]$value
+    strtmp <- dtStrings["strBtnHelp"]$value
     strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
 
-    strTmp <- dtStrings["strFrmOptions"]$value
+    strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
 
-    strTmp <- dtStrings["strLblFileName"]$value
+    strtmp <- dtStrings["strLblFileName"]$value
     strLblFileName <- ifelse(is.na(strtmp), strLblFileName, strtmp)
 
-    strTmp <- dtStrings["strChkOverwrite"]$value
+    strtmp <- dtStrings["strChkOverwrite"]$value
     strChkOverwrite <- ifelse(is.na(strtmp), strChkOverwrite, strtmp)
 
-    strTmp <- dtStrings["strChkSize"]$value
+    strtmp <- dtStrings["strChkSize"]$value
     strChkSize <- ifelse(is.na(strtmp), strChkSize, strtmp)
 
-    strTmp <- dtStrings["strBtnSize"]$value
+    strtmp <- dtStrings["strBtnSize"]$value
     strBtnSize <- ifelse(is.na(strtmp), strBtnSize, strtmp)
 
-    strTmp <- dtStrings["strLblSettings"]$value
+    strtmp <- dtStrings["strLblSettings"]$value
     strLblSettings <- ifelse(is.na(strtmp), strLblSettings, strtmp)
 
-    strTmp <- dtStrings["strLblUnit"]$value
+    strtmp <- dtStrings["strLblUnit"]$value
     strLblUnit <- ifelse(is.na(strtmp), strLblUnit, strtmp)
 
-    strTmp <- dtStrings["strLblWidth"]$value
+    strtmp <- dtStrings["strLblWidth"]$value
     strLblWidth <- ifelse(is.na(strtmp), strLblWidth, strtmp)
 
-    strTmp <- dtStrings["strLblPixels"]$value
+    strtmp <- dtStrings["strLblPixels"]$value
     strLblPixels <- ifelse(is.na(strtmp), strLblPixels, strtmp)
 
-    strTmp <- dtStrings["strLblHeight"]$value
+    strtmp <- dtStrings["strLblHeight"]$value
     strLblHeight <- ifelse(is.na(strtmp), strLblHeight, strtmp)
 
-    strTmp <- dtStrings["strLblRes"]$value
+    strtmp <- dtStrings["strLblRes"]$value
     strLblRes <- ifelse(is.na(strtmp), strLblRes, strtmp)
 
-    strTmp <- dtStrings["strLblScale"]$value
+    strtmp <- dtStrings["strLblScale"]$value
     strLblScale <- ifelse(is.na(strtmp), strLblScale, strtmp)
 
-    strTmp <- dtStrings["strLblPath"]$value
+    strtmp <- dtStrings["strLblPath"]$value
     strLblPath <- ifelse(is.na(strtmp), strLblPath, strtmp)
 
-    strTmp <- dtStrings["strBtnSave"]$value
+    strtmp <- dtStrings["strBtnSave"]$value
     strBtnSave <- ifelse(is.na(strtmp), strBtnSave, strtmp)
 
-    strTmp <- dtStrings["strBtnProcessing"]$value
+    strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
 
-    strTmp <- dtStrings["strMsgSave"]$value
+    strtmp <- dtStrings["strMsgSave"]$value
     strMsgSave <- ifelse(is.na(strtmp), strMsgSave, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleError"]$value
+    strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
 
-    strTmp <- dtStrings["strMsgTitleSaveError"]$value
+    strtmp <- dtStrings["strMsgTitleSaveError"]$value
     strMsgTitleSaveError <- ifelse(is.na(strtmp), strMsgTitleSaveError, strtmp)
 
-    strTmp <- dtStrings["strMsgFileExist"]$value
+    strtmp <- dtStrings["strMsgFileExist"]$value
     strMsgFileExist <- ifelse(is.na(strtmp), strMsgFileExist, strtmp)
 
-    strTmp <- dtStrings["strBtnCancel"]$value
+    strtmp <- dtStrings["strBtnCancel"]$value
     strBtnCancel <- ifelse(is.na(strtmp), strBtnCancel, strtmp)
 
-    strTmp <- dtStrings["strBtnOverwrite"]$value
+    strtmp <- dtStrings["strBtnOverwrite"]$value
     strBtnOverwrite <- ifelse(is.na(strtmp), strBtnOverwrite, strtmp)
 
-    strTmp <- dtStrings["strBtnRetry"]$value
+    strtmp <- dtStrings["strBtnRetry"]$value
     strBtnRetry <- ifelse(is.na(strtmp), strBtnRetry, strtmp)
   }
 

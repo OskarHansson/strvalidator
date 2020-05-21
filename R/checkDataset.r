@@ -51,7 +51,7 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
   dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  if (!is.na(dtStrings)) {
+  if (!is.null(dtStrings)) {
     # Get language strings, use default if not found.
   }
 
