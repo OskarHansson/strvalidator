@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.06.2020: Fixed "object 'val_obj' not found" when pressing plot buttons.
 # 25.04.2020: Added language support.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 08.05.2014: Implemented 'checkDataset'.
 # 15.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
 # 17.02.2014: Fixed NA in title for ecdp.
-# 17.02.2014: Fixed heatmap by 'H' loosing samples with equal 'H'.
 
 #' @title Plot Drop-out Events
 #'
@@ -474,6 +474,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f7_plot_sample_btn <- gbutton(text = strBtnSample, container = f7)
 
   addHandlerChanged(f7_plot_h_btn, handler = function(h, ...) {
+    val_obj <- svalue(dataset_drp)
 
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "H")
@@ -495,6 +496,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   })
 
   addHandlerChanged(f7_plot_amount_btn, handler = function(h, ...) {
+    val_obj <- svalue(dataset_drp)
 
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Amount")
@@ -516,6 +518,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   })
 
   addHandlerChanged(f7_plot_conc_btn, handler = function(h, ...) {
+    val_obj <- svalue(dataset_drp)
 
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Concentration")
@@ -537,6 +540,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   })
 
   addHandlerChanged(f7_plot_sample_btn, handler = function(h, ...) {
+    val_obj <- svalue(dataset_drp)
 
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout")
@@ -577,6 +581,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f8_plot_dot_btn <- gbutton(text = strBtnDot, container = f8)
 
   addHandlerChanged(f8_plot_ecdf_btn, handler = function(h, ...) {
+    val_obj <- svalue(dataset_drp)
 
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Height", "Heterozygous")
@@ -598,6 +603,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   })
 
   addHandlerChanged(f8_plot_dot_btn, handler = function(h, ...) {
+    val_obj <- svalue(dataset_drp)
 
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Height", "Heterozygous")
