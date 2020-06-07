@@ -5,10 +5,10 @@
 # 15.05.2020: Added parameters 'encoding' and 'about'.
 # 15.05.2020: Changed file extension from .csv to .txt.
 # 15.05.2020: Return NULL instead of NA to fix warning when vector.
-# 12.05.2020: Fixed encoding (è -> Ã¨).
+# 12.05.2020: Fixed encoding.
 # 22.02.2020: First version.
 
-#' @title Get Language Strings.
+#' @title Get Language Strings
 #'
 #' @description
 #' Accepts a language code and gui. Returns the corresponding language strings.

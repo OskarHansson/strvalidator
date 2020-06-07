@@ -28,6 +28,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added calls to calculateStatistics_gui. Depracated table*.
 # 21.05.2020: Added language support for welcome tab/about.
 # 11.05.2020: Fixed bugs in language support.
 # 04.05.2020: Added language support.
@@ -47,7 +48,6 @@
 # 19.07.2017: Updated the export_gui call with new argument 'obj' and logic.
 # 18.07.2017: Changed 'Edit' button to 'View' button in all tabs except 'Tools'.
 # 17.07.2017: Fixed problems with updating the project list.
-# 17.07.2017: Changed notebook argument 'pageno' to 'page.no'.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -251,16 +251,24 @@ strvalidator <- function(debug = FALSE) {
   strLblStutter <- "Calculate stutters for a dataset"
   strLblPlotStutter <- "Create plots for stutter data"
   strBtnStatistics <- "Statistics"
-  strLblStatStutter <- "Calculate summary statistics for stutter data"
-  strFrmBalance <- "Intra-locus and inter-locus balance"
-  strLblHb <- "Calculate intra-locus balance (heterozygote balance)"
-  strLblLb <- "Calculate inter-locus balance (profile balance)"
+  strLblStatStutterGlobal <- "Calculate global summary statistics"
+  strLblStatStutterMarker <- "Calculate summary statistics by marker"
+  strLblStatStutterStutter <- "Calculate summary statistics by marker and stutter type"
+  strFrmHb <- "Heterozygous balance (intra-locus)"
+  strFrmLb <- "Profile balance (inter-locus)"
+  strLblHb <- "Calculate heterozygote balance (intra-locus balance)"
+  strLblLb <- "Calculate profile balance (inter-locus balance)"
   strLblPlotBalance <- "Create plots for analysed data"
-  strLblStatBalance <- "Calculate summary statistics for balance data"
+  strLblStatBalanceGlobal <- "Calculate global summary statistics"
+  strLblStatBalanceMarker <- "Calculate summary statistics by marker"
   strFrmCapillary <- "Capillary balance"
   strLblCapillary <- "Calculate capillary balance for a dataset"
   strLblPlotCapillary <- "Create plots for capillary balance data"
-  strLblStatCapillary <- "Create summary statistics for capillary balance data"
+  strLblStatCapillaryCap <- "Calculate summary statistics by capillary"
+  strLblStatCapillaryInj <- "Calculate summary statistics by injection"
+  strLblStatCapillaryRow <- "Calculate summary statistics by plate row"
+  strLblStatCapillaryRun <- "Calculate summary statistics by run"
+  strLblStatCapillaryIns <- "Calculate summary statistics by instrument"
   strFrmRatio <- "Marker peak height ratio"
   strLblRatio <- "Calculate locus ratio for a dataset"
   strLblPlotRatio <- "Create plots for marker ratio data"
@@ -278,7 +286,8 @@ strvalidator <- function(debug = FALSE) {
   strFrmPeaks <- "Number of peaks"
   strLblPeaks <- "Count the number of peaks in sample"
   strLblPlotPeaks <- "Create plots for peak data"
-  strFrmHeight <- "Peak height metrics"
+  strFrmStatistics <- "Summary statistics"
+  strLblStatistics <- "Calculate summary statistics"
   strFrmDistribution <- "Distributions"
   strLblDistribution <- "Plot distributions for data"
   strLblGroups <- "Plot cumulative distribution for multiple groups"
@@ -292,7 +301,9 @@ strvalidator <- function(debug = FALSE) {
   strLblSlope <- "Calculate the profile slope"
   strLblPlotSlope <- "Plot slope data"
   strLblPrecision <- "Create precision plots"
-  strLblStatPrecision <- "Calculate summary statistics for precision"
+  strLblStatPrecisionSize <- "Calculate summary statistics for Size"
+  strLblStatPrecisionDataPoint <- "Calculate summary statistics for Data.Point"
+  strLblStatPrecisionHeight <- "Calculate summary statistics for Height"
   strLblPullup <- "Calculate spectral pull-up/bleed-through"
   strLblPlotPullup <- "Create plots for pull-up data"
 
@@ -720,11 +731,20 @@ strvalidator <- function(debug = FALSE) {
     strtmp <- dtStrings["strBtnStatistics"]$value
     strBtnStatistics <- ifelse(is.na(strtmp), strBtnStatistics, strtmp)
 
-    strtmp <- dtStrings["strLblStatStutter"]$value
-    strLblStatStutter <- ifelse(is.na(strtmp), strLblStatStutter, strtmp)
+    strtmp <- dtStrings["strLblStatStutterGlobal"]$value
+    strLblStatStutterGlobal <- ifelse(is.na(strtmp), strLblStatStutterGlobal, strtmp)
 
-    strtmp <- dtStrings["strFrmBalance"]$value
-    strFrmBalance <- ifelse(is.na(strtmp), strFrmBalance, strtmp)
+    strtmp <- dtStrings["strLblStatStutterMarker"]$value
+    strLblStatStutterMarker <- ifelse(is.na(strtmp), strLblStatStutterMarker, strtmp)
+
+    strtmp <- dtStrings["strLblStatStutterStutter"]$value
+    strLblStatStutterStutter <- ifelse(is.na(strtmp), strLblStatStutterStutter, strtmp)
+
+    strtmp <- dtStrings["strFrmHb"]$value
+    strFrmHb <- ifelse(is.na(strtmp), strFrmHb, strtmp)
+
+    strtmp <- dtStrings["strFrmLb"]$value
+    strFrmLb <- ifelse(is.na(strtmp), strFrmLb, strtmp)
 
     strtmp <- dtStrings["strLblHb"]$value
     strLblHb <- ifelse(is.na(strtmp), strLblHb, strtmp)
@@ -735,8 +755,11 @@ strvalidator <- function(debug = FALSE) {
     strtmp <- dtStrings["strLblPlotBalance"]$value
     strLblPlotBalance <- ifelse(is.na(strtmp), strLblPlotBalance, strtmp)
 
-    strtmp <- dtStrings["strLblStatBalance"]$value
-    strLblStatBalance <- ifelse(is.na(strtmp), strLblStatBalance, strtmp)
+    strtmp <- dtStrings["strLblStatBalanceGlobal"]$value
+    strLblStatBalanceGlobal <- ifelse(is.na(strtmp), strLblStatBalanceGlobal, strtmp)
+
+    strtmp <- dtStrings["strLblStatBalanceMarker"]$value
+    strLblStatBalanceMarker <- ifelse(is.na(strtmp), strLblStatBalanceMarker, strtmp)
 
     strtmp <- dtStrings["strFrmCapillary"]$value
     strFrmCapillary <- ifelse(is.na(strtmp), strFrmCapillary, strtmp)
@@ -747,8 +770,20 @@ strvalidator <- function(debug = FALSE) {
     strtmp <- dtStrings["strLblPlotCapillary"]$value
     strLblPlotCapillary <- ifelse(is.na(strtmp), strLblPlotCapillary, strtmp)
 
-    strtmp <- dtStrings["strLblStatCapillary"]$value
-    strLblStatCapillary <- ifelse(is.na(strtmp), strLblStatCapillary, strtmp)
+    strtmp <- dtStrings["strLblStatCapillaryCap"]$value
+    strLblStatCapillaryCap <- ifelse(is.na(strtmp), strLblStatCapillaryCap, strtmp)
+
+    strtmp <- dtStrings["strLblStatCapillaryInj"]$value
+    strLblStatCapillaryInj <- ifelse(is.na(strtmp), strLblStatCapillaryInj, strtmp)
+
+    strtmp <- dtStrings["strLblStatCapillaryRow"]$value
+    strLblStatCapillaryRow <- ifelse(is.na(strtmp), strLblStatCapillaryRow, strtmp)
+
+    strtmp <- dtStrings["strLblStatCapillaryRun"]$value
+    strLblStatCapillaryRun <- ifelse(is.na(strtmp), strLblStatCapillaryRun, strtmp)
+
+    strtmp <- dtStrings["strLblStatCapillaryIns"]$value
+    strLblStatCapillaryIns <- ifelse(is.na(strtmp), strLblStatCapillaryIns, strtmp)
 
     strtmp <- dtStrings["strFrmRatio"]$value
     strFrmRatio <- ifelse(is.na(strtmp), strFrmRatio, strtmp)
@@ -801,8 +836,11 @@ strvalidator <- function(debug = FALSE) {
     strtmp <- dtStrings["strLblPlotPeaks"]$value
     strLblPlotPeaks <- ifelse(is.na(strtmp), strLblPlotPeaks, strtmp)
 
-    strtmp <- dtStrings["strFrmHeight"]$value
-    strFrmHeight <- ifelse(is.na(strtmp), strFrmHeight, strtmp)
+    strtmp <- dtStrings["strFrmStatistics"]$value
+    strFrmStatistics <- ifelse(is.na(strtmp), strFrmStatistics, strtmp)
+
+    strtmp <- dtStrings["strLblStatistics"]$value
+    strLblStatistics <- ifelse(is.na(strtmp), strLblStatistics, strtmp)
 
     strtmp <- dtStrings["strFrmDistribution"]$value
     strFrmDistribution <- ifelse(is.na(strtmp), strFrmDistribution, strtmp)
@@ -843,8 +881,14 @@ strvalidator <- function(debug = FALSE) {
     strtmp <- dtStrings["strLblPrecision"]$value
     strLblPrecision <- ifelse(is.na(strtmp), strLblPrecision, strtmp)
 
-    strtmp <- dtStrings["strLblStatPrecision"]$value
-    strLblStatPrecision <- ifelse(is.na(strtmp), strLblStatPrecision, strtmp)
+    strtmp <- dtStrings["strLblStatPrecisionSize"]$value
+    strLblStatPrecisionSize <- ifelse(is.na(strtmp), strLblStatPrecisionSize, strtmp)
+
+    strtmp <- dtStrings["strLblStatPrecisionDataPoint"]$value
+    strLblStatPrecisionDataPoint <- ifelse(is.na(strtmp), strLblStatPrecisionDataPoint, strtmp)
+
+    strtmp <- dtStrings["strLblStatPrecisionHeight"]$value
+    strLblStatPrecisionHeight <- ifelse(is.na(strtmp), strLblStatPrecisionHeight, strtmp)
 
     strtmp <- dtStrings["strLblPullup"]$value
     strLblPullup <- ifelse(is.na(strtmp), strLblPullup, strtmp)
@@ -941,7 +985,7 @@ strvalidator <- function(debug = FALSE) {
     index = 4
   )
 
-  edit_tab <- ggroup(
+  tools_tab <- ggroup(
     horizontal = FALSE,
     spacing = 5,
     use.scrollwindow = FALSE,
@@ -2044,24 +2088,24 @@ strvalidator <- function(debug = FALSE) {
     calculateOL_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
-  # EDIT  #####################################################################
+  # TOOLS  ####################################################################
 
-  edit_grid <- glayout(container = edit_tab, spacing = 5)
+  tools_grid <- glayout(container = tools_tab, spacing = 5)
 
   # EDIT ----------------------------------------------------------------------
 
-  edit_grid[1, 1] <- edit_view_btn <- gbutton(
+  tools_grid[1, 1] <- tools_view_btn <- gbutton(
     text = strBtnEdit,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[1, 2] <- glabel(
+  tools_grid[1, 2] <- glabel(
     text = strLblEdit,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_view_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_view_btn, handler = function(h, ...) {
 
     # Open GUI.
     editData_gui(
@@ -2072,19 +2116,19 @@ strvalidator <- function(debug = FALSE) {
 
   # TRIM ----------------------------------------------------------------------
 
-  edit_grid[2, 1] <- edit_trim_btn <- gbutton(
+  tools_grid[2, 1] <- tools_trim_btn <- gbutton(
     text = strBtnTrim,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[2, 2] <- glabel(
+  tools_grid[2, 2] <- glabel(
     text = strLblTrim,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
 
-  addHandlerChanged(edit_trim_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_trim_btn, handler = function(h, ...) {
 
     # Open GUI.
     trim_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2092,19 +2136,19 @@ strvalidator <- function(debug = FALSE) {
 
   # SLIM ----------------------------------------------------------------------
 
-  edit_grid[3, 1] <- edit_slim_btn <- gbutton(
+  tools_grid[3, 1] <- tools_slim_btn <- gbutton(
     text = strBtnSlim,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[3, 2] <- glabel(
+  tools_grid[3, 2] <- glabel(
     text = strLblSlim,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
 
-  addHandlerChanged(edit_slim_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_slim_btn, handler = function(h, ...) {
 
     # Open GUI.
     slim_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2112,37 +2156,37 @@ strvalidator <- function(debug = FALSE) {
 
   # FILTER --------------------------------------------------------------------
 
-  edit_grid[4, 1] <- edit_filter_btn <- gbutton(
+  tools_grid[4, 1] <- tools_filter_btn <- gbutton(
     text = strBtnFilter,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[4, 2] <- glabel(
+  tools_grid[4, 2] <- glabel(
     text = strLblFilter,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
 
-  addHandlerChanged(edit_filter_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_filter_btn, handler = function(h, ...) {
     filterProfile_gui(env = .strvalidator_env, savegui = .save_gui, parent = w)
   })
 
   # CROP ----------------------------------------------------------------------
 
-  edit_grid[5, 1] <- edit_crop_btn <- gbutton(
+  tools_grid[5, 1] <- tools_crop_btn <- gbutton(
     text = strBtnCrop,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[5, 2] <- glabel(
+  tools_grid[5, 2] <- glabel(
     text = strLblCrop,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
 
-  addHandlerChanged(edit_crop_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_crop_btn, handler = function(h, ...) {
 
     # Open GUI.
     cropData_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2150,36 +2194,36 @@ strvalidator <- function(debug = FALSE) {
 
   # GUESS ---------------------------------------------------------------------
 
-  edit_grid[6, 1] <- edit_guess_btn <- gbutton(
+  tools_grid[6, 1] <- tools_guess_btn <- gbutton(
     text = strBtnGuess,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[6, 2] <- glabel(
+  tools_grid[6, 2] <- glabel(
     text = strLblGuess,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
 
-  addHandlerChanged(edit_guess_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_guess_btn, handler = function(h, ...) {
     guessProfile_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # DYE -----------------------------------------------------------------------
 
-  edit_grid[7, 1] <- edit_addDye_btn <- gbutton(
+  tools_grid[7, 1] <- tools_addDye_btn <- gbutton(
     text = strBtnDye,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[7, 2] <- glabel(
+  tools_grid[7, 2] <- glabel(
     text = strLblDye,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_addDye_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_addDye_btn, handler = function(h, ...) {
 
     # Open GUI.
     addDye_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2187,18 +2231,18 @@ strvalidator <- function(debug = FALSE) {
 
   # ADD MARKER ----------------------------------------------------------------
 
-  edit_grid[8, 1] <- edit_addMarker_btn <- gbutton(
+  tools_grid[8, 1] <- tools_addMarker_btn <- gbutton(
     text = strBtnMarker,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[8, 2] <- glabel(
+  tools_grid[8, 2] <- glabel(
     text = strLblMarker,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_addMarker_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_addMarker_btn, handler = function(h, ...) {
 
     # Open GUI.
     addMarker_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2206,18 +2250,18 @@ strvalidator <- function(debug = FALSE) {
 
   # ADD SIZE ------------------------------------------------------------------
 
-  edit_grid[9, 1] <- edit_addSize_btn <- gbutton(
+  tools_grid[9, 1] <- tools_addSize_btn <- gbutton(
     text = strBtnSize,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[9, 2] <- glabel(
+  tools_grid[9, 2] <- glabel(
     text = strLblSize,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_addSize_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_addSize_btn, handler = function(h, ...) {
 
     # Open GUI.
     addSize_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2225,18 +2269,18 @@ strvalidator <- function(debug = FALSE) {
 
   # ADD DATA -------------------------------------------------------------------
 
-  edit_grid[10, 1] <- edit_addData_btn <- gbutton(
+  tools_grid[10, 1] <- tools_addData_btn <- gbutton(
     text = strBtnData,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[10, 2] <- glabel(
+  tools_grid[10, 2] <- glabel(
     text = strLblData,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_addData_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_addData_btn, handler = function(h, ...) {
 
     # Open GUI.
     addData_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2244,18 +2288,18 @@ strvalidator <- function(debug = FALSE) {
 
   # CHECK SUBSET --------------------------------------------------------------
 
-  edit_grid[11, 1] <- edit_check_btn <- gbutton(
+  tools_grid[11, 1] <- tools_check_btn <- gbutton(
     text = strBtnCheck,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[11, 2] <- glabel(
+  tools_grid[11, 2] <- glabel(
     text = strLblCheck,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_check_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_check_btn, handler = function(h, ...) {
 
     # Open GUI.
     checkSubset_gui(
@@ -2266,18 +2310,18 @@ strvalidator <- function(debug = FALSE) {
 
   # COMBINE -------------------------------------------------------------------
 
-  edit_grid[12, 1] <- edit_combine_btn <- gbutton(
+  tools_grid[12, 1] <- tools_combine_btn <- gbutton(
     text = strBtnCombine,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[12, 2] <- glabel(
+  tools_grid[12, 2] <- glabel(
     text = strLblCombine,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_combine_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_combine_btn, handler = function(h, ...) {
 
     # Open GUI.
     combine_gui(env = .strvalidator_env, debug = debug, parent = w)
@@ -2285,18 +2329,18 @@ strvalidator <- function(debug = FALSE) {
 
   # COLUMNS -------------------------------------------------------------------
 
-  edit_grid[13, 1] <- edit_columns_btn <- gbutton(
+  tools_grid[13, 1] <- tools_columns_btn <- gbutton(
     text = strBtnColumns,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[13, 2] <- glabel(
+  tools_grid[13, 2] <- glabel(
     text = strLblColumns,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_columns_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_columns_btn, handler = function(h, ...) {
 
     # Open GUI.
     columns_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2304,18 +2348,18 @@ strvalidator <- function(debug = FALSE) {
 
   # CALCULATE HETEROZYGOUS ----------------------------------------------------
 
-  edit_grid[14, 1] <- edit_copies_btn <- gbutton(
+  tools_grid[14, 1] <- tools_copies_btn <- gbutton(
     text = strBtnCopies,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[14, 2] <- glabel(
+  tools_grid[14, 2] <- glabel(
     text = strLblCopies,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_copies_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_copies_btn, handler = function(h, ...) {
 
     # Open GUI.
     calculateCopies_gui(
@@ -2324,42 +2368,20 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
-  # CALCULATE H ---------------------------------------------------------------
-
-  edit_grid[15, 1] <- edit_h_btn <- gbutton(
-    text = strBtnHeight,
-    container = edit_grid
-  )
-
-  edit_grid[15, 2] <- glabel(
-    text = strLblHeight,
-    container = edit_grid,
-    anchor = c(-1, 0)
-  )
-
-  addHandlerChanged(edit_h_btn, handler = function(h, ...) {
-
-    # Open GUI.
-    calculateHeight_gui(
-      env = .strvalidator_env, savegui = .save_gui,
-      debug = debug, parent = w
-    )
-  })
-
   # GENERATE EPG --------------------------------------------------------------
 
-  edit_grid[16, 1] <- edit_epg_btn <- gbutton(
+  tools_grid[15, 1] <- tools_epg_btn <- gbutton(
     text = strBtnEPG,
-    container = edit_grid
+    container = tools_grid
   )
 
-  edit_grid[16, 2] <- glabel(
+  tools_grid[15, 2] <- glabel(
     text = strLblEPG,
-    container = edit_grid,
+    container = tools_grid,
     anchor = c(-1, 0)
   )
 
-  addHandlerChanged(edit_epg_btn, handler = function(h, ...) {
+  addHandlerChanged(tools_epg_btn, handler = function(h, ...) {
 
     # Open GUI.
     generateEPG_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
@@ -2516,23 +2538,88 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
+  # SUMMARY STATISTICS GLOBAL -------------------------------------------------
 
-  # SUMMARY TABLE -------------------------------------------------------------
-
-  stutter_grid[5, 1] <- stutter_table_btn <- gbutton(
+  stutter_grid[5, 1] <- stutter_stats_global_btn <- gbutton(
     text = strBtnStatistics,
     container = stutter_grid
   )
 
   stutter_grid[5, 2] <- glabel(
-    text = strLblStatStutter,
+    text = strLblStatStutterGlobal,
     container = stutter_grid
   )
 
-  addHandlerChanged(stutter_table_btn, handler = function(h, ...) {
+  addHandlerChanged(stutter_stats_global_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
 
     # Open GUI.
-    tableStutter_gui(
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Ratio"),
+      group = NULL, quant = 0.95,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS MARKER -------------------------------------------------
+
+  stutter_grid[6, 1] <- stutter_stats_marker_btn <- gbutton(
+    text = strBtnStatistics,
+    container = stutter_grid
+  )
+
+  stutter_grid[6, 2] <- glabel(
+    text = strLblStatStutterMarker,
+    container = stutter_grid
+  )
+
+  addHandlerChanged(stutter_stats_marker_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Ratio"),
+      group = c("Marker"), quant = 0.95,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS STUTTER ------------------------------------------------
+
+  stutter_grid[7, 1] <- stutter_stats_stutter_btn <- gbutton(
+    text = strBtnStatistics,
+    container = stutter_grid
+  )
+
+  stutter_grid[7, 2] <- glabel(
+    text = strLblStatStutterStutter,
+    container = stutter_grid
+  )
+
+  addHandlerChanged(stutter_stats_stutter_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Ratio"),
+      group = c("Marker", "Type"), quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2566,29 +2653,30 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
+
+
   # ALLELE BALANCE ============================================================
 
-  balance_f2 <- gframe(
-    text = strFrmBalance,
+  balance_hb_frm <- gframe(
+    text = strFrmHb,
     horizontal = FALSE, container = balance_tab
   )
 
-  balance_g2 <- glayout(container = balance_f2, spacing = 5)
+  balance_hb <- glayout(container = balance_hb_frm, spacing = 5)
 
   # CALCULATE -----------------------------------------------------------------
 
-  # FUNCTION 1.
-  balance_g2[1, 1] <- balance_g2_calc_1_btn <- gbutton(
+  balance_hb[1, 1] <- balance_hb_calc_btn <- gbutton(
     text = strBtnCalculate,
-    container = balance_g2
+    container = balance_hb
   )
 
-  balance_g2[1, 2] <- glabel(
+  balance_hb[1, 2] <- glabel(
     text = strLblHb,
-    container = balance_g2
+    container = balance_hb
   )
 
-  addHandlerChanged(balance_g2_calc_1_btn, handler = function(h, ...) {
+  addHandlerChanged(balance_hb_calc_btn, handler = function(h, ...) {
 
     # Open GUI.
     calculateHb_gui(
@@ -2597,19 +2685,108 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
-  # FUNCTION 2.
-  balance_g2[2, 1] <- balance_g2_calc_2_btn <- gbutton(
+  # PLOT ----------------------------------------------------------------------
+
+  balance_hb[2, 1] <- balance_hb_plot_btn <- gbutton(
+    text = strBtnPlot,
+    container = balance_hb
+  )
+
+  balance_hb[2, 2] <- glabel(
+    text = strLblPlotBalance,
+    container = balance_hb
+  )
+
+  addHandlerChanged(balance_hb_plot_btn, handler = function(h, ...) {
+
+    # Open GUI.
+    plotBalance_gui(
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS GLOBAL -------------------------------------------------
+
+  balance_hb[3, 1] <- balance_stats_global_btn <- gbutton(
+    text = strBtnStatistics,
+    container = balance_hb
+  )
+
+  balance_hb[3, 2] <- glabel(
+    text = strLblStatBalanceGlobal,
+    container = balance_hb
+  )
+
+  addHandlerChanged(balance_stats_global_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Hb"),
+      group = NULL, quant = 0.05,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS MARKER -------------------------------------------------
+
+  balance_hb[4, 1] <- balance_stats_marker_btn <- gbutton(
+    text = strBtnStatistics,
+    container = balance_hb
+  )
+
+  balance_hb[4, 2] <- glabel(
+    text = strLblStatBalanceMarker,
+    container = balance_hb
+  )
+
+  addHandlerChanged(balance_stats_marker_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Hb"),
+      group = c("Marker"), quant = 0.05,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # PROFILE BALANCE ===========================================================
+
+  balance_lb_frm <- gframe(
+    text = strFrmLb,
+    horizontal = FALSE, container = balance_tab
+  )
+
+  balance_lb <- glayout(container = balance_lb_frm, spacing = 5)
+
+  # CALCULATE -----------------------------------------------------------------
+
+  balance_lb[1, 1] <- balance_lb_calc_btn <- gbutton(
     text = strBtnCalculate,
-    container = balance_g2
+    container = balance_lb
   )
 
-  balance_g2[2, 2] <- glabel(
+  balance_lb[1, 2] <- glabel(
     text = strLblLb,
-    container = balance_g2
+    container = balance_lb
   )
 
 
-  addHandlerChanged(balance_g2_calc_2_btn, handler = function(h, ...) {
+  addHandlerChanged(balance_lb_calc_btn, handler = function(h, ...) {
 
     # Open GUI.
     calculateLb_gui(
@@ -2620,17 +2797,17 @@ strvalidator <- function(debug = FALSE) {
 
   # PLOT ----------------------------------------------------------------------
 
-  balance_g2[3, 1] <- balance_g2_plot_btn <- gbutton(
+  balance_lb[2, 1] <- balance_lb_plot_btn <- gbutton(
     text = strBtnPlot,
-    container = balance_g2
+    container = balance_lb
   )
 
-  balance_g2[3, 2] <- glabel(
+  balance_lb[2, 2] <- glabel(
     text = strLblPlotBalance,
-    container = balance_g2
+    container = balance_lb
   )
 
-  addHandlerChanged(balance_g2_plot_btn, handler = function(h, ...) {
+  addHandlerChanged(balance_lb_plot_btn, handler = function(h, ...) {
 
     # Open GUI.
     plotBalance_gui(
@@ -2639,22 +2816,62 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
-  # SUMMARY TABLE -------------------------------------------------------------
+  # SUMMARY STATISTICS GLOBAL -------------------------------------------------
 
-  balance_g2[4, 1] <- balance_table_btn <- gbutton(
+  balance_lb[3, 1] <- balance_stats_global_btn <- gbutton(
     text = strBtnStatistics,
-    container = balance_g2
+    container = balance_lb
   )
 
-  balance_g2[4, 2] <- glabel(
-    text = strLblStatBalance,
-    container = balance_g2
+  balance_lb[3, 2] <- glabel(
+    text = strLblStatBalanceGlobal,
+    container = balance_lb
   )
 
-  addHandlerChanged(balance_table_btn, handler = function(h, ...) {
+  addHandlerChanged(balance_stats_global_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
 
     # Open GUI.
-    tableBalance_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Lb"),
+      group = NULL, quant = 0.05,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS MARKER -------------------------------------------------
+
+  balance_lb[4, 1] <- balance_stats_marker_btn <- gbutton(
+    text = strBtnStatistics,
+    container = balance_lb
+  )
+
+  balance_lb[4, 2] <- glabel(
+    text = strLblStatBalanceMarker,
+    container = balance_lb
+  )
+
+  addHandlerChanged(balance_stats_marker_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Lb"),
+      group = c("Marker"), quant = 0.05,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
   })
 
   # CAPILLARY BALANCE =========================================================
@@ -2710,22 +2927,146 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
-  # SUMMARY -------------------------------------------------------------------
+  # SUMMARY STATISTICS CAPILLARY ----------------------------------------------
 
-  balance_g3[3, 1] <- balance_g3_tab_btn <- gbutton(
+  balance_g3[3, 1] <- balance_g3_stats_cap_btn <- gbutton(
     text = strBtnStatistics,
     container = balance_g3
   )
 
   balance_g3[3, 2] <- glabel(
-    text = strLblStatCapillary,
+    text = strLblStatCapillaryCap,
     container = balance_g3
   )
 
-  addHandlerChanged(balance_g3_tab_btn, handler = function(h, ...) {
+  addHandlerChanged(balance_g3_stats_cap_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
 
     # Open GUI.
-    tableCapillary_gui(
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Mean.Height"),
+      group = c("Capillary"), quant = 0.75,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS INJECTION ----------------------------------------------
+
+  balance_g3[1, 3] <- balance_g3_stats_inj_btn <- gbutton(
+    text = strBtnStatistics,
+    container = balance_g3
+  )
+
+  balance_g3[1, 4] <- glabel(
+    text = strLblStatCapillaryInj,
+    container = balance_g3
+  )
+
+  addHandlerChanged(balance_g3_stats_inj_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Mean.Height"),
+      group = c("Injection"), quant = 0.75,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS ROW ----------------------------------------------------
+
+  balance_g3[2, 3] <- balance_g3_stats_row_btn <- gbutton(
+    text = strBtnStatistics,
+    container = balance_g3
+  )
+
+  balance_g3[2, 4] <- glabel(
+    text = strLblStatCapillaryRow,
+    container = balance_g3
+  )
+
+  addHandlerChanged(balance_g3_stats_row_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Mean.Height"),
+      group = c("Well"), quant = 0.75,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS RUN ----------------------------------------------------
+
+  balance_g3[3, 3] <- balance_g3_stats_run_btn <- gbutton(
+    text = strBtnStatistics,
+    container = balance_g3
+  )
+
+  balance_g3[3, 4] <- glabel(
+    text = strLblStatCapillaryRun,
+    container = balance_g3
+  )
+
+  addHandlerChanged(balance_g3_stats_run_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Mean.Height"),
+      group = c("Run"), quant = 0.75,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS INSTRUMENT ---------------------------------------------
+
+  balance_g3[4, 3] <- balance_g3_stats_ins_btn <- gbutton(
+    text = strBtnStatistics,
+    container = balance_g3
+  )
+
+  balance_g3[4, 4] <- glabel(
+    text = strLblStatCapillaryIns,
+    container = balance_g3
+  )
+
+  addHandlerChanged(balance_g3_stats_ins_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Mean.Height"),
+      group = c("Instrument"), quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3137,18 +3478,18 @@ strvalidator <- function(debug = FALSE) {
   })
 
 
-  # PEAK HEIGHT ===============================================================
+  # SUMMARY STATISTICS ========================================================
 
   result_f3 <- gframe(
-    text = strFrmHeight,
+    text = strFrmStatistics,
     horizontal = FALSE, container = result_tab
   )
 
   result_g3 <- glayout(container = result_f3, spacing = 5)
 
-  # PLOT PEAKS ----------------------------------------------------------------
+  # CALCULATE PEAK HEIGHT -----------------------------------------------------
 
-  result_g3[1, 1] <- result_g3_calc_btn <- gbutton(
+  result_g3[1, 1] <- result_g3_height_btn <- gbutton(
     text = strBtnCalculate,
     container = result_g3
   )
@@ -3158,10 +3499,31 @@ strvalidator <- function(debug = FALSE) {
     container = result_g3
   )
 
-  addHandlerChanged(result_g3_calc_btn, handler = function(h, ...) {
+  addHandlerChanged(result_g3_height_btn, handler = function(h, ...) {
 
     # Open GUI.
     calculateHeight_gui(
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS --------------------------------------------------------
+
+  result_g3[1, 3] <- result_g3_stats_btn <- gbutton(
+    text = strBtnStatistics,
+    container = result_g3
+  )
+
+  result_g3[1, 4] <- glabel(
+    text = strLblStatistics,
+    container = result_g3
+  )
+
+  addHandlerChanged(result_g3_stats_btn, handler = function(h, ...) {
+
+    # Open GUI.
+    calculateStatistics_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3437,24 +3799,114 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
-  # SUMMARY TABLE -------------------------------------------------------------
+  # FILTER DATA ---------------------------------------------------------------
 
-  precision_grid[3, 1] <- precision_table_btn <- gbutton(
-    text = strBtnStatistics,
+  precision_grid[3, 1] <- precision_filter_btn <- gbutton(
+    text = strBtnFilter,
     container = precision_grid
   )
 
   precision_grid[3, 2] <- glabel(
-    text = strLblStatPrecision,
+    text = strLblFilter,
     container = precision_grid,
     anchor = c(-1, 0)
   )
 
 
-  addHandlerChanged(precision_table_btn, handler = function(h, ...) {
+  addHandlerChanged(precision_filter_btn, handler = function(h, ...) {
 
     # Open GUI.
-    tablePrecision_gui(
+    filterProfile_gui(
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS SIZE ---------------------------------------------------
+
+  precision_grid[4, 1] <- precision_stats_size_btn <- gbutton(
+    text = strBtnStatistics,
+    container = precision_grid
+  )
+
+  precision_grid[4, 2] <- glabel(
+    text = strLblStatPrecisionSize,
+    container = precision_grid,
+    anchor = c(-1, 0)
+  )
+
+  addHandlerChanged(precision_stats_size_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Size"),
+      group = c("Marker", "Allele"), quant = 0.95,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS DATA.POINT ---------------------------------------------
+
+  precision_grid[5, 1] <- precision_stats_dp_btn <- gbutton(
+    text = strBtnStatistics,
+    container = precision_grid
+  )
+
+  precision_grid[5, 2] <- glabel(
+    text = strLblStatPrecisionDataPoint,
+    container = precision_grid,
+    anchor = c(-1, 0)
+  )
+
+  addHandlerChanged(precision_stats_dp_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Data.Point"),
+      group = c("Marker", "Allele"), quant = 0.95,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # SUMMARY STATISTICS HEIGHT -------------------------------------------------
+
+  precision_grid[6, 1] <- precision_stats_height_btn <- gbutton(
+    text = strBtnStatistics,
+    container = precision_grid
+  )
+
+  precision_grid[6, 2] <- glabel(
+    text = strLblStatPrecisionHeight,
+    container = precision_grid,
+    anchor = c(-1, 0)
+  )
+
+  addHandlerChanged(precision_stats_height_btn, handler = function(h, ...) {
+
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Height"),
+      group = c("Marker", "Allele"), quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
