@@ -1,10 +1,7 @@
 ################################################################################
-# TODO LIST
-# TODO: Option to return other info e.g. size. Return dataframe instead of vector.
-#       Workaround: unname(sapply(listObjects(), function(x) object.size(get(x, envir = baseenv()))))
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added check for NA. Return NULL.
+# 06.06.2020: Added parameters "sort" and "decreasing".
 # 28.06.2015: Changed parameter names to format: lower.case
 # 26.07.2013: 'obj.class' can now be a vector.
 # 17.05.2013: New parameters 'obj.class', 'debug'.
@@ -23,9 +20,11 @@
 #'
 #' @param env environment in which to search for objects.
 #' @param obj.class character string or vector specifying the object class.
+#' @param sort character string "time", "alpha", "size" specifying the sorting order. Default = NULL.
+#' @param decreasing logical used to indicate order when sorting is not NULL. Default = TRUE.
 #' @param debug logical indicating printing debug information.
 #'
-#' @return character vector with the object names.
+#' @return character vector with the object names or NULL.
 #'
 #' @export
 #'
@@ -37,7 +36,9 @@
 #' listObjects(obj.class = "function")
 #' }
 #'
-listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
+listObjects <- function(env = parent.frame(), obj.class = NULL, 
+                        sort = NULL, decreasing = TRUE,
+                        debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -51,6 +52,8 @@ listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
   if (debug) {
     print("Objects:")
     print(wsObj)
+    print("obj.class:")
+    print(obj.class)
   }
 
   # Check if specified object class.
@@ -75,6 +78,70 @@ listObjects <- function(env = parent.frame(), obj.class = NULL, debug = FALSE) {
 
     # Return all objects.
     res <- wsObj
+  }
+
+  # Check if sorting is requested.  
+  if (!is.null(sort)) {
+
+    # Create sorting vector.
+    new.order <- vector(mode = "character", length = length(res))
+
+    if (sort == "time") {
+
+      # Loop over objects and retrieve attribute.
+      for (o in seq(along = res)) {
+        tmp <- attr(x = get(x = res[o], envir = env),
+                    which = "timestamp", exact = TRUE)
+        new.order[o] <- ifelse(is.null(tmp), as.character(NA), tmp)
+      }
+
+      if (debug) {
+        message("time, decreasing=", decreasing)
+        message(paste(new.order[order(new.order, decreasing = decreasing)],
+                      collapse = ", "))
+      }
+      
+      # Sort according to new order.
+      res <- res[order(new.order, decreasing = decreasing)]
+      
+    }
+    
+    if (sort == "alpha") {
+      
+      if (debug) {
+        message("alpha, decreasing=", decreasing)
+        message(paste(res[order(res, decreasing = decreasing)],
+                      collapse = ", "))
+      }
+      
+      # Sort according to new order.
+      res <- res[order(res, decreasing = decreasing)]
+      
+    }
+    
+    if (sort == "size") {
+      
+      # Loop over objects and retrieve attribute.
+      for (o in seq(along = res)) {
+        new.order[o] <- object.size(x = get(x = res[o], envir = env))
+      }
+      
+      if (debug) {
+        message("Size, decreasing=", decreasing)
+        message(paste(new.order[order(new.order, decreasing = decreasing)],
+                      collapse = ", "))
+      }
+      
+      # Sort according to new order.
+      res <- res[order(new.order, decreasing = decreasing)]
+
+    }
+    
+  }
+  
+  # Check if NA.
+  if (all(is.na(res))) {
+    res <- NULL
   }
 
   if (debug) {

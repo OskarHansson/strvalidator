@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 06.06.2020: Added option to log timestamp. Default = TRUE.
 # 15.02.2019: Removed messages. Not useful from the STR-validator gui.
 # 24.08.2018: Added argument for logging R-version.
 # 05.08.2017: First version.
@@ -31,6 +28,7 @@
 #' @param remove logical. If \code{TRUE} the 'audit trail' attribute is removed.
 #' @param package character to log the package version.
 #' @param rversion logical to log the R version.
+#' @param timestamp logical to add or update timestamp.
 #'
 #' @return object with added or updated attribute 'audit trail'.
 #'
@@ -49,14 +47,14 @@
 #' myData <- myFunction(x = 10, a = 2)
 #' # Check the audit trail.
 #' cat(attr(myData, "audit trail"))
-#' 
+#'
 #' # Remove the audit trail.
 #' myData <- auditTrail(myData, remove = TRUE)
 #' # Confirm that the audit trail is removed.
 #' cat(attr(myData, "audit trail"))
 auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NULL,
                        arguments = TRUE, exact = TRUE, remove = FALSE, package = NULL,
-                       rversion = TRUE) {
+                       rversion = TRUE, timestamp = TRUE) {
   if (length(key) != length(value)) {
     stop("Arguments 'key' and 'value' must have equal length.")
   }
@@ -178,6 +176,14 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Add new entries to existing audit trail attribute.
     attr(x = obj, which = which) <- paste(audit.trail, new.entries, sep = "\n")
+  }
+
+  # Add timestamp.
+  if (timestamp)  {
+    
+    # Add timestamp to result.
+    attr(obj, which = "timestamp") <- as.character(now)
+
   }
 
   return(obj)
