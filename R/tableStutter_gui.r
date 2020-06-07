@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added .Deprecated("calculateStatistics_gui")
 # 03.05.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -19,7 +20,6 @@
 # 06.06.2013: Added save GUI settings.
 # 04.06.2013: Fixed bug in 'missingCol'.
 # 29.05.2013: Disabled button and adding "processing..." after press.
-# 24.05.2013: Improved error message for missing columns.
 
 #' @title Table Stutter
 #'
@@ -45,6 +45,7 @@
 
 tableStutter_gui <- function(env = parent.frame(), savegui = NULL,
                              debug = FALSE, parent = NULL) {
+  .Deprecated("calculateStatistics_gui")
 
   # Global variables.
   .gData <- NULL

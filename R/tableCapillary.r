@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added .Deprecated("calculateStatistics")
 # 07.08.2017: Added audit trail.
 # 29.08.2015: Added importFrom.
 # 10.08.2014: Added scope=RUN.
@@ -34,6 +31,8 @@
 #'
 
 tableCapillary <- function(data, scope = "cap", debug = FALSE) {
+  .Deprecated("calculateStatistics")
+
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added .Deprecated("calculateStatistics_gui")
 # 03.05.2020: Added language support.
 # 02.05.2019: Further adjustments to tables in gui and handlers.
 # 26.03.2019: Further adjustments to tables in gui and handlers.
@@ -19,7 +20,6 @@
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 06.02.2014: Fixed button locks when error.
-# 06.02.2014: Changed name calculatePrecision_gui -> tablePrecision_gui
 
 #' @title Table Precision
 #'
@@ -46,6 +46,7 @@
 
 tablePrecision_gui <- function(env = parent.frame(), savegui = NULL,
                                debug = FALSE, parent = NULL) {
+  .Deprecated("calculateStatistics_gui")
 
   # Global variables.
   # NB! Omitting 'stringsAsFactors = FALSE' creates really strange behaviour.

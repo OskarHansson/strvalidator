@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added .Deprecated("calculateStatistics")
 # 07.08.2017: Added audit trail.
 # 24.09.2016: Re-written to use data.table. Now handles both Lb and Hb.
 # 24.09.2016: Re-named to tableBalance.
@@ -45,6 +42,8 @@
 
 tableBalance <- function(data, scope = "locus", quant = 0.05) {
   message("Function to calculate summary statistics for balance data.")
+
+  .Deprecated("calculateStatistics")
 
   # Prepare -------------------------------------------------------------------
 

@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added .Deprecated("calculateStatistics")
 # 07.08.2017: Added audit trail.
 # 29.08.2015: Added importFrom.
 # 06.02.2014: Fixed bug when only one column in 'key'.
@@ -40,6 +37,8 @@ tablePrecision <- function(data, key = c("Marker", "Allele"), target = c("Size")
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
+
+  .Deprecated("calculateStatistics")
 
   # CHECK DATA ----------------------------------------------------------------
 

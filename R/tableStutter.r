@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added .Deprecated("calculateStatistics")
 # 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 01.08.2017: Added attributes to result.
@@ -42,6 +39,7 @@
 
 
 tableStutter <- function(data, scope = "stutter", quant = 0.95) {
+  .Deprecated("calculateStatistics")
 
   # Column name for quantile.
   quantName <- paste("Perc", quant * 100, sep = ".")

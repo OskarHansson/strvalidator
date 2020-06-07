@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added .Deprecated("calculateStatistics_gui")
 # 03.05.2020: Added language support.
 # 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
 # 11.02.2019: Minor adjustments to tcltk gui.
@@ -19,7 +20,6 @@
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
-# 05.05.2014: Changed default value for percentile 0.95 -> 0.05.
 
 
 #' @title Table Balance
@@ -45,6 +45,7 @@
 #' @seealso \code{\link{tableBalance}}
 
 tableBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+  .Deprecated("calculateStatistics_gui")
 
   # Global variables.
   .gData <- NULL

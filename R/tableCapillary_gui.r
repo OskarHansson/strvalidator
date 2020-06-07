@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.06.2020: Added .Deprecated("calculateStatistics_gui")
 # 03.05.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -38,6 +39,7 @@
 #' @seealso \code{\link{tableCapillary}}
 
 tableCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+  .Deprecated("calculateStatistics_gui")
 
   # Global variables.
   .gData <- NULL
