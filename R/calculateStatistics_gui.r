@@ -1,5 +1,9 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.06.2020: Fixed bug dropdowns not populated in tcltk.
+# 13.06.2020: Fixed bug "The column <Select Columns> was not found in the dataset."
+# 12.06.2020: Fixed bug in call to checkDataset.
+# 09.06.2020: Added parameter count.
 # 06.06.2020: Fixed vector support for parameter group. Removed edit field for target.
 # 23.05.2020: First version.
 
@@ -10,13 +14,14 @@
 #'
 #' @details
 #' Simplifies the use of the \code{\link{calculateStatistics}} function
-#' by providing a graphical user interface. Preselected values can be provided 
+#' by providing a graphical user interface. Preselected values can be provided
 #' as arguments.
 #'
 #' @param data character preselected data.frame if provided and exist in environment.
 #' @param target character vector preselected target column.
 #' @param quant numeric quantile to calculate. Default=0.95.
 #' @param group character vector preselected column(s) to group by.
+#' @param count character vector preselected column to count unique values in.
 #' @param env environment in which to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
@@ -31,7 +36,8 @@
 #'
 #' @seealso \code{link{quantile}}, \code{link{min}}, \code{link{max}}, \code{link{mean}}, \code{link{sd}}
 
-calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, group = NULL,
+calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
+                                    group = NULL, count = NULL,
                                     env = parent.frame(), savegui = NULL,
                                     debug = FALSE, parent = NULL) {
 
@@ -59,6 +65,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
   strFrmOptions <- "Options"
   strLblTarget <- "Select target column:"
   strLblGroupBy <- "Group by column(s):"
+  strLblCount <- "Count unique values in column:"
   strDrpColumn <- "<Select Columns>"
   strLblQuantile <- "Calculate quantile"
   strFrmSave <- "Save as"
@@ -71,13 +78,75 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  # dtStrings <- getStrings(gui = fnc)
+  dtStrings <- getStrings(gui = fnc)
 
   # If language file is found.
-  # if (!is.null(dtStrings)) {
-  # Get language strings, use default if not found.
+  if (!is.null(dtStrings)) {
+    # Get language strings, use default if not found.
 
-  # }
+    strtmp <- dtStrings["strWinTitle"]$value
+    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
+
+    strtmp <- dtStrings["strChkGui"]$value
+    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
+
+    strtmp <- dtStrings["strBtnHelp"]$value
+    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
+
+    strtmp <- dtStrings["strFrmDataset"]$value
+    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
+
+    strtmp <- dtStrings["strLblDataset"]$value
+    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
+
+    strtmp <- dtStrings["strDrpDataset"]$value
+    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
+
+    strtmp <- dtStrings["strLblRows"]$value
+    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
+
+    strtmp <- dtStrings["strFrmOptions"]$value
+    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
+
+    strtmp <- dtStrings["strLblTarget"]$value
+    strLblTarget <- ifelse(is.na(strtmp), strLblTarget, strtmp)
+
+    strtmp <- dtStrings["strLblGroupBy"]$value
+    strLblGroupBy <- ifelse(is.na(strtmp), strLblGroupBy, strtmp)
+
+    strtmp <- dtStrings["strLblCount"]$value
+    strLblCount <- ifelse(is.na(strtmp), strLblCount, strtmp)
+
+    strtmp <- dtStrings["strDrpColumn"]$value
+    strDrpColumn <- ifelse(is.na(strtmp), strDrpColumn, strtmp)
+
+    strtmp <- dtStrings["strLblQuantile"]$value
+    strLblQuantile <- ifelse(is.na(strtmp), strLblQuantile, strtmp)
+
+    strtmp <- dtStrings["strFrmSave"]$value
+    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
+
+    strtmp <- dtStrings["strLblSave"]$value
+    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
+
+    strtmp <- dtStrings["strBtnCalculate"]$value
+    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
+
+    strtmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+
+    strtmp <- dtStrings["strMsgDataset"]$value
+    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
+
+    strtmp <- dtStrings["strMsgTitleDataset"]$value
+    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
+
+    strtmp <- dtStrings["strMsgCheck"]$value
+    strMsgCheck <- ifelse(is.na(strtmp), strMsgCheck, strtmp)
+
+    strtmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
+  }
 
   # WINDOW ####################################################################
 
@@ -165,52 +234,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
   )
 
   addHandlerChanged(data_drp, handler = function(h, ...) {
-    val_obj <- svalue(data_drp)
-
-    if (val_obj != strDrpDataset) {
-      # Load or change components.
-
-      # get dataset.
-      .gData <<- get(val_obj, envir = env)
-      .gDataName <<- val_obj
-
-      svalue(data_rows_lbl) <- paste(nrow(.gData), strLblRows)
-
-      # Update dropdown menues.
-      target_columns <- unique(c(strDrpColumn, names(.gData)))
-      target_drp[, ] <- target_columns
-      group_drp[, ] <- unique(c(strDrpColumn, names(.gData)))
-
-      # Select default value.
-      svalue(target_drp, index = TRUE) <- ifelse(is.null(target), 1,
-                                                 which(target_columns %in% target))
-      svalue(group_drp, index = TRUE) <- 1
-
-      # Suggest a name for the result.
-      svalue(save_edt) <- paste(val_obj, "_stats", sep = "")
-    } else {
-
-      # Reset components.
-      .gData <<- NULL
-      .gDataName <<- NULL
-      svalue(data_drp, index = TRUE) <- 1
-      svalue(data_rows_lbl) <- paste(" 0", strLblRows)
-      svalue(save_edt) <- ""
-
-      # Update dropdown menues.
-      target_drp[, ] <- strDrpColumn
-      group_drp[, ] <- strDrpColumn
-
-      # Select default value.
-      svalue(target_drp, index = TRUE) <- 1
-      svalue(group_drp, index = TRUE) <- 1
-    }
-
-    # Change button.
-    blockHandlers(calculate_btn)
-    svalue(calculate_btn) <- strBtnCalculate
-    unblockHandlers(calculate_btn)
-    enabled(calculate_btn) <- TRUE
+    .updateWidgets()
   })
 
   # OPTIONS ###################################################################
@@ -264,6 +288,15 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
     }
   })
 
+  # Count ---------------------------------------------------------------------
+
+  glabel(text = strLblCount, container = option_frm)
+
+  count_drp <- gcombobox(
+    items = strDrpColumn,
+    container = option_frm, ellipsize = "none"
+  )
+
   # Quantile ------------------------------------------------------------------
 
   glabel(text = strLblQuantile, container = option_frm)
@@ -294,6 +327,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
     val_name <- svalue(save_edt)
     val_target <- svalue(target_drp)
     val_group <- svalue(group_edt)
+    val_count <- svalue(count_drp)
     val_quant <- svalue(quant_spb)
 
     if (val_group == strDrpColumn) {
@@ -310,26 +344,37 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
       print(val_target)
       print("val_group")
       print(val_group)
+      print("val_count")
+      print(val_count)
       print("val_quant")
       print(val_quant)
     }
 
     # Check if data.
     if (!is.null(val_data)) {
-      if (!nchar(val_target) > 0) {
+      if (!nchar(val_target) > 0 || val_target == strDrpColumn) {
         val_target <- NULL
       } else {
-        val_target <- unlist(strsplit(val_target, split = ","))
+        # val_target <- unlist(strsplit(val_target, split = ","))
+        val_target # Currently only implemented single target column.
       }
 
-      if (!nchar(val_group) > 0) {
+      if (!nchar(val_group) > 0 || val_group == strDrpColumn) {
         val_group <- NULL
       } else {
         val_group <- unlist(strsplit(val_group, split = ","))
       }
 
+      if (!nchar(val_count) > 0 || val_count == strDrpColumn) {
+        val_count <- NULL
+      } else {
+        # val_count <- unlist(strsplit(val_count, split = ","))
+        val_count # Currently only implemented single count column.
+      }
+
       # Check if suitable.
-      requiredCol <- c(val_target, val_group)
+      requiredCol <- c(val_target, val_group, val_count)
+      requiredCol <- requiredCol[requiredCol != strDrpColumn]
       ok <- checkDataset(
         name = val_obj, reqcol = requiredCol,
         env = env, parent = w, debug = debug
@@ -342,6 +387,8 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
           print(val_target)
           print("val_group")
           print(val_group)
+          print("val_count")
+          print(val_count)
           print("val_quant")
           print(val_quant)
         }
@@ -356,14 +403,15 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
           data = val_data,
           target = val_target,
           group = val_group,
+          count = val_count,
           quant = val_quant,
           debug = debug
         )
 
         # Create key-value pairs to log.
-        keys <- list("data", "target", "group", "quant")
+        keys <- list("data", "target", "group", "count", "quant")
 
-        values <- list(val_obj, val_target, val_group, val_quant)
+        values <- list(val_obj, val_target, val_group, val_count, val_quant)
 
         # Update audit trail.
         datanew <- auditTrail(
@@ -401,6 +449,62 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
 
   # INTERNAL FUNCTIONS ########################################################
 
+  .updateWidgets <- function() {
+    val_obj <- svalue(data_drp)
+
+    if (val_obj != strDrpDataset) {
+      # Load or change components.
+
+      # get dataset.
+      .gData <<- get(val_obj, envir = env)
+      .gDataName <<- val_obj
+
+      svalue(data_rows_lbl) <- paste(nrow(.gData), strLblRows)
+
+      # Update dropdown menues.
+      target_columns <- unique(c(strDrpColumn, names(.gData)))
+      target_drp[] <- target_columns
+      group_drp[] <- target_columns
+      count_drp[] <- target_columns
+
+      # Select default value.
+      svalue(target_drp, index = TRUE) <- ifelse(is.null(target), 1,
+        which(target_columns %in% target)
+      )
+      svalue(group_drp, index = TRUE) <- 1
+      svalue(count_drp, index = TRUE) <- ifelse(is.null(count), 1,
+        which(target_columns %in% count)
+      )
+
+      # Suggest a name for the result.
+      svalue(save_edt) <- paste(val_obj, "_stats", sep = "")
+    } else {
+
+      # Reset components.
+      .gData <<- NULL
+      .gDataName <<- NULL
+      svalue(data_drp, index = TRUE) <- 1
+      svalue(data_rows_lbl) <- paste(" 0", strLblRows)
+      svalue(save_edt) <- ""
+
+      # Update dropdown menues.
+      target_drp[] <- strDrpColumn
+      group_drp[] <- strDrpColumn
+      count_drp[] <- strDrpColumn
+
+      # Select default value.
+      svalue(target_drp, index = TRUE) <- 1
+      svalue(group_drp, index = TRUE) <- 1
+      svalue(count_drp, index = TRUE) <- 1
+    }
+
+    # Change button.
+    blockHandlers(calculate_btn)
+    svalue(calculate_btn) <- strBtnCalculate
+    unblockHandlers(calculate_btn)
+    enabled(calculate_btn) <- TRUE
+  }
+
   .loadSavedSettings <- function() {
 
     # First check status of save flag.
@@ -425,9 +529,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
 
     # Then load settings if true.
     if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateStatistics_gui_target", envir = env, inherits = FALSE)) {
-        svalue(target_edt) <- get(".strvalidator_calculateStatistics_gui_target", envir = env)
-      }
       if (exists(".strvalidator_calculateStatistics_gui_group", envir = env, inherits = FALSE)) {
         svalue(group_edt) <- get(".strvalidator_calculateStatistics_gui_group", envir = env)
       }
@@ -445,16 +546,12 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateStatistics_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateStatistics_gui_target", value = svalue(target_edt), envir = env)
       assign(x = ".strvalidator_calculateStatistics_gui_group", value = svalue(group_edt), envir = env)
       assign(x = ".strvalidator_calculateStatistics_gui_quant", value = svalue(quant_spb), envir = env)
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_calculateStatistics_gui_savegui", envir = env, inherits = FALSE)) {
         remove(".strvalidator_calculateStatistics_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculateStatistics_gui_target", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStatistics_gui_target", envir = env)
       }
       if (exists(".strvalidator_calculateStatistics_gui_group", envir = env, inherits = FALSE)) {
         remove(".strvalidator_calculateStatistics_gui_group", envir = env)
@@ -478,6 +575,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
   # Update dropdown if data is provided.
   i_drp <- which(dfs %in% data)
   svalue(data_drp, index = TRUE) <- ifelse(length(i_drp) == 0, 1, i_drp)
+  .updateWidgets() # Needed to update tcltk widgets.
 
   # Only load settings if started without parameters.
   if (all(is.null(data), is.null(target), is.null(group))) {
@@ -486,9 +584,8 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95, gr
     .loadSavedSettings()
   } else {
 
-    # Save settings disabled when starting with parameters.    
+    # Save settings disabled when starting with parameters.
     enabled(savegui_chk) <- FALSE
-
   }
 
   # Show GUI.
