@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.06.2020: Expanded path field under tcltk.
 # 14.03.2020: Added language support.
 # 03.05.2019: Fixed "Error in structure(.External(.C_dotTclObjv, objv).." (tcltk).
 # 03.05.2019: Compacted and tweaked gui for tcltk.
@@ -19,7 +20,6 @@
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
-# 27.10.2013: Added warning when no object selected.
 
 #' @title Export
 #'
@@ -80,6 +80,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   strLblWidth <- "Width:"
   strLblHeight <- "Height:"
   strLblResolution <- "Resolution:"
+  strFrmLocation <- "Location"
   strLblLocation <- "Save files to path:"
   strBtnOpen <- "Open"
   strBtnExport <- "Export"
@@ -160,6 +161,9 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
     strtmp <- dtStrings["strLblResolution"]$value
     strLblResolution <- ifelse(is.na(strtmp), strLblResolution, strtmp)
+
+    strtmp <- dtStrings["strFrmLocation"]$value
+    strFrmLocation <- ifelse(is.na(strtmp), strFrmLocation, strtmp)
 
     strtmp <- dtStrings["strLblLocation"]$value
     strLblLocation <- ifelse(is.na(strtmp), strLblLocation, strtmp)
@@ -287,7 +291,10 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   # OPTIONS ###################################################################
 
-  option_frm <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 2, container = gv)
+  option_frm <- gframe(
+    text = strFrmOptions, horizontal = FALSE, spacing = 2,
+    container = gv
+  )
 
   name_chk <- gcheckbox(
     text = strChkNames,
@@ -349,9 +356,9 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   glabel(text = "", container = option_frm) # Spacer.
 
-  glabel(text = strLblLocation, container = option_frm, anchor = c(-1, 0))
+  path_grp <- gframe(text = strFrmLocation, horizontal = FALSE, spacing = 2, container = gv)
 
-  path_grp <- ggroup(spacing = 2, container = option_frm)
+  glabel(text = strLblLocation, container = path_grp, anchor = c(-1, 0))
 
   # NB! text = getwd() does not always work (e.g. when 'Documents' are localized).
   # https://stackoverflow.com/questions/45231928/initiate-gfilebrowse-with-a-valid-path-gwidgets2

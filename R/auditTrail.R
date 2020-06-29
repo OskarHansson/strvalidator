@@ -176,14 +176,13 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Add new entries to existing audit trail attribute.
     attr(x = obj, which = which) <- paste(audit.trail, new.entries, sep = "\n")
-  }
 
-  # Add timestamp.
-  if (timestamp)  {
-    
-    # Add timestamp to result.
-    attr(obj, which = "timestamp") <- as.character(now)
+    # Add timestamp.
+    if (timestamp) {
 
+      # Add timestamp to result.
+      attr(obj, which = "timestamp") <- as.character(now)
+    }
   }
 
   return(obj)

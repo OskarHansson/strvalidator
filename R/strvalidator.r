@@ -28,6 +28,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.06.2020: Description made gexpandgroup and loads only if opened.
 # 07.06.2020: Added calls to calculateStatistics_gui. Depracated table*.
 # 21.05.2020: Added language support for welcome tab/about.
 # 11.05.2020: Fixed bugs in language support.
@@ -47,7 +48,6 @@
 # 31.07.2017: Fixed error when pressing 'New' project.
 # 19.07.2017: Updated the export_gui call with new argument 'obj' and logic.
 # 18.07.2017: Changed 'Edit' button to 'View' button in all tabs except 'Tools'.
-# 17.07.2017: Fixed problems with updating the project list.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -114,7 +114,6 @@ strvalidator <- function(debug = FALSE) {
   # Default strings.
   strChkGui <- "Save GUI settings"
   strBtnHelp <- "Help"
-  strBtnCalculate <- "Calculate"
   strTabWelcome <- "Welcome"
   strTabWorkspace <- "Workspace"
   strTabProject <- "Projects"
@@ -154,6 +153,7 @@ strvalidator <- function(debug = FALSE) {
   strTipDelete <- "Delete selected project from the file system"
   strLblProject <- "Project:"
   strStrNoProject <- "[No project found]"
+  strFrmDescription <- "Description"
   strStrDescription <- "Write a project description here!"
   strStrProjectDescription <- "[Project description]"
   strBtnSave <- "Save"
@@ -244,6 +244,7 @@ strvalidator <- function(debug = FALSE) {
   strLblHeight <- "Calculate peak height metrics"
   strBtnEPG <- "EPG"
   strLblEPG <- "Generate EPG like plot"
+  strBtnCalculate <- "Calculate"
   strLblAT <- "Calculate analytical threshold (AT1, AT2, AT4, AT7)"
   strLblAT6 <- "Calculate analytical threshold (AT6)"
   strBtnPlot <- "Plot"
@@ -256,8 +257,8 @@ strvalidator <- function(debug = FALSE) {
   strLblStatStutterStutter <- "Calculate summary statistics by marker and stutter type"
   strFrmHb <- "Heterozygous balance (intra-locus)"
   strFrmLb <- "Profile balance (inter-locus)"
-  strLblHb <- "Calculate heterozygote balance (intra-locus balance)"
-  strLblLb <- "Calculate profile balance (inter-locus balance)"
+  strLblHb <- "Calculate heterozygote balance"
+  strLblLb <- "Calculate profile balance"
   strLblPlotBalance <- "Create plots for analysed data"
   strLblStatBalanceGlobal <- "Calculate global summary statistics"
   strLblStatBalanceMarker <- "Calculate summary statistics by marker"
@@ -439,6 +440,9 @@ strvalidator <- function(debug = FALSE) {
 
     strtmp <- dtStrings["strStrNoProject"]$value
     strStrNoProject <- ifelse(is.na(strtmp), strStrNoProject, strtmp)
+
+    strtmp <- dtStrings["strFrmDescription"]$value
+    strFrmDescription <- ifelse(is.na(strtmp), strFrmDescription, strtmp)
 
     strtmp <- dtStrings["strStrDescription"]$value
     strStrDescription <- ifelse(is.na(strtmp), strStrDescription, strtmp)
@@ -1360,17 +1364,21 @@ strvalidator <- function(debug = FALSE) {
     if (length(val_prj) > 0) {
       if (file.exists(val_prj)) {
 
-        # Load project in temporary environment.
-        load(file = val_prj, envir = val_env, verbose = FALSE)
-        if (exists(x = val_obj, envir = val_env, inherits = FALSE)) {
-          description <- get(x = val_obj, envir = val_env, inherits = FALSE)
-        } else {
-          description <- strStrDescription
-        }
+        # Check if description should be loaded.
+        if (visible(project_f3)) {
 
-        # Load description.
-        svalue(proj_info_lbl) <- paste(strLblProject, val_name)
-        svalue(proj_info_txt) <- description
+          # Load project in temporary environment.
+          load(file = val_prj, envir = val_env, verbose = FALSE)
+          if (exists(x = val_obj, envir = val_env, inherits = FALSE)) {
+            description <- get(x = val_obj, envir = val_env, inherits = FALSE)
+          } else {
+            description <- strStrDescription
+          }
+
+          # Load description.
+          svalue(proj_info_lbl) <- paste(strLblProject, val_name)
+          svalue(proj_info_txt) <- description
+        }
       }
     } else {
 
@@ -1383,13 +1391,15 @@ strvalidator <- function(debug = FALSE) {
   # DESCRIPTION ---------------------------------------------------------------
 
   # Horizontal main group.
-  project_f3 <- gframe(
-    text = "Description",
+  project_f3 <- gexpandgroup(
+    text = strFrmDescription,
     horizontal = TRUE,
-    spacing = 5,
     container = project_f1,
     expand = TRUE
   )
+
+  # Default is to not show description.
+  visible(project_f3) <- FALSE
 
   # Button group.
   project_g3 <- ggroup(
@@ -2561,7 +2571,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Ratio"),
-      group = NULL, quant = 0.95,
+      group = NULL, count = c("Allele"), quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2590,7 +2600,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Ratio"),
-      group = c("Marker"), quant = 0.95,
+      group = c("Marker"), count = c("Allele"), quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2619,7 +2629,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Ratio"),
-      group = c("Marker", "Type"), quant = 0.95,
+      group = c("Marker", "Type"), count = c("Allele"), quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2729,7 +2739,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Hb"),
-      group = NULL, quant = 0.05,
+      group = NULL, count = NULL, quant = 0.05,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2758,7 +2768,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Hb"),
-      group = c("Marker"), quant = 0.05,
+      group = c("Marker"), count = NULL, quant = 0.05,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2839,7 +2849,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Lb"),
-      group = NULL, quant = 0.05,
+      group = NULL, count = NULL, quant = 0.05,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2868,7 +2878,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Lb"),
-      group = c("Marker"), quant = 0.05,
+      group = c("Marker"), count = NULL, quant = 0.05,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2950,7 +2960,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Mean.Height"),
-      group = c("Capillary"), quant = 0.75,
+      group = c("Capillary"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2979,7 +2989,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Mean.Height"),
-      group = c("Injection"), quant = 0.75,
+      group = c("Injection"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3008,7 +3018,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Mean.Height"),
-      group = c("Well"), quant = 0.75,
+      group = c("Well"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3037,7 +3047,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Mean.Height"),
-      group = c("Run"), quant = 0.75,
+      group = c("Run"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3066,7 +3076,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Mean.Height"),
-      group = c("Instrument"), quant = 0.75,
+      group = c("Instrument"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3778,35 +3788,14 @@ strvalidator <- function(debug = FALSE) {
     )
   })
 
-  # PLOT RESULT TYPE ----------------------------------------------------------
-
-  precision_grid[2, 1] <- precision_plot_btn <- gbutton(
-    text = strBtnPlot,
-    container = precision_grid
-  )
-
-  precision_grid[2, 2] <- glabel(
-    text = strLblPrecision,
-    container = precision_grid
-  )
-
-  addHandlerChanged(precision_plot_btn, handler = function(h, ...) {
-
-    # Open GUI.
-    plotPrecision_gui(
-      env = .strvalidator_env, savegui = .save_gui,
-      debug = debug, parent = w
-    )
-  })
-
   # FILTER DATA ---------------------------------------------------------------
 
-  precision_grid[3, 1] <- precision_filter_btn <- gbutton(
+  precision_grid[2, 1] <- precision_filter_btn <- gbutton(
     text = strBtnFilter,
     container = precision_grid
   )
 
-  precision_grid[3, 2] <- glabel(
+  precision_grid[2, 2] <- glabel(
     text = strLblFilter,
     container = precision_grid,
     anchor = c(-1, 0)
@@ -3817,6 +3806,27 @@ strvalidator <- function(debug = FALSE) {
 
     # Open GUI.
     filterProfile_gui(
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+
+  # PLOT RESULT TYPE ----------------------------------------------------------
+
+  precision_grid[3, 1] <- precision_plot_btn <- gbutton(
+    text = strBtnPlot,
+    container = precision_grid
+  )
+
+  precision_grid[3, 2] <- glabel(
+    text = strLblPrecision,
+    container = precision_grid
+  )
+
+  addHandlerChanged(precision_plot_btn, handler = function(h, ...) {
+
+    # Open GUI.
+    plotPrecision_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3846,7 +3856,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Size"),
-      group = c("Marker", "Allele"), quant = 0.95,
+      group = c("Marker", "Allele"), count = NULL, quant = 0.50,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3876,7 +3886,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Data.Point"),
-      group = c("Marker", "Allele"), quant = 0.95,
+      group = c("Marker", "Allele"), count = NULL, quant = 0.50,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3906,7 +3916,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Height"),
-      group = c("Marker", "Allele"), quant = 0.95,
+      group = c("Marker", "Allele"), count = NULL, quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -4042,6 +4052,9 @@ strvalidator <- function(debug = FALSE) {
       if (exists(".strvalidator_last_open_dir", envir = .strvalidator_env, inherits = FALSE)) {
         .ws_last_open_dir <- get(".strvalidator_last_open_dir", envir = .strvalidator_env)
       }
+      if (exists(".strvalidator_show_description", envir = .strvalidator_env, inherits = FALSE)) {
+        visible(project_f3) <- get(".strvalidator_show_description", envir = .strvalidator_env)
+      }
     }
 
     if (debug) {
@@ -4056,6 +4069,7 @@ strvalidator <- function(debug = FALSE) {
       assign(x = ".strvalidator_savegui", value = svalue(savegui_chk), envir = .strvalidator_env)
       assign(x = ".strvalidator_project_dir", value = svalue(project_fb), envir = .strvalidator_env)
       assign(x = ".strvalidator_last_open_dir", value = .ws_last_open_dir, envir = .strvalidator_env)
+      assign(x = ".strvalidator_show_description", value = visible(project_f3), envir = .strvalidator_env)
     } else { # or remove all saved values if false.
 
       if (exists(".strvalidator_savegui", envir = .strvalidator_env, inherits = FALSE)) {
@@ -4066,6 +4080,9 @@ strvalidator <- function(debug = FALSE) {
       }
       if (exists(".strvalidator_last_open_dir", envir = .strvalidator_env, inherits = FALSE)) {
         remove(".strvalidator_last_open_dir", envir = .strvalidator_env)
+      }
+      if (exists(".strvalidator_show_description", envir = .strvalidator_env, inherits = FALSE)) {
+        remove(".strvalidator_show_description", envir = .strvalidator_env)
       }
 
       if (debug) {

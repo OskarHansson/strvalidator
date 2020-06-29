@@ -36,7 +36,7 @@
 #' listObjects(obj.class = "function")
 #' }
 #'
-listObjects <- function(env = parent.frame(), obj.class = NULL, 
+listObjects <- function(env = parent.frame(), obj.class = NULL,
                         sort = NULL, decreasing = TRUE,
                         debug = FALSE) {
   if (debug) {
@@ -80,7 +80,7 @@ listObjects <- function(env = parent.frame(), obj.class = NULL,
     res <- wsObj
   }
 
-  # Check if sorting is requested.  
+  # Check if sorting is requested.
   if (!is.null(sort)) {
 
     # Create sorting vector.
@@ -90,55 +90,55 @@ listObjects <- function(env = parent.frame(), obj.class = NULL,
 
       # Loop over objects and retrieve attribute.
       for (o in seq(along = res)) {
-        tmp <- attr(x = get(x = res[o], envir = env),
-                    which = "timestamp", exact = TRUE)
+        tmp <- attr(
+          x = get(x = res[o], envir = env),
+          which = "timestamp", exact = TRUE
+        )
         new.order[o] <- ifelse(is.null(tmp), as.character(NA), tmp)
       }
 
       if (debug) {
         message("time, decreasing=", decreasing)
         message(paste(new.order[order(new.order, decreasing = decreasing)],
-                      collapse = ", "))
+          collapse = ", "
+        ))
       }
-      
+
       # Sort according to new order.
       res <- res[order(new.order, decreasing = decreasing)]
-      
     }
-    
+
     if (sort == "alpha") {
-      
       if (debug) {
         message("alpha, decreasing=", decreasing)
         message(paste(res[order(res, decreasing = decreasing)],
-                      collapse = ", "))
+          collapse = ", "
+        ))
       }
-      
+
       # Sort according to new order.
       res <- res[order(res, decreasing = decreasing)]
-      
     }
-    
+
     if (sort == "size") {
-      
+
       # Loop over objects and retrieve attribute.
       for (o in seq(along = res)) {
         new.order[o] <- object.size(x = get(x = res[o], envir = env))
       }
-      
+
       if (debug) {
         message("Size, decreasing=", decreasing)
         message(paste(new.order[order(new.order, decreasing = decreasing)],
-                      collapse = ", "))
+          collapse = ", "
+        ))
       }
-      
+
       # Sort according to new order.
       res <- res[order(new.order, decreasing = decreasing)]
-
     }
-    
   }
-  
+
   # Check if NA.
   if (all(is.na(res))) {
     res <- NULL

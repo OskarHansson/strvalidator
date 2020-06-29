@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.06.2020: Fixed Error in `:=`(value, gsub("\\n", "\n", value, fixed = TRUE))...
 # 21.05.2020: Added gsub to about.
 # 17.05.2020: Added gsub to fix new line coming out as \n.
 # 15.05.2020: Added parameters 'encoding' and 'about'.
@@ -68,10 +69,11 @@ getStrings <- function(language = NA, gui = NA, key = NA,
 
       # Read file.
       result <- readLines(con = aboutFilePath, encoding = encoding)
-      
+
       # Fix new line character.
-      result <- gsub("\\n", "\n", result, fixed = TRUE)
-      
+      if (!is.null(result)) {
+        result <- gsub("\\n", "\n", result, fixed = TRUE)
+      }
     } else { # If file doesn't exist.
 
       # Show file not found message.
@@ -105,7 +107,7 @@ getStrings <- function(language = NA, gui = NA, key = NA,
         message("Get langugage strings for gui = ", gui)
 
         # Get strings for the specific function.
-        result <- result[scope == gui, ] 
+        result <- result[scope == gui, ]
         # Note: variable named as column name does not work i.e. scope == scope.
 
         if (nrow(result) == 0) {
@@ -129,7 +131,9 @@ getStrings <- function(language = NA, gui = NA, key = NA,
       } else {
 
         # Fix new line character.
-        result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
+        if (!is.null(result)) {
+          result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
+        }
       }
     } else { # If file doesn't exist.
 
