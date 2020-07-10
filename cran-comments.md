@@ -1,3 +1,8 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Removed gWidgets2tcltk from the Suggests field in the DESCRIPTION file. Hoping to fix the Debian NOTE "Namespace in Imports field not imported from: gWidgets2tcltk".
+
 ## Test environments
 * local Windows 10 (64-bit) install, R 4.0.2, RStudio 1.3.959
 * win-builder: R Under development (unstable) (2020-07-08 r78794)
