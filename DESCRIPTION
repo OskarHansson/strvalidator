@@ -24,7 +24,6 @@ Imports:
     utils,
     MASS
 Suggests:
-    gWidgets2tcltk,
     ResourceSelection,
     testthat
 Description: An open source platform for validation and process control.
