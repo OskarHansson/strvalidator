@@ -36,7 +36,7 @@
 #'  theme_void
 #' @importFrom graphics par
 #'
-#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
+#' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
 

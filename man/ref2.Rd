@@ -4,7 +4,9 @@
 \name{ref2}
 \alias{ref2}
 \title{SGMPlus example data}
-\format{A data frame with 16 rows and 3 variables}
+\format{
+A data frame with 16 rows and 3 variables
+}
 \usage{
 data(ref2)
 }

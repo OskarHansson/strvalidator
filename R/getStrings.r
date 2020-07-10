@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.07.2020: Fix warnings about improper quoting.
+# 04.07.2020: Defined unbound variables.
 # 09.06.2020: Fixed Error in `:=`(value, gsub("\\n", "\n", value, fixed = TRUE))...
 # 21.05.2020: Added gsub to about.
 # 17.05.2020: Added gsub to fix new line coming out as \n.
@@ -49,6 +51,10 @@ getStrings <- function(language = NA, gui = NA, key = NA,
     # Get language from settings.
     encoding <- getSetting("encoding")
   }
+  
+  # Unbound variables (https://www.r-bloggers.com/no-visible-binding-for-global-variable/):
+  scope <- NULL
+  value <- NULL
 
   # Constants.
   fileSep <- .Platform$file.sep # Platform dependent path separator.
@@ -93,7 +99,7 @@ getStrings <- function(language = NA, gui = NA, key = NA,
       # Read file.
       dtAll <- fread(
         file = langFilePath, sep = "\t",
-        header = "auto", encoding = encoding
+        header = "auto", encoding = encoding, quote=""
       )
 
       # Set key column.

@@ -14,7 +14,8 @@ auditTrail(
   exact = TRUE,
   remove = FALSE,
   package = NULL,
-  rversion = TRUE
+  rversion = TRUE,
+  timestamp = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ auditTrail(
 \item{package}{character to log the package version.}
 
 \item{rversion}{logical to log the R version.}
+
+\item{timestamp}{logical to add or update timestamp.}
 }
 \value{
 object with added or updated attribute 'audit trail'.

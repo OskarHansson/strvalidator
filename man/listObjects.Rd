@@ -4,17 +4,27 @@
 \alias{listObjects}
 \title{List Objects}
 \usage{
-listObjects(env = parent.frame(), obj.class = NULL, debug = FALSE)
+listObjects(
+  env = parent.frame(),
+  obj.class = NULL,
+  sort = NULL,
+  decreasing = TRUE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{env}{environment in which to search for objects.}
 
 \item{obj.class}{character string or vector specifying the object class.}
 
+\item{sort}{character string "time", "alpha", "size" specifying the sorting order. Default = NULL.}
+
+\item{decreasing}{logical used to indicate order when sorting is not NULL. Default = TRUE.}
+
 \item{debug}{logical indicating printing debug information.}
 }
 \value{
-character vector with the object names.
+character vector with the object names or NULL.
 }
 \description{
 Internal helper function to list objects in an environment.

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.07.2020: Fixed no visible binding for variables.
 # 02.05.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -49,7 +50,7 @@
 #'  theme_void
 #' @importFrom  data.table data.table
 #'
-#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
+#' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
 
@@ -63,6 +64,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     "theme_classic()", "theme_void()"
   )
   .scales <- c("fixed", "free_x", "free_y", "free")
+  val_obj <- NULL
 
   # Language ------------------------------------------------------------------
 

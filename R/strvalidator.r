@@ -1928,7 +1928,7 @@ strvalidator <- function(debug = FALSE) {
       } else {
         blockHandlers(w)
         gmessage(
-          msg = strMsgPrjectNotSaved,
+          msg = strMsgProjectNotSaved,
           title = strMsgTitleInfo,
           icon = "info",
           parent = w

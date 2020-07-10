@@ -4,7 +4,9 @@
 \name{ref61}
 \alias{ref61}
 \title{Fusion example data for dropout analysis.}
-\format{A data frame with 89 rows and 3 variables}
+\format{
+A data frame with 89 rows and 3 variables
+}
 \usage{
 data(ref61)
 }

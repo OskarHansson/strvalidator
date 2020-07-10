@@ -15,7 +15,7 @@ calculateT(
 \arguments{
 \item{data}{data.frame with dependent and explanatory values in columns named 'Dep' and 'Exp'.}
 
-\item{log.model}{logical indicating if data should be log tranformed. Default=FALSE.}
+\item{log.model}{logical indicating if data should be log transformed. Default=FALSE.}
 
 \item{p.dropout}{numeric accepted risk to calculate point estimate for. Default=0.01.}
 
@@ -31,7 +31,7 @@ Calculates point estimates for the stochastic threshold.
 }
 \details{
 Given a data.frame with observed values for the dependent variable
-(column 'Dep') and explanary values (column 'Exp') point estimates
+(column 'Dep') and explanatory values (column 'Exp') point estimates
 corresponding to a risk level of \code{p.dropout} are calculated
 using logistic regression: \code{glm(Dep~Exp, family=binomial("logit")}.
 A conservative estimate is calculated from the \code{pred.int}.

@@ -4,7 +4,9 @@
 \name{set6}
 \alias{set6}
 \title{Fusion example data for dropout analysis.}
-\format{A data frame with 1848 rows and 7 variables}
+\format{
+A data frame with 1848 rows and 7 variables
+}
 \usage{
 data(set6)
 }

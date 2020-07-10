@@ -36,7 +36,7 @@ checkDataset(
 \item{debug}{logical indicating printing debug information.}
 }
 \description{
-Internal function to check a data.frame before analysis.
+Check a data.frame before analysis.
 }
 \details{
 Check that the object exist, there are rows, the required columns exist,

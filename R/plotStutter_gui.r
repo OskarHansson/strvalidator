@@ -55,7 +55,7 @@
 #'  theme_void
 #' @importFrom  data.table data.table
 #'
-#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
+#' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
 

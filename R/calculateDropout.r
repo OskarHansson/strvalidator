@@ -51,7 +51,7 @@
 #' consider the whole locus and score drop-out if any allele is missing.
 #'
 #' Explanation of the methods:
-#' Dropout - all alleles are scored according to LDT. This is pure observations
+#' Dropout - all alleles are scored according to AT. This is pure observations
 #' and is not used for modeling.
 #' MethodX - a random reference allele is selected and drop-out is scored in
 #' relation to the the partner allele.
@@ -439,7 +439,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                 modeldrop <- 1
                 methodXTmp <- modeldrop
               } else if (peakHeight[partner0] < threshold) {
-                # If both alleles, check if below LDT.
+                # If both alleles, check if below AT.
 
                 # Score as dropout.
                 modeldrop <- 1
@@ -452,7 +452,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                   methodXTmp[partner0] <- NA
                 }
               } else {
-                # Partner peak is above LDT.
+                # Partner peak is above AT.
 
                 # Score as NO dropout.
                 modeldrop <- 0
@@ -478,7 +478,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                 modeldrop <- 1
                 method1Tmp <- modeldrop
               } else if (peakHeight[partner1] < threshold) {
-                # If both alleles, check if below LDT.
+                # If both alleles, check if below AT.
 
                 # Score as dropout.
                 modeldrop <- 1
@@ -491,7 +491,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                   method1Tmp[partner1] <- NA
                 }
               } else {
-                # Partner peak is above LDT.
+                # Partner peak is above AT.
 
                 # Score as NO dropout.
                 modeldrop <- 0
@@ -517,7 +517,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                 modeldrop <- 1
                 method2Tmp <- modeldrop
               } else if (peakHeight[partner2] < threshold) {
-                # If both alleles, check if below LDT.
+                # If both alleles, check if below AT.
 
                 # Score as dropout.
                 modeldrop <- 1
@@ -530,7 +530,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                   method2Tmp[partner2] <- NA
                 }
               } else {
-                # Partner peak is above LDT.
+                # Partner peak is above AT.
 
                 # Score as NO dropout.
                 modeldrop <- 0
@@ -658,7 +658,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                 } else {
                   stop(paste("Sample: ", sampleNames[s],
                     " Marker: ", markers[m],
-                    " - unhandled number of observed alleles > LDT",
+                    " - unhandled number of observed alleles > AT",
                     " (passingAlleles = ", paste(passingAlleles, collapse = "/"),
                     ", matchedAlleles = ", paste(matchedAlleles, collapse = "/"),
                     ")",

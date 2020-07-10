@@ -1,20 +1,18 @@
-context("tableBalance")
+context("calculateStatistics")
 
 ################################################################################
 # CHANGE LOG
-# 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
-# 25.09.2016: Added Test 3 for Lb.
-# 24.09.2016: Updated to work with tableBalance, replacing tableHb.
-# 07.09.2016: Updated to work with calculateHb, replacing calculateBalance.
-# 13.11.2015: Updated hb=2 to hb=3 in to correspond to new implemented method in calculateBalance.
-# 07.05.2014: First version.
+# 23.05.2020: First version.
 #
 # require(testthat)
 # test_dir("inst/tests/")
-# test_file("tests/testthat/test-tableBalance.r")
+# test_file("tests/testthat/test-calculateStatistics.r")
 # test_dir("tests/testthat")
 
-test_that("tableBalance", {
+test_that("calculateStatistics", {
+
+  # Toleranse for numeric comparisons as absolute difference.
+  threshold <- 0.00001
 
   # Get test data.
   data(set2)
@@ -40,7 +38,11 @@ test_that("tableBalance", {
   # Analyse dataframe.
   tmp <- calculateHb(data = set2, ref = ref2, hb = 3, kit = "SGMPlus", ignore.case = TRUE)
 
-  res <- tableBalance(data = tmp, scope = "locus", quant = 0.05)
+  # Calculate summary statistics.
+  res <- calculateStatistics(
+    data = tmp, target = "Hb",
+    quant = 0.05, group = c("Marker")
+  )
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -95,7 +97,12 @@ test_that("tableBalance", {
   # Analyse dataframe.
   tmp <- calculateHb(data = set2, ref = ref2, hb = 3, kit = "SGMPlus", ignore.case = TRUE)
 
-  res <- tableBalance(data = tmp, scope = "global", quant = 0.10)
+  # Calculate summary statistics.
+  res <- calculateStatistics(
+    data = tmp, target = "Hb",
+    quant = 0.10, group = NULL
+  )
+
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -145,12 +152,17 @@ test_that("tableBalance", {
     359 / 384, 179 / 183
   ), 0.10))))
 
+
   # TEST 03 -------------------------------------------------------------------
 
   # Analyse dataframe.
   tmp <- calculateLb(data = set1, ref = ref1, option = "prop", kit = "ESX17", ignore.case = TRUE)
 
-  res <- tableBalance(data = tmp, scope = "locus", quant = 0.50)
+  # Calculate summary statistics.
+  res <- calculateStatistics(
+    data = tmp, target = "Lb",
+    quant = 0.50, group = c("Marker")
+  )
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -268,4 +280,70 @@ test_that("tableBalance", {
   expect_that(res$Lb.Perc.50[15], equals(0.06942801))
   expect_that(res$Lb.Perc.50[16], equals(0.09111388))
   expect_that(res$Lb.Perc.50[17], equals(0.06878986))
+
+  # TEST 04 -------------------------------------------------------------------
+
+  # Analyse dataframe.
+  tmp <- calculateLb(
+    data = set1, ref = ref1, option = "peak", by.dye = TRUE,
+    kit = "ESX17", ignore.case = TRUE
+  )
+
+  # Calculate summary statistics.
+  res <- calculateStatistics(
+    data = tmp, target = "Lb",
+    quant = 0.75, group = c("Dye")
+  )
+
+  # Check return class.
+  expect_match(class(res), class(data.frame()))
+
+  # Check that expected columns exist.
+  expect_true(is.null(res$Sample.Name))
+  expect_true(is.null(res$Marker))
+  expect_false(is.null(res$Dye))
+  expect_false(is.null(res$Lb.n))
+  expect_false(is.null(res$Lb.Mean))
+  expect_false(is.null(res$Lb.Sd))
+  expect_false(is.null(res$Lb.Perc.75))
+
+  # Check for NA's.
+  expect_false(any(is.na(res$Lb.n)))
+  expect_false(any(is.na(res$Lb.Min)))
+  expect_false(any(is.na(res$Lb.Mean)))
+  expect_false(any(is.na(res$Lb.Sd)))
+  expect_false(any(is.na(res$Lb.Perc.75)))
+
+  # Check result: number of values for inter-locus balance.
+  expect_true(all(res$Lb.n == 8))
+
+  # Check result: Min inter-locus balance.
+  expect_equal(res$Lb.Min[1], 0.3550158, tolerance = threshold)
+  expect_equal(res$Lb.Min[2], 0.503657, tolerance = threshold)
+  expect_equal(res$Lb.Min[3], 0.3320323, tolerance = threshold)
+  expect_equal(res$Lb.Min[4], 0.2922748, tolerance = threshold)
+
+  # Check result: Mean inter-locus balance.
+  expect_equal(res$Lb.Mean[1], 0.4834055, tolerance = threshold)
+  expect_equal(res$Lb.Mean[2], 0.5898666, tolerance = threshold)
+  expect_equal(res$Lb.Mean[3], 0.4148376, tolerance = threshold)
+  expect_equal(res$Lb.Mean[4], 0.3749627, tolerance = threshold)
+
+  # Check result: Inter-locus balance standard deviation.
+  expect_equal(res$Lb.Sd[1], 0.1059861, tolerance = threshold)
+  expect_equal(res$Lb.Sd[2], 0.0681509, tolerance = threshold)
+  expect_equal(res$Lb.Sd[3], 0.07747881, tolerance = threshold)
+  expect_equal(res$Lb.Sd[4], 0.08144057, tolerance = threshold)
+
+  # Check result: Max inter-locus balance.
+  expect_equal(res$Lb.Max[1], 0.6892895, tolerance = threshold)
+  expect_equal(res$Lb.Max[2], 0.6788171, tolerance = threshold)
+  expect_equal(res$Lb.Max[3], 0.5664227, tolerance = threshold)
+  expect_equal(res$Lb.Max[4], 0.5070651, tolerance = threshold)
+
+  # Check result: 75 percentile for inter-locus balance.
+  expect_equal(res$Lb.Perc.75[1], 0.5130642, tolerance = threshold)
+  expect_equal(res$Lb.Perc.75[2], 0.6371951, tolerance = threshold)
+  expect_equal(res$Lb.Perc.75[3], 0.446667, tolerance = threshold)
+  expect_equal(res$Lb.Perc.75[4], 0.4351632, tolerance = threshold)
 })

@@ -4,7 +4,9 @@
 \name{set2}
 \alias{set2}
 \title{SGMPlus example data}
-\format{A data frame with 32 rows and 5 variables}
+\format{
+A data frame with 32 rows and 5 variables
+}
 \usage{
 data(set2)
 }

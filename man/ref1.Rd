@@ -4,7 +4,9 @@
 \name{ref1}
 \alias{ref1}
 \title{ESX17 Positive Control Profile}
-\format{A data frame with 17 rows and 4 variables}
+\format{
+A data frame with 17 rows and 4 variables
+}
 \usage{
 data(ref1)
 }

@@ -4,7 +4,9 @@
 \name{set4}
 \alias{set4}
 \title{ESX17 example data for dropout analysis.}
-\format{A data frame with 1609 rows and 5 variables}
+\format{
+A data frame with 1609 rows and 5 variables
+}
 \usage{
 data(set4)
 }

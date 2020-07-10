@@ -29,7 +29,7 @@ If provided alleles matching 'ref' will be extracted from 'data'
 (see \code{\link{filterProfile}}).}
 
 \item{option}{character: 'prop' for proportional Lb, 'norm' for normalized
-LB, and 'cent' for centred Lb.}
+LB, 'cent' for centred Lb, and 'peak' for the min and max peak height ratio.}
 
 \item{by.dye}{logical. Default is FALSE for global Lb, if TRUE Lb is calculated
 within each dye channel.}

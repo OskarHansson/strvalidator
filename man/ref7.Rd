@@ -4,7 +4,9 @@
 \name{ref7}
 \alias{ref7}
 \title{ESSplex SE QS example data for inhibition analysis.}
-\format{A data frame with 35 rows and 4 variables}
+\format{
+A data frame with 35 rows and 4 variables
+}
 \usage{
 data(ref7)
 }

@@ -45,7 +45,7 @@
 #' @importFrom ggplot2 ggplot aes_string facet_grid geom_point geom_line labs
 #'  geom_boxplot stat_boxplot theme geom_density coord_cartesian
 #'
-#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
+#' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
 

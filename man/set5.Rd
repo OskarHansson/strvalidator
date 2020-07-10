@@ -4,7 +4,9 @@
 \name{set5}
 \alias{set5}
 \title{ESX17 example data for mixture analysis.}
-\format{A data frame with 1663 rows and 7 variables}
+\format{
+A data frame with 1663 rows and 7 variables
+}
 \usage{
 data(set5)
 }

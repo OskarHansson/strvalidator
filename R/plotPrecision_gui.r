@@ -52,7 +52,7 @@
 #'  ggplotGrob theme_gray theme_bw theme_linedraw theme_light theme_dark
 #'  theme_minimal theme_classic theme_void
 #'
-#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
+#' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 #'
 
 plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {

@@ -4,7 +4,9 @@
 \name{ref4}
 \alias{ref4}
 \title{ESX17 example data for dropout analysis.}
-\format{A data frame with 98 rows and 3 variables}
+\format{
+A data frame with 98 rows and 3 variables
+}
 \usage{
 data(ref4)
 }

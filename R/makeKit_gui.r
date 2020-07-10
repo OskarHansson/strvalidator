@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.07.2020: Fixed spelling error in variables.
 # 20.03.2020: Added language support.
 # 14.03.2019: Fixed R-Check note.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 22.09.2013: Fixed duplicate check.
 # 21.09.2013: Fixed correct gender marker when reading from file.
 # 21.09.2013: Fixed no gender marker by putting 'NA' as option.
-# 22.06.2013: First version.
 
 #' @title Make Kit
 #'
@@ -528,7 +528,7 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     .f3g1[1, 3] <<- glabel(text = strLblShortName, container = .f3g1)
     .f3g1[1, 4] <<- glabel(text = strLblFullName, container = .f3g1)
     .f3g1[1, 5] <<- glabel(text = strLblSex, container = .f3g1)
-    .f3g1[1, 6] <<- glabel(text = strLblSensor, container = .f3g1)
+    .f3g1[1, 6] <<- glabel(text = strLblSensors, container = .f3g1)
 
     # Loop over panel and add objects.
     for (p in seq(along = panel)) {
@@ -855,9 +855,9 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
             msg = paste(
               strMsgDuplicate1,
               shortName[exist][1],
-              strMsgDplicate2
+              strMsgDuplicate2
             ),
-            title = strMsgTitleShortExist,
+            title = strMsgTitleDuplicate,
             icon = "error",
             parent = w
           )

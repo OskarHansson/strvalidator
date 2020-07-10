@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.07.2020: Added missing string variable.
 # 03.03.2020: Fixed reference to function name.
 # 29.02.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -72,6 +73,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
+  strBtnProcessing <- "Processing..."
   strMsgDataset <- "A 'Samples Table' dataset and a 'SamplePlotSizing' dataset have to be selected."
   strMsgTitleDataset <- "Datasets not selected"
 
@@ -130,6 +132,9 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
     strtmp <- dtStrings["strBtnCalculate"]$value
     strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
 
+    strtmp <- dtStrings["strBtnProcessing"]$value
+    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
+    
     strtmp <- dtStrings["strMsgDataset"]$value
     strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
 

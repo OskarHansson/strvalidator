@@ -10,7 +10,7 @@
 #'
 #' @details
 #' Given a data.frame with observed values for the dependent variable
-#' (column 'Dep') and explanary values (column 'Exp') point estimates
+#' (column 'Dep') and explanatory values (column 'Exp') point estimates
 #' corresponding to a risk level of \code{p.dropout} are calculated
 #' using logistic regression: \code{glm(Dep~Exp, family=binomial("logit")}.
 #' A conservative estimate is calculated from the \code{pred.int}.
@@ -19,7 +19,7 @@
 #' and dropped out alleles is returned.
 #'
 #' @param data data.frame with dependent and explanatory values in columns named 'Dep' and 'Exp'.
-#' @param log.model logical indicating if data should be log tranformed. Default=FALSE.
+#' @param log.model logical indicating if data should be log transformed. Default=FALSE.
 #' @param p.dropout numeric accepted risk to calculate point estimate for. Default=0.01.
 #' @param pred.int numeric prediction interval. Default=0.95.
 #' @param debug logical indicating printing debug information.

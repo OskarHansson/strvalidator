@@ -4,7 +4,9 @@
 \name{set7}
 \alias{set7}
 \title{ESSplex SE QS example data for inhibition analysis.}
-\format{A data frame with 883 rows and 7 variables}
+\format{
+A data frame with 883 rows and 7 variables
+}
 \usage{
 data(set7)
 }

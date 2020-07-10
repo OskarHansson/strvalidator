@@ -1,12 +1,27 @@
 Version 2.3.0
 ------------------------------------------------------------------------------
 * Implemented language support.
+* Italian and Spanish language files.
+* New functions:
+  - calculateStatistics/calculateStatistics_gui
+  General funcion to calculate summary statistics.
+* Deprecated functions:
+  - tableBalance/tableBalance_gui
+  - tableCapillary/tableCapillary_gui
+  - tablePrecision/tablePrecision_gui
+  - tableStutter/tableStutter_gui
+  Use calculateStatistics/calculateStatistics_gui instead.
 * Bug fixes and improvements with the most significant listed below:
+  - auditTrail
+  Added timestamp attribute.
+  - listObjects
+  Added parameters "sort" and "decreasing". Now returns NULL if no result.
   - getKit
   Better description of parameter 'what'.
   - calculateDropout_gui
   Changed LDT to AT for analytical threshold in gui.
   - strvalidator
+  Made Decsription in Projects tab hidden and inactive as default.
   Fixed potential "memory leak" by adding parent = emptyenv() to new.env()
   - plotSlope_gui
   Fixed narrow dropdown with hidden argument ellipsize = "none".

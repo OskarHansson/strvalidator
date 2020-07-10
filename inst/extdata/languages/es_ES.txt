@@ -1,0 +1,2076 @@
+scope	order	key	value
+addData_gui	1	strWinTitle 	Añadir datos
+addData_gui	2	strChkGui	Guardar configuración de GUI
+addData_gui	3	strBtnHelp	Ayuda
+addData_gui	4	strFrmDataset	Conjuntos de datos
+addData_gui	5	strLblDestination	Seleccionar destino de datos:
+addData_gui	6	strDrpDefault	<Seleccionar columna>
+addData_gui	7	strLblSamples	muestras
+addData_gui	8	strLblSource	Seleccionar fuente de datos:
+addData_gui	9	strFrmOptions	Opciones
+addData_gui	10	strChkExact	Clave de match exacto
+addData_gui	11	strChkIgnore	Ignorar mayúsculas y minúsculas en el nombre del marcador
+addData_gui	12	strLblKey1	Seleccionar columna como clave principal:
+addData_gui	13	strLblKey2	Seleccionar columna como clave secundaria (opcional):
+addData_gui	14	strLblColumns	Seleccionar columnas para añadir a los nuevos datos:
+addData_gui	15	strEdtMsg	Opción por defecto: todas las columnas
+addData_gui	16	strFrmSave	Guardar como
+addData_gui	17	strLblSave	Nombre para el resultado:
+addData_gui	18	strBtnAdd	Añadir
+addData_gui	19	 strBtnAddActive 	Procesando…
+addData_gui	20	strMsgDataset	Se debe seleccionar destino y fuente.
+addData_gui	21	 strMsgTitle 	Conjuntos de datos no seleccionados
+addDye_gui	1	strWinTitle	Añadir marcaje a los datos
+addDye_gui	2	strChkGui	Guardar configuración de GUI
+addDye_gui	3	strBtnHelp	Ayuda
+addDye_gui	4	strFrmDataset	Datos y kit
+addDye_gui	5	strLblDataset	Conjunto de datos de muestras:
+addDye_gui	6	strDrpDefault	<Seleccionar datos>
+addDye_gui	7	strLblSamples	muestras
+addDye_gui	8	strLblKit	Kit:
+addDye_gui	9	strFrmOptions	Opciones
+addDye_gui	10	strChkIgnore	Ignorar mayúsculas y minúsculas en el nombre del marcador
+addDye_gui	11	strChkDye	Añadir información sobre el marcaje
+addDye_gui	12	strChkColor	Añadir información sobre el color
+addDye_gui	13	strChkR	Añadir información sobre el color de R
+addDye_gui	14	strChkMarker	Añadir orden de marcadores
+addDye_gui	15	strFrmSave	Guardar como
+addDye_gui	16	strLblSave	Nombre del resultado:
+addDye_gui	17	strBtnAdd	Añadir
+addDye_gui	18	strBtnAddActive	Procesando…
+addMarker_gui	1	strWinTitle	Añadir marcadores ausentes a los datos
+addMarker_gui	2	strChkGui	Guardar configuración de GUI
+addMarker_gui	3	strBtnHelp	Ayuda
+addMarker_gui	4	strFrmDataset	Datos y kit
+addMarker_gui	5	strLblDataset	Conjunto de datos de muestras:
+addMarker_gui	6	strDrpDefault	<Seleccionar datos>
+addMarker_gui	7	strLblSamples	muestras
+addMarker_gui	8	strLblKit	Kit:
+addMarker_gui	9	strFrmOptions	Opciones
+addMarker_gui	10	strChkIgnore	Ignorar mayúsculas y minúsculas en el nombre del marcador
+addMarker_gui	11	strFrmSave	Guardar como
+addMarker_gui	12	strLblSave	Nombre del resultado:
+addMarker_gui	13	strBtnAdd	Añadir
+addMarker_gui	14	strBtnAddActive	Procesando…
+addSize_gui	1	strWinTitle	Añadir tamaño a los datos
+addSize_gui	2	strChkGui	Guardar configuración de GUI
+addSize_gui	3	strBtnHelp	Ayuda
+addSize_gui	4	strFrmDataset	Datos y kit
+addSize_gui	5	strLblDataset	Conjunto de datos de muestras:
+addSize_gui	6	strDrpDefault	<Seleccionar datos>
+addSize_gui	7	strLblSamples	muestras
+addSize_gui	8	strLblKit	Kit:
+addSize_gui	9	strFrmOptions	Opciones
+addSize_gui	10	strRadItem1	Obtener tamaño como se define en el archivo de bins (NA si no está definido)
+addSize_gui	11	strRadItem2	Calcular una estimación a partir del locus y el número de repeticiones
+addSize_gui	12	strFrmSave	Guardar como
+addSize_gui	13	strLblSave	Nombre del resultado:
+addSize_gui	14	strBtnAdd	Añadir
+addSize_gui	15	strBtnProcessing	Procesando…
+calculateAllele_gui	1	strWinTitle	Calcular estadísticas resumen para alelos
+calculateAllele_gui	2	strChkGui	Guardar configuración de GUI
+calculateAllele_gui	3	strBtnHelp	Ayuda
+calculateAllele_gui	4	strFrmDataset	Conjunto de datos
+calculateAllele_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateAllele_gui	6	strDrpDefault	<Seleccionar datos>
+calculateAllele_gui	7	strLblRows	filas
+calculateAllele_gui	8	strFrmOptions	Opciones
+calculateAllele_gui	9	strLblThreshold	Umbral de altura de pico:
+calculateAllele_gui	10	strTipThreshold	Los picos con alturas por debajo de este valor se eliminarán.
+calculateAllele_gui	11	strChkSexMarkers	Eliminar marcadores de sexo del kit:
+calculateAllele_gui	12	strFrmSave	Guardar como
+calculateAllele_gui	13	strLblSave	Nombre del resultado:
+calculateAllele_gui	14	strBtnCalculate	Calcular
+calculateAllele_gui	15	strMsgDataset	Seleccionar un conjunto de datos!
+calculateAllele_gui	16	strMsgTitleDataset	Error
+calculateAllT_gui	1	strWinTitle	Calcular umbrales estocásticos
+calculateAllT_gui	2	strChkGui	Guardar configuración de GUI
+calculateAllT_gui	3	strBtnHelp	Ayuda
+calculateAllT_gui	4	strFrmDataset	Datos y kit
+calculateAllT_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateAllT_gui	6	strDrpDefault	<Seleccionar datos>
+calculateAllT_gui	7	strLblSamples	muestras
+calculateAllT_gui	8	strLblKit	Kit:
+calculateAllT_gui	9	strFrmOptions	Opciones
+calculateAllT_gui	10	strLblT	Calcular estimas puntuales a P(dropout)=
+calculateAllT_gui	11	strLblTcons	Calcular estimas conservadoras a P(dropout>
+calculateAllT_gui	12	strChkSexMarkers	Eliminar marcadores de sexo
+calculateAllT_gui	13	strFrmSave	Guardar como
+calculateAllT_gui	14	strLblSave	Nombre del resultado:
+calculateAllT_gui	15	strBtnCalculate	Calcular
+calculateAllT_gui	16	strBtnCalculateActive	Procesando…
+calculateAT_gui	1	strWinTitle	Calcular umbral analítico
+calculateAT_gui	2	strChkGui	Guardar configuración de GUI
+calculateAT_gui	3	strBtnHelp	Ayuda
+calculateAT_gui	4	strFrmDataset	Conjuntos de datos
+calculateAT_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateAT_gui	6	strDrpDefault	<Seleccionar datos>
+calculateAT_gui	7	strLblSamples	muestras
+calculateAT_gui	8	strLblDatasetRef	Datos de referencia:
+calculateAT_gui	9	strLblRef	referencias
+calculateAT_gui	10	strBtnCheck	Comprobar subconjunto
+calculateAT_gui	11	strLblKit	Kit:
+calculateAT_gui	12	strTipKit	Se usa solo para sombrear rangos enmascarados en el gráfico.
+calculateAT_gui	13	strFrmOptions	Opciones
+calculateAT_gui	14	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateAT_gui	15	strChkWord	Añadir límites de palabras
+calculateAT_gui	16	strChkMaskHigh	Enmascarar alturas de pico
+calculateAT_gui	17	strLblMaskHigh	Enmascarar picos por encima de (RFU):
+calculateAT_gui	18	strChkMaskAllele	Enmascarar alelos
+calculateAT_gui	19	strLblDpAllele	Rango (data points) alrededor de alelos conocidos:
+calculateAT_gui	20	strChkMaskDye	Enmascarar alelos por canal de marcaje
+calculateAT_gui	21	strChkILS	Enmascarar picos ILS
+calculateAT_gui	22	strLblDpPeak	Rango (data points) alrededor de picos conocidos:
+calculateAT_gui	23	strLblConf	Nivel de confianza 'k' (AT1, AT7):
+calculateAT_gui	24	strLblRank	Umbral para el rango de percentil (AT2):
+calculateAT_gui	25	strLblAlpha	Nivel superior de confianza 'alpha' (AT4): 
+calculateAT_gui	26	strFrmPrepare	Preparar datos y verificar enmascaramiento
+calculateAT_gui	27	strBtnMask	Preparar y enmanscarar
+calculateAT_gui	28	strDrpDefault2	<Seleccionar muestra>
+calculateAT_gui	29	strBtnSave	Guardar gráfico
+calculateAT_gui	30	strFrmSave	Guardar como
+calculateAT_gui	31	strLblSave	Nombre del resultado:
+calculateAT_gui	32	strLblSaveRank	Nombre para la lista de rango de percentil:
+calculateAT_gui	33	strLblSaveMasked	Nombre para datos brutos enmascarados:
+calculateAT_gui	34	strBtnCalculate	Calcular
+calculateAT_gui	35	strBtnProcessing	Procesando…
+calculateAT_gui	36	strWinCheck	Comprobar subconjunto
+calculateAT_gui	37	strMsgPlot	Click 'Preparar y enamscarar' y seleccionar una muestra antes de guardar.
+calculateAT_gui	38	strMsgTitlePlot	Sin gráfico!
+calculateAT_gui	39	strMsgTitleError	Error
+calculateAT_gui	40	strMsgCheck	El marco de datos es NULO!\n\nAsegúrese de seleccionar un conjunto de datos y un conjunto de referencia
+calculateAT_gui	41	strMsgDataset	Se debe seleccionar datos y referencias.
+calculateAT_gui	42	strMsgTitleDataset	Conjuntos de datos no seleccionados
+calculateAT6_gui	1	strWinTitle	Calcular umbral analítico
+calculateAT6_gui	2	strChkGui	Guardar configuración de GUI
+calculateAT6_gui	3	strBtnHelp	Ayuda
+calculateAT6_gui	4	strFrmDataset	Conjuntos de datos
+calculateAT6_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateAT6_gui	6	strDrpDefault	<Seleccionar datos>
+calculateAT6_gui	7	strLblSamples	muestras
+calculateAT6_gui	8	strLblDatasetRef	Datos de referencia:
+calculateAT6_gui	9	strLblRef	referencias
+calculateAT6_gui	10	strBtnCheck	Comprobar subconjunto
+calculateAT6_gui	11	strLblAmount	Conjunto de datos de cantidad:
+calculateAT6_gui	12	strFrmOptions	Opciones
+calculateAT6_gui	13	strLblText1	NB! Método indirecto no recomendado.
+calculateAT6_gui	14	strLblText2	Consultar 'Ayuda' o el manual para conocer las limitaciones.
+calculateAT6_gui	15	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateAT6_gui	16	strRadItem1	Regresión lineal
+calculateAT6_gui	17	strRadItem2	Regresión lineal ponderada
+calculateAT6_gui	18	strLblLevel	Nivel significativo:
+calculateAT6_gui	19	strFrmSave	Guardar como
+calculateAT6_gui	20	strLblSave	Nombre del resultado:
+calculateAT6_gui	21	strBtnCalculate	Calcular
+calculateAT6_gui	22	strBtnCalculateActive	Procesando…
+calculateAT6_gui	23	strWinCheck	Comprobar subconjunto
+calculateAT6_gui	24	strMsgTitleError	Error
+calculateAT6_gui	25	strMsgCheck	El marco de datos es NULO!\n\nAsegúrese de seleccionar un conjunto de datos y un conjunto de referencia
+calculateAT6_gui	26	strMsgDataset	Se debe seleccionar datos y referencias.
+calculateAT6_gui	27	strMsgTitleDataset	Conjuntos de datos no seleccionados
+calculateCapillary_gui	1	strWinTitle	Calcular el equilibrio de capilares
+calculateCapillary_gui	2	strChkGui	Guardar configuración de GUI
+calculateCapillary_gui	3	strBtnHelp	Ayuda
+calculateCapillary_gui	4	strFrmDataset	Conjunto de datos
+calculateCapillary_gui	5	strLblDataSample	Tabla de Muestras:
+calculateCapillary_gui	6	strDrpDefault	<Seleccionar datos>
+calculateCapillary_gui	7	strLblSamples	muestras
+calculateCapillary_gui	8	strLblDataSizing	Sample Plot Sizing Table:
+calculateCapillary_gui	9	strLblSampleFiles	Archivos de muestras
+calculateCapillary_gui	10	strFrmOptions	Opciones
+calculateCapillary_gui	11	strLblRun	Nombre del run:
+calculateCapillary_gui	12	strLblRunMsg	Nombre opcional del run
+calculateCapillary_gui	13	strLblThreshold	Umbral de 'sizing quality':
+calculateCapillary_gui	14	strFrmSave	Guardar como
+calculateCapillary_gui	15	strLblSave	Nombre del resultado:
+calculateCapillary_gui	16	strBtnCalculate	Calcular
+calculateCapillary_gui	17	strMsgDataset	Se debe seleccionar la 'Tabla de muestras' y la 'SamplePlotSizing'.
+calculateCapillary_gui	18	strMsgTitleDataset	Conjuntos de datos no seleccionados
+calculateConcordance_gui	1	strWinTitle	Calcular concordancia
+calculateConcordance_gui	2	strChkGui	Guardar configuración de GUI
+calculateConcordance_gui	3	strBtnHelp	Ayuda
+calculateConcordance_gui	4	strFrmDataset	Datos y kit
+calculateConcordance_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateConcordance_gui	6	strDrpDefault	<Seleccionar datos>
+calculateConcordance_gui	7	strLblSamples	muestras
+calculateConcordance_gui	8	strLblKit	Kit:
+calculateConcordance_gui	9	strBtnAdd	Añadir
+calculateConcordance_gui	10	strFrmOptions	Opciones
+calculateConcordance_gui	11	strLblDelimiter	Delimitar por alelos en el genotipo:
+calculateConcordance_gui	12	strLblNoSample	Cadena para muestras ausentes:
+calculateConcordance_gui	13	strLblNoMarker	Cadena para marcadores ausentes:
+calculateConcordance_gui	14	strChkInclude	Incluir muestras ausentes en el resultado.
+calculateConcordance_gui	15	strTipInclude	Las muestras no incluidas en el conjunto de datos se incluirán siempre en el resultado.
+calculateConcordance_gui	16	strFrmSelected	Datos seleccionados
+calculateConcordance_gui	17	strLblSelected	Nombres para los conjuntos de datos a analizar (separados por coma):
+calculateConcordance_gui	18	strLblUsedKits	Nombre de los kits (separado por coma):
+calculateConcordance_gui	19	strFrmSave	Guardar como
+calculateConcordance_gui	20	strLblSave	Nombre de la tabla de discordancias:
+calculateConcordance_gui	21	strLblSave2	Nombre de la tabla de concordancias:
+calculateConcordance_gui	22	strBtnCalculate	Calcular
+calculateConcordance_gui	23	strBtnProcessing	Procesando…
+calculateConcordance_gui	24	strMsgAddMessage	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos
+calculateConcordance_gui	25	strMsgTitleError	Error
+calculateConcordance_gui	26	strMsgDataset	Se debe seleccionar un conjunto de datos.
+calculateConcordance_gui	27	strMsgTitleDataset	Conjuntos de datos no seleccionados
+calculateCopies_gui	1	strWinTitle	Calcular copias alélicas
+calculateCopies_gui	2	strChkGui	Guardar configuración de GUI
+calculateCopies_gui	3	strBtnHelp	Ayuda
+calculateCopies_gui	4	strFrmDataset	Conjunto de datos
+calculateCopies_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateCopies_gui	6	strDrpDefault	<Seleccionar datos>
+calculateCopies_gui	7	strLblSamples	muestras
+calculateCopies_gui	8	strFrmOptions	Opciones
+calculateCopies_gui	9	strChkObserved	Añadir el número de alelos únicos (contar el número de picos)
+calculateCopies_gui	10	strChkCopies	Añadir el número de copias alélicas (para perfiles completos conocidos)
+calculateCopies_gui	11	strTipCopies	"1" para heterocigotos y "2" para homocigotos.
+calculateCopies_gui	12	strChkHeterozygosity	Añadir indicador de heterocigoto (para perfiles conocidos y completos)
+calculateCopies_gui	13	strTipHeterozygosity	"1" para loci heterocigotos y "0" para loci homocigotos.
+calculateCopies_gui	14	strFrmSave	Guardar como
+calculateCopies_gui	15	strLblSave	Nombre del resultado:
+calculateCopies_gui	16	strBtnCalculate	Calcular
+calculateCopies_gui	17	strBtnProcessing	Procesando…
+calculateCopies_gui	18	strMsgDataset	Se tiene que seleccionar un conjunto de datos.
+calculateCopies_gui	19	strMsgTitleDataset	Datos no seleccionados
+calculateDropout_gui	1	strWinTitle	Calcular dropout
+calculateDropout_gui	2	strChkGui	Guardar configuración de GUI
+calculateDropout_gui	3	strBtnHelp	Ayuda
+calculateDropout_gui	4	strFrmDataset	Datos y kit
+calculateDropout_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateDropout_gui	6	strDrpDefault	<Seleccionar datos>
+calculateDropout_gui	7	strLblSamples	muestras
+calculateDropout_gui	8	strLblRefDataset	Datos de referencia:
+calculateDropout_gui	9	strLblRef	referencias
+calculateDropout_gui	10	strBtnCheck	Comprobar subconjunto
+calculateDropout_gui	11	strLblKit	Kit:
+calculateDropout_gui	12	strFrmOptions	Opciones
+calculateDropout_gui	13	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateDropout_gui	14	strChkSex	Eliminar marcadores de sexo
+calculateDropout_gui	15	strChkSensors	Eliminar sensores de calidad
+calculateDropout_gui	16	strChkAverage	Calcular altura promedio de pico
+calculateDropout_gui	17	strLblAt	Umbral anatítico (AT):
+calculateDropout_gui	18	strLblMethods	Seleccionar uno o más métodos de puntuación de dropout
+calculateDropout_gui	19	strChkMethod1	Puntuación dropout relativa al alelo de bajo peso molecular
+calculateDropout_gui	20	strChkMethod2	Puntuación dropout relativa al alelo de alto peso molecular
+calculateDropout_gui	21	strChkMethodX	Puntuación dropout relativa a un alelo al azar
+calculateDropout_gui	22	strChkMethodL	Puntuación dropout por locus
+calculateDropout_gui	23	strFrmSave	Guardar como
+calculateDropout_gui	24	strLblSave	Nombre del resultado:
+calculateDropout_gui	25	strBtnCalculate	Calcular
+calculateDropout_gui	26	strBtnProcessing	Procesando…
+calculateDropout_gui	27	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculateDropout_gui	28	strMsgTitleDataset	Datos no seleccionados
+calculateDropout_gui	29	strMsgCheck	El marco de datos es NULO!\n\nAsegúrese de seleccionar un conjunto de datos y un conjunto de referencia.
+calculateDropout_gui	30	strMsgTitleError	Error
+calculateHb_gui	1	strWinTitle	Calcular equilibrio de heterocigotos
+calculateHb_gui	2	strChkGui	Guardar configuración de GUI
+calculateHb_gui	3	strBtnHelp	Ayuda
+calculateHb_gui	4	strFrmDataset	Conjuntos de datos
+calculateHb_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateHb_gui	6	strDrpDefault	<Seleccionar datos>
+calculateHb_gui	7	strLblSamples	muestras
+calculateHb_gui	8	strLblRefDataset	Datos de referencia:
+calculateHb_gui	9	strLblRef	referencias
+calculateHb_gui	10	strBtnCheck	Comprobar subconjunto
+calculateHb_gui	11	strFrmOptions	Opciones
+calculateHb_gui	12	strLblPre	Pre-procesando:
+calculateHb_gui	13	strChkSex	Eliminar marcadores de sexo
+calculateHb_gui	14	strChkSensors	Eliminar sensores de calidad
+calculateHb_gui	15	strLblHb	Definir Hb como:
+calculateHb_gui	16	strItemHMWoLMW	Alto peso molecular / bajo peso molecular
+calculateHb_gui	17	strItemLMWoHMW	Bajo peso molecular / alto peso molecular
+calculateHb_gui	18	strItemSmloLrg	Pico más pequeño / pico más largo
+calculateHb_gui	19	strLblMatching	Coincidencia del nombre de la muestra:
+calculateHb_gui	20	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateHb_gui	21	strChkWord	Añadir límites de palabras
+calculateHb_gui	22	strChkExact	Coincidencia exacta
+calculateHb_gui	23	strLblPost	Post-procesando:
+calculateHb_gui	24	strChkAverage	Calcular altura promedio de pico
+calculateHb_gui	25	strFrmSave	Guardar como
+calculateHb_gui	26	strLblSave	Nombre del resultado:
+calculateHb_gui	27	strLblKit	Atributo del kit:
+calculateHb_gui	28	strBtnCalculate	Calcular
+calculateHb_gui	29	strBtnProcessing	Procesando…
+calculateHb_gui	30	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculateHb_gui	31	strMsgTitleDataset	Datos no seleccionados
+calculateHb_gui	32	strMsgCheck	El marco de datos es NULO!\n\nAsegúrese de seleccionar un conjunto de datos y un conjunto de referencia.
+calculateHb_gui	33	strWinTitleCheck	Comprobar subconjunto
+calculateHb_gui	34	strMsgTitleError	Error
+calculateHeight_gui	1	strWinTitle	Calcular altura de pico
+calculateHeight_gui	2	strChkGui	Guardar configuración de GUI
+calculateHeight_gui	3	strBtnHelp	Ayuda
+calculateHeight_gui	4	strFrmDataset	Conjuntos de datos
+calculateHeight_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateHeight_gui	6	strDrpDefault	<Seleccionar datos>
+calculateHeight_gui	7	strLblSamples	muestras
+calculateHeight_gui	8	strLblRefDataset	Datos de referencia:
+calculateHeight_gui	9	strLblRef	referencias
+calculateHeight_gui	10	strBtnCheck	Comprobar subconjunto
+calculateHeight_gui	11	strLblKit	Kit:
+calculateHeight_gui	12	strFrmOptions	Opciones
+calculateHeight_gui	13	strLblPre	Pre-procesando:
+calculateHeight_gui	14	strChkSex	Eliminar marcadores de sexo
+calculateHeight_gui	15	strChkSensors	Eliminar sensores de calidad
+calculateHeight_gui	16	strChkExclude	Excluir vaolres en la columna 'Alelo'
+calculateHeight_gui	17	strChkExcludeInfo	Valores sensibles a mayúsculas y minúsculas separados por comas:
+calculateHeight_gui	18	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
+calculateHeight_gui	19	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateHeight_gui	20	strChkExact	Coincidencia exacta
+calculateHeight_gui	21	strLblPost	Post-procesando:
+calculateHeight_gui	22	strChkReplace	Reemplazar NA en el resultado con 0
+calculateHeight_gui	23	strChkAdd	Añadir resultado a los datos
+calculateHeight_gui	24	strFrmSave	Guardar como
+calculateHeight_gui	25	strLblSave	Nombre del resultado:
+calculateHeight_gui	26	strBtnCalculate	Calcular
+calculateHeight_gui	27	strBtnProcessing	Procesando…
+calculateHeight_gui	28	strMsgMessage	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculateHeight_gui	29	strMsgTitle	Datos no seleccionados
+calculateHeight_gui	30	strMsgCheck	El marco de datos es NULO!\n\nAsegúrese de seleccionar un conjunto de datos y un conjunto de referencia.
+calculateHeight_gui	31	strWinTitleCheck	Comprobar subconjunto
+calculateHeight_gui	32	strMsgTitleError	Error
+calculateLb_gui	1	strWinTitle	Calcular equilibrio del locus
+calculateLb_gui	2	strChkGui	Guardar configuración de GUI
+calculateLb_gui	3	strBtnHelp	Ayuda
+calculateLb_gui	4	strFrmDataset	Conjuntos de datos
+calculateLb_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateLb_gui	6	strDrpDefault	<Seleccionar datos>
+calculateLb_gui	7	strLblSamples	muestras
+calculateLb_gui	8	strLblRefDataset	Datos de referencia:
+calculateLb_gui	9	strTipRef	Si se proporcionan, los alelos conocidos se extraerán de los datos
+calculateLb_gui	10	strLblRef	referencias
+calculateLb_gui	11	strBtnCheck	Comprobar subconjunto
+calculateLb_gui	12	strLblKit	Kit:
+calculateLb_gui	13	strFrmOptions	Opciones
+calculateLb_gui	14	strLblPre	Pre-procesando:
+calculateLb_gui	15	strChkOL	Eliminar alelos off-ladder
+calculateLb_gui	16	strChkSex	Eliminar marcadores de sexo
+calculateLb_gui	17	strChkSensors	Eliminar sensores de calidad
+calculateLb_gui	18	strLblMissing	Reemplazar datos ausentes con altura de pico:
+calculateLb_gui	19	strLblMethod	Calcular equilibrio del locus:
+calculateLb_gui	20	strRadProp	Proporcional
+calculateLb_gui	21	strRadNorm	Normalizado
+calculateLb_gui	22	strRadCent	Cantidades centradas
+calculateLb_gui	23	strRadRatio	Ratio de pico
+calculateLb_gui	24	strChkDye	Calcular Lb por canal de fluorocromo
+calculateLb_gui	25	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
+calculateLb_gui	26	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateLb_gui	27	strChkWord	Añadir límites de palabras
+calculateLb_gui	28	strChkExact	Coincidencia exacta
+calculateLb_gui	29	strLblPost	Post-procesando:
+calculateLb_gui	30	strChkAverage	Calcular altura promedio de pico
+calculateLb_gui	31	strFrmSave	Guardar como
+calculateLb_gui	32	strLblSave	Nombre del resultado:
+calculateLb_gui	33	strBtnCalculate	Calcular
+calculateLb_gui	34	strBtnProcessing	Procesando…
+calculateLb_gui	35	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculateLb_gui	36	strMsgTitleDataset	Datos no seleccionados
+calculateLb_gui	37	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+calculateLb_gui	38	strWinTitleCheck	Comprobar subconjunto
+calculateLb_gui	39	strMsgTitleError	Error
+calculateLb_gui	40	strMsgNA	"NA" en la columna 'Marcaje'. \nUsar la función añadir marcaje para arreglarlo.
+calculateLb_gui	41	strMsgTitleNA	NA detectado!
+calculateMixture_gui	1	strWinTitle	Calcular Mezcla
+calculateMixture_gui	2	strChkGui	Guardar configuración de GUI
+calculateMixture_gui	3	strBtnHelp	Ayuda
+calculateMixture_gui	4	strFrmDataset	Conjuntos de datos
+calculateMixture_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateMixture_gui	6	strDrpDefault	<Seleccionar datos>
+calculateMixture_gui	7	strLblSamples	muestras
+calculateMixture_gui	8	strLblRefMajor	Conjunto de datos de referencia (mayoritario):
+calculateMixture_gui	9	strLblRefMinor	Conjunto de datos de referencia (minoritario):
+calculateMixture_gui	10	strLblRef	referencias
+calculateMixture_gui	11	strBtnCheck	Comprobar subconjunto
+calculateMixture_gui	12	strFrmOptions	Opciones
+calculateMixture_gui	13	strChkOL	Eliminar alelos off-ladder (afecta al número de drop-in)
+calculateMixture_gui	14	strChkDrop	Ignorar drop-out (calcular Mx de todos modos)
+calculateMixture_gui	15	strFrmSave	Guardar como
+calculateMixture_gui	16	strLblSave	Nombre del resultado:
+calculateMixture_gui	17	strBtnCalculate	Calcular
+calculateMixture_gui	18	strBtnProcessing	Procesando…
+calculateMixture_gui	19	strMsgDataset	Se deben seleccionar los datos de las muestras y dos conjuntos de datos de referencias.
+calculateMixture_gui	20	strMsgTitleDataset	Datos no seleccionados
+calculateMixture_gui	21	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+calculateMixture_gui	22	strWinTitleCheck	Comprobar subconjunto
+calculateMixture_gui	23	strMsgTitleError	Error
+calculateOL_gui	1	strWinTitle	Analizar alelos off-ladder
+calculateOL_gui	2	strChkGui	Guardar configuración de GUI
+calculateOL_gui	3	strBtnHelp	Ayuda
+calculateOL_gui	4	strFrmKits	Seleccionar kits
+calculateOL_gui	5	strFrmOptions	Opciones
+calculateOL_gui	6	strLblDatabase	Seleccionar base de datos de frecuencias alélicas:
+calculateOL_gui	7	strChkVirtual	Incluir bins virtuales en el análisis
+calculateOL_gui	8	strTipVirtual	NB! No todos los fabricantes especifican qué alelos son virtuales en el archivo de bins. Esto se puede especificar manualmente en el archivo kit.txt.
+calculateOL_gui	9	strChkLowFreq	Limitar fecuencias mínimas a 5/2N
+calculateOL_gui	10	strFrmSave	Guardar como
+calculateOL_gui	11	strLblSave	Nombre del resultado:
+calculateOL_gui	12	strBtnCalculate	Calcular
+calculateOL_gui	13	strBtnProcessing	Procesando…
+calculateOL_gui	14	strMsgKit	Se tiene que seleccionar al menos un kit.
+calculateOL_gui	15	strMsgTitleKit	No se ha seleccionado kit
+calculateOverlap_gui	1	strWinTitle	Analizar superposición de bins
+calculateOverlap_gui	2	strChkGui	Guardar configuración de GUI
+calculateOverlap_gui	3	strBtnHelp	Ayuda
+calculateOverlap_gui	4	strFrmKits	Seleccionar kits
+calculateOverlap_gui	5	strFrmOptions	Opciones
+calculateOverlap_gui	6	strChkMultiply	Multiplicar la superposición por la frecuencia alélica
+calculateOverlap_gui	7	strChkVirtual	Incluir bins virtuales en el análisis
+calculateOverlap_gui	8	strTipVirtual	NB! No todos los fabricantes especifican qué alelos son virtuales en el archivo de bins. Esto se puede especificar manualmente en el archivo kit.txt.
+calculateOverlap_gui	9	strChkPenalty	Aplicar penalización de canal espectral
+calculateOverlap_gui	10	strFrmPenalty	Penalización
+calculateOverlap_gui	11	strLblPenalty	Definir penalización por la distancia entre los canales de fluorocromos (del 1º al 5º)
+calculateOverlap_gui	12	strFrmSave	Guardar como
+calculateOverlap_gui	13	strLblSave	Nombre del resultado:
+calculateOverlap_gui	14	strBtnCalculate	Calcular
+calculateOverlap_gui	15	strBtnProcessing	Procesando…
+calculateOverlap_gui	16	strMsgColor	Para comparar múltiples kits, los marcajes deben ser idénticos!\nAnalizar un solo kit!
+calculateOverlap_gui	17	strMsgKit	Se debe seleccionar al menos un kit.
+calculateOverlap_gui	18	strMsgTitleKit	No se ha seleccionado kit
+calculateOverlap_gui	19	strMsgTitleError	Error
+calculatePeaks_gui	1	strWinTitle	Calcular picos
+calculatePeaks_gui	2	strChkGui	Guardar configuración de GUI
+calculatePeaks_gui	3	strBtnHelp	Ayuda
+calculatePeaks_gui	4	strFrmDataset	Conjunto de datos
+calculatePeaks_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculatePeaks_gui	6	strDrpDefault	<Seleccionar datos>
+calculatePeaks_gui	7	strLblSamples	muestras
+calculatePeaks_gui	8	strFrmOptions	Opciones
+calculatePeaks_gui	9	strChkExcludeOL	Excluir picos off-ladder (alelos OL).
+calculatePeaks_gui	10	strRadBySample	Contar picos por muestra
+calculatePeaks_gui	11	strRadByMarker	Contar picos por marcador
+calculatePeaks_gui	12	strLblGroups	Definir las etiquetas del grupo (separadas por coma):
+calculatePeaks_gui	13	strTipGroups	El número de etiquetas debe ser una más que el número de puntos cut-off. El último grupo se define por > que el último punto cut-off.
+calculatePeaks_gui	14	strLblCutOff	Definir los puntos de corte (<=) para los grupos (seprados por comma):
+calculatePeaks_gui	15	strTipCutOff	El número de cut-off points debe ser uno menos que el número de etiquetas. El último grupo de etiquetas se define por > que el úlyimo cut-off point.
+calculatePeaks_gui	16	strFrmSave	Guardar como
+calculatePeaks_gui	17	strLblSave	Nombre del resultado:
+calculatePeaks_gui	18	strBtnCalculate	Calcular
+calculatePeaks_gui	19	strBtnProcessing	Procesando…
+calculatePeaks_gui	20	strMsgDataset	Se debe seleccionar un conjunto de datos de muestras.
+calculatePeaks_gui	21	strMsgTitleDataset	Datos no seleccionados
+calculatePullup_gui	1	strWinTitle	Calcular pull-up espectral
+calculatePullup_gui	2	strChkGui	Guardar configuración de GUI
+calculatePullup_gui	3	strBtnHelp	Ayuda
+calculatePullup_gui	4	strFrmDataset	Conjuntos de datos
+calculatePullup_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculatePullup_gui	6	strDrpDefault	<Seleccionar datos>
+calculatePullup_gui	7	strLblSamples	muestras
+calculatePullup_gui	8	strLblRefDataset	Datos de referencia:
+calculatePullup_gui	9	strLblRef	referencias
+calculatePullup_gui	10	strBtnCheck	Comprobar subconjunto
+calculatePullup_gui	11	strFrmOptions	Opciones
+calculatePullup_gui	12	strLblPre	Pre-procesando:
+calculatePullup_gui	13	strChkOL	Eliminar pico off-ladder
+calculatePullup_gui	14	strLblMethod	Configuración para pull-up:
+calculatePullup_gui	15	strLblRange	Rango de análisis de pull-up (data points) alrededor de alelos conocidos:
+calculatePullup_gui	16	strLblBlock	Rango de bloqueo (data points) alrededor de alelos conocidos:
+calculatePullup_gui	17	strLblDiscard	Descartar pull-ups con ratio >
+calculatePullup_gui	18	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
+calculatePullup_gui	19	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculatePullup_gui	20	strChkWord	Añadir límites de palabras
+calculatePullup_gui	21	strLblPost	Post-procesando:
+calculatePullup_gui	22	strChkDiscard	Descartar los alelos sin pull-up de la tabla de resultados
+calculatePullup_gui	23	strFrmSave	Guardar como
+calculatePullup_gui	24	strLblSave	Nombre del resultado:
+calculatePullup_gui	25	strLblKit	Atributo del kit:
+calculatePullup_gui	26	strBtnCalculate	Calcular
+calculatePullup_gui	27	strBtnProcessing	Procesando…
+calculatePullup_gui	28	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculatePullup_gui	29	strMsgTitleDataset	Datos no seleccionados
+calculatePullup_gui	30	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+calculatePullup_gui	31	strWinTitleCheck	Comprobar subconjunto
+calculatePullup_gui	32	strMsgTitleError	Error
+calculatePullup_gui	33	strMsgNA	"NA" en la columna 'Marcaje'. \nUsar la función añadir marcaje para arreglarlo.
+calculatePullup_gui	34	strMsgTitleNA	NA detectado!
+calculateRatio_gui	1	strWinTitle	Calcular ratio
+calculateRatio_gui	2	strChkGui	Guardar configuración de GUI
+calculateRatio_gui	3	strBtnHelp	Ayuda
+calculateRatio_gui	4	strFrmDataset	Conjuntos de datos
+calculateRatio_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateRatio_gui	6	strDrpDataset	<Seleccionar datos>
+calculateRatio_gui	7	strLblSamples	muestras
+calculateRatio_gui	8	strLblRefDataset	Datos de referencia:
+calculateRatio_gui	9	strLblRef	referencias
+calculateRatio_gui	10	strBtnCheck	Comprobar subconjunto
+calculateRatio_gui	11	strFrmOptions	Opciones
+calculateRatio_gui	12	strLblPre	Pre-procesando:
+calculateRatio_gui	13	strChkOL	Eliminar alelos off-ladder
+calculateRatio_gui	14	strLblMethod	Calcular marker ratio:
+calculateRatio_gui	15	strLblNumerator	Seleccionar marcadores en el numerador:
+calculateRatio_gui	16	strDrpMarker	<Seleccionar marcador>
+calculateRatio_gui	17	strLblDenominator	Seleccionar marcadores en el denominador:
+calculateRatio_gui	18	strLblGroupBy	Agrupar por columna:
+calculateRatio_gui	19	strDrpColumn	<Seleccionar columna>
+calculateRatio_gui	20	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
+calculateRatio_gui	21	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateRatio_gui	22	strChkWord	Añadir límites de palabras
+calculateRatio_gui	23	strChkExact	Coincidencia exacta
+calculateRatio_gui	24	strFrmSave	Guardar como
+calculateRatio_gui	25	strLblSave	Nombre del resultado:
+calculateRatio_gui	26	strBtnCalculate	Calcular
+calculateRatio_gui	27	strBtnProcessing	Procesando…
+calculateRatio_gui	28	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculateRatio_gui	29	strMsgTitleDataset	Datos no seleccionados
+calculateRatio_gui	30	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+calculateRatio_gui	31	strWinTitleCheck	Comprobar subconjunto
+calculateRatio_gui	32	strMsgTitleError	Error
+calculateResultType_gui	1	strWinTitle	Calcular tipo de resultado
+calculateResultType_gui	2	strChkGui	Guardar configuración de GUI
+calculateResultType_gui	3	strBtnHelp	Ayuda
+calculateResultType_gui	4	strFrmDataset	Datos y kit
+calculateResultType_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateResultType_gui	6	strDrpDataset	<Seleccionar datos>
+calculateResultType_gui	7	strLblSamples	muestras
+calculateResultType_gui	8	strLblKit	Kit:
+calculateResultType_gui	9	strFrmOptions	Opciones
+calculateResultType_gui	10	strLblNB	NB! Todos los marcadores deben estar presentes en cada muestra para obtener resultados correctos.
+calculateResultType_gui	11	strLblPre	Pre-procesando:
+calculateResultType_gui	12	strChkMissing	Añadir marcadores ausentes (puede ser lento si hay muchos datos)
+calculateResultType_gui	13	strLblMethod	Calcular tipo de resultado:
+calculateResultType_gui	14	strLblHeight	Definir subtipos de perfiles completos por: todos los picos > umbral de altura de pico (RFU):
+calculateResultType_gui	15	strTipHeight	Completar >[RFU] 
+calculateResultType_gui	16	strLblMarker	Definir los subtipos de mezclas por número de marcadores con > 2 picos detectados:
+calculateResultType_gui	17	strTipMarker	Mezcla >[marcadores]
+calculateResultType_gui	18	strLblPeak	Definir subtipos de perfiles parciales por el número de picos detectados:
+calculateResultType_gui	19	strTipPeak	Parcial >[picos]
+calculateResultType_gui	20	strLblFullKit	Definir subtipos de perfiles parciales por kit:
+calculateResultType_gui	21	strDrpKit	<Seleccionar kit>
+calculateResultType_gui	22	strTipFullKit	Parcial Completo [kit]
+calculateResultType_gui	23	strFrmSave	Guardar como
+calculateResultType_gui	24	strLblSave	Nombre del resultado:
+calculateResultType_gui	25	strBtnCalculate	Calcular
+calculateResultType_gui	26	strBtnProcessing	Procesando…
+calculateResultType_gui	27	strMsgDataset	Se debe seleccionar un conjunto de datos de muestras.
+calculateResultType_gui	28	strMsgTitleDataset	Datos no seleccionados
+calculateSlope_gui	1	strWinTitle	Calcular pendiente del perfil
+calculateSlope_gui	2	strChkGui	Guardar configuración de GUI
+calculateSlope_gui	3	strBtnHelp	Ayuda
+calculateSlope_gui	4	strFrmDataset	Conjunto de datos
+calculateSlope_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateSlope_gui	6	strDrpDataset	<Seleccionar datos>
+calculateSlope_gui	7	strLblSamples	muestras
+calculateSlope_gui	8	strLblRefDataset	Datos de referencia:
+calculateSlope_gui	9	strLblRef	referencias
+calculateSlope_gui	10	strBtnCheck	Comprobar subconjunto
+calculateSlope_gui	11	strFrmOptions	Opciones
+calculateSlope_gui	12	strLblGroups	Grupos:
+calculateSlope_gui	13	strLblConf	Límite de confianza:
+calculateSlope_gui	14	strLblKit	Calcular el tamaño del kit a partir de:
+calculateSlope_gui	15	strChkKit	Selección automática
+calculateSlope_gui	16	strTipKit	Se debe comprobar para múltiples kits.
+calculateSlope_gui	17	strTipKitDrp	No se necesita si se porporciona 'Tamaño' en el conjunto de datos.
+calculateSlope_gui	18	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
+calculateSlope_gui	19	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateSlope_gui	20	strChkWord	Añadir límites de palabras
+calculateSlope_gui	21	strChkExact	Coincidencia exacta
+calculateSlope_gui	22	strFrmSave	Guardar como
+calculateSlope_gui	23	strLblSave	Nombre del resultado:
+calculateSlope_gui	24	strBtnCalculate	Calcular
+calculateSlope_gui	25	strBtnProcessing	Procesando…
+calculateSlope_gui	26	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculateSlope_gui	27	strMsgTitleDataset	Datos no seleccionados
+calculateSlope_gui	28	strMsgCheck	El marco de datos es NULO!\n\nAsegúrese de seleccionar un conjunto de datos y un conjunto de referencia.
+calculateSlope_gui	29	strWinTitleCheck	Comprobar subconjunto
+calculateSlope_gui	30	strMsgTitleError	Error
+calculateSpike_gui	1	strWinTitle	Calcular spikes
+calculateSpike_gui	2	strChkGui	Guardar configuración de GUI
+calculateSpike_gui	3	strBtnHelp	Ayuda
+calculateSpike_gui	4	strFrmDataset	Conjunto de datos
+calculateSpike_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateSpike_gui	6	strDrpDataset	<Seleccionar datos>
+calculateSpike_gui	7	strLblSamples	muestras
+calculateSpike_gui	8	strLblKit	Kit:
+calculateSpike_gui	9	strFrmOptions	Opciones
+calculateSpike_gui	10	strLblThreshold	Umbral (número de picos de tamaño similar):
+calculateSpike_gui	11	strLblTolerance	Tolerancia (bp):
+calculateSpike_gui	12	strChkQuick	Rápido y "grueso"
+calculateSpike_gui	13	strTipQuick	NB! El método rápido puede no tener en cuenta todos los spikes ya que dos picos que puedan estar separados alrededor de por ejemplo 200.5 y 200.6, se convierten en 200 y 201 respectivamente!
+calculateSpike_gui	14	strFrmSave	Guardar como
+calculateSpike_gui	15	strLblSave	Nombre del resultado:
+calculateSpike_gui	16	strBtnCalculate	Calcular
+calculateSpike_gui	17	strBtnProcessing	Procesando…
+calculateSpike_gui	18	strMsgDataset	Se debe seleccionar un conjunto de datos de muestras.
+calculateSpike_gui	19	strMsgTitleDataset	Datos no seleccionados
+calculateStatistics_gui	1	strWinTitle	Calcular estadísticas resumen
+calculateStatistics_gui	2	strChkGui	Guardar configuración de GUI
+calculateStatistics_gui	3	strBtnHelp	Ayuda
+calculateStatistics_gui	4	strFrmDataset	Conjunto de datos
+calculateStatistics_gui	5	strLblDataset	Conjunto de datos:
+calculateStatistics_gui	6	strDrpDataset	<Seleccionar datos>
+calculateStatistics_gui	7	strLblRows	filas
+calculateStatistics_gui	8	strFrmOptions	Opciones
+calculateStatistics_gui	9	strLblTarget	Seleccionar columna de destino:
+calculateStatistics_gui	10	strLblGroupBy	Agrupar por columna(s):
+calculateStatistics_gui	11	strLblCount	Contar valores únicos en la columna:
+calculateStatistics_gui	12	strDrpColumn	<Seleccionar columnas>
+calculateStatistics_gui	13	strLblQuantile	Calcular cuantil
+calculateStatistics_gui	14	strFrmSave	Guardar como
+calculateStatistics_gui	15	strLblSave	Nombre del resultado:
+calculateStatistics_gui	16	strBtnCalculate	Calcular
+calculateStatistics_gui	17	strBtnProcessing	Procesando…
+calculateStatistics_gui	18	strMsgDataset	Se debe seleccionar un conjunto de datos.
+calculateStatistics_gui	19	strMsgTitleDataset	Datos no seleccionados
+calculateStatistics_gui	20	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+calculateStatistics_gui	21	strMsgTitleError	Error
+calculateStutter_gui	1	strWinTitle	Calcular stutter ratio
+calculateStutter_gui	2	strChkGui	Guardar configuración de GUI
+calculateStutter_gui	3	strBtnHelp	Ayuda
+calculateStutter_gui	4	strFrmDataset	Conjuntos de datos
+calculateStutter_gui	5	strLblDataset	Conjunto de datos de muestras:
+calculateStutter_gui	6	strDrpDataset	<Seleccionar datos>
+calculateStutter_gui	7	strLblSamples	muestras
+calculateStutter_gui	8	strLblRefDataset	Datos de referencia:
+calculateStutter_gui	9	strLblRef	referencias
+calculateStutter_gui	10	strBtnCheck	Comprobar subconjunto
+calculateStutter_gui	11	strLblKit	Kit:
+calculateStutter_gui	12	strFrmOptions	Opciones
+calculateStutter_gui	13	strLblRange	Calcular stutter ratio con el siguiente rango de análisis:
+calculateStutter_gui	14	strLblBack	back stutters respecto a
+calculateStutter_gui	15	strLblForward	stutters n+1
+calculateStutter_gui	16	strLblNB	NB! Los efectos aditivos fuera del rango de análisis no se pueden controlar.\nUn rango estrecho como 0 a 1 se puede ver enormemente afectado por stutters -1 cercanos.
+calculateStutter_gui	17	strLblInterference	Nivel de interferencia dentro del rango dado:
+calculateStutter_gui	18	strRadNone	sin solapamiento entre stutters y alelos
+calculateStutter_gui	19	strRadStutter	solapamiento stutter-stutter permitido
+calculateStutter_gui	20	strRadAllele	Solapamiento stutter-alelo permitido
+calculateStutter_gui	21	strLblReplace	Reemplazar stutters 'falsos':
+calculateStutter_gui	22	strFrmSave	Guardar como
+calculateStutter_gui	23	strLblSave	Nombre del resultado:
+calculateStutter_gui	24	strBtnCalculate	Calcular
+calculateStutter_gui	25	strBtnProcessing	Procesando…
+calculateStutter_gui	26	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculateStutter_gui	27	strMsgTitleDataset	Datos no seleccionados
+calculateStutter_gui	28	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+calculateStutter_gui	29	strWinTitleCheck	Comprobar subconjunto
+calculateStutter_gui	30	strMsgTitleError	Error
+checkDataset	1	strMsgNoRows	Los datos no contienen filas!
+checkDataset	2	strMsgAdditionalCols	Columnas adicionales requeridas:\n
+checkDataset	3	strMsgFat1	Los datos son demasiados!\n\nSólo puede haber 1 columna:
+checkDataset	4	strMsgFat2	\nPor favor reduzca el conjunto de datos.
+checkDataset	5	strMsgDetected1	Identificado en la columna
+checkDataset	6	strMsgDetected2	Por favor aegúrese de que los datos están depurados/filtrados.\n
+checkSubset_gui	1	strWinTitle	Comprobar subconjunto
+checkSubset_gui	2	strChkGui	Guardar configuración de GUI
+checkSubset_gui	3	strBtnHelp	Ayuda
+checkSubset_gui	4	strFrmDataset	Conjuntos de datos
+checkSubset_gui	5	strLblDataset	Conjunto de datos de muestras:
+checkSubset_gui	6	strDrpDataset	<Seleccionar datos>
+checkSubset_gui	7	strLblSamples	muestras
+checkSubset_gui	8	strLblRefDataset	Datos de referencia:
+checkSubset_gui	9	strLblRef	referencias
+checkSubset_gui	10	strLblManual	O escriba un nombre de referencia:
+checkSubset_gui	11	strFrmOptions	Opciones
+checkSubset_gui	12	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
+checkSubset_gui	13	strChkIgnore	Ignorar mayúsculas y minúsculas ('A' coincidirá con 'A', 'B-a.2', y 'A2'
+checkSubset_gui	14	strChkWord	Añadir límites de palabras ('A' coincidirá con 'A', 'B-A.2', y 'A 2' pero no con 'A2')
+checkSubset_gui	15	strChkExact	Coincidencia exacta ('A' coincidirá con 'A' pero no con 'B-A.2', 'A 2', o 'A2')
+checkSubset_gui	16	strFrmSave	Guardar como
+checkSubset_gui	17	strLblSave	Nombre del resultado:
+checkSubset_gui	18	strBtnCalculate	Subconjunto
+checkSubset_gui	19	strMsgCheck	El marco de datos es NULO!\n\nAsegúrese de seleccionar un conjunto de datos y un conjunto de referencia, o escriba un nombre de referencia
+checkSubset_gui	20	strWinTitleCheck	Comprobar subconjunto
+checkSubset_gui	21	strMsgTitleError	Error
+columns_gui	1	strWinTitle	Acciones en la columna
+columns_gui	2	strChkGui	Guardar configuración de GUI
+columns_gui	3	strBtnHelp	Ayuda
+columns_gui	4	strFrmDataset	Conjunto de datos
+columns_gui	5	strLblDataset	Conjunto de datos:
+columns_gui	6	strDrpDataset	<Seleccionar datos>
+columns_gui	7	strLblColumns	Columnas
+columns_gui	8	strFrmColumns	Columnas
+columns_gui	9	strLblCol1	Columna 1:
+columns_gui	10	strLblCol2	Columna 2:
+columns_gui	11	strDrpColumn	<Seleccionar columna>
+columns_gui	12	strFrmOptions	Opciones
+columns_gui	13	strLblFixed	Valor fijo:
+columns_gui	14	strLblNew	Columna para valores nuevos:
+columns_gui	15	strLblAction	Acción:
+columns_gui	16	strDrpAction	<Seleccionar acción>
+columns_gui	17	strLblStart	Posición de inicio:
+columns_gui	18	strLblStop	Posición de fin:
+columns_gui	19	strFrmSave	Guardar como
+columns_gui	20	strLblSave	Nombre del resultado:
+columns_gui	21	strBtnCalculate	Ejecutar
+combine_gui	1	strWinTitle	Combinar datos
+combine_gui	2	strChkGui	Guardar configuración de GUI
+combine_gui	3	strBtnHelp	Ayuda
+combine_gui	4	strFrmDataset	Conjunto de datos
+combine_gui	5	strLblSet1	Conjunto de datos 1:
+combine_gui	6	strDrpDataset	<Seleccionar datos>
+combine_gui	7	strLblColumns	Columnas
+combine_gui	8	strLblSet2	Conjunto de datos 2:
+combine_gui	9	strFrmSave	Guardar como
+combine_gui	10	strLblSave	Nombre del resultado:
+combine_gui	11	strBtnCalculate	Combinar
+combine_gui	12	strMsgColumns	Los conjuntos de datos deben tener nombres de columna idénticos!
+combine_gui	13	strMsgTitleError	Error
+combine_gui	14	strMsgDataset	Se deben seleccionar dos conjuntos de datos.
+combine_gui	15	strMsgTitleDataset	Datos no seleccionados
+cropData_gui	1	strWinTitle	Cortar o reemplazar datos
+cropData_gui	2	strChkGui	Guardar configuración de GUI
+cropData_gui	3	strBtnHelp	Ayuda
+cropData_gui	4	strFrmDataset	Conjunto de datos
+cropData_gui	5	strLblDataset	Conjunto de datos:
+cropData_gui	6	strDrpDataset	<Seleccionar datos>
+cropData_gui	7	strLblSamples	muestras,
+cropData_gui	8	strLblColumns	columnas,
+cropData_gui	9	strLblRows	filas
+cropData_gui	10	strFrmColumns	Columna:
+cropData_gui	11	strLblTargetCol	Columna target:
+cropData_gui	12	strDrpColumn	<Seleccionar columna>
+cropData_gui	13	strLblInfo	Info:
+cropData_gui	14	strLblMin	Min:
+cropData_gui	15	strLblMax	Max:
+cropData_gui	16	strChkNa	Ignorar NA en la información
+cropData_gui	17	strFrmOptions	Opciones
+cropData_gui	18	strChkRemNA	Eliminar NA
+cropData_gui	19	strLblAction	Acción:
+cropData_gui	20	strRadDiscard	Descartar valores
+cropData_gui	21	strRadReplace	Reemplazar valores
+cropData_gui	22	strDrpAbove	mayor
+cropData_gui	23	strDrpAboveEqual	mayor o igual a
+cropData_gui	24	strDrpBelow	menor
+cropData_gui	25	strDrpBelowEqual	menor o igual a
+cropData_gui	26	strDrpEqual	igual a
+cropData_gui	27	strDrpNotEqual	no es igual a
+cropData_gui	28	strDrpNA	es NA
+cropData_gui	29	strDrpNotNA	no es NA
+cropData_gui	30	strDrpContain	conteniendo
+cropData_gui	31	strDrpNotContain	sin contener
+cropData_gui	32	strDrpTarget	<Valor Target>
+cropData_gui	33	strLblWith	con
+cropData_gui	34	strLblTarget	La columna target contiene datos del tipo:
+cropData_gui	35	strRadNumeric	Numérico
+cropData_gui	36	strRadCharacter	Carácter
+cropData_gui	37	strBtnApply	Aplicar
+cropData_gui	38	strFrmSave	Guardar como
+cropData_gui	39	strLblSave	Nombre del resultado:
+cropData_gui	40	strBtnProcessing	Procesando…
+cropData_gui	41	strBtnSave	Guardar
+cropData_gui	42	strBtnSaved	Guardado!
+cropData_gui	43	strMsgDrop	No cree subconjuntos de un conjunto de datos de drop-out antes de la modelización!\n1) Hacer un subconjunto desde los datos originales.\n2) Calcular dropout en ese subconjunto.\n3) Modelizar drop-out desde el nuevo conjunto de datos de drop-out.
+cropData_gui	44	strMsgTitleDrop	Atención!
+cropData_gui	45	strMsgDataset	Se debe seleccionar un conjunto de datos.
+cropData_gui	46	strMsgTitleDataset	Datos no seleccionados
+cropData_gui	47	strMsgTitleError	Error
+editData_gui	1	strWinTitleEdit	Editar o ver datos
+editData_gui	2	strWinTitleView	Vista de un conjunto de datos
+editData_gui	3	strWinTitleAttributes	Atributos
+editData_gui	4	strChkGui	Guardar configuración de GUI
+editData_gui	5	strBtnHelp	Ayuda
+editData_gui	6	strFrmDataset	Conjunto de datos
+editData_gui	7	strLblDataset	Conjunto de datos:
+editData_gui	8	strDrpDataset	<Seleccionar datos>
+editData_gui	9	strLblSamples	muestras,
+editData_gui	10	strLblColumns	columnas,
+editData_gui	11	strLblRows	filas
+editData_gui	12	strFrmOptions	Opciones
+editData_gui	13	strChkAttributes	Mostrar atributos (en ventana separada)
+editData_gui	14	strChkLimit	Limitar el número de filas a:
+editData_gui	15	strTipLimit	NB! La clasificación solo se realizará en los datos cargados.
+editData_gui	16	strBtnCopy	Copiar
+editData_gui	17	strTipCopy	Copiar al portapapeles (¡NOTA! Los conjuntos de datos muy grandes pueden truncarse).
+editData_gui	18	strBtnCopying	Copiando…
+editData_gui	19	strBtnExport	Exportar
+editData_gui	20	strTipExport	Abre el diálogo de exportación.
+editData_gui	21	strBtnSave	Guardar como
+editData_gui	22	strTipSave	Guardar como nuevo conjunto de datos en este proyecto.
+editData_gui	23	strBtnSaving	Guardando…
+editData_gui	24	strFrmSave	Copiar|Exportar|Guardar
+editData_gui	25	strLblNoData	No hay datos
+editData_gui	26	strMsgSave	Se debe proporcionar un nombre.
+editData_gui	27	strMsgTitleError	Error
+editData_gui	28	strLblTcltk	La herramienta tcltk del gui no maneja valores NA en las tablas.\nLos valores NA se reemplazarán por cadenas vacías.\nSi edita la tabla, los valores NA se reeempazarán permanentemente.
+editData_gui	29	strChkShow	No mostrar este mensaje otra vez.
+editData_gui	30	strMsgTitleWarning	Atención
+export_gui	1	strWinTitle	Exportar objetos como archivos o imágenes
+export_gui	2	strChkGui	Guardar configuración de GUI
+export_gui	3	strBtnHelp	Ayuda
+export_gui	4	strFrmObjects	Objetos
+export_gui	5	strLblObjects	objetos seleccionados para exportar:
+export_gui	6	strLblValues	Valores
+export_gui	7	strFrmOptions	Opciones
+export_gui	8	strLblFiles	Archivos
+export_gui	9	strChkNames	Usar los nombres de objeto como nombres de archivo
+export_gui	10	strLblNames	Nombres del archivo (separados por | o ,):
+export_gui	11	strChkOverwrite	Sobreeescribir archivos existentes
+export_gui	12	strLblExtension	Extensión del archivo:
+export_gui	13	strLblDelimiter	Delimitar:
+export_gui	14	strDrpTab	TAB
+export_gui	15	strDrpSpace	ESPACIO
+export_gui	16	strDrpComma	COMA
+export_gui	17	strLblSettings	Confoguración de imagen:
+export_gui	18	strLblWidth	Ancho:
+export_gui	19	strLblHeight	Altura:
+export_gui	20	strLblResolution	Resolución:
+export_gui	21	strFrmLocation	Localización
+export_gui	22	strLblLocation	Guardar archivos en ruta:
+export_gui	23	strBtnOpen	Abrir
+export_gui	24	strBtnExport	Exportar
+export_gui	25	strBtnProcessing	Procesando…
+export_gui	26	strMsgObject	Se debe seleccionar al menos un objeto.\nSe debe proporcinar nombre de archivo y ruta.\n\nEste error también puede ocurrir la primera vez que se usa la función.\nPor favor localice la carpeta usando en botón 'Open'.
+export_gui	27	strMsgTitleError	Error
+export_gui	28	strMsgFailed	\nLos siguientes objetos no se guardaron porque los nombres de archivo ya existían.\nAsegúrese de salir de la última celda editada antes de continuar.
+export_gui	29	strMsgTitleFailed	La exportación falló!
+export_gui	30	strLblObject	Objeto
+export_gui	31	strLblNewName	Nuevo.Nombre
+export_gui	32	strBtnCancel	Cancelar
+export_gui	33	strBtnOverwrite	Sobreescribir
+export_gui	34	strBtnRetry	Reintentar
+filterProfile_gui	1	strWinTitle	Filtrar perfil
+filterProfile_gui	2	strChkGui	Guardar configuración de GUI
+filterProfile_gui	3	strBtnHelp	Ayuda
+filterProfile_gui	4	strFrmDataset	Conjuntos de datos
+filterProfile_gui	5	strLblDataset	Conjunto de datos de muestras:
+filterProfile_gui	6	strDrpDataset	<Seleccionar datos>
+filterProfile_gui	7	strLblSamples	muestras
+filterProfile_gui	8	strLblRefDataset	Datos de referencia:
+filterProfile_gui	9	strLblRef	referencias
+filterProfile_gui	10	strBtnCheck	Comprobar subconjunto
+filterProfile_gui	11	strLblKit	Kit:
+filterProfile_gui	12	strChkVirtual	Excluir bins virtuales
+filterProfile_gui	13	strFrmOptions	Opciones
+filterProfile_gui	14	strLblPre	Pre-procesando:
+filterProfile_gui	15	strChkSex	Eliminar marcadores de sexo
+filterProfile_gui	16	strTipSex	Eliminar marcadores de sexo definidos en el kit seleccionado
+filterProfile_gui	17	strChkSensors	Eliminar sensores de calidad
+filterProfile_gui	18	strTipSensors	Eliminar sensores de calidad definidos en el kit seleccionado.
+filterProfile_gui	19	strLblMethod	Opciones de filtrado:
+filterProfile_gui	20	strRadRef	Filtrar por perfiles de referencia
+filterProfile_gui	21	strRadBins	Filtrar por bins del kit (ladder alélico)
+filterProfile_gui	22	strChkInvert	Invertir (eliminar picos coincidentes)
+filterProfile_gui	23	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
+filterProfile_gui	24	strChkIgnore	Ignorar mayúsculas y minúsculas
+filterProfile_gui	25	strTipIgnore	"A" coincidirá con "A", "B-a.2", y "A2"
+filterProfile_gui	26	strChkWord	Añadir límites de palabras
+filterProfile_gui	27	strTipWord	"A" coincidirá con "A", "B-A.2", y "A 2" pero no con "A2"
+filterProfile_gui	28	strChkExact	Coincidencia exacta
+filterProfile_gui	29	strTipExact	"A" coincidirá con "A" pero no con "B-A.2", "A 2", o "A2"
+filterProfile_gui	30	strLblPost	Post-procesando:
+filterProfile_gui	31	strChkAdd	Añadir loci (marcadores) ausentes
+filterProfile_gui	32	strTipAdd	Esta opción será más lenta.
+filterProfile_gui	33	strChkKeep	Mantenga loci / muestra incluso si no hay un alelo correspondiente
+filterProfile_gui	34	strFrmSave	Guardar como
+filterProfile_gui	35	strLblSave	Nombre del resultado:
+filterProfile_gui	36	strBtnFilter	Filtrar
+filterProfile_gui	37	strBtnProcessing	Procesando…
+filterProfile_gui	38	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+filterProfile_gui	39	strMsgTitleDataset	Datos no seleccionados
+filterProfile_gui	40	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+filterProfile_gui	41	strWinTitleCheck	Comprobar subconjunto
+filterProfile_gui	42	strMsgTitleError	Error
+generateEPG_gui	1	strWinTitle	Generar electroferograma (EPG)
+generateEPG_gui	2	strChkGui	Guardar configuración de GUI
+generateEPG_gui	3	strBtnHelp	Ayuda
+generateEPG_gui	4	strFrmDataset	Conjuntos de datos
+generateEPG_gui	5	strLblDataset	Conjunto de datos de muestras:
+generateEPG_gui	6	strDrpDataset	<Seleccionar datos>
+generateEPG_gui	7	strLblSamples	muestras
+generateEPG_gui	8	strLblSample	Muestra:
+generateEPG_gui	9	strDrpSample	<Seleccionar muestra>
+generateEPG_gui	10	strLblKit	Kit:
+generateEPG_gui	11	strFrmOptions	Opciones
+generateEPG_gui	12	strLblPlot	Título del gráfico:
+generateEPG_gui	13	strLblScales	Escala de ejes:
+generateEPG_gui	14	strLblSize	Tamaño del texto de la etiqueta alélica:
+generateEPG_gui	15	strLblJustV	Justificación vertical:
+generateEPG_gui	16	strLblAngle	Ángulo de la etiqueta alélica:
+generateEPG_gui	17	strLblJustH	Justificación horizontal:
+generateEPG_gui	18	strLblArea	Expansión del área del gráfico:
+generateEPG_gui	19	strLblAT	Umbral anatítico:
+generateEPG_gui	20	strChkIgnore	Ignorar mayúsculas y minúsculas en el nombre de los marcadores
+generateEPG_gui	21	strChkWrap	Superponer por fluorocromo y agregar rangos de marcadores y nombres de alelos
+generateEPG_gui	22	strChkFix	Fijar eje X en un rango de tamaño
+generateEPG_gui	23	strChkCollapse	Contraer (agregar alturas de alelos idénticos. Descarta OL)
+generateEPG_gui	24	strChkBox	Gráficos de distribuciones de altura de pico (boxplot)
+generateEPG_gui	25	strChkPeaks	Gráfico de altura promedio de pico para las distribuciones
+generateEPG_gui	26	strFrmSave	Gráfico de altura promedio de pico para las distribuciones
+generateEPG_gui	27	strLblSave	Nombre del resultado:
+generateEPG_gui	28	strBtnSaveObject	Guardar como objeto
+generateEPG_gui	29	strBtnSaveImage	Guardar como imagen
+generateEPG_gui	30	strBtnObjectSaved	Objeto guardado
+generateEPG_gui	31	strBtnGenerate	Generar EPG
+generateEPG_gui	32	strBtnProcessing	Procesando…
+generateEPG_gui	33	strMsgDataset	Se debe seleccionar un conjunto de datos. La muestra es opcional.
+generateEPG_gui	34	strMsgTitleDataset	Conjuntos de datos no seleccionados
+ggsave_gui	1	strWinTitle	Guardar como imagen
+ggsave_gui	2	strChkGui	Guardar configuración de GUI
+ggsave_gui	3	strBtnHelp	Ayuda
+ggsave_gui	4	strFrmOptions	Opciones
+ggsave_gui	5	strLblFileName	Nombre de archivo y extensión:
+ggsave_gui	6	strChkOverwrite	Sobreescribir archivo existente
+ggsave_gui	7	strChkSize	Cargar tamaño desde la herramienta gráfica
+ggsave_gui	8	strBtnSize	Obtener tamaño desde el gráfico
+ggsave_gui	9	strLblSettings	Confoguración de imagen:
+ggsave_gui	10	strLblUnit	Unidad:
+ggsave_gui	11	strLblWidth	Ancho:
+ggsave_gui	12	strLblPixels	pixels
+ggsave_gui	13	strLblHeight	Altura:
+ggsave_gui	14	strLblRes	Resolución:
+ggsave_gui	15	strLblScale	Factor de escala
+ggsave_gui	16	strLblPath	Guardar archivo en ruta:
+ggsave_gui	17	strBtnSave	Guardar
+ggsave_gui	18	strBtnProcessing	Procesando…
+ggsave_gui	19	strMsgSave	Gráfico de objeto, se debe proporcionar nombre de archivo y ruta.\n\nEste error también puede ocurrir la primera vez que se usa la función.\nPor favor localice la carpeta a través del botón 'Abrir'.
+ggsave_gui	20	strMsgTitleError	Error
+ggsave_gui	21	strMsgTitleSaveError	Guardar error
+ggsave_gui	22	strMsgFileExist	El archivo ya existe!/n/nSeleccionar cancelar, sobreescribir o dar un nombre nuevo.
+ggsave_gui	23	strBtnCancel	Cancelar
+ggsave_gui	24	strBtnOverwrite	Sobreescribir
+ggsave_gui	25	strBtnRetry	Reintentar
+guessProfile_gui	1	strWinTitle	Inferir perfil
+guessProfile_gui	2	strChkGui	Guardar configuración de GUI
+guessProfile_gui	3	strBtnHelp	Ayuda
+guessProfile_gui	4	strFrmDataset	Conjunto de datos
+guessProfile_gui	5	strLblDataset	Conjunto de datos de muestras:
+guessProfile_gui	6	strDrpDataset	<Seleccionar datos>
+guessProfile_gui	7	strLblSamples	muestras
+guessProfile_gui	8	strFrmOptions	Opciones
+guessProfile_gui	9	strLblRatio	Ratio de altura de pico aceptada >=
+guessProfile_gui	10	strLblHeight	Altura de pico aceptada >=
+guessProfile_gui	11	strChkNA	Descartar filas NA
+guessProfile_gui	12	strChkOL	Ignorar alelos off-ladder (OL)
+guessProfile_gui	13	strFrmSave	Guardar como
+guessProfile_gui	14	strLblSave	Nombre del resultado:
+guessProfile_gui	15	strBtnGuess	Inferir (guess)
+guessProfile_gui	16	strBtnProcessing	Procesando…
+guessProfile_gui	17	strMsgDataset	Se debe seleccionar un conjunto de datos de muestras.
+guessProfile_gui	18	strMsgTitleDataset	Datos no seleccionados
+import_gui	1	strWinTitle	Importar desde archivos
+import_gui	2	strChkGui	Guardar configuración de GUI
+import_gui	3	strBtnHelp	Ayuda
+import_gui	4	strBtnFile	Seleccionar archivo
+import_gui	5	strTipFile	Importar un solo archivo en un conjunto de datos
+import_gui	6	strMsgFile	Seleccionar un archivo…
+import_gui	7	strBtnFolder	Seleccionar carpeta
+import_gui	8	strTipFolder	Importar por lotes de múltiples archivos en un solo grupo de datos.
+import_gui	9	strMsgFolder	Seleccionar una carpeta…
+import_gui	10	strLblSelected	Seleccionado para importar:
+import_gui	11	strFrmOptions	Opciones
+import_gui	12	strExpMultiple	Múltiples opciones de archivo
+import_gui	13	strChkIgnore	Ignorar mayúsculas y minúsculas
+import_gui	14	strLblPrefix	Prefijo:
+import_gui	15	strLblSuffix	Sufijo:
+import_gui	16	strLblExtension	Extensión:
+import_gui	17	strChkName	Guardar nombre de archivo
+import_gui	18	strChkTime	Guardar la marca temporal (tiem stamp)
+import_gui	19	strLblDelimiter	Delimitar:
+import_gui	20	strDrpTab	TAB
+import_gui	21	strDrpSpace	ESPACIO
+import_gui	22	strDrpComma	COMA
+import_gui	23	strDrpSemicolon	PUNTO Y COMA
+import_gui	24	strLblNA	Cadenas de NA (separadas por comas):
+import_gui	25	strChkTrim	Auto-recortar muestras
+import_gui	26	strLblTrim	Cortar muestras que contienen la palabra (separar por barra |):
+import_gui	27	strChkInvert	Invertir (eliminar muestras coincidentes
+import_gui	28	strChkSlim	Auto-reducir columnas repetidas
+import_gui	29	strChkKeep	Mantener todo arreglado (mantener una fila incluso si no hay datos)
+import_gui	30	strFrmSave	Guardar como
+import_gui	31	strLblSave	Nombre del conjunto de datos:
+import_gui	32	strMsgSave	Nombre del nuevo conjunto de datos
+import_gui	33	strBtnImport	Importar
+import_gui	34	strBtnProcessing	Procesando…
+import_gui	35	strMsgName	Se debe proporcionar un nombre para el conjunto de datos.
+import_gui	36	strMsgDataset	Datos vacíos!\nCompruebe su filtro de archivo.
+import_gui	37	strMsgTitleError	Error
+makeKit_gui	1	strWinTitle	Gestionar kits
+makeKit_gui	2	strBtnHelp	Ayuda
+makeKit_gui	3	strFrmAction	Acción
+makeKit_gui	4	strRadEdit	Editar (modificar) archivo del kit
+makeKit_gui	5	strRadAdd	Añadir nuevos kits
+makeKit_gui	6	strFrmFile	Ruta al archivo del kit
+makeKit_gui	7	strBtnLoad	Cargar
+makeKit_gui	8	strFrmNew	Kits nuevos
+makeKit_gui	9	strBtnBins	Seleccionar archivo de bins
+makeKit_gui	10	strBtnPanels	Seleccionar archivo de Paneles
+makeKit_gui	11	strBtnCombine	Combinar
+makeKit_gui	12	strMsgFile	El archivo del kit no se encontró
+makeKit_gui	13	strMsgTitleFile	Archivo no encontrado
+makeKit_gui	14	strLblSelectBins	Seleccionar archivo de bins…
+makeKit_gui	15	strLblSelectPanels	Seleccionar archivo de Paneles…
+makeKit_gui	16	strLblCombine	Leer y combinar los archivos de Bins y Panels
+makeKit_gui	17	strMsgCombine	Uno o varios archivos no se encontraron
+makeKit_gui	18	strLblSex	Lista de marcadores de sexo (separados por coma)
+makeKit_gui	19	strLblSensors	Lista de sensores de calidad (separados por coma)
+makeKit_gui	20	strLblRemove	Eliminar
+makeKit_gui	21	strLblPanel	Panel
+makeKit_gui	22	strLblShortName	Abreviatura
+makeKit_gui	23	strLblFullName	Nombre completo
+makeKit_gui	24	strLblNone	<ninguno>
+makeKit_gui	25	strFrmSave	Guardar
+makeKit_gui	26	strRadAppend	Agregar al archivo del kit
+makeKit_gui	27	strRadOverwrite	Sobreescribir archivo del kit
+makeKit_gui	28	strRadSave	Guardar como marco de datos
+makeKit_gui	29	strBtnSave	Guardar
+makeKit_gui	30	strBtnSaving	Guardando…
+makeKit_gui	31	strMsgDuplicate1	Un kit con abreviatura
+makeKit_gui	32	strMsgDuplicate2	ya existe!\n\nLa abreviatura debe ser única!
+makeKit_gui	33	strMsgTitleDuplicate	Abreviatura duplicada
+makeKit_gui	34	strMsgMissing	Se debe proporcionar una abreviatura para todos los kits nuevos
+makeKit_gui	35	strMsgTitleMissing	Falta abreviatura
+modelDropout_gui	1	strWinTitle	Gráfico de predicción de dropout
+modelDropout_gui	2	strChkGui	Guardar configuración de GUI
+modelDropout_gui	3	strBtnHelp	Ayuda
+modelDropout_gui	4	strFrmDataset	Conjunto de datos
+modelDropout_gui	5	strLblDataset	Conjunto de datos de muestras:
+modelDropout_gui	6	strDrpDataset	<Seleccionar datos>
+modelDropout_gui	7	strLblKit	y el kit utilizado:
+modelDropout_gui	8	strFrmOptions	Opciones
+modelDropout_gui	9	strChkOverride	Anular títulos automáticos
+modelDropout_gui	10	strLblTitlePlot	Título del gráfico:
+modelDropout_gui	11	strLblTitleX	Título eje X:
+modelDropout_gui	12	strLblTitleY	Título eje Y:
+modelDropout_gui	13	strLblRange	Datos de rango de altura de pico:
+modelDropout_gui	14	strChkLog	Log (Altura)
+modelDropout_gui	15	strChkSex	Excluir marcadores de sexo
+modelDropout_gui	16	strLblNote	NB! Actualmente, los métodos recomendados son los de las tres primeras opciones.\nLa cuarta alternativa no ha sido evaluada por la DNA Commission.\nVer 'Detalles' en 'Ayuda' para más información.
+modelDropout_gui	17	strLblModels	Modelizar drop-out de acuerdo al método de puntuación:
+modelDropout_gui	18	strRadRandom	Relativo a un alelo aleatorio y a la altura máxima del alelo superviviente
+modelDropout_gui	19	strRadLMW	En relación con el alelo de bajo peso molecular y la altura del alelo superviviente
+modelDropout_gui	20	strRadHMW	En relación con el alelo de bajo peso molecular y la altura del alelo superviviente
+modelDropout_gui	21	strRadLocus	En relación con el locus y la altura del alelos superviviente, o con la altura media de picos del locus
+modelDropout_gui	22	strChkAverage	Usar altura promedio de pico 'H' en lugar de la altura de alelo/locus
+modelDropout_gui	23	strChkPrint	Imprimir modelo
+modelDropout_gui	24	strChkDump	Entrada del modelo de volcado
+modelDropout_gui	25	strExpThreshold	Predicción de drop-out y umbral
+modelDropout_gui	26	strChkThreshold	Marcar umbral @ P(D):
+modelDropout_gui	27	strLblLineType	Tipo de línea
+modelDropout_gui	28	strLblBlank	vacío
+modelDropout_gui	29	strLblSolid	sólido
+modelDropout_gui	30	strLblDashed	rayado (trazo de línea-punto)
+modelDropout_gui	31	strLblDotted	moteado
+modelDropout_gui	32	strLblDotDash	trazo de puntos y guiones (dotdash)
+modelDropout_gui	33	strLblLongDash	guiones extendidos (longdash)
+modelDropout_gui	34	strLblTwoDash	estilo de línea corta-larga (twodash)
+modelDropout_gui	35	strLblLineColour	Color de línea
+modelDropout_gui	36	strChkPrintT	Imprimir valor umbral
+modelDropout_gui	37	strLblPredictionInterval	Intervalo de predicción:
+modelDropout_gui	38	strChkPrintTcons	Imprimir valor conservativo de T
+modelDropout_gui	39	strChkPredictionInterval	Dibujar intervalo de predicción:
+modelDropout_gui	40	strLblAlpha	Alpha:
+modelDropout_gui	41	strLblFill	Color de relleno:
+modelDropout_gui	42	strExpPoints	Data points
+modelDropout_gui	43	strChkPoints	Gráfico de data points
+modelDropout_gui	44	strLblShape	Forma:
+modelDropout_gui	45	strLblJitter	Distorsión (h/v):
+modelDropout_gui	46	strExpAxes	Ejes
+modelDropout_gui	47	strChkScaleLog	Usar escala log10 en el eje Y
+modelDropout_gui	48	strLblNbMinMax	NB! Se debe proporcionar un valor min y un valor max.
+modelDropout_gui	49	strLblLimitY	Limitar el eje Y (min-max)
+modelDropout_gui	50	strLblLimitX	Limitar el eje X (min-max)
+modelDropout_gui	51	strExpLabels	Etiquetas X
+modelDropout_gui	52	strLblSize	Tamaño de texto (pts):
+modelDropout_gui	53	strLblAngle	Ángulo:
+modelDropout_gui	54	strLblJustification	Justificación (v/h):
+modelDropout_gui	55	strBtnPlot	Gráfico de probabilidades de drop-out estimadas
+modelDropout_gui	56	strBtnProcessing	Procesando…
+modelDropout_gui	57	strFrmSave	Guardar como
+modelDropout_gui	58	strLblSave	Nombre del resultado:
+modelDropout_gui	59	strBtnSaveObject	Guardar como objeto
+modelDropout_gui	60	strBtnSaveImage	Guardar como imagen
+modelDropout_gui	61	strBtnObjectSaved	Objeto guardado
+modelDropout_gui	62	strLblMainTitleAverage	Probabilidad de drop-out en función de la altura promedio de pico
+modelDropout_gui	63	strLblXTitleAverage	Altura promedio de pico 'H', (RFU)
+modelDropout_gui	64	strLblMainTitleHeight	Probabilidad de drop-out en función de la altura de alelos presentes
+modelDropout_gui	65	strLblXTitleHeight	Altura de pico, (RFU)
+modelDropout_gui	66	strLblYTitle	Probabilidad de drop-out, P(D)
+modelDropout_gui	67	strLblLegend	Parámetros del modelo:
+modelDropout_gui	68	strLblHosmer	\nTest Hosmer-Lemeshow: p = 
+modelDropout_gui	69	strMsgDataset	Se debe seleccionar un conjunto de datos.
+modelDropout_gui	70	strMsgTitleDataset	Datos no seleccionados
+modelDropout_gui	71	strMsgNull	El marco de datos en NULO o NA!
+modelDropout_gui	72	strMsgTitleError	Error
+modelDropout_gui	73	strMsgIncomplete1	Los datos están ok para análisis de drop-out.\nSin embargo, se necesitan columnas adicionales para este análisis:\n
+modelDropout_gui	74	strMsgIncomplete2	\n\nPor favor intente modelizar usando otro método de puntuación.
+modelDropout_gui	75	strMsgTitleIncomplete	Conjunto de datos incompleto
+plotAT_gui	1	strWinTitle	Gráfico del umbral analítico
+plotAT_gui	2	strChkGui	Guardar configuración de GUI
+plotAT_gui	3	strBtnHelp	Ayuda
+plotAT_gui	4	strFrmDataset	Conjunto de datos
+plotAT_gui	5	strLblDataset	Datos AT6:
+plotAT_gui	6	strDrpDataset	<Seleccionar datos>
+plotAT_gui	7	strLblSamples	muestras
+plotAT_gui	8	strFrmOptions	Opciones
+plotAT_gui	9	strChkOverride	Anular títulos automáticos
+plotAT_gui	10	strLblTitlePlot	Título del gráfico:
+plotAT_gui	11	strLblTitleX	Título eje X:
+plotAT_gui	12	strLblTitleY	Título eje Y:
+plotAT_gui	13	strLblTheme	Representar gráficamente el tema:
+plotAT_gui	14	strExpPoints	Data points
+plotAT_gui	15	strLblShape	Forma:
+plotAT_gui	16	strLblAlpha	Alpha:
+plotAT_gui	17	strLblJitter	Distorsión (ancho):
+plotAT_gui	18	strExpAxes	Ejes
+plotAT_gui	19	strLblLimitY	Limitar el eje Y (min-max)
+plotAT_gui	20	strLblLimitX	Limitar el eje X (min-max)
+plotAT_gui	21	strLblScales	Escalas:
+plotAT_gui	22	strExpLabels	Etiquetas X
+plotAT_gui	23	strLblSize	Tamaño de texto (pts):
+plotAT_gui	24	strLblAngle	Ángulo:
+plotAT_gui	25	strLblJustification	Justificación (v/h):
+plotAT_gui	26	strFrmPlot	Gráfico de datos de umbral analítico
+plotAT_gui	27	strBtnPlot	Gráfico AT6
+plotAT_gui	28	strBtnProcessing	Procesando…
+plotAT_gui	29	strFrmSave	Guardar como
+plotAT_gui	30	strLblSave	Nombre del resultado:
+plotAT_gui	31	strBtnSaveObject	Guardar como objeto
+plotAT_gui	32	strBtnSaveImage	Guardar como imagen
+plotAT_gui	33	strBtnObjectSaved	Objeto guardado
+plotAT_gui	34	strLblMainTitleLinear	Regresión lineal
+plotAT_gui	35	strLblMainTitleWeighted	Regresión lineal ponderada
+plotAT_gui	36	strLblXTitle	Cantidad (pg)
+plotAT_gui	37	strLblYTitle	Altura promedio de pico (RFU)
+plotAT_gui	38	strMsgNull	El marco de datos en NULO o NA!
+plotAT_gui	39	strMsgTitleError	Error
+plotBalance_gui	1	strWinTitle	Gráfico de equilibrio
+plotBalance_gui	2	strChkGui	Guardar configuración de GUI
+plotBalance_gui	3	strBtnHelp	Ayuda
+plotBalance_gui	4	strFrmDataset	Datos y kit
+plotBalance_gui	5	strLblDataset	Datos de equilibrio:
+plotBalance_gui	6	strDrpDataset	<Seleccionar datos>
+plotBalance_gui	7	strLblSamples	muestras
+plotBalance_gui	8	strLblKit	y el kit utilizado:
+plotBalance_gui	9	strFrmOptions	Opciones
+plotBalance_gui	10	strChkOverride	Anular títulos automáticos
+plotBalance_gui	11	strLblTitlePlot	Título del gráfico:
+plotBalance_gui	12	strLblTitleX	Título eje X:
+plotBalance_gui	13	strLblTitleY	Título eje Y:
+plotBalance_gui	14	strLblTheme	Representar gráficamente el tema:
+plotBalance_gui	15	strChkSex	Excluir marcadores de sexo
+plotBalance_gui	16	strChkLog	Log (Equilibrio)
+plotBalance_gui	17	strRadNone	No lo coloque uno al lado del otro ni superponga
+plotBalance_gui	18	strRadWrap	Superposición por fluorocromo
+plotBalance_gui	19	strRadFacetWrap	Mosaico por marcador y superposición por fluorocromo
+plotBalance_gui	20	strExpPoints	Data points
+plotBalance_gui	21	strLblShape	Forma:
+plotBalance_gui	22	strLblAlpha	Alpha:
+plotBalance_gui	23	strLblJitter	Distorsión (ancho):
+plotBalance_gui	24	strExpAxes	Ejes
+plotBalance_gui	25	strChkScaleLog	Usar escala log10 en el eje Y
+plotBalance_gui	26	strLblLimitY	Limitar el eje Y (min-max)
+plotBalance_gui	27	strLblLimitX	Limitar el eje X (min-max)
+plotBalance_gui	28	strLblScales	Escalas:
+plotBalance_gui	29	strExpLabels	Etiquetas X
+plotBalance_gui	30	strLblSize	Tamaño de texto (pts):
+plotBalance_gui	31	strLblAngle	Ángulo:
+plotBalance_gui	32	strLblJustification	Justificación (v/h):
+plotBalance_gui	33	strFrmPlot	Gráfico de datos de equilibrio
+plotBalance_gui	34	strBtnHbVsHeight	Hb vs. Altura
+plotBalance_gui	35	strTipHbVsHeight	Gráfico de equilibrio de heterocigotos por altura promedio del marcador
+plotBalance_gui	36	strBtnHbVsDelta	Hb vs. Delta
+plotBalance_gui	37	strTipHbVsDelta	Gráfico de equilibrio de heterocigotos por diferencias de repeticiones alélicas
+plotBalance_gui	38	strBtnHbVsH	Hb vs. 'H'
+plotBalance_gui	39	strTipHbVsH	Gráfico de equilibrio de heterocigotos por promedio de altura de picos del perfil
+plotBalance_gui	40	strBtnHbVsMarker	Hb vs. Marcador
+plotBalance_gui	41	strTipHbVsMarker	Gráfico de equilibrio de heterocigotos por marcador
+plotBalance_gui	42	strBtnLbVsHeight	Lb vs. Altura
+plotBalance_gui	43	strTipLbVsHeight	Gráfico de equilibrio del locus por altura promedio del marcador
+plotBalance_gui	44	strBtnLbVsH	Lb vs. 'H'
+plotBalance_gui	45	strTipLbVsH	Gráfico de equilibrio por altura promedio del perfil
+plotBalance_gui	46	strBtnLbVsMarker	Lb vs. Marcador
+plotBalance_gui	47	strTipLbVsMarker	Gráfico de equilibrio del locus por marcador
+plotBalance_gui	48	strBtnProcessing	Procesando…
+plotBalance_gui	49	strFrmSave	Guardar como
+plotBalance_gui	50	strLblSave	Nombre del resultado:
+plotBalance_gui	51	strBtnSaveObject	Guardar como objeto
+plotBalance_gui	52	strBtnSaveImage	Guardar como imagen
+plotBalance_gui	53	strBtnObjectSaved	Objeto guardado
+plotBalance_gui	54	strLblMainTitleHb	Equilibrio de heterocigotos
+plotBalance_gui	55	strLblMainTitleLb	Equilibrio del locus
+plotBalance_gui	56	strLblXTitleMean	Media de altura de pico (RFU)
+plotBalance_gui	57	strLblXTitleDelta	Differencia en repeat
+plotBalance_gui	58	strLblXTitleAverage	Altura promedio de pico 'H' (RFU)
+plotBalance_gui	59	strLblXTitleLocus	Locus
+plotBalance_gui	60	strLblXTitleLocusHeight	Altura de pico en el locus (RFU)
+plotBalance_gui	61	strLblYTitleLog	Log(Ratio)
+plotBalance_gui	62	strLblYTitle	Ratio
+plotBalance_gui	63	strMsgNull	El marco de datos en NULO o NA!
+plotBalance_gui	64	strMsgTitleError	Error
+plotCapillary_gui	1	strWinTitle	Gráfico de equilibrio de capilar
+plotCapillary_gui	2	strChkGui	Guardar configuración de GUI
+plotCapillary_gui	3	strBtnHelp	Ayuda
+plotCapillary_gui	4	strFrmDataset	Conjunto de datos
+plotCapillary_gui	5	strLblDataset	Conjunto de datos:
+plotCapillary_gui	6	strDrpDataset	<Seleccionar datos>
+plotCapillary_gui	7	strLblRows	filas
+plotCapillary_gui	8	strFrmOptions	Opciones
+plotCapillary_gui	9	strChkOverride	Anular títulos automáticos
+plotCapillary_gui	10	strLblTitlePlot	Título del gráfico:
+plotCapillary_gui	11	strLblTitleSub	Sub-título:
+plotCapillary_gui	12	strLblTitleX	Título eje X:
+plotCapillary_gui	13	strLblTitleY	Título eje Y:
+plotCapillary_gui	14	strExpPoints	Data points
+plotCapillary_gui	15	strLblShape	Forma:
+plotCapillary_gui	16	strLblAlpha	Alpha:
+plotCapillary_gui	17	strExpAxes	Ejes
+plotCapillary_gui	18	strLblLimitY	Limitar el eje Y (min-max)
+plotCapillary_gui	19	strFrmPlot	Gráfico de datos de equilibrio de capilar
+plotCapillary_gui	20	strBtnDotplot	Gráfico de puntos
+plotCapillary_gui	21	strBtnBoxplot	Boxplot
+plotCapillary_gui	22	strBtnDistribution	Distribución
+plotCapillary_gui	23	strBtnProcessing	Procesando…
+plotCapillary_gui	24	strFrmSave	Guardar como
+plotCapillary_gui	25	strLblSave	Nombre del resultado:
+plotCapillary_gui	26	strBtnSaveObject	Guardar como objeto
+plotCapillary_gui	27	strBtnSaveImage	Guardar como imagen
+plotCapillary_gui	28	strBtnObjectSaved	Objeto guardado
+plotCapillary_gui	29	strLblMainTitleDotplot	Media de altura de pico agrupara por capilar para
+plotCapillary_gui	30	strLblMainTitleBoxplot	Media de altura de pico por capilar para
+plotCapillary_gui	31	strLblMainTitleDistribution	Media de altura de pico para
+plotCapillary_gui	32	strLblMainSubTitleDotplot	[la línea azul punteada indica la media global, la línea roja indica la mediana por capilar]
+plotCapillary_gui	33	strLblXTitleInjection	Inyección
+plotCapillary_gui	34	strLblXTitleCapillary	Capilar
+plotCapillary_gui	35	strLblXTitleDensity	Densidad
+plotCapillary_gui	36	strLblYTitleMean	Media de altura de pico (RFU)
+plotCapillary_gui	37	strMsgNull	El marco de datos en NULO o NA!
+plotCapillary_gui	38	strMsgTitleError	Error
+plotContamination_gui	1	strWinTitle	Gráfico de contaminación
+plotContamination_gui	2	strChkGui	Guardar configuración de GUI
+plotContamination_gui	3	strBtnHelp	Ayuda
+plotContamination_gui	4	strFrmDataset	Conjunto de datos
+plotContamination_gui	5	strLblDataset	Datos de contaminación:
+plotContamination_gui	6	strDrpDataset	<Seleccionar datos>
+plotContamination_gui	7	strLblSamples	muestras
+plotContamination_gui	8	strFrmOptions	Opciones
+plotContamination_gui	9	strChkOverride	Anular títulos automáticos
+plotContamination_gui	10	strLblTitlePlot	Título del gráfico:
+plotContamination_gui	11	strLblTitleX	Título eje X:
+plotContamination_gui	12	strLblTitleY	Título eje Y:
+plotContamination_gui	13	strLblTheme	Representar gráficamente el tema:
+plotContamination_gui	14	strBtnPlot	Gráfico
+plotContamination_gui	15	strBtnProcessing	Procesando…
+plotContamination_gui	16	strFrmSave	Guardar como
+plotContamination_gui	17	strLblSave	Nombre del resultado:
+plotContamination_gui	18	strBtnSaveObject	Guardar como objeto
+plotContamination_gui	19	strBtnSaveImage	Guardar como imagen
+plotContamination_gui	20	strBtnObjectSaved	Objeto guardado
+plotContamination_gui	21	strLblMainTitle	Número de picos observados y esperados por perfil (n=
+plotContamination_gui	22	strLblXTitle	Número de picos por control
+plotContamination_gui	23	strLblYTitle	Ocurrencia relativa
+plotContamination_gui	24	strMsgNull	El marco de datos en NULO o NA!
+plotContamination_gui	25	strMsgTitleError	Error
+plotDistribution_gui	1	strWinTitle	Gráfico de distribución
+plotDistribution_gui	2	strChkGui	Guardar configuración de GUI
+plotDistribution_gui	3	strBtnHelp	Ayuda
+plotDistribution_gui	4	strFrmDataset	Conjunto de datos
+plotDistribution_gui	5	strLblDataset	Conjunto de datos:
+plotDistribution_gui	6	strLblGroup	Agrupar:
+plotDistribution_gui	7	strLblColumn	Columna:
+plotDistribution_gui	8	strDrpDataset	<Seleccionar datos>
+plotDistribution_gui	9	strDrpGroup	<Seleccionar grupo>
+plotDistribution_gui	10	strDrpColumn	<Seleccionar columna>
+plotDistribution_gui	11	strLblRows	filas
+plotDistribution_gui	12	strFrmOptions	Opciones
+plotDistribution_gui	13	strChkOverride	Anular títulos automáticos
+plotDistribution_gui	14	strLblTitlePlot	Título del gráfico:
+plotDistribution_gui	15	strLblTitleX	Título eje X:
+plotDistribution_gui	16	strLblTitleY	Título eje Y:
+plotDistribution_gui	17	strLblTheme	Representar gráficamente el tema:
+plotDistribution_gui	18	strChkBoxplot	Superposición de diagramas de caja
+plotDistribution_gui	19	strLblWidth	Ancho de diagrama de cajas:
+plotDistribution_gui	20	strChkLog	Transformar en logaritmos.
+plotDistribution_gui	21	strLblBase	Base:
+plotDistribution_gui	22	strTipBase	Por defecto logaritmo natural, approximadamente 2.718282. Otros valores habituales son 10 para logaritmo decimal, y 2 para logaritmos binarios.
+plotDistribution_gui	23	strExpDistribution	Función de distribución
+plotDistribution_gui	24	strLblSmoothing	Smoothing kernel (función estadística):
+plotDistribution_gui	25	strLblBandwidth	Ajustar ancho de banda:
+plotDistribution_gui	26	strExpHistogram	Función de distribución
+plotDistribution_gui	27	strLblBinwidth	Ajustar ancho de bin:
+plotDistribution_gui	28	strTipBin	Ancho de los bins. El valor predeterminado es usar 30 bins, que cubren el rango de los datos. Siempre debe anular este valor, explorando múltiples anchos con el fin de encontrar el mejor para ilustrar sus datos. Deje en blanco para usar 'bins'.
+plotDistribution_gui	29	strLblBins	Número de bins:
+plotDistribution_gui	30	strTipBins	Anulado por el ancho del bin. El valor predeterminado es 30.
+plotDistribution_gui	31	strExpAxes	Ejes
+plotDistribution_gui	32	strLblNB	NB! Se debe proporcionar un valor min y un valor max.
+plotDistribution_gui	33	strLblLimitY	Limitar el eje Y (min-max)
+plotDistribution_gui	34	strLblLimitX	Limitar el eje X (min-max)
+plotDistribution_gui	35	strFrmPlot	Gráfico de distribución
+plotDistribution_gui	36	strBtnCDF	CDF (función de distribución acumulativa)
+plotDistribution_gui	37	strTipCDF	Función de densidad acumulativa (CDF)
+plotDistribution_gui	38	strBtnPDF	PDF
+plotDistribution_gui	39	strTipPDF	Función de densidad de probabilidad (PDF)
+plotDistribution_gui	40	strBtnHistogram	Histograma
+plotDistribution_gui	41	strBtnProcessing	Procesando…
+plotDistribution_gui	42	strFrmSave	Guardar como
+plotDistribution_gui	43	strLblSave	Nombre del resultado:
+plotDistribution_gui	44	strBtnSaveObject	Guardar como objeto
+plotDistribution_gui	45	strBtnSaveImage	Guardar como imagen
+plotDistribution_gui	46	strBtnObjectSaved	Objeto guardado
+plotDistribution_gui	47	strLblMainTitleCDF	Función de densidad acumulativa (CDF)
+plotDistribution_gui	48	strLblMainTitlePDF	Función de densidad de probabilidad (PDF)
+plotDistribution_gui	49	strLblMainTitleHistogram	Histograma
+plotDistribution_gui	50	strLblYTitleDensity	Densidad
+plotDistribution_gui	51	strLblYTitleCount	Contar
+plotDistribution_gui	52	strLblXTitleHeight	Altura de pico (RFU)
+plotDistribution_gui	53	strLblXTitleSize	Tamaño del fragmento (bp)
+plotDistribution_gui	54	strLblXTitleDataPoint	Data point
+plotDistribution_gui	55	strLblObservations	observaciones
+plotDistribution_gui	56	strMsgColumn	Se debe especificar la columna de datos!
+plotDistribution_gui	57	strMsgNull	El marco de datos en NULO o NA!
+plotDistribution_gui	58	strMsgTitleError	Error
+plotDropout_gui	1	strWinTitle	Gráfico de datos de dropout
+plotDropout_gui	2	strChkGui	Guardar configuración de GUI
+plotDropout_gui	3	strBtnHelp	Ayuda
+plotDropout_gui	4	strFrmDataset	Datos y kit
+plotDropout_gui	5	strLblDataset	Conjunto de datos:
+plotDropout_gui	6	strLblKit	Kit:
+plotDropout_gui	7	strDrpDataset	<Seleccionar datos>
+plotDropout_gui	8	strFrmOptions	Opciones
+plotDropout_gui	9	strChkOverride	Anular títulos automáticos
+plotDropout_gui	10	strLblTitlePlot	Título del gráfico:
+plotDropout_gui	11	strLblTitleX	Título eje X:
+plotDropout_gui	12	strLblTitleY	Título eje Y:
+plotDropout_gui	13	strExpAxes	Ejes (aplica a ejes contínuos)
+plotDropout_gui	14	strLblNB	NB! Se debe proporcionar un valor min y un valor max.
+plotDropout_gui	15	strLblLimitY	Limitar el eje Y (min-max)
+plotDropout_gui	16	strLblLimitX	Limitar el eje X (min-max)
+plotDropout_gui	17	strExpLabels	Etiquetas X
+plotDropout_gui	18	strLblRound	Redondear a la cifra:
+plotDropout_gui	19	strLblSize	Tamaño de texto (pts):
+plotDropout_gui	20	strLblAngle	Ángulo:
+plotDropout_gui	21	strLblJustification	Justificación (v/h):
+plotDropout_gui	22	strFrmPlot	Gráfico heatmap por
+plotDropout_gui	23	strBtnH	Altura promedio de pico
+plotDropout_gui	24	strBtnAmount	Cantidad
+plotDropout_gui	25	strBtnConcentration	Concentración
+plotDropout_gui	26	strBtnSample	Muestra
+plotDropout_gui	27	strBtnProcessing	Procesando…
+plotDropout_gui	28	strFrmOther	Otros gráficos
+plotDropout_gui	29	strBtnECDP	ecdp
+plotDropout_gui	30	strTipECDP	Gráfico de distribución acumulativa empírica (ECD)
+plotDropout_gui	31	strChkHom	Gráfico de picos homocigotos
+plotDropout_gui	32	strBtnDot	Gráfico de puntos
+plotDropout_gui	33	strFrmSave	Guardar como
+plotDropout_gui	34	strLblSave	Nombre del resultado:
+plotDropout_gui	35	strBtnSaveObject	Guardar como objeto
+plotDropout_gui	36	strBtnSaveImage	Guardar como imagen
+plotDropout_gui	37	strBtnObjectSaved	Objeto guardado
+plotDropout_gui	38	strLblMainTitle	Dropout de alelo y de locus
+plotDropout_gui	39	strLblMainTitleECDP	Distribución acumulada empírica para
+plotDropout_gui	40	strLblMainTitleAnd	y
+plotDropout_gui	41	strLblMainTitleHeterozygous	alelos heterocigotos (con dropout del alelo hermano)
+plotDropout_gui	42	strLblMainTitleHomozygous	picos homocigotos
+plotDropout_gui	43	strLblXTitleAverage	Altura promedio de pico
+plotDropout_gui	44	strLblXTitleAmount	Cantidad de ADN amplificado
+plotDropout_gui	45	strLblXTitleConcentration	Concentración
+plotDropout_gui	46	strLblXTitleSample	Nombre de muestra
+plotDropout_gui	47	strLblXTitleHeight	Altura de pico (RFU)
+plotDropout_gui	48	strLblXTitleSurvivingHeight	Altura de pico del alelo superviviente (RFU)
+plotDropout_gui	49	strLblYTitleMarker	Marcador
+plotDropout_gui	50	strLblYTitleCP	Probabilidad acumulativa
+plotDropout_gui	51	strMsgNull	El marco de datos en NULO o NA!
+plotDropout_gui	52	strMsgTitleError	Error
+plotGroups_gui	1	strWinTitle	Gráfico de grupos
+plotGroups_gui	2	strChkGui	Guardar configuración de GUI
+plotGroups_gui	3	strBtnHelp	Ayuda
+plotGroups_gui	4	strFrmDataset	Conjunto de datos
+plotGroups_gui	5	strLblDataset	Conjunto de datos:
+plotGroups_gui	6	strLblColumn	Hacer los datos unidimensionales (planos) para:
+plotGroups_gui	7	strLblGroup	Agrupar datos por:
+plotGroups_gui	8	strLblPlot	Gráfico de datos por:
+plotGroups_gui	9	strDrpDataset	<Seleccionar datos>
+plotGroups_gui	10	strDrpColumn	<Seleccionar columna>
+plotGroups_gui	11	strDrpGroup	<Seleccionar grupo>
+plotGroups_gui	12	strLblRows	filas
+plotGroups_gui	13	strFrmOptions	Opciones
+plotGroups_gui	14	strChkOverride	Anular títulos automáticos
+plotGroups_gui	15	strLblTitlePlot	Título del gráfico:
+plotGroups_gui	16	strLblTitleX	Título eje X:
+plotGroups_gui	17	strLblTitleY	Título eje Y:
+plotGroups_gui	18	strLblLabels	Agrupar etiquetas:
+plotGroups_gui	19	strTipLabels	Separar por comas
+plotGroups_gui	20	strLblTheme	Representar gráficamente el tema:
+plotGroups_gui	21	strExpAxes	Ejes
+plotGroups_gui	22	strLblNB	NB! Se debe proporcionar un valor min y un valor max.
+plotGroups_gui	23	strLblLimitY	Limitar el eje Y (min-max)
+plotGroups_gui	24	strLblLimitX	Limitar el eje X (min-max)
+plotGroups_gui	25	strBtnPlot	Gráfico
+plotGroups_gui	26	strTipPlot	Función de distribución acumulativa empírica
+plotGroups_gui	27	strBtnProcessing	Procesando…
+plotGroups_gui	28	strFrmSave	Guardar como
+plotGroups_gui	29	strLblSave	Nombre del resultado:
+plotGroups_gui	30	strBtnSaveObject	Guardar como objeto
+plotGroups_gui	31	strBtnSaveImage	Guardar como imagen
+plotGroups_gui	32	strBtnObjectSaved	Objeto guardado
+plotGroups_gui	33	strLblMainTitle	Función de distribución acumulativa empírica
+plotGroups_gui	34	strLblObservations	observaciones
+plotGroups_gui	35	strMsgColumn	Se debe especificar la columna de datos!
+plotGroups_gui	36	strMsgNull	El marco de datos en NULO o NA!
+plotGroups_gui	37	strMsgTitleError	Error
+plotKit_gui	1	strWinTitle	Gráfico del kit
+plotKit_gui	2	strChkGui	Guardar configuración de GUI
+plotKit_gui	3	strBtnHelp	Ayuda
+plotKit_gui	4	strFrmKit	Seleccionar kits
+plotKit_gui	5	strFrmOptions	Opciones
+plotKit_gui	6	strLblTitlePlot	Título del gráfico:
+plotKit_gui	7	strLblTitleX	Título eje X:
+plotKit_gui	8	strLblSize	Tamaño:
+plotKit_gui	9	strLblKitSize	Tamaño del nombre del kit:
+plotKit_gui	10	strLblKitSpacing	Espaciado entre kits:
+plotKit_gui	11	strLblMarkerSize	Tamaño del nombre del marcador:
+plotKit_gui	12	strLblMarkerHeight	Altura del marcador:
+plotKit_gui	13	strLblMarkerAlpha	Transparencia del marcador:
+plotKit_gui	14	strTipMarker	Color alfa del relleno del rango del marcador
+plotKit_gui	15	strBtnPlot	Gráfico
+plotKit_gui	16	strTipPlot	Gráfico del rango de marcadores por kit
+plotKit_gui	17	strBtnProcessing	Procesando…
+plotKit_gui	18	strFrmSave	Guardar como
+plotKit_gui	19	strLblSave	Nombre del resultado:
+plotKit_gui	20	strBtnSaveObject	Guardar como objeto
+plotKit_gui	21	strBtnSaveImage	Guardar como imagen
+plotKit_gui	22	strBtnObjectSaved	Objeto guardado
+plotKit_gui	23	strLblMainTitle	Rango de tamaño del marcador
+plotKit_gui	24	strLblXTitle	Tamaño (bp)
+plotKit_gui	25	strMsgNull	Se debe seleccionar al menos un kit!
+plotKit_gui	26	strMsgTitleError	Error
+plotPeaks_gui	1	strWinTitle	Gráfico de picos
+plotPeaks_gui	2	strChkGui	Guardar configuración de GUI
+plotPeaks_gui	3	strBtnHelp	Ayuda
+plotPeaks_gui	4	strFrmDataset	Conjunto de datos
+plotPeaks_gui	5	strLblDataset	Conjunto de datos:
+plotPeaks_gui	6	strDrpDataset	<Seleccionar datos>
+plotPeaks_gui	7	strLblSamples	muestras
+plotPeaks_gui	8	strFrmOptions	Opciones
+plotPeaks_gui	9	strChkOverride	Anular títulos automáticos
+plotPeaks_gui	10	strLblTitlePlot	Título del gráfico:
+plotPeaks_gui	11	strLblTitleX	Título eje X:
+plotPeaks_gui	12	strLblTitleY	Título eje Y:
+plotPeaks_gui	13	strChkProportion	Gráfico de la proporción
+plotPeaks_gui	14	strLblBaseSize	Tamaño de fuente base (pts):
+plotPeaks_gui	15	strLblPalette	Paleta de colores:
+plotPeaks_gui	16	strChkLabels	Imprimir valor como etiquetas de barra
+plotPeaks_gui	17	strLblLabelDecimals	Decimales de la barra de la etiqueta:
+plotPeaks_gui	18	strLblLabelSize	Tamaño de fuente en etiqueta de barra (pts):
+plotPeaks_gui	19	strBtnPlot	Gráfico
+plotPeaks_gui	20	strBtnProcessing	Procesando…
+plotPeaks_gui	21	strFrmSave	Guardar como
+plotPeaks_gui	22	strLblSave	Nombre del resultado:
+plotPeaks_gui	23	strBtnSaveObject	Guardar como objeto
+plotPeaks_gui	24	strBtnSaveImage	Guardar como imagen
+plotPeaks_gui	25	strBtnObjectSaved	Objeto guardado
+plotPeaks_gui	26	strLblMainTitle	Análisis de picos desde
+plotPeaks_gui	27	strLblXTitle	Agrupar
+plotPeaks_gui	28	strLblYTitleProp	Proporción
+plotPeaks_gui	29	strLblYTitleCount	Contar
+plotPeaks_gui	30	strMsgNull	El marco de datos en NULO o NA!
+plotPeaks_gui	31	strMsgTitleError	Error
+plotPrecision_gui	1	strWinTitle	Gráfico de precisión
+plotPrecision_gui	2	strChkGui	Guardar configuración de GUI
+plotPrecision_gui	3	strBtnHelp	Ayuda
+plotPrecision_gui	4	strFrmDataset	Datos y kit
+plotPrecision_gui	5	strLblDataset	Conjunto de datos de precisión:
+plotPrecision_gui	6	strDrpDataset	<Seleccionar datos>
+plotPrecision_gui	7	strLblKit	y el kit utilizado:
+plotPrecision_gui	8	strFrmOptions	Opciones
+plotPrecision_gui	9	strChkOverride	Anular títulos automáticos
+plotPrecision_gui	10	strExpTitles	Títulos
+plotPrecision_gui	11	strLblTitlePlot	Título del gráfico:
+plotPrecision_gui	12	strLblTitleX	Título eje X:
+plotPrecision_gui	13	strLblTitleY	Título eje Y:
+plotPrecision_gui	14	strLblNB	NB! Tamaño del título, ángulo, vjust, y hjust no siempre funcionan como se espera con un número diferente de facets por fila.
+plotPrecision_gui	15	strLblTitleSettings	Tamaño del título principal, ángulo, vjust, hjust:
+plotPrecision_gui	16	strLblXTitleSettings	X tamaño del título, ángulo, vjust, hjust:
+plotPrecision_gui	17	strLblYTitleSettings	tamaño del título, ángulo, vjust, hjust en eje Y:
+plotPrecision_gui	18	strChkByMarker	Gráfico por marcador
+plotPrecision_gui	19	strLblXAxis	Eje X:
+plotPrecision_gui	20	strRadMean	Media
+plotPrecision_gui	21	strRadAllele	Alelo
+plotPrecision_gui	22	strLblTheme	Representar gráficamente el tema:
+plotPrecision_gui	23	strExpPoints	Data points
+plotPrecision_gui	24	strLblShape	Forma:
+plotPrecision_gui	25	strLblAlpha	Alpha:
+plotPrecision_gui	26	strLblColor	Color:
+plotPrecision_gui	27	strExpAxes	Ejes
+plotPrecision_gui	28	strLblLimitY	Limitar el eje Y (min-max)
+plotPrecision_gui	29	strLblLimitX	Limitar el eje X (min-max)
+plotPrecision_gui	30	strLblScales	Escalas:
+plotPrecision_gui	31	strChkOverrideLabels	Anular etiquetas predeterminadas para x / y / faceta
+plotPrecision_gui	32	strExpXLabels	Etiquetas X
+plotPrecision_gui	33	strLblSize	Tamaño de texto (pts):
+plotPrecision_gui	34	strLblAngle	Ángulo:
+plotPrecision_gui	35	strLblJustification	Justificación (v/h):
+plotPrecision_gui	36	strExpYLabels	Etiquetas Y
+plotPrecision_gui	37	strExpFacets	Gráficos uno al lado del otro (facetas)
+plotPrecision_gui	38	strLblSizeX	Tamaño de texto X (pts):
+plotPrecision_gui	39	strLblSizeY	Tamaño de texto Y (pts):
+plotPrecision_gui	40	strFrmPlotDot	Gráfico de puntos de los datos de precisión
+plotPrecision_gui	41	strBtnSize	Tamaño
+plotPrecision_gui	42	strBtnHeight	Altura
+plotPrecision_gui	43	strBtnPoint	Data point
+plotPrecision_gui	44	strFrmPlotBox	Gráfico de cajas de datos de precisión
+plotPrecision_gui	45	strBtnProcessing	Procesando…
+plotPrecision_gui	46	strFrmSave	Guardar como
+plotPrecision_gui	47	strLblSave	Nombre del resultado:
+plotPrecision_gui	48	strBtnSaveObject	Guardar como objeto
+plotPrecision_gui	49	strBtnSaveImage	Guardar como imagen
+plotPrecision_gui	50	strBtnObjectSaved	Objeto guardado
+plotPrecision_gui	51	strLblMainTitleSize	Rango de tamaño de alelo
+plotPrecision_gui	52	strLblMainTitleHeight	Rango de altura de alelo
+plotPrecision_gui	53	strLblMainTitlePoint	Rango de datapoints para el alelo
+plotPrecision_gui	54	strLblYTitleSize	Desviación de la media (bp)
+plotPrecision_gui	55	strLblYTitleHeight	Desviación de la media (RFU)
+plotPrecision_gui	56	strLblYTitlePoint	Desviación de la media (data point)
+plotPrecision_gui	57	strLblXTitleSize	Media del tamaño en pares de bases (bp)
+plotPrecision_gui	58	strLblXTitleHeight	Altura media en unidades fluorescentes relativas (RFU)
+plotPrecision_gui	59	strLblXTitlePoints	Número medio de escaneo en puntos de datos
+plotPrecision_gui	60	strLblXTitleAllele	Alelo
+plotPrecision_gui	61	strMsgNull	El marco de datos en NULO o NA!
+plotPrecision_gui	62	strMsgTitleError	Error
+plotPullup_gui	1	strWinTitle	Gráfico de pull-up
+plotPullup_gui	2	strChkGui	Guardar configuración de GUI
+plotPullup_gui	3	strBtnHelp	Ayuda
+plotPullup_gui	4	strFrmDataset	Datos y kit
+plotPullup_gui	5	strLblDataset	Datos de pull-up:
+plotPullup_gui	6	strDrpDataset	<Seleccionar datos>
+plotPullup_gui	7	strLblSamples	muestras
+plotPullup_gui	8	strLblKit	y el kit utilizado:
+plotPullup_gui	9	strFrmOptions	Opciones
+plotPullup_gui	10	strChkOverride	Anular títulos automáticos
+plotPullup_gui	11	strLblTitlePlot	Título del gráfico:
+plotPullup_gui	12	strLblTitleX	Título eje X:
+plotPullup_gui	13	strLblTitleY	Título eje Y:
+plotPullup_gui	14	strLblTheme	Representar gráficamente el tema:
+plotPullup_gui	15	strChkSex	Excluir marcadores de sexo
+plotPullup_gui	16	strExpPoints	Data points
+plotPullup_gui	17	strLblShape	Forma:
+plotPullup_gui	18	strLblAlpha	Alpha:
+plotPullup_gui	19	strLblJitter	Distorsión (ancho):
+plotPullup_gui	20	strExpAxes	Ejes
+plotPullup_gui	21	strLblLimitY	Limitar el eje Y (min-max)
+plotPullup_gui	22	strLblLimitX	Limitar el eje X (min-max)
+plotPullup_gui	23	strLblScales	Escalas:
+plotPullup_gui	24	strExpLabels	Etiquetas X
+plotPullup_gui	25	strLblSize	Tamaño de texto (pts):
+plotPullup_gui	26	strLblAngle	Ángulo:
+plotPullup_gui	27	strLblJustification	Justificación (v/h):
+plotPullup_gui	28	strFrmPlot	Gráfico de datos de pull-up
+plotPullup_gui	29	strBtnRatioVsHeight	Ratio vs. Altura
+plotPullup_gui	30	strBtnRatioVsAllele	Ratio vs. Alelo
+plotPullup_gui	31	strBtnProcessing	Procesando…
+plotPullup_gui	32	strFrmSave	Guardar como
+plotPullup_gui	33	strLblSave	Nombre del resultado:
+plotPullup_gui	34	strBtnSaveObject	Guardar como objeto
+plotPullup_gui	35	strBtnSaveImage	Guardar como imagen
+plotPullup_gui	36	strBtnObjectSaved	Objeto guardado
+plotPullup_gui	37	strLblMainTitle	Ratio de pull-up
+plotPullup_gui	38	strLblYTitle	Ratio
+plotPullup_gui	39	strLblXTitleHeight	Altura de pico alélico (RFU)
+plotPullup_gui	40	strLblXTitleAllele	Designación alélica
+plotPullup_gui	41	strMsgNull	El marco de datos en NULO o NA!
+plotPullup_gui	42	strMsgTitleError	Error
+plotRatio_gui	1	strWinTitle	Gráfico de ratios de marcador
+plotRatio_gui	2	strChkGui	Guardar configuración de GUI
+plotRatio_gui	3	strBtnHelp	Ayuda
+plotRatio_gui	4	strFrmDataset	Conjunto de datos
+plotRatio_gui	5	strLblDataset	Datos de ratio del marcador:
+plotRatio_gui	6	strDrpDataset	<Seleccionar datos>
+plotRatio_gui	7	strLblSamples	muestras
+plotRatio_gui	8	strFrmOptions	Opciones
+plotRatio_gui	9	strLblScales	Escalas:
+plotRatio_gui	10	strChkOverride	Anular títulos automáticos
+plotRatio_gui	11	strLblTitlePlot	Título del gráfico:
+plotRatio_gui	12	strLblTitleX	Título eje X:
+plotRatio_gui	13	strLblTitleY	Título eje Y:
+plotRatio_gui	14	strLblTheme	Representar gráficamente el tema:
+plotRatio_gui	15	strFrmPlot	Gráfico de ratios de marcador
+plotRatio_gui	16	strBtnBrowse	Entorno
+plotRatio_gui	17	strTipBrowse	Active la ventana de la consola y use Enter para recorrer los gráficos.
+plotRatio_gui	18	strBtnPlot	Gráfico
+plotRatio_gui	19	strTipPlot	Esquematizar todos los datos en un gráfico, por grupo si está disponible
+plotRatio_gui	20	strBtnProcessing	Procesando…
+plotRatio_gui	21	strFrmSave	Guardar como
+plotRatio_gui	22	strLblSave	Nombre del resultado:
+plotRatio_gui	23	strBtnSaveObject	Guardar como objeto
+plotRatio_gui	24	strBtnSaveImage	Guardar como imagen
+plotRatio_gui	25	strBtnObjectSaved	Objeto guardado
+plotRatio_gui	26	strLblMainTitle	Ratio del marcador
+plotRatio_gui	27	strLblYTitle	Ratio
+plotRatio_gui	28	strLblXTitleMarker	Marcador
+plotRatio_gui	29	strLblXTitlePair	Par de marcadores
+plotRatio_gui	30	strMsgNull	El marco de datos en NULO o NA!
+plotRatio_gui	31	strMsgTitleError	Error
+plotResultType_gui	1	strWinTitle	Gráfico de tipos de resultado
+plotResultType_gui	2	strChkGui	Guardar configuración de GUI
+plotResultType_gui	3	strBtnHelp	Ayuda
+plotResultType_gui	4	strFrmDataset	Conjunto de datos
+plotResultType_gui	5	strLblDataset	Tipo de resultado del conjunto de datos:
+plotResultType_gui	6	strDrpDataset	<Seleccionar datos>
+plotResultType_gui	7	strLblSamples	muestras
+plotResultType_gui	8	strFrmOptions	Opciones
+plotResultType_gui	9	strLblScales	Escalas:
+plotResultType_gui	10	strChkOverride	Anular títulos automáticos
+plotResultType_gui	11	strLblTitlePlot	Título del gráfico:
+plotResultType_gui	12	strLblTitleX	Título eje X:
+plotResultType_gui	13	strLblTitleY	Título eje Y:
+plotResultType_gui	14	strChkProportion	Gráfico de la proporción
+plotResultType_gui	15	strLblBaseSize	Tamaño de fuente base (pts):
+plotResultType_gui	16	strLblPalette	Paleta de colores:
+plotResultType_gui	17	strChkLabels	Imprimir valores como etiquetas de barra
+plotResultType_gui	18	strLblLabelDecimals	Decimales de la barra de la etiqueta:
+plotResultType_gui	19	strLblLabelSize	Tamaño de fuente en etiqueta de barra (pts):
+plotResultType_gui	20	strBtnPlot	Gráfico
+plotResultType_gui	21	strBtnProcessing	Procesando…
+plotResultType_gui	22	strFrmSave	Guardar como
+plotResultType_gui	23	strLblSave	Nombre del resultado:
+plotResultType_gui	24	strBtnSaveObject	Guardar como objeto
+plotResultType_gui	25	strBtnSaveImage	Guardar como imagen
+plotResultType_gui	26	strBtnObjectSaved	Objeto guardado
+plotResultType_gui	27	strLblMainTitle	muestras analizadas
+plotResultType_gui	28	strLblXTitleType	Tipo de resultado
+plotResultType_gui	29	strLblYTitleProportion	Proporción
+plotResultType_gui	30	strLblYTitleCount	Contar
+plotResultType_gui	31	strMsgNull	El marco de datos en NULO o NA!
+plotResultType_gui	32	strMsgTitleError	Error
+plotSlope_gui	1	strWinTitle	Gráfico de la pendiente
+plotSlope_gui	2	strChkGui	Guardar configuración de GUI
+plotSlope_gui	3	strBtnHelp	Ayuda
+plotSlope_gui	4	strFrmDataset	Conjunto de datos
+plotSlope_gui	5	strLblDataset	Datos de la pendiente:
+plotSlope_gui	6	strDrpDataset	<Seleccionar datos>
+plotSlope_gui	7	strLblSamples	muestras
+plotSlope_gui	8	strFrmOptions	Opciones
+plotSlope_gui	9	strChkOverride	Anular títulos automáticos
+plotSlope_gui	10	strLblTitlePlot	Título del gráfico:
+plotSlope_gui	11	strLblTitleX	Título eje X:
+plotSlope_gui	12	strLblTitleY	Título eje Y:
+plotSlope_gui	13	strLblTheme	Representar gráficamente el tema:
+plotSlope_gui	14	strExpLabels	Etiquetas X
+plotSlope_gui	15	strLblSize	Tamaño de texto (pts):
+plotSlope_gui	16	strLblAngle	Ángulo:
+plotSlope_gui	17	strLblJustification	Justificación (v/h):
+plotSlope_gui	18	strFrmPlot	Gráfico de datos de pendiente
+plotSlope_gui	19	strBtnPlot	Pendiente vs. Muestra
+plotSlope_gui	20	strBtnProcessing	Procesando…
+plotSlope_gui	21	strFrmSave	Guardar como
+plotSlope_gui	22	strLblSave	Nombre del resultado:
+plotSlope_gui	23	strBtnSaveObject	Guardar como objeto
+plotSlope_gui	24	strBtnSaveImage	Guardar como imagen
+plotSlope_gui	25	strBtnObjectSaved	Objeto guardado
+plotSlope_gui	26	strLblMainTitle	Pendiente del perfil
+plotSlope_gui	27	strLblXTitle	Muestra
+plotSlope_gui	28	strLblYTitle	Pendiente
+plotSlope_gui	29	strMsgNull	El marco de datos en NULO o NA!
+plotSlope_gui	30	strMsgTitleError	Error
+plotStutter_gui	1	strWinTitle	Gráfico de ratios de stutter
+plotStutter_gui	2	strChkGui	Guardar configuración de GUI
+plotStutter_gui	3	strBtnHelp	Ayuda
+plotStutter_gui	4	strFrmDataset	Datos y kit
+plotStutter_gui	5	strLblDataset	Datos de Stutter:
+plotStutter_gui	6	strDrpDataset	<Seleccionar datos>
+plotStutter_gui	7	strLblSamples	muestras
+plotStutter_gui	8	strLblKit	y el kit utilizado:
+plotStutter_gui	9	strFrmOptions	Opciones
+plotStutter_gui	10	strChkOverride	Anular títulos automáticos
+plotStutter_gui	11	strExpTitles	Títulos
+plotStutter_gui	12	strLblTitlePlot	Título del gráfico:
+plotStutter_gui	13	strLblTitleX	Título eje X:
+plotStutter_gui	14	strLblTitleY	Título eje Y:
+plotStutter_gui	15	strLblNB	NB! El tamaño, el ángulo, vjust y hjust del título no siempre funcionan como se espera con un número diferente de facetas por fila.
+plotStutter_gui	16	strLblTitleSettings	Tamaño del título principal, ángulo, vjust, hjust:
+plotStutter_gui	17	strLblXTitleSettings	tamaño del título, ángulo, vjust, hjust en X:
+plotStutter_gui	18	strLblYTitleSettings	tamaño del título, ángulo, vjust, hjust en Y:
+plotStutter_gui	19	strLblTheme	Representar gráficamente el tema:
+plotStutter_gui	20	strChkSex	Excluir marcadores de sexo
+plotStutter_gui	21	strChkMarker	Excluir marcadores sin datos
+plotStutter_gui	22	strExpPoints	Data points
+plotStutter_gui	23	strLblShape	Forma:
+plotStutter_gui	24	strLblAlpha	Alpha:
+plotStutter_gui	25	strLblJitter	Distorsión (ancho):
+plotStutter_gui	26	strExpAxes	Ejes
+plotStutter_gui	27	strLblLimitY	Limitar el eje Y (min-max)
+plotStutter_gui	28	strLblLimitX	Limitar el eje X (min-max)
+plotStutter_gui	29	strLblScales	Escalas:
+plotStutter_gui	30	strChkOverrideLabels	Anular etiquetas predeterminadas para x / y / faceta
+plotStutter_gui	31	strExpXLabels	Etiquetas X
+plotStutter_gui	32	strLblSize	Tamaño de texto (pts):
+plotStutter_gui	33	strLblAngle	Ángulo:
+plotStutter_gui	34	strLblJustification	Justificación (v/h):
+plotStutter_gui	35	strExpYLabels	Etiquetas Y
+plotStutter_gui	36	strExpFacets	Gráficos uno al lado del otro (facetas)
+plotStutter_gui	37	strLblSizeX	Tamaño de texto X (pts):
+plotStutter_gui	38	strLblSizeY	Tamaño de texto Y (pts):
+plotStutter_gui	39	strFrmPlot	Gráfico de datos de stutter
+plotStutter_gui	40	strBtnAllele	Ratio vs. Alelo
+plotStutter_gui	41	strBtnHeight	Ratio vs. Altura
+plotStutter_gui	42	strBtnProcessing	Procesando…
+plotStutter_gui	43	strFrmSave	Guardar como
+plotStutter_gui	44	strLblSave	Nombre del resultado:
+plotStutter_gui	45	strBtnSaveObject	Guardar como objeto
+plotStutter_gui	46	strBtnSaveImage	Guardar como imagen
+plotStutter_gui	47	strBtnObjectSaved	Objeto guardado
+plotStutter_gui	48	strLblMainTitle	Ratios de stutter
+plotStutter_gui	49	strLblXTitleAllele	Alelo real
+plotStutter_gui	50	strLblXTitleHeight	Alelo real (RFU)
+plotStutter_gui	51	strLblYTitleRatio	Ratio
+plotStutter_gui	52	strMsgNull	El marco de datos en NULO o NA!
+plotStutter_gui	53	strMsgTitleError	Error
+removeArtefact_gui	1	strWinTitle	Eliminar artefactos
+removeArtefact_gui	2	strChkGui	Guardar configuración de GUI
+removeArtefact_gui	3	strBtnHelp	Ayuda
+removeArtefact_gui	4	strFrmDataset	Conjunto de datos
+removeArtefact_gui	5	strLblDataset	Conjunto de datos:
+removeArtefact_gui	6	strDrpDataset	<Seleccionar datos>
+removeArtefact_gui	7	strLblRows	filas
+removeArtefact_gui	8	strLblArtefacts	Lista de artefactos:
+removeArtefact_gui	9	strFrmOptions	Opciones
+removeArtefact_gui	10	strChkRemoveNA	Elimina Alelo=NA
+removeArtefact_gui	11	strLblThreshold	Umbral de artefactos:
+removeArtefact_gui	12	strFrmSave	Guardar como
+removeArtefact_gui	13	strLblSave	Nombre del resultado:
+removeArtefact_gui	14	strMsgNull	Seleccionar conjunto de datos!
+removeArtefact_gui	15	strMsgTitleError	Error
+removeArtefact_gui	16	strBtnRemove	Eliminar
+removeSpike_gui	1	strWinTitle	Eliminar spikes
+removeSpike_gui	2	strChkGui	Guardar configuración de GUI
+removeSpike_gui	3	strBtnHelp	Ayuda
+removeSpike_gui	4	strFrmDataset	Conjunto de datos
+removeSpike_gui	5	strLblDataset	Conjunto de datos:
+removeSpike_gui	6	strDrpDataset	<Seleccionar datos>
+removeSpike_gui	7	strLblRows	filas
+removeSpike_gui	8	strLblSpikes	Lista de spikes:
+removeSpike_gui	9	strLblSamples	muestras
+removeSpike_gui	10	strFrmOptions	Opciones
+removeSpike_gui	11	strChkInvert	Invertir (eliminar todo menos spikes)
+removeSpike_gui	12	strFrmSave	Guardar como
+removeSpike_gui	13	strLblSave	Nombre del resultado:
+removeSpike_gui	14	strMsgNull	Seleccionar conjunto de datos!
+removeSpike_gui	15	strMsgTitleError	Error
+removeSpike_gui	16	strBtnRemove	Eliminar
+saveObject	1	strMsgName	Inserte un nombre
+saveObject	2	strMsgSyntax	La sintaxis del nombre no es válida!\n\nEl objeto se guardará como:
+saveObject	3	strMsgExists	ya existe.\n\nDesea reemplazar?
+saveObject	4	strMsgNewName	Nombre nuevo
+saveObject	5	strMsgMissing	Se debe proporcionar un nombre.
+saveObject	6	strMsgTitleInput	Ingresar
+saveObject	7	strMsgTitleInvalid	Nombre no válido
+saveObject	8	strMsgTitleWarning	Atención!
+saveObject	9	strMsgTitleError	Error
+slim_gui	1	strWinTitle	Reducir conjunto de datos
+slim_gui	2	strChkGui	Guardar configuración de GUI
+slim_gui	3	strBtnHelp	Ayuda
+slim_gui	4	strFrmDataset	Conjunto de datos
+slim_gui	5	strLblDataset	Conjunto de datos:
+slim_gui	6	strDrpDataset	<Seleccionar datos>
+slim_gui	7	strLblSamples	muestras
+slim_gui	8	strLblColumns	Columnas
+slim_gui	9	strLblRows	filas
+slim_gui	10	strFrmOptions	Opciones
+slim_gui	11	strChkKeep	Mantener filas en columnas fijas incluso si no hay datos en columnas apiladas
+slim_gui	12	strLblKeep	(ej. mantener una fila por marcador para cada muestra aunque no haya pico)
+slim_gui	13	strTipColumns	Sugerencia: Editar columnas manualmente para arreglar y apilar (ej. apilar='Allelo' apilará 'Allelo.1', 'Allelo.2'...)
+slim_gui	14	strFrmFix	Reparar
+slim_gui	15	strLblFix	Columnas para mantener fijas (separadas por barra |):
+slim_gui	16	strEdtMsg	Haga doble clic o arrastre los nombres de columna a la lista
+slim_gui	17	strFrmStack	Apilar
+slim_gui	18	strLblStack	Columnas a apilar (separadas por barra |):
+slim_gui	19	strFrmSave	Guardar como
+slim_gui	20	strLblSave	Nombre del resultado:
+slim_gui	21	strMsgName	Se debe proporcionar un nombre de archivo!
+slim_gui	22	strBtnSlim	Reducir conjunto de datos
+slim_gui	23	strBtnProcessing	Procesando…
+slim_gui	24	strMsgTitleError	Error
+strvalidator	1	strChkGui	Guardar configuración de GUI
+strvalidator	2	strBtnHelp	Ayuda
+strvalidator	3	strBtnCalculate	Calcular
+strvalidator	4	strTabWelcome	Bienvenido
+strvalidator	5	strTabWorkspace	Área de trabajo
+strvalidator	6	strTabProject	Proyectos:
+strvalidator	7	strTabDryLab	DryLab
+strvalidator	8	strTabTools	Herramientas
+strvalidator	9	strTabAT	AT
+strvalidator	10	strTabStutter	Stutter
+strvalidator	11	strTabBalance	Equilibrio
+strvalidator	12	strTabConcordance	Concordanza
+strvalidator	13	strTabDroput	Dropout
+strvalidator	14	strTabMixture	Mezcla
+strvalidator	15	strTabResult	Resultado
+strvalidator	16	strTabPrecision	Precisión
+strvalidator	17	strTabPullup	Pull-up
+strvalidator	18	strBtnWebpage	sitio web de STR-validator
+strvalidator	19	strTipWebpage	Información general, talleres, y tutoriales
+strvalidator	20	strBtnVideo	Vídeos tutoriales
+strvalidator	21	strTipVideo	Canal YouTube de STR-validator
+strvalidator	22	strBtnFacebook	Facebook page
+strvalidator	23	strTipFacebook	Noticias, sugerencias, y otra información
+strvalidator	24	strBtnSupport	Foro de soporte
+strvalidator	25	strTipSupport	Obtener ayuda de la comunidad de usuarios de Facebook
+strvalidator	26	strBtnReport	Informar bugs
+strvalidator	27	strTipReport	Informar bugs, errores, y problemas
+strvalidator	28	strBtnSource	Código fuente
+strvalidator	29	strTipSource	Eche un vistazo al código fuente futuro, actual y pasado
+strvalidator	30	strBtnCran	Página CRAN
+strvalidator	31	strTipCran	Página oficial de CRAN con referencia al responsable y a la versión del archivo
+strvalidator	32	strBtnLicense	Licencia
+strvalidator	33	strLblFolder	Carpeta:
+strvalidator	34	strFrmProject	Proyectos:
+strvalidator	35	strBtnOpen	Abrir
+strvalidator	36	strTipOpen	Abrir proyecto seleccionado
+strvalidator	37	strBtnAdd	Añadir
+strvalidator	38	strTipAdd	Fusionar un proyecto con el proyecto actual
+strvalidator	39	strBtnDelete	Borrar
+strvalidator	40	strTipDelete	Borrar proyecto seleccionado del sistema de archivos
+strvalidator	41	strLblProject	Proyecto:
+strvalidator	42	strStrNoProject	[No se ha encontrado el proyecto]
+strvalidator	43	strFrmDescription	Descripción
+strvalidator	44	strStrDescription	Escribir descripción del proyecto aquí!
+strvalidator	45	strStrProjectDescription	[Descripción del proyecto]
+strvalidator	46	strBtnSave	Guardar
+strvalidator	47	strTipSaveDescription	Guardar descripción del proyecto
+strvalidator	48	strBtnNew	Nuevo
+strvalidator	49	strTipNewProject	Crear un proyecto nuevo
+strvalidator	50	strTipOpenProject	Abrir proyecto
+strvalidator	51	strTipSaveProject	Guardar proyecto
+strvalidator	52	strBtnSaveAs	Guardar como
+strvalidator	53	strTipSaveAs	Elegir una localización y guardar proyecto
+strvalidator	54	strBtnImport	Importar
+strvalidator	55	strTipImport	Importar datos desde archivo
+strvalidator	56	strBtnExport	Exportar
+strvalidator	57	strTipExport	Abrir el diálogo de exportación con los objetos seleccionados
+strvalidator	58	strBtnRefresh	Actualizar
+strvalidator	59	strTipRefresh	Actualizar el área de trabajo
+strvalidator	60	strTipDeleteObject	Borrar objeto seleccionado
+strvalidator	61	strBtnRename	Renombrar
+strvalidator	62	strTipRenameObject	Renombrar el objeto seleccionado
+strvalidator	63	strBtnView	Vista
+strvalidator	64	strTipView	Ver objeto seleccionado
+strvalidator	65	strMsgNew	¿Está seguro de que quiere crear un proyecto nuevo?\nCualquier cambio en el proyecto actual se perderá!
+strvalidator	66	strMsgRename	Ahora solo puede renombrar un objeto a la vez!
+strvalidator	67	strMsgSelectWorkspace	Seleccionar un área de trabajo o conjunto de datos
+strvalidator	68	strMsgNotFound	El archivo del área de trabajo no se encontró
+strvalidator	69	strMsgTitleNotFound	Archivo no encontrado
+strvalidator	70	strMsgExport	Por favor seleccione los objetos a exportar!
+strvalidator	71	strMsgNoObjectSelected	No se ha seleccionado objeto!
+strvalidator	72	strMsgTitleError	Error
+strvalidator	73	strMsgTypeNotSupported	tipo de objeto no compatible!
+strvalidator	74	strMsgTitleNotSupported	No se puede ver el objeto
+strvalidator	75	strMsgSelectObject	Por favor, seleccionar un objeto!
+strvalidator	76	strMsgProjectSaved	Proyecto guardado!\n\n
+strvalidator	77	strMsgDirNotFound	El directorio del proyecto no se encontró
+strvalidator	78	strMsgTitleDirNotFound	Directorio no encontrado
+strvalidator	79	strMsgFileNameMissing	Se debe proporcionar un nombre de archivo!
+strvalidator	80	strMsgFileNameRequired	Se requiere nombre de archivo
+strvalidator	81	strMsgUseSaveAs	Sin nombre de proyecto o ruta!\nUsar 'Guardar como'
+strvalidator	82	strMsgPropertyNotFound	Propiedad no encontrada
+strvalidator	83	strMsgSelectDirSave	Seleccionar un directorio para guardar el proyecto
+strvalidator	84	strMsgInputProject	Ingresar nombre del proyecto
+strvalidator	85	strMsgTitleSaveAs	Guardar como
+strvalidator	86	strMsgOverwrite	\nya existe!\n\n Reemplazar?
+strvalidator	87	strMsgTitleConfirm	Confirmar
+strvalidator	88	strMsgProjectNotSaved	El proyecto no se ha guardado!
+strvalidator	89	strMsgTitleInfo	Info
+strvalidator	90	strFrmRworkspace	Cargar objetos desde área de trabajo de R
+strvalidator	91	strBtnLoad	Cargar objeto
+strvalidator	92	strDrpObject	<Seleccionar objeto>
+strvalidator	93	strLblViewDataset	Ver un conjunto de datos
+strvalidator	94	strBtnKits	Kits
+strvalidator	95	strLblKits	Añadir nuevos kits o editar el archivo de kits
+strvalidator	96	strBtnPlotKit	Gráfico del kit
+strvalidator	97	strLblPlotKit	Gráfico del rango de marcadores por kits
+strvalidator	98	strBtnBins	Analizar superposición
+strvalidator	99	strLblBins	Comparar solapamiento de bins de kits
+strvalidator	100	strBtnOl	Analizar OL
+strvalidator	101	strLblOl	Comparar riesgo de obtener alelos off-ladder para kits
+strvalidator	102	strBtnEdit	Editar (modificar)
+strvalidator	103	strLblEdit	Editar (modificar) un conjunto de datos
+strvalidator	104	strBtnTrim	Cortar
+strvalidator	105	strLblTrim	Cortar/descartar muestras o columnas del conjunto de datos
+strvalidator	106	strBtnSlim	Reducir  
+strvalidator	107	strLblSlim	Reducir conjunto de datos en formato largo
+strvalidator	108	strBtnFilter	Filtrar
+strvalidator	109	strLblFilter	Filtrar datos usando datos de referencia
+strvalidator	110	strBtnCrop	Tamaño (Crop)
+strvalidator	111	strLblCrop	Descartar, o sustituir datos
+strvalidator	112	strBtnGuess	Inferir (guess)
+strvalidator	113	strLblGuess	Inferir el perfil de los datos crudos (sin procesar)
+strvalidator	114	strBtnDye	Marcaje (fluorocromo)
+strvalidator	115	strLblDye	Añadir información sobre el marcaje de acuerdo al kit
+strvalidator	116	strBtnMarker	Marcador
+strvalidator	117	strLblMarker	Añadir marcadores ausentes a los datos
+strvalidator	118	strBtnSize	Tamaño
+strvalidator	119	strLblSize	Añadir tamaño aproximado a los alelos en el conjunto de datos
+strvalidator	120	strBtnData	Datos
+strvalidator	121	strLblData	Añadir nueva información a los datos
+strvalidator	122	strBtnCheck	Comprobar
+strvalidator	123	strLblCheck	Comprobar subconjunto de un conjunto de datos
+strvalidator	124	strBtnCombine	Combinar
+strvalidator	125	strLblCombine	Combinar dos conjuntos de datos
+strvalidator	126	strBtnColumns	Columnas
+strvalidator	127	strLblColumns	Llevar a cabo acciones en las columnas
+strvalidator	128	strBtnCopies	Copias
+strvalidator	129	strLblCopies	Calcular copias alélicas
+strvalidator	130	strBtnHeight	Altura
+strvalidator	131	strLblHeight	Calcular métricas de altura de pico
+strvalidator	132	strBtnEPG	EPG
+strvalidator	133	strLblEPG	Generar EPG como gráfico
+strvalidator	134	strLblAT	Calcular umbral analítico (AT1, AT2, AT4, AT7)
+strvalidator	135	strLblAT6	Calcular umbral analítico (AT6)
+strvalidator	136	strBtnPlot	Gráfico
+strvalidator	137	strLblPlotAT6	Crear gráficos para datos analizados (AT6)
+strvalidator	138	strLblStutter	Calcular stutters en un conjunto de datos
+strvalidator	139	strLblPlotStutter	Crear gráficos para datos de stutter
+strvalidator	140	strBtnStatistics	Estadísticas
+strvalidator	141	strLblStatStutterGlobal	Calcular estadísticas resumen globales
+strvalidator	142	strLblStatStutterMarker	Calcular estadísticas resumen por marcador
+strvalidator	143	strLblStatStutterStutter	Calcular estadísticas resumen por marcador y tipo de stutter
+strvalidator	144	strFrmHb	Equilibrio de heterocigotos (intra-locus)
+strvalidator	145	strFrmLb	Equilibrio del perfil (inter-locus)
+strvalidator	146	strLblHb	Calcular equilibrio de heterocigotos
+strvalidator	147	strLblLb	Calcular equilibrio del perfil
+strvalidator	148	strLblPlotBalance	Crear gráficos para datos analizados
+strvalidator	149	strLblStatBalanceGlobal	Calcular estadísticas resumen globales
+strvalidator	150	strLblStatBalanceMarker	Calcular estadísticas resumen por marcador
+strvalidator	151	strFrmCapillary	Equilibrio entre capilares
+strvalidator	152	strLblCapillary	Calcular el equilibrio de capilares para un conjunto de datos
+strvalidator	153	strLblPlotCapillary	Crear gráficos para datos de equilibrio de capilares
+strvalidator	154	strLblStatCapillaryCap	Calcular estadísticas resumen por capilar
+strvalidator	155	strLblStatCapillaryInj	Calcular estadísticas resumen por inyección
+strvalidator	156	strLblStatCapillaryRow	Calcular estadísticas resumen por fila de la placa
+strvalidator	157	strLblStatCapillaryRun	Calcular estadísticas resumen por run
+strvalidator	158	strLblStatCapillaryIns	Calcular estadísticas resumen por equipo
+strvalidator	159	strFrmRatio	Ratio de altura del pico en el marcador
+strvalidator	160	strLblRatio	Calcular el locus ratio para un conjunto de datos
+strvalidator	161	strLblPlotRatio	Crear gráficos para datos de marker ratio
+strvalidator	162	strLblConcordance	Calcular concordancia entre múltiples conjuntos de datos
+strvalidator	163	strBtnScore	Puntuación
+strvalidator	164	strLblScore	Puntuación dropout para un conjunto de datos
+strvalidator	165	strLblDropout	Calcular umbrales estocásticos
+strvalidator	166	strBtnModel	Modelizar
+strvalidator	167	strLblModel	Modelizar y hacer gráfico del riesgo de dropout
+strvalidator	168	strLblPlotDropout	Crear gráficos para datos analizados
+strvalidator	169	strLblMixture	Calcular mezcla para un conjunto de datos
+strvalidator	170	strFrmType	Tipos de resultado
+strvalidator	171	strLblType	Calcular tipos de resultado para un conjunto de datos
+strvalidator	172	strLblPlotType	Crear gráficos para datos de tipo de resultado
+strvalidator	173	strFrmPeaks	Número de picos
+strvalidator	174	strLblPeaks	Contar el número de picos en la muestra
+strvalidator	175	strLblPlotPeaks	Crear gráficos para datos de pico
+strvalidator	176	strFrmStatistics	Estadísticas resumen
+strvalidator	177	strLblStatistics	Calcular estadísticas resumen
+strvalidator	178	strFrmDistribution	Distribuciones
+strvalidator	179	strLblDistribution	Representar gráficamente la distribución de los datos
+strvalidator	180	strLblGroups	Gráfico de distribución acumulativa para múltiples grupos
+strvalidator	181	strFrmDropin	Herramientas de drop-in
+strvalidator	182	strLblSpikes	Identificar posibles spikes
+strvalidator	183	strLblFilterSpikes	Eliminar spikes
+strvalidator	184	strLblArtefacts	Identificar posibles artefactos
+strvalidator	185	strLblFilterArtefacts	Eliminar artefactos
+strvalidator	186	strLblPlotContamination	Gráfico de contaminación
+strvalidator	187	strFrmSlope	Pendiente del perfil
+strvalidator	188	strLblSlope	Calcular la pendiente del perfil
+strvalidator	189	strLblPlotSlope	Gráfico de datos de pendiente
+strvalidator	190	strLblPrecision	Crear gráficos de precisión
+strvalidator	191	strLblStatPrecisionSize	Calcular estadísticas resumen por tamaño
+strvalidator	192	strLblStatPrecisionDataPoint	Calcular estadísticas resumen por Data.Point
+strvalidator	193	strLblStatPrecisionHeight	Calcular estadísticas resumen por Altura
+strvalidator	194	strLblPullup	Calcular pull-up espectral/depurar
+strvalidator	195	strLblPlotPullup	Crear gráficos para datos de pull-up
+tableBalance_gui	1	strWinTitle	Calcular estadísticas resumen para equilibrio
+tableBalance_gui	2	strChkGui	Guardar configuración de GUI
+tableBalance_gui	3	strBtnHelp	Ayuda
+tableBalance_gui	4	strFrmDataset	Conjunto de datos
+tableBalance_gui	5	strLblDataset	Conjunto de datos:
+tableBalance_gui	6	strDrpDataset	<Seleccionar datos>
+tableBalance_gui	7	strLblSamples	muestras
+tableBalance_gui	8	strFrmOptions	Opciones
+tableBalance_gui	9	strLblQuantile	Calcular cuantil
+tableBalance_gui	10	strLblBy	Estadísticas para calcular
+tableBalance_gui	11	strRadGlobal	global
+tableBalance_gui	12	strRadMarker	marcador
+tableBalance_gui	13	strFrmSave	Guardar como
+tableBalance_gui	14	strLblSave	Nombre del resultado:
+tableBalance_gui	15	strBtnCalculate	Calcular
+tableBalance_gui	16	strBtnProcessing	Procesando…
+tableBalance_gui	17	strMsgNull	El marco de datos en NULO o NA!
+tableBalance_gui	18	strMsgTitleError	Error
+tableCapillary_gui	1	strWinTitle	Calcular estadísticas resumen para equilibrio de capilares
+tableCapillary_gui	2	strChkGui	Guardar configuración de GUI
+tableCapillary_gui	3	strBtnHelp	Ayuda
+tableCapillary_gui	4	strFrmDataset	Conjunto de datos
+tableCapillary_gui	5	strLblDataset	Conjunto de datos:
+tableCapillary_gui	6	strDrpDataset	<Seleccionar datos>
+tableCapillary_gui	7	strLblRows	filas
+tableCapillary_gui	8	strFrmOptions	Opciones
+tableCapillary_gui	9	strLblBy	Estadísticas para calcular
+tableCapillary_gui	10	strRadCapillary	Capilar
+tableCapillary_gui	11	strRadInjection	Inyección
+tableCapillary_gui	12	strRadRow	fila de placa
+tableCapillary_gui	13	strRadRun	carrera
+tableCapillary_gui	14	strRadInstrument	instrumento
+tableCapillary_gui	15	strFrmSave	Guardar como
+tableCapillary_gui	16	strLblSave	Nombre del resultado:
+tableCapillary_gui	17	strBtnCalculate	Calcular
+tableCapillary_gui	18	strBtnProcessing	Procesando…
+tableCapillary_gui	19	strMsgNull	El marco de datos en NULO o NA!
+tableCapillary_gui	20	strMsgTitleError	Error
+tablePrecision_gui	1	strWinTitle	Calcular estadísticas resumen para precisión
+tablePrecision_gui	2	strChkGui	Guardar configuración de GUI
+tablePrecision_gui	3	strBtnHelp	Ayuda
+tablePrecision_gui	4	strFrmDataset	Conjunto de datos
+tablePrecision_gui	5	strLblDataset	Conjunto de datos:
+tablePrecision_gui	6	strDrpDataset	<Seleccionar datos>
+tablePrecision_gui	7	strLblSamples	muestras
+tablePrecision_gui	8	strFrmOptions	Opciones
+tablePrecision_gui	9	strRadReference	Filtrar por datos de referencia
+tablePrecision_gui	10	strRadBins	Filtrar por bins del kit
+tablePrecision_gui	11	strRadNone	No filtrar
+tablePrecision_gui	12	strLblReference	Datos de referencia:
+tablePrecision_gui	13	strChkIgnore	Ignorar mayúsculas y minúsculas
+tablePrecision_gui	14	strBtnCheck	Comprobar subconjunto
+tablePrecision_gui	15	strLblKit	Kit:
+tablePrecision_gui	16	strChkExclude	Excluir bins virtuales
+tablePrecision_gui	17	strFrmKey	Crear clave desde columnas
+tablePrecision_gui	18	strEdtMessage	Haga doble clic o arrastre los nombres de columna a la lista
+tablePrecision_gui	19	strFrmTarget	Calcular precisión para las columnas de interés
+tablePrecision_gui	20	strFrmSave	Guardar como
+tablePrecision_gui	21	strLblSave	Nombre del resultado:
+tablePrecision_gui	22	strBtnCalculate	Calcular
+tablePrecision_gui	23	strBtnProcessing	Procesando…
+tablePrecision_gui	24	strMsgDataset	Se tienen que seleccionar los datos y las referencias.
+tablePrecision_gui	25	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+tablePrecision_gui	26	strMsgTitleDataset	Conjuntos de datos no seleccionados
+tablePrecision_gui	27	strWinTitleCheck	Comprobar subconjunto
+tablePrecision_gui	28	strMsgTitleError	Error
+tableStutter_gui	1	strWinTitle	Calcular estadísticas resumen para stutter
+tableStutter_gui	2	strChkGui	Guardar configuración de GUI
+tableStutter_gui	3	strBtnHelp	Ayuda
+tableStutter_gui	4	strFrmDataset	Conjunto de datos
+tableStutter_gui	5	strLblDataset	Conjunto de datos:
+tableStutter_gui	6	strDrpDataset	<Seleccionar datos>
+tableStutter_gui	7	strLblSamples	muestras
+tableStutter_gui	8	strFrmOptions	Opciones
+tableStutter_gui	9	strLblQuantile	Calcular cuantil
+tableStutter_gui	10	strLblBy	Estadísticas para calcular
+tableStutter_gui	11	strRadGlobal	global
+tableStutter_gui	12	strRadMarker	marcador
+tableStutter_gui	13	strRadStutter	stutter
+tableStutter_gui	14	strFrmSave	Guardar como
+tableStutter_gui	15	strLblSave	Nombre del resultado:
+tableStutter_gui	16	strBtnCalculate	Calcular
+tableStutter_gui	17	strBtnProcessing	Procesando…
+tableStutter_gui	18	strMsgNull	El marco de datos en NULO o NA!
+tableStutter_gui	19	strMsgTitleError	Error
+trim_gui	1	strWinTitle	Cortar datos
+trim_gui	2	strChkGui	Guardar configuración de GUI
+trim_gui	3	strBtnHelp	Ayuda
+trim_gui	4	strFrmDataset	Conjunto de datos
+trim_gui	5	strLblDataset	Conjunto de datos:
+trim_gui	6	strDrpDataset	<Seleccionar datos>
+trim_gui	7	strLblSamples	muestras
+trim_gui	8	strLblColumns	Columnas
+trim_gui	9	strLblRows	filas
+trim_gui	10	strFrmSamples	muestras
+trim_gui	11	strLblSelectedSamples	Muestras seleccionadas (separadas por barra |):
+trim_gui	12	strEdtMsg	Haga doble clic o arrastre los nombres de las muestras a la lista
+trim_gui	13	strRadKeep	Mantener
+trim_gui	14	strRadRemove	Eliminar
+trim_gui	15	strFrmColumns	Columnas
+trim_gui	16	strLblSelectedColumns	Selleccionar columnas (separadas por barra|):
+trim_gui	17	strFrmOptions	Opciones
+trim_gui	18	strChkColumns	Eliminar columnas vacías
+trim_gui	19	strChkNA	Eliminar columnas NA
+trim_gui	20	strChkWord	Añadir límites de palabras
+trim_gui	21	strChkIgnore	Ignorar mayúsculas y minúsculas
+trim_gui	22	strLblReplace	Reemplazar valores ausentes con:
+trim_gui	23	strFrmSave	Guardar como
+trim_gui	24	strLblSave	Nombre del resultado:
+trim_gui	25	strMsgName	Se debe proporcionar un nombre de archivo!
+trim_gui	26	strBtnTrim	Cortar datos
+trim_gui	27	strBtnProcessing	Procesando…
+trim_gui	28	strMsgTitleError	Error

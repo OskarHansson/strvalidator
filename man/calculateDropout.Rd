@@ -67,7 +67,7 @@ commission (see Appendix B in ref 1). However, an alternative method is to
 consider the whole locus and score drop-out if any allele is missing.
 
 Explanation of the methods:
-Dropout - all alleles are scored according to LDT. This is pure observations
+Dropout - all alleles are scored according to AT. This is pure observations
 and is not used for modeling.
 MethodX - a random reference allele is selected and drop-out is scored in
 relation to the the partner allele.

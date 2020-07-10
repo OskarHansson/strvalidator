@@ -590,6 +590,27 @@ calculateSpike_gui	16	strBtnCalculate	Calcola
 calculateSpike_gui	17	strBtnProcessing	In elaborazione?
 calculateSpike_gui	18	strMsgDataset	Deve essere selezionato un dataset di campioni.
 calculateSpike_gui	19	strMsgTitleDataset	Dataset non selezionato
+calculateStatistics_gui	1	strWinTitle	Calcola statistica riassuntiva
+calculateStatistics_gui	2	strChkGui	Salva impostazioni interfaccia grafica
+calculateStatistics_gui	3	strBtnHelp	Aiuto
+calculateStatistics_gui	4	strFrmDataset	Dataset
+calculateStatistics_gui	5	strLblDataset	Dataset
+calculateStatistics_gui	6	strDrpDataset	Seleziona dataset
+calculateStatistics_gui	7	strLblRows	righe
+calculateStatistics_gui	8	strFrmOptions	Opzioni
+calculateStatistics_gui	9	strLblTarget	Seleziona la colonna
+calculateStatistics_gui	10	strLblGroupBy	Raggruppa per colonna(e)
+calculateStatistics_gui	11	strLblCount	Conta i valori unici nella colonna
+calculateStatistics_gui	12	strDrpColumn	<Seleziona colonne>
+calculateStatistics_gui	13	strLblQuantile	Calcolare il quantile
+calculateStatistics_gui	14	strFrmSave	Salva come
+calculateStatistics_gui	15	strLblSave	Nome per il risultato:
+calculateStatistics_gui	16	strBtnCalculate	Calcola
+calculateStatistics_gui	17	strBtnProcessing	In elaborazione...
+calculateStatistics_gui	18	strMsgDataset	Deve essere selezionato un dataset
+calculateStatistics_gui	19	strMsgTitleDataset	Dataset non selezionato
+calculateStatistics_gui	20	strMsgCheck	Il data frame è NULL!\n\nAssicurati di selezionare un dataset di campioni
+calculateStatistics_gui	21	strMsgTitleError	Errore
 calculateStutter_gui	1	strWinTitle	Calcola lo stutter ratio
 calculateStutter_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 calculateStutter_gui	3	strBtnHelp	Aiuto
@@ -720,16 +741,16 @@ cropData_gui	34	strLblTarget	La colonna target contiene dati del tipo:
 cropData_gui	35	strRadNumeric	Numerico
 cropData_gui	36	strRadCharacter	carattere
 cropData_gui	37	strBtnApply	Applica
-cropData_gui	37	strFrmSave	Salva come
-cropData_gui	38	strLblSave	Nome per il risultato:
-cropData_gui	38	strBtnProcessing	In elaborazione?
-cropData_gui	39	strBtnSave	Salva
-cropData_gui	40	strBtnSaved	Salvato!
-cropData_gui	41	strMsgDrop	Non creare subsets di un dataset di drop-out prima della modellizzazione!\n1) Crea un subset dai dati originali.\n2) Far calcolare il drop-out su quel subset.\n3) Modellizzare il drop-out dal nuovo dataset di drop-out dataset.
-cropData_gui	42	strMsgTitleDrop	Attenzione!
-cropData_gui	43	strMsgDataset	Deve essere selezionato un dataset.
-cropData_gui	44	strMsgTitleDataset	Dataset non selezionato
-cropData_gui	45	strMsgTitleError	Errore
+cropData_gui	38	strFrmSave	Salva come
+cropData_gui	39	strLblSave	Nome per il risultato:
+cropData_gui	40	strBtnProcessing	In elaborazione?
+cropData_gui	41	strBtnSave	Salva
+cropData_gui	42	strBtnSaved	Salvato!
+cropData_gui	43	strMsgDrop	Non creare subsets di un dataset di drop-out prima della modellizzazione!\n1) Crea un subset dai dati originali.\n2) Far calcolare il drop-out su quel subset.\n3) Modellizzare il drop-out dal nuovo dataset di drop-out dataset.
+cropData_gui	44	strMsgTitleDrop	Attenzione!
+cropData_gui	45	strMsgDataset	Deve essere selezionato un dataset.
+cropData_gui	46	strMsgTitleDataset	Dataset non selezionato
+cropData_gui	47	strMsgTitleError	Errore
 editData_gui	1	strWinTitleEdit	Modifica o visualizza  dataset
 editData_gui	2	strWinTitleView	Visualizza il dataset
 editData_gui	3	strWinTitleAttributes	Attributi
@@ -780,19 +801,20 @@ export_gui	17	strLblSettings	Settaggi immagine:
 export_gui	18	strLblWidth	Larghezza:
 export_gui	19	strLblHeight	Altezza:
 export_gui	20	strLblResolution	Risoluzione:
-export_gui	21	strLblLocation	Salva i file in questo percorso:
-export_gui	22	strBtnOpen	Apri
-export_gui	23	strBtnExport	Esporta
-export_gui	24	strBtnProcessing	In elaborazione?
-export_gui	25	strMsgObject	Devi selezionare almeno un oggetto.\ndevono essere immessi il nome ed il percorso del file.\n\nQuesto errore potrebbe prodursi anche la prima volta che viene utilizzata la funzione.\nindividua la cartella utilizzando il pulsante 'Open'.
-export_gui	26	strMsgTitleError	Errore
-export_gui	27	strMsgFailed	\nI seguenti oggetti non sono stati salvati perché il nome del file è già esistente.\nAssicurarsi di uscire dall'ultima cella modificata prima di continuare.
-export_gui	28	strMsgTitleFailed	Esportazione non riuscita!
-export_gui	29	strLblObject	Oggetto
-export_gui	30	strLblNewName	Nuovo.Nome
-export_gui	31	strBtnCancel	Cancella
-export_gui	32	strBtnOverwrite	Sovrascrivi
-export_gui	33	strBtnRetry	Riprova
+export_gui	21	strFrmLocation	Percorso
+export_gui	22	strLblLocation	Salva i file in questo percorso:
+export_gui	23	strBtnOpen	Apri
+export_gui	24	strBtnExport	Esporta
+export_gui	25	strBtnProcessing	In elaborazione?
+export_gui	26	strMsgObject	Devi selezionare almeno un oggetto.\ndevono essere immessi il nome ed il percorso del file.\n\nQuesto errore potrebbe prodursi anche la prima volta che viene utilizzata la funzione.\nindividua la cartella utilizzando il pulsante 'Open'.
+export_gui	27	strMsgTitleError	Errore
+export_gui	28	strMsgFailed	\nI seguenti oggetti non sono stati salvati perché il nome del file è già esistente.\nAssicurarsi di uscire dall'ultima cella modificata prima di continuare.
+export_gui	29	strMsgTitleFailed	Esportazione non riuscita!
+export_gui	30	strLblObject	Oggetto
+export_gui	31	strLblNewName	Nuovo.Nome
+export_gui	32	strBtnCancel	Cancella
+export_gui	33	strBtnOverwrite	Sovrascrivi
+export_gui	34	strBtnRetry	Riprova
 filterProfile_gui	1	strWinTitle	Filtra profilo
 filterProfile_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 filterProfile_gui	3	strBtnHelp	Aiuto
@@ -967,7 +989,7 @@ makeKit_gui	15	strLblSelectPanels	Seleziona un file Panels?
 makeKit_gui	16	strLblCombine	Legge e combina i file Bins e Panels
 makeKit_gui	17	strMsgCombine	Non sono stati trovati uno o più file
 makeKit_gui	18	strLblSex	Elenca i marcatori del sesso (separati da virgola)
-makeKit_gui	19	strLblSensors	Elenca i quality sensors' (separati da virgola)
+makeKit_gui	19	strLblSensors	Elenca i 'quality sensors' (separati da virgola)
 makeKit_gui	20	strLblRemove	Rimuovi
 makeKit_gui	21	strLblPanel	Panel
 makeKit_gui	22	strLblShortName	Abbreviazione
@@ -1786,147 +1808,159 @@ strvalidator	39	strBtnDelete	Cancella
 strvalidator	40	strTipDelete	Cancella il project selezionato dal file system
 strvalidator	41	strLblProject	Project:
 strvalidator	42	strStrNoProject	[Nessun progetto trovato]
-strvalidator	43	strStrDescription	Scrivi una descrizione del progetto qui!
-strvalidator	44	strStrProjectDescription	[Descrizione del progetto]
-strvalidator	45	strBtnSave	Salva
-strvalidator	46	strTipSaveDescription	Salva la descrizione del project
-strvalidator	47	strBtnNew	Nuovo
-strvalidator	48	strTipNewProject	Crea un nuovo project
-strvalidator	49	strTipOpenProject	Apri project
-strvalidator	50	strTipSaveProject	Salva il project
-strvalidator	51	strBtnSaveAs	Salva come
-strvalidator	52	strTipSaveAs	Scegli una destinazione e salva il project
-strvalidator	53	strBtnImport	Importa
-strvalidator	54	strTipImport	Importa dati da file
-strvalidator	55	strBtnExport	Esporta
-strvalidator	56	strTipExport	Apri il dialogo di esportazione con gli oggetti selezionati
-strvalidator	57	strBtnRefresh	Aggiorna
-strvalidator	58	strTipRefresh	Aggorna lo spazio di lavoro
-strvalidator	59	strTipDeleteObject	Cancella l'oggetto selezionato
-strvalidator	60	strBtnRename	Rinomina
-strvalidator	61	strTipRenameObject	Rinomina l'oggetto selezionato
-strvalidator	62	strBtnView	Visualizza
-strvalidator	63	strTipView	Visualizza l'oggetto selezionato
-strvalidator	64	strMsgNew	Sei sicuro di voler creare un nuovo progetto?\nAndranno perse tutte le modifiche dall'ultimo salvataggio!
-strvalidator	65	strMsgRename	Adesso puoi rinominare solo un oggetto alla volta!
-strvalidator	66	strMsgSelectWorkspace	Seleziona uno spazio di lavoro o un dataset salvati
-strvalidator	67	strMsgNotFound	Il file dello spazio di lavoro non è stato trovato
-strvalidator	68	strMsgTitleNotFound	File non trovato
-strvalidator	69	strMsgExport	Selezionare gli oggetti da esportare!
-strvalidator	70	strMsgNoObjectSelected	Nessun oggetto selezionato!
-strvalidator	71	strMsgTitleError	Errore
-strvalidator	72	strMsgTypeNotSupported	Tipo di oggetto non supportato!
-strvalidator	73	strMsgTitleNotSupported	Non riesco a vedere l'oggetto
-strvalidator	74	strMsgSelectObject	Seleziona un oggetto!
-strvalidator	75	strMsgProjectSaved	Project salvato!\n\n
-strvalidator	76	strMsgDirNotFound	La cartella del project non è stata trovata
-strvalidator	77	strMsgTitleDirNotFound	Cartella non trovata
-strvalidator	78	strMsgFileNameMissing	Deve essere indicato un nome per il file
-strvalidator	79	strMsgFileNameRequired	Nome del file necessario
-strvalidator	80	strMsgUseSaveAs	Nessun nome o percorso di progetto!\nUtilizzare invece 'Salva come' 
-strvalidator	81	strMsgPropertyNotFound	Proprietà non riscontrata
-strvalidator	82	strMsgSelectDirSave	Seleziona una cartella in cui salvare il project
-strvalidator	83	strMsgInputProject	Inserimento del nome del progetto
-strvalidator	84	strMsgTitleSaveAs	Salva come
-strvalidator	85	strMsgOverwrite	\ngià esistente!\n\n Sovrascrivere?
-strvalidator	86	strMsgTitleConfirm	Conferma
-strvalidator	87	strMsgProjectNotSaved	Project non salvato!
-strvalidator	88	strMsgTitleInfo	Informazioni generali
-strvalidator	89	strFrmRworkspace	Carica oggetti dallo spazio di lavoro in R
-strvalidator	90	strBtnLoad	Carica oggetto
-strvalidator	91	strDrpObject	<Selezionare oggetto>
-strvalidator	92	strLblViewDataset	Visualizza un dataset
-strvalidator	93	strBtnKits	Kit
-strvalidator	94	strLblKits	Aggiungi nuovi kit o modifica i file dei kit
-strvalidator	95	strBtnPlotKit	Rendi graficamente il kit
-strvalidator	96	strLblPlotKit	Rendi graficamente gli intervalli dei marker per il kit
-strvalidator	97	strBtnBins	Analizza la sovrapposizione
-strvalidator	98	strLblBins	Confronta la sovrapposizione dei bin per i kit
-strvalidator	99	strBtnOl	Analizza gli OL
-strvalidator	100	strLblOl	Confronta il rischio di ottenere alleli off-ladder per i kit
-strvalidator	101	strBtnEdit	Modifica
-strvalidator	102	strLblEdit	Modifica un dataset
-strvalidator	103	strBtnTrim	Trim
-strvalidator	104	strLblTrim	Procedi con 'Trim'/'elimina' campioni o colonne da un dataset
-strvalidator	105	strBtnSlim	Procedi con lo slim
-strvalidator	106	strLblSlim	Procedi con lo slim di un dataset nel formato 'long'
-strvalidator	107	strBtnFilter	Filtra
-strvalidator	108	strLblFilter	Filtra un dataset usando un set di reference
-strvalidator	109	strBtnCrop	Taglia (Crop)
-strvalidator	110	strLblCrop	Scarta o sostituisci i dati
-strvalidator	111	strBtnGuess	Desumi (guess)
-strvalidator	112	strLblGuess	Desumi il profilo (guess) dai dati grezzi
-strvalidator	113	strBtnDye	Fluorocromo
-strvalidator	114	strLblDye	Aggiungi l'informazione sul fluorocromo in accordo al kit
-strvalidator	115	strBtnMarker	Marker
-strvalidator	116	strLblMarker	Aggiungi i marcatori mancanti al dataset
-strvalidator	117	strBtnSize	Size
-strvalidator	118	strLblSize	Aggiungi il size approssimativo agli alleli in un dataset
-strvalidator	119	strBtnData	Dati
-strvalidator	120	strLblData	Aggiungi ulteriori informazioni al dataset 
-strvalidator	121	strBtnCheck	Controllo
-strvalidator	122	strLblCheck	Controlla il subsetting per un dataset
-strvalidator	123	strBtnCombine	Combina
-strvalidator	124	strLblCombine	Combina due dataset
-strvalidator	125	strBtnColumns	Colonne
-strvalidator	126	strLblColumns	Procedi con le azioni sulle colonne
-strvalidator	127	strBtnCopies	Copie
-strvalidator	128	strLblCopies	Calcola le copie alleliche
-strvalidator	129	strBtnHeight	Altezza
-strvalidator	130	strLblHeight	Calcola le metriche dell'altezza di picco
-strvalidator	131	strBtnEPG	EPG
-strvalidator	132	strLblEPG	Genera EPG come grafico
-strvalidator	133	strLblAT	Calcola la soglia analitica (AT1, AT2, AT4 e AT7)
-strvalidator	134	strLblAT6	Calcola la soglia analitica (AT6)
-strvalidator	135	strBtnPlot	Grafico
-strvalidator	136	strLblPlotAT6	Crea grafici per i dati analizzati (AT6)
-strvalidator	137	strLblStutter	Calcola gli stutters per un dataset
-strvalidator	138	strLblPlotStutter	Crea grafici per i dati degli stutter
-strvalidator	139	strBtnStatistics	Statistica
-strvalidator	140	strLblStatStutter	Calcola la statistica riassuntiva per i dati degli stutter
-strvalidator	141	strFrmBalance	Equilibrio intra-locus e inter-locus
-strvalidator	142	strLblHb	calcola l'equilibrio intra-locus (equilibrio eterozigote)
-strvalidator	143	strLblLb	Calcola l'equilibrio inter-locus  (balance del profilo)
-strvalidator	144	strLblPlotBalance	Crea grafici per i dati analizzati
-strvalidator	145	strLblStatBalance	Calcola la statistica riassuntiva per i dati di balance
-strvalidator	146	strFrmCapillary	Capillary balance
-strvalidator	147	strLblCapillary	 per un dataset
-strvalidator	148	strLblPlotCapillary	Crea grafici per i dati di capillary balance
-strvalidator	149	strLblStatCapillary	Crea statistica riassuntiva per i dati sul capillary balance
-strvalidator	150	strFrmRatio	PHR del marker
-strvalidator	151	strLblRatio	Calcola il rapporto tra locus per un dataset
-strvalidator	152	strLblPlotRatio	Crea grafici per i dati di rapporto tra marker
-strvalidator	153	strLblConcordance	Calcola la concordanza tra più dataset
-strvalidator	154	strBtnScore	Score
-strvalidator	155	strLblScore	Score dei dropout per un dataset
-strvalidator	156	strLblDropout	Calcola le soglie stocastiche
-strvalidator	157	strBtnModel	Modellizza
-strvalidator	158	strLblModel	Modellizza e rendi graficamente il rischio di dropout
-strvalidator	159	strLblPlotDropout	Crea grafici per i dati analizzati
-strvalidator	160	strLblMixture	Calcola la mixture per un dataset
-strvalidator	161	strFrmType	Tipi di risultato
-strvalidator	162	strLblType	Calcola il tipo di risultati per un dataset
-strvalidator	163	strLblPlotType	Crea grafici per i dati sul tipo di risultato
-strvalidator	164	strFrmPeaks	Numero di picchi
-strvalidator	165	strLblPeaks	Conta il numero di picchi nel campione
-strvalidator	166	strLblPlotPeaks	Crea grafici per i dati di picco
-strvalidator	167	strFrmHeight	Metriche dell'altezza di picco
-strvalidator	168	strFrmDistribution	Distribuzioni
-strvalidator	169	strLblDistribution	Rendi graficamente la distribuzione dei dati
-strvalidator	170	strLblGroups	Rendi graficamente la distribuzione cumulativa per più gruppi
-strvalidator	171	strFrmDropin	Strumenti per il drop-in
-strvalidator	172	strLblSpikes	Identifica possibili spike
-strvalidator	173	strLblFilterSpikes	Rimuovi gli spike
-strvalidator	174	strLblArtefacts	Identifica possibili spike
-strvalidator	175	strLblFilterArtefacts	Rimuovi artefatti
-strvalidator	176	strLblPlotContamination	Rendi graficamente la contaminazione
-strvalidator	177	strFrmSlope	Slope del profilo
-strvalidator	178	strLblSlope	Calcola la slope del profilo
-strvalidator	179	strLblPlotSlope	Rendi graficamente i dati di slope
-strvalidator	180	strLblPrecision	Crea grafici per la precisione
-strvalidator	181	strLblStatPrecision	Calcola la statistica riassuntiva per la precisione
-strvalidator	182	strLblPullup	Calcola il pull-up spettrale/bleed-through
-strvalidator	183	strLblPlotPullup	Crea grafici per i dati di pull-up
+strvalidator	43	strFrmDescription	Descrizione
+strvalidator	44	strStrDescription	Scrivi una descrizione del progetto qui!
+strvalidator	45	strStrProjectDescription	[Descrizione del progetto]
+strvalidator	46	strBtnSave	Salva
+strvalidator	47	strTipSaveDescription	Salva la descrizione del project
+strvalidator	48	strBtnNew	Nuovo
+strvalidator	49	strTipNewProject	Crea un nuovo project
+strvalidator	50	strTipOpenProject	Apri project
+strvalidator	51	strTipSaveProject	Salva il project
+strvalidator	52	strBtnSaveAs	Salva come
+strvalidator	53	strTipSaveAs	Scegli una destinazione e salva il project
+strvalidator	54	strBtnImport	Importa
+strvalidator	55	strTipImport	Importa dati da file
+strvalidator	56	strBtnExport	Esporta
+strvalidator	57	strTipExport	Apri il dialogo di esportazione con gli oggetti selezionati
+strvalidator	58	strBtnRefresh	Aggiorna
+strvalidator	59	strTipRefresh	Aggorna lo spazio di lavoro
+strvalidator	60	strTipDeleteObject	Cancella l'oggetto selezionato
+strvalidator	61	strBtnRename	Rinomina
+strvalidator	62	strTipRenameObject	Rinomina l'oggetto selezionato
+strvalidator	63	strBtnView	Visualizza
+strvalidator	64	strTipView	Visualizza l'oggetto selezionato
+strvalidator	65	strMsgNew	Sei sicuro di voler creare un nuovo progetto?\nAndranno perse tutte le modifiche dall'ultimo salvataggio!
+strvalidator	66	strMsgRename	Adesso puoi rinominare solo un oggetto alla volta!
+strvalidator	67	strMsgSelectWorkspace	Seleziona uno spazio di lavoro o un dataset salvati
+strvalidator	68	strMsgNotFound	Il file dello spazio di lavoro non è stato trovato
+strvalidator	69	strMsgTitleNotFound	File non trovato
+strvalidator	70	strMsgExport	Selezionare gli oggetti da esportare!
+strvalidator	71	strMsgNoObjectSelected	Nessun oggetto selezionato!
+strvalidator	72	strMsgTitleError	Errore
+strvalidator	73	strMsgTypeNotSupported	Tipo di oggetto non supportato!
+strvalidator	74	strMsgTitleNotSupported	Non riesco a vedere l'oggetto
+strvalidator	75	strMsgSelectObject	Seleziona un oggetto!
+strvalidator	76	strMsgProjectSaved	Project salvato!\n\n
+strvalidator	77	strMsgDirNotFound	La cartella del project non è stata trovata
+strvalidator	78	strMsgTitleDirNotFound	Cartella non trovata
+strvalidator	79	strMsgFileNameMissing	Deve essere indicato un nome per il file
+strvalidator	80	strMsgFileNameRequired	Nome del file necessario
+strvalidator	81	strMsgUseSaveAs	Nessun nome o percorso di progetto!\nUtilizzare invece 'Salva come' 
+strvalidator	82	strMsgPropertyNotFound	Proprietà non riscontrata
+strvalidator	83	strMsgSelectDirSave	Seleziona una cartella in cui salvare il project
+strvalidator	84	strMsgInputProject	Inserimento del nome del progetto
+strvalidator	85	strMsgTitleSaveAs	Salva come
+strvalidator	86	strMsgOverwrite	\ngià esistente!\n\n Sovrascrivere?
+strvalidator	87	strMsgTitleConfirm	Conferma
+strvalidator	88	strMsgProjectNotSaved	Project non salvato!
+strvalidator	89	strMsgTitleInfo	Informazioni generali
+strvalidator	90	strFrmRworkspace	Carica oggetti dallo spazio di lavoro in R
+strvalidator	91	strBtnLoad	Carica oggetto
+strvalidator	92	strDrpObject	<Selezionare oggetto>
+strvalidator	93	strLblViewDataset	Visualizza un dataset
+strvalidator	94	strBtnKits	Kit
+strvalidator	95	strLblKits	Aggiungi nuovi kit o modifica i file dei kit
+strvalidator	96	strBtnPlotKit	Rendi graficamente il kit
+strvalidator	97	strLblPlotKit	Rendi graficamente gli intervalli dei marker per il kit
+strvalidator	98	strBtnBins	Analizza la sovrapposizione
+strvalidator	99	strLblBins	Confronta la sovrapposizione dei bin per i kit
+strvalidator	100	strBtnOl	Analizza gli OL
+strvalidator	101	strLblOl	Confronta il rischio di ottenere alleli off-ladder per i kit
+strvalidator	102	strBtnEdit	Modifica
+strvalidator	103	strLblEdit	Modifica un dataset
+strvalidator	104	strBtnTrim	Trim
+strvalidator	105	strLblTrim	Procedi con 'Trim'/'elimina' campioni o colonne da un dataset
+strvalidator	106	strBtnSlim	Procedi con lo slim
+strvalidator	107	strLblSlim	Procedi con lo slim di un dataset nel formato 'long'
+strvalidator	108	strBtnFilter	Filtra
+strvalidator	109	strLblFilter	Filtra un dataset usando un set di reference
+strvalidator	110	strBtnCrop	Taglia (Crop)
+strvalidator	111	strLblCrop	Scarta o sostituisci i dati
+strvalidator	112	strBtnGuess	Desumi (guess)
+strvalidator	113	strLblGuess	Desumi il profilo (guess) dai dati grezzi
+strvalidator	114	strBtnDye	Fluorocromo
+strvalidator	115	strLblDye	Aggiungi l'informazione sul fluorocromo in accordo al kit
+strvalidator	116	strBtnMarker	Marker
+strvalidator	117	strLblMarker	Aggiungi i marcatori mancanti al dataset
+strvalidator	118	strBtnSize	Size
+strvalidator	119	strLblSize	Aggiungi il size approssimativo agli alleli in un dataset
+strvalidator	120	strBtnData	Dati
+strvalidator	121	strLblData	Aggiungi ulteriori informazioni al dataset 
+strvalidator	122	strBtnCheck	Controllo
+strvalidator	123	strLblCheck	Controlla il subsetting per un dataset
+strvalidator	124	strBtnCombine	Combina
+strvalidator	125	strLblCombine	Combina due dataset
+strvalidator	126	strBtnColumns	Colonne
+strvalidator	127	strLblColumns	Procedi con le azioni sulle colonne
+strvalidator	128	strBtnCopies	Copie
+strvalidator	129	strLblCopies	Calcola le copie alleliche
+strvalidator	130	strBtnHeight	Altezza
+strvalidator	131	strLblHeight	Calcola le metriche dell'altezza di picco
+strvalidator	132	strBtnEPG	EPG
+strvalidator	133	strLblEPG	Genera EPG come grafico
+strvalidator	134	strLblAT	Calcola la soglia analitica (AT1, AT2, AT4 e AT7)
+strvalidator	135	strLblAT6	Calcola la soglia analitica (AT6)
+strvalidator	136	strBtnPlot	Grafico
+strvalidator	137	strLblPlotAT6	Crea grafici per i dati analizzati (AT6)
+strvalidator	138	strLblStutter	Calcola gli stutters per un dataset
+strvalidator	139	strLblPlotStutter	Crea grafici per i dati degli stutter
+strvalidator	140	strBtnStatistics	Statistica
+strvalidator	141	strLblStatStutterGlobal	Calcola la statistica riassuntiva per i dati degli stutter
+strvalidator	142	strLblStatStutterMarker	Calcola la statistica riassuntiva per i dati degli stutter
+strvalidator	143	strLblStatStutterStutter	Calcola la statistica riassuntiva per i dati degli stutter
+strvalidator	144	strFrmHb	Equilibrio eterozigote (intra-locus)
+strvalidator	145	strFrmLb	Equilibrio del profilo (inter-locus)
+strvalidator	146	strLblHb	Calcola l'equilibrio eterozigote
+strvalidator	147	strLblLb	Calcola l'equilibrio balance del profilo
+strvalidator	148	strLblPlotBalance	Crea grafici per i dati analizzati
+strvalidator	149	strLblStatBalanceGlobal	Calcola la statistica riassuntiva per i dati di balance
+strvalidator	150	strLblStatBalanceMarker	Calcola la statistica riassuntiva per marcatore
+strvalidator	151	strFrmCapillary	Capillary balance
+strvalidator	152	strLblCapillary	 per un dataset
+strvalidator	153	strLblPlotCapillary	Crea grafici per i dati di capillary balance
+strvalidator	154	strLblStatCapillaryCap	Calcola la statistica riassuntiva per capillare
+strvalidator	155	strLblStatCapillaryInj	Calcola la statistica riassuntiva per iniezione
+strvalidator	156	strLblStatCapillaryRow	Calcola la statistica riassuntiva per righe della piastra
+strvalidator	157	strLblStatCapillaryRun	Calcola la statistica riassuntiva per corsa
+strvalidator	158	strLblStatCapillaryIns	Calcola la statistica riassuntiva per strumento
+strvalidator	159	strFrmRatio	PHR del marker
+strvalidator	160	strLblRatio	Calcola il rapporto tra locus per un dataset
+strvalidator	161	strLblPlotRatio	Crea grafici per i dati di rapporto tra marker
+strvalidator	162	strLblConcordance	Calcola la concordanza tra più dataset
+strvalidator	163	strBtnScore	Score
+strvalidator	164	strLblScore	Score dei dropout per un dataset
+strvalidator	165	strLblDropout	Calcola le soglie stocastiche
+strvalidator	166	strBtnModel	Modellizza
+strvalidator	167	strLblModel	Modellizza e rendi graficamente il rischio di dropout
+strvalidator	168	strLblPlotDropout	Crea grafici per i dati analizzati
+strvalidator	169	strLblMixture	Calcola la mixture per un dataset
+strvalidator	170	strFrmType	Tipi di risultato
+strvalidator	171	strLblType	Calcola il tipo di risultati per un dataset
+strvalidator	172	strLblPlotType	Crea grafici per i dati sul tipo di risultato
+strvalidator	173	strFrmPeaks	Numero di picchi
+strvalidator	174	strLblPeaks	Conta il numero di picchi nel campione
+strvalidator	175	strLblPlotPeaks	Crea grafici per i dati di picco
+strvalidator	176	strFrmStatistics	Statistica riassuntiva
+strvalidator	177	strLblStatistics	Calcola statistica riassuntiva
+strvalidator	178	strFrmDistribution	Distribuzioni
+strvalidator	179	strLblDistribution	Rendi graficamente la distribuzione dei dati
+strvalidator	180	strLblGroups	Rendi graficamente la distribuzione cumulativa per più gruppi
+strvalidator	181	strFrmDropin	Strumenti per il drop-in
+strvalidator	182	strLblSpikes	Identifica possibili spike
+strvalidator	183	strLblFilterSpikes	Rimuovi gli spike
+strvalidator	184	strLblArtefacts	Identifica possibili spike
+strvalidator	185	strLblFilterArtefacts	Rimuovi artefatti
+strvalidator	186	strLblPlotContamination	Rendi graficamente la contaminazione
+strvalidator	187	strFrmSlope	Slope del profilo
+strvalidator	188	strLblSlope	Calcola la slope del profilo
+strvalidator	189	strLblPlotSlope	Rendi graficamente i dati di slope
+strvalidator	190	strLblPrecision	Crea grafici per la precisione
+strvalidator	191	strLblStatPrecisionSize	Calcola la statistica riassuntiva per la precisione
+strvalidator	192	strLblStatPrecisionDataPoint	Calcola la statistica riassuntiva per la precisione
+strvalidator	193	strLblStatPrecisionHeight	Calcola la statistica riassuntiva per la precisione
+strvalidator	194	strLblPullup	Calcola il pull-up spettrale/bleed-through
+strvalidator	195	strLblPlotPullup	Crea grafici per i dati di pull-up
 tableBalance_gui	1	strWinTitle	Calcola la statistica riassuntiva per il balance
 tableBalance_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 tableBalance_gui	3	strBtnHelp	Aiuto

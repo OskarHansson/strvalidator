@@ -2,9 +2,9 @@
 % Please edit documentation in R/getStrings.r
 \name{getStrings}
 \alias{getStrings}
-\title{Get Language Strings.}
+\title{Get Language Strings}
 \usage{
-getStrings(language = NA, gui = NA, key = NA)
+getStrings(language = NA, gui = NA, key = NA, encoding = NA, about = FALSE)
 }
 \arguments{
 \item{language}{character name of the language.}
@@ -12,14 +12,21 @@ getStrings(language = NA, gui = NA, key = NA)
 \item{gui}{character the function name for the gui to 'translate'.}
 
 \item{key}{character the key to 'translate'. Only used in combination with 'gui'.}
+
+\item{encoding}{character encoding to be assumed for input strings.}
+
+\item{about}{logical FALSE (default) to read key value pairs,
+TRUE to read about file as plain text.}
 }
 \value{
-character the retrieved value or NA if not found.
+character vector or data.table with the retrieved values.
+NULL if file or gui was not found.
 }
 \description{
 Accepts a language code and gui. Returns the corresponding language strings.
 }
 \details{
-Accepts a language code and gui. Returns the corresponding language strings
-for the specified gui function from a text file named as the language code.
+Accepts a language code, gui, and key. Returns the corresponding language strings
+for the specified gui function or key from a text file named as the language code.
+Replaces backslash + n with new line character (only if 'gui' is specified).
 }

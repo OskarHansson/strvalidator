@@ -35,7 +35,7 @@
 #' @importFrom ggplot2 stat_smooth geom_abline xlim ggplot aes_string geom_point
 #' position_jitter coord_cartesian theme element_text labs xlab ylab
 #'
-#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
+#' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
 

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.07.2020: Fixed no visible binding for variables.
 # 02.05.2020: Added language support.
 # 06.09.2019: Fixed narrow dropdown with hidden argument ellipsize = "none".
 # 24.02.2019: Compacted and tweaked gui for tcltk.
@@ -37,7 +38,7 @@
 #'  xlab ylab theme_gray theme_bw theme_linedraw theme_light theme_dark
 #'  theme_minimal theme_classic theme_void geom_errorbar position_dodge
 #'
-#' @seealso \url{http://docs.ggplot2.org/current/} for details on plot settings.
+#' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
 
@@ -50,7 +51,8 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     "theme_light()", "theme_dark()", "theme_minimal()",
     "theme_classic()", "theme_void()"
   )
-
+  val_obj <- NULL
+  
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.

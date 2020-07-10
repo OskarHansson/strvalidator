@@ -4,7 +4,9 @@
 \name{set1}
 \alias{set1}
 \title{Typing data in 'GeneMapper' format}
-\format{A data frame with 170 rows and 13 variables}
+\format{
+A data frame with 170 rows and 13 variables
+}
 \usage{
 data(set1)
 }
