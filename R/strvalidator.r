@@ -9,7 +9,7 @@
 # IMPORTANT: Use devtools::check_win_oldrelease() to test on previous major R.
 # IMPORTANT: Use revdepcheck::revdep_check() to check reverse dependencies?
 # IMPORTANT: Use devtools::check_rhub() to check on multiple platforms.
-# IMPORTANT: Use devtools::release() to submitt to CRAN.
+# IMPORTANT: Use devtools::release() to submit to CRAN.
 # NB! The error below indicates some problem with the test server (try again later).
 # Error in curl::curl_fetch_memory(url, handle = h) : Timeout was reached
 
