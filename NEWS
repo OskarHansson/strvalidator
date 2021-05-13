@@ -1,6 +1,9 @@
 Version 2.3.0.9000
 ------------------------------------------------------------------------------
 * Starting new developer version.
+* Bug fixes and improvements with the most significant listed below:
+  - plotSlope_gui
+  Fixes issue #19 "Error in exists(name, envir = env, inherits = FALSE)"
 
 Version 2.3.0
 ------------------------------------------------------------------------------
