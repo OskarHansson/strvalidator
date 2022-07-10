@@ -1,3 +1,16 @@
+Version 2.3.0.9001
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - columns
+  Fixed "Found if() conditions comparing class() to string.
+  - getStrings
+  Fixed Warning message: In !is.na(result) && !is.na(gui):'length(x) = 780 > 1' in coercion to 'logical(1)'
+  - calculateMixture, calculateHeight_gui, calculateHeight, calculateAT, calculateAT6,
+  calculateDropout, modelDropout_gui, plotContamination_gui, calculateLb
+  Fixed url-> doi in references.
+  - editData_gui
+  Try to expand dropdown for dataset under tcltk.
+
 Version 2.3.0.9000
 ------------------------------------------------------------------------------
 * Starting new developer version.

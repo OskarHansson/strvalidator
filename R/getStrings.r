@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2022: Fixed Warning message: In !is.na(result) && !is.na(gui):'length(x) = 780 > 1' in coercion to 'logical(1)' 
 # 08.07.2020: Fix warnings about improper quoting.
 # 04.07.2020: Defined unbound variables.
 # 09.06.2020: Fixed Error in `:=`(value, gsub("\\n", "\n", value, fixed = TRUE))...
@@ -129,7 +130,7 @@ getStrings <- function(language = NA, gui = NA, key = NA,
       }
 
       # If gui function and key is specified.
-      if (!is.na(result) && !is.na(gui) && !is.na(key)) {
+      if (!is.null(result) && !is.na(gui) && !is.na(key)) {
         message("Get langugage strings for key = ", key)
 
         # Get the specific gui function value by key.

@@ -1,10 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 18.09.2016: Fixed attribute word not saved.
@@ -53,7 +49,7 @@
 #' @param ref data.frame with at least columns 'Sample.Name' and 'Allele'.
 #' @param na.replace replaces NA values in the final result.
 #' @param exclude character vector (case sensitive) e.g. "OL" excludes rows with
-#'  "OL" in the 'Allele' column.
+#'  "OL" in the 'Allele' column (not necessary when a reference dataset is provided).
 #' @param add logical default is TRUE which will add or overwrite columns
 #' 'TPH', 'Peaks', 'H', and 'Proportion' in the provided 'data'.
 #' @param sex.rm logical, default FALSE to include sex markers in the analysis.
@@ -74,7 +70,7 @@
 #'  Journal of the Royal Statistical Society: Series C (Applied Statistics),
 #'  Volume 59, Issue 5, 2010,
 #'  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
-#' \url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
+#' \doi{10.1111/j.1467-9876.2010.00722.x}
 #'
 #' @importFrom utils str
 #' @importFrom data.table data.table :=
@@ -259,7 +255,7 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
     if ("Copies" %in% names(DT)) {
 
-      # Calculate number of observed peaks for each sample.
+      # Calculate number of observed allele copies for each sample.
       DT[, N.Alleles := sum(Copies[!is.na(Height)]), by = list(Sample.Name)]
     } else {
       message("A column 'Copies' was not found in 'data'.")

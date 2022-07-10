@@ -6,6 +6,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 06.08.2017: Added audit trail.
 # 30.09.2016: Fixed a sample name mathcing bug (now really works as check subsetting in gui).
 # 29.08.2014: Added check for uniqueness between reference datasets.
@@ -65,7 +66,7 @@
 #'  Identifiler Multiplex."
 #'  Forensic Science International: Genetics 4, no. 2 (February 2010): 111-14.
 #'  doi:10.1016/j.fsigen.2009.07.002.
-#' \url{http://dx.doi.org/10.1016/j.fsigen.2009.07.002}
+#' \doi{10.1016/j.fsigen.2009.07.002}
 
 calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
                              ignore.dropout = TRUE, debug = FALSE) {

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 17.10.2021: Try to expand dropdown for dataset under tcltk.
 # 08.03.2020: Added language support.
 # 18.03.2019: Fixed freeze when opened with a NA containing dataset in view mode (tcltk).
 # 14.03.2019: Fixed R-Check note.
@@ -274,7 +275,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     container = gv
   )
 
-  g0 <- glayout(container = f0, spacing = 1)
+  g0 <- glayout(container = f0, spacing = 1, expand = TRUE)
 
   g0[1, 1] <- glabel(text = strLblDataset, container = g0)
 

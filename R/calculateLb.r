@@ -3,6 +3,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 10.05.2020: Added 'peak' in parameter description.
 # 20.03.2019: Added new definition of balance (Issue:#14).
 # 24.08.2018: Removed unused variables.
@@ -78,7 +79,7 @@
 #'  Biosystems's AmpFlSTR NGMSElect and Promega's PowerPlex ESI17 kits,
 #'  Forensic Science International: Genetics, Volume 6, Issue 5, September 2012,
 #'  Pages 523-531, ISSN 1872-4973, 10.1016/j.fsigen.2011.12.006.
-#' \url{http://www.sciencedirect.com/science/article/pii/S1872497311002365}
+#' \doi{10.1016/j.fsigen.2011.12.006}
 #'
 #' @importFrom utils str
 #' @importFrom data.table data.table

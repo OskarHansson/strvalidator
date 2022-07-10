@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.07.2022: Fixed "Found if() conditions comparing class() to string.
 # 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 09.05.2016: Added attributes to result.
@@ -83,7 +80,7 @@ columns <- function(data, col1 = NA, col2 = NA, operator = "&",
 
   # Check data ----------------------------------------------------------------
 
-  if (class(data) != "data.frame") {
+  if (!inherits(data, "data.frame")) {
     stop("'data' must be of type data.frame",
       call. = TRUE
     )

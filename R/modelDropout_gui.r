@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 10.04.2020: Added language support.
 # 20.03.2019: Fixed save object triggered when plotting if label is changed.
 # 24.02.2019: Added option to use log10 y-axis scale.
@@ -92,20 +93,20 @@
 #'  include drop-out and/or drop-in using probabilistic methods,
 #'  Forensic Science International: Genetics, Volume 6, Issue 6, December 2012,
 #'  Pages 679-688, ISSN 1872-4973, 10.1016/j.fsigen.2012.06.002.
-#' \url{http://www.sciencedirect.com/science/article/pii/S1872497312001354}
+#' \doi{10.1016/j.fsigen.2012.06.002}
 #' @references
 #' [2] Peter Gill, Roberto Puch-Solis, James Curran,
 #'  The low-template-DNA (stochastic) threshold-Its determination relative to
 #'  risk analysis for national DNA databases,
 #'  Forensic Science International: Genetics, Volume 3, Issue 2, March 2009,
 #'  Pages 104-111, ISSN 1872-4973, 10.1016/j.fsigen.2008.11.009.
-#' \url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
+#' \doi{10.1016/j.fsigen.2008.11.009}
 #' @references
 #' [3] Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
 #'  Estimating the probability of allelic drop-out of STR alleles in forensic genetics,
 #'  Forensic Science International: Genetics, Volume 3, Issue 4, September 2009,
 #'  Pages 222-226, ISSN 1872-4973, 10.1016/j.fsigen.2009.02.002.
-#'  \url{http://www.sciencedirect.com/science/article/pii/S1872497309000398}
+#'  \doi{10.1016/j.fsigen.2009.02.002}
 #' @references
 #' [4] H. DW Jr., S. Lemeshow, Applied Logistic Regression, John Wiley & Sons, 2004.
 #' @references
@@ -114,13 +115,13 @@
 #'  and low template techniques for NGM,
 #'  Forensic Science International: Genetetics, Volume 6, Issue 6 December 2012,
 #'  Pages 708-715, ISSN 1872-4973, 10.1016/j.fsigen.2012.05.001.
-#'  \url{http://www.sciencedirect.com/science/article/pii/S1872497312001172}
+#'  \doi{10.1016/j.fsigen.2012.05.001}
 #' @references
 #' [6] R. Puch-Solis, A.J. Kirkham, P. Gill, J. Read, S. Watson, D. Drew,
 #'  Practical determination of the low template DNA threshold,
 #'  Forensic Science International: Genetetics, Volume 5, Issue 5, November 2011,
 #'  Pages 422-427, ISSN 1872-4973, 10.1016/j.fsigen.2010.09.001.
-#'  \url{http://www.sciencedirect.com/science/article/pii/S1872497310001511}
+#'  \doi{10.1016/j.fsigen.2010.09.001}
 #'
 #' @return TRUE
 #'
@@ -133,7 +134,7 @@
 #'  geom_ribbon geom_segment geom_text coord_cartesian theme element_text labs
 #'  xlab ylab
 #'
-#' @seealso \code{\link{calculateDropout}}, \code{\link{plotDropout_gui}}
+#' @seealso \code{\link{calculateDropout}}, \code{\link{plotDropout_gui}}, \code{\link[ResourceSelection]{hoslem.test}}
 
 modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
 

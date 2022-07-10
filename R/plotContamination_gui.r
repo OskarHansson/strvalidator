@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 18.04.2020: Added language support.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -41,7 +42,7 @@
 #'  Validating multiplexes for use in conjunction with modern interpretation strategies,
 #'  Forensic Science International: Genetics, Volume 20, January 2016,
 #'  Pages 6-19, ISSN 1872-4973, 10.1016/j.fsigen.2015.09.011.
-#' \url{http://www.sciencedirect.com/science/article/pii/S1872497315300739}
+#' \doi{10.1016/j.fsigen.2015.09.011}
 
 plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
 
