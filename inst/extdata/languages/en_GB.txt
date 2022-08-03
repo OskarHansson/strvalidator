@@ -1357,6 +1357,31 @@ plotDropout_gui	49	strLblYTitleMarker	Marker
 plotDropout_gui	50	strLblYTitleCP	Cumulative probability
 plotDropout_gui	51	strMsgNull	Data frame is NULL or NA!
 plotDropout_gui	52	strMsgTitleError	Error
+plotEPG2_gui	1	strWinTitle	Plot electropherogram (EPG)
+plotEPG2_gui	2	strChkGui	Save GUI settings
+plotEPG2_gui	3	strBtnHelp	Help
+plotEPG2_gui	4	strFrmDataset	Datasets
+plotEPG2_gui	5	strLblDataset	Sample dataset:
+plotEPG2_gui	6	strDrpDataset	<Select dataset>
+plotEPG2_gui	7	strLblSamples	samples
+plotEPG2_gui	8	strLblSample	Sample:
+plotEPG2_gui	9	strDrpSample	<Select sample>
+plotEPG2_gui	10	strLblKit	Kit:
+plotEPG2_gui	11	strFrmOptions	Options
+plotEPG2_gui	12	strLblScale	Y axis scale:
+plotEPG2_gui	13	strOptYmax	Across dye max y-scale
+plotEPG2_gui	14	strOptYind	Individual dye y-scale
+plotEPG2_gui	15	strLblAT	Analytical threshold:
+plotEPG2_gui	16	strLblST	Stochastic threshold:
+plotEPG2_gui	17	strFrmSave	Save as
+plotEPG2_gui	18	strLblSave	Name for result:
+plotEPG2_gui	19	strBtnSaveObject	Save as object
+plotEPG2_gui	20	strBtnSaveImage	Save as image
+plotEPG2_gui	21	strBtnObjectSaved	Object saved
+plotEPG2_gui	22	strBtnPlot	Plot EPG
+plotEPG2_gui	23	strBtnProcessing	Processing...
+plotEPG2_gui	24	strMsgDataset	A dataset must be selected. Sample is optional.
+plotEPG2_gui	25	strMsgTitleDataset	Datasets not selected
 plotGroups_gui	1	strWinTitle	Plot groups
 plotGroups_gui	2	strChkGui	Save GUI settings
 plotGroups_gui	3	strBtnHelp	Help
@@ -1899,68 +1924,70 @@ strvalidator	130	strBtnHeight	Height
 strvalidator	131	strLblHeight	Calculate peak height metrics
 strvalidator	132	strBtnEPG	EPG
 strvalidator	133	strLblEPG	Generate EPG like plot
-strvalidator	134	strLblAT	Calculate analytical threshold (AT1, AT2, AT4, AT7)
-strvalidator	135	strLblAT6	Calculate analytical threshold (AT6)
-strvalidator	136	strBtnPlot	Plot
-strvalidator	137	strLblPlotAT6	Create plots for analysed data (AT6)
-strvalidator	138	strLblStutter	Calculate stutters for a dataset
-strvalidator	139	strLblPlotStutter	Create plots for stutter data
-strvalidator	140	strBtnStatistics	Statistics
-strvalidator	141	strLblStatStutterGlobal	Calculate global summary statistics
-strvalidator	142	strLblStatStutterMarker	Calculate summary statistics by marker
-strvalidator	143	strLblStatStutterStutter	Calculate summary statistics by marker and stutter type
-strvalidator	144	strFrmHb	Heterozygous balance (intra-locus)
-strvalidator	145	strFrmLb	Profile balance (inter-locus)
-strvalidator	146	strLblHb	Calculate heterozygote balance
-strvalidator	147	strLblLb	Calculate profile balance
-strvalidator	148	strLblPlotBalance	Create plots for analysed data
-strvalidator	149	strLblStatBalanceGlobal	Calculate global summary statistics
-strvalidator	150	strLblStatBalanceMarker	Calculate summary statistics by marker
-strvalidator	151	strFrmCapillary	Capillary balance
-strvalidator	152	strLblCapillary	Calculate capillary balance for a dataset
-strvalidator	153	strLblPlotCapillary	Create plots for capillary balance data
-strvalidator	154	strLblStatCapillaryCap	Calculate summary statistics by capillary
-strvalidator	155	strLblStatCapillaryInj	Calculate summary statistics by injection
-strvalidator	156	strLblStatCapillaryRow	Calculate summary statistics by plate row
-strvalidator	157	strLblStatCapillaryRun	Calculate summary statistics by run
-strvalidator	158	strLblStatCapillaryIns	Calculate summary statistics by instrument
-strvalidator	159	strFrmRatio	Marker peak height ratio
-strvalidator	160	strLblRatio	Calculate locus ratio for a dataset
-strvalidator	161	strLblPlotRatio	Create plots for marker ratio data
-strvalidator	162	strLblConcordance	Calculate concordance between multiple datasets
-strvalidator	163	strBtnScore	Score
-strvalidator	164	strLblScore	Score dropouts for a dataset
-strvalidator	165	strLblDropout	Calculate stochastic thresholds
-strvalidator	166	strBtnModel	Model
-strvalidator	167	strLblModel	Model and plot dropout risk
-strvalidator	168	strLblPlotDropout	Create plots for analysed data
-strvalidator	169	strLblMixture	Calculate mixture for a dataset
-strvalidator	170	strFrmType	Result types
-strvalidator	171	strLblType	Calculate result types for a dataset
-strvalidator	172	strLblPlotType	Create plots for result type data
-strvalidator	173	strFrmPeaks	Number of peaks
-strvalidator	174	strLblPeaks	Count the number of peaks in sample
-strvalidator	175	strLblPlotPeaks	Create plots for peak data
-strvalidator	176	strFrmStatistics	Summary statistics
-strvalidator	177	strLblStatistics	Calculate summary statistics
-strvalidator	178	strFrmDistribution	Distributions
-strvalidator	179	strLblDistribution	Plot distributions for data
-strvalidator	180	strLblGroups	Plot cumulative distribution for multiple groups
-strvalidator	181	strFrmDropin	Drop-in tools
-strvalidator	182	strLblSpikes	Identify possible spikes
-strvalidator	183	strLblFilterSpikes	Remove spikes
-strvalidator	184	strLblArtefacts	Identify possible artefacts
-strvalidator	185	strLblFilterArtefacts	Remove artefacts
-strvalidator	186	strLblPlotContamination	Plot contamination
-strvalidator	187	strFrmSlope	Profile slope
-strvalidator	188	strLblSlope	Calculate the profile slope
-strvalidator	189	strLblPlotSlope	Plot slope data
-strvalidator	190	strLblPrecision	Create precision plots
-strvalidator	191	strLblStatPrecisionSize	Calculate summary statistics for Size
-strvalidator	192	strLblStatPrecisionDataPoint	Calculate summary statistics for Data.Point
-strvalidator	193	strLblStatPrecisionHeight	Calculate summary statistics for Height
-strvalidator	194	strLblPullup	Calculate spectral pull-up/bleed-through
-strvalidator	195	strLblPlotPullup	Create plots for pull-up data
+strvalidator	134	strBtnEPG2	EPG2
+strvalidator	135	strLblEPG2	Generate interactive EPG like plot
+strvalidator	136	strLblAT	Calculate analytical threshold (AT1, AT2, AT4, AT7)
+strvalidator	137	strLblAT6	Calculate analytical threshold (AT6)
+strvalidator	138	strBtnPlot	Plot
+strvalidator	139	strLblPlotAT6	Create plots for analysed data (AT6)
+strvalidator	140	strLblStutter	Calculate stutters for a dataset
+strvalidator	141	strLblPlotStutter	Create plots for stutter data
+strvalidator	142	strBtnStatistics	Statistics
+strvalidator	143	strLblStatStutterGlobal	Calculate global summary statistics
+strvalidator	144	strLblStatStutterMarker	Calculate summary statistics by marker
+strvalidator	145	strLblStatStutterStutter	Calculate summary statistics by marker and stutter type
+strvalidator	146	strFrmHb	Heterozygous balance (intra-locus)
+strvalidator	147	strFrmLb	Profile balance (inter-locus)
+strvalidator	148	strLblHb	Calculate heterozygote balance
+strvalidator	149	strLblLb	Calculate profile balance
+strvalidator	150	strLblPlotBalance	Create plots for analysed data
+strvalidator	151	strLblStatBalanceGlobal	Calculate global summary statistics
+strvalidator	152	strLblStatBalanceMarker	Calculate summary statistics by marker
+strvalidator	153	strFrmCapillary	Capillary balance
+strvalidator	154	strLblCapillary	Calculate capillary balance for a dataset
+strvalidator	155	strLblPlotCapillary	Create plots for capillary balance data
+strvalidator	156	strLblStatCapillaryCap	Calculate summary statistics by capillary
+strvalidator	157	strLblStatCapillaryInj	Calculate summary statistics by injection
+strvalidator	158	strLblStatCapillaryRow	Calculate summary statistics by plate row
+strvalidator	159	strLblStatCapillaryRun	Calculate summary statistics by run
+strvalidator	160	strLblStatCapillaryIns	Calculate summary statistics by instrument
+strvalidator	161	strFrmRatio	Marker peak height ratio
+strvalidator	162	strLblRatio	Calculate locus ratio for a dataset
+strvalidator	163	strLblPlotRatio	Create plots for marker ratio data
+strvalidator	164	strLblConcordance	Calculate concordance between multiple datasets
+strvalidator	165	strBtnScore	Score
+strvalidator	166	strLblScore	Score dropouts for a dataset
+strvalidator	167	strLblDropout	Calculate stochastic thresholds
+strvalidator	168	strBtnModel	Model
+strvalidator	169	strLblModel	Model and plot dropout risk
+strvalidator	170	strLblPlotDropout	Create plots for analysed data
+strvalidator	171	strLblMixture	Calculate mixture for a dataset
+strvalidator	172	strFrmType	Result types
+strvalidator	173	strLblType	Calculate result types for a dataset
+strvalidator	174	strLblPlotType	Create plots for result type data
+strvalidator	175	strFrmPeaks	Number of peaks
+strvalidator	176	strLblPeaks	Count the number of peaks in sample
+strvalidator	177	strLblPlotPeaks	Create plots for peak data
+strvalidator	178	strFrmStatistics	Summary statistics
+strvalidator	179	strLblStatistics	Calculate summary statistics
+strvalidator	180	strFrmDistribution	Distributions
+strvalidator	181	strLblDistribution	Plot distributions for data
+strvalidator	182	strLblGroups	Plot cumulative distribution for multiple groups
+strvalidator	183	strFrmDropin	Drop-in tools
+strvalidator	184	strLblSpikes	Identify possible spikes
+strvalidator	185	strLblFilterSpikes	Remove spikes
+strvalidator	186	strLblArtefacts	Identify possible artefacts
+strvalidator	187	strLblFilterArtefacts	Remove artefacts
+strvalidator	188	strLblPlotContamination	Plot contamination
+strvalidator	189	strFrmSlope	Profile slope
+strvalidator	190	strLblSlope	Calculate the profile slope
+strvalidator	191	strLblPlotSlope	Plot slope data
+strvalidator	192	strLblPrecision	Create precision plots
+strvalidator	193	strLblStatPrecisionSize	Calculate summary statistics for Size
+strvalidator	194	strLblStatPrecisionDataPoint	Calculate summary statistics for Data.Point
+strvalidator	195	strLblStatPrecisionHeight	Calculate summary statistics for Height
+strvalidator	196	strLblPullup	Calculate spectral pull-up/bleed-through
+strvalidator	197	strLblPlotPullup	Create plots for pull-up data
 tableBalance_gui	1	strWinTitle	Calculate summary statistics for balance
 tableBalance_gui	2	strChkGui	Save GUI settings
 tableBalance_gui	3	strBtnHelp	Help

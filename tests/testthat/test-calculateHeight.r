@@ -2,10 +2,12 @@ context("calculateHeight")
 
 ################################################################################
 # CHANGE LOG
+# 21.11.2021: Fixed unique sample names in df7.
+# 21.11.2021: Changed partial match argument "na" to full name "na.replace".
 # 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
-# 16.09.2016: Uppdated with test 21-22 for complete negative samples, updated test 16.
-# 15.09.2016: Uppdated with test 20 for homozygous double notation.
-# 19.08.2016: Uppdated as a consequence of a bug fix.
+# 16.09.2016: Updated with test 21-22 for complete negative samples, updated test 16.
+# 15.09.2016: Updated with test 20 for homozygous double notation.
+# 19.08.2016: Updated as a consequence of a bug fix.
 # 15.08.2016: Updated to match re-written function. Added additional tests.
 # 12.10.2014: Added test for NA in Allele column (test 14 and 15).
 # 10.09.2014: Added test for parameter 'exclude' (test 12 and 13).
@@ -91,13 +93,26 @@ test_that("calculateHeight", {
   df6$Allele <- NA
 
   # One result and one negative sample.
-  df7 <- rbind(df4, df6)
+  df7 <- df6
+  df7$Sample.Name <- "AnotherSample"
+  df7 <- rbind(df7, df4)
+
+  # Check correct formula, division by expected alleles.
+  df8 <- ref4
+  df8$Sample.Name <- "MySample2"
+  df8 <- rbind(ref4, df8)
+  df8$Height <- NA
+  df8[df8$Sample.Name == "MySample2" & df8$Marker == "AMEL", ]$Height <- 200
+  df8[df8$Sample.Name == "MySample", ]$Height <- 100
+  df8[df8$Sample.Name == "MySample" & df8$Marker == "AMEL", ]$Height <- 200
+  df8[df8$Sample.Name == "MySample" & df8$Marker == "D18", ]$Height <- 200
+  df8[df8$Sample.Name == "MySample" & df8$Marker == "TH01", ]$Height <- 200
 
   # TEST 01 -------------------------------------------------------------------
   # Test that analysis of one sample works.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df1, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df1, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -117,10 +132,10 @@ test_that("calculateHeight", {
   expect_that(res$Peaks, equals(19))
 
   # TEST 02 -------------------------------------------------------------------
-  # Test that analysis of a dataset works.
+  # Test that analysis of a dataset with multiple samples works.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df2, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df2, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -142,10 +157,10 @@ test_that("calculateHeight", {
   expect_that(res$Peaks[2], equals(18))
 
   # TEST 03 -------------------------------------------------------------------
-  # Test that analysis of a dataset with negative samples work.
+  # Test that analysis of a dataset including negative samples work.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df3, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df3, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -171,7 +186,7 @@ test_that("calculateHeight", {
   # with replacement of NA.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df3, na = 0, add = FALSE)
+  res <- calculateHeight(data = df3, na.replace = 0, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -197,7 +212,7 @@ test_that("calculateHeight", {
   # Add to dataframe.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df1, na = NULL, add = TRUE)
+  res <- calculateHeight(data = df1, na.replace = NULL, add = TRUE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -224,11 +239,11 @@ test_that("calculateHeight", {
   expect_that(unique(res$Peaks), equals(19))
 
   # TEST 06 -------------------------------------------------------------------
-  # Test that analysis of a dataset works.
+  # Test that analysis of a dataset with multiple samples works.
   # Add to dataframe.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df2, na = NULL, add = TRUE)
+  res <- calculateHeight(data = df2, na.replace = NULL, add = TRUE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -257,11 +272,11 @@ test_that("calculateHeight", {
   expect_that(unique(res$Peaks)[2], equals(18))
 
   # TEST 07 -------------------------------------------------------------------
-  # Test that analysis of a dataset with negative samples work.
+  # Test that analysis of a dataset including negative samples work.
   # Add to dataframe.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df3, na = NULL, add = TRUE)
+  res <- calculateHeight(data = df3, na.replace = NULL, add = TRUE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -290,12 +305,12 @@ test_that("calculateHeight", {
   expect_that(unique(res$Peaks)[2], equals(0))
 
   # TEST 08 -------------------------------------------------------------------
-  # Test that analysis of a dataset with negative samples work,
+  # Test that analysis of a dataset including negative samples work,
   # with replacement of NA.
   # Add to dataframe.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df3, na = 0, add = TRUE)
+  res <- calculateHeight(data = df3, na.replace = 0, add = TRUE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -324,10 +339,10 @@ test_that("calculateHeight", {
   expect_that(unique(res$Peaks)[2], equals(0))
 
   # TEST 09 -------------------------------------------------------------------
-  # Test that analysis work when no NA and na!=NULL.
+  # Test that analysis work when no NA and na.replace!=NULL.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df1, na = 0, add = FALSE)
+  res <- calculateHeight(data = df1, na.replace = 0, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -350,7 +365,7 @@ test_that("calculateHeight", {
   # Test that analysis of one sample with off-ladder alleles work.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df4, na = NULL, add = FALSE, exclude = "OL")
+  res <- calculateHeight(data = df4, na.replace = NULL, add = FALSE, exclude = "OL")
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -373,7 +388,7 @@ test_that("calculateHeight", {
   # Test that analysis of one sample with vector as exclude work.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df4, na = NULL, add = TRUE, exclude = c("X", "OL"))
+  res <- calculateHeight(data = df4, na.replace = NULL, add = TRUE, exclude = c("X", "OL"))
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -404,7 +419,7 @@ test_that("calculateHeight", {
   # Test that analysis of one sample with off-ladder alleles work + NA allele.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df5, na = NULL, add = FALSE, exclude = "OL")
+  res <- calculateHeight(data = df5, na.replace = NULL, add = FALSE, exclude = "OL")
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -427,7 +442,7 @@ test_that("calculateHeight", {
   # Test that analysis of one sample with vector as exclude work + NA allele.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df5, na = NULL, add = TRUE, exclude = c("X", "OL"))
+  res <- calculateHeight(data = df5, na.replace = NULL, add = TRUE, exclude = c("X", "OL"))
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -455,10 +470,10 @@ test_that("calculateHeight", {
   expect_that(unique(res$Peaks), equals(15))
 
   # TEST 14 -------------------------------------------------------------------
-  # Test that analysis of one sample works.
+  # Test that analysis of one sample with reference works.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df4, ref = ref4, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df4, ref = ref4, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -487,10 +502,11 @@ test_that("calculateHeight", {
   expect_that(res$Proportion, equals(1))
 
   # TEST 15 -------------------------------------------------------------------
-  # Test that analysis of a dataset works.
+  # Test that analysis of a dataset with reference works.
+  # Includes NA.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df5, ref = ref4, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df5, ref = ref4, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -519,10 +535,10 @@ test_that("calculateHeight", {
   expect_that(round(res$Proportion, 3), equals(0.941))
 
   # TEST 16 -------------------------------------------------------------------
-  # Test that analysis of a dataset with only a negative samples work.
+  # Test that analysis of a dataset with only a negative sample work.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df6, ref = ref4, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df6, ref = ref4, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -531,11 +547,37 @@ test_that("calculateHeight", {
   # Updated 16.09.2016. No longer remove NA samples.
   expect_false(nrow(res) == 0)
 
+  # Check return class.
+  expect_match(class(res), class(data.frame()))
+
+  # Check that expected columns exist.
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("TPH" %in% names(res))
+  expect_true("H" %in% names(res))
+  expect_true("Peaks" %in% names(res))
+  expect_true("Expected" %in% names(res))
+  expect_true("Proportion" %in% names(res))
+
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$TPH)))
+  expect_true(any(is.na(res$H)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_false(any(is.na(res$Expected)))
+  expect_false(any(is.na(res$Proportion)))
+
+  # Check result.
+  expect_that(res$TPH, equals(0))
+  expect_that(round(res$H, 3), equals(NaN))
+  expect_that(res$Peaks, equals(0))
+  expect_that(res$Expected, equals(17))
+  expect_that(round(res$Proportion, 3), equals(0))
+
   # TEST 17 -------------------------------------------------------------------
   # Test that analysis of a dataset with 1 result and 1 negative sample work.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df7, ref = ref4, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df7, ref = ref4, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -568,7 +610,7 @@ test_that("calculateHeight", {
   # Add to dataframe.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df5, ref = ref4, na = NULL, add = TRUE)
+  res <- calculateHeight(data = df5, ref = ref4, na.replace = NULL, add = TRUE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -602,7 +644,10 @@ test_that("calculateHeight", {
   # Remove sex markers.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df5, ref = ref4, na = NULL, add = TRUE, sex.rm = TRUE, kit = "SGMPlus")
+  res <- calculateHeight(
+    data = df5, ref = ref4, na.replace = NULL, add = TRUE,
+    sex.rm = TRUE, kit = "SGMPlus"
+  )
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -635,7 +680,7 @@ test_that("calculateHeight", {
   # with double notation for homozygotes in reference.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df4, ref = ref5, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df4, ref = ref5, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -664,11 +709,11 @@ test_that("calculateHeight", {
   expect_that(res$Proportion, equals(1))
 
   # TEST 21 -------------------------------------------------------------------
-  # Test that analysis of a dataset with only a negative samples work,
+  # Test that analysis of a dataset with only a negative sample work,
   # with reference and replacement of NA.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df6, ref = ref4, na = 0, add = FALSE)
+  res <- calculateHeight(data = df6, ref = ref4, na.replace = 0, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -697,11 +742,11 @@ test_that("calculateHeight", {
   expect_that(res$Proportion, equals(0))
 
   # TEST 22 -------------------------------------------------------------------
-  # Test that analysis of a dataset with only a negative samples work,
-  # with reference and replacement of NA.
+  # Test that analysis of a dataset with only a negative sample work,
+  # with reference.
 
   # Analyse dataframe.
-  res <- calculateHeight(data = df6, ref = ref4, na = NULL, add = FALSE)
+  res <- calculateHeight(data = df6, ref = ref4, na.replace = NULL, add = FALSE)
 
   # Check return class.
   expect_match(class(res), class(data.frame()))
@@ -728,4 +773,42 @@ test_that("calculateHeight", {
   expect_that(res$Peaks, equals(0))
   expect_that(res$Expected, equals(17))
   expect_that(res$Proportion, equals(0))
+
+  # TEST 23 -------------------------------------------------------------------
+  # Test correctness of formula, division by expected alleles.
+  # A full profile with H=100 and a sample with a single allele H=100/20.
+
+  # Analyse dataframe.
+  res <- calculateHeight(data = df8, ref = ref4, na.replace = NULL, add = FALSE)
+
+  # Check return class.
+  expect_match(class(res), class(data.frame()))
+
+  # Check that expected columns exist.
+  expect_true("Sample.Name" %in% names(res))
+  expect_true("TPH" %in% names(res))
+  expect_true("H" %in% names(res))
+  expect_true("Peaks" %in% names(res))
+  expect_true("Expected" %in% names(res))
+  expect_true("Proportion" %in% names(res))
+
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$TPH)))
+  expect_false(any(is.na(res$H)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_false(any(is.na(res$Expected)))
+  expect_false(any(is.na(res$Proportion)))
+
+  # Check result.
+  expect_that(res$TPH[1], equals(2000))
+  expect_that(res$TPH[2], equals(200))
+  expect_that(res$H[1], equals(100))
+  expect_that(res$H[2], equals(100))
+  expect_that(res$Peaks[1], equals(17))
+  expect_that(res$Peaks[2], equals(1))
+  expect_that(res$Expected[1], equals(17))
+  expect_that(res$Expected[2], equals(17))
+  expect_that(res$Proportion[1], equals(17 / 17))
+  expect_that(res$Proportion[2], equals(1 / 17))
 })

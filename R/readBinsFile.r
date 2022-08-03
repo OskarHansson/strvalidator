@@ -60,7 +60,7 @@ readBinsFile <- function(bin.files, debug = FALSE) {
       "Virtual"
     )
     # Remove all NAs
-    bins <- bins [-1, ]
+    bins <- bins[-1, ]
 
     # Get last index.
     rows <- length(allTextSplit)

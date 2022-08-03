@@ -134,7 +134,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
     strtmp <- dtStrings["strBtnProcessing"]$value
     strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-    
+
     strtmp <- dtStrings["strMsgDataset"]$value
     strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
 

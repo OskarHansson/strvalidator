@@ -37,5 +37,5 @@ Duncan Taylor et.al.,
  Validating multiplexes for use in conjunction with modern interpretation strategies,
  Forensic Science International: Genetics, Volume 20, January 2016,
  Pages 6-19, ISSN 1872-4973, 10.1016/j.fsigen.2015.09.011.
-\url{http://www.sciencedirect.com/science/article/pii/S1872497315300739}
+\doi{10.1016/j.fsigen.2015.09.011}
 }

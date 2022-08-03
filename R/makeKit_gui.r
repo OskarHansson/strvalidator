@@ -546,8 +546,8 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         }
       } else {
         # Get current sex marker.
-        sexMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p]
-        & kitInfo$Sex.Marker])
+        sexMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p] &
+          kitInfo$Sex.Marker])
         if (length(sexMarkers) == 0) {
           # If no matching marker, set to no sex marker string.
           sexMarkers <- strLblNone
@@ -566,8 +566,8 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         }
       } else {
         # Get current quality sensors.
-        qsMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p]
-        & kitInfo$Quality.Sensor])
+        qsMarkers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p] &
+          kitInfo$Quality.Sensor])
         if (length(qsMarkers) == 0) {
           # If no matching marker, set to no qs marker string.
           qsMarkers <- strLblNone

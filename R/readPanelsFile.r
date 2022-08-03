@@ -59,7 +59,7 @@ readPanelsFile <- function(panel.files, debug = FALSE) {
       "Repeat"
     )
     # Remove all NAs
-    panels <- panels [-1, ]
+    panels <- panels[-1, ]
 
     # Get last index.
     rows <- length(allTextSplit)

@@ -190,7 +190,7 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
             selectedData2 <- data[, then.by.col] == keys2[k2] & selectedData
             selectedNewData2 <- new.data[, then.by.col] == keys2[k2] & selectedNewData
           } else {
-            selectedData2 <- grepl(keys2[k2], data [, then.by.col],
+            selectedData2 <- grepl(keys2[k2], data[, then.by.col],
               ignore.case = ignore.case
             ) & selectedData
             selectedNewData2 <- grepl(keys2[k2], new.data[, then.by.col],

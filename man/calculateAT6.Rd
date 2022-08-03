@@ -66,7 +66,7 @@ J. Bregu et.al.,
   Analytical thresholds and sensitivity: establishing RFU thresholds for
   forensic DNA analysis, J. Forensic Sci. 58 (1) (2013) 120-129,
   ISSN 1556-4029, DOI: 10.1111/1556-4029.12008.
-\url{http://onlinelibrary.wiley.com/doi/10.1111/1556-4029.12008/abstract}
+\doi{10.1111/1556-4029.12008}
 }
 \seealso{
 \code{\link{calculateAT6_gui}}, \code{\link{calculateAT}},

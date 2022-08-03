@@ -50,7 +50,7 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     "theme_classic()", "theme_void()"
   )
   val_obj <- NULL
-  
+
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
@@ -361,19 +361,19 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   )
 
   # BUTTON ####################################################################
-  
+
   plot_sample_btn <- gbutton(
     text = strBtnPlot, container = gv,
     expand = TRUE, fill = TRUE
   )
   tooltip(plot_sample_btn) <- "Plot slope by sample and group"
-  
+
   addHandlerChanged(plot_sample_btn, handler = function(h, ...) {
     enabled(plot_sample_btn) <- FALSE
     .plot()
     enabled(plot_sample_btn) <- TRUE
   })
-  
+
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
@@ -557,7 +557,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
         icon = "error"
       )
     }
-
   }
 
   # INTERNAL FUNCTIONS ########################################################

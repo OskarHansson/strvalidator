@@ -1,3 +1,20 @@
+Version 2.3.0.9002
+------------------------------------------------------------------------------
+* Added gWidgets2tcltk to imports as gWidgets2RGtk2 was removed from CRAN 2021-11-08
+* New functions:
+  - plotEPG2/plotEPG2_gui/sample_tableToList
+  Interactive EPG plot and converter function (adapted from package euroformix by Øyvind Bleka)
+* Bug fixes and improvements with the most significant listed below:
+  - calculateStatistics_gui
+  Fixed "missing value where TRUE/FALSE needed" due to no matching 'target' or 'count' column names in the default (most recent) data.frame.
+  Fixed saved gui state cleared when opening with pre set parameters.
+* Removed functions (deprecated in 2.3.0):
+  - tableBalance/tableBalance_gui
+  - tableCapillary/tableCapillary_gui
+  - tablePrecision/tablePrecision_gui
+  - tableStutter/tableStutter_gui
+* All code run through styler_1.7.0
+
 Version 2.3.0.9001
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

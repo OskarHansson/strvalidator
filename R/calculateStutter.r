@@ -89,7 +89,7 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
     "Ratio", "Type"
   )
   # Remove all NAs
-  stutterRatio <- stutterRatio [-1, ]
+  stutterRatio <- stutterRatio[-1, ]
 
   # CHECK DATA ----------------------------------------------------------------
 

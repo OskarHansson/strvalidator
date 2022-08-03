@@ -70,5 +70,5 @@ Bright, Jo-Anne, Jnana Turkington, and John Buckleton.
  Identifiler Multiplex."
  Forensic Science International: Genetics 4, no. 2 (February 2010): 111-14.
  doi:10.1016/j.fsigen.2009.07.002.
-\url{http://dx.doi.org/10.1016/j.fsigen.2009.07.002}
+\doi{10.1016/j.fsigen.2009.07.002}
 }

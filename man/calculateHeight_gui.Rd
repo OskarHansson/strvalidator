@@ -36,7 +36,7 @@ Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
  Journal of the Royal Statistical Society: Series C (Applied Statistics),
  Volume 59, Issue 5, 2010,
  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
-\url{http://dx.doi.org/10.1111/j.1467-9876.2010.00722.x}
+\doi{10.1111/j.1467-9876.2010.00722.x}
 }
 \seealso{
 \code{\link{calculateHeight}}

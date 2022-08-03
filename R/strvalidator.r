@@ -28,6 +28,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 23.07.2022: Added button to plotEPG2.
 # 28.06.2020: Description made gexpandgroup and loads only if opened.
 # 07.06.2020: Added calls to calculateStatistics_gui. Depracated table*.
 # 21.05.2020: Added language support for welcome tab/about.
@@ -47,7 +48,6 @@
 # 02.08.2017: Allow multiple objects to be removed from workspace.
 # 31.07.2017: Fixed error when pressing 'New' project.
 # 19.07.2017: Updated the export_gui call with new argument 'obj' and logic.
-# 18.07.2017: Changed 'Edit' button to 'View' button in all tabs except 'Tools'.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -244,6 +244,8 @@ strvalidator <- function(debug = FALSE) {
   strLblHeight <- "Calculate peak height metrics"
   strBtnEPG <- "EPG"
   strLblEPG <- "Generate EPG like plot"
+  strBtnEPG2 <- "EPG2"
+  strLblEPG2 <- "Generate interactive EPG like plot"
   strBtnCalculate <- "Calculate"
   strLblAT <- "Calculate analytical threshold (AT1, AT2, AT4, AT7)"
   strLblAT6 <- "Calculate analytical threshold (AT6)"
@@ -713,6 +715,12 @@ strvalidator <- function(debug = FALSE) {
 
     strtmp <- dtStrings["strLblEPG"]$value
     strLblEPG <- ifelse(is.na(strtmp), strLblEPG, strtmp)
+
+    strtmp <- dtStrings["strBtnEPG2"]$value
+    strBtnEPG2 <- ifelse(is.na(strtmp), strBtnEPG2, strtmp)
+
+    strtmp <- dtStrings["strLblEPG2"]$value
+    strLblEPG2 <- ifelse(is.na(strtmp), strLblEPG2, strtmp)
 
     strtmp <- dtStrings["strLblAT"]$value
     strLblAT <- ifelse(is.na(strtmp), strLblAT, strtmp)
@@ -2395,6 +2403,25 @@ strvalidator <- function(debug = FALSE) {
 
     # Open GUI.
     generateEPG_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+  })
+
+  # GENERATE EPG2 -------------------------------------------------------------
+
+  tools_grid[16, 1] <- tools_epg2_btn <- gbutton(
+    text = strBtnEPG2,
+    container = tools_grid
+  )
+
+  tools_grid[16, 2] <- glabel(
+    text = strLblEPG2,
+    container = tools_grid,
+    anchor = c(-1, 0)
+  )
+
+  addHandlerChanged(tools_epg2_btn, handler = function(h, ...) {
+
+    # Open GUI.
+    plotEPG2_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # AT  #######################################################################

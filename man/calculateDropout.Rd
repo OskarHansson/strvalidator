@@ -96,12 +96,12 @@ Peter Gill et.al.,
  include drop-out and/or drop-in using probabilistic methods,
  Forensic Science International: Genetics, Volume 6, Issue 6, December 2012,
  Pages 679-688, ISSN 1872-4973, 10.1016/j.fsigen.2012.06.002.
-\url{http://www.sciencedirect.com/science/article/pii/S1872497312001354}
+\doi{10.1016/j.fsigen.2012.06.002}
 
 Peter Gill, Roberto Puch-Solis, James Curran,
  The low-template-DNA (stochastic) threshold-Its determination relative to
  risk analysis for national DNA databases,
  Forensic Science International: Genetics, Volume 3, Issue 2, March 2009,
  Pages 104-111, ISSN 1872-4973, 10.1016/j.fsigen.2008.11.009.
-\url{http://www.sciencedirect.com/science/article/pii/S1872497308001798}
+\doi{10.1016/j.fsigen.2008.11.009}
 }
