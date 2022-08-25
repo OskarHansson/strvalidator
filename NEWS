@@ -1,3 +1,20 @@
+Version 2.3.0.9003
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateStutter_gui
+  Fixed 'Replace false stutters' table not working under gWidgets2tcltk. 
+  - calculateStatistics/calculateStatistics_gui
+  Added parameter 'decimals' for rounding of result.
+  - plotEPG2_gui
+  Fixed switched options for Y-scale radio button.
+  - strvalidator
+  Added 'plotly' to supported classes and the view function.
+  - en_GB.txt/es_ES.txt/it_IT.txt
+  Cleared strings for removed functions.
+  - strvalidator (main gui)
+  Fixed workspace not refreshed when no supported objects in environment and after loading a previous project.
+
+  
 Version 2.3.0.9002
 ------------------------------------------------------------------------------
 * Added gWidgets2tcltk to imports as gWidgets2RGtk2 was removed from CRAN 2021-11-08

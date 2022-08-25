@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.08.2022: Added a reference.
 # 01.06.2020: Fixed "object 'val_obj' not found" when pressing plot buttons.
 # 25.04.2020: Added language support.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
@@ -38,6 +39,14 @@
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
+#' 
+#' @references
+#' Antoinette A. Westen, Laurens J.W. Grol, Joyce Harteveld, Anuska S.Matai,
+#' Peter de Knijff, Titia Sijen, Assessment of the stochastic threshold, back- and
+#' forward stutter filters and low template techniques for NGM,
+#' Forensic Science International: Genetetics, Volume 6, Issue 6, December 2012,
+#' Pages 708-715, ISSN 1872-4973, 10.1016/j.fsigen.2012.05.001.
+#'  \doi{10.1016/j.fsigen.2012.05.001}
 #'
 #' @return TRUE
 #'

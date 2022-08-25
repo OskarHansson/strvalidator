@@ -5,6 +5,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 12.08.2022: Changed logical (-> NA in tcltk) to strings in replace-false-stutter df + check for NAs. 
 # 07.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -480,7 +481,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   default <- data.frame(
     False.Stutter = replace_val,
     True.Stutter = by_val,
-    Replace = TRUE,
+    Replace = rep("TRUE", length(replace_val)),
     stringsAsFactors = FALSE
   )
 
@@ -516,14 +517,22 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     val_name_ref <- .gRefName
     val_name <- svalue(save_edt)
     val_replace_df <- default_gdf[]
-    val_chk <- val_replace_df$Replace
+    val_chk <- as.logical(val_replace_df$Replace) # Convert strings to logicals.
     val_replace <- val_replace_df$False.Stutter
     val_by <- val_replace_df$True.Stutter
     val_kit <- svalue(kit_drp)
 
+    # Check for NAs.
+    num_na <- sum(is.na(val_chk))
+    if(num_na > 0){
+      val_chk[is.na(val_chk)] <- FALSE
+      message("Replaced ", num_na, " non TRUE/FALSE strings in column Replace by FALSE")
+    }
+    
     # Get selected values.
     val_replace <- val_replace[val_chk]
     val_by <- val_by[val_chk]
+    
     if (length(val_replace) == 0) {
       val_replace <- NULL
     }

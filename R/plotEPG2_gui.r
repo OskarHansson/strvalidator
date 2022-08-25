@@ -1,5 +1,8 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 12.08.2022: Removed 'Save as image' option. ggsave not compatible with plotly.
+# 04.08.2022: Fixed switched options for Y-scale radio button.
+# 04.08.2022: Removed unused strings.
 # 18.07.2022: First version.
 
 
@@ -60,7 +63,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
   strBtnObjectSaved <- "Object saved"
   strBtnPlot <- "Plot EPG"
   strBtnProcessing <- "Processing..."
@@ -131,9 +133,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     strtmp <- dtStrings["strBtnSaveObject"]$value
     strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
 
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
     strtmp <- dtStrings["strBtnObjectSaved"]$value
     strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
 
@@ -148,12 +147,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     strtmp <- dtStrings["strMsgTitleDataset"]$value
     strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-
-    strtmp <- dtStrings["strBtnOverwrite"]$value
-    strBtnOverwrite <- ifelse(is.na(strtmp), strBtnOverwrite, strtmp)
-
-    strtmp <- dtStrings["strBtnRetry"]$value
-    strBtnRetry <- ifelse(is.na(strtmp), strBtnRetry, strtmp)
   }
 
   # WINDOW ####################################################################
@@ -358,8 +351,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   save_btn <- gbutton(text = strBtnSaveObject, container = save_frame)
 
-  ggsave_btn <- gbutton(text = strBtnSaveImage, container = save_frame)
-
   addHandlerChanged(save_btn, handler = function(h, ...) {
     val_name <- svalue(save_edt)
 
@@ -381,17 +372,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     unblockHandlers(save_btn)
   })
 
-  addHandlerChanged(ggsave_btn, handler = function(h, ...) {
-    val_name <- svalue(save_edt)
-
-    # Save data.
-    ggsave_gui(
-      ggplot = .gPlot, name = val_name,
-      parent = w, env = env, savegui = savegui, debug = debug
-    )
-  })
-
-
   # BUTTON ####################################################################
 
 
@@ -408,10 +388,10 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     if (val_scale == 1) {
       # Use Max across dye y-scale.
-      val_scale <- TRUE
+      val_scale <- FALSE
     } else {
       # Use individual dye y-scale.
-      val_scale <- FALSE
+      val_scale <- TRUE
     }
 
     if (!is.null(val_data)) {

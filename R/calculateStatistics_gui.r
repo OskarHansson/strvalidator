@@ -1,5 +1,8 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.08.2022: Fixed retaining new option decimals to quantile widget.
+# 09.08.2022: Added saving/retaining the new option decimals.
+# 05.08.2022: Decreased spacing in options. Added new option decimals.
 # 02.08.2022: Fixed bug "Error in if (length(value) == 0 || value == "")...".
 # 02.08.2022: Fixed saved gui state cleared when opening with pre set parameters.
 # 28.06.2020: Fixed bug dropdowns not populated in tcltk.
@@ -39,7 +42,7 @@
 #' @seealso \code{link{quantile}}, \code{link{min}}, \code{link{max}}, \code{link{mean}}, \code{link{sd}}
 
 calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
-                                    group = NULL, count = NULL,
+                                    group = NULL, count = NULL, decimals = 4,
                                     env = parent.frame(), savegui = NULL,
                                     debug = FALSE, parent = NULL) {
 
@@ -70,7 +73,8 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   strLblGroupBy <- "Group by column(s):"
   strLblCount <- "Count unique values in column:"
   strDrpColumn <- "<Select Columns>"
-  strLblQuantile <- "Calculate quantile"
+  strLblQuantile <- "Calculate quantile:"
+  strLblDecimals <- "Round to decimals (-1 for no rounding):"
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
@@ -126,6 +130,9 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     strtmp <- dtStrings["strLblQuantile"]$value
     strLblQuantile <- ifelse(is.na(strtmp), strLblQuantile, strtmp)
 
+    strtmp <- dtStrings["strLblDecimals"]$value
+    strLblDecimals <- ifelse(is.na(strtmp), strLblDecimals, strtmp)
+    
     strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
@@ -245,7 +252,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   option_frm <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 5,
     container = gv
   )
 
@@ -310,6 +317,16 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     container = option_frm
   )
 
+  # Decimals ------------------------------------------------------------------
+  
+  glabel(text = strLblDecimals, container = option_frm)
+  
+  decimals_spb <- gspinbutton(
+    from = -1, to = 10,
+    by = 1, value = decimals,
+    container = option_frm
+  )
+  
   # SAVE ######################################################################
 
   save_frame <- gframe(text = strFrmSave, container = gv)
@@ -332,7 +349,8 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     val_group <- svalue(group_edt)
     val_count <- svalue(count_drp)
     val_quant <- svalue(quant_spb)
-
+    val_decimals <- svalue(decimals_spb)
+    
     if (val_group == strDrpColumn) {
       val_group <- NULL
     }
@@ -351,6 +369,8 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       print(val_count)
       print("val_quant")
       print(val_quant)
+      print("val_decimals")
+      print(val_decimals)
     }
 
     # Check if data.
@@ -394,6 +414,8 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
           print(val_count)
           print("val_quant")
           print(val_quant)
+          print("val_decimals")
+          print(val_decimals)
         }
 
         # Change button.
@@ -408,6 +430,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
           group = val_group,
           count = val_count,
           quant = val_quant,
+          decimals = val_decimals,
           debug = debug
         )
 
@@ -542,6 +565,9 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       if (exists(".strvalidator_calculateStatistics_gui_quant", envir = env, inherits = FALSE)) {
         svalue(quant_spb) <- get(".strvalidator_calculateStatistics_gui_quant", envir = env)
       }
+      if (exists(".strvalidator_calculateStatistics_gui_decimals", envir = env, inherits = FALSE)) {
+        svalue(decimals_spb) <- get(".strvalidator_calculateStatistics_gui_decimals", envir = env)
+      }
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -555,7 +581,8 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       assign(x = ".strvalidator_calculateStatistics_gui_savegui", value = svalue(savegui_chk), envir = env)
       assign(x = ".strvalidator_calculateStatistics_gui_group", value = svalue(group_edt), envir = env)
       assign(x = ".strvalidator_calculateStatistics_gui_quant", value = svalue(quant_spb), envir = env)
-
+      assign(x = ".strvalidator_calculateStatistics_gui_decimals", value = svalue(decimals_spb), envir = env)
+      
       if (debug) {
         print("Settings saved!")
       }

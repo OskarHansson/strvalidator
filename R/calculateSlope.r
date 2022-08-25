@@ -1,7 +1,3 @@
-################################################################################
-# TODO LIST
-# TODO: ...
-
 # NOTE: Column names used for calculations with data.table is declared
 # in globals.R to avoid NOTES in R CMD CHECK.
 

@@ -28,6 +28,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 21.08.2022: Fixed workspace not refreshed when no supported objects in environment and after loading a previous project.
+# 12.08.2022: Added "plotly" to supported classes and view function.
 # 23.07.2022: Added button to plotEPG2.
 # 28.06.2020: Description made gexpandgroup and loads only if opened.
 # 07.06.2020: Added calls to calculateStatistics_gui. Depracated table*.
@@ -46,8 +48,6 @@
 # 18.07.2018: Added button to plot groups in 'Result' tab.
 # 17.07.2018: Added button to calculate stochastic thresholds in 'Dropout' tab.
 # 02.08.2017: Allow multiple objects to be removed from workspace.
-# 31.07.2017: Fixed error when pressing 'New' project.
-# 19.07.2017: Updated the export_gui call with new argument 'obj' and logic.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -85,15 +85,18 @@ strvalidator <- function(debug = FALSE) {
   .separator <- .Platform$file.sep # Platform dependent path separator.
   .save_gui <- TRUE
   .ws_last_open_dir <- getwd()
-  .object_classes_view <- c("data.frame", "ggplot")
-  .object_classes_import <- c("data.frame", "ggplot")
+  .object_classes_view <- c("data.frame", "ggplot", "plotly")
+  .object_classes_import <- c("data.frame", "ggplot", "plotly")
   .project_description_variable <- ".strvalidator_project_description"
   .project_tmp_env <- new.env(parent = emptyenv())
   .project_name_list <- NULL
   .project_path_list <- NULL
   .ws_name_variable <- ".strvalidator_project_name"
   .ws_path_variable <- ".strvalidator_project_path"
-
+  .object_empty_df <- data.frame(Object = "[Object]", Size = "[Size]",
+                               stringsAsFactors = FALSE
+  )
+  
   # Language ------------------------------------------------------------------
 
   # Get text for welcome tab from:
@@ -257,7 +260,7 @@ strvalidator <- function(debug = FALSE) {
   strLblStatStutterGlobal <- "Calculate global summary statistics"
   strLblStatStutterMarker <- "Calculate summary statistics by marker"
   strLblStatStutterStutter <- "Calculate summary statistics by marker and stutter type"
-  strFrmHb <- "Heterozygous balance (intra-locus)"
+  strFrmHb <- "Heterozygote balance (intra-locus)"
   strFrmLb <- "Profile balance (inter-locus)"
   strLblHb <- "Calculate heterozygote balance"
   strLblLb <- "Calculate profile balance"
@@ -1519,10 +1522,7 @@ strvalidator <- function(debug = FALSE) {
   tooltip(ws_view_btn) <- strTipView
 
   ws_loaded_tbl <- gWidgets2::gtable(
-    items = data.frame(
-      Object = "[Object]", Size = "[Size]",
-      stringsAsFactors = FALSE
-    ),
+    items = .object_empty_df,
     multiple = TRUE,
     chosencol = 1,
     expand = TRUE,
@@ -1538,7 +1538,10 @@ strvalidator <- function(debug = FALSE) {
 
       # Create a new environment.
       .strvalidator_env <<- new.env(parent = emptyenv())
-      print("A new project environment was created.")
+      message("A new project environment was created.")
+      
+      # Refresh workspace.
+      .refreshLoaded()
     }
   })
 
@@ -1591,6 +1594,11 @@ strvalidator <- function(debug = FALSE) {
 
           # Load new project.
           load(file = ws_path, envir = .strvalidator_env)
+          
+          # Refresh workspace.
+          .refreshLoaded()
+          
+          # Load saved project settings.
           .loadSavedSettings()
 
           # Save last used directory.
@@ -1706,7 +1714,7 @@ strvalidator <- function(debug = FALSE) {
           name = val_obj,
           edit = FALSE, debug = debug, parent = w
         )
-      } else if ("ggplot" %in% val_class) {
+      } else if (any(c("ggplot","plotly") %in% val_class)) {
 
         # Plot object.
         print(val_data)
@@ -4162,6 +4170,13 @@ strvalidator <- function(debug = FALSE) {
         stringsAsFactors = FALSE
       )
       unblockHandler(ws_loaded_tbl)
+    } else {
+      
+      # No objects in environment. Load empty data.frame to clear previous list.
+      blockHandler(ws_loaded_tbl)
+      ws_loaded_tbl[, ] <- .object_empty_df
+      unblockHandler(ws_loaded_tbl)
+
     }
   }
 

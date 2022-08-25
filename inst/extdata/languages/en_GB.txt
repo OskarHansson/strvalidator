@@ -602,15 +602,16 @@ calculateStatistics_gui	9	strLblTarget	Select target column:
 calculateStatistics_gui	10	strLblGroupBy	Group by column(s):
 calculateStatistics_gui	11	strLblCount	Count unique values in column:
 calculateStatistics_gui	12	strDrpColumn	<Select Columns>
-calculateStatistics_gui	13	strLblQuantile	Calculate quantile
-calculateStatistics_gui	14	strFrmSave	Save as
-calculateStatistics_gui	15	strLblSave	Name for result:
-calculateStatistics_gui	16	strBtnCalculate	Calculate
-calculateStatistics_gui	17	strBtnProcessing	Processing...
-calculateStatistics_gui	18	strMsgDataset	A dataset must be selected.
-calculateStatistics_gui	19	strMsgTitleDataset	Dataset not selected
-calculateStatistics_gui	20	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
-calculateStatistics_gui	21	strMsgTitleError	Error
+calculateStatistics_gui	13	strLblQuantile	Calculate quantile:
+calculateStatistics_gui	14	strLblDecimals	Round to decimals (-1 for no rounding):
+calculateStatistics_gui	15	strFrmSave	Save as
+calculateStatistics_gui	16	strLblSave	Name for result:
+calculateStatistics_gui	17	strBtnCalculate	Calculate
+calculateStatistics_gui	18	strBtnProcessing	Processing...
+calculateStatistics_gui	19	strMsgDataset	A dataset must be selected.
+calculateStatistics_gui	20	strMsgTitleDataset	Dataset not selected
+calculateStatistics_gui	21	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
+calculateStatistics_gui	22	strMsgTitleError	Error
 calculateStutter_gui	1	strWinTitle	Calculate stutter ratio
 calculateStutter_gui	2	strChkGui	Save GUI settings
 calculateStutter_gui	3	strBtnHelp	Help
@@ -1376,12 +1377,11 @@ plotEPG2_gui	16	strLblST	Stochastic threshold:
 plotEPG2_gui	17	strFrmSave	Save as
 plotEPG2_gui	18	strLblSave	Name for result:
 plotEPG2_gui	19	strBtnSaveObject	Save as object
-plotEPG2_gui	20	strBtnSaveImage	Save as image
-plotEPG2_gui	21	strBtnObjectSaved	Object saved
-plotEPG2_gui	22	strBtnPlot	Plot EPG
-plotEPG2_gui	23	strBtnProcessing	Processing...
-plotEPG2_gui	24	strMsgDataset	A dataset must be selected. Sample is optional.
-plotEPG2_gui	25	strMsgTitleDataset	Datasets not selected
+plotEPG2_gui	20	strBtnObjectSaved	Object saved
+plotEPG2_gui	21	strBtnPlot	Plot EPG
+plotEPG2_gui	22	strBtnProcessing	Processing...
+plotEPG2_gui	23	strMsgDataset	A dataset must be selected. Sample is optional.
+plotEPG2_gui	24	strMsgTitleDataset	Datasets not selected
 plotGroups_gui	1	strWinTitle	Plot groups
 plotGroups_gui	2	strChkGui	Save GUI settings
 plotGroups_gui	3	strBtnHelp	Help
@@ -1936,7 +1936,7 @@ strvalidator	142	strBtnStatistics	Statistics
 strvalidator	143	strLblStatStutterGlobal	Calculate global summary statistics
 strvalidator	144	strLblStatStutterMarker	Calculate summary statistics by marker
 strvalidator	145	strLblStatStutterStutter	Calculate summary statistics by marker and stutter type
-strvalidator	146	strFrmHb	Heterozygous balance (intra-locus)
+strvalidator	146	strFrmHb	Heterozygote balance (intra-locus)
 strvalidator	147	strFrmLb	Profile balance (inter-locus)
 strvalidator	148	strLblHb	Calculate heterozygote balance
 strvalidator	149	strLblLb	Calculate profile balance
@@ -1988,91 +1988,6 @@ strvalidator	194	strLblStatPrecisionDataPoint	Calculate summary statistics for D
 strvalidator	195	strLblStatPrecisionHeight	Calculate summary statistics for Height
 strvalidator	196	strLblPullup	Calculate spectral pull-up/bleed-through
 strvalidator	197	strLblPlotPullup	Create plots for pull-up data
-tableBalance_gui	1	strWinTitle	Calculate summary statistics for balance
-tableBalance_gui	2	strChkGui	Save GUI settings
-tableBalance_gui	3	strBtnHelp	Help
-tableBalance_gui	4	strFrmDataset	Dataset
-tableBalance_gui	5	strLblDataset	Dataset:
-tableBalance_gui	6	strDrpDataset	<Select dataset>
-tableBalance_gui	7	strLblSamples	samples
-tableBalance_gui	8	strFrmOptions	Options
-tableBalance_gui	9	strLblQuantile	Calculate quantile
-tableBalance_gui	10	strLblBy	Statistics to calculate
-tableBalance_gui	11	strRadGlobal	global
-tableBalance_gui	12	strRadMarker	marker
-tableBalance_gui	13	strFrmSave	Save as
-tableBalance_gui	14	strLblSave	Name for result:
-tableBalance_gui	15	strBtnCalculate	Calculate
-tableBalance_gui	16	strBtnProcessing	Processing...
-tableBalance_gui	17	strMsgNull	Data frame is NULL or NA!
-tableBalance_gui	18	strMsgTitleError	Error
-tableCapillary_gui	1	strWinTitle	Calculate summary statistics for capillary balance
-tableCapillary_gui	2	strChkGui	Save GUI settings
-tableCapillary_gui	3	strBtnHelp	Help
-tableCapillary_gui	4	strFrmDataset	Dataset
-tableCapillary_gui	5	strLblDataset	Dataset:
-tableCapillary_gui	6	strDrpDataset	<Select dataset>
-tableCapillary_gui	7	strLblRows	rows
-tableCapillary_gui	8	strFrmOptions	Options
-tableCapillary_gui	9	strLblBy	Statistics to calculate
-tableCapillary_gui	10	strRadCapillary	capillary
-tableCapillary_gui	11	strRadInjection	injection
-tableCapillary_gui	12	strRadRow	plate row
-tableCapillary_gui	13	strRadRun	run
-tableCapillary_gui	14	strRadInstrument	instrument
-tableCapillary_gui	15	strFrmSave	Save as
-tableCapillary_gui	16	strLblSave	Name for result:
-tableCapillary_gui	17	strBtnCalculate	Calculate
-tableCapillary_gui	18	strBtnProcessing	Processing...
-tableCapillary_gui	19	strMsgNull	Data frame is NULL or NA!
-tableCapillary_gui	20	strMsgTitleError	Error
-tablePrecision_gui	1	strWinTitle	Calculate summary statistics for precision
-tablePrecision_gui	2	strChkGui	Save GUI settings
-tablePrecision_gui	3	strBtnHelp	Help
-tablePrecision_gui	4	strFrmDataset	Dataset
-tablePrecision_gui	5	strLblDataset	Dataset:
-tablePrecision_gui	6	strDrpDataset	<Select dataset>
-tablePrecision_gui	7	strLblSamples	samples
-tablePrecision_gui	8	strFrmOptions	Options
-tablePrecision_gui	9	strRadReference	Filter by reference dataset
-tablePrecision_gui	10	strRadBins	Filter by kit bins
-tablePrecision_gui	11	strRadNone	Do not filter
-tablePrecision_gui	12	strLblReference	Reference dataset:
-tablePrecision_gui	13	strChkIgnore	Ignore case
-tablePrecision_gui	14	strBtnCheck	Check subsetting
-tablePrecision_gui	15	strLblKit	Kit:
-tablePrecision_gui	16	strChkExclude	Exclude virtual bins
-tablePrecision_gui	17	strFrmKey	Create key from columns
-tablePrecision_gui	18	strEdtMessage	Doubleklick or drag column names to list
-tablePrecision_gui	19	strFrmTarget	Calculate precision for target columns
-tablePrecision_gui	20	strFrmSave	Save as
-tablePrecision_gui	21	strLblSave	Name for result:
-tablePrecision_gui	22	strBtnCalculate	Calculate
-tablePrecision_gui	23	strBtnProcessing	Processing...
-tablePrecision_gui	24	strMsgDataset	A dataset and a reference dataset have to be selected.
-tablePrecision_gui	25	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
-tablePrecision_gui	26	strMsgTitleDataset	Datasets not selected
-tablePrecision_gui	27	strWinTitleCheck	Check subsetting
-tablePrecision_gui	28	strMsgTitleError	Error
-tableStutter_gui	1	strWinTitle	Calculate summary statistics for stutters
-tableStutter_gui	2	strChkGui	Save GUI settings
-tableStutter_gui	3	strBtnHelp	Help
-tableStutter_gui	4	strFrmDataset	Dataset
-tableStutter_gui	5	strLblDataset	Dataset:
-tableStutter_gui	6	strDrpDataset	<Select dataset>
-tableStutter_gui	7	strLblSamples	samples
-tableStutter_gui	8	strFrmOptions	Options
-tableStutter_gui	9	strLblQuantile	Calculate quantile
-tableStutter_gui	10	strLblBy	Statistics to calculate
-tableStutter_gui	11	strRadGlobal	global
-tableStutter_gui	12	strRadMarker	marker
-tableStutter_gui	13	strRadStutter	stutter
-tableStutter_gui	14	strFrmSave	Save as
-tableStutter_gui	15	strLblSave	Name for result:
-tableStutter_gui	16	strBtnCalculate	Calculate
-tableStutter_gui	17	strBtnProcessing	Processing...
-tableStutter_gui	18	strMsgNull	Data frame is NULL or NA!
-tableStutter_gui	19	strMsgTitleError	Error
 trim_gui	1	strWinTitle	Trim dataset
 trim_gui	2	strChkGui	Save GUI settings
 trim_gui	3	strBtnHelp	Help

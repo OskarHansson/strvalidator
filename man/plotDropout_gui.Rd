@@ -36,6 +36,14 @@ Automatic plot titles can be replaced by custom titles.
 A name for the result is automatically suggested.
 The resulting plot can be saved as either a plot object or as an image.
 }
+\references{
+Antoinette A. Westen, Laurens J.W. Grol, Joyce Harteveld, Anuska S.Matai,
+Peter de Knijff, Titia Sijen, Assessment of the stochastic threshold, back- and
+forward stutter filters and low template techniques for NGM,
+Forensic Science International: Genetetics, Volume 6, Issue 6, December 2012,
+Pages 708-715, ISSN 1872-4973, 10.1016/j.fsigen.2012.05.001.
+ \doi{10.1016/j.fsigen.2012.05.001}
+}
 \seealso{
 \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 }

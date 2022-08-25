@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 04.08.2022: Added parameter decimals for rounding of result.
 # 13.06.2020: Fixed error in argument checks.
 # 09.06.2020: Added parameter count.
 # 22.05.2020: First version.
@@ -24,6 +25,7 @@
 #' @param group character vector of column(s) to group by, if any.
 #' @param count character column to count unique values in, if any.
 #' @param quant numeric quantile to calculate {0,1}, default 0.95.
+#' @param decimals numeric number of decimals. Negative does not round.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return data.frame with summary statistics.
@@ -32,10 +34,12 @@
 #'
 #' @importFrom stats sd quantile setNames
 #' @importFrom data.table data.table
+#' @importFrom dplyr mutate across %>%
 #'
 
 calculateStatistics <- function(data, target, quant = 0.95,
-                                group = NULL, count = NULL, debug = FALSE) {
+                                group = NULL, count = NULL, 
+                                decimals = -1, debug = FALSE) {
   message("General function to calculate summary statistics.")
 
   # Check ---------------------------------------------------------------------
@@ -174,6 +178,21 @@ calculateStatistics <- function(data, target, quant = 0.95,
   if (debug) {
     print("result:")
     print(res)
+  }
+  
+  # Round ---------------------------------------------------------------------
+  
+  if (decimals >= 0) {
+    
+    message("Round result to ", decimals, " decimals.")
+    
+    # Perform calculations without counting unique values.
+    res <- res %>% mutate(across(c(nameMin, nameMean, nameSd,
+                               nameMax, namePerc), ~round(., decimals)))
+  } else {
+    
+    message("Result not rounded (", decimals, ").")
+    
   }
 
   # Convert to data.frame to assure compatibility with strvalidator.
