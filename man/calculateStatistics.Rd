@@ -10,7 +10,7 @@ calculateStatistics(
   quant = 0.95,
   group = NULL,
   count = NULL,
-  decimals = 4,
+  decimals = -1,
   debug = FALSE
 )
 }
@@ -25,7 +25,7 @@ calculateStatistics(
 
 \item{count}{character column to count unique values in, if any.}
 
-\item{decimals}{numeric number of decimals (default=4. NULL=no rounding).}
+\item{decimals}{numeric number of decimals. Negative does not round.}
 
 \item{debug}{logical indicating printing debug information.}
 }

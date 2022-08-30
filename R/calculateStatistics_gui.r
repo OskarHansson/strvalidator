@@ -27,6 +27,7 @@
 #' @param quant numeric quantile to calculate. Default=0.95.
 #' @param group character vector preselected column(s) to group by.
 #' @param count character vector preselected column to count unique values in.
+#' @param decimals numeric number of decimals. Negative does not round.
 #' @param env environment in which to search for data frames and save result.
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.

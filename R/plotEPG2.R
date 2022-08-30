@@ -13,7 +13,8 @@
 #' @return sub A plotly widget
 #' @export
 #'
-#'
+#' @importFrom plotly mutate %>% plot_ly add_lines add_trace add_annotations layout subplot config
+#' @importFrom stats aggregate na.omit
 #'
 
 plotEPG2 <- function(mixData, kit, refData = NULL, AT = NULL, ST = NULL, dyeYmax = TRUE, plotRepsOnly = TRUE, options = NULL) {

@@ -67,6 +67,7 @@
 #' @return TRUE
 #'
 #' @import gWidgets2
+#' @import gWidgets2tcltk
 #' @importFrom utils packageVersion help object.size browseURL
 #' @importFrom graphics title
 #'

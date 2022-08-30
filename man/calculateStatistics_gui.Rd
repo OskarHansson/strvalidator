@@ -10,6 +10,7 @@ calculateStatistics_gui(
   quant = 0.95,
   group = NULL,
   count = NULL,
+  decimals = 4,
   env = parent.frame(),
   savegui = NULL,
   debug = FALSE,
@@ -26,6 +27,8 @@ calculateStatistics_gui(
 \item{group}{character vector preselected column(s) to group by.}
 
 \item{count}{character vector preselected column to count unique values in.}
+
+\item{decimals}{numeric number of decimals. Negative does not round.}
 
 \item{env}{environment in which to search for data frames and save result.}
 

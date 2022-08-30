@@ -3,7 +3,7 @@ Package: strvalidator
 Type: Package
 Title: Process Control and Validation of Forensic STR Kits
 Version: 2.4.0
-Date: 2022-08-24
+Date: 2022-08-29
 Author: Oskar Hansson
 Maintainer: Oskar Hansson <oskhan@ous-hf.no>
 URL: https://sites.google.com/site/forensicapps/strvalidator
@@ -19,6 +19,8 @@ Imports:
     plyr,
     scales,
     data.table,
+    dplyr,
+    plotly,
     grDevices,
     graphics,
     stats,
@@ -37,5 +39,5 @@ Description: An open source platform for validation and process control.
     More information about each function can be found in the
     respective help documentation.
 License: GPL-2
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Encoding: UTF-8
