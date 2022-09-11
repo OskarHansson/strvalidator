@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Removed destroy workaround.
 # 26.04.2020: Added language support.
 # 26.04.2020: Fixed bug when no kit selected.
 # 04.08.2019: Expand scrollable checkbox view.
@@ -184,29 +185,14 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -232,7 +218,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f0 <- gframe(
     text = strFrmKit,
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 1,
     container = gv,
     expand = TRUE,
     fill = TRUE
@@ -245,6 +231,9 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     expand = TRUE,
     fill = TRUE
   )
+
+  # Set initial size.
+  size(scroll_view) <- c(100, 150)
 
   kit_checkbox_group <- gcheckboxgroup(
     items = getKit(),
@@ -259,7 +248,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
@@ -364,7 +353,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f5 <- gframe(
     text = strFrmSave,
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 

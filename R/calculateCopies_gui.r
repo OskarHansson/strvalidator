@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 01.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
@@ -162,32 +163,18 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroys window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
-    expand = TRUE
+    expand = FALSE,
+    fill = "x"
   )
 
   # Help button group.
@@ -212,15 +199,15 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset, horizontal = FALSE, spacing = 2,
-    container = gv
+    text = strFrmDataset, horizontal = TRUE, spacing = 1,
+    container = gv, expand = FALSE, fill = "x"
   )
-
-  f0g0 <- glayout(container = f0, spacing = 1)
 
   # Datasets ------------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strLblDataset, container = f0)
+
+  samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = f0)
 
   dataset_drp <- gcombobox(
     items = c(
@@ -230,13 +217,11 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
         obj.class = "data.frame"
       )
     ),
-    selected = 1, editable = FALSE, container = f0g0,
-    ellipsize = "none"
+    selected = 1, editable = FALSE, container = f0,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
-  f0g0[1, 2] <- dataset_drp
-
-  f0g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = f0g0)
-  f0g0[1, 3] <- f0g0_samples_lbl
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -254,7 +239,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(f0g0_samples_lbl) <- paste(" ", samples, strLblSamples)
+      svalue(samples_lbl) <- paste(" ", samples, strLblSamples)
       svalue(save_edt) <- paste(val_obj, "_cop", sep = "")
     } else {
 
@@ -262,7 +247,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0g0_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(samples_lbl) <- paste(" 0", strLblSamples)
       svalue(save_edt) <- ""
     }
   })
@@ -271,7 +256,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1 <- gframe(
     text = strFrmOptions, horizontal = FALSE,
-    spacing = 2, container = gv
+    spacing = 1, container = gv
   )
 
   f1_observed_chk <- gcheckbox(

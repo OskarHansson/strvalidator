@@ -1,6 +1,7 @@
 # NB! Can't handle Sample.Names as factors?
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.05.2020: Added language support.
 # 01.03.2019: Fixed expansion of widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -20,8 +21,6 @@
 # 07.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 14.01.2014: Removed requirement for column 'Sample.Name'.
-# 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
-# 27.10.2013: Fixed bug when 'samples'=NULL and 'invertS'=TRUE.
 
 #' @title Trim Data
 #'
@@ -201,29 +200,14 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -247,7 +231,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   # Vertical sub group.
   g0 <- ggroup(
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = gv,
     expand = FALSE,
@@ -257,7 +241,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   # Horizontal sub group.
   g1 <- ggroup(
     horizontal = TRUE,
-    spacing = 2,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = gv,
     expand = TRUE,
@@ -267,7 +251,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   # Vertical sub group.
   g2 <- ggroup(
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = gv,
     expand = FALSE,
@@ -277,18 +261,24 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
   # DATASET ###################################################################
 
-  frame0 <- gframe(
+  f0 <- gframe(
     text = strFrmDataset,
-    horizontal = FALSE,
-    spacing = 2,
+    horizontal = TRUE,
+    spacing = 1,
     container = g0
   )
 
-  g0 <- glayout(container = frame0, spacing = 1)
+  glabel(text = strLblDataset, container = f0)
 
-  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
+  info_txt <- paste(" 0 ", strLblSamples,
+    ", 0 ", strLblColumns,
+    ", 0 ", strLblRows,
+    sep = ""
+  )
 
-  g0[1, 2] <- dataset_drp <- gcombobox(
+  info_lbl <- glabel(text = info_txt, container = f0)
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -298,17 +288,11 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     ),
     selected = 1,
     editable = FALSE,
-    container = g0,
-    ellipsize = "none"
+    container = f0,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
-
-  info_txt <- paste(" 0 ", strLblSamples,
-    ", 0 ", strLblColumns,
-    ", 0 ", strLblRows,
-    sep = ""
-  )
-
-  g0[1, 3] <- info_lbl <- glabel(text = info_txt, container = g0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)

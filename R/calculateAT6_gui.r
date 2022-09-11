@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 27.02.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -189,29 +190,14 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -237,17 +223,19 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
-  g0 <- glayout(container = f0, spacing = 1)
-
   # Datasets ------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  g0[1, 2] <- dataset_drp <- gcombobox(
+  glabel(text = strLblDataset, container = g0)
+
+  g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDefault,
       listObjects(
@@ -258,10 +246,10 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
     selected = 1,
     editable = FALSE,
     container = g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
-
-  g0[1, 3] <- g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -294,9 +282,15 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
     }
   })
 
-  g0[2, 1] <- glabel(text = strLblDatasetRef, container = g0)
+  # Refset --------------------------------------------------------------------
 
-  g0[2, 2] <- refset_drp <- gcombobox(
+  g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblDatasetRef, container = g1)
+
+  g0_ref_lbl <- glabel(text = paste(" 0", strLblRef), container = g1)
+
+  refset_drp <- gcombobox(
     items = c(
       strDrpDefault,
       listObjects(
@@ -306,11 +300,11 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
     ),
     selected = 1,
     editable = FALSE,
-    container = g0,
-    ellipsize = "none"
+    container = g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
-
-  g0[2, 3] <- g0_ref_lbl <- glabel(text = paste(" 0", strLblRef), container = g0)
 
   addHandlerChanged(refset_drp, handler = function(h, ...) {
     val_obj <- svalue(refset_drp)
@@ -339,11 +333,62 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
     }
   })
 
-  # CHECK ---------------------------------------------------------------------
+  # AMOUNT --------------------------------------------------------------------
 
-  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
+  g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  addHandlerChanged(g0_check_btn, handler = function(h, ...) {
+  glabel(text = strLblAmount, container = g2)
+
+  am_lbl <- glabel(text = paste(" 0", strLblSamples), container = g2)
+
+  amset_drp <- gcombobox(
+    items = c(
+      strDrpDefault,
+      listObjects(
+        env = env,
+        obj.class = "data.frame"
+      )
+    ),
+    selected = 1,
+    editable = FALSE,
+    container = g2,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
+  )
+
+  addHandlerChanged(amset_drp, handler = function(h, ...) {
+    val_obj <- svalue(amset_drp)
+
+    # Check if suitable.
+    requiredCol <- c("Sample.Name", "Amount")
+    ok <- checkDataset(
+      name = val_obj, reqcol = requiredCol,
+      env = env, parent = w, debug = debug
+    )
+
+    if (ok) {
+      # Load or change components.
+
+      .gAm <<- get(val_obj, envir = env)
+      .gNameAm <<- val_obj
+      am <- length(unique(.gAm$Sample.Name))
+      svalue(am_lbl) <- paste("", am, strLblSamples)
+    } else {
+
+      # Reset components.
+      .gAm <<- NULL
+      .gNameAm <<- NULL
+      svalue(amset_drp, index = TRUE) <- 1
+      svalue(am_lbl) <- paste(" 0", strLblSamples)
+    }
+  })
+
+  # CHECK #####################################################################
+
+  check_btn <- gbutton(text = strBtnCheck, container = gv)
+
+  addHandlerChanged(check_btn, handler = function(h, ...) {
 
     # Get values.
     val_data <- .gData
@@ -381,59 +426,12 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
     }
   })
 
-  # AMOUNT --------------------------------------------------------------------
-
-  g0[4, 1] <- glabel(text = strLblAmount, container = g0)
-
-  g0[4, 2] <- amset_drp <- gcombobox(
-    items = c(
-      strDrpDefault,
-      listObjects(
-        env = env,
-        obj.class = "data.frame"
-      )
-    ),
-    selected = 1,
-    editable = FALSE,
-    container = g0,
-    ellipsize = "none"
-  )
-
-  g0[4, 3] <- g0_am_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
-
-  addHandlerChanged(amset_drp, handler = function(h, ...) {
-    val_obj <- svalue(amset_drp)
-
-    # Check if suitable.
-    requiredCol <- c("Sample.Name", "Amount")
-    ok <- checkDataset(
-      name = val_obj, reqcol = requiredCol,
-      env = env, parent = w, debug = debug
-    )
-
-    if (ok) {
-      # Load or change components.
-
-      .gAm <<- get(val_obj, envir = env)
-      .gNameAm <<- val_obj
-      am <- length(unique(.gAm$Sample.Name))
-      svalue(g0_am_lbl) <- paste("", am, strLblSamples)
-    } else {
-
-      # Reset components.
-      .gAm <<- NULL
-      .gNameAm <<- NULL
-      svalue(amset_drp, index = TRUE) <- 1
-      svalue(g0_am_lbl) <- paste(" 0", strLblSamples)
-    }
-  })
-
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
@@ -462,7 +460,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   f2 <- gframe(
     text = strFrmSave,
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 

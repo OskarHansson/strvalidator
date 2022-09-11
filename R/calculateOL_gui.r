@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.09.2022: Compacted gui. Removed destroy workaround.
 # 03.03.2020: Added language support.
 # 03.03.2020: Expand scrollable checkbox view.
 # 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
@@ -136,28 +137,13 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -183,7 +169,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   f0 <- gframe(
     text = strFrmKits,
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 1,
     container = gv,
     expand = TRUE,
     fill = TRUE
@@ -197,6 +183,9 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     fill = TRUE
   )
 
+  # Set initial minimal size.
+  size(scroll_view) <- c(100, 150)
+  
   kit_checkbox_group <- gcheckboxgroup(
     items = getKit(),
     checked = FALSE,
@@ -238,7 +227,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 

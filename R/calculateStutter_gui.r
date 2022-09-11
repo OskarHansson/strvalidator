@@ -5,7 +5,9 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
-# 12.08.2022: Changed logical (-> NA in tcltk) to strings in replace-false-stutter df + check for NAs. 
+# 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
+# 31.08.2022: Compacted the gui. Fixed Replacement table not expanding.
+# 12.08.2022: Changed logical (-> NA in tcltk) to strings in replace-false-stutter df + check for NAs.
 # 07.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -213,29 +215,14 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = FALSE
@@ -261,17 +248,24 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 5,
-    container = gv
+    spacing = 1,
+    container = gv,
+    expand = FALSE,
+    fill = "x"
   )
-
-  f0g0 <- glayout(container = f0, spacing = 1)
 
   # Datasets ------------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[1, 2] <- f0_dataset_drp <- gcombobox(
+  glabel(text = strLblDataset, container = f0g0)
+
+  f0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0g0
+  )
+
+  f0_dataset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -282,12 +276,9 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     selected = 1,
     editable = FALSE,
     container = f0g0,
-    ellipsize = "none"
-  )
-
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = f0g0
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(f0_dataset_drp, handler = function(h, ...) {
@@ -323,9 +314,16 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     }
   })
 
-  f0g0[2, 1] <- glabel(text = strLblRefDataset, container = f0g0)
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[2, 2] <- f0_refset_drp <- gcombobox(
+  glabel(text = strLblRefDataset, container = f0g1)
+
+  f0_ref_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = f0g1
+  )
+
+  f0_refset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -335,13 +333,10 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     ),
     selected = 1,
     editable = FALSE,
-    container = f0g0,
-    ellipsize = "none"
-  )
-
-  f0g0[2, 3] <- f0_ref_lbl <- glabel(
-    text = paste(" 0", strLblRef),
-    container = f0g0
+    container = f0g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(f0_refset_drp, handler = function(h, ...) {
@@ -371,11 +366,25 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     }
   })
 
-  # CHECK ---------------------------------------------------------------------
+  # Kit -----------------------------------------------------------------------
 
-  f0g0[3, 2] <- f0_check_btn <- gbutton(text = strBtnCheck, container = f0g0)
+  f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  addHandlerChanged(f0_check_btn, handler = function(h, ...) {
+  glabel(text = strLblKit, container = f0g2)
+
+  kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = f0g2,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
+  )
+
+  # CHECK #####################################################################
+
+  check_btn <- gbutton(text = strBtnCheck, container = gv)
+
+  addHandlerChanged(check_btn, handler = function(h, ...) {
 
     # Get values.
     val_data <- .gData
@@ -412,19 +421,10 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     }
   })
 
-  # Kit -----------------------------------------------------------------------
-
-  f0g0[4, 1] <- glabel(text = strLblKit, container = f0g0)
-
-  f0g0[4, 2] <- kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
-    editable = FALSE, container = f0g0,
-    ellipsize = "none"
-  )
-
   # OPTIONS ###################################################################
 
   f1 <- gframe(strFrmOptions,
+    spacing = 1,
     horizontal = FALSE, container = gv,
     expand = TRUE, fill = TRUE
   )
@@ -433,7 +433,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   f1g1 <- ggroup(
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = f1
   )
@@ -458,8 +458,6 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   # INTERFERENCE --------------------------------------------------------------
 
-  glabel(text = "", container = f1, anchor = c(-1, 0))
-
   glabel(text = strLblInterference, container = f1, anchor = c(-1, 0))
 
   options <- c(strRadNone, strRadStutter, strRadAllele)
@@ -470,8 +468,6 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   )
 
   # FALSE STUTTERS ------------------------------------------------------------
-
-  glabel(text = "", container = f1, anchor = c(-1, 0))
 
   glabel(text = strLblReplace, container = f1, anchor = c(-1, 0))
 
@@ -488,7 +484,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   # gdf generates an error when gui is closed.
   # (rsession.exe:20768): Gtk-CRITICAL **: gtk_tree_view_unref_tree_helper: assertion `node != NULL' failed
   # Issue reported here: https://github.com/jverzani/gWidgets2/issues/11
-  default_gdf <- gdf(items = default, container = f1, expand = TRUE)
+  default_gdf <- gdf(items = default, container = f1, expand = TRUE, fill = TRUE)
 
   # Set initial minimum size.
   size(default_gdf) <- c(100, 100)
@@ -524,15 +520,15 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     # Check for NAs.
     num_na <- sum(is.na(val_chk))
-    if(num_na > 0){
+    if (num_na > 0) {
       val_chk[is.na(val_chk)] <- FALSE
       message("Replaced ", num_na, " non TRUE/FALSE strings in column Replace by FALSE")
     }
-    
+
     # Get selected values.
     val_replace <- val_replace[val_chk]
     val_by <- val_by[val_chk]
-    
+
     if (length(val_replace) == 0) {
       val_replace <- NULL
     }

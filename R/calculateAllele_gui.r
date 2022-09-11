@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 25.02.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -56,10 +57,11 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   strLblDataset <- "Sample dataset:"
   strDrpDefault <- "<Select dataset>"
   strLblRows <- "rows"
+  strLblKit <- "Kit:"
   strFrmOptions <- "Options"
   strLblThreshold <- "Peak height threshold: "
   strTipThreshold <- "Peaks with heights below this value will be removed."
-  strChkSexMarkers <- "Remove sex markers defined in kit: "
+  strChkSexMarkers <- "Remove sex markers defined in kit."
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
@@ -93,6 +95,9 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
     strtmp <- dtStrings["strLblRows"]$value
     strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
+
+    strtmp <- dtStrings["strLblKit"]$value
+    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
 
     strtmp <- dtStrings["strFrmOptions"]$value
     strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
@@ -138,29 +143,13 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    return(FALSE) # Destroy window.
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = FALSE
@@ -181,21 +170,29 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     print(help(fnc, help_type = "html"))
   })
 
-  # DATASET ###################################################################
+  # FRAME 0 ###################################################################
 
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 10,
-    container = gv
+    spacing = 1,
+    container = gv,
+    expand = FALSE,
+    fill = "x"
   )
 
+  # DATASET -------------------------------------------------------------------
 
-  f0g0 <- glayout(container = f0, spacing = 1)
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strLblDataset, container = f0g0)
 
-  f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
+  f0g0_data_col_lbl <- glabel(
+    text = paste(" 0", strLblRows),
+    container = f0g0
+  )
+
+  f0g0_data_drp <- gcombobox(
     items = c(
       strDrpDefault,
       listObjects(
@@ -206,12 +203,9 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     selected = 1,
     editable = FALSE,
     container = f0g0,
-    ellipsize = "none"
-  )
-
-  f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
-    text = paste(" 0", strLblRows),
-    container = f0g0
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(f0g0_data_drp, handler = function(h, ...) {
@@ -231,10 +225,10 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gDataName <<- val_obj
 
       svalue(f0g0_data_col_lbl) <- paste(" ", nrow(.gData), strLblRows)
-      svalue(f2_name) <- paste(.gDataName, "allele", sep = "_")
+      svalue(save_edt) <- paste(.gDataName, "allele", sep = "_")
 
       # Autodetect kit.
-      svalue(f1_kit_drp) <- detectKit(
+      svalue(kit_drp) <- detectKit(
         data = .gData, index = FALSE,
         debug = debug
       )[1]
@@ -242,55 +236,58 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
-      svalue(f2_name) <- ""
+      svalue(save_edt) <- ""
     }
   })
+
+  # KIT -----------------------------------------------------------------------
+
+  f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblKit, container = f0g2)
+
+  kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = f0g2,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
+  )
 
   # OPTIONS ###################################################################
 
-  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 1, container = gv)
 
-  f1g1 <- glayout(container = f1, spacing = 1)
+  f1g1 <- ggroup(container = f1, spacing = 1, expand = TRUE, fill = "x")
 
-  f1g1[1, 1] <- f1_threshold_lbl <- glabel(
+  f1_threshold_lbl <- glabel(
     text = strLblThreshold,
     container = f1g1
   )
-  f1g1[1, 2] <- f1_threshold_edt <- gedit(text = "", width = 10, container = f1g1)
+
+  f1_threshold_edt <- gedit(text = "", width = 10, container = f1g1)
   tooltip(f1_threshold_edt) <- strTipThreshold
 
-  f1g1[2, 1:2] <- f1_sex_chk <- gcheckbox(
-    text = strChkSexMarkers,
-    checked = FALSE, container = f1g1
-  )
+  f1g2 <- ggroup(container = f1, spacing = 1, expand = TRUE, fill = "x")
 
-  f1g1[2, 3] <- f1_kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
-    editable = FALSE, container = f1g1,
-    ellipsize = "none"
+  f1_sex_chk <- gcheckbox(
+    text = strChkSexMarkers,
+    checked = FALSE, container = f1g2
   )
 
   addHandlerChanged(f1_sex_chk, handler = function(h, ...) {
-    val_obj <- svalue(f1_sex_chk)
-
-    if (val_obj) {
-      enabled(f1_kit_drp) <- TRUE
-    } else {
-      enabled(f1_kit_drp) <- FALSE
-    }
+    .widgetState()
   })
 
-  # NAME ######################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = strFrmSave,
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = strLblSave, container = f2)
-  f2_name <- gedit(text = "", width = 40, container = f2, expand = TRUE)
+  glabel(text = strLblSave, container = save_frame)
+
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -299,10 +296,10 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   addHandlerChanged(button_btn, handler = function(h, ...) {
     val_data <- .gData
     val_name_data <- .gDataName
-    val_name <- svalue(f2_name)
+    val_name <- svalue(save_edt)
     val_threshold <- as.numeric(svalue(f1_threshold_edt))
     val_sex <- svalue(f1_sex_chk)
-    val_kit <- svalue(f1_kit_drp)
+    val_kit <- svalue(kit_drp)
 
     if (!is.na(val_data) && !is.null(val_data)) {
 
@@ -357,6 +354,16 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   })
 
   # INTERNAL FUNCTIONS ########################################################
+
+  .widgetState <- function() {
+    val_obj <- svalue(f1_sex_chk)
+
+    if (val_obj) {
+      enabled(kit_drp) <- TRUE
+    } else {
+      enabled(kit_drp) <- FALSE
+    }
+  }
 
   .loadSavedSettings <- function() {
 
@@ -427,6 +434,9 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   # Load GUI settings.
   .loadSavedSettings()
+
+  # Initiate widgets.
+  .widgetState()
 
   # Show GUI.
   visible(w) <- TRUE

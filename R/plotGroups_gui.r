@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 26.04.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -239,27 +240,12 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
-    horizontal = FALSE, spacing = 5, use.scrollwindow = FALSE,
+    horizontal = FALSE, spacing = 1, use.scrollwindow = FALSE,
     container = w, expand = TRUE
   )
 
@@ -283,13 +269,20 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = strFrmDataset, horizontal = TRUE, spacing = 2, container = gv)
+  f0 <- gframe(text = strFrmDataset, horizontal = FALSE, spacing = 1, container = gv)
 
-  f0g0 <- glayout(container = f0, spacing = 2)
+  # Dataset -------------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(
+  glabel(text = strLblDataset, container = f0g0)
+
+  samples_lbl <- glabel(
+    text = paste(" 0 ", strLblRows, sep = ""),
+    container = f0g0
+  )
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -298,35 +291,47 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       )
     ),
     selected = 1, editable = FALSE,
-    container = f0g0, ellipsize = "none"
+    container = f0g0, ellipsize = "none",
+    expand = TRUE, fill = "x"
   )
 
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(
-    text = paste(" (0 ", strLblRows, ")", sep = ""),
-    container = f0g0
-  )
+  # Column --------------------------------------------------------------------
 
-  f0g0[2, 1] <- glabel(text = strLblColumn, container = f0g0)
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[2, 2] <- f0_flat_drp <- gcombobox(
+  glabel(text = strLblColumn, container = f0g1)
+
+  flat_drp <- gcombobox(
     items = strDrpColumn, selected = 1,
-    container = f0g0, ellipsize = "none"
+    container = f0g1, ellipsize = "none",
+    expand = TRUE, fill = "x"
   )
 
-  f0g0[3, 1] <- glabel(text = strLblGroup, container = f0g0)
+  # Group ---------------------------------------------------------------------
 
-  f0g0[3, 2] <- f0_group_drp <- gcombobox(
+  f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblGroup, container = f0g2)
+
+  group_drp <- gcombobox(
     items = strDrpGroup, selected = 1,
-    container = f0g0, ellipsize = "none"
+    container = f0g2, ellipsize = "none",
+    expand = TRUE, fill = "x"
   )
 
-  f0g0[4, 1] <- glabel(text = strLblPlot, container = f0g0)
+  # Plot ----------------------------------------------------------------------
 
-  f0g0[4, 2] <- f0_axis_drp <- gcombobox(
+  f0g3 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblPlot, container = f0g3)
+
+  axis_drp <- gcombobox(
     items = strDrpColumn, selected = 1,
-    container = f0g0, ellipsize = "none"
+    container = f0g3, ellipsize = "none",
+    expand = TRUE, fill = "x"
   )
 
+  # Handlers ------------------------------------------------------------------
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -351,8 +356,8 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       # Get number of observations.
-      svalue(f0_samples_lbl) <- paste(" (", nrow(.gData), " ",
-        strLblRows, ")",
+      svalue(samples_lbl) <- paste(" ", nrow(.gData), " ",
+        strLblRows,
         sep = ""
       )
 
@@ -363,14 +368,14 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
-      svalue(f0_samples_lbl) <- paste(" (0 ", strLblRows, ")", sep = "")
+      svalue(samples_lbl) <- paste(" 0 ", strLblRows, sep = "")
     }
   })
 
-  addHandlerChanged(f0_group_drp, handler = function(h, ...) {
+  addHandlerChanged(group_drp, handler = function(h, ...) {
 
     # Extract selected column name.
-    val <- svalue(f0_group_drp)
+    val <- svalue(group_drp)
 
     # Get unique groups, save in global variable.
     .groups <<- unique(.gData[[val]])
@@ -382,7 +387,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions, horizontal = FALSE, spacing = 2,
+    text = strFrmOptions, horizontal = FALSE, spacing = 1,
     container = gv
   )
 
@@ -412,13 +417,13 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
 
-  f1g2 <- ggroup(container = f1, spacing = 2, horizontal = TRUE, expand = TRUE)
+  f1g2 <- ggroup(container = f1, spacing = 1, horizontal = TRUE, expand = TRUE)
 
   glabel(text = strLblLabels, container = f1g2)
   f1_labels_edt <- gedit(expand = TRUE, fill = TRUE, container = f1g2)
   tooltip(f1_labels_edt) <- strTipLabels
 
-  f1g3 <- glayout(container = f1, spacing = 2, expand = TRUE)
+  f1g3 <- glayout(container = f1, spacing = 1, expand = TRUE)
 
   f1g3[1, 1] <- glabel(text = strLblTheme, anchor = c(-1, 0), container = f1g3)
 
@@ -455,7 +460,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   tooltip(plot_ecdf_btn) <- strTipPlot
 
   addHandlerChanged(plot_ecdf_btn, handler = function(h, ...) {
-    val_column <- svalue(f0_axis_drp)
+    val_column <- svalue(axis_drp)
 
     if (val_column == strDrpColumn) {
       gmessage(
@@ -472,7 +477,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = strFrmSave, horizontal = TRUE, spacing = 2, container = gv)
+  f5 <- gframe(text = strFrmSave, horizontal = TRUE, spacing = 1, container = gv)
 
   glabel(text = strLblSave, container = f5)
 
@@ -524,15 +529,15 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     val_x_title <- svalue(x_title_edt)
     val_y_title <- svalue(y_title_edt)
     val_theme <- svalue(f1_theme_drp)
-    val_group <- svalue(f0_group_drp)
-    val_axis <- svalue(f0_axis_drp)
+    val_group <- svalue(group_drp)
+    val_axis <- svalue(axis_drp)
     val_xmin <- as.numeric(svalue(f1g6_x_min_edt))
     val_xmax <- as.numeric(svalue(f1g6_x_max_edt))
     val_ymin <- as.numeric(svalue(f1g6_y_min_edt))
     val_ymax <- as.numeric(svalue(f1g6_y_max_edt))
     val_labels <- unlist(strsplit(svalue(f1_labels_edt), ","))
     val_names <- .groups
-    val_flatten <- svalue(f0_flat_drp)
+    val_flatten <- svalue(flat_drp)
 
     if (debug) {
       print("val_titles")
@@ -754,33 +759,33 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     columns <- names(.gData)
 
     # Block handlers.
-    blockHandler(f0_group_drp)
-    blockHandler(f0_axis_drp)
-    blockHandler(f0_flat_drp)
+    blockHandler(group_drp)
+    blockHandler(axis_drp)
+    blockHandler(flat_drp)
 
     if (!is.null(columns)) {
 
       # Populate drop list.
-      f0_group_drp[] <- c(strDrpGroup, columns)
-      f0_axis_drp[] <- c(strDrpColumn, columns)
-      f0_flat_drp[] <- c(strDrpColumn, columns)
+      group_drp[] <- c(strDrpGroup, columns)
+      axis_drp[] <- c(strDrpColumn, columns)
+      flat_drp[] <- c(strDrpColumn, columns)
     } else {
 
       # Reset drop list and select first item.
-      f0_group_drp[] <- c(strDrpGroup)
-      f0_axis_drp[] <- c(strDrpColumn)
-      f0_flat_drp[] <- c(strDrpColumn)
+      group_drp[] <- c(strDrpGroup)
+      axis_drp[] <- c(strDrpColumn)
+      flat_drp[] <- c(strDrpColumn)
     }
 
     # Select helpful text.
-    svalue(f0_group_drp, index = TRUE) <- 1
-    svalue(f0_axis_drp, index = TRUE) <- 1
-    svalue(f0_flat_drp, index = TRUE) <- 1
+    svalue(group_drp, index = TRUE) <- 1
+    svalue(axis_drp, index = TRUE) <- 1
+    svalue(flat_drp, index = TRUE) <- 1
 
     # Unblock handlers.
-    unblockHandler(f0_group_drp)
-    unblockHandler(f0_axis_drp)
-    unblockHandler(f0_flat_drp)
+    unblockHandler(group_drp)
+    unblockHandler(axis_drp)
+    unblockHandler(flat_drp)
   }
 
   .loadSavedSettings <- function() {

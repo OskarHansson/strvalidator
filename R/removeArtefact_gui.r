@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 02.05.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -137,29 +138,14 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = FALSE
@@ -185,16 +171,22 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 1,
     container = gv
   )
 
+  # Dataset -------------------------------------------------------------------
 
-  f0g0 <- glayout(container = f0, spacing = 1)
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strLblDataset, container = f0g0)
 
-  f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
+  data_col_lbl <- glabel(
+    text = paste(" 0", strLblRows),
+    container = f0g0
+  )
+
+  data_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -205,16 +197,13 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     selected = 1,
     editable = FALSE,
     container = f0g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
-    text = paste(" 0", strLblRows),
-    container = f0g0
-  )
-
-  addHandlerChanged(f0g0_data_drp, handler = function(h, ...) {
-    val_obj <- svalue(f0g0_data_drp)
+  addHandlerChanged(data_drp, handler = function(h, ...) {
+    val_obj <- svalue(data_drp)
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele")
@@ -229,19 +218,28 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      svalue(f0g0_data_col_lbl) <- paste("", nrow(.gData), strLblRows)
-      svalue(f2_name) <- paste(.gDataName, "no_artefacts", sep = "_")
+      svalue(data_col_lbl) <- paste("", nrow(.gData), strLblRows)
+      svalue(save_edt) <- paste(.gDataName, "no_artefacts", sep = "_")
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
-      svalue(f2_name) <- ""
+      svalue(data_col_lbl) <- paste(" 0", strLblRows)
+      svalue(save_edt) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = strLblArtefacts, container = f0g0)
+  # Artefacts -----------------------------------------------------------------
 
-  f0g0[2, 2] <- f0g0_spike_drp <- gcombobox(
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblArtefacts, container = f0g1)
+
+  spike_col_lbl <- glabel(
+    text = paste(" 0", strLblRows),
+    container = f0g1
+  )
+
+  spike_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -251,17 +249,14 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     ),
     selected = 1,
     editable = FALSE,
-    container = f0g0,
-    ellipsize = "none"
+    container = f0g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0g0[2, 3] <- f0g0_spike_col_lbl <- glabel(
-    text = paste(" 0", strLblRows),
-    container = f0g0
-  )
-
-  addHandlerChanged(f0g0_spike_drp, handler = function(h, ...) {
-    val_obj <- svalue(f0g0_spike_drp)
+  addHandlerChanged(spike_drp, handler = function(h, ...) {
+    val_obj <- svalue(spike_drp)
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele")
@@ -276,17 +271,17 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gArtefact <<- get(val_obj, envir = env)
       .gArtefactName <<- val_obj
 
-      svalue(f0g0_spike_col_lbl) <- paste("", nrow(.gArtefact), strLblRows)
+      svalue(spike_col_lbl) <- paste("", nrow(.gArtefact), strLblRows)
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
+      svalue(data_col_lbl) <- paste(" 0", strLblRows)
     }
   })
 
   # OPTIONS ###################################################################
 
-  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 1, container = gv)
 
   f1_na_chk <- gcheckbox(
     text = strChkRemoveNA,
@@ -301,17 +296,13 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     digits = 2, container = f1g1
   )
 
-  # NAME ######################################################################
+  # SAVE ######################################################################
 
-  f2 <- gframe(
-    text = strFrmSave,
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  glabel(text = strLblSave, container = f2)
-  f2_name <- gedit(text = "", width = 40, container = f2, expand = TRUE)
+  glabel(text = strLblSave, container = save_frame)
+
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -322,7 +313,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     val_artefact <- .gArtefact
     val_name_data <- .gDataName
     val_name_spike <- .gArtefactName
-    val_name <- svalue(f2_name)
+    val_name <- svalue(save_edt)
     val_na <- svalue(f1_na_chk)
     val_threshold <- svalue(f1_threshold_spn)
 

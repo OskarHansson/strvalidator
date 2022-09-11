@@ -341,7 +341,7 @@ export <- function(object, name = NA, use.object.name = is.na(name),
     print("failed")
     print(failed)
   }
-  # If 0 rows all objects were sucessfully exported.
+  # If 0 rows all objects were successfully exported.
   if (nrow(failed) == 0) {
     failed <- NA
   }

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 08.03.2020: Added check for data selected.
 # 08.03.2020: Added language support.
 # 16.03.2019: Fixed R Check note.
@@ -147,29 +148,14 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = FALSE
@@ -195,16 +181,23 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
 
-  f0g0 <- glayout(container = f0, spacing = 1)
+  # DATASET 1 -----------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = strLblSet1, container = f0g0)
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[1, 2] <- f0g0_data1_drp <- gcombobox(
+  glabel(text = strLblSet1, container = f0g0)
+
+  data1_col_lbl <- glabel(
+    text = paste(" 0", strLblColumns),
+    container = f0g0
+  )
+
+  data1_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -215,16 +208,13 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
     selected = 1,
     editable = FALSE,
     container = f0g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0g0[1, 3] <- f0g0_data1_col_lbl <- glabel(
-    text = paste(" 0", strLblColumns),
-    container = f0g0
-  )
-
-  addHandlerChanged(f0g0_data1_drp, handler = function(h, ...) {
-    val_obj <- svalue(f0g0_data1_drp)
+  addHandlerChanged(data1_drp, handler = function(h, ...) {
+    val_obj <- svalue(data1_drp)
 
     # Check if suitable.
     ok <- checkDataset(
@@ -238,19 +228,28 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       .gData1 <<- get(val_obj, envir = env)
       .gData1Name <<- val_obj
 
-      svalue(f0g0_data1_col_lbl) <- paste(" ", ncol(.gData1), strLblColumns)
+      svalue(data1_col_lbl) <- paste(" ", ncol(.gData1), strLblColumns)
       svalue(save_edt) <- paste(.gData1Name, .gData2Name, sep = "_")
     } else {
       .gData1 <<- NULL
       .gData1Name <<- NULL
-      svalue(f0g0_data1_col_lbl) <- paste(" 0", strLblColumns)
+      svalue(data1_col_lbl) <- paste(" 0", strLblColumns)
       svalue(save_edt) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = strLblSet2, container = f0g0)
+  # DATASET 2 -----------------------------------------------------------------
 
-  f0g0[2, 2] <- f0g0_data2_drp <- gcombobox(
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblSet2, container = f0g1)
+
+  data2_col_lbl <- glabel(
+    text = paste(" 0", strLblColumns),
+    container = f0g1
+  )
+
+  data2_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -260,28 +259,25 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
     ),
     selected = 1,
     editable = FALSE,
-    container = f0g0,
-    ellipsize = "none"
+    container = f0g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0g0[2, 3] <- f0g0_data2_col_lbl <- glabel(
-    text = paste(" 0", strLblColumns),
-    container = f0g0
-  )
-
-  addHandlerChanged(f0g0_data2_drp, handler = function(h, ...) {
-    val_obj <- svalue(f0g0_data2_drp)
+  addHandlerChanged(data2_drp, handler = function(h, ...) {
+    val_obj <- svalue(data2_drp)
 
     if (exists(val_obj, envir = env, inherits = FALSE)) {
       .gData2 <<- get(val_obj, envir = env)
       .gData2Name <<- val_obj
 
-      svalue(f0g0_data2_col_lbl) <- paste(" ", ncol(.gData2), strLblColumns)
+      svalue(data2_col_lbl) <- paste(" ", ncol(.gData2), strLblColumns)
       svalue(save_edt) <- paste(.gData1Name, .gData2Name, sep = "_")
     } else {
       .gData2 <<- NULL
       .gData1Name <<- NULL
-      svalue(f0g0_data2_col_lbl) <- paste(" 0", strLblColumns)
+      svalue(data2_col_lbl) <- paste(" 0", strLblColumns)
       svalue(save_edt) <- ""
     }
   })

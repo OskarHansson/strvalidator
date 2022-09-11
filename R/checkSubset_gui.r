@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 07.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 15.07.2013: Added 'options' group.
 # 11.06.2013: Added 'inherits=FALSE' to 'exists'.
 # 04.06.2013: Fixed bug in 'missingCol'.
-# 24.05.2013: Improved error message for missing columns.
 
 #' @title Check Subset
 #'
@@ -169,29 +169,14 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -217,15 +202,22 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
-  f0g1 <- glayout(container = f0, spacing = 1)
+  # SAMPLE --------------------------------------------------------------------
 
-  f0g1[1, 1] <- glabel(text = strLblDataset, container = f0g1)
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g1[1, 2] <- dataset_drp <- gcombobox(
+  glabel(text = strLblDataset, container = f0g1)
+
+  dataset_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0g1
+  )
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -236,12 +228,9 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     selected = 1,
     editable = FALSE,
     container = f0g1,
-    ellipsize = "none"
-  )
-
-  f0g1[1, 3] <- dataset_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = f0g1
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
@@ -268,9 +257,18 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
   })
 
-  f0g1[2, 1] <- glabel(text = strLblRefDataset, container = f0g1)
+  # REFERENCE -----------------------------------------------------------------
 
-  f0g1[2, 2] <- dataset_ref_drp <- gcombobox(
+  f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblRefDataset, container = f0g2)
+
+  dataset_ref_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = f0g2
+  )
+
+  dataset_ref_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -280,19 +278,19 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     ),
     selected = 1,
     editable = FALSE,
-    container = f0g1,
-    ellipsize = "none"
+    container = f0g2,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0g1[2, 3] <- dataset_ref_lbl <- glabel(
-    text = paste(" 0", strLblRef),
-    container = f0g1
-  )
+  # MANUAL --------------------------------------------------------------------
 
+  f0g3 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g1[3, 1] <- glabel(text = strLblManual, container = f0g1)
+  glabel(text = strLblManual, container = f0g3)
 
-  f0g1[3, 2] <- dataset_ref_edt <- gedit(container = f0g1)
+  dataset_ref_edt <- gedit(container = f0g3, expand = TRUE, fill = "x")
 
   addHandlerChanged(dataset_ref_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_ref_drp)
@@ -323,7 +321,7 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 

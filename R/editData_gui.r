@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.09.2022: Fixed dataset info when NULL. Added view button. Now default to limit.
 # 17.10.2021: Try to expand dropdown for dataset under tcltk.
 # 08.03.2020: Added language support.
 # 18.03.2019: Fixed freeze when opened with a NA containing dataset in view mode (tcltk).
@@ -86,6 +87,8 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   strChkAttributes <- "Show attributes (separate window)"
   strChkLimit <- "Limit number of rows to:"
   strTipLimit <- "NB! Sorting will only be performed on the loaded data."
+  strBtnView <- "View"
+  strTipView <- "View as interactive table in Posit Viewer tab."
   strBtnCopy <- "Copy"
   strTipCopy <- "Copy to clipboard (NB! large datasets might get truncated)."
   strBtnCopying <- "Copying..."
@@ -94,7 +97,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   strBtnSave <- "Save as"
   strTipSave <- "Save as new dataset in this project."
   strBtnSaving <- "Saving..."
-  strFrmSave <- "Copy|Export|Save"
+  strFrmSave <- "View|Copy|Export|Save"
   strLblNoData <- "There is no data"
   strMsgSave <- "A name must be provided."
   strMsgTitleError <- "Error"
@@ -224,28 +227,13 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -271,15 +259,20 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
-  g0 <- glayout(container = f0, spacing = 1, expand = TRUE)
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
+  glabel(text = strLblDataset, container = g0)
 
-  g0[1, 2] <- dataset_drp <- gcombobox(
+  # Show info about selected dataset.
+  g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
+  g0_columns_lbl <- glabel(text = paste(" 0", strLblColumns), container = g0)
+  g0_rows_lbl <- glabel(text = paste(" 0", strLblRows), container = g0)
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -290,20 +283,14 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     selected = 1,
     editable = FALSE,
     container = g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   if (!is.null(.gDataName) && nchar(.gDataName) > 0) {
     svalue(dataset_drp) <- .gDataName
   }
-
-  g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
-  g0_columns_lbl <- glabel(text = paste(" 0", strLblColumns), container = g0)
-  g0_rows_lbl <- glabel(text = paste(" 0", strLblRows), container = g0)
-
-  g0[1, 3] <- g0_samples_lbl
-  g0[1, 4] <- g0_columns_lbl
-  g0[1, 5] <- g0_rows_lbl
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -337,7 +324,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
@@ -351,7 +338,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
   g1[2, 1] <- f1_limit_chk <- gcheckbox(
     text = strChkLimit,
-    checked = FALSE, container = g1
+    checked = TRUE, container = g1
   )
   tooltip(f1_limit_chk) <- strTipLimit
 
@@ -379,6 +366,9 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     horizontal = TRUE, spacing = 5, container = gv
   )
 
+  view_btn <- gbutton(text = strBtnView, container = f2)
+  tooltip(view_btn) <- strTipView
+
   copy_btn <- gbutton(text = strBtnCopy, container = f2)
   tooltip(copy_btn) <- strTipCopy
 
@@ -389,6 +379,27 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   tooltip(save_btn) <- strTipSave
 
   save_txt <- gedit(text = .gDataName, container = f2, expand = TRUE, fill = TRUE)
+
+  addHandlerClicked(view_btn, handler = function(h, ...) {
+    val_tbl <- data_tbl[]
+
+    # Change button.
+    blockHandlers(view_btn)
+    svalue(view_btn) <- strBtnCopying
+    unblockHandlers(view_btn)
+    enabled(view_btn) <- FALSE
+
+    # Convert to DT and show in viewer.
+    library(DT)
+    dt <- DT::datatable(val_tbl)
+    print(dt)
+
+    # Change button.
+    blockHandlers(view_btn)
+    svalue(view_btn) <- strBtnCopy
+    unblockHandlers(copy_btn)
+    enabled(view_btn) <- TRUE
+  })
 
   addHandlerClicked(copy_btn, handler = function(h, ...) {
     val_tbl <- data_tbl[]
@@ -523,7 +534,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       print(paste("IN:", match.call()[[1]]))
     }
 
-    if (!clear) {
+    if (!clear && !is.null(.gData)) {
       # Update info.
       if ("Sample.Name" %in% names(.gData)) {
         samples <- length(unique(.gData$Sample.Name))

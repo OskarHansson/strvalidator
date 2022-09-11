@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 20.08.2022: Fixed retaining new option decimals to quantile widget.
 # 09.08.2022: Added saving/retaining the new option decimals.
 # 05.08.2022: Decreased spacing in options. Added new option decimals.
@@ -133,7 +134,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
     strtmp <- dtStrings["strLblDecimals"]$value
     strLblDecimals <- ifelse(is.na(strtmp), strLblDecimals, strtmp)
-    
+
     strtmp <- dtStrings["strFrmSave"]$value
     strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
 
@@ -175,28 +176,13 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -222,13 +208,18 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   data_frm <- gframe(
     text = strFrmDataset,
     horizontal = TRUE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
   # Dataset -------------------------------------------------------------------
 
   glabel(text = strLblDataset, container = data_frm)
+
+  data_rows_lbl <- glabel(
+    text = paste(" 0", strLblRows),
+    container = data_frm
+  )
 
   dfs <- c(strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
 
@@ -237,11 +228,9 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     selected = 1,
     editable = FALSE,
     container = data_frm,
-    ellipsize = "none"
-  )
-  data_rows_lbl <- glabel(
-    text = paste(" 0", strLblRows),
-    container = data_frm
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(data_drp, handler = function(h, ...) {
@@ -253,7 +242,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   option_frm <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
@@ -319,15 +308,15 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   )
 
   # Decimals ------------------------------------------------------------------
-  
+
   glabel(text = strLblDecimals, container = option_frm)
-  
+
   decimals_spb <- gspinbutton(
     from = -1, to = 10,
     by = 1, value = decimals,
     container = option_frm
   )
-  
+
   # SAVE ######################################################################
 
   save_frame <- gframe(text = strFrmSave, container = gv)
@@ -351,7 +340,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     val_count <- svalue(count_drp)
     val_quant <- svalue(quant_spb)
     val_decimals <- svalue(decimals_spb)
-    
+
     if (val_group == strDrpColumn) {
       val_group <- NULL
     }
@@ -583,7 +572,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       assign(x = ".strvalidator_calculateStatistics_gui_group", value = svalue(group_edt), envir = env)
       assign(x = ".strvalidator_calculateStatistics_gui_quant", value = svalue(quant_spb), envir = env)
       assign(x = ".strvalidator_calculateStatistics_gui_decimals", value = svalue(decimals_spb), envir = env)
-      
+
       if (debug) {
         print("Settings saved!")
       }

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 01.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 01.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -188,28 +189,13 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -234,32 +220,39 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   f0 <- gframe(
     text = strFrmDataset, horizontal = FALSE,
-    spacing = 2, container = gv
+    spacing = 1, container = gv
   )
 
-  f0g0 <- glayout(container = f0, expand = TRUE, fill = "both", spacing = 2)
+  # Samples -------------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0_list <- c(strDrpDefault, listObjects(env = env, obj.class = "data.frame"))
+  glabel(text = strLblDataset, container = f0g0)
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(
-    items = f0_list, selected = 1,
-    editable = FALSE, container = f0g0,
-    ellipsize = "none"
-  )
-
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(
+  f0_samples_lbl <- glabel(
     text = paste(" 0", strLblSamples),
     container = f0g0
   )
 
-  f0g0[2, 1] <- glabel(text = strLblKit, container = f0g0)
+  f0_list <- c(strDrpDefault, listObjects(env = env, obj.class = "data.frame"))
 
-  f0g0[2, 2] <- kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+  dataset_drp <- gcombobox(
+    items = f0_list, selected = 1,
     editable = FALSE, container = f0g0,
-    ellipsize = "none"
+    ellipsize = "none", expand = TRUE, fill = "x"
+  )
+
+  # Sizing --------------------------------------------------------------------
+
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblKit, container = f0g1)
+
+  kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = f0g1,
+    ellipsize = "none", expand = TRUE,
+    fill = "x"
   )
 
   f0_add_btn <- gbutton(text = strBtnAdd, container = f0)
@@ -340,9 +333,9 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 1, container = gv)
 
-  f1g0 <- glayout(container = f1, expand = TRUE, fill = "both", spacing = 2)
+  f1g0 <- glayout(container = f1, expand = TRUE, fill = "both", spacing = 1)
 
   f1g0[1, 1] <- glabel(
     text = strLblDelimiter,
@@ -382,7 +375,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   f3 <- gframe(
     text = strFrmSelected,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
@@ -406,7 +399,7 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   f4 <- gframe(
     text = strFrmSave,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 

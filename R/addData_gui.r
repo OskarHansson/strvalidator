@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Prepended .strvalidator_ to saved settings.
+# 01.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 23.02.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
@@ -18,8 +20,6 @@
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 06.05.2014: Implemented 'checkDataset'.
-# 31.07.2013: Added parameter 'ignoreCase'.
-# 18.07.2013: Check before overwrite object.
 
 #' @title Add Data
 #'
@@ -170,28 +170,13 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -217,17 +202,21 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 2,
-    container = gv
+    spacing = 1,
+    container = gv,
+    expand = FALSE,
+    fill = "x"
   )
-
-  g0 <- glayout(container = f0, spacing = 1)
 
   # Datasets ------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = strLblDestination, container = g0)
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  g0[1, 2] <- dataset_drp <- gcombobox(
+  glabel(text = strLblDestination, container = g0)
+
+  g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDefault,
       listObjects(
@@ -238,10 +227,10 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     selected = 1,
     editable = FALSE,
     container = g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
-
-  g0[1, 3] <- g0_samples_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -294,9 +283,13 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
   })
 
-  g0[2, 1] <- glabel(text = strLblSource, container = g0)
+  g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  g0[2, 2] <- refset_drp <- gcombobox(
+  glabel(text = strLblSource, container = g1)
+
+  g1_ref_lbl <- glabel(text = paste(" 0", strLblSamples), container = g1)
+
+  refset_drp <- gcombobox(
     items = c(
       strDrpDefault,
       listObjects(
@@ -306,11 +299,11 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     ),
     selected = 1,
     editable = FALSE,
-    container = g0,
-    ellipsize = "none"
+    container = g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
-
-  g0[2, 3] <- g0_ref_lbl <- glabel(text = paste(" 0", strLblSamples), container = g0)
 
   addHandlerChanged(refset_drp, handler = function(h, ...) {
     val_obj <- svalue(refset_drp)
@@ -327,7 +320,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gDataSource <<- get(val_obj, envir = env)
       .gDataSourceColumns <<- names(.gDataSource)
       ref <- length(unique(.gDataSource$Sample.Name))
-      svalue(g0_ref_lbl) <- paste(" ", ref, strLblSamples)
+      svalue(g1_ref_lbl) <- paste(" ", ref, strLblSamples)
 
       # Update dropdown menues.
       f1_key_drp[] <- c(
@@ -349,7 +342,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     } else {
       .gDataSource <<- NULL
       svalue(refset_drp, index = TRUE) <- 1
-      svalue(g0_ref_lbl) <- paste(" 0", strLblSamples)
+      svalue(g1_ref_lbl) <- paste(" 0", strLblSamples)
 
       # Update dropdown menues.
       f1_key_drp[] <- strDrpDefault
@@ -368,7 +361,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
@@ -579,8 +572,8 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       }
     } else {
       # Load save flag.
-      if (exists(".addData_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".addData_gui_savegui", envir = env)
+      if (exists(".strvalidator_addData_gui_savegui", envir = env, inherits = FALSE)) {
+        svalue(savegui_chk) <- get(".strvalidator_addData_gui_savegui", envir = env)
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -592,8 +585,8 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Then load settings if true.
     if (svalue(savegui_chk)) {
-      if (exists(".addData_gui_exact", envir = env, inherits = FALSE)) {
-        svalue(f1_exact_chk) <- get(".addData_gui_exact", envir = env)
+      if (exists(".strvalidator_addData_gui_exact", envir = env, inherits = FALSE)) {
+        svalue(f1_exact_chk) <- get(".strvalidator_addData_gui_exact", envir = env)
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -605,15 +598,15 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-      assign(x = ".addData_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".addData_gui_exact", value = svalue(f1_exact_chk), envir = env)
+      assign(x = ".strvalidator_addData_gui_savegui", value = svalue(savegui_chk), envir = env)
+      assign(x = ".strvalidator_addData_gui_exact", value = svalue(f1_exact_chk), envir = env)
     } else { # or remove all saved values if false.
 
-      if (exists(".addData_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".addData_gui_savegui", envir = env)
+      if (exists(".strvalidator_addData_gui_savegui", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_addData_gui_savegui", envir = env)
       }
-      if (exists(".addData_gui_exact", envir = env, inherits = FALSE)) {
-        remove(".addData_gui_exact", envir = env)
+      if (exists(".strvalidator_addData_gui_exact", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_addData_gui_exact", envir = env)
       }
 
       if (debug) {
