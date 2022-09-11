@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 02.05.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 07.08.2017: Added audit trail.
@@ -137,29 +138,14 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 15,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = FALSE
@@ -185,16 +171,22 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 10,
+    spacing = 1,
     container = gv
   )
 
+  # Datasets ------------------------------------------------------------------
 
-  f0g0 <- glayout(container = f0, spacing = 1)
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strLblDataset, container = f0g0)
 
-  f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
+  data_col_lbl <- glabel(
+    text = paste(" 0", strLblRows),
+    container = f0g0
+  )
+
+  data_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -205,16 +197,13 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     selected = 1,
     editable = FALSE,
     container = f0g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
-    text = paste(" 0", strLblRows),
-    container = f0g0
-  )
-
-  addHandlerChanged(f0g0_data_drp, handler = function(h, ...) {
-    val_obj <- svalue(f0g0_data_drp)
+  addHandlerChanged(data_drp, handler = function(h, ...) {
+    val_obj <- svalue(data_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Size", "File.Name")
@@ -229,19 +218,28 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      svalue(f0g0_data_col_lbl) <- paste(" ", nrow(.gData), " rows")
-      svalue(f2_name) <- paste(.gDataName, "no_spikes", sep = "_")
+      svalue(data_col_lbl) <- paste(" ", nrow(.gData), " rows")
+      svalue(save_edt) <- paste(.gDataName, "no_spikes", sep = "_")
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
-      svalue(f2_name) <- ""
+      svalue(data_col_lbl) <- paste(" 0", strLblRows)
+      svalue(save_edt) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = strLblSpikes, container = f0g0)
+  # Spikes --------------------------------------------------------------------
 
-  f0g0[2, 2] <- f0g0_spike_drp <- gcombobox(
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblSpikes, container = f0g1)
+
+  spike_col_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0g1
+  )
+
+  spike_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -251,17 +249,14 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     ),
     selected = 1,
     editable = FALSE,
-    container = f0g0,
+    container = f0g1,
     ellipsize = "none"
   )
 
-  f0g0[2, 3] <- f0g0_spike_col_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = f0g0
-  )
+  # Handlers ------------------------------------------------------------------
 
-  addHandlerChanged(f0g0_spike_drp, handler = function(h, ...) {
-    val_obj <- svalue(f0g0_spike_drp)
+  addHandlerChanged(spike_drp, handler = function(h, ...) {
+    val_obj <- svalue(spike_drp)
 
     # Check if suitable.
     requiredCol <- c("Allele", "Id", "Marker")
@@ -276,38 +271,33 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gSpike <<- get(val_obj, envir = env)
       .gSpikeName <<- val_obj
 
-      svalue(f0g0_spike_col_lbl) <- paste(
+      svalue(spike_col_lbl) <- paste(
         "", length(unique(.gSpike$Id)),
         strLblSamples
       )
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblSamples)
+      svalue(data_col_lbl) <- paste(" 0", strLblSamples)
     }
   })
 
   # OPTIONS ###################################################################
 
-  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 10, container = gv)
+  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 1, container = gv)
 
   f1_invert_chk <- gcheckbox(
     text = strChkInvert,
     checked = FALSE, container = f1
   )
 
+  # SAVE ######################################################################
 
-  # NAME ######################################################################
+  save_frame <- gframe(text = strFrmSave, container = gv)
 
-  f2 <- gframe(
-    text = strFrmSave,
-    horizontal = TRUE,
-    spacing = 5,
-    container = gv
-  )
+  glabel(text = strLblSave, container = save_frame)
 
-  glabel(text = strLblSave, container = f2)
-  f2_name <- gedit(text = "", width = 40, container = f2, expand = TRUE)
+  save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
@@ -318,7 +308,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     val_spike <- .gSpike
     val_name_data <- .gDataName
     val_name_spike <- .gSpikeName
-    val_name <- svalue(f2_name)
+    val_name <- svalue(save_edt)
     val_invert <- svalue(f1_invert_chk)
 
     if ((!is.na(val_data) && !is.null(val_data)) &

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 05.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 07.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 03.03.2020: Fixed reference to function name.
 # 02.03.2020: Added language support.
@@ -19,8 +20,6 @@
 # 28.08.2015: Added importFrom
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 26.09.2014: Implemented text field for 'exclude'.
-# 12.09.2014: Implemented new options 'exclude OL'.
-# 28.06.2014: Added help button and moved save gui checkbox.
 
 #' @title Calculate Peak Height
 #'
@@ -223,29 +222,14 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -271,17 +255,22 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
-  f0g0 <- glayout(container = f0, spacing = 1)
+  # Samples -------------------------------------------------------------------
 
-  # Datasets ------------------------------------------------------------------
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strLblDataset, container = f0g0)
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(
+  samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0g0
+  )
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDefault,
       listObjects(
@@ -291,12 +280,9 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     ),
     selected = 1, editable = FALSE,
     container = f0g0,
-    ellipsize = "none"
-  )
-
-  f0g0[1, 3] <- f0g0_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = f0g0
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
@@ -316,7 +302,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(f0g0_samples_lbl) <- paste("", samples, strLblSamples)
+      svalue(samples_lbl) <- paste("", samples, strLblSamples)
 
       # Suggest name for the result.
       svalue(save_edt) <- paste(val_obj, "_height", sep = "")
@@ -331,14 +317,23 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0g0_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(samples_lbl) <- paste(" 0", strLblSamples)
       svalue(save_edt) <- ""
     }
   })
 
-  f0g0[2, 1] <- glabel(text = strLblRefDataset, container = f0g0)
+  # References ----------------------------------------------------------------
 
-  f0g0[2, 2] <- refset_drp <- gcombobox(
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblRefDataset, container = f0g1)
+
+  ref_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = f0g1
+  )
+
+  refset_drp <- gcombobox(
     items = c(
       strDrpDefault,
       listObjects(
@@ -347,13 +342,10 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       )
     ),
     selected = 1, editable = FALSE,
-    container = f0g0,
-    ellipsize = "none"
-  )
-
-  f0g0[2, 3] <- f0g0_ref_lbl <- glabel(
-    text = paste(" 0", strLblRef),
-    container = f0g0
+    container = f0g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(refset_drp, handler = function(h, ...) {
@@ -373,19 +365,31 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
-      svalue(f0g0_ref_lbl) <- paste("", ref, strLblRef)
+      svalue(ref_lbl) <- paste("", ref, strLblRef)
     } else {
 
       # Reset components.
       .gRef <<- NULL
       svalue(refset_drp, index = TRUE) <- 1
-      svalue(f0g0_ref_lbl) <- paste(" 0", strLblRef)
+      svalue(ref_lbl) <- paste(" 0", strLblRef)
     }
   })
 
-  # CHECK ---------------------------------------------------------------------
+  # Kit -----------------------------------------------------------------------
 
-  f0g0[3, 2] <- check_btn <- gbutton(text = strBtnCheck, container = f0g0)
+  f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblKit, container = f0g2)
+
+  kit_drp <- gcombobox(
+    items = getKit(), selected = 1,
+    editable = FALSE, container = f0g2,
+    ellipsize = "none", expand = TRUE, fill = "x"
+  )
+
+  # CHECK #####################################################################
+
+  check_btn <- gbutton(text = strBtnCheck, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
 
@@ -428,22 +432,12 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     }
   })
 
-  # Kit -----------------------------------------------------------------------
-
-  f0g0[4, 1] <- glabel(text = strLblKit, container = f0g0)
-
-  f0g0[4, 2] <- kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
-    editable = FALSE, container = f0g0,
-    ellipsize = "none"
-  )
-
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 

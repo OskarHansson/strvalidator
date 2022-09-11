@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 04.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
 # 06.08.2017: Added audit trail.
@@ -157,28 +158,13 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 8,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -204,17 +190,22 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
-  g0 <- glayout(container = f0, spacing = 1)
-
   # Datasets ------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  g0[1, 2] <- g0_dataset_drp <- gcombobox(
+  glabel(text = strLblDataset, container = g0)
+
+  samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDefault,
       listObjects(
@@ -225,16 +216,13 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     selected = 1,
     editable = FALSE,
     container = g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  g0[1, 3] <- g0_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = g0
-  )
-
-  addHandlerChanged(g0_dataset_drp, handler = function(h, ...) {
-    val_obj <- svalue(g0_dataset_drp)
+  addHandlerChanged(dataset_drp, handler = function(h, ...) {
+    val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Height")
@@ -250,15 +238,15 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(g0_samples_lbl) <- paste("", samples, strLblSamples)
+      svalue(samples_lbl) <- paste("", samples, strLblSamples)
       svalue(save_edt) <- paste(.gDataName, "_peaks", sep = "")
     } else {
 
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(g0_dataset_drp, index = TRUE) <- 1
-      svalue(g0_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(dataset_drp, index = TRUE) <- 1
+      svalue(samples_lbl) <- paste(" 0", strLblSamples)
       svalue(save_edt) <- ""
     }
   })
@@ -268,7 +256,7 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 

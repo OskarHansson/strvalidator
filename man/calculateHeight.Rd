@@ -57,11 +57,24 @@ Calculates the total peak height (TPH), and number of observed peaks (Peaks),
 for each sample by default. If a reference dataset is provided average peak
 height (H), and profile proportion (Proportion) are calculated.
 
-H is calculated according to the formula:
+H is calculated according to the formula (references [1][2]):
 \eqn{H = sum(peak heights)/(n[het] + 2n[hom]}
 Where:
 n[het] = number of observed heterozygous alleles
 n[hom] = number of observed homozygous alleles
+
+Important: The above formula has a drawback that when many alleles have
+dropped out, i.e. when only few alleles are detected, H can be overestimated.
+For example, if there are only 1 (homozygote) peak observed in the profile,
+with a height of 100 RFU, then H=100 RFU. This means that the value of H will
+always be between half the analytical threshold (AT/2) and the peak height of
+the observed allele (if only one). For this reason Tvedebrink et al. actually
+modified the estimate to take the number of expected alleles into account
+when estimating the expected peak height (reference [3]). Basically, they adjust
+the estimated peak height for the fact that they know how many alleles that 
+fall below the AT, such that the expected peak height could be estimated lower
+than AT. In addition, they account for degradation using a log-linear 
+relationship on peak heights and fragment length.
 
 Tip: If it is known that all expected peaks are observed and no unexpected
 peaks are present, the dataset can be used as a reference for itself.
@@ -70,10 +83,24 @@ Note: If a reference dataset is provided the known alleles will be extracted
 from the dataset.
 }
 \references{
-Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
+[1] Torben Tvedebrink, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
  Evaluating the weight of evidence by using quantitative short tandem repeat data in DNA mixtures
  Journal of the Royal Statistical Society: Series C (Applied Statistics),
  Volume 59, Issue 5, 2010,
  Pages 855-874, 10.1111/j.1467-9876.2010.00722.x.
 \doi{10.1111/j.1467-9876.2010.00722.x}
+
+[2] Torben Tvedebrink, Helle Smidt Mogensen, Maria Charlotte Stene, Niels Morling,
+ Performance of two 17 locus forensic identification STR kits-Applied Biosystems's AmpFlSTR NGMSElect and Promega's PowerPlex ESI17 kits
+ Forensic Science International: Genetics,
+ Volume 6, Issue 5, 2012,
+ Pages 523-531, 10.1016/j.fsigen.2011.12.006.
+\doi{10.1016/j.fsigen.2011.12.006}
+
+[3] Torben Tvedebrink, Maria Asplund, Poul Svante Eriksen, Helle Smidt Mogensen, Niels Morling,
+ Estimating drop-out probabilities of STR alleles accounting for stutters, detection threshold truncation and degradation
+ Forensic Science International: Genetics Supplement Series,
+ Volume 4, Issue 1, 2013,
+ Pages e51-e52, 10.1016/j.fsigss.2013.10.026.
+\doi{10.1016/j.fsigss.2013.10.026}
 }

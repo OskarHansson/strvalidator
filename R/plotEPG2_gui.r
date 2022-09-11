@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 12.08.2022: Removed 'Save as image' option. ggsave not compatible with plotly.
 # 04.08.2022: Fixed switched options for Y-scale radio button.
 # 04.08.2022: Removed unused strings.
@@ -165,28 +166,12 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    return(FALSE) # Destroy window.
   })
 
   # Vertical main group.
   gv <- ggroup(
-    horizontal = FALSE, spacing = 5, use.scrollwindow = FALSE,
+    horizontal = FALSE, spacing = 1, use.scrollwindow = FALSE,
     container = w, expand = TRUE
   )
 
@@ -209,55 +194,65 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   f0 <- gframe(
     text = strFrmDataset,
-    horizontal = TRUE,
-    spacing = 2,
+    horizontal = FALSE,
+    spacing = 1,
     container = gv
   )
 
-  g0 <- glayout(container = f0, spacing = 1)
-
   # Dataset -------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  dfs <- c(strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
+  glabel(text = strLblDataset, container = g0)
 
-  g0[1, 2] <- g0_data_drp <- gcombobox(
-    items = dfs,
-    selected = 1,
-    editable = FALSE,
-    container = g0,
-    ellipsize = "none"
-  )
-
-  g0[1, 3] <- g0_data_samples_lbl <- glabel(
+  data_samples_lbl <- glabel(
     text = paste(" 0", strLblSamples),
     container = g0
   )
 
-  g0[1, 4] <- glabel(text = strLblKit, container = g0)
+  dfs <- c(strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
 
-  g0[1, 5] <- kit_drp <- gcombobox(
+  data_drp <- gcombobox(
+    items = dfs,
+    selected = 1,
+    editable = FALSE,
+    container = g0,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
+  )
+
+  # Kit -----------------------------------------------------------------------
+
+  g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblKit, container = g1)
+
+  kit_drp <- gcombobox(
     items = getKit(), selected = 1,
-    editable = FALSE, container = g0,
-    ellipsize = "none"
+    editable = FALSE, container = g1,
+    ellipsize = "none", expand = TRUE, fill = "x"
   )
 
   # Sample --------------------------------------------------------------------
 
-  g0[2, 1] <- glabel(text = strLblSample, container = g0)
+  g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  g0[2, 2] <- g0_sample_drp <- gcombobox(
+  glabel(text = strLblSample, container = g2)
+
+  sample_drp <- gcombobox(
     items = strDrpSample, selected = 1,
-    editable = FALSE, container = g0,
-    ellipsize = "none"
+    editable = FALSE, container = g2,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   # Handlers ------------------------------------------------------------------
 
 
-  addHandlerChanged(g0_data_drp, handler = function(h, ...) {
-    val_obj <- svalue(g0_data_drp)
+  addHandlerChanged(data_drp, handler = function(h, ...) {
+    val_obj <- svalue(data_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
@@ -275,7 +270,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       # Suggest name.
       svalue(save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
-      svalue(g0_data_samples_lbl) <- paste(
+      svalue(data_samples_lbl) <- paste(
         length(unique(.gData$Sample.Name)),
         strLblSamples
       )
@@ -295,15 +290,15 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       # Reset components.
       .gData <<- NULL
       svalue(save_edt) <- ""
-      svalue(g0_data_drp, index = TRUE) <- 1
-      svalue(g0_data_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(data_drp, index = TRUE) <- 1
+      svalue(data_samples_lbl) <- paste(" 0", strLblSamples)
     }
   })
 
-  addHandlerChanged(g0_sample_drp, handler = function(h, ...) {
+  addHandlerChanged(sample_drp, handler = function(h, ...) {
 
     # Get selected sample name.
-    val_sample <- svalue(g0_sample_drp)
+    val_sample <- svalue(sample_drp)
 
     if (!is.null(val_sample)) {
       if (val_sample != strDrpSample) {
@@ -317,7 +312,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   f1 <- gframe(
     text = strFrmOptions, horizontal = FALSE,
-    spacing = 2, container = gv
+    spacing = 1, container = gv
   )
 
   glabel(text = strLblScale, anchor = c(-1, 0), container = f1)
@@ -379,7 +374,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   addHandlerClicked(plot_epg_btn, handler = function(h, ...) {
     val_name <- svalue(save_edt)
-    val_sample <- svalue(g0_sample_drp)
+    val_sample <- svalue(sample_drp)
     val_kit <- svalue(kit_drp)
     val_scale <- svalue(f1_scale_opt, index = TRUE)
     val_at <- svalue(f1_at_spb)
@@ -455,13 +450,13 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     dfs <- unique(.gData$Sample.Name)
 
     if (!is.null(dfs)) {
-      blockHandler(g0_sample_drp)
+      blockHandler(sample_drp)
 
       # Populate drop list and select first item.
-      g0_sample_drp[] <- c(strDrpSample, dfs)
-      svalue(g0_sample_drp, index = TRUE) <- 1
+      sample_drp[] <- c(strDrpSample, dfs)
+      svalue(sample_drp, index = TRUE) <- 1
 
-      unblockHandler(g0_sample_drp)
+      unblockHandler(sample_drp)
     }
 
     if (debug) {

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 15.03.2020: Added language support.
 # 15.02.2019: Minor adjustments to tcltk gui. Expand gedit.
 # 11.02.2019: Minor adjustments to tcltk gui.
@@ -200,29 +201,14 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -248,7 +234,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     container = gv
   )
 
@@ -257,7 +243,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     expand = TRUE
   )
 
-  f1g1 <- ggroup(horizontal = TRUE, spacing = 10, container = f1)
+  f1g1 <- ggroup(horizontal = TRUE, spacing = 1, container = f1)
 
   f1g1_name_edt <- gedit(text = name, container = f1g1, expand = TRUE, fill = TRUE)
 
@@ -302,7 +288,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
   # GRID 2 --------------------------------------------------------------------
 
-  f1g2 <- glayout(container = f1, spacing = 2)
+  f1g2 <- glayout(container = f1, spacing = 1)
 
   f1g2[1, 1] <- glabel(
     text = strLblSettings,

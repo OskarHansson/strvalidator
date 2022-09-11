@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 04.08.2022: Added a reference.
 # 01.06.2020: Fixed "object 'val_obj' not found" when pressing plot buttons.
 # 25.04.2020: Added language support.
@@ -39,7 +40,7 @@
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
-#' 
+#'
 #' @references
 #' Antoinette A. Westen, Laurens J.W. Grol, Joyce Harteveld, Anuska S.Matai,
 #' Peter de Knijff, Titia Sijen, Assessment of the stochastic threshold, back- and
@@ -312,29 +313,14 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -359,12 +345,16 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   f0 <- gframe(
     text = strFrmDataset,
-    horizontal = TRUE,
-    spacing = 2,
+    horizontal = FALSE,
+    spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblDataset, container = f0)
+  # Dataset -------------------------------------------------------------------
+
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblDataset, container = g0)
 
   dataset_drp <- gcombobox(
     items = c(
@@ -376,18 +366,26 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     ),
     selected = 1,
     editable = FALSE,
-    container = f0,
-    ellipsize = "none"
+    container = g0,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  glabel(text = strLblKit, container = f0)
+  # Kit -----------------------------------------------------------------------
+
+  g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblKit, container = g1)
 
   kit_drp <- gcombobox(
     items = getKit(),
     selected = 1,
     editable = FALSE,
-    container = f0,
-    ellipsize = "none"
+    container = g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
@@ -437,7 +435,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
@@ -638,7 +636,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   f5 <- gframe(
     text = strFrmSave,
     horizontal = TRUE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 

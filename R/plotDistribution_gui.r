@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 19.04.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -335,28 +336,13 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -381,16 +367,23 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   f0 <- gframe(
     text = strFrmDataset,
-    horizontal = TRUE,
-    spacing = 2,
+    horizontal = FALSE,
+    spacing = 1,
     container = gv
   )
 
-  f0g0 <- glayout(container = f0, spacing = 2)
+  # Dataset -------------------------------------------------------------------
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(
+  glabel(text = strLblDataset, container = f0g0)
+
+  samples_lbl <- glabel(
+    text = paste(" 0 ", strLblRows),
+    container = f0g0
+  )
+
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -401,31 +394,42 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     selected = 1,
     editable = FALSE,
     container = f0g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(
-    text = paste(" (0 ", strLblRows, ")"),
-    container = f0g0
+  # Group ---------------------------------------------------------------------
+
+  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblGroup, container = f0g1)
+
+  rows_lbl <- glabel(
+    text = paste(" 0 ", strLblRows, sep = ""),
+    container = f0g1
   )
 
-  f0g0[2, 1] <- glabel(text = strLblGroup, container = f0g0)
-  f0g0[2, 2] <- f0_group_drp <- gcombobox(
+  group_drp <- gcombobox(
     items = strDrpGroup,
-    selected = 1, container = f0g0,
-    ellipsize = "none"
+    selected = 1, container = f0g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
-  f0g0[2, 3] <- f0_rows_lbl <- glabel(text = paste(" (0 ", strLblRows, ")",
-    sep = ""
-  ), container = f0g0)
 
-  f0g0[3, 1] <- glabel(text = strLblColumn, container = f0g0)
-  f0g0[3, 2] <- f0_column_drp <- gcombobox(
+  # Column --------------------------------------------------------------------
+
+  f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblColumn, container = f0g2)
+
+  column_drp <- gcombobox(
     items = strDrpColumn,
-    selected = 1, container = f0g0,
-    ellipsize = "none"
+    selected = 1, container = f0g2,
+    ellipsize = "none", expand = TRUE,
+    fill = "x"
   )
-
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -450,19 +454,19 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       # Get number of observations.
-      svalue(f0_samples_lbl) <- paste(" (", nrow(.gData), " ", strLblRows, ")",
+      svalue(samples_lbl) <- paste(" ", nrow(.gData), " ", strLblRows,
         sep = ""
       )
 
       # Get number of observations in subset.
-      val <- svalue(f0_group_drp)
+      val <- svalue(group_drp)
       if (length(val) > 0 && val %in% names(.gData)) {
         rows <- nrow(.gData[.gData$Group == val, ])
-        svalue(f0_rows_lbl) <- paste(" (", rows, " ", strLblRows, ")",
+        svalue(rows_lbl) <- paste(" ", rows, " ", strLblRows,
           sep = ""
         )
       } else {
-        svalue(f0_rows_lbl) <- paste(" (0 ", strLblRows, ")",
+        svalue(rows_lbl) <- paste(" 0 ", strLblRows,
           sep = ""
         )
       }
@@ -476,23 +480,23 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
-      svalue(f0_samples_lbl) <- paste(" (0 ", strLblRows, ")",
+      svalue(samples_lbl) <- paste(" 0 ", strLblRows,
         sep = ""
       )
     }
   })
 
-  addHandlerChanged(f0_group_drp, handler = function(h, ...) {
-    val <- svalue(f0_group_drp)
+  addHandlerChanged(group_drp, handler = function(h, ...) {
+    val <- svalue(group_drp)
     rows <- nrow(.gData[.gData$Group == val, ])
 
     # Update number of observations.
-    svalue(f0_rows_lbl) <- paste(" (", rows, " ", strLblRows, ")",
+    svalue(rows_lbl) <- paste(" ", rows, " ", strLblRows,
       sep = ""
     )
   })
 
-  addHandlerChanged(f0_column_drp, handler = function(h, ...) {
+  addHandlerChanged(column_drp, handler = function(h, ...) {
 
     # Enable buttons.
     enabled(f7_ecdf_btn) <- TRUE
@@ -505,7 +509,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
@@ -663,7 +667,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   tooltip(f7_ecdf_btn) <- strTipCDF
 
   addHandlerChanged(f7_ecdf_btn, handler = function(h, ...) {
-    val_column <- svalue(f0_column_drp)
+    val_column <- svalue(column_drp)
 
     if (val_column == strDrpColumn) {
       gmessage(
@@ -682,7 +686,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   tooltip(f7_pdf_btn) <- strTipPDF
 
   addHandlerChanged(f7_pdf_btn, handler = function(h, ...) {
-    val_column <- svalue(f0_column_drp)
+    val_column <- svalue(column_drp)
 
     if (val_column == strDrpColumn) {
       gmessage(
@@ -700,7 +704,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f7_histogram_btn <- gbutton(text = strBtnHistogram, container = f7)
 
   addHandlerChanged(f7_histogram_btn, handler = function(h, ...) {
-    val_column <- svalue(f0_column_drp)
+    val_column <- svalue(column_drp)
 
     if (val_column == strDrpColumn) {
       gmessage(
@@ -720,7 +724,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f5 <- gframe(
     text = strFrmSave,
     horizontal = TRUE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
@@ -774,8 +778,8 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     val_x_title <- svalue(x_title_edt)
     val_y_title <- svalue(y_title_edt)
     val_theme <- svalue(f1_theme_drp)
-    val_group <- svalue(f0_group_drp)
-    val_column <- svalue(f0_column_drp)
+    val_group <- svalue(group_drp)
+    val_column <- svalue(column_drp)
     val_kernel <- svalue(f1_kernel_drp)
     val_adjustbw <- as.numeric(svalue(f1_adjustbw_cbo))
     val_boxplot <- svalue(f1_box_chk)
@@ -1180,40 +1184,40 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     columns <- names(.gData)
 
     if (length(groups) > 0) {
-      blockHandler(f0_group_drp)
+      blockHandler(group_drp)
 
       # Populate drop list.
-      f0_group_drp[] <- c(strDrpGroup, groups)
-      svalue(f0_group_drp, index = TRUE) <- 1
+      group_drp[] <- c(strDrpGroup, groups)
+      svalue(group_drp, index = TRUE) <- 1
 
-      unblockHandler(f0_group_drp)
+      unblockHandler(group_drp)
     } else {
-      blockHandler(f0_group_drp)
+      blockHandler(group_drp)
 
       # Reset drop list and select first item.
-      f0_group_drp[] <- c(strDrpGroup)
-      svalue(f0_group_drp, index = TRUE) <- 1
+      group_drp[] <- c(strDrpGroup)
+      svalue(group_drp, index = TRUE) <- 1
 
-      unblockHandler(f0_group_drp)
+      unblockHandler(group_drp)
     }
 
 
     if (!is.null(columns)) {
-      blockHandler(f0_column_drp)
+      blockHandler(column_drp)
 
       # Populate drop list.
-      f0_column_drp[] <- c(strDrpColumn, columns)
-      svalue(f0_column_drp, index = TRUE) <- 1
+      column_drp[] <- c(strDrpColumn, columns)
+      svalue(column_drp, index = TRUE) <- 1
 
-      unblockHandler(f0_column_drp)
+      unblockHandler(column_drp)
     } else {
-      blockHandler(f0_column_drp)
+      blockHandler(column_drp)
 
       # Reset drop list and select first item.
-      f0_column_drp[] <- c(strDrpColumn)
-      svalue(f0_column_drp, index = TRUE) <- 1
+      column_drp[] <- c(strDrpColumn)
+      svalue(column_drp, index = TRUE) <- 1
 
-      unblockHandler(f0_column_drp)
+      unblockHandler(column_drp)
     }
   }
 

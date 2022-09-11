@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 14.03.2020: Added language support and minor gui adjustments.
 # 02.03.2019: Tweaked widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -254,31 +255,17 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
-    expand = TRUE
+    expand = TRUE,
+    fill = "x"
   )
 
   # Help button group.
@@ -301,17 +288,24 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 2,
-    container = gv
+    spacing = 1,
+    container = gv,
+    expand = FALSE,
+    fill = "x"
   )
-
-  g0 <- glayout(container = f0, spacing = 1)
 
   # Datasets ------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  g0[1, 2] <- g0_dataset_drp <- gcombobox(
+  glabel(text = strLblDataset, container = g0)
+
+  g0_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
+
+  g0_dataset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -322,12 +316,9 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     selected = 1,
     editable = FALSE,
     container = g0,
-    ellipsize = "none"
-  )
-
-  g0[1, 3] <- g0_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = g0
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(g0_dataset_drp, handler = function(h, ...) {
@@ -353,7 +344,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       # Detect kit.
       kitIndex <- detectKit(.gData, index = TRUE)
       # Select in dropdown.
-      svalue(g0_kit_drp, index = TRUE) <- kitIndex
+      svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
 
       # Reset components.
@@ -364,12 +355,19 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     }
   })
 
-  g0[2, 1] <- g0_refset_lbl <- glabel(
+  g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  refset_lbl <- glabel(
     text = strLblRefDataset,
-    container = g0
+    container = g1
   )
 
-  g0[2, 2] <- g0_refset_drp <- gcombobox(
+  g1_ref_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = g1
+  )
+
+  refset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -379,17 +377,15 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     ),
     selected = 1,
     editable = FALSE,
-    container = g0,
-    ellipsize = "none"
+    container = g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  g0[2, 3] <- g0_ref_lbl <- glabel(
-    text = paste(" 0", strLblRef),
-    container = g0
-  )
 
-  addHandlerChanged(g0_refset_drp, handler = function(h, ...) {
-    val_obj <- svalue(g0_refset_drp)
+  addHandlerChanged(refset_drp, handler = function(h, ...) {
+    val_obj <- svalue(refset_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
@@ -405,21 +401,43 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
-      svalue(g0_ref_lbl) <- paste("", ref, strLblRef)
+      svalue(g1_ref_lbl) <- paste("", ref, strLblRef)
     } else {
 
       # Reset components.
       .gRef <<- NULL
-      svalue(g0_refset_drp, index = TRUE) <- 1
-      svalue(g0_ref_lbl) <- paste(" 0", strLblRef)
+      svalue(refset_drp, index = TRUE) <- 1
+      svalue(g1_ref_lbl) <- paste(" 0", strLblRef)
     }
   })
 
-  # CHECK ---------------------------------------------------------------------
+  # Kit -------------------------------------------------------------------
 
-  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
+  g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  addHandlerChanged(g0_check_btn, handler = function(h, ...) {
+  kit_lbl <- glabel(text = strLblKit, container = g2)
+
+  kit_drp <- gcombobox(
+    items = getKit(),
+    selected = 1,
+    editable = FALSE,
+    container = g2,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
+  )
+
+  kit_chk <- gcheckbox(
+    text = strChkVirtual,
+    checked = TRUE,
+    container = f0
+  )
+
+  # CHECK ###############################################################33####
+
+  check_btn <- gbutton(text = strBtnCheck, container = gv)
+
+  addHandlerChanged(check_btn, handler = function(h, ...) {
 
     # Get values.
     val_data <- .gData
@@ -460,29 +478,12 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     }
   })
 
-  # Kit -------------------------------------------------------------------
-
-  g0[4, 1] <- g0_kit_lbl <- glabel(text = strLblKit, container = g0)
-
-  g0[4, 2] <- g0_kit_drp <- gcombobox(
-    items = getKit(),
-    selected = 1,
-    editable = FALSE,
-    container = g0,
-    ellipsize = "none"
-  )
-
-  g0[4, 3] <- g0_kit_chk <- gcheckbox(
-    text = strChkVirtual,
-    checked = TRUE,
-    container = g0
-  )
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
     text = strFrmOptions, horizontal = FALSE,
-    spacing = 2, container = gv
+    spacing = 1, container = gv
   )
 
   # PRE-PROCESSING ------------------------------------------------------------
@@ -503,7 +504,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # METHOD --------------------------------------------------------------------
 
-  glabel(text = "", anchor = c(-1, 0), container = f1)
   glabel(text = strLblMethod, anchor = c(-1, 0), container = f1)
 
   f1_options <- c(strRadRef, strRadBins)
@@ -525,7 +525,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # MATCHING ------------------------------------------------------------------
 
-  glabel(text = "", anchor = c(-1, 0), container = f1)
   glabel(text = strLblMatching, anchor = c(-1, 0), container = f1)
 
   f1_ignore_case_chk <- gcheckbox(
@@ -548,7 +547,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # POST-PROCESSING -----------------------------------------------------------
 
-  glabel(text = "", anchor = c(-1, 0), container = f1)
   glabel(text = strLblPost, anchor = c(-1, 0), container = f1)
 
   f1_add_missing_loci_chk <- gcheckbox(
@@ -592,8 +590,8 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     val_word <- svalue(f1_word_chk)
     val_name <- svalue(save_edt)
     val_filter <- svalue(f1_filter_opt, index = TRUE)
-    val_kit <- svalue(g0_kit_drp)
-    val_exclude <- svalue(g0_kit_chk)
+    val_kit <- svalue(kit_drp)
+    val_exclude <- svalue(kit_chk)
     val_sex <- svalue(f1_sex_chk)
     val_qs <- svalue(f1_qs_chk)
 
@@ -683,17 +681,17 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     val_exact <- svalue(f1_exact_chk)
 
     if (val_opt == 1) {
-      enabled(g0_refset_lbl) <- TRUE
-      enabled(g0_refset_drp) <- TRUE
-      enabled(g0_check_btn) <- TRUE
+      enabled(refset_lbl) <- TRUE
+      enabled(refset_drp) <- TRUE
+      enabled(check_btn) <- TRUE
 
-      enabled(g0_kit_chk) <- FALSE
+      enabled(kit_chk) <- FALSE
     } else if (val_opt == 2) {
-      enabled(g0_refset_lbl) <- FALSE
-      enabled(g0_refset_drp) <- FALSE
-      enabled(g0_check_btn) <- FALSE
+      enabled(refset_lbl) <- FALSE
+      enabled(refset_drp) <- FALSE
+      enabled(check_btn) <- FALSE
 
-      enabled(g0_kit_chk) <- TRUE
+      enabled(kit_chk) <- TRUE
     }
 
     # Disable 'word' if 'exact' is TRUE.

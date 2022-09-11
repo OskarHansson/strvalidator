@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 07.03.2020: Added language support.
 # 03.03.2019: Compacted and tweaked widgets under tcltk.
 # 01.03.2019: Compacting gui and made text box expand (tcltk)
@@ -159,29 +160,14 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = FALSE
@@ -207,16 +193,20 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
+  f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  f0g0 <- glayout(container = f0, spacing = 1)
+  glabel(text = strLblDataset, container = f0g0)
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  data_col_lbl <- glabel(
+    text = paste(" 0", strLblColumns),
+    container = f0g0
+  )
 
-  f0g0[1, 2] <- f0g0_data_drp <- gcombobox(
+  data_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -227,16 +217,13 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     selected = 1,
     editable = FALSE,
     container = f0g0,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0g0[1, 3] <- f0g0_data_col_lbl <- glabel(
-    text = paste(" 0", strLblColumns),
-    container = f0g0
-  )
-
-  addHandlerChanged(f0g0_data_drp, handler = function(h, ...) {
-    val_obj <- svalue(f0g0_data_drp)
+  addHandlerChanged(data_drp, handler = function(h, ...) {
+    val_obj <- svalue(data_drp)
 
     # Check if suitable.
     ok <- is.data.frame(get(val_obj, envir = env))
@@ -247,52 +234,58 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      svalue(f0g0_data_col_lbl) <- paste(" ", ncol(.gData), strLblColumns)
+      svalue(data_col_lbl) <- paste(" ", ncol(.gData), strLblColumns)
       svalue(save_edt) <- paste(.gDataName, "new", sep = "_")
 
-      f1g1_col1_drp[] <- c(strDrpColumn, names(.gData))
-      svalue(f1g1_col1_drp, index = TRUE) <- 1
-      f1g1_col2_drp[] <- c(strDrpColumn, names(.gData))
-      svalue(f1g1_col2_drp, index = TRUE) <- 1
+      col1_drp[] <- c(strDrpColumn, names(.gData))
+      svalue(col1_drp, index = TRUE) <- 1
+      col2_drp[] <- c(strDrpColumn, names(.gData))
+      svalue(col2_drp, index = TRUE) <- 1
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblColumns)
+      svalue(data_col_lbl) <- paste(" 0", strLblColumns)
       svalue(save_edt) <- ""
 
-      f1g1_col1_drp[] <- c(strDrpColumn)
-      svalue(f1g1_col1_drp, index = TRUE) <- 1
-      f1g1_col2_drp[] <- c(strDrpColumn)
-      svalue(f1g1_col2_drp, index = TRUE) <- 1
+      col1_drp[] <- c(strDrpColumn)
+      svalue(col1_drp, index = TRUE) <- 1
+      col2_drp[] <- c(strDrpColumn)
+      svalue(col2_drp, index = TRUE) <- 1
     }
   })
 
   # COLUMNS ###################################################################
 
-  f1 <- gframe(text = strFrmColumns, horizontal = FALSE, spacing = 2, container = gv)
+  f1 <- gframe(text = strFrmColumns, horizontal = FALSE, spacing = 1, container = gv)
 
-  f1g1 <- glayout(container = f1, spacing = 1)
+  f1g1 <- ggroup(container = f1, spacing = 1, expand = TRUE, fill = "x")
 
-  f1g1[1, 1] <- glabel(text = strLblCol1, container = f1g1)
+  glabel(text = strLblCol1, container = f1g1)
 
-  f1g1[1, 2] <- f1g1_col1_drp <- gcombobox(
+  col1_drp <- gcombobox(
     items = c(strDrpColumn),
     editable = FALSE,
     container = f1g1,
-    ellipsize = "none"
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f1g1[2, 1] <- glabel(text = strLblCol2, container = f1g1)
+  f1g2 <- ggroup(container = f1, spacing = 1, expand = TRUE, fill = "x")
 
-  f1g1[2, 2] <- f1g1_col2_drp <- gcombobox(
+  glabel(text = strLblCol2, container = f1g2)
+
+  col2_drp <- gcombobox(
     items = c(strDrpColumn),
     editable = FALSE,
-    container = f1g1,
-    ellipsize = "none"
+    container = f1g2,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  addHandlerChanged(f1g1_col1_drp, handler = function(h, ...) {
-    val_col <- svalue(f1g1_col1_drp)
+  addHandlerChanged(col1_drp, handler = function(h, ...) {
+    val_col <- svalue(col1_drp)
 
     # Check if column exist.
     ok <- val_col %in% names(.gData)
@@ -307,8 +300,8 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
   })
 
-  addHandlerChanged(f1g1_col2_drp, handler = function(h, ...) {
-    if (svalue(f1g1_col2_drp) %in% names(.gData)) {
+  addHandlerChanged(col2_drp, handler = function(h, ...) {
+    if (svalue(col2_drp) %in% names(.gData)) {
       # If an existing colum gets selected.
 
       if (svalue(f3g1_action_drp) %in% "substr") {
@@ -325,7 +318,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # OPTIONS ###################################################################
 
   f3 <- gframe(
-    text = strFrmOptions, horizontal = FALSE, spacing = 2,
+    text = strFrmOptions, horizontal = FALSE, spacing = 1,
     container = gv
   )
 
@@ -361,7 +354,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     if (svalue(f3g1_action_drp) %in% "substr") {
 
       # Reset column 2 if 'substr' is selected.
-      svalue(f1g1_col2_drp, index = TRUE) <- 1
+      svalue(col2_drp, index = TRUE) <- 1
     }
 
     .updateGui()
@@ -380,8 +373,8 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   combine_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerChanged(combine_btn, handler = function(h, ...) {
-    val_col1 <- svalue(f1g1_col1_drp)
-    val_col2 <- svalue(f1g1_col2_drp)
+    val_col1 <- svalue(col1_drp)
+    val_col2 <- svalue(col2_drp)
     val_action <- svalue(f3g1_action_drp)
     val_target <- svalue(f3g1_col_edt)
     val_fixed <- svalue(f3g1_val_edt)
@@ -442,7 +435,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   .updateGui <- function() {
     substr_selected <- svalue(f3g1_action_drp) %in% "substr"
     no_action <- svalue(f3g1_action_drp) %in% strDrpAction
-    second_col_selected <- svalue(f1g1_col2_drp) %in% names(.gData)
+    second_col_selected <- svalue(col2_drp) %in% names(.gData)
 
     if (substr_selected || second_col_selected) {
       enabled(f3g1_val_edt) <- FALSE

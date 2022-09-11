@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.09.2022: Compacted gui. Removed destroy workaround.
 # 28.06.2020: Expanded path field under tcltk.
 # 14.03.2020: Added language support.
 # 03.05.2019: Fixed "Error in structure(.External(.C_dotTclObjv, objv).." (tcltk).
@@ -221,28 +222,13 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
-    horizontal = FALSE, spacing = 5, use.scrollwindow = FALSE,
+    horizontal = FALSE, spacing = 1, use.scrollwindow = FALSE,
     container = w, expand = TRUE
   )
 
@@ -264,7 +250,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   # OBJECTS ###################################################################
 
   object_frm <- gframe(
-    text = strFrmObjects, horizontal = FALSE, spacing = 2, expand = TRUE,
+    text = strFrmObjects, horizontal = FALSE, spacing = 1, expand = TRUE,
     fill = TRUE, container = gv
   )
 
@@ -292,7 +278,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   # OPTIONS ###################################################################
 
   option_frm <- gframe(
-    text = strFrmOptions, horizontal = FALSE, spacing = 2,
+    text = strFrmOptions, horizontal = FALSE, spacing = 1,
     container = gv
   )
 
@@ -317,7 +303,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   glabel(text = "", container = option_frm) # Spacer.
 
-  file_grp <- ggroup(spacing = 2, container = option_frm)
+  file_grp <- ggroup(spacing = 1, container = option_frm)
 
   glabel(text = strLblExtension, container = file_grp, anchor = c(-1, 0))
 
@@ -341,7 +327,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   glabel(text = strLblSettings, container = option_frm, anchor = c(-1, 0))
 
-  image_grp <- ggroup(spacing = 2, container = option_frm)
+  image_grp <- ggroup(spacing = 1, container = option_frm)
 
   glabel(text = strLblWidth, container = image_grp, anchor = c(-1, 0))
   width_edt <- gedit(text = "3000", width = 6, container = image_grp)
@@ -356,7 +342,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   glabel(text = "", container = option_frm) # Spacer.
 
-  path_grp <- gframe(text = strFrmLocation, horizontal = FALSE, spacing = 2, container = gv)
+  path_grp <- gframe(text = strFrmLocation, horizontal = FALSE, spacing = 1, container = gv)
 
   glabel(text = strLblLocation, container = path_grp, anchor = c(-1, 0))
 

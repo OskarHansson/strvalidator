@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 13.04.2020: Added language support.
 # 13.04.2020: Implemented function checkDataset.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
@@ -241,28 +242,13 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -288,11 +274,16 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f0 <- gframe(
     text = strFrmDataset,
     horizontal = TRUE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
   glabel(text = strLblDataset, container = f0)
+
+  samples_lbl <- glabel(
+    text = paste(" 0 ", strLblRows, sep = ""),
+    container = f0
+  )
 
   dataset_drp <- gcombobox(
     items = c(
@@ -305,12 +296,9 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     selected = 1,
     editable = FALSE,
     container = f0,
-    ellipsize = "none"
-  )
-
-  f0_samples_lbl <- glabel(
-    text = paste(" (0 ", strLblRows, ")", sep = ""),
-    container = f0
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
@@ -335,8 +323,8 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       # Suggest name.
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
-      svalue(f0_samples_lbl) <- paste(" (",
-        nrow(.gData), " ", strLblRows, ")",
+      svalue(samples_lbl) <- paste(" ",
+        nrow(.gData), " ", strLblRows,
         sep = ""
       )
 
@@ -349,7 +337,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0_samples_lbl) <- paste(" (0 ", strLblRows, ")", sep = "")
+      svalue(samples_lbl) <- paste(" 0 ", strLblRows, sep = "")
     }
   })
 
@@ -358,7 +346,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f1 <- gframe(
     text = strFrmOptions,
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 
@@ -397,7 +385,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     text = strFrmPlot,
     horizontal = TRUE,
     container = gv,
-    spacing = 5
+    spacing = 1
   )
 
   plot_dot_btn <- gbutton(text = strBtnDotplot, container = f7)
@@ -471,7 +459,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   f5 <- gframe(
     text = strFrmSave,
     horizontal = TRUE,
-    spacing = 2,
+    spacing = 1,
     container = gv
   )
 

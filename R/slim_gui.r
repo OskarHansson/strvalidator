@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.05.2020: Added language support.
 # 02.03.2019: Fixed expansion of widgets under tcltk.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -19,7 +20,6 @@
 # 20.11.2013: Specified package for function 'gtable' -> 'gWidgets::gtable'
 # 06.08.2013: Added rows and columns to info.
 # 18.07.2013: Check before overwrite object.
-# 16.07.2013: Added save GUI settings.
 
 #' @title Slim Data Frames
 #'
@@ -181,29 +181,14 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
   gv <- ggroup(
     horizontal = FALSE,
-    spacing = 5,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = w,
     expand = TRUE
@@ -228,7 +213,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # Vertical sub group.
   g0 <- ggroup(
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = gv,
     expand = FALSE,
@@ -238,7 +223,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # Horizontal sub group.
   g1 <- ggroup(
     horizontal = TRUE,
-    spacing = 2,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = gv,
     expand = TRUE,
@@ -248,7 +233,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # Vertical sub group.
   g2 <- ggroup(
     horizontal = FALSE,
-    spacing = 2,
+    spacing = 1,
     use.scrollwindow = FALSE,
     container = gv,
     expand = FALSE,
@@ -260,16 +245,27 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
 
   f0 <- gframe(
     text = strFrmDataset,
-    horizontal = FALSE,
-    spacing = 2,
+    horizontal = TRUE,
+    spacing = 1,
     container = g0
   )
 
-  f0g0 <- glayout(container = f0, spacing = 1)
+  glabel(text = strLblDataset, container = f0)
 
-  f0g0[1, 1] <- glabel(text = strLblDataset, container = f0g0)
+  samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = f0
+  )
+  columns_lbl <- glabel(
+    text = paste(" 0", strLblColumns),
+    container = f0
+  )
+  rows_lbl <- glabel(
+    text = paste(" 0", strLblRows),
+    container = f0
+  )
 
-  f0g0[1, 2] <- dataset_drp <- gcombobox(
+  dataset_drp <- gcombobox(
     items = c(
       strDrpDataset,
       listObjects(
@@ -279,23 +275,11 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     ),
     selected = 1,
     editable = FALSE,
-    container = f0g0,
-    ellipsize = "none"
+    container = f0,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
-
-  f0g0[1, 3] <- f0_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = f0g0
-  )
-  f0g0[1, 4] <- f0_columns_lbl <- glabel(
-    text = paste(" 0", strLblColumns),
-    container = f0g0
-  )
-  f0g0[1, 5] <- f0_rows_lbl <- glabel(
-    text = paste(" 0", strLblRows),
-    container = f0g0
-  )
-
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -320,21 +304,21 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       # Info.
       if ("Sample.Name" %in% names(.gData)) {
         samples <- length(unique(.gData$Sample.Name))
-        svalue(f0_samples_lbl) <- paste(" ", samples, " ",
+        svalue(samples_lbl) <- paste(" ", samples, " ",
           strLblSamples, ", ",
           sep = ""
         )
       } else {
-        svalue(f0_samples_lbl) <- paste(" ", "<NA> ",
+        svalue(samples_lbl) <- paste(" ", "<NA> ",
           strLblSamples, ", ",
           sep = ""
         )
       }
-      svalue(f0_columns_lbl) <- paste(" ", ncol(.gData), " ",
+      svalue(columns_lbl) <- paste(" ", ncol(.gData), " ",
         strLblColumns, ", ",
         sep = ""
       )
-      svalue(f0_rows_lbl) <- paste(" ", nrow(.gData), " ",
+      svalue(rows_lbl) <- paste(" ", nrow(.gData), " ",
         strLblRows, ", ",
         sep = ""
       )
@@ -365,15 +349,15 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(stack_edt) <- ""
       .refresh_fix_tbl()
       .refresh_stack_tbl()
-      svalue(f0_samples_lbl) <- paste(" ", "<NA> ",
+      svalue(samples_lbl) <- paste(" ", "<NA> ",
         strLblSamples, ", ",
         sep = ""
       )
-      svalue(f0_columns_lbl) <- paste(" ", "<NA> ",
+      svalue(columns_lbl) <- paste(" ", "<NA> ",
         strLblColumns, ", ",
         sep = ""
       )
-      svalue(f0_rows_lbl) <- paste(" ", "<NA> ",
+      svalue(rows_lbl) <- paste(" ", "<NA> ",
         strLblRows, ", ",
         sep = ""
       )

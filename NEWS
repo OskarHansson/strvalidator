@@ -1,3 +1,19 @@
+Version 2.3.0.9004
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - The graphical user interface (GUI) was optimized for gWidgets2tcltk. The GUI
+  is now a lot more compact to improve the user experience on small computer screens.
+  - The GUI has been rearranged such that dropdown menues for selecting datasets
+  expands to the right. Previously they were often too narrow to show the full names. 
+  - Imports gWidgets2tcltk (> 1.0.6) where a bug was fixed: https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
+  - The workaround (https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2) for the above bug was removed for all *_gui functions.
+  - calculateHeight/modelDropout_gui
+  Added information about limitations of the calculation of average peak height H, when dropout is present.
+  - editData_gui
+  Fixed dataset info when NULL. Added view button. Now defaults to limit 100 rows.
+  - strvalidator
+  Fixed warning when selecting multiple objects for export. Added "datatables" to supported classes in view function.
+  
 Version 2.3.0.9003
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

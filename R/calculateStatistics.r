@@ -38,7 +38,7 @@
 #'
 
 calculateStatistics <- function(data, target, quant = 0.95,
-                                group = NULL, count = NULL, 
+                                group = NULL, count = NULL,
                                 decimals = -1, debug = FALSE) {
   message("General function to calculate summary statistics.")
 
@@ -179,20 +179,19 @@ calculateStatistics <- function(data, target, quant = 0.95,
     print("result:")
     print(res)
   }
-  
+
   # Round ---------------------------------------------------------------------
-  
+
   if (decimals >= 0) {
-    
     message("Round result to ", decimals, " decimals.")
-    
+
     # Perform calculations without counting unique values.
-    res <- res %>% mutate(across(c(nameMin, nameMean, nameSd,
-                               nameMax, namePerc), ~round(., decimals)))
+    res <- res %>% mutate(across(c(
+      nameMin, nameMean, nameSd,
+      nameMax, namePerc
+    ), ~ round(., decimals)))
   } else {
-    
     message("Result not rounded (", decimals, ").")
-    
   }
 
   # Convert to data.frame to assure compatibility with strvalidator.

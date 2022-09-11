@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 01.03.2020: Added language support.
 # 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
@@ -213,27 +214,12 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       focus(parent)
     }
 
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+    # Destroy window.
+    return(FALSE)
   })
 
   gv <- ggroup(
-    horizontal = FALSE, spacing = 8, use.scrollwindow = FALSE,
+    horizontal = FALSE, spacing = 1, use.scrollwindow = FALSE,
     container = w, expand = TRUE
   )
 
@@ -258,30 +244,30 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset, horizontal = TRUE,
-    spacing = 5, container = gv
+    text = strFrmDataset, horizontal = FALSE,
+    spacing = 1, container = gv, expand = FALSE, fill = "x"
   )
-
-  g0 <- glayout(container = f0, spacing = 1)
 
   # Dataset -------------------------------------------------------------------
 
-  g0[1, 1] <- glabel(text = strLblDataset, container = g0)
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblDataset, container = g0)
+
+  g0_data_samples_lbl <- glabel(
+    text = paste(" 0", strLblSamples),
+    container = g0
+  )
 
   dfs <- c(
     strDrpDefault,
     listObjects(env = env, obj.class = "data.frame")
   )
 
-  g0[1, 2] <- g0_data_drp <- gcombobox(
+  g0_data_drp <- gcombobox(
     items = dfs, selected = 1,
     editable = FALSE, container = g0,
-    ellipsize = "none"
-  )
-
-  g0[1, 3] <- g0_data_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = g0
+    ellipsize = "none", expand = TRUE, fill = "x"
   )
 
   addHandlerChanged(g0_data_drp, handler = function(h, ...) {
@@ -324,18 +310,20 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Reference -----------------------------------------------------------------
 
-  g0[2, 1] <- glabel(text = strLblRefDataset, container = g0)
+  g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  # NB! dfs defined in previous section.
-  g0[2, 2] <- g0_ref_drp <- gcombobox(
-    items = dfs, selected = 1,
-    editable = FALSE, container = g0,
-    ellipsize = "none"
+  glabel(text = strLblRefDataset, container = g1)
+
+  g0_ref_samples_lbl <- glabel(
+    text = paste(" 0", strLblRef),
+    container = g1
   )
 
-  g0[2, 3] <- g0_ref_samples_lbl <- glabel(
-    text = paste(" 0", strLblRef),
-    container = g0
+  # NB! dfs defined in previous section.
+  g0_ref_drp <- gcombobox(
+    items = dfs, selected = 1,
+    editable = FALSE, container = g1,
+    ellipsize = "none", expand = TRUE, fill = "x"
   )
 
   addHandlerChanged(g0_ref_drp, handler = function(h, ...) {
@@ -366,9 +354,9 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
     }
   })
 
-  # CHECK ---------------------------------------------------------------------
+  # CHECK #####################################################################
 
-  g0[3, 2] <- g0_check_btn <- gbutton(text = strBtnCheck, container = g0)
+  g0_check_btn <- gbutton(text = strBtnCheck, container = gv)
 
   addHandlerChanged(g0_check_btn, handler = function(h, ...) {
 
@@ -411,7 +399,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1 <- gframe(
     text = strFrmOptions, horizontal = FALSE,
-    spacing = 5, container = gv
+    spacing = 1, container = gv
   )
 
   glabel(text = strLblPre, anchor = c(-1, 0), container = f1)
@@ -468,7 +456,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
   f4 <- gframe(
     text = strFrmSave, horizontal = TRUE,
-    spacing = 5, container = gv
+    spacing = 1, container = gv
   )
 
   glabel(text = strLblSave, container = f4)

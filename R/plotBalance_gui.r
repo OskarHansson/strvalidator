@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 13.04.2020: Added language support.
 # 13.04.2020: Implemented function checkDataset.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
@@ -86,7 +87,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strLblDataset <- "Balance dataset:"
   strDrpDataset <- "<Select dataset>"
   strLblSamples <- "samples"
-  strLblKit <- "and the kit used:"
+  strLblKit <- "Kit:"
   strFrmOptions <- "Options"
   strChkOverride <- "Override automatic titles"
   strLblTitlePlot <- "Plot title:"
@@ -359,23 +360,9 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     if (!is.null(parent)) {
       focus(parent)
     }
-    # Check which toolkit we are using.
-    if (gtoolkit() == "tcltk") {
-      if (as.numeric(gsub("[^0-9]", "", packageVersion("gWidgets2tcltk"))) <= 106) {
-        # Version <= 1.0.6 have the wrong implementation:
-        # See: https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2
-        message("tcltk version <= 1.0.6, returned TRUE!")
-        return(TRUE) # Destroys window under tcltk, but not RGtk2.
-      } else {
-        # Version > 1.0.6 will be fixed:
-        # https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53
-        message("tcltk version >1.0.6, returned FALSE!")
-        return(FALSE) # Destroys window under tcltk, but not RGtk2.
-      }
-    } else {
-      message("RGtk2, returned FALSE!")
-      return(FALSE) # Destroys window under RGtk2, but not with tcltk.
-    }
+
+    # Destroy window.
+    return(FALSE)
   })
 
   # Vertical main group.
@@ -406,12 +393,21 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   f0 <- gframe(
     text = strFrmDataset,
-    horizontal = TRUE,
+    horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = strLblDataset, container = f0)
+  # Dataset -------------------------------------------------------------------
+
+  g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblDataset, container = g0)
+
+  samples_lbl <- glabel(
+    text = paste(" 0 ", strLblSamples, sep = ""),
+    container = g0
+  )
 
   dataset_drp <- gcombobox(
     items = c(
@@ -423,23 +419,26 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     ),
     selected = 1,
     editable = FALSE,
-    container = f0,
-    ellipsize = "none"
+    container = g0,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
-  f0_samples_lbl <- glabel(
-    text = paste(" (0 ", strLblSamples, ")", sep = ""),
-    container = f0
-  )
+  # Kit -----------------------------------------------------------------------
 
-  glabel(text = strLblKit, container = f0)
+  g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
+
+  glabel(text = strLblKit, container = g1)
 
   kit_drp <- gcombobox(
     items = getKit(),
     selected = 1,
     editable = FALSE,
-    container = f0,
-    ellipsize = "none"
+    container = g1,
+    ellipsize = "none",
+    expand = TRUE,
+    fill = "x"
   )
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
@@ -462,9 +461,9 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Suggest name.
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
-      svalue(f0_samples_lbl) <- paste(" (",
+      svalue(samples_lbl) <- paste(" ",
         length(unique(.gData$Sample.Name)),
-        " ", strLblSamples, ")",
+        " ", strLblSamples,
         sep = ""
       )
 
@@ -485,7 +484,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(f0_samples_lbl) <- paste(" (0 ", strLblSamples, ")", sep = "")
+      svalue(samples_lbl) <- paste(" 0 ", strLblSamples, sep = "")
     }
   })
 

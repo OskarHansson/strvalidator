@@ -74,15 +74,16 @@ calculateAllele_gui	4	strFrmDataset	Dataset
 calculateAllele_gui	5	strLblDataset	Sample dataset:
 calculateAllele_gui	6	strDrpDefault	<Select dataset>
 calculateAllele_gui	7	strLblRows	rows
-calculateAllele_gui	8	strFrmOptions	Options
-calculateAllele_gui	9	strLblThreshold	Peak height threshold: 
-calculateAllele_gui	10	strTipThreshold	Peaks with heights below this value will be removed.
-calculateAllele_gui	11	strChkSexMarkers	Remove sex markers defined in kit: 
-calculateAllele_gui	12	strFrmSave	Save as
-calculateAllele_gui	13	strLblSave	Name for result:
-calculateAllele_gui	14	strBtnCalculate	Calculate
-calculateAllele_gui	15	strMsgDataset	Select a dataset!
-calculateAllele_gui	16	strMsgTitleDataset	Error
+calculateAllele_gui	8	strLblKit	Kit:
+calculateAllele_gui	9	strFrmOptions	Options
+calculateAllele_gui	10	strLblThreshold	Peak height threshold: 
+calculateAllele_gui	11	strTipThreshold	Peaks with heights below this value will be removed.
+calculateAllele_gui	12	strChkSexMarkers	Remove sex markers defined in kit.
+calculateAllele_gui	13	strFrmSave	Save as
+calculateAllele_gui	14	strLblSave	Name for result:
+calculateAllele_gui	15	strBtnCalculate	Calculate
+calculateAllele_gui	16	strMsgDataset	Select a dataset!
+calculateAllele_gui	17	strMsgTitleDataset	Error
 calculateAllT_gui	1	strWinTitle	Calculate stochastic thresholds
 calculateAllT_gui	2	strChkGui	Save GUI settings
 calculateAllT_gui	3	strBtnHelp	Help
@@ -767,21 +768,23 @@ editData_gui	12	strFrmOptions	Options
 editData_gui	13	strChkAttributes	Show attributes (separate window)
 editData_gui	14	strChkLimit	Limit number of rows to:
 editData_gui	15	strTipLimit	NB! Sorting will only be performed on the loaded data.
-editData_gui	16	strBtnCopy	Copy
-editData_gui	17	strTipCopy	Copy to clipboard (NB! large datasets might get truncated).
-editData_gui	18	strBtnCopying	Copying...
-editData_gui	19	strBtnExport	Export
-editData_gui	20	strTipExport	Opens the export dialog.
-editData_gui	21	strBtnSave	Save as
-editData_gui	22	strTipSave	Save as new dataset in this project.
-editData_gui	23	strBtnSaving	Saving...
-editData_gui	24	strFrmSave	Copy|Export|Save
-editData_gui	25	strLblNoData	There is no data
-editData_gui	26	strMsgSave	A name must be provided.
-editData_gui	27	strMsgTitleError	Error
-editData_gui	28	strLblTcltk	The tcltk gui toolkit does not handle NA values in tables.\nNA values will be replaced with empty strings.\nIf you edit the table, NA values will be permanently replaced.
-editData_gui	29	strChkShow	Don't show this message again.
-editData_gui	30	strMsgTitleWarning	Warning
+editData_gui	16	strBtnView	View
+editData_gui	17	strTipView	View as interactive table in Posit Viewer tab.
+editData_gui	18	strBtnCopy	Copy
+editData_gui	19	strTipCopy	Copy to clipboard (NB! large datasets might get truncated).
+editData_gui	20	strBtnCopying	Copying...
+editData_gui	21	strBtnExport	Export
+editData_gui	22	strTipExport	Opens the export dialog.
+editData_gui	23	strBtnSave	Save as
+editData_gui	24	strTipSave	Save as new dataset in this project.
+editData_gui	25	strBtnSaving	Saving...
+editData_gui	26	strFrmSave	View|Copy|Export|Save
+editData_gui	27	strLblNoData	There is no data
+editData_gui	28	strMsgSave	A name must be provided.
+editData_gui	29	strMsgTitleError	Error
+editData_gui	30	strLblTcltk	The tcltk gui toolkit does not handle NA values in tables.\nNA values will be replaced with empty strings.\nIf you edit the table, NA values will be permanently replaced.
+editData_gui	31	strChkShow	Don't show this message again.
+editData_gui	32	strMsgTitleWarning	Warning tables.\nNA values will be replaced with empty strings.\nIf you edit the table, NA values will be permanently replaced.
 export_gui	1	strWinTitle	Export objects as files or images
 export_gui	2	strChkGui	Save GUI settings
 export_gui	3	strBtnHelp	Help
@@ -1013,7 +1016,7 @@ modelDropout_gui	3	strBtnHelp	Help
 modelDropout_gui	4	strFrmDataset	Dataset
 modelDropout_gui	5	strLblDataset	Sample dataset:
 modelDropout_gui	6	strDrpDataset	<Select dataset>
-modelDropout_gui	7	strLblKit	and the kit used:
+modelDropout_gui	7	strLblKit	Kit:
 modelDropout_gui	8	strFrmOptions	Options
 modelDropout_gui	9	strChkOverride	Override automatic titles
 modelDropout_gui	10	strLblTitlePlot	Plot title:
@@ -1022,7 +1025,7 @@ modelDropout_gui	12	strLblTitleY	Y title:
 modelDropout_gui	13	strLblRange	Dataset peak height range:
 modelDropout_gui	14	strChkLog	Log (Height)
 modelDropout_gui	15	strChkSex	Exclude sex markers
-modelDropout_gui	16	strLblNote	NB! Currently, the recommended methods are the first three options.\nThe fourth alternative has not been evaluated by the DNA Commission.\nSee 'Details' in 'Help' for more information.
+modelDropout_gui	16	strLblNote	NB! The recommended methods are the first three options.\nThe fourth alternative has not been evaluated by the DNA Commission.\nThe average peak heigt 'H' has a limitation when there are dropouts.\nSee 'Details' in 'Help' for more information.
 modelDropout_gui	17	strLblModels	Model drop-out from scoring method:
 modelDropout_gui	18	strRadRandom	Relative a random allele and peak height of surviving allele
 modelDropout_gui	19	strRadLMW	Relative the low molecular weight allele and peak height of surviving allele
@@ -1128,7 +1131,7 @@ plotBalance_gui	4	strFrmDataset	Dataset and kit
 plotBalance_gui	5	strLblDataset	Balance dataset:
 plotBalance_gui	6	strDrpDataset	<Select dataset>
 plotBalance_gui	7	strLblSamples	samples
-plotBalance_gui	8	strLblKit	and the kit used:
+plotBalance_gui	8	strLblKit	Kit:
 plotBalance_gui	9	strFrmOptions	Options
 plotBalance_gui	10	strChkOverride	Override automatic titles
 plotBalance_gui	11	strLblTitlePlot	Plot title:
@@ -1482,7 +1485,7 @@ plotPrecision_gui	3	strBtnHelp	Help
 plotPrecision_gui	4	strFrmDataset	Dataset and kit
 plotPrecision_gui	5	strLblDataset	Precision dataset:
 plotPrecision_gui	6	strDrpDataset	<Select dataset>
-plotPrecision_gui	7	strLblKit	and the kit used:
+plotPrecision_gui	7	strLblKit	Kit:
 plotPrecision_gui	8	strFrmOptions	Options
 plotPrecision_gui	9	strChkOverride	Override automatic titles
 plotPrecision_gui	10	strExpTitles	Titles
@@ -1545,7 +1548,7 @@ plotPullup_gui	4	strFrmDataset	Dataset and kit
 plotPullup_gui	5	strLblDataset	Pull-up dataset:
 plotPullup_gui	6	strDrpDataset	<Select dataset>
 plotPullup_gui	7	strLblSamples	samples
-plotPullup_gui	8	strLblKit	and the kit used:
+plotPullup_gui	8	strLblKit	Kit:
 plotPullup_gui	9	strFrmOptions	Options
 plotPullup_gui	10	strChkOverride	Override automatic titles
 plotPullup_gui	11	strLblTitlePlot	Plot title:
@@ -1680,7 +1683,7 @@ plotStutter_gui	4	strFrmDataset	Dataset and kit
 plotStutter_gui	5	strLblDataset	Stutter dataset:
 plotStutter_gui	6	strDrpDataset	<Select dataset>
 plotStutter_gui	7	strLblSamples	samples
-plotStutter_gui	8	strLblKit	and the kit used:
+plotStutter_gui	8	strLblKit	Kit:
 plotStutter_gui	9	strFrmOptions	Options
 plotStutter_gui	10	strChkOverride	Override automatic titles
 plotStutter_gui	11	strExpTitles	Titles
