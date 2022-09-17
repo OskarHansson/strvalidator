@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.09.2022: Added export buttons to DT table for View.
 # 09.09.2022: Fixed dataset info when NULL. Added view button. Now default to limit.
 # 17.10.2021: Try to expand dropdown for dataset under tcltk.
 # 08.03.2020: Added language support.
@@ -46,6 +47,7 @@
 #' @export
 #'
 #' @importFrom utils help write.table
+#' @importFrom DT datatable
 #'
 #' @return TRUE
 #'
@@ -383,21 +385,18 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   addHandlerClicked(view_btn, handler = function(h, ...) {
     val_tbl <- data_tbl[]
 
-    # Change button.
-    blockHandlers(view_btn)
-    svalue(view_btn) <- strBtnCopying
-    unblockHandlers(view_btn)
+    # Disable button.
     enabled(view_btn) <- FALSE
 
     # Convert to DT and show in viewer.
-    library(DT)
-    dt <- DT::datatable(val_tbl)
+    dt <- DT::datatable(val_tbl,
+      rownames = FALSE,
+      filter = "top", extensions = "Buttons",
+      options = list(dom = "Bfrtip", buttons = c("copy", "csv", "excel", "pdf", "print"))
+    )
     print(dt)
 
-    # Change button.
-    blockHandlers(view_btn)
-    svalue(view_btn) <- strBtnCopy
-    unblockHandlers(copy_btn)
+    # Enable button.
     enabled(view_btn) <- TRUE
   })
 

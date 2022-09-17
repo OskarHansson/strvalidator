@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.09.2022: Filename as suggested name for dataset for single file import.
 # 10.09.2022: Compacted the gui. Removed destroy workaround.
 # 16.03.2020: Added language support.
 # 17.03.2019: Fixed widgets not enabled.
@@ -42,6 +43,7 @@
 #' @export
 #'
 #' @importFrom utils help
+#' @importFrom tools file_path_sans_ext
 #'
 #' @seealso \code{\link{import}}
 
@@ -310,6 +312,8 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Update current selection.
     svalue(selected_lbl) <- paste0(c(strLblSelected, .selectedFile))
+    # Suggest filename as name for dataset.
+    svalue(import_edt) <- file_path_sans_ext(basename(.selectedFile))
   })
 
   # Button for multiple files import.

@@ -27,6 +27,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 14.09.2022: Added export buttons to DT table for View.
 # 10.09.2022: Fixed warning when selecting multiple objects for export.
 # 02.09.2022: Added "datatables" to supported classes in view function.
 # 21.08.2022: Fixed workspace not refreshed when no supported objects in environment and after loading a previous project.
@@ -1710,7 +1711,10 @@ strvalidator <- function(debug = FALSE) {
       if ("data.frame" %in% val_class) {
 
         # Convert to DT and view.
-        dt <- DT::datatable(val_data)
+        dt <- DT::datatable(val_data,
+          rownames = FALSE, filter = "top",
+          extensions = "Buttons", options = list(dom = "Bfrtip", buttons = c("copy", "csv", "excel", "pdf", "print"))
+        )
         print(dt)
       } else if (any(c("ggplot", "plotly", "datatables") %in% val_class)) {
 
@@ -1976,7 +1980,8 @@ strvalidator <- function(debug = FALSE) {
   workspace_f2g1 <- ggroup(
     horizontal = TRUE,
     container = workspace_f2,
-    expand = TRUE
+    expand = TRUE,
+    fill = "x"
   )
 
   ws_r_refresh_btn <- gbutton(text = strBtnRefresh, container = workspace_f2g1)

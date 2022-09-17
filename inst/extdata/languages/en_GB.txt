@@ -913,13 +913,11 @@ ggsave_gui	15	strLblScale	Scaling factor
 ggsave_gui	16	strLblPath	Save file to path:
 ggsave_gui	17	strBtnSave	Save
 ggsave_gui	18	strBtnProcessing	Processing...
-ggsave_gui	19	strMsgSave	Plot object, file name and path must be provided.\n\nThis error may also occur the first time the function is used.\nPlease locate the folder using the 'Open' button.
-ggsave_gui	20	strMsgTitleError	Error
-ggsave_gui	21	strMsgTitleSaveError	Save error
-ggsave_gui	22	strMsgFileExist	The file already exist!/n/nChose to cancel, overwrite or give a new name.
-ggsave_gui	23	strBtnCancel	Cancel
-ggsave_gui	24	strBtnOverwrite	Overwrite
-ggsave_gui	25	strBtnRetry	Retry
+ggsave_gui	19	strMsgPath	File path must be provided!\n\nThis error may also occur the first time the function is used.\nPlease locate the folder using the [file] button.
+ggsave_gui	20	strMsgName	File name must be provided!
+ggsave_gui	21	strMsgTitleError	Error
+ggsave_gui	22	strMsgTitleSaveError	Save error
+ggsave_gui	23	strMsgFileExist	The file already exist!\n\nClick [Yes] to overwrite or [No] to cancel and type a new name.
 guessProfile_gui	1	strWinTitle	Guess profile
 guessProfile_gui	2	strChkGui	Save GUI settings
 guessProfile_gui	3	strBtnHelp	Help

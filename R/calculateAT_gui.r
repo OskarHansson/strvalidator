@@ -897,7 +897,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
     }
     val_ref <- .gRef
     val_name_data <- svalue(g0_data_drp)
-    val_name_ref <- svalue(g0_ref_drp)
+    val_name_ref <- svalue(g1_ref_drp)
     val_ignore <- svalue(f1_ignore_chk)
     val_word <- svalue(f1_word_chk)
     val_mask_h <- svalue(f1_mask_h_chk)
