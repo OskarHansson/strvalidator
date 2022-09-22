@@ -3,7 +3,7 @@ Package: strvalidator
 Type: Package
 Title: Process Control and Validation of Forensic STR Kits
 Version: 2.4.0
-Date: 2022-09-11
+Date: 2022-09-19
 Author: Oskar Hansson
 Maintainer: Oskar Hansson <oskhan@ous-hf.no>
 URL: https://sites.google.com/site/forensicapps/strvalidator

@@ -74,15 +74,16 @@ calculateAllele_gui	4	strFrmDataset	Dataset
 calculateAllele_gui	5	strLblDataset	Dataset campioni:
 calculateAllele_gui	6	strDrpDefault	<Selezionare dataset>
 calculateAllele_gui	7	strLblRows	righe
-calculateAllele_gui	8	strFrmOptions	Opzioni
-calculateAllele_gui	9	strLblThreshold	Soglia altezza di picco:
-calculateAllele_gui	10	strTipThreshold	Picchi con altezze inferiori a questo valore saranno rimossi.
-calculateAllele_gui	11	strChkSexMarkers	Rimuovi i marcatori del sesso definiti nel kit: 
-calculateAllele_gui	12	strFrmSave	Salva come
-calculateAllele_gui	13	strLblSave	Nome per il risultato:
-calculateAllele_gui	14	strBtnCalculate	Calcola
-calculateAllele_gui	15	strMsgDataset	Seleziona un dataset!
-calculateAllele_gui	16	strMsgTitleDataset	Errore
+calculateAllele_gui	8	strLblKit	Kit:
+calculateAllele_gui	9	strFrmOptions	Opzioni
+calculateAllele_gui	10	strLblThreshold	Soglia altezza di picco:
+calculateAllele_gui	11	strTipThreshold	Picchi con altezze inferiori a questo valore saranno rimossi.
+calculateAllele_gui	12	strChkSexMarkers	Rimuovi i marcatori del sesso definiti nel kit: 
+calculateAllele_gui	13	strFrmSave	Salva come
+calculateAllele_gui	14	strLblSave	Nome per il risultato:
+calculateAllele_gui	15	strBtnCalculate	Calcola
+calculateAllele_gui	16	strMsgDataset	Seleziona un dataset!
+calculateAllele_gui	17	strMsgTitleDataset	Errore
 calculateAllT_gui	1	strWinTitle	Calcola le soglie stocastiche
 calculateAllT_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 calculateAllT_gui	3	strBtnHelp	Aiuto
@@ -603,14 +604,15 @@ calculateStatistics_gui	10	strLblGroupBy	Raggruppa per colonna(e)
 calculateStatistics_gui	11	strLblCount	Conta i valori unici nella colonna
 calculateStatistics_gui	12	strDrpColumn	<Seleziona colonne>
 calculateStatistics_gui	13	strLblQuantile	Calcolare il quantile
-calculateStatistics_gui	14	strFrmSave	Salva come
-calculateStatistics_gui	15	strLblSave	Nome per il risultato:
-calculateStatistics_gui	16	strBtnCalculate	Calcola
-calculateStatistics_gui	17	strBtnProcessing	In elaborazione...
-calculateStatistics_gui	18	strMsgDataset	Deve essere selezionato un dataset
-calculateStatistics_gui	19	strMsgTitleDataset	Dataset non selezionato
-calculateStatistics_gui	20	strMsgCheck	Il data frame è NULL!\n\nAssicurati di selezionare un dataset di campioni
-calculateStatistics_gui	21	strMsgTitleError	Errore
+calculateStatistics_gui	14	strLblDecimals	Arrotondamento ai decimali (-1 per nessun arrotondamento)
+calculateStatistics_gui	15	strFrmSave	Salva come
+calculateStatistics_gui	16	strLblSave	Nome per il risultato:
+calculateStatistics_gui	17	strBtnCalculate	Calcola
+calculateStatistics_gui	18	strBtnProcessing	In elaborazione...
+calculateStatistics_gui	19	strMsgDataset	Deve essere selezionato un dataset
+calculateStatistics_gui	20	strMsgTitleDataset	Dataset non selezionato
+calculateStatistics_gui	21	strMsgCheck	Il data frame è NULL!\n\nAssicurati di selezionare un dataset di campioni
+calculateStatistics_gui	22	strMsgTitleError	Errore
 calculateStutter_gui	1	strWinTitle	Calcola lo stutter ratio
 calculateStutter_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 calculateStutter_gui	3	strBtnHelp	Aiuto
@@ -766,21 +768,23 @@ editData_gui	12	strFrmOptions	Opzioni
 editData_gui	13	strChkAttributes	Mostra attributi (in una finestra separata)
 editData_gui	14	strChkLimit	Limita il numero di righe a:
 editData_gui	15	strTipLimit	NB! L'ordinamento sarà fatto solo sui dati caricati.
-editData_gui	16	strBtnCopy	Copia
-editData_gui	17	strTipCopy	Copia negli Appunti (NB! Dataset grandi potrebbero essere troncati).
-editData_gui	18	strBtnCopying	Copia in corso?
-editData_gui	19	strBtnExport	Esporta
-editData_gui	20	strTipExport	Apre il dialogo di esportazione.
-editData_gui	21	strBtnSave	Salva come
-editData_gui	22	strTipSave	Salva come nuovo dataset in questo project.
-editData_gui	23	strBtnSaving	Salvataggio in corso?
-editData_gui	24	strFrmSave	Copia|Esporta|Salva
-editData_gui	25	strLblNoData	Non ci sono dati
-editData_gui	26	strMsgSave	Deve essere indicato un nome.
-editData_gui	27	strMsgTitleError	Errore
-editData_gui	28	strLblTcltk	Lo strumento d'interfaccia grafica  tcltk non gestisce valori NA nelle tabelle.\ni valori NA saranno sostituiti con stringhe vuote.\nSe modifichi la tabella
-editData_gui	29	strChkShow	Non visualizzare più questo messaggio.
-editData_gui	30	strMsgTitleWarning	Attenzione
+editData_gui	16	strBtnView	Visualizza
+editData_gui	17	strTipView	Vedi come tabella interattiva nella scheda Posit Viewer.
+editData_gui	18	strBtnCopy	Copia
+editData_gui	19	strTipCopy	Copia negli Appunti (NB! Dataset grandi potrebbero essere troncati).
+editData_gui	20	strBtnCopying	Copia in corso?
+editData_gui	21	strBtnExport	Esporta
+editData_gui	22	strTipExport	Apre il dialogo di esportazione.
+editData_gui	23	strBtnSave	Salva come
+editData_gui	24	strTipSave	Salva come nuovo dataset in questo project.
+editData_gui	25	strBtnSaving	Salvataggio in corso?
+editData_gui	26	strFrmSave	Visualizza|Copia|Esporta|Salva
+editData_gui	27	strLblNoData	Non ci sono dati
+editData_gui	28	strMsgSave	Deve essere indicato un nome.
+editData_gui	29	strMsgTitleError	Errore
+editData_gui	30	strLblTcltk	Lo strumento d'interfaccia grafica  tcltk non gestisce valori NA nelle tabelle.\ni valori NA saranno sostituiti con stringhe vuote.\nSe modifichi la tabella
+editData_gui	31	strChkShow	Non visualizzare più questo messaggio.
+editData_gui	32	strMsgTitleWarning	Attenzione
 export_gui	1	strWinTitle	Esporta gli oggetti come file o immagini
 export_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 export_gui	3	strBtnHelp	Aiuto
@@ -909,13 +913,11 @@ ggsave_gui	15	strLblScale	fattore di scala
 ggsave_gui	16	strLblPath	Salva il file in questo percorso:
 ggsave_gui	17	strBtnSave	Salva
 ggsave_gui	18	strBtnProcessing	In elaborazione?
-ggsave_gui	19	strMsgSave	Rendi graficamente l'oggetto,  devono essere forniti nome e percorso del file.\n\nQuesto errore potrebbe verificarsio la prima volta che si usa la funzione.\nTrovare la cartella usando il pulsante 'Apri'.
-ggsave_gui	20	strMsgTitleError	Errore
-ggsave_gui	21	strMsgTitleSaveError	Errore di salvataggio
-ggsave_gui	22	strMsgFileExist	Il file esiste già!\n\nScegliere di cancellare, sovrascrivere o dare un nuovo nome
-ggsave_gui	23	strBtnCancel	Cancella
-ggsave_gui	24	strBtnOverwrite	Sovrascrivi
-ggsave_gui	25	strBtnRetry	Riprova
+ggsave_gui	19	strMsgPath	Deve essere indicato il percorso del file!\n\Questo errore si può verificare quando la funzione è usata per la prima volta.\nLocalizzare la cartella usando il pulsante [file].
+ggsave_gui	20	strMsgName	Deve essere indicato un nome per il file!
+ggsave_gui	21	strMsgTitleError	Errore
+ggsave_gui	22	strMsgTitleSaveError	Errore di salvataggio
+ggsave_gui	23	strMsgFileExist	Il file è già esistente!\n\nClicca [Yes] per sovrascrivere o [No] per cancellare e assegnare un nuovo nome.
 guessProfile_gui	1	strWinTitle	Desumi il profilo (guess)
 guessProfile_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 guessProfile_gui	3	strBtnHelp	Aiuto
@@ -1012,7 +1014,7 @@ modelDropout_gui	3	strBtnHelp	Aiuto
 modelDropout_gui	4	strFrmDataset	Dataset
 modelDropout_gui	5	strLblDataset	Dataset campioni:
 modelDropout_gui	6	strDrpDataset	<Selezionare dataset>
-modelDropout_gui	7	strLblKit	e il kit usato:
+modelDropout_gui	7	strLblKit	Kit:
 modelDropout_gui	8	strFrmOptions	Opzioni
 modelDropout_gui	9	strChkOverride	Sovrascrivi titoli automatici
 modelDropout_gui	10	strLblTitlePlot	Rendi graficamente il titolo:
@@ -1021,7 +1023,7 @@ modelDropout_gui	12	strLblTitleY	Titolo asse Y:
 modelDropout_gui	13	strLblRange	Intervallo di altezza di picco del dataset:
 modelDropout_gui	14	strChkLog	Log (Altezza)
 modelDropout_gui	15	strChkSex	Escludi i marcatori del sesso
-modelDropout_gui	16	strLblNote	NB! Attualmente i metodi raccomandati sono le prime tre opzioni. \nLa quarta alternativa non è stata valutata dalla DNA Commission.\nVedi 'Dettagli' in 'Aiuto' per maggiori informazioni.
+modelDropout_gui	16	strLblNote	NB! Attualmente i metodi raccomandati sono le prime tre opzioni. \nLa quarta alternativa non è stata valutata dalla DNA Commission.\nL'altezza media di picco 'H' ha dei limiti quando si verificano dropouts.\nVedi 'Dettagli' in 'Aiuto' per maggiori informazioni.
 modelDropout_gui	17	strLblModels	Modellizza il drop-out secondo il metodo di scoring:
 modelDropout_gui	18	strRadRandom	Relativo ad un allele a caso e all'altezza di picco dell'allele superstite
 modelDropout_gui	19	strRadLMW	Relativo all'allele a basso peso molecolare e all'altezza di picco dell'allele superstite
@@ -1127,7 +1129,7 @@ plotBalance_gui	4	strFrmDataset	Dataset e kit
 plotBalance_gui	5	strLblDataset	Dataset di balance:
 plotBalance_gui	6	strDrpDataset	<Selezionare dataset>
 plotBalance_gui	7	strLblSamples	campioni
-plotBalance_gui	8	strLblKit	e il kit usato:
+plotBalance_gui	8	strLblKit	Kit:
 plotBalance_gui	9	strFrmOptions	Opzioni
 plotBalance_gui	10	strChkOverride	Sovrascrivi titoli automatici
 plotBalance_gui	11	strLblTitlePlot	Rendi graficamente il titolo:
@@ -1357,6 +1359,30 @@ plotDropout_gui	49	strLblYTitleMarker	Marker
 plotDropout_gui	50	strLblYTitleCP	Probabilità cumulativa
 plotDropout_gui	51	strMsgNull	Il data frame è NULL o NA!
 plotDropout_gui	52	strMsgTitleError	Errore
+plotEPG2_gui	1	strWinTitle	Plot elettroferogramma (EPG)
+plotEPG2_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
+plotEPG2_gui	3	strBtnHelp	Aiuto
+plotEPG2_gui	4	strFrmDataset	Datasets
+plotEPG2_gui	5	strLblDataset	Dataset campioni:
+plotEPG2_gui	6	strDrpDataset	<Selezionare dataset>
+plotEPG2_gui	7	strLblSamples	campioni
+plotEPG2_gui	8	strLblSample	Campione:
+plotEPG2_gui	9	strDrpSample	<Selezionare campione>
+plotEPG2_gui	10	strLblKit	Kit:
+plotEPG2_gui	11	strFrmOptions	Opzioni
+plotEPG2_gui	12	strLblScale	scala asse Y:
+plotEPG2_gui	13	strOptYmax	Massimo su scala y tra i fluorocromi
+plotEPG2_gui	14	strOptYind	Scala y per singolo fluorocromo
+plotEPG2_gui	15	strLblAT	Soglia analitica:
+plotEPG2_gui	16	strLblST	Le soglie stocastiche:
+plotEPG2_gui	17	strFrmSave	Salva come
+plotEPG2_gui	18	strLblSave	Nome per il risultato:
+plotEPG2_gui	19	strBtnSaveObject	Salva come oggetto
+plotEPG2_gui	20	strBtnObjectSaved	Oggetto salvato
+plotEPG2_gui	21	strBtnPlot	Plot EPG
+plotEPG2_gui	22	strBtnProcessing	In elaborazione…
+plotEPG2_gui	23	strMsgDataset	Selezionare un dataset. Il campione è opzionale.
+plotEPG2_gui	24	strMsgTitleDataset	Dataset non selezionati
 plotGroups_gui	1	strWinTitle	Rendi graficamente i gruppi
 plotGroups_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 plotGroups_gui	3	strBtnHelp	Aiuto
@@ -1457,7 +1483,7 @@ plotPrecision_gui	3	strBtnHelp	Aiuto
 plotPrecision_gui	4	strFrmDataset	Dataset e kit
 plotPrecision_gui	5	strLblDataset	Dataset per la precisione:
 plotPrecision_gui	6	strDrpDataset	<Selezionare dataset>
-plotPrecision_gui	7	strLblKit	e il kit usato:
+plotPrecision_gui	7	strLblKit	Kit:
 plotPrecision_gui	8	strFrmOptions	Opzioni
 plotPrecision_gui	9	strChkOverride	Sovrascrivi titoli automatici
 plotPrecision_gui	10	strExpTitles	Titoli
@@ -1520,7 +1546,7 @@ plotPullup_gui	4	strFrmDataset	Dataset e kit
 plotPullup_gui	5	strLblDataset	Data set per il pull-up:
 plotPullup_gui	6	strDrpDataset	<Selezionare dataset>
 plotPullup_gui	7	strLblSamples	campioni
-plotPullup_gui	8	strLblKit	e il kit usato:
+plotPullup_gui	8	strLblKit	Kit:
 plotPullup_gui	9	strFrmOptions	Opzioni
 plotPullup_gui	10	strChkOverride	Sovrascrivi titoli automatici
 plotPullup_gui	11	strLblTitlePlot	Rendi graficamente il titolo:
@@ -1655,7 +1681,7 @@ plotStutter_gui	4	strFrmDataset	Dataset e kit
 plotStutter_gui	5	strLblDataset	Datasert degli stutter:
 plotStutter_gui	6	strDrpDataset	<Selezionare dataset>
 plotStutter_gui	7	strLblSamples	campioni
-plotStutter_gui	8	strLblKit	e il kit usato:
+plotStutter_gui	8	strLblKit	Kit:
 plotStutter_gui	9	strFrmOptions	Opzioni
 plotStutter_gui	10	strChkOverride	Sovrascrivi titoli automatici
 plotStutter_gui	11	strExpTitles	Titoli
@@ -1899,68 +1925,70 @@ strvalidator	130	strBtnHeight	Altezza
 strvalidator	131	strLblHeight	Calcola le metriche dell'altezza di picco
 strvalidator	132	strBtnEPG	EPG
 strvalidator	133	strLblEPG	Genera EPG come grafico
-strvalidator	134	strLblAT	Calcola la soglia analitica (AT1, AT2, AT4 e AT7)
-strvalidator	135	strLblAT6	Calcola la soglia analitica (AT6)
-strvalidator	136	strBtnPlot	Grafico
-strvalidator	137	strLblPlotAT6	Crea grafici per i dati analizzati (AT6)
-strvalidator	138	strLblStutter	Calcola gli stutters per un dataset
-strvalidator	139	strLblPlotStutter	Crea grafici per i dati degli stutter
-strvalidator	140	strBtnStatistics	Statistica
-strvalidator	141	strLblStatStutterGlobal	Calcola la statistica riassuntiva per i dati degli stutter
-strvalidator	142	strLblStatStutterMarker	Calcola la statistica riassuntiva per i dati degli stutter
-strvalidator	143	strLblStatStutterStutter	Calcola la statistica riassuntiva per i dati degli stutter
-strvalidator	144	strFrmHb	Equilibrio eterozigote (intra-locus)
-strvalidator	145	strFrmLb	Equilibrio del profilo (inter-locus)
-strvalidator	146	strLblHb	Calcola l'equilibrio eterozigote
-strvalidator	147	strLblLb	Calcola l'equilibrio balance del profilo
-strvalidator	148	strLblPlotBalance	Crea grafici per i dati analizzati
-strvalidator	149	strLblStatBalanceGlobal	Calcola la statistica riassuntiva per i dati di balance
-strvalidator	150	strLblStatBalanceMarker	Calcola la statistica riassuntiva per marcatore
-strvalidator	151	strFrmCapillary	Capillary balance
-strvalidator	152	strLblCapillary	 per un dataset
-strvalidator	153	strLblPlotCapillary	Crea grafici per i dati di capillary balance
-strvalidator	154	strLblStatCapillaryCap	Calcola la statistica riassuntiva per capillare
-strvalidator	155	strLblStatCapillaryInj	Calcola la statistica riassuntiva per iniezione
-strvalidator	156	strLblStatCapillaryRow	Calcola la statistica riassuntiva per righe della piastra
-strvalidator	157	strLblStatCapillaryRun	Calcola la statistica riassuntiva per corsa
-strvalidator	158	strLblStatCapillaryIns	Calcola la statistica riassuntiva per strumento
-strvalidator	159	strFrmRatio	PHR del marker
-strvalidator	160	strLblRatio	Calcola il rapporto tra locus per un dataset
-strvalidator	161	strLblPlotRatio	Crea grafici per i dati di rapporto tra marker
-strvalidator	162	strLblConcordance	Calcola la concordanza tra più dataset
-strvalidator	163	strBtnScore	Score
-strvalidator	164	strLblScore	Score dei dropout per un dataset
-strvalidator	165	strLblDropout	Calcola le soglie stocastiche
-strvalidator	166	strBtnModel	Modellizza
-strvalidator	167	strLblModel	Modellizza e rendi graficamente il rischio di dropout
-strvalidator	168	strLblPlotDropout	Crea grafici per i dati analizzati
-strvalidator	169	strLblMixture	Calcola la mixture per un dataset
-strvalidator	170	strFrmType	Tipi di risultato
-strvalidator	171	strLblType	Calcola il tipo di risultati per un dataset
-strvalidator	172	strLblPlotType	Crea grafici per i dati sul tipo di risultato
-strvalidator	173	strFrmPeaks	Numero di picchi
-strvalidator	174	strLblPeaks	Conta il numero di picchi nel campione
-strvalidator	175	strLblPlotPeaks	Crea grafici per i dati di picco
-strvalidator	176	strFrmStatistics	Statistica riassuntiva
-strvalidator	177	strLblStatistics	Calcola statistica riassuntiva
-strvalidator	178	strFrmDistribution	Distribuzioni
-strvalidator	179	strLblDistribution	Rendi graficamente la distribuzione dei dati
-strvalidator	180	strLblGroups	Rendi graficamente la distribuzione cumulativa per più gruppi
-strvalidator	181	strFrmDropin	Strumenti per il drop-in
-strvalidator	182	strLblSpikes	Identifica possibili spike
-strvalidator	183	strLblFilterSpikes	Rimuovi gli spike
-strvalidator	184	strLblArtefacts	Identifica possibili spike
-strvalidator	185	strLblFilterArtefacts	Rimuovi artefatti
-strvalidator	186	strLblPlotContamination	Rendi graficamente la contaminazione
-strvalidator	187	strFrmSlope	Slope del profilo
-strvalidator	188	strLblSlope	Calcola la slope del profilo
-strvalidator	189	strLblPlotSlope	Rendi graficamente i dati di slope
-strvalidator	190	strLblPrecision	Crea grafici per la precisione
-strvalidator	191	strLblStatPrecisionSize	Calcola la statistica riassuntiva per la precisione
-strvalidator	192	strLblStatPrecisionDataPoint	Calcola la statistica riassuntiva per la precisione
-strvalidator	193	strLblStatPrecisionHeight	Calcola la statistica riassuntiva per la precisione
-strvalidator	194	strLblPullup	Calcola il pull-up spettrale/bleed-through
-strvalidator	195	strLblPlotPullup	Crea grafici per i dati di pull-up
+strvalidator	134	strBtnEPG2	EPG2
+strvalidator	135	strLblEPG2	Genera EPG  come grafico interattivo
+strvalidator	136	strLblAT	Calcola la soglia analitica (AT1, AT2, AT4 e AT7)
+strvalidator	137	strLblAT6	Calcola la soglia analitica (AT6)
+strvalidator	138	strBtnPlot	Grafico
+strvalidator	139	strLblPlotAT6	Crea grafici per i dati analizzati (AT6)
+strvalidator	140	strLblStutter	Calcola gli stutters per un dataset
+strvalidator	141	strLblPlotStutter	Crea grafici per i dati degli stutter
+strvalidator	142	strBtnStatistics	Statistica
+strvalidator	143	strLblStatStutterGlobal	Calcola la statistica riassuntiva per i dati degli stutter
+strvalidator	144	strLblStatStutterMarker	Calcola la statistica riassuntiva per i dati degli stutter
+strvalidator	145	strLblStatStutterStutter	Calcola la statistica riassuntiva per i dati degli stutter
+strvalidator	146	strFrmHb	Equilibrio eterozigote (intra-locus)
+strvalidator	147	strFrmLb	Equilibrio del profilo (inter-locus)
+strvalidator	148	strLblHb	Calcola l'equilibrio eterozigote
+strvalidator	149	strLblLb	Calcola l'equilibrio balance del profilo
+strvalidator	150	strLblPlotBalance	Crea grafici per i dati analizzati
+strvalidator	151	strLblStatBalanceGlobal	Calcola la statistica riassuntiva per i dati di balance
+strvalidator	152	strLblStatBalanceMarker	Calcola la statistica riassuntiva per marcatore
+strvalidator	153	strFrmCapillary	Capillary balance
+strvalidator	154	strLblCapillary	 per un dataset
+strvalidator	155	strLblPlotCapillary	Crea grafici per i dati di capillary balance
+strvalidator	156	strLblStatCapillaryCap	Calcola la statistica riassuntiva per capillare
+strvalidator	157	strLblStatCapillaryInj	Calcola la statistica riassuntiva per iniezione
+strvalidator	158	strLblStatCapillaryRow	Calcola la statistica riassuntiva per righe della piastra
+strvalidator	159	strLblStatCapillaryRun	Calcola la statistica riassuntiva per corsa
+strvalidator	160	strLblStatCapillaryIns	Calcola la statistica riassuntiva per strumento
+strvalidator	161	strFrmRatio	PHR del marker
+strvalidator	162	strLblRatio	Calcola il rapporto tra locus per un dataset
+strvalidator	163	strLblPlotRatio	Crea grafici per i dati di rapporto tra marker
+strvalidator	164	strLblConcordance	Calcola la concordanza tra più dataset
+strvalidator	165	strBtnScore	Score
+strvalidator	166	strLblScore	Score dei dropout per un dataset
+strvalidator	167	strLblDropout	Calcola le soglie stocastiche
+strvalidator	168	strBtnModel	Modellizza
+strvalidator	169	strLblModel	Modellizza e rendi graficamente il rischio di dropout
+strvalidator	170	strLblPlotDropout	Crea grafici per i dati analizzati
+strvalidator	171	strLblMixture	Calcola la mixture per un dataset
+strvalidator	172	strFrmType	Tipi di risultato
+strvalidator	173	strLblType	Calcola il tipo di risultati per un dataset
+strvalidator	174	strLblPlotType	Crea grafici per i dati sul tipo di risultato
+strvalidator	175	strFrmPeaks	Numero di picchi
+strvalidator	176	strLblPeaks	Conta il numero di picchi nel campione
+strvalidator	177	strLblPlotPeaks	Crea grafici per i dati di picco
+strvalidator	178	strFrmStatistics	Statistica riassuntiva
+strvalidator	179	strLblStatistics	Calcola statistica riassuntiva
+strvalidator	180	strFrmDistribution	Distribuzioni
+strvalidator	181	strLblDistribution	Rendi graficamente la distribuzione dei dati
+strvalidator	182	strLblGroups	Rendi graficamente la distribuzione cumulativa per più gruppi
+strvalidator	183	strFrmDropin	Strumenti per il drop-in
+strvalidator	184	strLblSpikes	Identifica possibili spike
+strvalidator	185	strLblFilterSpikes	Rimuovi gli spike
+strvalidator	186	strLblArtefacts	Identifica possibili spike
+strvalidator	187	strLblFilterArtefacts	Rimuovi artefatti
+strvalidator	188	strLblPlotContamination	Rendi graficamente la contaminazione
+strvalidator	189	strFrmSlope	Slope del profilo
+strvalidator	190	strLblSlope	Calcola la slope del profilo
+strvalidator	191	strLblPlotSlope	Rendi graficamente i dati di slope
+strvalidator	192	strLblPrecision	Crea grafici per la precisione
+strvalidator	193	strLblStatPrecisionSize	Calcola la statistica riassuntiva per la precisione
+strvalidator	194	strLblStatPrecisionDataPoint	Calcola la statistica riassuntiva per la precisione
+strvalidator	195	strLblStatPrecisionHeight	Calcola la statistica riassuntiva per la precisione
+strvalidator	196	strLblPullup	Calcola il pull-up spettrale/bleed-through
+strvalidator	197	strLblPlotPullup	Crea grafici per i dati di pull-up
 trim_gui	1	strWinTitle	Procedi con 'Trim' sul dataset
 trim_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 trim_gui	3	strBtnHelp	Aiuto

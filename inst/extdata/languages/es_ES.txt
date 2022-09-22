@@ -74,15 +74,16 @@ calculateAllele_gui	4	strFrmDataset	Conjunto de datos
 calculateAllele_gui	5	strLblDataset	Conjunto de datos de muestras:
 calculateAllele_gui	6	strDrpDefault	<Seleccionar datos>
 calculateAllele_gui	7	strLblRows	filas
-calculateAllele_gui	8	strFrmOptions	Opciones
-calculateAllele_gui	9	strLblThreshold	Umbral de altura de pico:
-calculateAllele_gui	10	strTipThreshold	Los picos con alturas por debajo de este valor se eliminarán.
-calculateAllele_gui	11	strChkSexMarkers	Eliminar marcadores de sexo del kit:
-calculateAllele_gui	12	strFrmSave	Guardar como
-calculateAllele_gui	13	strLblSave	Nombre del resultado:
-calculateAllele_gui	14	strBtnCalculate	Calcular
-calculateAllele_gui	15	strMsgDataset	Seleccionar un conjunto de datos!
-calculateAllele_gui	16	strMsgTitleDataset	Error
+calculateAllele_gui	8	strLblKit	Kit:
+calculateAllele_gui	9	strFrmOptions	Opciones
+calculateAllele_gui	10	strLblThreshold	Umbral de altura de pico:
+calculateAllele_gui	11	strTipThreshold	Los picos con alturas por debajo de este valor se eliminarán.
+calculateAllele_gui	12	strChkSexMarkers	Eliminar marcadores de sexo del kit:
+calculateAllele_gui	13	strFrmSave	Guardar como
+calculateAllele_gui	14	strLblSave	Nombre del resultado:
+calculateAllele_gui	15	strBtnCalculate	Calcular
+calculateAllele_gui	16	strMsgDataset	Seleccionar un conjunto de datos!
+calculateAllele_gui	17	strMsgTitleDataset	Error
 calculateAllT_gui	1	strWinTitle	Calcular umbrales estocásticos
 calculateAllT_gui	2	strChkGui	Guardar configuración de GUI
 calculateAllT_gui	3	strBtnHelp	Ayuda
@@ -603,14 +604,15 @@ calculateStatistics_gui	10	strLblGroupBy	Agrupar por columna(s):
 calculateStatistics_gui	11	strLblCount	Contar valores únicos en la columna:
 calculateStatistics_gui	12	strDrpColumn	<Seleccionar columnas>
 calculateStatistics_gui	13	strLblQuantile	Calcular cuantil
-calculateStatistics_gui	14	strFrmSave	Guardar como
-calculateStatistics_gui	15	strLblSave	Nombre del resultado:
-calculateStatistics_gui	16	strBtnCalculate	Calcular
-calculateStatistics_gui	17	strBtnProcessing	Procesando…
-calculateStatistics_gui	18	strMsgDataset	Se debe seleccionar un conjunto de datos.
-calculateStatistics_gui	19	strMsgTitleDataset	Datos no seleccionados
-calculateStatistics_gui	20	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
-calculateStatistics_gui	21	strMsgTitleError	Error
+calculateStatistics_gui	14	strLblDecimals	Redondear decimales (-1 para no redondear):
+calculateStatistics_gui	15	strFrmSave	Guardar como
+calculateStatistics_gui	16	strLblSave	Nombre del resultado:
+calculateStatistics_gui	17	strBtnCalculate	Calcular
+calculateStatistics_gui	18	strBtnProcessing	Procesando…
+calculateStatistics_gui	19	strMsgDataset	Se debe seleccionar un conjunto de datos.
+calculateStatistics_gui	20	strMsgTitleDataset	Datos no seleccionados
+calculateStatistics_gui	21	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+calculateStatistics_gui	22	strMsgTitleError	Error
 calculateStutter_gui	1	strWinTitle	Calcular stutter ratio
 calculateStutter_gui	2	strChkGui	Guardar configuración de GUI
 calculateStutter_gui	3	strBtnHelp	Ayuda
@@ -766,21 +768,23 @@ editData_gui	12	strFrmOptions	Opciones
 editData_gui	13	strChkAttributes	Mostrar atributos (en ventana separada)
 editData_gui	14	strChkLimit	Limitar el número de filas a:
 editData_gui	15	strTipLimit	NB! La clasificación solo se realizará en los datos cargados.
-editData_gui	16	strBtnCopy	Copiar
-editData_gui	17	strTipCopy	Copiar al portapapeles (¡NOTA! Los conjuntos de datos muy grandes pueden truncarse).
-editData_gui	18	strBtnCopying	Copiando…
-editData_gui	19	strBtnExport	Exportar
-editData_gui	20	strTipExport	Abre el diálogo de exportación.
-editData_gui	21	strBtnSave	Guardar como
-editData_gui	22	strTipSave	Guardar como nuevo conjunto de datos en este proyecto.
-editData_gui	23	strBtnSaving	Guardando…
-editData_gui	24	strFrmSave	Copiar|Exportar|Guardar
-editData_gui	25	strLblNoData	No hay datos
-editData_gui	26	strMsgSave	Se debe proporcionar un nombre.
-editData_gui	27	strMsgTitleError	Error
-editData_gui	28	strLblTcltk	La herramienta tcltk del gui no maneja valores NA en las tablas.\nLos valores NA se reemplazarán por cadenas vacías.\nSi edita la tabla, los valores NA se reeempazarán permanentemente.
-editData_gui	29	strChkShow	No mostrar este mensaje otra vez.
-editData_gui	30	strMsgTitleWarning	Atención
+editData_gui	16	strBtnView	Visualizar
+editData_gui	17	strTipView	Visualizar como tabla interactiva en la pestaña Posit Viewer.
+editData_gui	18	strBtnCopy	Copiar
+editData_gui	19	strTipCopy	Copiar al portapapeles (¡NOTA! Los conjuntos de datos muy grandes pueden truncarse).
+editData_gui	20	strBtnCopying	Copiando…
+editData_gui	21	strBtnExport	Exportar
+editData_gui	22	strTipExport	Abre el diálogo de exportación.
+editData_gui	23	strBtnSave	Guardar como
+editData_gui	24	strTipSave	Guardar como nuevo conjunto de datos en este proyecto.
+editData_gui	25	strBtnSaving	Guardando…
+editData_gui	26	strFrmSave	Vista|Copiar|Exportar|Guardar
+editData_gui	27	strLblNoData	No hay datos
+editData_gui	28	strMsgSave	Se debe proporcionar un nombre.
+editData_gui	29	strMsgTitleError	Error
+editData_gui	30	strLblTcltk	La herramienta tcltk del gui no maneja valores NA en las tablas.\nLos valores NA se reemplazarán por cadenas vacías.\nSi edita la tabla, los valores NA se reeempazarán permanentemente.
+editData_gui	31	strChkShow	No mostrar este mensaje otra vez.
+editData_gui	32	strMsgTitleWarning	Atención
 export_gui	1	strWinTitle	Exportar objetos como archivos o imágenes
 export_gui	2	strChkGui	Guardar configuración de GUI
 export_gui	3	strBtnHelp	Ayuda
@@ -909,13 +913,11 @@ ggsave_gui	15	strLblScale	Factor de escala
 ggsave_gui	16	strLblPath	Guardar archivo en ruta:
 ggsave_gui	17	strBtnSave	Guardar
 ggsave_gui	18	strBtnProcessing	Procesando…
-ggsave_gui	19	strMsgSave	Gráfico de objeto, se debe proporcionar nombre de archivo y ruta.\n\nEste error también puede ocurrir la primera vez que se usa la función.\nPor favor localice la carpeta a través del botón 'Abrir'.
-ggsave_gui	20	strMsgTitleError	Error
-ggsave_gui	21	strMsgTitleSaveError	Guardar error
-ggsave_gui	22	strMsgFileExist	El archivo ya existe!/n/nSeleccionar cancelar, sobreescribir o dar un nombre nuevo.
-ggsave_gui	23	strBtnCancel	Cancelar
-ggsave_gui	24	strBtnOverwrite	Sobreescribir
-ggsave_gui	25	strBtnRetry	Reintentar
+ggsave_gui	19	strMsgPath	¡Se debe proporcionar la ruta del archivo!\n\nEste error también puede ocurrir la primera vez que se usa la función.\nUbique la carpeta usando el botón [archivo].
+ggsave_gui	20	strMsgName	Se debe proporcionar un nombre de archivo!
+ggsave_gui	21	strMsgTitleError	Error
+ggsave_gui	22	strMsgTitleSaveError	Guardar error
+ggsave_gui	23	strMsgFileExist	El archivo ya existe!\n\nClick en [Yes] para sobreescribir o [No] para cancelar y dar un nuevo nombre.
 guessProfile_gui	1	strWinTitle	Inferir perfil
 guessProfile_gui	2	strChkGui	Guardar configuración de GUI
 guessProfile_gui	3	strBtnHelp	Ayuda
@@ -1012,7 +1014,7 @@ modelDropout_gui	3	strBtnHelp	Ayuda
 modelDropout_gui	4	strFrmDataset	Conjunto de datos
 modelDropout_gui	5	strLblDataset	Conjunto de datos de muestras:
 modelDropout_gui	6	strDrpDataset	<Seleccionar datos>
-modelDropout_gui	7	strLblKit	y el kit utilizado:
+modelDropout_gui	7	strLblKit	Kit:
 modelDropout_gui	8	strFrmOptions	Opciones
 modelDropout_gui	9	strChkOverride	Anular títulos automáticos
 modelDropout_gui	10	strLblTitlePlot	Título del gráfico:
@@ -1021,7 +1023,7 @@ modelDropout_gui	12	strLblTitleY	Título eje Y:
 modelDropout_gui	13	strLblRange	Datos de rango de altura de pico:
 modelDropout_gui	14	strChkLog	Log (Altura)
 modelDropout_gui	15	strChkSex	Excluir marcadores de sexo
-modelDropout_gui	16	strLblNote	NB! Actualmente, los métodos recomendados son los de las tres primeras opciones.\nLa cuarta alternativa no ha sido evaluada por la DNA Commission.\nVer 'Detalles' en 'Ayuda' para más información.
+modelDropout_gui	16	strLblNote	NB! Los métodos recomendados son los de las tres primeras opciones.\nLa cuarta alternativa no ha sido evaluada por la DNA Commission.\nLa altura media del pico 'H' tiene limitaciones cuando hay dropouts.\nVer 'Detalles' en 'Ayuda' para más información.
 modelDropout_gui	17	strLblModels	Modelizar drop-out de acuerdo al método de puntuación:
 modelDropout_gui	18	strRadRandom	Relativo a un alelo aleatorio y a la altura máxima del alelo superviviente
 modelDropout_gui	19	strRadLMW	En relación con el alelo de bajo peso molecular y la altura del alelo superviviente
@@ -1127,7 +1129,7 @@ plotBalance_gui	4	strFrmDataset	Datos y kit
 plotBalance_gui	5	strLblDataset	Datos de equilibrio:
 plotBalance_gui	6	strDrpDataset	<Seleccionar datos>
 plotBalance_gui	7	strLblSamples	muestras
-plotBalance_gui	8	strLblKit	y el kit utilizado:
+plotBalance_gui	8	strLblKit	Kit:
 plotBalance_gui	9	strFrmOptions	Opciones
 plotBalance_gui	10	strChkOverride	Anular títulos automáticos
 plotBalance_gui	11	strLblTitlePlot	Título del gráfico:
@@ -1357,6 +1359,30 @@ plotDropout_gui	49	strLblYTitleMarker	Marcador
 plotDropout_gui	50	strLblYTitleCP	Probabilidad acumulativa
 plotDropout_gui	51	strMsgNull	El marco de datos en NULO o NA!
 plotDropout_gui	52	strMsgTitleError	Error
+plotEPG2_gui	1	strWinTitle	Plot electroferograma (EPG)
+plotEPG2_gui	2	strChkGui	Guardar configuración de GUI
+plotEPG2_gui	3	strBtnHelp	Ayuda
+plotEPG2_gui	4	strFrmDataset	Conjuntos de datos
+plotEPG2_gui	5	strLblDataset	Conjunto de datos de muestras:
+plotEPG2_gui	6	strDrpDataset	<Seleccionar datos>
+plotEPG2_gui	7	strLblSamples	muestras
+plotEPG2_gui	8	strLblSample	Muestra:
+plotEPG2_gui	9	strDrpSample	<Seleccionar muestra>
+plotEPG2_gui	10	strLblKit	Kit:
+plotEPG2_gui	11	strFrmOptions	Opciones
+plotEPG2_gui	12	strLblScale	Escala del eje Y:
+plotEPG2_gui	13	strOptYmax	A lo largo de la escala del eje Y de máx fluorescencia
+plotEPG2_gui	14	strOptYind	Escala-Y de fluorocromo individual
+plotEPG2_gui	15	strLblAT	Umbral analítico:
+plotEPG2_gui	16	strLblST	Umbrales estocásticos:
+plotEPG2_gui	17	strFrmSave	Guardar como
+plotEPG2_gui	18	strLblSave	Nombre para el resultado:
+plotEPG2_gui	19	strBtnSaveObject	Guardar como objeto
+plotEPG2_gui	20	strBtnObjectSaved	Objeto guardado
+plotEPG2_gui	21	strBtnPlot	Plot EPG
+plotEPG2_gui	22	strBtnProcessing	Procesando…
+plotEPG2_gui	23	strMsgDataset	Debe seleccionar un conjunto de datos. Muestra es opcional.
+plotEPG2_gui	24	strMsgTitleDataset	Conjuntos de datos no seleccionados
 plotGroups_gui	1	strWinTitle	Gráfico de grupos
 plotGroups_gui	2	strChkGui	Guardar configuración de GUI
 plotGroups_gui	3	strBtnHelp	Ayuda
@@ -1457,7 +1483,7 @@ plotPrecision_gui	3	strBtnHelp	Ayuda
 plotPrecision_gui	4	strFrmDataset	Datos y kit
 plotPrecision_gui	5	strLblDataset	Conjunto de datos de precisión:
 plotPrecision_gui	6	strDrpDataset	<Seleccionar datos>
-plotPrecision_gui	7	strLblKit	y el kit utilizado:
+plotPrecision_gui	7	strLblKit	Kit:
 plotPrecision_gui	8	strFrmOptions	Opciones
 plotPrecision_gui	9	strChkOverride	Anular títulos automáticos
 plotPrecision_gui	10	strExpTitles	Títulos
@@ -1520,7 +1546,7 @@ plotPullup_gui	4	strFrmDataset	Datos y kit
 plotPullup_gui	5	strLblDataset	Datos de pull-up:
 plotPullup_gui	6	strDrpDataset	<Seleccionar datos>
 plotPullup_gui	7	strLblSamples	muestras
-plotPullup_gui	8	strLblKit	y el kit utilizado:
+plotPullup_gui	8	strLblKit	Kit:
 plotPullup_gui	9	strFrmOptions	Opciones
 plotPullup_gui	10	strChkOverride	Anular títulos automáticos
 plotPullup_gui	11	strLblTitlePlot	Título del gráfico:
@@ -1655,7 +1681,7 @@ plotStutter_gui	4	strFrmDataset	Datos y kit
 plotStutter_gui	5	strLblDataset	Datos de Stutter:
 plotStutter_gui	6	strDrpDataset	<Seleccionar datos>
 plotStutter_gui	7	strLblSamples	muestras
-plotStutter_gui	8	strLblKit	y el kit utilizado:
+plotStutter_gui	8	strLblKit	Kit:
 plotStutter_gui	9	strFrmOptions	Opciones
 plotStutter_gui	10	strChkOverride	Anular títulos automáticos
 plotStutter_gui	11	strExpTitles	Títulos
@@ -1899,68 +1925,70 @@ strvalidator	130	strBtnHeight	Altura
 strvalidator	131	strLblHeight	Calcular métricas de altura de pico
 strvalidator	132	strBtnEPG	EPG
 strvalidator	133	strLblEPG	Generar EPG como gráfico
-strvalidator	134	strLblAT	Calcular umbral analítico (AT1, AT2, AT4, AT7)
-strvalidator	135	strLblAT6	Calcular umbral analítico (AT6)
-strvalidator	136	strBtnPlot	Gráfico
-strvalidator	137	strLblPlotAT6	Crear gráficos para datos analizados (AT6)
-strvalidator	138	strLblStutter	Calcular stutters en un conjunto de datos
-strvalidator	139	strLblPlotStutter	Crear gráficos para datos de stutter
-strvalidator	140	strBtnStatistics	Estadísticas
-strvalidator	141	strLblStatStutterGlobal	Calcular estadísticas resumen globales
-strvalidator	142	strLblStatStutterMarker	Calcular estadísticas resumen por marcador
-strvalidator	143	strLblStatStutterStutter	Calcular estadísticas resumen por marcador y tipo de stutter
-strvalidator	144	strFrmHb	Equilibrio de heterocigotos (intra-locus)
-strvalidator	145	strFrmLb	Equilibrio del perfil (inter-locus)
-strvalidator	146	strLblHb	Calcular equilibrio de heterocigotos
-strvalidator	147	strLblLb	Calcular equilibrio del perfil
-strvalidator	148	strLblPlotBalance	Crear gráficos para datos analizados
-strvalidator	149	strLblStatBalanceGlobal	Calcular estadísticas resumen globales
-strvalidator	150	strLblStatBalanceMarker	Calcular estadísticas resumen por marcador
-strvalidator	151	strFrmCapillary	Equilibrio entre capilares
-strvalidator	152	strLblCapillary	Calcular el equilibrio de capilares para un conjunto de datos
-strvalidator	153	strLblPlotCapillary	Crear gráficos para datos de equilibrio de capilares
-strvalidator	154	strLblStatCapillaryCap	Calcular estadísticas resumen por capilar
-strvalidator	155	strLblStatCapillaryInj	Calcular estadísticas resumen por inyección
-strvalidator	156	strLblStatCapillaryRow	Calcular estadísticas resumen por fila de la placa
-strvalidator	157	strLblStatCapillaryRun	Calcular estadísticas resumen por run
-strvalidator	158	strLblStatCapillaryIns	Calcular estadísticas resumen por equipo
-strvalidator	159	strFrmRatio	Ratio de altura del pico en el marcador
-strvalidator	160	strLblRatio	Calcular el locus ratio para un conjunto de datos
-strvalidator	161	strLblPlotRatio	Crear gráficos para datos de marker ratio
-strvalidator	162	strLblConcordance	Calcular concordancia entre múltiples conjuntos de datos
-strvalidator	163	strBtnScore	Puntuación
-strvalidator	164	strLblScore	Puntuación dropout para un conjunto de datos
-strvalidator	165	strLblDropout	Calcular umbrales estocásticos
-strvalidator	166	strBtnModel	Modelizar
-strvalidator	167	strLblModel	Modelizar y hacer gráfico del riesgo de dropout
-strvalidator	168	strLblPlotDropout	Crear gráficos para datos analizados
-strvalidator	169	strLblMixture	Calcular mezcla para un conjunto de datos
-strvalidator	170	strFrmType	Tipos de resultado
-strvalidator	171	strLblType	Calcular tipos de resultado para un conjunto de datos
-strvalidator	172	strLblPlotType	Crear gráficos para datos de tipo de resultado
-strvalidator	173	strFrmPeaks	Número de picos
-strvalidator	174	strLblPeaks	Contar el número de picos en la muestra
-strvalidator	175	strLblPlotPeaks	Crear gráficos para datos de pico
-strvalidator	176	strFrmStatistics	Estadísticas resumen
-strvalidator	177	strLblStatistics	Calcular estadísticas resumen
-strvalidator	178	strFrmDistribution	Distribuciones
-strvalidator	179	strLblDistribution	Representar gráficamente la distribución de los datos
-strvalidator	180	strLblGroups	Gráfico de distribución acumulativa para múltiples grupos
-strvalidator	181	strFrmDropin	Herramientas de drop-in
-strvalidator	182	strLblSpikes	Identificar posibles spikes
-strvalidator	183	strLblFilterSpikes	Eliminar spikes
-strvalidator	184	strLblArtefacts	Identificar posibles artefactos
-strvalidator	185	strLblFilterArtefacts	Eliminar artefactos
-strvalidator	186	strLblPlotContamination	Gráfico de contaminación
-strvalidator	187	strFrmSlope	Pendiente del perfil
-strvalidator	188	strLblSlope	Calcular la pendiente del perfil
-strvalidator	189	strLblPlotSlope	Gráfico de datos de pendiente
-strvalidator	190	strLblPrecision	Crear gráficos de precisión
-strvalidator	191	strLblStatPrecisionSize	Calcular estadísticas resumen por tamaño
-strvalidator	192	strLblStatPrecisionDataPoint	Calcular estadísticas resumen por Data.Point
-strvalidator	193	strLblStatPrecisionHeight	Calcular estadísticas resumen por Altura
-strvalidator	194	strLblPullup	Calcular pull-up espectral/depurar
-strvalidator	195	strLblPlotPullup	Crear gráficos para datos de pull-up
+strvalidator	134	strBtnEPG2	EPG2
+strvalidator	135	strLblEPG2	Generar EPG interactivo como gráfico
+strvalidator	136	strLblAT	Calcular umbral analítico (AT1, AT2, AT4, AT7)
+strvalidator	137	strLblAT6	Calcular umbral analítico (AT6)
+strvalidator	138	strBtnPlot	Gráfico
+strvalidator	139	strLblPlotAT6	Crear gráficos para datos analizados (AT6)
+strvalidator	140	strLblStutter	Calcular stutters en un conjunto de datos
+strvalidator	141	strLblPlotStutter	Crear gráficos para datos de stutter
+strvalidator	142	strBtnStatistics	Estadísticas
+strvalidator	143	strLblStatStutterGlobal	Calcular estadísticas resumen globales
+strvalidator	144	strLblStatStutterMarker	Calcular estadísticas resumen por marcador
+strvalidator	145	strLblStatStutterStutter	Calcular estadísticas resumen por marcador y tipo de stutter
+strvalidator	146	strFrmHb	Equilibrio de heterocigotos (intra-locus)
+strvalidator	147	strFrmLb	Equilibrio del perfil (inter-locus)
+strvalidator	148	strLblHb	Calcular equilibrio de heterocigotos
+strvalidator	149	strLblLb	Calcular equilibrio del perfil
+strvalidator	150	strLblPlotBalance	Crear gráficos para datos analizados
+strvalidator	151	strLblStatBalanceGlobal	Calcular estadísticas resumen globales
+strvalidator	152	strLblStatBalanceMarker	Calcular estadísticas resumen por marcador
+strvalidator	153	strFrmCapillary	Equilibrio entre capilares
+strvalidator	154	strLblCapillary	Calcular el equilibrio de capilares para un conjunto de datos
+strvalidator	155	strLblPlotCapillary	Crear gráficos para datos de equilibrio de capilares
+strvalidator	156	strLblStatCapillaryCap	Calcular estadísticas resumen por capilar
+strvalidator	157	strLblStatCapillaryInj	Calcular estadísticas resumen por inyección
+strvalidator	158	strLblStatCapillaryRow	Calcular estadísticas resumen por fila de la placa
+strvalidator	159	strLblStatCapillaryRun	Calcular estadísticas resumen por run
+strvalidator	160	strLblStatCapillaryIns	Calcular estadísticas resumen por equipo
+strvalidator	161	strFrmRatio	Ratio de altura del pico en el marcador
+strvalidator	162	strLblRatio	Calcular el locus ratio para un conjunto de datos
+strvalidator	163	strLblPlotRatio	Crear gráficos para datos de marker ratio
+strvalidator	164	strLblConcordance	Calcular concordancia entre múltiples conjuntos de datos
+strvalidator	165	strBtnScore	Puntuación
+strvalidator	166	strLblScore	Puntuación dropout para un conjunto de datos
+strvalidator	167	strLblDropout	Calcular umbrales estocásticos
+strvalidator	168	strBtnModel	Modelizar
+strvalidator	169	strLblModel	Modelizar y hacer gráfico del riesgo de dropout
+strvalidator	170	strLblPlotDropout	Crear gráficos para datos analizados
+strvalidator	171	strLblMixture	Calcular mezcla para un conjunto de datos
+strvalidator	172	strFrmType	Tipos de resultado
+strvalidator	173	strLblType	Calcular tipos de resultado para un conjunto de datos
+strvalidator	174	strLblPlotType	Crear gráficos para datos de tipo de resultado
+strvalidator	175	strFrmPeaks	Número de picos
+strvalidator	176	strLblPeaks	Contar el número de picos en la muestra
+strvalidator	177	strLblPlotPeaks	Crear gráficos para datos de pico
+strvalidator	178	strFrmStatistics	Estadísticas resumen
+strvalidator	179	strLblStatistics	Calcular estadísticas resumen
+strvalidator	180	strFrmDistribution	Distribuciones
+strvalidator	181	strLblDistribution	Representar gráficamente la distribución de los datos
+strvalidator	182	strLblGroups	Gráfico de distribución acumulativa para múltiples grupos
+strvalidator	183	strFrmDropin	Herramientas de drop-in
+strvalidator	184	strLblSpikes	Identificar posibles spikes
+strvalidator	185	strLblFilterSpikes	Eliminar spikes
+strvalidator	186	strLblArtefacts	Identificar posibles artefactos
+strvalidator	187	strLblFilterArtefacts	Eliminar artefactos
+strvalidator	188	strLblPlotContamination	Gráfico de contaminación
+strvalidator	189	strFrmSlope	Pendiente del perfil
+strvalidator	190	strLblSlope	Calcular la pendiente del perfil
+strvalidator	191	strLblPlotSlope	Gráfico de datos de pendiente
+strvalidator	192	strLblPrecision	Crear gráficos de precisión
+strvalidator	193	strLblStatPrecisionSize	Calcular estadísticas resumen por tamaño
+strvalidator	194	strLblStatPrecisionDataPoint	Calcular estadísticas resumen por Data.Point
+strvalidator	195	strLblStatPrecisionHeight	Calcular estadísticas resumen por Altura
+strvalidator	196	strLblPullup	Calcular pull-up espectral/depurar
+strvalidator	197	strLblPlotPullup	Crear gráficos para datos de pull-up
 trim_gui	1	strWinTitle	Cortar datos
 trim_gui	2	strChkGui	Guardar configuración de GUI
 trim_gui	3	strBtnHelp	Ayuda

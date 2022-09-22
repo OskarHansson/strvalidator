@@ -1,18 +1,13 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* Removed gWidgets2tcltk from the Suggests field in the DESCRIPTION file. Hoping to fix the Debian NOTE "Namespace in Imports field not imported from: gWidgets2tcltk".
-
 ## Test environments
-* local Windows 10 (64-bit) install, R 4.0.2, RStudio 1.3.959
-* win-builder: R Under development (unstable) (2020-07-08 r78794)
-* win-builder: R version 4.0.2 (2020-06-22)
-* win-builder: R version 3.6.3 (2020-02-29)
-* R-hub (Windows Server 2008 R2 SP1, Ubuntu Linux 16.04 LTS, Fedora Linux)
+* local Windows 10 (64-bit) install, R version 4.2.1 (2022-06-23 ucrt), RStudio 2022.07.1+554 * win-builder: R Under development (unstable) (2022-09-16 r82861 ucrt)
+* win-builder: R version 4.2.1 (2022-06-23 ucrt)
+* win-builder: R version 4.1.3 (2022-03-10)
+* R-hub: Windows Server 2022, R-devel, 64 bit
+* R-hub: Fedora Linux, R-devel, clang, gfortran
+* R-hub: Ubuntu Linux 20.04.1 LTS, R-release, GCC
 
 ## R CMD check results
-There was an ERROR under R-hub Windows Server 2008 R2 SP1 "Package required but not available: 'data.table'" - 'data.table' is in imports, so not sure why it fails.
-There were no other ERRORs or WARNINGs.
+There were no ERRORs or WARNINGs.
 
 ## Downstream dependencies
 There are currently no dependent packages.
