@@ -2,8 +2,8 @@ Roxygen: list()
 Package: strvalidator
 Type: Package
 Title: Process Control and Validation of Forensic STR Kits
-Version: 2.4.0
-Date: 2022-09-23
+Version: 2.4.0.9000
+Date: 2023-06-20
 Author: Oskar Hansson
 Maintainer: Oskar Hansson <oskhan@ous-hf.no>
 URL: https://sites.google.com/site/forensicapps/strvalidator

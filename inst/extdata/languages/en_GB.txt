@@ -139,7 +139,7 @@ calculateAT_gui	36	strWinCheck	Check subsetting
 calculateAT_gui	37	strMsgPlot	Click 'Prepare and mask' and select a sample before saving.
 calculateAT_gui	38	strMsgTitlePlot	No plot!
 calculateAT_gui	39	strMsgTitleError	Error
-calculateAT_gui	40	strMsgCheck	Data frame is NULL!\n\nMake sure to select a dataset and a reference set
+calculateAT_gui	40	strMsgCheck	Data set is NULL!\n\nMake sure to select a dataset and a reference set
 calculateAT_gui	41	strMsgDataset	A dataset and a reference dataset must be selected.
 calculateAT_gui	42	strMsgTitleDataset	Datasets not selected
 calculateAT6_gui	1	strWinTitle	Calculate analytical threshold
@@ -166,7 +166,7 @@ calculateAT6_gui	21	strBtnCalculate	Calculate
 calculateAT6_gui	22	strBtnCalculateActive	Processing...
 calculateAT6_gui	23	strWinCheck	Check subsetting
 calculateAT6_gui	24	strMsgTitleError	Error
-calculateAT6_gui	25	strMsgCheck	Data frame is NULL!\n\nMake sure to select a dataset and a reference set
+calculateAT6_gui	25	strMsgCheck	Data set is NULL!\n\nMake sure to select a dataset and a reference set
 calculateAT6_gui	26	strMsgDataset	A dataset and a reference dataset must be selected.
 calculateAT6_gui	27	strMsgTitleDataset	Datasets not selected
 calculateCapillary_gui	1	strWinTitle	Calculate capillary balance
@@ -210,7 +210,7 @@ calculateConcordance_gui	20	strLblSave	Name for discordance table:
 calculateConcordance_gui	21	strLblSave2	Name for concordance table:
 calculateConcordance_gui	22	strBtnCalculate	Calculate
 calculateConcordance_gui	23	strBtnProcessing	Processing...
-calculateConcordance_gui	24	strMsgAddMessage	Data frame is NULL!\n\nMake sure to select a dataset
+calculateConcordance_gui	24	strMsgAddMessage	Data set is NULL!\n\nMake sure to select a dataset
 calculateConcordance_gui	25	strMsgTitleError	Error
 calculateConcordance_gui	26	strMsgDataset	A dataset must be selected.
 calculateConcordance_gui	27	strMsgTitleDataset	Datasets not selected
@@ -261,7 +261,7 @@ calculateDropout_gui	25	strBtnCalculate	Calculate
 calculateDropout_gui	26	strBtnProcessing	Processing...
 calculateDropout_gui	27	strMsgDataset	A sample dataset and a reference dataset must be selected.
 calculateDropout_gui	28	strMsgTitleDataset	Dataset not selected
-calculateDropout_gui	29	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset.
+calculateDropout_gui	29	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset and a reference dataset.
 calculateDropout_gui	30	strMsgTitleError	Error
 calculateHb_gui	1	strWinTitle	Calculate heterozygote balance
 calculateHb_gui	2	strChkGui	Save GUI settings
@@ -294,7 +294,7 @@ calculateHb_gui	28	strBtnCalculate	Calculate
 calculateHb_gui	29	strBtnProcessing	Processing...
 calculateHb_gui	30	strMsgDataset	A sample dataset and a reference dataset must be selected.
 calculateHb_gui	31	strMsgTitleDataset	Dataset not selected
-calculateHb_gui	32	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset.
+calculateHb_gui	32	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset and a reference dataset.
 calculateHb_gui	33	strWinTitleCheck	Check subsetting
 calculateHb_gui	34	strMsgTitleError	Error
 calculateHeight_gui	1	strWinTitle	Calculate peak height
@@ -326,7 +326,7 @@ calculateHeight_gui	26	strBtnCalculate	Calculate
 calculateHeight_gui	27	strBtnProcessing	Processing...
 calculateHeight_gui	28	strMsgMessage	A sample dataset and a reference dataset must be selected.
 calculateHeight_gui	29	strMsgTitle	Dataset not selected
-calculateHeight_gui	30	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset.
+calculateHeight_gui	30	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset and a reference dataset.
 calculateHeight_gui	31	strWinTitleCheck	Check subsetting
 calculateHeight_gui	32	strMsgTitleError	Error
 calculateLb_gui	1	strWinTitle	Calculate locus balance
@@ -365,7 +365,7 @@ calculateLb_gui	33	strBtnCalculate	Calculate
 calculateLb_gui	34	strBtnProcessing	Processing...
 calculateLb_gui	35	strMsgDataset	A sample dataset and a reference dataset must be selected.
 calculateLb_gui	36	strMsgTitleDataset	Dataset not selected
-calculateLb_gui	37	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
+calculateLb_gui	37	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
 calculateLb_gui	38	strWinTitleCheck	Check subsetting
 calculateLb_gui	39	strMsgTitleError	Error
 calculateLb_gui	40	strMsgNA	'NA' in 'Dye' column. \nUse add dye function to fix.
@@ -390,7 +390,7 @@ calculateMixture_gui	17	strBtnCalculate	Calculate
 calculateMixture_gui	18	strBtnProcessing	Processing...
 calculateMixture_gui	19	strMsgDataset	A sample dataset and two reference datasets must be selected.
 calculateMixture_gui	20	strMsgTitleDataset	Dataset not selected
-calculateMixture_gui	21	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
+calculateMixture_gui	21	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
 calculateMixture_gui	22	strWinTitleCheck	Check subsetting
 calculateMixture_gui	23	strMsgTitleError	Error
 calculateOL_gui	1	strWinTitle	Analyse off-ladder alleles
@@ -477,7 +477,7 @@ calculatePullup_gui	26	strBtnCalculate	Calculate
 calculatePullup_gui	27	strBtnProcessing	Processing...
 calculatePullup_gui	28	strMsgDataset	A sample dataset and a reference dataset must be selected.
 calculatePullup_gui	29	strMsgTitleDataset	Dataset not selected
-calculatePullup_gui	30	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
+calculatePullup_gui	30	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
 calculatePullup_gui	31	strWinTitleCheck	Check subsetting
 calculatePullup_gui	32	strMsgTitleError	Error
 calculatePullup_gui	33	strMsgNA	'NA' in 'Dye' column. \nUse add dye function to fix.
@@ -511,7 +511,7 @@ calculateRatio_gui	26	strBtnCalculate	Calculate
 calculateRatio_gui	27	strBtnProcessing	Processing...
 calculateRatio_gui	28	strMsgDataset	A sample dataset and a reference dataset must be selected.
 calculateRatio_gui	29	strMsgTitleDataset	Dataset not selected
-calculateRatio_gui	30	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
+calculateRatio_gui	30	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
 calculateRatio_gui	31	strWinTitleCheck	Check subsetting
 calculateRatio_gui	32	strMsgTitleError	Error
 calculateResultType_gui	1	strWinTitle	Calculate result type
@@ -569,7 +569,7 @@ calculateSlope_gui	24	strBtnCalculate	Calculate
 calculateSlope_gui	25	strBtnProcessing	Processing...
 calculateSlope_gui	26	strMsgDataset	A sample dataset and a reference dataset must be selected.
 calculateSlope_gui	27	strMsgTitleDataset	Dataset not selected
-calculateSlope_gui	28	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset.
+calculateSlope_gui	28	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset and a reference dataset.
 calculateSlope_gui	29	strWinTitleCheck	Check subsetting
 calculateSlope_gui	30	strMsgTitleError	Error
 calculateSpike_gui	1	strWinTitle	Calculate spikes
@@ -611,7 +611,7 @@ calculateStatistics_gui	17	strBtnCalculate	Calculate
 calculateStatistics_gui	18	strBtnProcessing	Processing...
 calculateStatistics_gui	19	strMsgDataset	A dataset must be selected.
 calculateStatistics_gui	20	strMsgTitleDataset	Dataset not selected
-calculateStatistics_gui	21	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
+calculateStatistics_gui	21	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
 calculateStatistics_gui	22	strMsgTitleError	Error
 calculateStutter_gui	1	strWinTitle	Calculate stutter ratio
 calculateStutter_gui	2	strChkGui	Save GUI settings
@@ -640,7 +640,7 @@ calculateStutter_gui	24	strBtnCalculate	Calculate
 calculateStutter_gui	25	strBtnProcessing	Processing...
 calculateStutter_gui	26	strMsgDataset	A sample dataset and a reference dataset must be selected.
 calculateStutter_gui	27	strMsgTitleDataset	Dataset not selected
-calculateStutter_gui	28	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
+calculateStutter_gui	28	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
 calculateStutter_gui	29	strWinTitleCheck	Check subsetting
 calculateStutter_gui	30	strMsgTitleError	Error
 checkDataset	1	strMsgNoRows	Dataset contain no rows!
@@ -667,7 +667,7 @@ checkSubset_gui	15	strChkExact	Exact matching ('A' will match 'A' but not 'B-A.2
 checkSubset_gui	16	strFrmSave	Save as
 checkSubset_gui	17	strLblSave	Name for result:
 checkSubset_gui	18	strBtnCalculate	Subset
-checkSubset_gui	19	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset and a reference dataset, or type a reference name
+checkSubset_gui	19	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset and a reference dataset, or type a reference name
 checkSubset_gui	20	strWinTitleCheck	Check subsetting
 checkSubset_gui	21	strMsgTitleError	Error
 columns_gui	1	strWinTitle	Column actions
@@ -858,7 +858,7 @@ filterProfile_gui	36	strBtnFilter	Filter
 filterProfile_gui	37	strBtnProcessing	Processing...
 filterProfile_gui	38	strMsgDataset	A sample dataset and a reference dataset must be selected.
 filterProfile_gui	39	strMsgTitleDataset	Dataset not selected
-filterProfile_gui	40	strMsgCheck	Data frame is NULL!\n\nMake sure to select a sample dataset.
+filterProfile_gui	40	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
 filterProfile_gui	41	strWinTitleCheck	Check subsetting
 filterProfile_gui	42	strMsgTitleError	Error
 generateEPG_gui	1	strWinTitle	Generate electropherogram (EPG)
@@ -1078,7 +1078,7 @@ modelDropout_gui	67	strLblLegend	Model parameters:
 modelDropout_gui	68	strLblHosmer	\nHosmer-Lemeshow test: p = 
 modelDropout_gui	69	strMsgDataset	A dataset must be selected.
 modelDropout_gui	70	strMsgTitleDataset	Dataset not selected
-modelDropout_gui	71	strMsgNull	Data frame is NULL or NA!
+modelDropout_gui	71	strMsgNull	Data set is NULL or NA!
 modelDropout_gui	72	strMsgTitleError	Error
 modelDropout_gui	73	strMsgIncomplete1	Dataset is ok for drop-out analysis.\nHowever, additional columns are required for this analysis:\n
 modelDropout_gui	74	strMsgIncomplete2	\n\nPlease try modeling using another scoring method.
@@ -1120,7 +1120,7 @@ plotAT_gui	34	strLblMainTitleLinear	Linear regression
 plotAT_gui	35	strLblMainTitleWeighted	Weighted linear regression
 plotAT_gui	36	strLblXTitle	Amount (pg)
 plotAT_gui	37	strLblYTitle	Average Peak Height (RFU)
-plotAT_gui	38	strMsgNull	Data frame is NULL or NA!
+plotAT_gui	38	strMsgNull	Data set is NULL or NA!
 plotAT_gui	39	strMsgTitleError	Error
 plotBalance_gui	1	strWinTitle	Plot balance
 plotBalance_gui	2	strChkGui	Save GUI settings
@@ -1184,7 +1184,7 @@ plotBalance_gui	59	strLblXTitleLocus	Locus
 plotBalance_gui	60	strLblXTitleLocusHeight	Locus peak height (RFU)
 plotBalance_gui	61	strLblYTitleLog	Log(Ratio)
 plotBalance_gui	62	strLblYTitle	Ratio
-plotBalance_gui	63	strMsgNull	Data frame is NULL or NA!
+plotBalance_gui	63	strMsgNull	Data set is NULL or NA!
 plotBalance_gui	64	strMsgTitleError	Error
 plotCapillary_gui	1	strWinTitle	Plot capillary balance
 plotCapillary_gui	2	strChkGui	Save GUI settings
@@ -1222,7 +1222,7 @@ plotCapillary_gui	33	strLblXTitleInjection	Injection
 plotCapillary_gui	34	strLblXTitleCapillary	Capillary
 plotCapillary_gui	35	strLblXTitleDensity	Density
 plotCapillary_gui	36	strLblYTitleMean	Mean peak height (RFU)
-plotCapillary_gui	37	strMsgNull	Data frame is NULL or NA!
+plotCapillary_gui	37	strMsgNull	Data set is NULL or NA!
 plotCapillary_gui	38	strMsgTitleError	Error
 plotContamination_gui	1	strWinTitle	Plot contamination
 plotContamination_gui	2	strChkGui	Save GUI settings
@@ -1247,7 +1247,7 @@ plotContamination_gui	20	strBtnObjectSaved	Object saved
 plotContamination_gui	21	strLblMainTitle	Observed and expected number of peaks per profile (n=
 plotContamination_gui	22	strLblXTitle	Number of peaks per control
 plotContamination_gui	23	strLblYTitle	Relative occurance
-plotContamination_gui	24	strMsgNull	Data frame is NULL or NA!
+plotContamination_gui	24	strMsgNull	Data set is NULL or NA!
 plotContamination_gui	25	strMsgTitleError	Error
 plotDistribution_gui	1	strWinTitle	Plot distribution
 plotDistribution_gui	2	strChkGui	Save GUI settings
@@ -1305,7 +1305,7 @@ plotDistribution_gui	53	strLblXTitleSize	Fragment size (bp)
 plotDistribution_gui	54	strLblXTitleDataPoint	Data point
 plotDistribution_gui	55	strLblObservations	observations
 plotDistribution_gui	56	strMsgColumn	A data column must be specified!
-plotDistribution_gui	57	strMsgNull	Data frame is NULL or NA!
+plotDistribution_gui	57	strMsgNull	Data set is NULL or NA!
 plotDistribution_gui	58	strMsgTitleError	Error
 plotDropout_gui	1	strWinTitle	Plot dropout data
 plotDropout_gui	2	strChkGui	Save GUI settings
@@ -1357,7 +1357,7 @@ plotDropout_gui	47	strLblXTitleHeight	Peak height (RFU)
 plotDropout_gui	48	strLblXTitleSurvivingHeight	Peak height of surviving allele (RFU)
 plotDropout_gui	49	strLblYTitleMarker	Marker
 plotDropout_gui	50	strLblYTitleCP	Cumulative probability
-plotDropout_gui	51	strMsgNull	Data frame is NULL or NA!
+plotDropout_gui	51	strMsgNull	Data set is NULL or NA!
 plotDropout_gui	52	strMsgTitleError	Error
 plotEPG2_gui	1	strWinTitle	Plot electropherogram (EPG)
 plotEPG2_gui	2	strChkGui	Save GUI settings
@@ -1418,7 +1418,7 @@ plotGroups_gui	32	strBtnObjectSaved	Object saved
 plotGroups_gui	33	strLblMainTitle	Empirical cumulative distribution function
 plotGroups_gui	34	strLblObservations	observations
 plotGroups_gui	35	strMsgColumn	A data column must be specified!
-plotGroups_gui	36	strMsgNull	Data frame is NULL or NA!
+plotGroups_gui	36	strMsgNull	Data set is NULL or NA!
 plotGroups_gui	37	strMsgTitleError	Error
 plotKit_gui	1	strWinTitle	Plot kit
 plotKit_gui	2	strChkGui	Save GUI settings
@@ -1475,7 +1475,7 @@ plotPeaks_gui	26	strLblMainTitle	Analysis of peaks from
 plotPeaks_gui	27	strLblXTitle	Group
 plotPeaks_gui	28	strLblYTitleProp	Proportion
 plotPeaks_gui	29	strLblYTitleCount	Count
-plotPeaks_gui	30	strMsgNull	Data frame is NULL or NA!
+plotPeaks_gui	30	strMsgNull	Data set is NULL or NA!
 plotPeaks_gui	31	strMsgTitleError	Error
 plotPrecision_gui	1	strWinTitle	Plot precision
 plotPrecision_gui	2	strChkGui	Save GUI settings
@@ -1537,7 +1537,7 @@ plotPrecision_gui	57	strLblXTitleSize	Mean size in basepairs (bp)
 plotPrecision_gui	58	strLblXTitleHeight	Mean height in relative fluorescent units (RFU)
 plotPrecision_gui	59	strLblXTitlePoints	Mean scan number in data points
 plotPrecision_gui	60	strLblXTitleAllele	Allele
-plotPrecision_gui	61	strMsgNull	Data frame is NULL or NA!
+plotPrecision_gui	61	strMsgNotDf	Data set must be a data.frame!
 plotPrecision_gui	62	strMsgTitleError	Error
 plotPullup_gui	1	strWinTitle	Plot pull-up
 plotPullup_gui	2	strChkGui	Save GUI settings
@@ -1579,7 +1579,7 @@ plotPullup_gui	37	strLblMainTitle	Pull-up ratio
 plotPullup_gui	38	strLblYTitle	Ratio
 plotPullup_gui	39	strLblXTitleHeight	Allele peak height (RFU)
 plotPullup_gui	40	strLblXTitleAllele	Allele designation
-plotPullup_gui	41	strMsgNull	Data frame is NULL or NA!
+plotPullup_gui	41	strMsgNull	Data set is NULL or NA!
 plotPullup_gui	42	strMsgTitleError	Error
 plotRatio_gui	1	strWinTitle	Plot marker ratios
 plotRatio_gui	2	strChkGui	Save GUI settings
@@ -1610,7 +1610,7 @@ plotRatio_gui	26	strLblMainTitle	Marker ratio
 plotRatio_gui	27	strLblYTitle	Ratio
 plotRatio_gui	28	strLblXTitleMarker	Marker
 plotRatio_gui	29	strLblXTitlePair	Marker pair
-plotRatio_gui	30	strMsgNull	Data frame is NULL or NA!
+plotRatio_gui	30	strMsgNull	Data set is NULL or NA!
 plotRatio_gui	31	strMsgTitleError	Error
 plotResultType_gui	1	strWinTitle	Plot result type
 plotResultType_gui	2	strChkGui	Save GUI settings
@@ -1642,7 +1642,7 @@ plotResultType_gui	27	strLblMainTitle	samples analysed
 plotResultType_gui	28	strLblXTitleType	Result type
 plotResultType_gui	29	strLblYTitleProportion	Proportion
 plotResultType_gui	30	strLblYTitleCount	Count
-plotResultType_gui	31	strMsgNull	Data frame is NULL or NA!
+plotResultType_gui	31	strMsgNull	Data set is NULL or NA!
 plotResultType_gui	32	strMsgTitleError	Error
 plotSlope_gui	1	strWinTitle	Plot slope
 plotSlope_gui	2	strChkGui	Save GUI settings
@@ -1672,7 +1672,7 @@ plotSlope_gui	25	strBtnObjectSaved	Object saved
 plotSlope_gui	26	strLblMainTitle	Profile slope
 plotSlope_gui	27	strLblXTitle	Sample
 plotSlope_gui	28	strLblYTitle	Slope
-plotSlope_gui	29	strMsgNull	Data frame is NULL or NA!
+plotSlope_gui	29	strMsgNull	Data set is NULL or NA!
 plotSlope_gui	30	strMsgTitleError	Error
 plotStutter_gui	1	strWinTitle	Plot stutter ratios
 plotStutter_gui	2	strChkGui	Save GUI settings
@@ -1725,7 +1725,7 @@ plotStutter_gui	48	strLblMainTitle	Stutter ratios
 plotStutter_gui	49	strLblXTitleAllele	True allele
 plotStutter_gui	50	strLblXTitleHeight	True allele (RFU)
 plotStutter_gui	51	strLblYTitleRatio	Ratio
-plotStutter_gui	52	strMsgNull	Data frame is NULL or NA!
+plotStutter_gui	52	strMsgNull	Data set is NULL or NA!
 plotStutter_gui	53	strMsgTitleError	Error
 removeArtefact_gui	1	strWinTitle	Remove artefacts
 removeArtefact_gui	2	strChkGui	Save GUI settings

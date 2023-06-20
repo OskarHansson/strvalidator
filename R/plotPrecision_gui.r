@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.06.2023: Fixed Error in facet_wrap, `ncol` must be a whole number or `NULL`, not an integer vector.
+# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Removed destroy workaround.
 # 26.04.2020: Added language support.
 # 08.09.2019: Added option to override labels and titles.
@@ -18,9 +20,6 @@
 # 29.08.2015: Added importFrom.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 12.09.2014: Filter rows with Allele=NA (Fixes issue #6).
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 08.05.2014: Implemented 'checkDataset'.
-# 23.02.2014: Fixed column check for plots.
 
 #' @title Plot Precision
 #'
@@ -140,7 +139,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   strLblXTitleHeight <- "Mean height in relative fluorescent units (RFU)"
   strLblXTitlePoints <- "Mean scan number in data points"
   strLblXTitleAllele <- "Allele"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -330,8 +329,8 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     strtmp <- dtStrings["strLblXTitleAllele"]$value
     strLblXTitleAllele <- ifelse(is.na(strtmp), strLblXTitleAllele, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -1066,7 +1065,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     val_axis <- svalue(f1_axis_opt)
     val_theme <- svalue(f1_theme_drp)
 
-    if (!is.null(val_data) && !is.na(val_data)) {
+    if (is.data.frame(val_data)) {
       if (debug) {
         print("BEFORE PLOTTING:")
         print("str(val_data)")
@@ -1244,7 +1243,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         gp <- gp + geom_point(aes_string(x = val_axis, y = "Deviation"),
           alpha = val_alpha, shape = val_shape, colour = val_colour
         )
-        # gp <- gp + facet_wrap(~Marker) # TODO: is this needed?
       } else if (how == "boxplot") {
 
         # Create boxplot (by allele).
@@ -1272,14 +1270,13 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         uniqueMarkerDye <- markerDye[!duplicated(markerDye), ]
         # Calculate number of unique columns per dye.
         val_ncol <- unique(table(uniqueMarkerDye$Dye))
-
+        
         # Facet plot.
         gp <- gp + facet_grid("Dye ~ Marker")
         # NB! 'facet_wrap' does not seem to support strings.
         #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
         gp <- gp + facet_wrap(as.formula(paste("~ Marker")),
-          ncol = val_ncol,
-          drop = FALSE, scales = val_scales
+                              drop = FALSE, scales = val_scales
         )
       }
 
@@ -1568,7 +1565,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
