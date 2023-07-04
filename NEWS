@@ -1,3 +1,12 @@
+Version 2.4.0.9001
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - test-calculateAllT
+  Updated expected Hosmer-Lemeshow_p values due to a change in
+  the ResourceSelection package 0.3-6, which involves changes to the Hosmer-Lemeshov
+  test because the test degrees of freedom was incorrectly determined for 
+  certain small data sets.
+
 Version 2.4.0.9000
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

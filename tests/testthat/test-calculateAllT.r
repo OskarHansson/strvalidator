@@ -2,6 +2,10 @@ context("calculateAllT")
 
 ################################################################################
 # CHANGE LOG
+# 04.07.2023: Updated expected Hosmer-Lemeshow_p values due to a change in
+#   the ResourceSelection package 0.3-6, which involves changes to the Hosmer-Lemeshov
+#   test because the test degrees of freedom was incorrectly determined for 
+#   certain small data sets.
 # 14.03.2019: Added temporary fix for changed random number generator.
 # 13.07.2018: First version.
 #
@@ -123,14 +127,14 @@ test_that("calculateAllT", {
   expect_equal(res[16, 3], 1194)
 
   # Check that expected Hosmer-Lemeshow_p was calculated.
-  expect_equal(res[1, 4], 0.8505)
-  expect_equal(res[2, 4], 0.9922)
-  expect_equal(res[3, 4], 0.9992)
-  expect_equal(res[4, 4], 0.9903)
-  expect_equal(res[5, 4], 0.9999)
-  expect_equal(res[6, 4], 0.9915)
-  expect_equal(res[7, 4], 0.9989)
-  expect_equal(res[8, 4], 0.9963)
+  expect_equal(res[1, 4], 0.6668)
+  expect_equal(res[2, 4], 0.9574)
+  expect_equal(res[3, 4], 0.9973)
+  expect_equal(res[4, 4], 0.9501)
+  expect_equal(res[5, 4], 0.9987)
+  expect_equal(res[6, 4], 0.9546)
+  expect_equal(res[7, 4], 0.9895)
+  expect_equal(res[8, 4], 0.9752)
   expect_equal(res[9, 4], 0.3480)
   expect_equal(res[10, 4], 0.8312)
   expect_equal(res[11, 4], 0.8982)
