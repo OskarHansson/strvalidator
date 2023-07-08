@@ -1,6 +1,5 @@
 # IMPORTANT: To manually run R CMD check in RStudio all packages must be installed in
 # both the 32 and 64 bit version. Make sure it is possible to start manually
-# (GTK+ must be installed by clicking 'OK' on the message box).
 
 # See http://r-pkgs.had.co.nz/release.html for advice on release.
 # IMPORTANT: Use devtools::spell_check() to check spelling.
@@ -82,7 +81,6 @@
 #' }
 #'
 strvalidator <- function(debug = FALSE) {
-
   # Global variables.
   .strvalidator_env <- new.env(parent = emptyenv())
   .separator <- .Platform$file.sep # Platform dependent path separator.
@@ -942,7 +940,6 @@ strvalidator <- function(debug = FALSE) {
   savegui_chk <- gcheckbox(text = strChkGui, checked = TRUE, container = gh)
 
   addHandlerChanged(savegui_chk, handler = function(h, ...) {
-
     # Update variable.
     .save_gui <<- svalue(savegui_chk)
   })
@@ -952,7 +949,6 @@ strvalidator <- function(debug = FALSE) {
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -1245,7 +1241,6 @@ strvalidator <- function(debug = FALSE) {
   addSpring(project_g1)
 
   addHandlerChanged(project_open_btn, handler = function(h, ...) {
-
     # Get selected projects file name.
     val_name <- svalue(project_tbl)
     val_id <- as.numeric(project_tbl[svalue(project_tbl, index = TRUE), "Id"])
@@ -1261,7 +1256,6 @@ strvalidator <- function(debug = FALSE) {
     # Check if file exist.
     if (length(val_prj) > 0) {
       if (file.exists(val_prj)) {
-
         # Clear environment.
         remove(
           list = ls(envir = val_env, all.names = TRUE),
@@ -1278,7 +1272,6 @@ strvalidator <- function(debug = FALSE) {
   })
 
   addHandlerChanged(project_add_btn, handler = function(h, ...) {
-
     # Get selected projects file name.
     val_name <- svalue(project_tbl)
     val_id <- as.numeric(project_tbl[svalue(project_tbl, index = TRUE), "Id"])
@@ -1294,7 +1287,6 @@ strvalidator <- function(debug = FALSE) {
     # Check if file exist.
     if (length(val_prj) > 0) {
       if (file.exists(val_prj)) {
-
         # Load project to workspace.
         load(file = val_prj, envir = val_env, verbose = FALSE)
         message(paste("Loaded", val_prj))
@@ -1303,7 +1295,6 @@ strvalidator <- function(debug = FALSE) {
   })
 
   addHandlerChanged(project_delete_btn, handler = function(h, ...) {
-
     # Get selected projects file name.
     val_name <- svalue(project_tbl)
     val_id <- as.numeric(project_tbl[svalue(project_tbl, index = TRUE), "Id"])
@@ -1318,7 +1309,6 @@ strvalidator <- function(debug = FALSE) {
     # Check if file exist.
     if (length(val_prj) > 0) {
       if (file.exists(val_prj)) {
-
         # Delete project file and update list.
         file.remove(val_prj)
         message("Deleted", val_prj)
@@ -1354,7 +1344,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerSelectionChanged(project_tbl, handler = function(h, ...) {
-
     # Get selected projects file name.
     val_name <- svalue(project_tbl)
     val_id <- as.numeric(project_tbl[svalue(project_tbl, index = TRUE), "Id"])
@@ -1378,10 +1367,8 @@ strvalidator <- function(debug = FALSE) {
     # Check if file exist.
     if (length(val_prj) > 0) {
       if (file.exists(val_prj)) {
-
         # Check if description should be loaded.
         if (visible(project_f3)) {
-
           # Load project in temporary environment.
           load(file = val_prj, envir = val_env, verbose = FALSE)
           if (exists(x = val_obj, envir = val_env, inherits = FALSE)) {
@@ -1396,7 +1383,6 @@ strvalidator <- function(debug = FALSE) {
         }
       }
     } else {
-
       # Reset description.
       svalue(proj_info_lbl) <- strLblProject
       svalue(proj_info_txt) <- strStrProjectDescription
@@ -1439,7 +1425,6 @@ strvalidator <- function(debug = FALSE) {
 
     # Check if selected project.
     if (length(val_prj) > 0) {
-
       # Save project description and write to disc.
       message("Assign: ", val_obj)
       assign(x = val_obj, value = val_description, envir = val_env, inherits = FALSE)
@@ -1539,7 +1524,6 @@ strvalidator <- function(debug = FALSE) {
     unblockHandlers(w)
 
     if (response) {
-
       # Create a new environment.
       .strvalidator_env <<- new.env(parent = emptyenv())
       message("A new project environment was created.")
@@ -1553,7 +1537,6 @@ strvalidator <- function(debug = FALSE) {
     objectName <- svalue(ws_loaded_tbl)
 
     if (length(objectName) == 1) {
-
       # Get the object to save.
       datanew <- get(objectName, envir = .strvalidator_env)
 
@@ -1589,7 +1572,6 @@ strvalidator <- function(debug = FALSE) {
     if (length(ws_path) > 0) {
       if (!is.na(ws_path)) {
         if (file.exists(ws_path)) {
-
           # Clear environment.
           remove(
             list = ls(envir = val_env, all.names = TRUE),
@@ -1635,7 +1617,6 @@ strvalidator <- function(debug = FALSE) {
     if (length(ws_path) > 0) {
       if (!is.na(ws_path)) {
         if (file.exists(ws_path)) {
-
           # Add new project.
           load(file = ws_path, envir = val_env)
           .loadSavedSettings()
@@ -1657,18 +1638,15 @@ strvalidator <- function(debug = FALSE) {
   })
 
   addHandlerChanged(ws_import_btn, handler = function(h, ...) {
-
     # Open GUI.
     import_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   addHandlerChanged(ws_export_btn, handler = function(h, ...) {
-
     # Get selected items.
     val <- svalue(ws_loaded_tbl)
 
     if (!any(is.null(val)) && !any(is.na(val)) && length(val) > 0) {
-
       # List selected objects.
       message("Objects selected for export: ", paste(val, collapse = ", "))
 
@@ -1692,7 +1670,6 @@ strvalidator <- function(debug = FALSE) {
   })
 
   addHandlerChanged(ws_view_btn, handler = function(h, ...) {
-
     # Get selected dataset name(s).
     val_obj <- svalue(ws_loaded_tbl)
 
@@ -1703,13 +1680,11 @@ strvalidator <- function(debug = FALSE) {
     }
 
     if (!is.null(val_obj) && !is.na(val_obj) && length(val_obj) > 0) {
-
       # Get data and class.
       val_data <- get(val_obj, envir = .strvalidator_env)
       val_class <- class(val_data)
 
       if ("data.frame" %in% val_class) {
-
         # Convert to DT and view.
         dt <- DT::datatable(val_data,
           rownames = FALSE, filter = "top",
@@ -1717,7 +1692,6 @@ strvalidator <- function(debug = FALSE) {
         )
         print(dt)
       } else if (any(c("ggplot", "plotly", "datatables") %in% val_class)) {
-
         # View object.
         print(val_data)
       } else {
@@ -1739,13 +1713,11 @@ strvalidator <- function(debug = FALSE) {
   })
 
   addHandlerChanged(ws_remove_btn, handler = function(h, ...) {
-
     # Get selected dataset name(s).
     val_obj <- svalue(ws_loaded_tbl)
 
     if (length(val_obj) > 0) {
       if (!is.null(val_obj) && !is.na(val_obj)) {
-
         # Get active reference data frame.
         remove(list = val_obj, envir = .strvalidator_env)
 
@@ -1773,7 +1745,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(ws_save_btn, handler = function(h, ...) {
-
     # Initiate flag.
     ok <- TRUE
 
@@ -1855,7 +1826,6 @@ strvalidator <- function(debug = FALSE) {
   })
 
   addHandlerChanged(ws_saveas_btn, handler = function(h, ...) {
-
     # Initiate flag.
     ok <- TRUE
 
@@ -1882,7 +1852,6 @@ strvalidator <- function(debug = FALSE) {
 
     # Check if valid name.
     if (!is.na(ws_name) && !ws_name == "") {
-
       # Create complete path.
       ws_full_name <- paste(ws_save_path, .separator, ws_name, ".RData", sep = "")
 
@@ -1892,7 +1861,6 @@ strvalidator <- function(debug = FALSE) {
 
       # Check if file exist.
       if (file.exists(ws_full_name)) {
-
         # Ask if overwrite.
         blockHandlers(w)
         ok <- gconfirm(
@@ -1907,10 +1875,8 @@ strvalidator <- function(debug = FALSE) {
 
       # Check if ok to overwrite.
       if (ok) {
-
         # Save project.
         if (file.exists(ws_save_path)) {
-
           # Save project variables in workspace.
           assign(x = .ws_name_variable, value = ws_name, envir = .strvalidator_env)
           assign(x = .ws_path_variable, value = ws_save_path, envir = .strvalidator_env)
@@ -2015,7 +1981,6 @@ strvalidator <- function(debug = FALSE) {
     val_name <- svalue(ws_r_drp)
 
     if (!is.na(val_name) && !is.null(val_name)) {
-
       # Load dataset.
       saveObject(
         name = val_name, object = get(val_name),
@@ -2045,7 +2010,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(dry_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2097,25 +2061,21 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(dry_kit_btn, handler = function(h, ...) {
-
     # Open GUI.
     makeKit_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   addHandlerChanged(dry_plot_kit_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotKit_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   addHandlerChanged(dry_bins_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateOverlap_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   addHandlerChanged(dry_ol_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateOL_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2138,7 +2098,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2161,7 +2120,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(tools_trim_btn, handler = function(h, ...) {
-
     # Open GUI.
     trim_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2181,7 +2139,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(tools_slim_btn, handler = function(h, ...) {
-
     # Open GUI.
     slim_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2219,7 +2176,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(tools_crop_btn, handler = function(h, ...) {
-
     # Open GUI.
     cropData_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2256,7 +2212,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_addDye_btn, handler = function(h, ...) {
-
     # Open GUI.
     addDye_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2275,7 +2230,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_addMarker_btn, handler = function(h, ...) {
-
     # Open GUI.
     addMarker_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2294,7 +2248,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_addSize_btn, handler = function(h, ...) {
-
     # Open GUI.
     addSize_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2313,7 +2266,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_addData_btn, handler = function(h, ...) {
-
     # Open GUI.
     addData_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2332,7 +2284,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_check_btn, handler = function(h, ...) {
-
     # Open GUI.
     checkSubset_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2354,7 +2305,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_combine_btn, handler = function(h, ...) {
-
     # Open GUI.
     combine_gui(env = .strvalidator_env, debug = debug, parent = w)
   })
@@ -2373,7 +2323,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_columns_btn, handler = function(h, ...) {
-
     # Open GUI.
     columns_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2392,7 +2341,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_copies_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateCopies_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2414,7 +2362,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_epg_btn, handler = function(h, ...) {
-
     # Open GUI.
     generateEPG_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2433,7 +2380,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(tools_epg2_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotEPG2_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2453,7 +2399,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(at_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui =
@@ -2474,7 +2419,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(at_calculate_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateAT_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2495,7 +2439,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(at6_calculate_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateAT6_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2513,7 +2456,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(at_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotAT_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
@@ -2538,7 +2480,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(stutter_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2560,7 +2501,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(stutter_calculate_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateStutter_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2581,7 +2521,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(stutter_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotStutter_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2602,7 +2541,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(stutter_stats_global_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -2631,7 +2569,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(stutter_stats_marker_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -2660,7 +2597,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(stutter_stats_stutter_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -2696,7 +2632,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2728,7 +2663,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_hb_calc_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateHb_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2749,7 +2683,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_hb_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotBalance_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2770,7 +2703,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_stats_global_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -2799,7 +2731,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_stats_marker_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -2838,7 +2769,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(balance_lb_calc_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateLb_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2859,7 +2789,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_lb_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotBalance_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2880,7 +2809,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_stats_global_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -2909,7 +2837,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_stats_marker_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -2949,7 +2876,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateCapillary_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2970,7 +2896,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_g3_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotCapillary_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -2991,7 +2916,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_g3_stats_cap_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -3020,7 +2944,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_g3_stats_inj_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -3049,7 +2972,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_g3_stats_row_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -3078,7 +3000,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_g3_stats_run_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -3107,7 +3028,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_g3_stats_ins_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -3145,7 +3065,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_g4_calc_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateRatio_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3166,7 +3085,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(balance_g4_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotRatio_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3193,7 +3111,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(conc_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3215,7 +3132,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(conc_calculate_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateConcordance_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3242,7 +3158,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(drop_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3265,7 +3180,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(drop_score_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateDropout_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3288,7 +3202,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(drop_calculate_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateAllT_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3309,7 +3222,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(drop_model_btn, handler = function(h, ...) {
-
     # Open GUI.
     modelDropout_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3330,7 +3242,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(drop_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotDropout_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3360,7 +3271,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(mix_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3382,7 +3292,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(mix_calculate_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateMixture_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3413,7 +3322,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3446,7 +3354,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(result_g1_calc_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateResultType_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3467,7 +3374,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g1_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotResultType_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3499,7 +3405,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g2_calc_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculatePeaks_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3520,7 +3425,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g2_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotPeaks_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3551,7 +3455,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g3_height_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateHeight_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3572,7 +3475,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g3_stats_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateStatistics_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3603,7 +3505,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g4_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotDistribution_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3624,7 +3525,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g4_group_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotGroups_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3657,7 +3557,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g5_calc_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateSpike_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3678,7 +3577,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g5_filter_btn, handler = function(h, ...) {
-
     # Open GUI.
     removeSpike_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3699,7 +3597,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g5_allele_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateAllele_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3720,7 +3617,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g5_artefact_btn, handler = function(h, ...) {
-
     # Open GUI.
     removeArtefact_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3741,7 +3637,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g5_cont_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotContamination_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3773,7 +3668,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g6_calc_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculateSlope_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3794,7 +3688,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(result_g6_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotSlope_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3821,7 +3714,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(precision_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3844,7 +3736,6 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(precision_filter_btn, handler = function(h, ...) {
-
     # Open GUI.
     filterProfile_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3865,7 +3756,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(precision_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotPrecision_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -3887,7 +3777,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(precision_stats_size_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -3917,7 +3806,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(precision_stats_dp_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -3947,7 +3835,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(precision_stats_height_btn, handler = function(h, ...) {
-
     # Get most recent object.
     tmp <- listObjects(
       env = .strvalidator_env, obj.class = "data.frame",
@@ -3981,7 +3868,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(pull_view_btn, handler = function(h, ...) {
-
     # Open GUI.
     editData_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -4003,7 +3889,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(pull_calculate_btn, handler = function(h, ...) {
-
     # Open GUI.
     calculatePullup_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -4024,7 +3909,6 @@ strvalidator <- function(debug = FALSE) {
   )
 
   addHandlerChanged(pull_plot_btn, handler = function(h, ...) {
-
     # Open GUI.
     plotPullup_gui(
       env = .strvalidator_env, savegui = .save_gui,
@@ -4079,7 +3963,6 @@ strvalidator <- function(debug = FALSE) {
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First load save flag.
     if (exists(".strvalidator_savegui", envir = .strvalidator_env, inherits = FALSE)) {
       svalue(savegui_chk) <- get(".strvalidator_savegui", envir = .strvalidator_env)
@@ -4104,7 +3987,6 @@ strvalidator <- function(debug = FALSE) {
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_savegui", value = svalue(savegui_chk), envir = .strvalidator_env)
@@ -4137,7 +4019,6 @@ strvalidator <- function(debug = FALSE) {
   }
 
   .refreshWs <- function() {
-
     # Get data frames in global workspace.
     dfs <- listObjects(env = .GlobalEnv, obj.class = .object_classes_import)
 
@@ -4172,7 +4053,6 @@ strvalidator <- function(debug = FALSE) {
     dfsSize <- as.numeric(dfsSize)
 
     if (!is.null(dfs)) {
-
       # Populate table.
       blockHandler(ws_loaded_tbl)
       ws_loaded_tbl[, ] <- data.frame(
@@ -4181,7 +4061,6 @@ strvalidator <- function(debug = FALSE) {
       )
       unblockHandler(ws_loaded_tbl)
     } else {
-
       # No objects in environment. Load empty data.frame to clear previous list.
       blockHandler(ws_loaded_tbl)
       ws_loaded_tbl[, ] <- .object_empty_df
@@ -4190,7 +4069,6 @@ strvalidator <- function(debug = FALSE) {
   }
 
   .updateProjectList <- function() {
-
     # Get project folder.
     projectdir <- svalue(project_fb)
 
@@ -4228,7 +4106,6 @@ strvalidator <- function(debug = FALSE) {
 
     # Check if any project in list.
     if (length(.project_name_list) > 0) {
-
       # Update projects list.
       project_tbl[, ] <- data.frame(
         Project = .project_name_list,
@@ -4240,7 +4117,6 @@ strvalidator <- function(debug = FALSE) {
 
       message("Updated project list with 'RData' files found in ", projectdir)
     } else {
-
       # Reset projects list.
       project_tbl[, ] <- data.frame(
         Name = strStrNoProject, Date = "",

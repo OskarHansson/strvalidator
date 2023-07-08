@@ -42,7 +42,6 @@
 #'
 
 plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gPlot <- NULL
 
@@ -176,7 +175,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -208,7 +206,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -400,7 +397,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
 
   .plotKit <- function(selectedKits = NULL) {
-
     # Get values.
     val_title <- svalue(title_edt)
     val_titlesize <- as.numeric(svalue(title_size_edt))
@@ -437,7 +433,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
 
     if (length(selectedKits) > 0) {
-
       # Initiate:
       kitData <- NULL
       kitTitle <- data.frame(Name = NA, X = NA, Y = NA)
@@ -446,7 +441,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
 
       for (k in seq(along = selectedKits)) {
-
         # Get current kit.
         kit <- getKit(selectedKits[k], what = "Range")
 
@@ -539,7 +533,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -597,7 +590,6 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotKit_gui_savegui", value = svalue(savegui_chk), envir = env)

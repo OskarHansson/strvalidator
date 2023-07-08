@@ -283,7 +283,6 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
 
   # Loop over all pairs of numerator / denominator.
   for (i in seq(1:intRatio)) {
-
     # Extract markers.
     dtNum <- dtTPH[Marker == numerator[i]]
     dtDen <- dtTPH[Marker == denominator[i]]

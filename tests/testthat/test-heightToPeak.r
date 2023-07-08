@@ -12,7 +12,6 @@ context("EPG generation")
 # test_dir("tests/testthat")
 
 test_that("heightToPeak", {
-
   # Three alleles with sizes and heights.
   peakw <- 1
   mydf <- data.frame(Size = c(100, 120, 130), Height = c(5000, 4500, 4000))

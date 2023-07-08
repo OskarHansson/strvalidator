@@ -235,10 +235,8 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
   # Only if ref is provided.
   if (!is.null(ref)) {
-
     # Check for NA alleles (Y markers in female references).
     if (any(is.na(ref$Allele))) {
-
       # Remove NA rows.
       tmp1 <- nrow(ref)
       ref <- ref[!is.na(ref$Allele), ]
@@ -301,7 +299,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
       # Loop over all elements.
       for (e in seq(along = start)) {
-
         # Create a sequence of data points to search for pull-up within.
         seqVec <- seq(start[e], end[e])
 
@@ -329,7 +326,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
     # Loop over all reference samples.
     for (r in seq(along = grepNames)) {
-
       # Select samples containing reference name.
       selSample <- grepl(grepNames[r], sVec, ignore.case = ignore.case)
 
@@ -347,7 +343,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
       # Loop over reference markers.
       for (m in seq(along = marker)) {
-
         # Select current marker in reference samples.
         selRefMarker <- ref$Marker == marker[m]
 
@@ -378,7 +373,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
     # Loop over all samples and mask sample peaks.
     for (s in seq(along = sample)) {
-
       # Select current sample.
       selSample <- data$Sample.File.Name == sample[s]
 
@@ -391,7 +385,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
         # Mask sample peaks per dye.
 
         for (d in seq(along = dyesKit)) {
-
           # Select current dye.
           selDye <- data$Dye == dyesKit[d]
 
@@ -410,7 +403,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
           # Loop over all elements.
           for (e in seq(along = start)) {
-
             # Create a sequence of data points to search for overlap within.
             seqVec <- seq(start[e], end[e])
 
@@ -436,7 +428,6 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
 
         # Loop over all elements.
         for (e in seq(along = start)) {
-
           # Create a sequence of data points to search for overlap within.
           seqVec <- seq(start[e], end[e])
 

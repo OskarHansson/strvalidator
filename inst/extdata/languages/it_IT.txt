@@ -82,8 +82,8 @@ calculateAllele_gui	12	strChkSexMarkers	Rimuovi i marcatori del sesso definiti n
 calculateAllele_gui	13	strFrmSave	Salva come
 calculateAllele_gui	14	strLblSave	Nome per il risultato:
 calculateAllele_gui	15	strBtnCalculate	Calcola
-calculateAllele_gui	16	strMsgDataset	Seleziona un dataset!
-calculateAllele_gui	17	strMsgTitleDataset	Errore
+calculateAllele_gui	16	strMsgNotDf	Il data set deve essere un data.frame!
+calculateAllele_gui	17	strMsgTitleError	Errore
 calculateAllT_gui	1	strWinTitle	Calcola le soglie stocastiche
 calculateAllT_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 calculateAllT_gui	3	strBtnHelp	Aiuto
@@ -1120,7 +1120,7 @@ plotAT_gui	34	strLblMainTitleLinear	Regressione lineare
 plotAT_gui	35	strLblMainTitleWeighted	Regressione lineare pesata
 plotAT_gui	36	strLblXTitle	Quantità (pg)
 plotAT_gui	37	strLblYTitle	Altezza media di picco (RFU)
-plotAT_gui	38	strMsgNull	Il data frame è NULL o NA!
+plotAT_gui	38	strMsgNotDf	Il data set deve essere un data.frame!
 plotAT_gui	39	strMsgTitleError	Errore
 plotBalance_gui	1	strWinTitle	Rendi graficamente il balance
 plotBalance_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1184,7 +1184,7 @@ plotBalance_gui	59	strLblXTitleLocus	Locus
 plotBalance_gui	60	strLblXTitleLocusHeight	Altezza di picco del locus (RFU)
 plotBalance_gui	61	strLblYTitleLog	Log(Rapporto)
 plotBalance_gui	62	strLblYTitle	Rapporto
-plotBalance_gui	63	strMsgNull	Il data frame è NULL o NA!
+plotBalance_gui	63	strMsgNotDf	Il data set deve essere un data.frame!
 plotBalance_gui	64	strMsgTitleError	Errore
 plotCapillary_gui	1	strWinTitle	Rendi graficamente  la capillary balance
 plotCapillary_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1222,7 +1222,7 @@ plotCapillary_gui	33	strLblXTitleInjection	Iniezione
 plotCapillary_gui	34	strLblXTitleCapillary	Capillary
 plotCapillary_gui	35	strLblXTitleDensity	Densità
 plotCapillary_gui	36	strLblYTitleMean	Altezza media di picco (RFU)
-plotCapillary_gui	37	strMsgNull	Il data frame è NULL o NA!
+plotCapillary_gui	37	strMsgNotDf	Il data set deve essere un data.frame!
 plotCapillary_gui	38	strMsgTitleError	Errore
 plotContamination_gui	1	strWinTitle	Rendi graficamente la contaminazione
 plotContamination_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1247,7 +1247,7 @@ plotContamination_gui	20	strBtnObjectSaved	Oggetto salvato
 plotContamination_gui	21	strLblMainTitle	Numero di picchi osservato ed atteso per profilo (n=
 plotContamination_gui	22	strLblXTitle	Numero di picchi per controllo
 plotContamination_gui	23	strLblYTitle	Occorrenza relativa
-plotContamination_gui	24	strMsgNull	Il data frame è NULL o NA!
+plotContamination_gui	24	strMsgNotDf	Il data set deve essere un data.frame!
 plotContamination_gui	25	strMsgTitleError	Errore
 plotDistribution_gui	1	strWinTitle	Rendi graficamente la distribuzione
 plotDistribution_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1305,7 +1305,7 @@ plotDistribution_gui	53	strLblXTitleSize	Size del frammento (bp)
 plotDistribution_gui	54	strLblXTitleDataPoint	Data point
 plotDistribution_gui	55	strLblObservations	osservazioni
 plotDistribution_gui	56	strMsgColumn	Deve essere specificata una colonna dati!
-plotDistribution_gui	57	strMsgNull	Il data frame è NULL o NA!
+plotDistribution_gui	57	strMsgNotDf	Il data set deve essere un data.frame!
 plotDistribution_gui	58	strMsgTitleError	Errore
 plotDropout_gui	1	strWinTitle	Rendi graficamente i dati di dropout
 plotDropout_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1357,7 +1357,7 @@ plotDropout_gui	47	strLblXTitleHeight	Altezza di picco (RFU)
 plotDropout_gui	48	strLblXTitleSurvivingHeight	Altezza di picco dell'allele superstite (RFU)
 plotDropout_gui	49	strLblYTitleMarker	Marker
 plotDropout_gui	50	strLblYTitleCP	Probabilità cumulativa
-plotDropout_gui	51	strMsgNull	Il data frame è NULL o NA!
+plotDropout_gui	51	strMsgNotDf	Il data set deve essere un data.frame!
 plotDropout_gui	52	strMsgTitleError	Errore
 plotEPG2_gui	1	strWinTitle	Plot elettroferogramma (EPG)
 plotEPG2_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1418,7 +1418,7 @@ plotGroups_gui	32	strBtnObjectSaved	Oggetto salvato
 plotGroups_gui	33	strLblMainTitle	Funzione di distribuzione cumulativa empirica (ECDF)
 plotGroups_gui	34	strLblObservations	osservazioni
 plotGroups_gui	35	strMsgColumn	Deve essere specificata una colonna dati!
-plotGroups_gui	36	strMsgNull	Il data frame è NULL o NA!
+plotGroups_gui	36	strMsgNotDf	Il data set deve essere un data.frame!
 plotGroups_gui	37	strMsgTitleError	Errore
 plotKit_gui	1	strWinTitle	Rendi graficamente il kit
 plotKit_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1475,7 +1475,7 @@ plotPeaks_gui	26	strLblMainTitle	Analisi dei picchi da
 plotPeaks_gui	27	strLblXTitle	Raggruppa
 plotPeaks_gui	28	strLblYTitleProp	Proporzione
 plotPeaks_gui	29	strLblYTitleCount	Conta
-plotPeaks_gui	30	strMsgNull	Il data frame è NULL o NA!
+plotPeaks_gui	30	strMsgNotDf	Il data set deve essere un data.frame!
 plotPeaks_gui	31	strMsgTitleError	Errore
 plotPrecision_gui	1	strWinTitle	Rendi graficamente la precisione
 plotPrecision_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1537,7 +1537,7 @@ plotPrecision_gui	57	strLblXTitleSize	Size medio in paia di basi (bp)
 plotPrecision_gui	58	strLblXTitleHeight	Altezza media in unità relative di fluorescenza (RFU)
 plotPrecision_gui	59	strLblXTitlePoints	Numero medio di scansioni in data points
 plotPrecision_gui	60	strLblXTitleAllele	Allele
-plotPrecision_gui	61	strMsgNull	Il data frame è NULL o NA!
+plotPrecision_gui	61	strMsgNotDf	Il data set deve essere un data.frame!
 plotPrecision_gui	62	strMsgTitleError	Errore
 plotPullup_gui	1	strWinTitle	Rendi graficamente il pull-up
 plotPullup_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1579,7 +1579,7 @@ plotPullup_gui	37	strLblMainTitle	Rapporto di pull-up
 plotPullup_gui	38	strLblYTitle	Rapporto
 plotPullup_gui	39	strLblXTitleHeight	Altezza di picco allelica (RFU)
 plotPullup_gui	40	strLblXTitleAllele	Designazione allelica
-plotPullup_gui	41	strMsgNull	Il data frame è NULL o NA!
+plotPullup_gui	41	strMsgNotDf	Il data set deve essere un data.frame!
 plotPullup_gui	42	strMsgTitleError	Errore
 plotRatio_gui	1	strWinTitle	Rendi graficamente i rapporti dei marker
 plotRatio_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1610,7 +1610,7 @@ plotRatio_gui	26	strLblMainTitle	rapporto marker
 plotRatio_gui	27	strLblYTitle	Rapporto
 plotRatio_gui	28	strLblXTitleMarker	Marker
 plotRatio_gui	29	strLblXTitlePair	Coppia di marcatori
-plotRatio_gui	30	strMsgNull	Il data frame è NULL o NA!
+plotRatio_gui	30	strMsgNotDf	Il data set deve essere un data.frame!
 plotRatio_gui	31	strMsgTitleError	Errore
 plotResultType_gui	1	strWinTitle	Rendi graficamente il tipo di risultato
 plotResultType_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1642,7 +1642,7 @@ plotResultType_gui	27	strLblMainTitle	campioni analizzati
 plotResultType_gui	28	strLblXTitleType	Tipo di risultato
 plotResultType_gui	29	strLblYTitleProportion	Proporzione
 plotResultType_gui	30	strLblYTitleCount	Conta
-plotResultType_gui	31	strMsgNull	Il data frame è NULL o NA!
+plotResultType_gui	31	strMsgNotDf	Il data set deve essere un data.frame!
 plotResultType_gui	32	strMsgTitleError	Errore
 plotSlope_gui	1	strWinTitle	Rendi graficamente lo slope
 plotSlope_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1672,7 +1672,7 @@ plotSlope_gui	25	strBtnObjectSaved	Oggetto salvato
 plotSlope_gui	26	strLblMainTitle	Slope del profilo
 plotSlope_gui	27	strLblXTitle	Campione
 plotSlope_gui	28	strLblYTitle	Slope
-plotSlope_gui	29	strMsgNull	Il data frame è NULL o NA!
+plotSlope_gui	29	strMsgNotDf	Il data set deve essere un data.frame!
 plotSlope_gui	30	strMsgTitleError	Errore
 plotStutter_gui	1	strWinTitle	Rendi graficamente i dati dei rapporti di stutter
 plotStutter_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1725,7 +1725,7 @@ plotStutter_gui	48	strLblMainTitle	Rapporti di stutter
 plotStutter_gui	49	strLblXTitleAllele	Allele vero
 plotStutter_gui	50	strLblXTitleHeight	Allele vero (RFU)
 plotStutter_gui	51	strLblYTitleRatio	Rapporto
-plotStutter_gui	52	strMsgNull	Il data frame è NULL o NA!
+plotStutter_gui	52	strMsgNotDf	Il data set deve essere un data.frame!
 plotStutter_gui	53	strMsgTitleError	Errore
 removeArtefact_gui	1	strWinTitle	Rimuovi artefatti
 removeArtefact_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
@@ -1740,7 +1740,7 @@ removeArtefact_gui	10	strChkRemoveNA	Rimuovi Allele=NA
 removeArtefact_gui	11	strLblThreshold	Soglia artefatti:
 removeArtefact_gui	12	strFrmSave	Salva come
 removeArtefact_gui	13	strLblSave	Nome per il risultato:
-removeArtefact_gui	14	strMsgNull	Seleziona dei dataset!
+removeArtefact_gui	14	strMsgNotDf	Il data set deve essere un data.frame!
 removeArtefact_gui	15	strMsgTitleError	Errore
 removeArtefact_gui	16	strBtnRemove	Rimuovi
 removeSpike_gui	1	strWinTitle	Rimuovi gli spike
@@ -1756,7 +1756,7 @@ removeSpike_gui	10	strFrmOptions	Opzioni
 removeSpike_gui	11	strChkInvert	Inverti (rimuovi tutto tranne gli spike)
 removeSpike_gui	12	strFrmSave	Salva come
 removeSpike_gui	13	strLblSave	Nome per il risultato:
-removeSpike_gui	14	strMsgNull	Seleziona dei dataset!
+removeSpike_gui	14	strMsgNotDf	Il data set deve essere un data.frame!
 removeSpike_gui	15	strMsgTitleError	Errore
 removeSpike_gui	16	strBtnRemove	Rimuovi
 saveObject	1	strMsgName	Inserire un nome

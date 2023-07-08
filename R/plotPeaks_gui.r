@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 26.04.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
@@ -45,7 +46,6 @@
 #'
 
 plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -98,7 +98,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   strLblXTitle <- "Group"
   strLblYTitleProp <- "Proportion"
   strLblYTitleCount <- "Count"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -195,8 +195,8 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     strtmp <- dtStrings["strLblYTitleCount"]$value
     strLblYTitleCount <- ifelse(is.na(strtmp), strLblYTitleCount, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -209,7 +209,6 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -239,7 +238,6 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -287,7 +285,6 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -304,7 +301,6 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       # Enable buttons.
       enabled(plot_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -443,7 +439,6 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FUNCTIONS #################################################################
 
   .plotBalance <- function() {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -482,7 +477,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     }
 
     # Check if data.
-    if (!is.na(.gData) && !is.null(.gData)) {
+    if (is.data.frame(.gData)) {
       if (debug) {
         print("Before plot: str(.gData)")
         print(str(.gData))
@@ -548,7 +543,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -558,7 +553,6 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -568,7 +562,6 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     }
   }
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -629,7 +622,6 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotPeaks_gui_savegui", value = svalue(savegui_chk), envir = env)

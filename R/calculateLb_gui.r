@@ -42,7 +42,6 @@
 
 calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
                             debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
@@ -239,7 +238,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -270,7 +268,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -337,7 +334,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
-
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
@@ -393,7 +389,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       # Enable checkbox to calculate H.
       enabled(f1_h_chk) <- TRUE
     } else {
-
       # Reset components.
       .gRef <<- NULL
       .gRefName <<- NULL
@@ -424,7 +419,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   check_btn <- gbutton(text = strBtnCheck, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -565,7 +559,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     val_option <- svalue(f1_lb_opt, index = TRUE)
     val_dye <- svalue(f1_dye_chk)
@@ -618,7 +611,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if data.
     if (!is.null(val_data)) {
-
       # Check for NA's in dye column.
       if (!any(is.na(val_data$Dye))) {
         if (val_option == 1) {
@@ -706,7 +698,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Calculate and add average peak height.
         if (val_h) {
-
           # Calculate average peak height.
           dfH <- calculateHeight(
             data = val_data, ref = val_ref,
@@ -763,7 +754,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -823,7 +813,6 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateLb_gui_savegui", value = svalue(savegui_chk), envir = env)

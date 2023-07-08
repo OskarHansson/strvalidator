@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 13.04.2020: Added language support.
 # 13.04.2020: Implemented function checkDataset.
@@ -19,9 +20,6 @@
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 28.02.2014: Fixed plot object not saved in '.gPlot'.
-# 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
-# 19.11.2013: Added distribution plot.
-# 28.10.2013: First version.
 
 #' @title Plot Capillary Balance
 #'
@@ -49,7 +47,6 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -101,7 +98,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   strLblXTitleCapillary <- "Capillary"
   strLblXTitleDensity <- "Density"
   strLblYTitleMean <- "Mean peak height (RFU)"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -219,8 +216,8 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     strtmp <- dtStrings["strLblYTitleMean"]$value
     strLblYTitleMean <- ifelse(is.na(strtmp), strLblYTitleMean, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -233,7 +230,6 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -264,7 +260,6 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -315,7 +310,6 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -332,7 +326,6 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       enabled(plot_dot_btn) <- TRUE
       enabled(plot_box_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -561,7 +554,6 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
 
   .plotBalance <- function(what) {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -599,8 +591,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       print(str(.gData))
     }
 
-    if (!is.na(.gData) && !is.null(.gData)) {
-
+    if (is.data.frame(.gData)) {
       # Remove NA.
       if (any(is.na(.gData$Mean.Height))) {
         n0 <- nrow(.gData)
@@ -738,7 +729,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -748,7 +739,6 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -758,7 +748,6 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     }
   }
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -819,7 +808,6 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotCapillary_gui_savegui", value = svalue(savegui_chk), envir = env)

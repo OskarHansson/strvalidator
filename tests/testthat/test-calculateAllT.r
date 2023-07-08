@@ -4,7 +4,7 @@ context("calculateAllT")
 # CHANGE LOG
 # 04.07.2023: Updated expected Hosmer-Lemeshow_p values due to a change in
 #   the ResourceSelection package 0.3-6, which involves changes to the Hosmer-Lemeshov
-#   test because the test degrees of freedom was incorrectly determined for 
+#   test because the test degrees of freedom was incorrectly determined for
 #   certain small data sets.
 # 14.03.2019: Added temporary fix for changed random number generator.
 # 13.07.2018: First version.
@@ -18,7 +18,6 @@ context("calculateAllT")
 # test_dir("tests/testthat")
 
 test_that("calculateAllT", {
-
   # Get test data.
   data(set4)
   data(ref4)

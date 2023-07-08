@@ -57,12 +57,10 @@ combineBinsAndPanels <- function(bin, panel) {
 
   # Loop over all panels.
   for (p in seq(along = binPanel)) {
-
     # Get markers for current panel.
     binMarker <- unique(bin$Marker[bin$Panel == binPanel[p]])
 
     for (m in seq(along = binMarker)) {
-
       # Add new info for current marker in current panel.
 
       # Color.
@@ -93,7 +91,6 @@ combineBinsAndPanels <- function(bin, panel) {
 
   # Loop over all panels.
   for (p in seq(along = panel)) {
-
     # Select current panel.
     selPanel <- kit$Panel == panel[p]
 
@@ -102,7 +99,6 @@ combineBinsAndPanels <- function(bin, panel) {
 
     # Loop over all markers.
     for (m in seq(along = marker)) {
-
       # Select current marker.
       selMarker <- kit$Marker == marker[m]
 

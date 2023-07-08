@@ -15,7 +15,6 @@ context("filterProfile")
 # test_dir("tests/testthat")
 
 test_that("filterProfile", {
-
   # Load test data.
   data(set1)
   data(ref1)

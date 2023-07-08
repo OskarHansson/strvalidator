@@ -10,7 +10,6 @@ context("calculateStatistics")
 # test_dir("tests/testthat")
 
 test_that("calculateStatistics", {
-
   # Toleranse for numeric comparisons as absolute difference.
   threshold <- 0.00001
 

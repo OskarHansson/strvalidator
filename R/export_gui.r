@@ -50,7 +50,6 @@
 
 export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", "ggplot")),
                        env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
@@ -213,7 +212,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -242,7 +240,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -361,7 +358,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   # HANDLERS ##################################################################
 
   addHandlerSelectionChanged(object_tbl, handler = function(h, ...) {
-
     # Get selected values.
     val <- svalue(object_tbl)
 
@@ -374,7 +370,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   })
 
   addHandlerChanged(ext_drp, handler = function(h, ...) {
-
     # Get values.
     val <- svalue(ext_drp)
 
@@ -388,7 +383,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   })
 
   addHandlerChanged(export_btn, handler = function(h, ...) {
-
     # Get values.
     val_object <- svalue(object_tbl)
     val_use_obj <- svalue(name_chk)
@@ -535,7 +529,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Get values.
     val <- svalue(name_chk)
 
@@ -547,7 +540,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -601,7 +593,6 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_export_gui_savegui", value = svalue(savegui_chk), envir = env)

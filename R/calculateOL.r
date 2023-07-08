@@ -101,7 +101,6 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
   kitNames <- unique(kit$Short.Name)
 
   if (limit) {
-
     # Calculate min frequency.
     size <- unique(db$N)
     if (length(size) == 1) {
@@ -153,7 +152,6 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
       selection <- selection & ladder$Marker == marker[m]
 
       if (!virtual) {
-
         # Select only real alleles.
         selection <- selection & ladder$Virtual == 0
       }

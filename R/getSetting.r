@@ -21,7 +21,6 @@
 #'
 
 getSetting <- function(key) {
-
   # Constants
   fileName <- "settings.txt" # Name of settings file with file extension.
   subFolder <- "extdata" # Sub folder in addition to package path.
@@ -35,7 +34,6 @@ getSetting <- function(key) {
 
   # If file exist.
   if (file.exists(filePath)) {
-
     # Read settings file.
     dtable <- fread(
       file = filePath, sep = "=",

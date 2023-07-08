@@ -52,7 +52,6 @@
 #' @seealso \code{\link{addColor}}
 
 addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- data.frame(No.Data = NA)
   .gDataName <- NULL
@@ -155,7 +154,6 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -186,7 +184,6 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -246,7 +243,6 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       svalue(kit_drp, index = TRUE) <- .gKit
       svalue(save_edt) <- paste(.gDataName, sep = "")
     } else {
-
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
@@ -313,7 +309,6 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   add_btn <- gbutton(text = strBtnAdd, container = gv)
 
   addHandlerClicked(add_btn, handler = function(h, ...) {
-
     # Get values.
     val_kit <- svalue(kit_drp)
     val_data <- .gData
@@ -415,7 +410,6 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -461,7 +455,6 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_addDye_gui_savegui", value = svalue(savegui_chk), envir = env)

@@ -10,7 +10,6 @@ context("trim")
 # test_dir("tests/testthat")
 
 test_that("trim", {
-
   # Columns:
   allele <- c("10", "", "X", "Y", "12", "OL")
   nastrcol <- c("NA", "NA", "NA", "NA", "NA", "NA")

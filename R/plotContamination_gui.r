@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 18.04.2020: Added language support.
@@ -46,7 +47,6 @@
 #' \doi{10.1016/j.fsigen.2015.09.011}
 
 plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gPlot <- NULL
@@ -84,7 +84,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   strLblMainTitle <- "Observed and expected number of peaks per profile (n="
   strLblXTitle <- "Number of peaks per control"
   strLblYTitle <- "Relative occurance"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -163,8 +163,8 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     strtmp <- dtStrings["strLblYTitle"]$value
     strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -177,7 +177,6 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -209,7 +208,6 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -274,7 +272,6 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
       # Enable buttons.
       enabled(plot_poiss_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -397,7 +394,6 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
 
   .plot <- function() {
-
     # Get values.
     val_data <- .gData
     val_titles <- svalue(titles_chk)
@@ -406,8 +402,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     val_ytitle <- svalue(y_title_edt)
     val_theme <- svalue(f1_theme_drp)
 
-    if (!is.na(val_data) && !is.null(val_data)) {
-
+    if (is.data.frame(val_data)) {
       # Convert to data table.
       DT <- data.table(val_data)
 
@@ -504,7 +499,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -514,7 +509,6 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -526,7 +520,6 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
   .applyPlotSettings <- function(gp, theme = "theme_grey()",
                                  main.title = NULL, x.title = NULL, y.title = NULL) {
-
     # Apply theme.
     gp <- gp + eval(parse(text = theme))
     gp <- gp + theme(legend.justification = c(1, 1), legend.position = c(1, 1))
@@ -540,7 +533,6 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -586,7 +578,6 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotContamination_gui_savegui", value = svalue(savegui_chk), envir = env)

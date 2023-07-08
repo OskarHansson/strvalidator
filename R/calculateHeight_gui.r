@@ -52,7 +52,6 @@
 #' @seealso \code{\link{calculateHeight}}
 
 calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -213,7 +212,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -245,7 +243,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -297,7 +294,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -312,7 +308,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
-
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
@@ -360,14 +355,12 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     )
 
     if (ok) {
-
       # Load or change components.
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
       svalue(ref_lbl) <- paste("", ref, strLblRef)
     } else {
-
       # Reset components.
       .gRef <<- NULL
       svalue(refset_drp, index = TRUE) <- 1
@@ -392,7 +385,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   check_btn <- gbutton(text = strBtnCheck, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -543,7 +535,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     }
 
     if (!is.null(val_data)) {
-
       # Change button.
       blockHandlers(calculate_btn)
       svalue(calculate_btn) <- strBtnProcessing
@@ -602,7 +593,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   })
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -656,7 +646,6 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateHeight_gui_savegui", value = svalue(savegui_chk), envir = env)

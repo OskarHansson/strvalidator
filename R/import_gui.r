@@ -49,7 +49,6 @@
 
 
 import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Define variables.
   .default_file_dir <- NA
   .default_file_name <- NA
@@ -236,7 +235,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -268,7 +266,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -280,7 +277,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   tooltip(select_file) <- strTipFile
 
   addHandlerClicked(select_file, handler = function(h, ...) {
-
     # Set batch import flag.
     .batchImport <<- FALSE
 
@@ -321,7 +317,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   tooltip(select_folder) <- strTipFolder
 
   addHandlerClicked(select_folder, handler = function(h, ...) {
-
     # Set import from folder flag.
     .batchImport <<- TRUE
 
@@ -482,7 +477,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
 
   addHandlerClicked(import_btn, handler = function(h, ...) {
-
     # Get values.
     file_val <- .selectedFile
     folder_val <- .selectedFolder
@@ -532,7 +526,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Check if ok to import data to 'env'.
     if (ok) {
-
       # Set arguments.
       if (folder_opt_val) {
         file_val <- NA
@@ -613,7 +606,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       )
 
       if (length(datanew) == 0) {
-
         # Show warning.
         gmessage(
           msg = strMsgDataset,
@@ -628,7 +620,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         unblockHandlers(import_btn)
         enabled(import_btn) <- TRUE
       } else {
-
         # Create key-value pairs to log.
         keys <- list(
           "folder", "extension", "suffix", "prefix",
@@ -667,7 +658,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Get values.
     val_trim <- svalue(opt_trim_chk)
     val_slim <- svalue(opt_slim_chk)
@@ -688,7 +678,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -766,7 +755,6 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_import_gui_savegui", value = svalue(savegui_chk), envir = env)

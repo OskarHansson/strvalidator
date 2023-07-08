@@ -95,7 +95,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
   # Check kit.name vector.
   if (all(is.na(kit.name))) {
-
     # Create default names.
     kit.name <- paste("Kit", seq(along = data), sep = ".")
   } else if (length(kit.name) != length(data)) {
@@ -152,7 +151,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
   # Add logical vectors for each dataset.
   for (d in seq(along = data)) {
-
     # Add pre-allocated vectors.
     sampleList[[d]] <- vector(mode = "logical", length = length(sampleNames))
     markerList[[d]] <- vector(mode = "logical", length = length(markerNames))
@@ -163,7 +161,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
   # Loop over all sample names.
   for (s in seq(along = sampleNames)) {
-
     # Progress.
     message(paste("Calculate concordance for: ", sampleNames[s],
       " (", s, " of ", length(sampleNames), ").",
@@ -172,13 +169,11 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
     # Loop over all marker names.
     for (m in seq(along = markerNames)) {
-
       # Create list.
       alleleSet <- list()
 
       # Loop over all data sets. (start with 1 to handle only 1 dataset in list.)
       for (d in seq(along = data)) {
-
         # Check if sample and add logical value.
         if (any(data[[d]]$Sample.Name == sampleNames[s])) {
           sampleList[[d]][s] <- TRUE
@@ -196,29 +191,24 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
         # Check if marker.
         if (!(markerList[[d]][m] & sampleList[[d]][s])) {
           if (!sampleList[[d]][s]) {
-
             # Sample does not exist.
             alleleSet[[d]] <- no.sample
           } else if (!markerList[[d]][m]) {
-
             # Marker does not exist.
             alleleSet[[d]] <- no.marker
           }
         } else {
-
           # Get current alleles from dataset.
           alleleSet[[d]] <- data[[d]][data[[d]]$Sample.Name == sampleNames[s] & data[[d]]$Marker == markerNames[m], "Allele"]
         }
       }
 
       if (list.all) {
-
         # Check for discordant results excluding if only difference is missing
         # marker (but including missing sample).
         tmp <- alleleSet[alleleSet != no.marker]
         discordance <- !length(unique(tmp)) == 1
       } else {
-
         # Check for discordant results excluding differences caused by missing
         # sample or missing marker.
         tmp <- alleleSet[alleleSet != no.sample & alleleSet != no.marker]
@@ -226,7 +216,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
       }
 
       if (discordance) {
-
         # Create result vectors.
         resAlleleVec <- NULL
         resInfoVec <- NULL
@@ -256,7 +245,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
     res1 <- data.frame(cbind(resInfoM, resAlleleM), stringsAsFactors = FALSE)
     names(res1) <- c("Sample.Name", "Marker", kit.name)
   } else {
-
     # Make a data.frame:
     res1 <- data.frame("NO DISCORDANCE", stringsAsFactors = FALSE)
   }
@@ -282,7 +270,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
   # Loop through all combinations.
   for (i in 1:nComb) {
-
     # Current combination.
     compareKit[i] <- paste(kitComb[, i], collapse = " vs. ")
 
@@ -308,7 +295,6 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
     # Loop through each row of dscordant result.
     for (r in seq(along = resAlleleList)) {
-
       # Get alleles for current kits.
       k1 <- resAlleleList[[r]][iComb[1, i]]
       k2 <- resAlleleList[[r]][iComb[2, i]]
@@ -319,10 +305,8 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
       # Only add if sample...
       if (!(no.sample %in% k1 | no.sample %in% k2)) {
-
         # ...and marker exist in both datasets.
         if (!(no.marker %in% k1 | no.marker %in% k2)) {
-
           # Compare alleles and count differences.
           sumDiscordances <- sumDiscordances + sum(!k1 %in% k2)
         }

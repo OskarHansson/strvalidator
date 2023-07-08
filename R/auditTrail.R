@@ -63,16 +63,13 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
   which <- "audit trail"
 
   if (remove) {
-
     # Remove the attribute.
     attr(x = obj, which = which) <- NULL
 
     message("Audit trail removed.")
   } else {
-
     # Get call information.
     if (!is.null(f.call)) {
-
       # Extract function name to label,
       # and add information to provided key-value pairs.
       info <- as.list(f.call)
@@ -102,7 +99,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Check option to store R version.
     if (rversion) {
-
       # Add current R version.
       log.entry <- paste0(prefix, R.version.string)
       new.entries <- paste(new.entries, log.entry, sep = "\n")
@@ -110,7 +106,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Check option to store package version.
     if (!is.null(package)) {
-
       # Get the current strvalidator version.
       version <- as.character(utils::packageVersion(package))
 
@@ -123,7 +118,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
     # Check option to store function arguments.
     if (arguments) {
       if (!is.null(f.call)) {
-
         # Get function name.
         fname <- as.character(as.list(f.call))[1]
 
@@ -132,7 +126,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
         # Check if an object exists.
         if (exists(fname)) {
-
           # Get function arguments.
           arg.info <- args(fname)
 
@@ -154,7 +147,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Check option to store the function call.
     if (!is.null(f.call)) {
-
       # Add function call.
       log.entry <- paste0(prefix, "call=", as.character(c(f.call)))
       new.entries <- paste(new.entries, log.entry, sep = "\n")
@@ -162,7 +154,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Loop over key-value pairs.
     for (i in seq(along = key)) {
-
       # Add all key-value pairs.
       log.entry <- paste0(
         prefix,
@@ -179,7 +170,6 @@ auditTrail <- function(obj, f.call = NULL, key = NULL, value = NULL, label = NUL
 
     # Add timestamp.
     if (timestamp) {
-
       # Add timestamp to result.
       attr(obj, which = "timestamp") <- as.character(now)
     }

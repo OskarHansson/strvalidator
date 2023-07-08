@@ -250,7 +250,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       # Check and fix dye.
       if (!is.null((data$Dye))) {
         if (any(is.na(data$Dye))) {
-
           # Fix broken dye.
           data <- addColor(
             data = data, kit = kit, need = "Dye",
@@ -275,10 +274,8 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
 
     # Check if Dye exist.
     if (!is.null((data$Dye))) {
-
       # Check and fix dye.
       if (any(is.na(data$Dye))) {
-
         # Fix broken dye.
         data <- addColor(
           data = data, kit = kit, need = "Dye",
@@ -311,7 +308,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     nas <- sum(is.na(data$Height))
 
     if (nas > 0) {
-
       # Replace missing values with specified value.
       data[is.na(data$Height), ]$Height <- na
     }

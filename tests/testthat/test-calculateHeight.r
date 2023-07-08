@@ -23,7 +23,6 @@ context("calculateHeight")
 # test_dir("tests/testthat")
 
 test_that("calculateHeight", {
-
   # Generate test data.
   markers <- c("D3", "vWA", "D16", "D2", "AMEL", "D8", "D21", "D18", "D19", "TH01", "FGA")
   height.1 <- c(3349, 1273, 627, 77, 7189, 3303, 582, 175, 2854, 1217, 460)

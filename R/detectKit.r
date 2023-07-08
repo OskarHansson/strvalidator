@@ -66,7 +66,6 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
 
     # Check if a match was returned.
     if (!is.na(detectedKit)) {
-
       # Write message.
       message(paste(
         "Found matching attribute 'kit':",
@@ -87,11 +86,9 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
   # Get markers from data -----------------------------------------------------
 
   if (is.data.frame(data)) {
-
     # Get unique markers.
     markers <- unique(data$Marker)
   } else if (is.vector(data)) {
-
     # Get unique markers.
     markers <- unique(data)
   } else {
@@ -165,7 +162,6 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
 
     # Loop over all candidate kits.
     for (c in seq(along = detectedKit)) {
-
       # Get first kit marker string.
       kitString <- paste(kitMarkers[[detectedKit[c]]], collapse = "")
 
@@ -177,7 +173,6 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
 
       # Loop over markers in data.
       for (m in seq(along = markers)) {
-
         # Search for substring.
         match <- regexpr(
           pattern = markers[m], text = kitString,
@@ -186,12 +181,10 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
         )
 
         if (match < 0) {
-
           # No match. Exit.
           score <- NA
           break
         } else {
-
           # Get first matching character position.
           matchStart <- match
 
@@ -234,7 +227,6 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
   candidates <- length(detectedKit)
 
   if (candidates == 0) {
-
     # Revert to previous matches.
     detectedKit <- prevDetected
 
@@ -244,7 +236,6 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
       print(detectedKit)
     }
   } else {
-
     # Store last match.
     prevDetected <- detectedKit
   } ###########################################################################

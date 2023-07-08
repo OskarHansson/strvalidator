@@ -98,7 +98,6 @@ slim <- function(data, fix = NULL, stack = NULL,
   # Slim ----------------------------------------------------------------------
 
   if (!is.null(stack)) {
-
     # Get columns to slim.
     slimCols <- NULL
     for (c in seq(along = stack)) {
@@ -120,7 +119,6 @@ slim <- function(data, fix = NULL, stack = NULL,
     }
 
     if (!is.null(fix)) {
-
       # Get fixed indexes.
       fixedIndex <- vector()
       for (k in seq(along = fix)) {
@@ -136,7 +134,6 @@ slim <- function(data, fix = NULL, stack = NULL,
       listStack <- list()
       listRep <- vector()
       for (c in seq(along = slimCols)) {
-
         # Get columns for current stack key.
         matrixStack <- data[, slimCols[[c]]]
 
@@ -147,7 +144,6 @@ slim <- function(data, fix = NULL, stack = NULL,
         vectorStack <- c(t(matrixStack))
 
         if (keep.na) {
-
           # Keep one value per fixed row.
           values <- replace(values, values == 0, 1)
 
@@ -161,7 +157,6 @@ slim <- function(data, fix = NULL, stack = NULL,
           # Extract values to keep.
           vectorStack <- vectorStack[keep]
         } else {
-
           # Extract values to keep.
           vectorStack <- vectorStack[!is.na(vectorStack)]
         }
@@ -175,17 +170,14 @@ slim <- function(data, fix = NULL, stack = NULL,
 
       # Check if all listRep's are equal.
       for (i in seq(along = listRep)) {
-
         # Compare lists.
         if (!identical(listRep[i], listRep[1])) {
-
           # Convert mismatch to vectors.
           testA <- unlist(listRep[1])
           testB <- unlist(listRep[i])
 
           # Find row causing the error.
           for (e in seq(along = testA)) {
-
             # Compare elements.
             if (testA[e] != testB[e]) {
               stop(paste(
@@ -204,7 +196,6 @@ slim <- function(data, fix = NULL, stack = NULL,
       # Loop over columns in fixed data.
       fixedDataExt <- list()
       for (k in seq(along = fix)) {
-
         # Repeat each 'row' to fit the stacked data.
         fixedDataExt[k] <- list(rep(fixedData[, k], times = unlist(listRep[1])))
       }

@@ -1,3 +1,14 @@
+Version 2.4.0.9002
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - Run code through styler
+  - plotContamination_gui, plotDistribution_gui, plotRatio_gui, plotGroups_gui,
+    calculateAllele_gui, removeArtefact_gui, removeSpike_gui, plotAT_gui,
+    plotPullup_gui, plotPeaks_gui, plotBalance_gui, plotResultType_gui.r, 
+    plotSlope_gui, plotStutter_gui, plotDropout_gui, plotCapillary_gui
+  Fixed error introduced in R 4.3.0: Error in !is.null(val_data) && !is.na(val_data)
+  and, Error in !is.na(.gData) && !is.null(.gData))
+
 Version 2.4.0.9001
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

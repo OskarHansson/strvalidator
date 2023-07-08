@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 25.02.2020: Added language support.
@@ -35,7 +36,6 @@
 
 
 calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -65,8 +65,8 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
   strBtnCalculate <- "Calculate"
-  strMsgDataset <- "Select a dataset!"
-  strMsgTitleDataset <- "Error"
+  strMsgNotDf <- "Data set must be a data.frame!"
+  strMsgTitleError <- "Error"
 
   # Get strings from language file.
   dtStrings <- getStrings(gui = fnc)
@@ -120,11 +120,11 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     strtmp <- dtStrings["strBtnCalculate"]$value
     strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
 
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
+    strtmp <- dtStrings["strMsgTitleError"]$value
+    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
   }
 
   # ---------------------------------------------------------------------------
@@ -134,7 +134,6 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -165,7 +164,6 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -219,7 +217,6 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -301,8 +298,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     val_sex <- svalue(f1_sex_chk)
     val_kit <- svalue(kit_drp)
 
-    if (!is.na(val_data) && !is.null(val_data)) {
-
+    if (is.data.frame(val_data)) {
       # Check status to set correct values for arguments.
       if (!val_sex) {
         # If no filtering of sex markers kit should be NULL.
@@ -346,8 +342,8 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strMsgNotDf,
+        title = strMsgTitleError,
         icon = "error"
       )
     }
@@ -366,7 +362,6 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -402,7 +397,6 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateAllele_gui_savegui", value = svalue(savegui_chk), envir = env)

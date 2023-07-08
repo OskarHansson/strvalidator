@@ -43,7 +43,6 @@
 
 calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
                                     debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -186,7 +185,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -218,7 +216,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -286,7 +283,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -299,7 +295,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
-
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
@@ -451,7 +446,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     if (!is.null(val_data)) {
-
       # Change button.
       blockHandlers(calculate_btn)
       svalue(calculate_btn) <- strBtnProcessing
@@ -514,7 +508,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -560,7 +553,6 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateResultType_gui_savegui", value = svalue(savegui_chk), envir = env)

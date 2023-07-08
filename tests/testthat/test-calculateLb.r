@@ -15,7 +15,6 @@ context("calculateLb")
 # test_dir("tests/testthat")
 
 test_that("calculateLb", {
-
   # Get test data.
   data(set1)
   data(ref1)

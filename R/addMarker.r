@@ -100,7 +100,6 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
 
   # Loop through all samples.
   for (s in seq(along = sample)) {
-
     # Reset vector.
     missingMarkers <- NULL
 
@@ -122,7 +121,6 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
     }
 
     if (!is.null(missingMarkers)) {
-
       # Show progress.
       message(paste("Adding missing markers to sample (",
         s, " of ", length(sample), "): ", sample[s],
@@ -138,7 +136,6 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
       # Add to result.
       res <- plyr::rbind.fill(res, new)
     } else {
-
       # Add current sample to res.
       res <- rbind(res, cSample)
     }

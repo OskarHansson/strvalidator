@@ -115,7 +115,6 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
 
   # Loop through keys.
   for (k in seq(along = keys)) {
-
     # Select rows.
     if (exact) {
       selectedData <- data[, by.col] == keys[k]
@@ -144,7 +143,6 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
             dataNewLen <- length(new.data[selectedNewData, colNamesNew[c]])
 
             if (dataLen == dataNewLen) {
-
               # Add new data.
               data[selectedData, colNamesNew[c]] <-
                 new.data[selectedNewData, colNamesNew[c]]
@@ -165,7 +163,6 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
           }
         }
       } else {
-
         # Get unique identifiers.
         keysData2 <- unique(as.character(data[, then.by.col]))
         keysNew2 <- unique(as.character(new.data[, then.by.col]))
@@ -184,7 +181,6 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
 
         # Loop through keys.
         for (k2 in seq(along = keys2)) {
-
           # Select rows.
           if (exact) {
             selectedData2 <- data[, then.by.col] == keys2[k2] & selectedData

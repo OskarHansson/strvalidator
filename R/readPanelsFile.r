@@ -27,14 +27,12 @@
 #'
 
 readPanelsFile <- function(panel.files, debug = FALSE) {
-
   # Constants.
   keyPanel <- "Panel"
   cDelimeter <- "\t"
 
   # Check if files are specified.
   if (!is.na(panel.files)) {
-
     # Open file for reading.
     f1 <- file(panel.files[1], open = "r")
 
@@ -77,7 +75,6 @@ readPanelsFile <- function(panel.files, debug = FALSE) {
 
         # Read all lines until next panel or last row.
         repeat {
-
           # Repeat until found first marker row.
           # (This is for handle comments which is found in LifeTech files)
           repeat { #### BEGIN REPEAT!

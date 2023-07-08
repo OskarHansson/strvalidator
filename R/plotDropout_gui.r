@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 04.08.2022: Added a reference.
 # 01.06.2020: Fixed "object 'val_obj' not found" when pressing plot buttons.
@@ -19,9 +20,6 @@
 # 16.05.2015: Fixed issue#10 colors hardcoded as ESX17 for dotplot.
 # 11.10.2014: Added 'focus', added 'parent' parameter.
 # 28.06.2014: Added help button and moved save gui checkbox.
-# 08.05.2014: Implemented 'checkDataset'.
-# 15.04.2014: Fixed position_jitter height now fixed to zero (prev. default).
-# 17.02.2014: Fixed NA in title for ecdp.
 
 #' @title Plot Drop-out Events
 #'
@@ -64,7 +62,6 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataColumns <- NULL
@@ -130,7 +127,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strLblXTitleSurvivingHeight <- "Peak height of surviving allele (RFU)"
   strLblYTitleMarker <- "Marker"
   strLblYTitleCP <- "Cumulative probability"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -290,8 +287,8 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     strtmp <- dtStrings["strLblYTitleCP"]$value
     strLblYTitleCP <- ifelse(is.na(strtmp), strLblYTitleCP, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -304,7 +301,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -336,7 +332,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -402,7 +397,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataColumns <<- names(.gData)
@@ -422,7 +416,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       enabled(f8_plot_ecdf_btn) <- TRUE
       enabled(f8_plot_dot_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       .gDataColumns <<- NULL
@@ -745,7 +738,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
 
   .plotDropout <- function(what) {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -787,9 +779,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
 
-    if (!is.na(.gData) && !is.null(.gData)) {
-
-
+    if (is.data.frame(.gData)) {
       # Call functions.
 
       # Color information.
@@ -819,7 +809,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Select what to plot and create default titles.
       if (what == "heat_h") {
-
         # Create default titles.
         if (!val_titles) {
           mainTitle <- strLblMainTitle
@@ -874,7 +863,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           scale_x_discrete(labels = formatC(xlabels, 0, format = "f")) +
           theme(axis.text.x = element_text(family = "sans", face = "bold", size = val_size))
       } else if (what == "heat_amount") {
-
         # Create default titles.
         if (!val_titles) {
           mainTitle <- strLblMainTitle
@@ -1041,7 +1029,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         ))
 
         if (val_hom) {
-
           # Remove locus dropouts.
           # NB! THIS HAS TO BE CHANGED WHEN A DROPOUT MODEL HAS BEEN SELECTED!
           n0 <- nrow(.gData)
@@ -1074,7 +1061,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             sep = ""
           ))
         } else {
-
           # Remove non-dropouts.
           n0 <- nrow(.gData)
           .gData <- .gData[.gData$Dropout == 1, ]
@@ -1088,7 +1074,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Create plot.
         if (val_hom) {
-
           # Create default titles.
           if (!val_titles) {
             mainTitle <- paste(
@@ -1118,7 +1103,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
             labels = c("Homozygous", "Heterozygous")
           )
         } else {
-
           # Create default titles.
           if (!val_titles) {
             mainTitle <- paste(
@@ -1250,7 +1234,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Zoom in without dropping observations.
         gp <- gp + coord_cartesian(xlim = val_x, ylim = val_y)
       } else if (what == "heat_mx") {
-
         #         if(!val_titles){
         #           mainTitle <- "Allele and locus dropout"
         #           xTitle <- "Mixture proportion (Mx)"
@@ -1298,7 +1281,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -1308,7 +1291,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -1319,7 +1301,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -1392,7 +1373,6 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotDropout_gui_savegui", value = svalue(savegui_chk), envir = env)

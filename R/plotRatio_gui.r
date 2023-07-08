@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 15.05.2020: Fixed spelling error.
 # 02.05.2020: Added language support.
@@ -40,7 +41,6 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -91,7 +91,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   strLblYTitle <- "Ratio"
   strLblXTitleMarker <- "Marker"
   strLblXTitlePair <- "Marker pair"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -188,8 +188,8 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     strtmp <- dtStrings["strLblXTitlePair"]$value
     strLblXTitlePair <- ifelse(is.na(strtmp), strLblXTitlePair, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -202,7 +202,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -234,7 +233,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -300,7 +298,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       enabled(plot_browse_btn) <- TRUE
       enabled(plot_all_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -437,7 +434,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
 
   .plot <- function(what) {
-
     # Get values.
     val_data <- .gData
     val_scales <- svalue(f1_scales_opt)
@@ -447,8 +443,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     val_ytitle <- svalue(y_title_edt)
     val_theme <- svalue(f1_theme_drp)
 
-    if (!is.na(val_data) && !is.null(val_data)) {
-
+    if (is.data.frame(val_data)) {
       # Fix data for plotting.
       vecColNames <- setdiff(names(val_data), c("Sample.Name", "Group"))
 
@@ -471,7 +466,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
       # Loop over all column names containing ratios.
       for (i in seq(along = vecColNames)) {
-
         # Add column data to vector.
         vecRatio <- c(vecRatio, val_data[, vecColNames[i]])
         vecMarkers <- c(vecMarkers, rep(vecColNames[i], intSamples))
@@ -483,7 +477,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
       # Plotting alleles for observed stutters per marker.
       if (what == "browse") {
-
         # Enable confirm. NB! Remember to disable.
         par(ask = T)
 
@@ -532,7 +525,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
         par(ask = F)
       } else if (what == "plot") {
         if ("Group" %in% names(val_data)) {
-
           # Create plot.
           gp <- ggplot(
             data = dfPlot,
@@ -553,7 +545,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
             )
           }
         } else {
-
           # Create plot.
           gp <- ggplot(
             data = dfPlot,
@@ -587,7 +578,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -597,7 +588,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -609,7 +599,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   .applyPlotSettings <- function(gp, theme = "theme_grey()",
                                  main.title = NULL, x.title = NULL, y.title = NULL) {
-
     # Apply theme.
     gp <- gp + eval(parse(text = theme))
 
@@ -622,7 +611,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -671,7 +659,6 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotRatio_gui_savegui", value = svalue(savegui_chk), envir = env)

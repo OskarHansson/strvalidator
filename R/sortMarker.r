@@ -101,7 +101,6 @@ sortMarker <- function(data, kit, add.missing.levels = FALSE, debug = FALSE) {
 
   # Check if identical levels.
   if (all(currentMarkerLevels %in% newMarkerLevels)) {
-
     # Add any missing factor levels.
     if (add.missing.levels) {
       for (m in seq(along = newMarkerLevels)) {
@@ -129,10 +128,8 @@ sortMarker <- function(data, kit, add.missing.levels = FALSE, debug = FALSE) {
 
   # Check if Dye is available.
   if ("Dye" %in% names(data)) {
-
     # Check if identical levels.
     if (all(currentDyeLevels %in% newDyeLevels)) {
-
       # Add any missing factor levels.
       if (add.missing.levels) {
         for (d in seq(along = newDyeLevels)) {

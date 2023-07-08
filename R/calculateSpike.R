@@ -53,7 +53,6 @@
 
 calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
                            quick = FALSE, debug = FALSE) {
-
   # Parameters that are changed by the function must be saved first.
   attr_kit <- substitute(kit)
 
@@ -101,7 +100,6 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
   DT <- data.table::data.table(data)
 
   if (is.null(kit)) {
-
     # Detect kit.
     kit <- detectKit(data = DT, index = FALSE, debug = debug)
     kit <- kit[1]
@@ -113,12 +111,10 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
   kitDyes <- addColor(data = kitColors, have = "Color", need = "Dye")
 
   if (is.null(threshold)) {
-
     # Default to number of dyes minus one to allow for one unlabeled spike.
     threshold <- length(kitDyes) - 1
     message(paste("Using default spike threshold:", threshold))
   } else if (threshold > length(kitDyes)) {
-
     # Threshold cannot be larger than the number of dyes in the kit.
     threshold <- length(kitDyes) - 1
     message(paste("'threshold' cannot be larger than the number of dyes in the kit"))
@@ -190,7 +186,6 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
 
     # Loop through each sample.
     for (i in seq(along = id)) {
-
       # Show progress every 10% percent.
       if ((i / length(id)) >= (m / 10)) {
         message(100 * m / 10, "% of ", length(id), " samples analysed.")
@@ -215,7 +210,6 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
         currentPeaks <- rep(as.numeric(NA), lenMat)
 
         for (r in seq(from = 1, to = lenMat)) {
-
           # Extract peaks whose difference is tolerated.
           closePeaks <- which(currentMat[r, ] <= tolerance)
           currentDist[r] <- paste(closePeaks, collapse = ",")

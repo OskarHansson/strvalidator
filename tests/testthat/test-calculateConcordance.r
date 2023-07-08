@@ -11,7 +11,6 @@ context("calculateConcordance")
 # test_dir("tests/testthat")
 
 test_that("calculateConcordance", {
-
   # Create a dataframe for testing:
   # Load data.
   data(set2)

@@ -143,11 +143,9 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
     }
 
     if (ignore.case) {
-
       # Select rows for current marker and ignore case in marker names.
       cMarker <- toupper(data$Marker) == toupper(marker[m])
     } else {
-
       # Select rows for current marker.
       cMarker <- data$Marker == marker[m]
     }
@@ -164,7 +162,6 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
 
     # Loop over allele in current marker.
     for (a in seq(along = allele)) {
-
       # Select rows for current allele.
       cAllele <- data$Allele == allele[a]
 
@@ -172,7 +169,6 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
       selection <- cMarker & cAllele
 
       if (bins) {
-
         # Get size from matching bins.
         size <- kit$Size[kit$Marker == marker[m] & kit$Allele == allele[a]]
       } else {
@@ -183,7 +179,6 @@ addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FA
 
         # Check presence of X/Y.
         if ("X" %in% alleleTmp || "Y" %in% alleleTmp) {
-
           # Use 1 and 2 for X and Y.
           alleleTmp <- sub(pattern = "X", replacement = 1, x = alleleTmp)
           alleleTmp <- sub(pattern = "Y", replacement = 2, x = alleleTmp)

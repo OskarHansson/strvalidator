@@ -169,7 +169,6 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
 
   # Loop through all reference samples.
   for (r in seq(along = refSampleNames)) {
-
     # Select current ref sample.
     selected.refs <- grepl(refSampleNames[r], ref$Sample.Name)
     refSubset <- ref[selected.refs, ]
@@ -183,7 +182,6 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
 
     # Loop over all samples in subset.
     for (s in seq(along = ssName)) {
-
       # Select samples from this ref.
       selectedSamples <- grepl(ssName[s], dataSubset$Sample.Name)
       dataSs <- dataSubset[selectedSamples, ]
@@ -193,7 +191,6 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
 
       # Loop over all markers in subset.
       for (m in seq(along = markerNames)) {
-
         # Get reference alleles (true alleles).
         tA <- refSubset$Allele[refSubset$Marker == markerNames[m]]
         tA1 <- tA[1]

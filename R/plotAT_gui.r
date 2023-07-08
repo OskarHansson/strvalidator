@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 10.04.2020: Added language support.
 # 23.02.2019: Compacted and tweaked gui for tcltk.
@@ -39,7 +40,6 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -92,7 +92,7 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   strLblMainTitleWeighted <- "Weighted linear regression"
   strLblXTitle <- "Amount (pg)"
   strLblYTitle <- "Average Peak Height (RFU)"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -213,8 +213,8 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     strtmp <- dtStrings["strLblYTitle"]$value
     strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -227,7 +227,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -259,7 +258,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -323,7 +321,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       # Enable buttons.
       enabled(plot_at6_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -544,7 +541,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
 
   .plotAT <- function(what) {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -598,8 +594,7 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       print(val_theme)
     }
 
-    if (!is.na(.gData) && !is.null(.gData)) {
-
+    if (is.data.frame(.gData)) {
       # Plotting data and regression for AT6.
       if (what == "AT6") {
         if (val_titles) {
@@ -626,14 +621,12 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         atinterc <- unique(.gData$AT6)
 
         if (all(is.na(.gData$Weight))) {
-
           # Add regression line.
           gp <- gp + stat_smooth(aes_string(x = "Amount", y = "Height"),
             method = "lm", se = TRUE, n = npoints,
             fullrange = TRUE, level = 1 - alpha * 2
           )
         } else {
-
           # Add weighted regression line.
           gp <- gp + stat_smooth(aes_string(x = "Amount", y = "Height", weight = "Weight"),
             method = "lm", se = TRUE, n = npoints,
@@ -720,7 +713,7 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -730,7 +723,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -741,7 +733,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -823,7 +814,6 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotAT_gui_savegui", value = svalue(savegui_chk), envir = env)

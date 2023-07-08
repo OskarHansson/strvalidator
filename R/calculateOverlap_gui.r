@@ -47,7 +47,6 @@
 #' @seealso \code{\link{calculateOverlap}}
 
 calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
-
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
@@ -150,7 +149,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -181,7 +179,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -204,7 +201,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     expand = TRUE,
     fill = TRUE
   )
-  
+
   # Set initial minimal size.
   size(scroll_view) <- c(100, 150)
 
@@ -228,7 +225,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
     # check if any selected kit.
     if (length(val_kits) > 0) {
-
       # Get selected kits.
       for (k in seq(along = val_kits)) {
         kit <- getKit(val_kits[k], what = "Color")
@@ -237,7 +233,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
       # Check if identical.
       if (all(sapply(kitColor, identical, kitColor[[1]]))) {
-
         # Calculate number of penalty elements.
         elements <- length(kitColor[[1]]) - 1
 
@@ -298,7 +293,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
         enabled(analyse_btn) <- FALSE
       }
     } else {
-
       # Disable all.
       enabled(f2_penalty1_spb) <- FALSE
       enabled(f2_penalty2_spb) <- FALSE
@@ -442,7 +436,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     val_penalty <- NULL
 
     if (length(val_kits) > 0) {
-
       # Change button.
       blockHandlers(analyse_btn)
       svalue(analyse_btn) <- strBtnProcessing
@@ -545,7 +538,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -603,7 +595,6 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateOverlap_gui_savegui", value = svalue(savegui_chk), envir = env)

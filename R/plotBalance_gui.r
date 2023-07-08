@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 13.04.2020: Added language support.
 # 13.04.2020: Implemented function checkDataset.
@@ -23,8 +24,6 @@
 # 19.11.2015: Changed axes default to 'fixed' to avoid common plot error.
 # 11.11.2015: Added importFrom gridExtra arrangeGrob, and ggplot2.
 # 11.11.2015: Added more themes.
-# 08.11.2015: Added new plot options 'Hb vs. Marker' and 'Lb vs. Marker'.
-# 08.11.2015: Added options to plot all data 'Facet per marker and wrap by dye'.
 
 #' @title Plot Balance
 #'
@@ -64,7 +63,6 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -142,7 +140,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strLblXTitleLocusHeight <- "Locus peak height (RFU)"
   strLblYTitleLog <- "Log(Ratio)"
   strLblYTitle <- "Ratio"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -338,8 +336,8 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     strtmp <- dtStrings["strLblYTitle"]$value
     strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -352,7 +350,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -384,7 +381,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -479,7 +475,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       enabled(plot_lb_btn) <- TRUE
       enabled(plot_lb_h_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -845,7 +840,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FUNCTIONS #################################################################
 
   .plotBalance <- function(what, complex = NULL) {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -912,8 +906,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     ymax <- NULL # For complex plots.
     ymin <- NULL # For complex plots.
 
-    if (!is.na(.gData) && !is.null(.gData)) {
-
+    if (is.data.frame(.gData)) {
       # Call functions.
       # Add color information.
       if (is.null(.gData$Dye)) {
@@ -929,13 +922,11 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Drop sex markers.
       if (val_drop) {
-
         # Get sex marker.
         sexMarkers <- getKit(val_kit, what = "Sex.Marker")
 
         # Check if sexMarkers was found.
         if (length(sexMarkers) > 0) {
-
           # Drop sex markers.
           n0 <- nrow(.gData)
           for (m in seq(along = sexMarkers)) {
@@ -986,7 +977,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Check if 'simple' or 'complex' plotting:
       if (is.null(complex)) {
-
         # Auto detect if complex plot.
         complex <- length(val_ncol) > 1
       }
@@ -1183,11 +1173,9 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Create Plot.
         if (val_box) {
-
           # Create box and whisker plot.
           gp <- gp + geom_boxplot(alpha = val_alpha)
         } else {
-
           # Create scatter plot.
           gp <- gp + geom_point(
             shape = val_shape, alpha = val_alpha,
@@ -1197,17 +1185,14 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Facet plot.
         if (val_wrap == 1) {
-
           # Do nothing.
         } else if (val_wrap == 2) {
-
           # Plot by dye per row.
           gp <- gp + facet_wrap(as.formula(paste("~", "Dye")),
             ncol = 1,
             drop = FALSE, scales = val_scales
           )
         } else if (val_wrap == 3) {
-
           # Plot per marker one dye per row.
           gp <- gp + facet_grid("Dye ~ Marker")
           # NB! 'facet_wrap' does not seem to support strings.
@@ -1305,7 +1290,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Loop over all dyes.
         for (d in seq(along = dyes)) {
-
           # Get data for current dye.
           gDataSub <- .gData[.gData$Dye == dyes[d], ]
 
@@ -1402,11 +1386,9 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
           # Create Plot.
           if (val_box) {
-
             # Create box and whisker plot.
             gp <- gp + geom_boxplot(alpha = val_alpha)
           } else {
-
             # Create scatter plot.
             gp <- gp + geom_point(
               shape = val_shape, alpha = val_alpha,
@@ -1488,7 +1470,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -1498,7 +1480,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -1509,7 +1490,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -1600,7 +1580,6 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotBalance_gui_savegui", value = svalue(savegui_chk), envir = env)

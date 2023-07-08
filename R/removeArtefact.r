@@ -173,7 +173,6 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
 
   # Loop over marker.
   for (m in seq(along = marker)) {
-
     # Save number of rows.
     n1 <- nrow(data)
 

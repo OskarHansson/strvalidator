@@ -29,7 +29,6 @@
 checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
                          string = NULL, stringcol = NULL,
                          env = parent.frame(), parent = NULL, debug = FALSE) {
-
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
@@ -79,13 +78,11 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
 
   # Check if dataset exist in environment.
   if (exists(name, envir = env, inherits = FALSE)) {
-
     # Get dataset.
     df <- get(name, envir = env)
 
     # Check if empty dataset.
     if (nrow(df) == 0) {
-
       # Construct error message.
       messageText <- strMsgNoRows
 
@@ -105,15 +102,12 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
       # Change flag.
       ok <- FALSE
     } else if (slim & !is.null(slimcol)) {
-
       # Loop over columns to check.
       for (c in seq(along = slimcol)) {
-
         # Check if slimmed.
         slimmed <- sum(grepl(slimcol[c], names(df), fixed = TRUE)) == 1
 
         if (!slimmed) {
-
           # Construct error message.
           messageText <- paste(strMsgFat1, slimcol[c], strMsgFat2)
 
@@ -122,11 +116,9 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
         }
       }
     } else if (!is.null(string) & !is.null(stringcol)) {
-
       # Loop over columns to check.
       for (c in seq(along = stringcol)) {
         if (any(string %in% df[, stringcol[c]])) {
-
           # Construct error message.
           messageText <- paste("'", string, "' ", strMsgDetected1, " ",
             stringcol[c], "!\n", strMsgDetected2,
@@ -138,12 +130,10 @@ checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
         }
       }
     } else {
-
       # Dataset passed!
       ok <- TRUE
     }
   } else {
-
     # Construct error message.
     messageText <- NULL # NB! Can't show error message because "<Select dataset>" is in drop-downs.
 

@@ -136,7 +136,6 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -167,7 +166,6 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -236,7 +234,6 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -249,7 +246,6 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
-
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
@@ -305,7 +301,6 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_name_data <- .gDataName
@@ -316,7 +311,6 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     val_quick <- svalue(f1_quick_chk)
 
     if (!is.null(val_data)) {
-
       # Change button.
       blockHandlers(calculate_btn)
       svalue(calculate_btn) <- strBtnProcessing
@@ -377,7 +371,6 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -416,7 +409,6 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateSpike_gui_savegui", value = svalue(savegui_chk), envir = env)

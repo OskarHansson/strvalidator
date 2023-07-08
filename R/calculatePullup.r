@@ -227,7 +227,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
   # Loop over all reference names.
   for (r in seq(along = grepNames)) {
-
     # Select samples containing reference name.
     selSample <- grepl(grepNames[r], data$Sample.Name, ignore.case = ignore.case)
 
@@ -236,7 +235,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
     # Get reference a
     for (m in seq(along = marker)) {
-
       # Select current marker.
       selMarker <- data$Marker == marker[m]
 
@@ -278,7 +276,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
   # Mark masked alleles per sample.
   sample <- unique(dfKnown$Sample.Name)
   for (s in seq(along = sample)) {
-
     # Print progress.
     message(paste("Identify pull-up peaks for sample ",
       sample[s], " (", s, "of", length(sample), ")",
@@ -296,7 +293,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
     # Loop over all elements.
     for (e in seq(along = start)) {
-
       # Create a sequence of data points to search for pull-up within.
       seqVec <- seq(start[e], end[e])
 
@@ -311,13 +307,11 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
       # Check if any overlapping allele.
       if (sum(maskedMin) > 1 || sum(maskedMax) > 1) {
-
         # Marked as masked alleles.
         dfKnown[selCurrentSample, ][(maskedMin | maskedMax), ]$Masked <- TRUE
 
         # Check if any peaks in range.
         if (any(matchPoints)) {
-
           # Marked as masked i.e. not analysed.
           dfData[selCurrentData, ][matchPoints, ]$Masked <- TRUE
         }
@@ -328,7 +322,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
         # Check if any peaks in range.
         if (any(matchPoints)) {
-
           # Mark as possible pull-up.
           dfData[selCurrentData, ][matchPoints, ]$Pull.Up <- TRUE
 
@@ -341,7 +334,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
         # Check that it is only one row.
         if (nrow(knownTmp) == 1) {
-
           # Check if overlap has been found.
           if (!is.null(pullTmp)) {
             # Remove overlap in same dye as known.
@@ -353,7 +345,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
 
           # Check if possible pull-up peaks.
           if (!is.null(pullTmp) && len > 0) {
-
             # Current matches.
             pullMarker <- c(pullMarker, pullTmp$Marker)
             pullDye <- c(pullDye, pullTmp$Dye)
@@ -362,7 +353,6 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
             pullSize <- c(pullSize, as.numeric(pullTmp$Size))
             pullPoint <- c(pullPoint, as.numeric(pullTmp$Data.Point))
           } else {
-
             # Fill with NA's.
             pullMarker <- c(pullMarker, NA)
             pullDye <- c(pullDye, NA)

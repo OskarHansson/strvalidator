@@ -46,7 +46,6 @@
 
 
 combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData1 <- NULL
   .gData2 <- NULL
@@ -139,7 +138,6 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     # .saveSettings()
 
@@ -171,7 +169,6 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -223,7 +220,6 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
     )
 
     if (ok) {
-
       # Load or change components.
       .gData1 <<- get(val_obj, envir = env)
       .gData1Name <<- val_obj
@@ -308,7 +304,6 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
     val_name <- svalue(save_edt)
 
     if (colOk && datOk) {
-
       # Combine the datasets.
       datanew <- plyr::rbind.fill(.gData1, .gData2)
 

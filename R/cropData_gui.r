@@ -51,7 +51,6 @@
 
 
 cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -270,7 +269,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -302,7 +300,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -816,7 +813,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     if (length(val_col) != 0) {
       if (val_col %in% names(.gData)) {
-
         # Update info:
         if (is.factor(.gData[, val_col])) {
           svalue(f1_min_lbl) <- paste(
@@ -848,7 +844,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         svalue(f3_columns_lbl) <- paste(" ", ncol(.gData), strLblColumns)
         svalue(f3_rows_lbl) <- paste(" ", nrow(.gData), strLblRows)
       } else {
-
         # Update info:
         svalue(f1_min_lbl) <- strLblMin
         svalue(f1_max_lbl) <- strLblMax
@@ -918,7 +913,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -963,7 +957,6 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_cropData_gui_savegui", value = svalue(savegui_chk), envir = env)

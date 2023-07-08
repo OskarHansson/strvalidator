@@ -44,7 +44,6 @@
 #' @seealso \code{\link{calculateOL}}
 
 calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
-
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
@@ -128,7 +127,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -159,7 +157,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -185,7 +182,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
   # Set initial minimal size.
   size(scroll_view) <- c(100, 150)
-  
+
   kit_checkbox_group <- gcheckboxgroup(
     items = getKit(),
     checked = FALSE,
@@ -203,7 +200,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
     # check if any selected kit.
     if (length(val_kits) > 0) {
-
       # Enable analyse button.
       enabled(analyse_btn) <- TRUE
 
@@ -213,7 +209,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
         sep = ""
       )
     } else {
-
       # Disable analyse button.
       enabled(analyse_btn) <- FALSE
 
@@ -279,7 +274,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     val_limit <- svalue(f1_limit_chk)
 
     if (length(val_kits) > 0) {
-
       # Change button.
       blockHandlers(analyse_btn)
       svalue(analyse_btn) <- strBtnProcessing
@@ -350,7 +344,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -390,7 +383,6 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateOL_gui_savegui", value = svalue(savegui_chk), envir = env)

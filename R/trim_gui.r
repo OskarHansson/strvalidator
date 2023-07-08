@@ -48,7 +48,6 @@
 
 trim_gui <- function(env = parent.frame(), savegui = NULL,
                      debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- data.frame(Sample.Name = "NA")
   .gDataName <- NULL
@@ -191,7 +190,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -223,7 +221,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -350,7 +347,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       # Result name.
       svalue(save_edt) <- paste(val_obj, "_trim", sep = "")
     } else {
-
       # Reset components.
       .gData <<- data.frame(Sample.Name = "NA")
       .gDataName <<- NULL
@@ -553,12 +549,10 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   trim_btn <- gbutton(text = strBtnTrim, container = g2)
 
   addHandlerChanged(trim_btn, handler = function(h, ...) {
-
     # Get new dataset name.
     val_name <- svalue(save_edt)
 
     if (nchar(val_name) > 0) {
-
       # Get values.
       val_data <- .gData
       val_data_name <- .gDataName
@@ -674,7 +668,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     if (any(grepl("SAMPLE", names(.gData), ignore.case = TRUE))) {
-
       # Refresh widget by removing it and...
       delete(sample_f, sample_tbl)
 
@@ -703,7 +696,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       addDropSource(sample_tbl, handler = function(h, ...) svalue(h$obj))
 
       addHandlerDoubleclick(sample_tbl, handler = function(h, ...) {
-
         # Get values.
         tbl_val <- svalue(h$obj)
         sample_val <- svalue(sample_edt)
@@ -744,7 +736,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     addDropSource(column_tbl, handler = function(h, ...) svalue(h$obj))
 
     addHandlerDoubleclick(column_tbl, handler = function(h, ...) {
-
       # Get values.
       tbl_val <- svalue(h$obj)
       column_val <- svalue(column_edt)
@@ -766,7 +757,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -818,7 +808,6 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_trim_gui_savegui", value = svalue(savegui_chk), envir = env)

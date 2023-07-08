@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 02.05.2020: Added language support.
 # 07.09.2019: Added option to override labels and titles.
@@ -19,7 +20,6 @@
 # 11.11.2015: Added more themes.
 # 29.08.2015: Added importFrom.
 # 05.01.2015: 'Save as object' now disabled when complex plot.
-# 14.12.2014: Option to drop sex markers.
 
 #' @title Plot Stutter
 #'
@@ -58,7 +58,6 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -132,7 +131,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strLblXTitleAllele <- "True allele"
   strLblXTitleHeight <- "True allele (RFU)"
   strLblYTitleRatio <- "Ratio"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -295,8 +294,8 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     strtmp <- dtStrings["strLblYTitleRatio"]$value
     strLblYTitleRatio <- ifelse(is.na(strtmp), strLblYTitleRatio, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -309,7 +308,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -341,7 +339,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -433,7 +430,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Enable buttons.
       .enablePlotButtons()
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -593,7 +589,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   )
 
   addHandlerChanged(f1_drop_chk, handler = function(h, ...) {
-
     # Enable buttons.
     .enablePlotButtons()
   })
@@ -732,7 +727,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   )
 
   addHandlerChanged(scales_opt, handler = function(h, ...) {
-
     # Enable buttons.
     .enablePlotButtons()
   })
@@ -747,7 +741,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   )
 
   addHandlerChanged(labels_chk, handler = function(h, ...) {
-
     # Enable buttons.
     .updateGui()
   })
@@ -859,7 +852,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
 
   .plotStutter <- function(what) {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -918,8 +910,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       print(levels(.gData$Marker))
     }
 
-    if (!is.na(.gData) && !is.null(.gData)) {
-
+    if (is.data.frame(.gData)) {
       # Call functions.
       # Add color information.
       if (!"Dye" %in% names(.gData)) {
@@ -936,7 +927,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Drop sex markers.
       if (val_drop) {
-
         # Get sex markers.
         sexMarkers <- getKit(val_kit, what = "Sex.Marker")
         if (length(sexMarkers) > 0) {
@@ -1241,7 +1231,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Loop over all dyes.
         for (d in seq(along = dyes)) {
-
           # Get data for current dye.
           gDataSub <- .gData[.gData$Dye == dyes[d], ]
 
@@ -1378,7 +1367,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -1388,7 +1377,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -1422,7 +1410,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -1573,7 +1560,6 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotStutter_gui_savegui", value = svalue(savegui_chk), envir = env)

@@ -55,7 +55,6 @@
 
 calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
                             debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gSamples <- NULL
@@ -257,7 +256,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -288,7 +286,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -364,7 +361,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       # Select in dropdown.
       svalue(g2_kit_drp, index = TRUE) <- kitIndex
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
@@ -416,7 +412,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
         strLblSamples
       )
     } else {
-
       # Reset components.
       .gRef <<- NULL
       svalue(g1_ref_drp, index = TRUE) <- 1
@@ -443,7 +438,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   check_btn <- gbutton(text = strBtnCheck, expande = TRUE, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -549,19 +543,16 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   # Handlers ------------------------------------------------------------------
 
   addHandlerChanged(f1_mask_h_chk, handler = function(h, ...) {
-
     # Update otions.
     .refresh_options()
   })
 
   addHandlerChanged(f1_mask_chk, handler = function(h, ...) {
-
     # Update otions.
     .refresh_options()
   })
 
   addHandlerChanged(f1_mask_ils_chk, handler = function(h, ...) {
-
     # Update otions.
     .refresh_options()
   })
@@ -588,7 +579,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   save_btn <- gbutton(text = strBtnSave, container = f3)
 
   addHandlerClicked(mask_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -658,12 +648,10 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   })
 
   addHandlerChanged(f3_sample_drp, handler = function(h, ...) {
-
     # Get values.
     val_sample <- svalue(f3_sample_drp)
 
     if (!is.null(.gDataPrep) & !is.null(val_sample)) {
-
       # Get values.
       val_mask_h <- svalue(f1_mask_h_chk)
       val_mask <- svalue(f1_mask_chk)
@@ -674,7 +662,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       val_kit <- svalue(g2_kit_drp)
 
       if (val_sample %in% unique(.gDataPrep$Sample.File.Name)) {
-
         # Must come after 'val_sample'.
         val_data <- subset(.gDataPrep, Sample.File.Name == val_sample)
 
@@ -736,7 +723,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
         }
 
         if (val_mask_ils) {
-
           # ILS masking data frame for plot:
           dfIls <- val_data[val_data$ILS == TRUE, ]
           ilsDye <- unique(dfIls$Dye)
@@ -750,7 +736,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
           )
 
           if (nrow(dfMask) > 0) {
-
             # Add masking range to plot.
             gp <- gp + geom_rect(
               data = dfMask,
@@ -769,10 +754,8 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
           dfSample <- val_data[!is.na(val_data$Min), ]
 
           if (val_mask_d) {
-
             # Loop over dyes and add mask ranges.
             for (d in seq(along = dyesKit)) {
-
               # Get data points for selected sample.
               dpMask <- dfSample$Data.Point[dfSample$Dye == dyesKit[d]]
               dpMin <- dfSample$Min[dfSample$Dye == dyesKit[d]]
@@ -786,7 +769,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
               )
 
               if (nrow(dfMask) > 0) {
-
                 # Add masking range to plot.
                 gp <- gp + geom_rect(
                   data = dfMask,
@@ -799,7 +781,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
               }
             }
           } else {
-
             # Get data points for selected sample.
             dpMask <- dfSample$Data.Point
             dpMin <- dfSample$Min
@@ -816,7 +797,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
             )
 
             if (nrow(dfMask) > 0) {
-
               # Add masking range to plot.
               gp <- gp + geom_rect(
                 data = dfMask,
@@ -840,12 +820,10 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   })
 
   addHandlerChanged(save_btn, handler = function(h, ...) {
-
     # Get sample name.
     val_name <- svalue(f3_sample_drp)
 
     if (!is.null(.gPlot)) {
-
       # Save data.
       ggsave_gui(
         ggplot = .gPlot, name = val_name, parent = w, env = env,
@@ -888,7 +866,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     if (is.null(.gDataPrep)) {
       val_data <- .gData
@@ -952,7 +929,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if data.
     if (!is.null(val_data)) {
-
       # Change button.
       blockHandlers(calculate_btn)
       svalue(calculate_btn) <- strBtnProcessing
@@ -1040,17 +1016,14 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   # INTERNAL FUNCTIONS ########################################################
 
   .refresh_sample_drp <- function() {
-
     # Get data frames in global workspace.
     samples <- unique(.gData$Sample.File.Name)
 
     if (!is.null(samples)) {
-
       # Populate drop list.
       f3_sample_drp[] <- c(strDrpDefault2, samples)
       svalue(f3_sample_drp, index = TRUE) <- 1
     } else {
-
       # Populate drop list.
       f3_sample_drp[] <- c(strDrpDefault2)
       svalue(f3_sample_drp, index = TRUE) <- 1
@@ -1088,7 +1061,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -1154,7 +1126,6 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateAT_gui_savegui", value = svalue(savegui_chk), envir = env)

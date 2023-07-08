@@ -64,7 +64,6 @@ colNames <- function(data, slim = TRUE, concatenate = NULL, numbered = TRUE, deb
   }
 
   if (!is.null(columnNames)) {
-
     # Guess base names i.e. "Allele.1" -> "Allele"
     # To the first dot.
     # baseNames <- unique(gsub("(\\w*)\\..*", "\\1", columnNames))

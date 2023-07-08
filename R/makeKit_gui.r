@@ -47,7 +47,6 @@
 #' @seealso \code{\link{readBinsFile}}, \code{\link{readPanelsFile}}, \code{\link{combineBinsAndPanels}}
 
 makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .f3g1 <- NULL
   .separator <- .Platform$file.sep # Platform dependent path separator.
@@ -252,7 +251,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     # .saveSettings()
 
@@ -285,7 +283,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -340,7 +337,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     if (!is.na(val_obj)) {
       if (file.exists(val_obj)) {
-
         # Read kit info file.
         .newKitInfo <<- read.delim(
           file = val_obj, header = TRUE,
@@ -443,7 +439,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
     if (file.exists(.binsFiles) & file.exists(.panelsFiles)) {
-
       # Disable options after loading the kit definition file.
       # This is because the GUI cannot handle adding widgets correct.
       enabled(kit_opt) <- FALSE
@@ -521,7 +516,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Loop over panel and add objects.
     for (p in seq(along = panel)) {
-
       # Get all markers.
       markers <- unique(kitInfo$Marker[kitInfo$Panel == panel[p]])
 
@@ -617,25 +611,21 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
     if (val_obj == 1) {
-
       # Disable.
       enabled(save_edt) <- FALSE
 
       # Update path.
       svalue(file_edt) <- .filePath
     } else if (val_obj == 2) {
-
       # Disable.
       enabled(save_edt) <- FALSE
     } else if (val_obj == 3) {
-
       # Enable.
       enabled(save_edt) <- TRUE
     }
   })
 
   addHandlerClicked(save_btn, handler = function(h, ...) {
-
     # Get variables.
     val_name <- svalue(save_edt)
     val_opt <- svalue(save_opt, index = TRUE)
@@ -643,7 +633,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Check if kit info exist.
     if (!is.null(.newKitInfo)) {
-
       # Initiate vectors.
       removeKit <- logical()
       shortName <- character()
@@ -703,7 +692,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
         # Check if short name exist.
         if (!any(exist)) {
-
           # Change button.
           blockHandlers(save_btn)
           svalue(save_btn) <- strBtnSaving
@@ -865,7 +853,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Get option.
     val_obj <- svalue(kit_opt, index = TRUE)
 
@@ -875,7 +862,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
     if (val_obj == 1) {
-
       # Enable 'edit' objects.
       enabled(f1) <- TRUE
 
@@ -888,7 +874,6 @@ makeKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       # Update path.
       svalue(file_edt) <- .filePath
     } else {
-
       # Enable 'new' objects.
       enabled(f2) <- TRUE
 

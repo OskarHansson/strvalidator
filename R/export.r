@@ -90,7 +90,6 @@ export <- function(object, name = NA, use.object.name = is.na(name),
 
     # Check if file exist.
     if (file.exists(path)) {
-
       # Make a data frame of objects that could not be exported.
       failed <<- rbind(
         failed,
@@ -107,7 +106,6 @@ export <- function(object, name = NA, use.object.name = is.na(name),
       # Set flag.
       available <- FALSE
     } else {
-
       # Set flag.
       available <- TRUE
 
@@ -201,7 +199,6 @@ export <- function(object, name = NA, use.object.name = is.na(name),
 
     # Check if not vector.
   } else if (length(name) == 1) {
-
     # Split using pipe or comma separator, if present.
     name <- unlist(strsplit(name, "\\|"))
     name <- unlist(strsplit(name, "\\,"))
@@ -233,10 +230,8 @@ export <- function(object, name = NA, use.object.name = is.na(name),
   }
 
   for (o in seq(along = object)) {
-
     # Check file format.
     if (ext == ".RData") {
-
       # Construct complete file name.
       fullFileName <- paste(path, name[o], ".RData", sep = "")
 
@@ -262,7 +257,6 @@ export <- function(object, name = NA, use.object.name = is.na(name),
     } else if (ext == "auto") { # Automatic detection based on class type.
 
       if (any(class(get(object[o], envir = env)) == "data.frame")) {
-
         # Construct complete file name.
         fullFileName <- paste(path, name[o], ".txt", sep = "")
 
@@ -292,7 +286,6 @@ export <- function(object, name = NA, use.object.name = is.na(name),
           ))
         }
       } else if (any(class(get(object[o], envir = env)) == "ggplot")) {
-
         # Construct complete file name.
         fullFileName <- paste(path, name[o], ".png", sep = "")
 
@@ -318,21 +311,23 @@ export <- function(object, name = NA, use.object.name = is.na(name),
           ))
         }
       } else {
-        warning(paste("Object", object[o],
-          "could not be exported. Object class '",
-          class(get(object[o], envir = env)), "' not supported!",
-          sep = ""
-        ),
-        call. = TRUE, immediate. = FALSE, domain = NULL
+        warning(
+          paste("Object", object[o],
+            "could not be exported. Object class '",
+            class(get(object[o], envir = env)), "' not supported!",
+            sep = ""
+          ),
+          call. = TRUE, immediate. = FALSE, domain = NULL
         )
       }
     } else {
-      stop(paste("Object", object[o],
-        "could not be exported. File extension '",
-        ext, "' not supported!",
-        sep = ""
-      ),
-      call. = TRUE
+      stop(
+        paste("Object", object[o],
+          "could not be exported. File extension '",
+          ext, "' not supported!",
+          sep = ""
+        ),
+        call. = TRUE
       )
     }
   }

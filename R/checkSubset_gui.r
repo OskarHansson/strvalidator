@@ -45,7 +45,6 @@
 #' @seealso \code{\link{checkSubset}}
 
 checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
@@ -160,7 +159,6 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -192,7 +190,6 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -244,13 +241,11 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       samples <- length(unique(.gData$Sample.Name))
       svalue(dataset_samples_lbl) <- paste("", samples, strLblSamples)
     } else {
-
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       svalue(dataset_samples_lbl) <- paste(" 0", strLblSamples)
@@ -303,13 +298,11 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     )
 
     if (ok) {
-
       # Load or change components.
       .gRef <<- get(val_obj, envir = env)
       refs <- length(unique(.gRef$Sample.Name))
       svalue(dataset_ref_lbl) <- paste("", refs, strLblRef)
     } else {
-
       # Reset components.
       .gRef <<- data.frame(No.Data = NA)
       svalue(dataset_ref_lbl) <- paste(" 0", strLblRef)
@@ -350,7 +343,6 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   check_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -400,7 +392,6 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -439,7 +430,6 @@ checkSubset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_checkSubset_gui_savegui", value = svalue(savegui_chk), envir = env)

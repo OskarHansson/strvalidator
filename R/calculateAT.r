@@ -314,7 +314,6 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     # Strip masked data.
     dt <- data[data$Masked == FALSE, ]
   } else {
-
     # Strip masked data, and ILS channel.
     dt <- data[data$Masked == FALSE & data$Dye != dyeILS, ]
   }

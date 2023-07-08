@@ -56,7 +56,6 @@
 #'
 
 plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables and constants.
   .gData <- NULL
   .gDataName <- NULL
@@ -343,7 +342,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -375,7 +373,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -439,7 +436,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
 
@@ -459,7 +455,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       enabled(f8_height_btn) <- TRUE
       enabled(f8_data_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -908,7 +903,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   )
 
   addHandlerChanged(labels_chk, handler = function(h, ...) {
-
     # Enable buttons.
     .updateGui()
   })
@@ -1020,7 +1014,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
 
   .plot <- function(what, how) {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -1097,7 +1090,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
       # Loop over all markers.
       for (m in seq(along = marker)) {
-
         # Select current marker.
         selMarker <- val_data$Marker == marker[m]
 
@@ -1106,7 +1098,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
         # Loop over all alleles.
         for (a in seq(along = allele)) {
-
           # Select current allele.
           selAllele <- val_data$Allele == allele[a]
 
@@ -1237,14 +1228,12 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
       # Create plot.
       if (how == "dotplot") {
-
         # Create dotplot.
         gp <- ggplot(val_data)
         gp <- gp + geom_point(aes_string(x = val_axis, y = "Deviation"),
           alpha = val_alpha, shape = val_shape, colour = val_colour
         )
       } else if (how == "boxplot") {
-
         # Create boxplot (by allele).
         gp <- ggplot(val_data)
         gp <- gp + geom_boxplot(aes_string(x = val_axis, y = "Deviation"),
@@ -1262,7 +1251,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
       # Facet plot.
       if (val_facet) {
-
         # Check if 'simple' or 'complex' plotting:
         # Get Marker and Dye column.
         markerDye <- val_data[c("Marker", "Dye")]
@@ -1270,13 +1258,13 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         uniqueMarkerDye <- markerDye[!duplicated(markerDye), ]
         # Calculate number of unique columns per dye.
         val_ncol <- unique(table(uniqueMarkerDye$Dye))
-        
+
         # Facet plot.
         gp <- gp + facet_grid("Dye ~ Marker")
         # NB! 'facet_wrap' does not seem to support strings.
         #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
         gp <- gp + facet_wrap(as.formula(paste("~ Marker")),
-                              drop = FALSE, scales = val_scales
+          drop = FALSE, scales = val_scales
         )
       }
 
@@ -1453,17 +1441,14 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
         # Loop over all dyes.
         for (d in seq(along = dyes)) {
-
           # Create a plot for the current subset.
           if (how == "dotplot") {
-
             # Create a plot for the current subset.
             gp <- ggplot(subset(val_data, val_data$Dye == dyes[d]))
             gp <- gp + geom_point(aes_string(x = val_axis, y = "Deviation"),
               alpha = val_alpha, shape = val_shape, colour = val_colour
             )
           } else if (how == "boxplot") {
-
             # Create a plot for the current subset.
             gp <- ggplot(subset(val_data, val_data$Dye == dyes[d]))
             gp <- gp + geom_boxplot(aes_string(x = val_axis, y = "Deviation"),
@@ -1575,7 +1560,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -1597,7 +1581,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     }
   }
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -1745,7 +1728,6 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotPrecision_gui_savegui", value = svalue(savegui_chk), envir = env)

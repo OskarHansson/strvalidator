@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 11.05.2021: Removed unused imports. Fixes issue#19.
 # 04.07.2020: Fixed no visible binding for variables.
@@ -40,7 +41,6 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -90,7 +90,7 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   strLblMainTitle <- "Profile slope"
   strLblXTitle <- "Sample"
   strLblYTitle <- "Slope"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -184,8 +184,8 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     strtmp <- dtStrings["strLblYTitle"]$value
     strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -198,7 +198,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -230,7 +229,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -296,7 +294,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       # Enable buttons.
       enabled(plot_sample_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -451,7 +448,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FUNCTIONS #################################################################
 
   .plot <- function() {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -484,8 +480,7 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       print(val_theme)
     }
 
-    if (!is.na(.gData) && !is.null(.gData)) {
-
+    if (is.data.frame(.gData)) {
       # Create default tit
       if (val_titles) {
         maintitle <- val_title
@@ -540,7 +535,7 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -550,7 +545,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -561,7 +555,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -619,7 +612,6 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotSlope_gui_savegui", value = svalue(savegui_chk), envir = env)

@@ -35,7 +35,6 @@
 
 saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
                        env = parent.frame(), remove = NULL, debug = FALSE) {
-
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
@@ -105,7 +104,6 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
 
   # Check if name is provided.
   if (is.null(name)) {
-
     # Show dialogue.
     name <- ginput(
       msg = strMsgName, text = suggest,
@@ -128,13 +126,11 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
 
   # Check that a name has been provided for the new data object.
   if (nchar(name) > 0) {
-
     # Make syntactically valid name.
     orgName <- name
     name <- make.names(name)
 
     if (name != orgName) {
-
       # Show message.
       gmessage(
         msg = paste(orgName, strMsgSyntax, name),
@@ -158,7 +154,6 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
     }
 
     if (ok) {
-
       # Save data.
       assign(name, object, envir = env)
 
@@ -166,7 +161,6 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
         print(paste("Object", name, "saved!"))
       }
     } else {
-
       # Ask for new name.
       name <- ginput(
         msg = strMsgNewName,
@@ -184,7 +178,6 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
         # Return FALSE.
         return(ok)
       } else {
-
         # Save data.
         assign(name, object, envir = env)
 
@@ -196,7 +189,6 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
 
     # Remove only if different from final name.
     if (!is.null(remove) && remove != name) {
-
       # Delete object.
       remove(list = remove, envir = env)
 

@@ -246,7 +246,6 @@ calculateAT6 <- function(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05
   n <- nrow(dfSd)
 
   if (weighted) {
-
     # Calculate weights.
     weight <- 1 / dfSd$Sd^2
 
@@ -276,7 +275,6 @@ calculateAT6 <- function(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05
       Std.Error = coeff[3], Slope = coeff[2]
     )
   } else {
-
     # Perform linear regression.
     fit <- lm(dfSd$H ~ dfSd$Amount)
 

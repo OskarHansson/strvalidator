@@ -30,7 +30,6 @@
 #' @seealso \code{\link{plotEPG2}}
 
 plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gPlot <- NULL
@@ -157,7 +156,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -185,7 +183,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -286,7 +283,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       # Enable buttons.
       enabled(plot_epg_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(save_edt) <- ""
@@ -296,7 +292,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   })
 
   addHandlerChanged(sample_drp, handler = function(h, ...) {
-
     # Get selected sample name.
     val_sample <- svalue(sample_drp)
 
@@ -391,7 +386,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     if (!is.null(val_data)) {
       if (val_sample != strDrpSample) {
-
         # Subset selected sample.
         val_data <- val_data[val_data$Sample.Name == val_sample, ]
 
@@ -465,7 +459,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -504,7 +497,6 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotEPG2_gui_savegui", value = svalue(savegui_chk), envir = env)

@@ -133,7 +133,6 @@ removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
 
   # Check if column exist.
   if (!"Id" %in% names(data)) {
-
     # Create id from sample name and file name.
     data$Id <- paste(data$Sample.Name, data$File.Name)
 
@@ -145,7 +144,6 @@ removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
 
   # Loop over id's
   for (i in seq(along = ids)) {
-
     # Print progress.
     message("Sample ", i, " of (", length(ids), ")")
 
@@ -157,7 +155,6 @@ removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
 
     # Loop through the markers.
     for (m in seq(along = marker)) {
-
       # Select matching markers.
       selM <- data$Marker == marker[m]
 
@@ -166,7 +163,6 @@ removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
 
       # Loop through size.
       for (b in seq(along = size)) {
-
         # Select matchin size.
         selB <- data$Size == size[b]
 

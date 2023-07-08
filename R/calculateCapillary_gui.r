@@ -41,7 +41,6 @@
 
 calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
                                    debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gSamples <- NULL
   .gSamplesName <- NULL
@@ -150,7 +149,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -181,7 +179,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -244,7 +241,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       )
       svalue(save_edt) <- paste(val_obj, "_cap", sep = "")
     } else {
-
       # Reset components.
       .gSamples <<- NULL
       .gSamplesName <<- NULL
@@ -296,7 +292,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
         "sample files."
       )
     } else {
-
       # Reset components.
       .gPlot <<- NULL
       .gPlotName <<- NULL
@@ -350,7 +345,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     val_samples <- .gSamples
     val_name_samples <- .gSamplesName
@@ -375,7 +369,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     if (!is.null(.gSamples) & !is.null(.gPlot)) {
-
       # Change button.
       blockHandlers(calculate_btn)
       svalue(calculate_btn) <- strBtnProcessing
@@ -426,7 +419,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -462,7 +454,6 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_capillaryBalance_gui_savegui", value = svalue(savegui_chk), envir = env)

@@ -62,7 +62,6 @@
 trim <- function(data, samples = NULL, columns = NULL,
                  word = FALSE, ignore.case = TRUE, invert.s = FALSE, invert.c = FALSE,
                  rm.na.col = TRUE, rm.empty.col = TRUE, missing = NA, debug = FALSE) {
-
   # Variables.
   colNames <- columns
 
@@ -92,7 +91,6 @@ trim <- function(data, samples = NULL, columns = NULL,
 
   # Ignore case. NB! Must be before add word boundary.
   if (ignore.case) {
-
     # Convert to upper case.
     samples <- toupper(samples)
     columns <- toupper(columns)
@@ -148,7 +146,6 @@ trim <- function(data, samples = NULL, columns = NULL,
 
   # Check if column 'Sample.Name' exist.
   if ("Sample.Name" %in% names(data)) {
-
     # Grab rows.
     if (ignore.case) {
       sampleNames <- toupper(as.character(data$Sample.Name))
@@ -164,11 +161,9 @@ trim <- function(data, samples = NULL, columns = NULL,
     }
 
     if (is.null(samples)) {
-
       # Default is to keep all samples.
       rows <- rep(TRUE, length(sampleNames))
     } else {
-
       # Get matching rows.
       rows <- grepl(samples, sampleNames, fixed = FALSE)
 
@@ -180,7 +175,6 @@ trim <- function(data, samples = NULL, columns = NULL,
 
     # Check if column 'Sample.File.Name' exist.
   } else if ("Sample.File.Name" %in% names(data)) {
-
     # Grab rows.
     if (ignore.case) {
       sampleNames <- toupper(as.character(data$Sample.File.Name))
@@ -196,11 +190,9 @@ trim <- function(data, samples = NULL, columns = NULL,
     }
 
     if (is.null(samples)) {
-
       # Default is to keep all samples.
       rows <- rep(TRUE, length(sampleNames))
     } else {
-
       # Get matching rows.
       rows <- grepl(samples, sampleNames, fixed = FALSE)
 
@@ -212,7 +204,6 @@ trim <- function(data, samples = NULL, columns = NULL,
 
     # Check if any column containing 'Sample' exist.
   } else if (any(grepl("SAMPLE", names(data), ignore.case = TRUE))) {
-
     # Get (first) column name containing "Sample".
     sampleCol <- names(data)[grep("SAMPLE", names(data), ignore.case = TRUE)[1]]
 
@@ -231,11 +222,9 @@ trim <- function(data, samples = NULL, columns = NULL,
     }
 
     if (is.null(samples)) {
-
       # Default is to keep all samples.
       rows <- rep(TRUE, length(sampleNames))
     } else {
-
       # Get matching rows.
       rows <- grepl(samples, sampleNames, fixed = FALSE)
 
@@ -245,7 +234,6 @@ trim <- function(data, samples = NULL, columns = NULL,
       }
     }
   } else {
-
     # Keep all rows.
     rows <- rep(TRUE, nrow(data))
   }
@@ -271,11 +259,9 @@ trim <- function(data, samples = NULL, columns = NULL,
 
 
   if (is.null(columns)) {
-
     # Default is to keep all columns.
     columns <- rep(TRUE, length(columnNames))
   } else {
-
     # Get matching columns.
     columns <- grepl(columns, columnNames, fixed = FALSE)
 

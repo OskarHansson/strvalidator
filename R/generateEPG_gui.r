@@ -37,7 +37,6 @@
 #' @seealso \code{\link{generateEPG}}
 
 generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gPlot <- NULL
@@ -204,7 +203,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -233,7 +231,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -338,7 +335,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Enable buttons.
       enabled(plot_epg_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(save_edt) <- ""
@@ -348,7 +344,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   })
 
   addHandlerChanged(sample_drp, handler = function(h, ...) {
-
     # Get selected sample name.
     val_sample <- svalue(sample_drp)
 
@@ -600,7 +595,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -669,7 +663,6 @@ generateEPG_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_generateEPG_gui_savegui", value = svalue(savegui_chk), envir = env)

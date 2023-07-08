@@ -42,7 +42,6 @@
 
 calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
                                      debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
 
@@ -180,7 +179,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -211,7 +209,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -285,7 +282,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f4_save1_edt) <- ""
@@ -296,7 +292,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   })
 
   addHandlerChanged(f0_add_btn, handler = function(h, ...) {
-
     # Get values.
     val_obj <- svalue(dataset_drp)
     val_dataset <- svalue(f3_dataset_edt)
@@ -304,7 +299,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
     val_new_kit <- svalue(kit_drp)
 
     if (!is.null(.gData)) {
-
       # Add new value to selected.
       new <- ifelse(nchar(val_dataset) > 0,
         paste(val_dataset, val_obj, sep = ","),
@@ -416,7 +410,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     val_datasets <- svalue(f3_dataset_edt)
     val_kits <- svalue(f3_kit_edt)
@@ -450,7 +443,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if data.
     if (!val_datasets == "") {
-
       # Create list of datasets.
       val_datasets <- unlist(strsplit(val_datasets, ","))
       for (d in seq(along = val_datasets)) {
@@ -543,7 +535,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -585,7 +576,6 @@ calculateConcordance_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateConcordance_gui_savegui", value = svalue(savegui_chk), envir = env)

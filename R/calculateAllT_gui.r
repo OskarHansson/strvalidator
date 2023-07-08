@@ -30,7 +30,6 @@
 #' @seealso \code{\link{calculateAllT}}
 
 calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- data.frame(No.Data = NA)
   .gDataName <- NULL
@@ -125,7 +124,6 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -156,7 +154,6 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -219,7 +216,6 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       svalue(kit_drp, index = TRUE) <- .gKit
       svalue(f2_save_edt) <- paste(.gDataName, "_t", sep = "")
     } else {
-
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
@@ -293,7 +289,6 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     val_kit <- svalue(kit_drp)
     val_data <- .gData
@@ -356,7 +351,6 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -396,7 +390,6 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateAllT_gui_savegui", value = svalue(savegui_chk), envir = env)

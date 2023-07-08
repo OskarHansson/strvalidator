@@ -235,7 +235,6 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
 
   # Loop over all capillaries.
   for (c in seq(along = cap)) {
-
     # Make selection for current capillary.
     selCap <- df$Cap == cap[c]
 
@@ -244,7 +243,6 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
 
     # Loop over all injections.
     for (i in seq(along = inj)) {
-
       # Make selection for current injection.
       selInj <- df$Injection == inj[i]
 
@@ -253,7 +251,6 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
 
       # Check if empty selection.
       if (sum(selection) != 0) {
-
         # Check current sizing quality.
         csq <- unique(df[selection, ]$SQ)
 
@@ -270,7 +267,6 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
         # Check if sizing quality pass threshold.
         # Default is 0, everything accepted.
         if (!(csq < sq)) {
-
           # Select one sample.
           # Sum peaks, remember to filter first!
 

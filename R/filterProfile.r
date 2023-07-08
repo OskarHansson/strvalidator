@@ -201,7 +201,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
   # Remove sex markers.
   if (sex.rm) {
-
     # Check if kit is provided.
     if (is.null(kit)) {
       message("No kit defined. Attempt to auto detect:")
@@ -242,7 +241,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     }
 
     if (!is.null(ref)) {
-
       # Loop through and remove all sex markers.
       message("Removing sex markers from reference dataset:")
       for (i in seq(along = sexMarkers)) {
@@ -262,7 +260,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
   # Remove quality sensors.
   if (qs.rm) {
-
     # Check if kit is provided.
     if (is.null(kit)) {
       message("No kit defined. Attempt to auto detect:")
@@ -303,7 +300,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     }
 
     if (!is.null(ref)) {
-
       # Loop through and remove all quality sensors.
       message("Removing quality sensors from reference dataset:")
       for (i in seq(along = qsMarkers)) {
@@ -324,7 +320,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
   # FILTER --------------------------------------------------------------------
 
   if (filter.allele) {
-
     # SELECT METHOD -------------------------------------------------------------
 
     if (!add.missing.loci & !keep.na & !invert) {
@@ -355,11 +350,9 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
       # Get reference names.
       if ("Sample.Name" %in% names(ref)) {
-
         # Get reference names from reference dataset.
         refSampleNames <- unique(ref$Sample.Name)
       } else {
-
         # Get reference names from dataset.
         refSampleNames <- unique(data$Sample.Name)
       }
@@ -392,7 +385,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       # Loop through all reference samples.
       for (s in seq(along = refSampleNames)) {
         if ("Sample.Name" %in% names(ref)) {
-
           # Get current reference subset.
           selection <- grepl(refSampleNames[s], ref$Sample.Name,
             ignore.case = ignore.case
@@ -417,13 +409,11 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
         # Loop through all markers.
         for (m in seq(along = refMarkers)) {
-
           # Get reference alleles.
           refAlleles <- currentRef$Allele[currentRef$Marker == refMarkers[m]]
 
           # Loop through all alleles.
           for (a in seq(along = refAlleles)) {
-
             # Get matching alleles in data.
             mM <- data$Marker == refMarkers[m]
             mA <- data$Allele == refAlleles[a]
@@ -438,7 +428,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       # Create return data frame.
       res <- data[matchingData, ]
     } else {
-
       # 'SLOW' METHOD -----------------------------------------------------------
       # NB! Possible to keep NA alleles, add missing loci, and invert.
 
@@ -461,11 +450,9 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
       # Get reference names.
       if ("Sample.Name" %in% names(ref)) {
-
         # Get reference names from reference dataset.
         refSampleNames <- unique(ref$Sample.Name)
       } else {
-
         # Get reference names from dataset.
         refSampleNames <- unique(data$Sample.Name)
       }
@@ -486,7 +473,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       # Loop through all reference samples.
       for (r in seq(along = refSampleNames)) {
         if ("Sample.Name" %in% names(ref)) {
-
           # Get current reference subset.
           selection <- grepl(refSampleNames[r], ref$Sample.Name,
             ignore.case = ignore.case
@@ -517,13 +503,11 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
         # Loop over all samples.
         for (s in seq(along = dataSampleNames)) {
-
           # Get current sample
           currentData <- currentDataSubset[currentDataSubset$Sample.Name == dataSampleNames[s], ]
 
           # Loop through all markers.
           for (m in seq(along = refMarkers)) {
-
             # Get reference alleles.
             refAlleles <- currentRef$Allele[currentRef$Marker == refMarkers[m]]
 
@@ -533,7 +517,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
             # dataAlleles is of length 0 if no matching marker.
             if (nrow(tmpDf) == 0 & add.missing.loci) {
-
               # Add missing marker, allele will become NA in rbind.fill.
               tmpDf <- data.frame(
                 Sample.Name = dataSampleNames[s],
@@ -569,14 +552,11 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
                 tmpDf[additionalColumns[a]] <- addValue[1]
               }
             } else {
-
               # Filter alleles and add to selection.
               if (invert) {
-
                 # Select peaks not in reference.
                 selection <- selection & !currentData$Allele %in% refAlleles
               } else {
-
                 # Select peaks matching reference.
                 selection <- selection & currentData$Allele %in% refAlleles
               }
@@ -586,7 +566,6 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
               # matching is of length 0 if no matching allele.
               if (nrow(tmpDf) == 0 & keep.na) {
-
                 # Add missing marker, allele will become NA in rbind.fill.
                 tmpDf <- data.frame(
                   Sample.Name = dataSampleNames[s],
@@ -636,10 +615,8 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
   # Check if Dye is available.
   if ("Dye" %in% names(res)) {
-
     # Check for NA's in Dye.
     if (any(is.na(res$Dye))) {
-
       # Check if kit is provided.
       if (is.null(kit)) {
         message("No kit defined. Attempt to auto detect:")

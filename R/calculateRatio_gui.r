@@ -37,7 +37,6 @@
 
 calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
                                debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
@@ -198,7 +197,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -229,7 +227,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -300,7 +297,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       # Suggest a name for the result.
       svalue(save_edt) <- paste(val_obj, "_ratio", sep = "")
     } else {
-
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
@@ -363,7 +359,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
         strLblRef
       )
     } else {
-
       # Reset components.
       .gRef <<- NULL
       .gRefName <<- NULL
@@ -377,7 +372,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   check_btn <- gbutton(text = strBtnCheck, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -465,7 +459,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(val_marker)) {
       if (val_marker != strDrpMarker) {
-
         # Add new value to selected.
         if (nchar(val_value) == 0) {
           svalue(f1_numerator_edt) <- val_marker
@@ -482,7 +475,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(val_marker)) {
       if (val_marker != strDrpMarker) {
-
         # Add new value to selected.
         if (nchar(val_value) == 0) {
           svalue(f1_denominator_edt) <- val_marker
@@ -525,7 +517,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_name_data <- .gDataName
@@ -646,7 +637,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -694,7 +684,6 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateRatio_gui_savegui", value = svalue(savegui_chk), envir = env)

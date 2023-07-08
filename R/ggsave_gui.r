@@ -52,7 +52,6 @@
 
 ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
                        savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Constants.
   .separator <- .Platform$file.sep # Platform dependent path separator.
 
@@ -185,7 +184,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -217,7 +215,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -264,17 +261,14 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     val <- svalue(f1_load_chk)
 
     if (val) {
-
       # Read size from device.
       .readSize()
     } else {
-
       # Could load saved settings...
     }
   })
 
   addHandlerChanged(f1_get_btn, handler = function(h, ...) {
-
     # Read size from device.
     .readSize()
   })
@@ -302,7 +296,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   )
 
   addHandlerChanged(f1g2_unit_drp, handler = function(h, ...) {
-
     # Read size from device.
     .readSize()
   })
@@ -354,7 +347,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   )
 
   addHandlerKeystroke(f1g2_width_edt, handler = function(h, ...) {
-
     # Get values.
     val_w <- as.numeric(svalue(f1g2_width_edt))
     val_u <- svalue(f1g2_unit_drp)
@@ -369,7 +361,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   })
 
   addHandlerKeystroke(f1g2_height_edt, handler = function(h, ...) {
-
     # Get values.
     val_h <- as.numeric(svalue(f1g2_height_edt))
     val_u <- svalue(f1g2_unit_drp)
@@ -383,7 +374,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   })
 
   addHandlerChanged(f1g2_width_edt, handler = function(h, ...) {
-
     # Get values.
     val_w <- as.numeric(svalue(f1g2_width_edt))
     val_u <- svalue(f1g2_unit_drp)
@@ -410,7 +400,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   })
 
   addHandlerKeystroke(f1g2_res_edt, handler = function(h, ...) {
-
     # Get values.
     val_w <- as.numeric(svalue(f1g2_width_edt))
     val_h <- as.numeric(svalue(f1g2_height_edt))
@@ -428,7 +417,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   })
 
   addHandlerChanged(f1g2_res_edt, handler = function(h, ...) {
-
     # Get values.
     val_w <- as.numeric(svalue(f1g2_width_edt))
     val_h <- as.numeric(svalue(f1g2_height_edt))
@@ -446,7 +434,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   })
 
   addHandlerKeystroke(f1g2_scale_edt, handler = function(h, ...) {
-
     # Get values.
     val_w <- as.numeric(svalue(f1g2_width_edt))
     val_h <- as.numeric(svalue(f1g2_height_edt))
@@ -464,7 +451,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   })
 
   addHandlerChanged(f1g2_scale_edt, handler = function(h, ...) {
-
     # Get values.
     val_w <- as.numeric(svalue(f1g2_width_edt))
     val_h <- as.numeric(svalue(f1g2_height_edt))
@@ -511,7 +497,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
 
   addHandlerChanged(g_save_btn, handler = function(h, ...) {
-
     # Change button label.
     blockHandlers(g_save_btn)
     svalue(g_save_btn) <- strBtnProcessing
@@ -583,7 +568,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     }
 
     if (okPathAndName) {
-
       # Add trailing path separator if not present.
       if (substr(val_path, nchar(val_path), nchar(val_path) + 1) != .separator) {
         val_path <- paste(val_path, .separator, sep = "")
@@ -620,14 +604,12 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
           message("Overwrite? ", okToSave)
         } else {
-
           # File does not exist.
           okToSave <- TRUE
         }
       }
 
       if (okToSave) {
-
         # Save plot device as image.
         ggsave(
           filename = val_filename,
@@ -645,7 +627,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
         .saveSettings()
         dispose(w)
       } else {
-
         # Confirm to console.
         message("Image not saved!")
       }
@@ -660,7 +641,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   # INTERNAL FUNCTIONS ########################################################
 
   .toPixel <- function(unit, val, dpi = 72, scale = 1) {
-
     # Convert to pixel.
     if (unit == "cm") {
       pixels <- (val / (2.54 / dpi)) * scale
@@ -674,7 +654,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   }
 
   .readSize <- function() {
-
     # Get values.
     val_unit <- svalue(f1g2_unit_drp)
     val_size <- round(dev.size(val_unit), 2)
@@ -689,7 +668,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -746,7 +724,6 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_ggsave_gui_savegui", value = svalue(savegui_chk), envir = env)

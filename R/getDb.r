@@ -72,14 +72,11 @@ getDb <- function(db.name.or.index = NULL, debug = FALSE) {
 
     # String provided.
   } else {
-
     # Check if number or string.
     if (is.numeric(db.name.or.index)) {
-
       # Set index to number.
       index <- db.name.or.index
     } else {
-
       # Find matching database index (case insensitive)
       index <- match(toupper(db.name.or.index), toupper(databases))
     }

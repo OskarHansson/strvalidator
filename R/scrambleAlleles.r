@@ -74,7 +74,6 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
 
   # Make a list of database.
   for (i in seq(along = dfMarker)) {
-
     # Extract database alleles and frequencies.
     dbSel <- !is.na(dfDb[[dfMarker[i]]])
     allele[[i]] <- dfDb[dbSel, ]$Allele
@@ -84,7 +83,6 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
 
   for (s in seq(along = dfSample)) {
     for (i in seq(along = dfMarker)) {
-
       # Select current sample.
       selS <- data$Sample.Name == dfSample[s]
       # Select current marker.
@@ -99,7 +97,6 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
 
       # Check if more than in db.
       if (n > length(allele[[i]])) {
-
         # Add the extra observed alleles...
         a <- allele[[i]]
         a <- c(a, data[selection, ]$Allele[!data[selection, ]$Allele %in% a])
@@ -108,7 +105,6 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
         f <- c(f, rep(min(f), length(a) - length(f)))
         f <- f / sum(f)
       } else {
-
         # Use alleles and frequencies in database.
         a <- allele[[i]]
         f <- freq[[i]]
@@ -130,7 +126,6 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
   }
 
   if ("Size" %in% names(data)) {
-
     # Store original sizes.
     tmpSize <- data$Size
 

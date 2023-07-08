@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 19.04.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
@@ -19,8 +20,6 @@
 # 27.06.2016: Fixed 'bins' not saved.
 # 16.06.2016: Implemented log option and number of bins.
 # 19.05.2016: Fixed update of drop-down and information when selecting a new dataset.
-# 29.04.2016: 'Save as' textbox expandable.
-# 06.01.2016: Fixed theme methods not found and added more themes.
 
 #' @title Plot Distribution
 #'
@@ -55,7 +54,6 @@
 
 
 plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -135,7 +133,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   strLblXTitleDataPoint <- "Data point"
   strLblObservations <- "observations"
   strMsgColumn <- "A data column must be specified!"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -313,8 +311,8 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     strtmp <- dtStrings["strMsgColumn"]$value
     strMsgColumn <- ifelse(is.na(strtmp), strMsgColumn, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -327,7 +325,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -358,7 +355,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -442,7 +438,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -476,7 +471,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       enabled(f7_pdf_btn) <- TRUE
       enabled(f7_histogram_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -497,7 +491,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   })
 
   addHandlerChanged(column_drp, handler = function(h, ...) {
-
     # Enable buttons.
     enabled(f7_ecdf_btn) <- TRUE
     enabled(f7_pdf_btn) <- TRUE
@@ -770,7 +763,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   # FUNCTIONS #################################################################
 
   .plot <- function(how) {
-
     # Get values.
     val_data <- .gData
     val_titles <- svalue(titles_chk)
@@ -829,7 +821,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     }
 
     # Check if data.
-    if (!is.na(val_data) && !is.null(val_data)) {
+    if (is.data.frame(val_data)) {
       if (debug) {
         print("Before plot: str(val_data)")
         print(str(val_data))
@@ -842,7 +834,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       # Get data for selected group.
       if ("Group" %in% names(val_data)) {
         if (val_group != strDrpGroup) {
-
           # Store nb of observations.
           nb0 <- nb
 
@@ -883,7 +874,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
       # Remove NA's
       if (any(is.na(val_data[, val_column]))) {
-
         # Store nb of observations.
         nb0 <- nb
 
@@ -1130,7 +1120,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -1140,7 +1130,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -1222,7 +1211,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -1289,7 +1277,6 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotDistribution_gui_savegui", value = svalue(savegui_chk), envir = env)

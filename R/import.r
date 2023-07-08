@@ -128,13 +128,11 @@ import <- function(folder = TRUE, extension = "txt",
 
   # Check if result files in folder.
   if (folder) {
-
     # Get path.
     folder <- folder.name
 
     # Check if folder is specified.
     if (!is.na(folder)) {
-
       # Create file filter.
       fileFilter <- paste(".*", sep = "")
       if (!is.na(prefix) && nchar(prefix) > 0) {
@@ -175,7 +173,6 @@ import <- function(folder = TRUE, extension = "txt",
 
   # Check if files are specified.
   if (any(length(import.file) > 0, !is.na(import.file))) {
-
     # Autotrim message (function inside loop).
     if (auto.trim) {
       message(paste(
@@ -186,7 +183,6 @@ import <- function(folder = TRUE, extension = "txt",
 
     # Read files.
     for (f in seq(along = import.file)) {
-
       # Should change to more efficient and simpler 'fread' but
       # problem is that autodetection of colClasses does not always work
       # and it is not possible(?) to set all to character.
@@ -223,14 +219,12 @@ import <- function(folder = TRUE, extension = "txt",
 
       # Check if file path should be saved.
       if (file.name) {
-
         # Add column and save file name.
         tmpdf$File.Name <- basename(import.file[f])
       }
 
       # Check if time stamp should be saved.
       if (time.stamp) {
-
         # Add column and save file name.
         tmptime <- file.info(import.file[f])
         tmpdf$File.Time <- as.character(tmptime$mtime)
@@ -248,7 +242,6 @@ import <- function(folder = TRUE, extension = "txt",
 
     # Autoslim dataset.
     if (auto.slim) {
-
       # Autodetect column names to keep fixed.
       fixCol <- colNames(data = res, slim = TRUE, numbered = TRUE, concatenate = "|")
 

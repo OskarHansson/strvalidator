@@ -34,7 +34,6 @@ readBinsFile <- function(bin.files, debug = FALSE) {
 
   # Check if files are specified.
   if (!is.na(bin.files)) {
-
     # Open file for reading.
     f1 <- file(bin.files[1], open = "r")
 

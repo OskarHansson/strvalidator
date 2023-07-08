@@ -118,7 +118,6 @@ calculateStatistics <- function(data, target, quant = 0.95,
 
   # Check if numeric.
   if (!is.numeric(DT[[target]])) {
-
     # Convert to numeric.
     DT[[target]] <- as.numeric(DT[[target]])
 
@@ -133,7 +132,6 @@ calculateStatistics <- function(data, target, quant = 0.95,
   # Calculate -----------------------------------------------------------------
 
   if (is.null(count)) {
-
     # Perform calculations without counting unique values.
     res <- DT[,
       j = setNames(
@@ -153,7 +151,6 @@ calculateStatistics <- function(data, target, quant = 0.95,
       by = eval(group)
     ]
   } else {
-
     # Perform calculations and count unique values.
     res <- DT[,
       j = setNames(

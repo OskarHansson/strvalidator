@@ -45,7 +45,6 @@ colConvert <- function(data, columns = "Height|Size|Data.Point",
 
   # Loop over all columns to change to numeric.
   for (c in seq(along = selected)) {
-
     # Convert to numeric (handles factors using as.character).
     data[, selected[c]] <- as.numeric(as.character(data[, selected[c]]))
   }

@@ -142,7 +142,6 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
 
   # Loop over all samples.
   for (s in seq(along = sampleNames)) {
-
     # Show progress.
     message(paste("Calculate result type for sample (",
       s, " of ", length(sampleNames), "): ", sampleNames[s],

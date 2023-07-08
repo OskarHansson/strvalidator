@@ -65,8 +65,8 @@
 #' is used as explanatory variable. The logarithm of the average peak height 'H'
 #' can be used instead of the allele/locus peak height [3] (The implementation
 #' of 'H' has limitations when dropout is present. See \code{\link{calculateHeight}}).
-#' To evaluate the goodness of fit for the logistic regression the 
-#' Hosmer-Lemeshow test is used [4]. A value below 0.05 indicates a poor fit. 
+#' To evaluate the goodness of fit for the logistic regression the
+#' Hosmer-Lemeshow test is used [4]. A value below 0.05 indicates a poor fit.
 #' Alternatives to the logistic regression method are discussed in reference [5]
 #' and [6].
 #'
@@ -140,7 +140,6 @@
 #' @seealso \code{\link{calculateDropout}}, \code{\link{plotDropout_gui}}, \code{\link[ResourceSelection]{hoslem.test}}
 
 modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gPlot <- NULL
@@ -471,7 +470,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -502,7 +500,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -565,7 +562,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
 
@@ -593,7 +589,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       # Check additional required columns and enable/disable plot button.
       .checkColumns()
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -1318,7 +1313,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     # PLOT ####################################################################
 
     if (!is.na(predictionDf) && !is.null(predictionDf)) {
-
       # Plotting global dropout probability.
       gp <- ggplot(
         data = predictionDf,
@@ -1350,7 +1344,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
       # Dropout threshold.
       if (val_threshold) {
-
         # Initiate.
         thresholdLegend <- ""
 
@@ -1551,7 +1544,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
 
@@ -1635,7 +1627,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -1762,7 +1753,6 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_modelDropout_gui_savegui", value = svalue(savegui_chk), envir = env)

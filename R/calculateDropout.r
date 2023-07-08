@@ -313,7 +313,6 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
 
   # Loop through all reference samples.
   for (r in seq(along = sampleNamesRef)) {
-
     # Select current subsets.
     if (ignore.case) {
       selectedSamples <- grepl(
@@ -357,14 +356,12 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
     # Loop through all individual samples.
     # NB! Needed for detection of locus dropout.
     for (s in seq(along = sampleNames)) {
-
       # Extract the result for the current sample.
       selectedReplicate <- data$Sample.Name == sampleNames[s]
       dataSample <- data[selectedReplicate, ]
 
       # Loop through all markers.
       for (m in seq(along = markers)) {
-
         # Get reference alleles and calculate expected number of alleles.
         refAlleles <- unique(refSubset$Allele[refSubset$Marker == markers[m]])
         expected <- length(refAlleles)
@@ -405,7 +402,6 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
         methodLPh <- NULL
 
         if (observed == 1 || observed == 2) {
-
           # Check expected number of alleles.
           if (expected == 1) {
             # Expected homozygous.
@@ -432,10 +428,8 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
 
             # SCORE RANDOM ALLELE ---------------------------------------BEGIN-
             if ("X" %in% toupper(method)) {
-
               # Dropout if not partner.
               if (is.na(partner0)) {
-
                 # Score as dropout.
                 modeldrop <- 1
                 methodXTmp <- modeldrop
@@ -471,10 +465,8 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
 
             # SCORE ALLELE 1 --------------------------------------------BEGIN-
             if ("1" %in% toupper(method)) {
-
               # Dropout if not partner.
               if (is.na(partner1)) {
-
                 # Score as dropout.
                 modeldrop <- 1
                 method1Tmp <- modeldrop
@@ -510,10 +502,8 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
 
             # SCORE ALLELE 2 --------------------------------------------BEGIN-
             if ("2" %in% toupper(method)) {
-
               # Dropout if not partner.
               if (is.na(partner2)) {
-
                 # Score as dropout.
                 modeldrop <- 1
                 method2Tmp <- modeldrop
@@ -550,7 +540,6 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
 
           # SCORE LOCUS -----------------------------------------------BEGIN-
           if ("L" %in% toupper(method)) {
-
             # Check expected number of alleles.
             if (expected == 1) {
               # Expected homozygous.
@@ -617,16 +606,17 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                     methodLPh[1] <- max(peakHeight[selA1], peakHeight[selA2], rm.na = TRUE)
                     methodLPh[2] <- NA
                   } else {
-                    stop(paste("Sample: ", sampleNames[s],
-                      ", Marker: ", markers[m],
-                      " - unhandled number of observed alleles",
-                      " (observed = ", observed,
-                      ", matchedAlleles = ", paste(matchedAlleles, collapse = "/"),
-                      ", passingAlleles = ", paste(passingAlleles, collapse = "/"),
-                      ")",
-                      sep = ""
-                    ),
-                    call. = TRUE
+                    stop(
+                      paste("Sample: ", sampleNames[s],
+                        ", Marker: ", markers[m],
+                        " - unhandled number of observed alleles",
+                        " (observed = ", observed,
+                        ", matchedAlleles = ", paste(matchedAlleles, collapse = "/"),
+                        ", passingAlleles = ", paste(passingAlleles, collapse = "/"),
+                        ")",
+                        sep = ""
+                      ),
+                      call. = TRUE
                     )
                   }
                 } else if (passingAlleles == 2) {
@@ -644,28 +634,30 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                     methodLPh[1] <- NA
                     methodLPh[2] <- NA
                   } else {
-                    stop(paste("Sample: ", sampleNames[s],
+                    stop(
+                      paste("Sample: ", sampleNames[s],
+                        " Marker: ", markers[m],
+                        " - unhandled number of observed alleles",
+                        " (observed = ", observed,
+                        ", matchedAlleles = ", paste(matchedAlleles, collapse = "/"),
+                        ", passingAlleles = ", paste(passingAlleles, collapse = "/"),
+                        ")",
+                        sep = ""
+                      ),
+                      call. = TRUE
+                    )
+                  }
+                } else {
+                  stop(
+                    paste("Sample: ", sampleNames[s],
                       " Marker: ", markers[m],
-                      " - unhandled number of observed alleles",
-                      " (observed = ", observed,
+                      " - unhandled number of observed alleles > AT",
+                      " (passingAlleles = ", paste(passingAlleles, collapse = "/"),
                       ", matchedAlleles = ", paste(matchedAlleles, collapse = "/"),
-                      ", passingAlleles = ", paste(passingAlleles, collapse = "/"),
                       ")",
                       sep = ""
                     ),
                     call. = TRUE
-                    )
-                  }
-                } else {
-                  stop(paste("Sample: ", sampleNames[s],
-                    " Marker: ", markers[m],
-                    " - unhandled number of observed alleles > AT",
-                    " (passingAlleles = ", paste(passingAlleles, collapse = "/"),
-                    ", matchedAlleles = ", paste(matchedAlleles, collapse = "/"),
-                    ")",
-                    sep = ""
-                  ),
-                  call. = TRUE
                   )
                 }
               } else { # No dropout or NA.
@@ -756,7 +748,6 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
           heightsTmp <- NA
           records <- 1
         } else {
-
           # Store all peaks.
           allelesTmp <- matchedAlleles
           heightsTmp <- peakHeight
@@ -788,15 +779,16 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
           hetTmp <- rep(1, records)
           het <- TRUE
         } else {
-          stop(paste("Sample: ", sampleNames[s],
-            " Marker: ", markers[m],
-            " - unhandled number of expected alleles",
-            " (expected = ", expected,
-            ", refAlleles = ", paste(refAlleles, collapse = "/"),
-            ")",
-            sep = ""
-          ),
-          call. = TRUE
+          stop(
+            paste("Sample: ", sampleNames[s],
+              " Marker: ", markers[m],
+              " - unhandled number of expected alleles",
+              " (expected = ", expected,
+              ", refAlleles = ", paste(refAlleles, collapse = "/"),
+              ")",
+              sep = ""
+            ),
+            call. = TRUE
           )
         }
 
@@ -814,15 +806,16 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
         } else if (dropCount == 2 & het) {
           dropoutTmp <- rep(2, records)
         } else {
-          stop(paste("Sample: ", sampleNames[s],
-            " Marker: ", markers[m],
-            " - unhandled combination",
-            " (dropCount = ", dropCount,
-            ", het = ", het,
-            ")",
-            sep = ""
-          ),
-          call. = TRUE
+          stop(
+            paste("Sample: ", sampleNames[s],
+              " Marker: ", markers[m],
+              " - unhandled combination",
+              " (dropCount = ", dropCount,
+              ", het = ", het,
+              ")",
+              sep = ""
+            ),
+            call. = TRUE
           )
         }
 

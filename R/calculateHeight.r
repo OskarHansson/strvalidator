@@ -45,11 +45,11 @@
 #' the observed allele (if only one). For this reason Tvedebrink et al. actually
 #' modified the estimate to take the number of expected alleles into account
 #' when estimating the expected peak height (reference [3]). Basically, they adjust
-#' the estimated peak height for the fact that they know how many alleles that 
+#' the estimated peak height for the fact that they know how many alleles that
 #' fall below the AT, such that the expected peak height could be estimated lower
-#' than AT. In addition, they account for degradation using a log-linear 
+#' than AT. In addition, they account for degradation using a log-linear
 #' relationship on peak heights and fragment length.
-#' 
+#'
 #' Tip: If it is known that all expected peaks are observed and no unexpected
 #' peaks are present, the dataset can be used as a reference for itself.
 #'
@@ -98,7 +98,7 @@
 #'  Volume 4, Issue 1, 2013,
 #'  Pages e51-e52, 10.1016/j.fsigss.2013.10.026.
 #' \doi{10.1016/j.fsigss.2013.10.026}
-#' 
+#'
 #' @importFrom utils str
 #' @importFrom data.table data.table :=
 
@@ -128,7 +128,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
   # Check ref.
   if (!is.null(ref)) {
-
     # Check dataset.
     if (!any(grepl("Sample.Name", names(ref)))) {
       stop("'ref' must contain a column 'Sample.Name'.", call. = TRUE)
@@ -178,7 +177,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
   # Check if numeric data.
   if (!is.numeric(data$Height)) {
-
     # Convert to numeric.
     data$Height <- as.numeric(data$Height)
 
@@ -189,7 +187,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     message("Removing excluded alleles from dataset:")
 
     for (e in seq(along = exclude)) {
-
       # Remove excluded alleles, accept NA values (or will result in all NA for that row).
       tmp1 <- nrow(data)
       data <- data[data$Allele != exclude[e] | is.na(data$Allele), ]
@@ -200,7 +197,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
   # Check if reference dataset was provided.
   if (!is.null(ref)) {
-
     # Filter dataset.
     message("Extracting known alleles from dataset...")
     data <- filterProfile(
@@ -281,7 +277,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     DT[, Peaks := sum(!is.na(Height)), by = list(Sample.Name)]
 
     if ("Copies" %in% names(DT)) {
-
       # Calculate number of observed allele copies for each sample.
       DT[, N.Alleles := sum(Copies[!is.na(Height)]), by = list(Sample.Name)]
     } else {
@@ -291,7 +286,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     }
 
     if ("N.Alleles" %in% names(DT)) {
-
       # Calculate average peak height for each sample.
       DT[, H := TPH / N.Alleles, by = list(Sample.Name)]
     } else {
@@ -301,7 +295,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     }
 
     if ("Expected" %in% names(DT)) {
-
       # Calculate proportion observed profile for each sample.
       DT[, Proportion := Peaks / Expected, by = list(Sample.Name)]
     } else {
@@ -316,7 +309,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     # Calculate per sample in a new dataset.
 
     if (!is.null(ref)) {
-
       # Calculate total peak height for each sample.
       DT[, TPH := sum(Height, na.rm = TRUE), by = list(Sample.Name)]
 
@@ -338,7 +330,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
       by = list(Sample.Name)
       ]
     } else {
-
       # Calculate total peak height and number of peaks for each sample.
       res <- DT[, list(
         TPH = sum(Height, na.rm = TRUE),
@@ -354,7 +345,6 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     message("Dataset is empty. Returning NULL")
     res <- NULL
   } else {
-
     # This should not happen.
     message("There was an unexpected error")
   }

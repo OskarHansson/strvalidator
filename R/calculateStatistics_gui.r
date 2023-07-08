@@ -47,7 +47,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
                                     group = NULL, count = NULL, decimals = 4,
                                     env = parent.frame(), savegui = NULL,
                                     debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -167,7 +166,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -198,7 +196,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -277,7 +274,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
     if (!is.null(val_column)) {
       if (val_column != strDrpColumn) {
-
         # Add new value to selected.
         if (nchar(val_value) == 0) {
           svalue(group_edt) <- val_column
@@ -330,7 +326,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_obj <- .gDataName
@@ -499,7 +494,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       # Suggest a name for the result.
       gWidgets2::svalue(save_edt) <- paste(val_obj, "_stats", sep = "")
     } else {
-
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
@@ -526,7 +520,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -565,7 +558,6 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculateStatistics_gui_savegui", value = svalue(savegui_chk), envir = env)
@@ -605,11 +597,9 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
   # Only load settings if started without parameters.
   if (all(is.null(data), is.null(target), is.null(group))) {
-
     # Load GUI settings.
     .loadSavedSettings()
   } else {
-
     # Save settings disabled when starting with parameters.
     enabled(savegui_chk) <- FALSE
     .gSkipClear <- TRUE

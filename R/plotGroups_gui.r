@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 26.04.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
@@ -37,7 +38,6 @@
 
 
 plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -102,7 +102,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   strLblMainTitle <- "Empirical cumulative distribution function"
   strLblObservations <- "observations"
   strMsgColumn <- "A data column must be specified!"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -217,8 +217,8 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     strtmp <- dtStrings["strMsgColumn"]$value
     strMsgColumn <- ifelse(is.na(strtmp), strMsgColumn, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -231,7 +231,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -262,7 +261,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -344,7 +342,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -364,7 +361,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       # Enable buttons.
       enabled(plot_ecdf_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -373,7 +369,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   })
 
   addHandlerChanged(group_drp, handler = function(h, ...) {
-
     # Extract selected column name.
     val <- svalue(group_drp)
 
@@ -521,7 +516,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FUNCTIONS #################################################################
 
   .plot <- function() {
-
     # Get values.
     val_data <- .gData
     val_titles <- svalue(titles_chk)
@@ -563,7 +557,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     }
 
     # Check if data.
-    if (!is.na(val_data) && !is.null(val_data)) {
+    if (is.data.frame(val_data)) {
       if (debug) {
         print("Input data:")
         print(str(val_data))
@@ -596,7 +590,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       # Check if labels have been customized.
       if (!all(val_labels %in% val_names)) {
-
         # Replace values.
         names(val_labels) <- val_names
         dt$Group <- plyr::revalue(dt$Group, val_labels)
@@ -607,7 +600,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       # Remove NA's
       if (any(is.na(dt$Group))) {
-
         # Show affected rows.
         message(val_group, "=NA on the following rows:")
         print(dt[is.na(dt$Group), ])
@@ -627,7 +619,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       # Remove NA's
       if (any(is.na(dt$Axis))) {
-
         # Show affected rows.
         message(val_axis, "=NA on the following rows:")
         print(dt[is.na(dt$Axis), ])
@@ -730,7 +721,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -740,7 +731,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -764,13 +754,11 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     blockHandler(flat_drp)
 
     if (!is.null(columns)) {
-
       # Populate drop list.
       group_drp[] <- c(strDrpGroup, columns)
       axis_drp[] <- c(strDrpColumn, columns)
       flat_drp[] <- c(strDrpColumn, columns)
     } else {
-
       # Reset drop list and select first item.
       group_drp[] <- c(strDrpGroup)
       axis_drp[] <- c(strDrpColumn)
@@ -789,7 +777,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -835,7 +822,6 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotGroups_gui_savegui", value = svalue(savegui_chk), envir = env)

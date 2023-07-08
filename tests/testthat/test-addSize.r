@@ -12,7 +12,6 @@ context("addSize")
 # test_dir("tests/testthat")
 
 test_that("addSize", {
-
   # Get test data.
   data(set2)
 

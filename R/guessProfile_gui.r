@@ -43,7 +43,6 @@
 #' @seealso \code{\link{guessProfile}}, \code{\link{checkSubset}}
 
 guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -145,7 +144,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # Runs when window is closed.
   addHandlerDestroy(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -176,7 +174,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -228,7 +225,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -236,7 +232,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       svalue(samples_lbl) <- paste(" ", samples, strLblSamples)
       svalue(save_edt) <- paste(val_obj, "_profile", sep = "")
     } else {
-
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
@@ -294,7 +289,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   check_btn <- gbutton(text = strBtnGuess, container = gv)
 
   addHandlerClicked(check_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_name_data <- .gDataName
@@ -309,7 +303,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     }
 
     if (!is.null(.gData)) {
-
       # Change button.
       blockHandlers(check_btn)
       svalue(check_btn) <- strBtnProcessing
@@ -360,7 +353,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -402,7 +394,6 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_guessProfile_gui_savegui", value = svalue(savegui_chk), envir = env)

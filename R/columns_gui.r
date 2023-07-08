@@ -39,7 +39,6 @@
 
 
 columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -151,7 +150,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -183,7 +181,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -229,7 +226,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     ok <- is.data.frame(get(val_obj, envir = env))
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -352,7 +348,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   addHandlerChanged(f3g1_action_drp, handler = function(h, ...) {
     if (svalue(f3g1_action_drp) %in% "substr") {
-
       # Reset column 2 if 'substr' is selected.
       svalue(col2_drp, index = TRUE) <- 1
     }
@@ -459,7 +454,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -504,7 +498,6 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_columns_gui_savegui", value = svalue(savegui_chk), envir = env)

@@ -82,7 +82,6 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
 
   # Check if NULL
   if (is.null(kit)) {
-
     # Print available kits
     if (show.messages) {
       message("Available kits:")
@@ -91,21 +90,17 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
 
     # String provided.
   } else {
-
     # Check if number or string.
     if (is.numeric(kit)) {
-
       # Set index to number.
       index <- kit
     } else {
-
       # Find matching kit index (case insensitive)
       index <- match(toupper(kit), toupper(kits))
     }
 
     # No matching kit.
     if (any(is.na(index))) {
-
       # Print available kits
       if (show.messages) {
         message(paste(

@@ -59,7 +59,6 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
   ok <- NULL
 
   if ("ORDER" %in% toupper(names(data))) {
-
     # Check if overwrite.
     if (overwrite) {
       message("Column 'Order' will be overwritten!")
@@ -74,7 +73,6 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
       ok <- FALSE
     }
   } else {
-
     # Add column.
     data$Order <- as.numeric(NA)
     ok <- TRUE
@@ -98,11 +96,9 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
     # Loop over all markers.
     for (m in seq(along = marker)) {
       if (ignore.case) {
-
         # Add order by marker.
         data$Order[toupper(data$Marker) == toupper(marker[m])] <- m
       } else {
-
         # Add new column and colors per marker.
         data$Order[data$Marker == marker[m]] <- m
       }

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 04.07.2020: Fixed no visible binding for variables.
 # 02.05.2020: Added language support.
@@ -19,7 +20,6 @@
 # 11.11.2015: Added more themes.
 # 29.08.2015: Added importFrom.
 # 14.12.2014: Updated to handle gender -> sex.marker option in getKit.
-# 08.12.2014: First version.
 
 #' @title Plot Pull-up
 #'
@@ -54,7 +54,6 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
 plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -117,7 +116,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   strLblYTitle <- "Ratio"
   strLblXTitleHeight <- "Allele peak height (RFU)"
   strLblXTitleAllele <- "Allele designation"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -247,8 +246,8 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     strtmp <- dtStrings["strLblXTitleAllele"]$value
     strLblXTitleAllele <- ifelse(is.na(strtmp), strLblXTitleAllele, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -261,7 +260,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -293,7 +291,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -390,7 +387,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       # Enable buttons.
       .enablePlotButtons()
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -450,7 +446,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   )
 
   addHandlerChanged(f1_drop_chk, handler = function(h, ...) {
-
     # Enable buttons.
     .enablePlotButtons()
   })
@@ -468,7 +463,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   plot_allele_btn <- gbutton(text = strBtnRatioVsAllele, container = f7)
 
   addHandlerChanged(plot_height_btn, handler = function(h, ...) {
-
     # Check if suitable for plot.
     requiredCol <- c(
       "Sample.Name", "Marker", "Dye", "Allele", "Height",
@@ -489,7 +483,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   })
 
   addHandlerChanged(plot_allele_btn, handler = function(h, ...) {
-
     # Check if suitable for plot.
     requiredCol <- c(
       "Sample.Name", "Marker", "Dye", "Allele", "Height",
@@ -619,7 +612,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   )
 
   addHandlerChanged(e3_scales_opt, handler = function(h, ...) {
-
     # Enable buttons.
     .enablePlotButtons()
   })
@@ -664,7 +656,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FUNCTIONS #################################################################
 
   .plotPullup <- function(what) {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -725,8 +716,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     ymax <- NULL # For complex plots.
     ymin <- NULL # For complex plots.
 
-    if (!is.na(.gData) && !is.null(.gData)) {
-
+    if (is.data.frame(.gData)) {
       # Call functions.
       # Sort by marker in kit and add Dye levels.
       .gData <- sortMarker(
@@ -745,13 +735,11 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       # Drop sex markers.
       if (val_drop) {
-
         # Get sex marker.
         sexMarkers <- getKit(kit = val_kit, what = "Sex.Marker")
 
         # Check if sexMarkers was found.
         if (length(sexMarkers) > 0) {
-
           # Drop sex markers.
           n0 <- nrow(.gData)
           for (m in seq(along = sexMarkers)) {
@@ -960,7 +948,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
         # Loop over all dyes.
         for (d in seq(along = dyes)) {
-
           # Get data for current dye.
           gDataSub <- .gData[.gData$Dye == dyes[d], ]
 
@@ -1079,7 +1066,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -1089,7 +1076,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -1105,7 +1091,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -1190,7 +1175,6 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotPullup_gui_savegui", value = svalue(savegui_chk), envir = env)

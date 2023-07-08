@@ -58,7 +58,6 @@
 
 
 calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm.sex = TRUE, debug = FALSE) {
-
   # CHECK DATA ----------------------------------------------------------------
 
   # Check dataset columns.

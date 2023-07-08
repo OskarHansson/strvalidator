@@ -63,7 +63,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
                         limit.x = TRUE, label.size = 3, label.angle = 0,
                         label.vjust = 1, label.hjust = 0.5, expand = 0.1,
                         debug = FALSE) {
-
   # Debug info.
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -154,7 +153,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
   # Check if height column exist.
   if (!"Height" %in% names(data)) {
-
     # Add Height if not present.
     data$Height <- 1000
 
@@ -255,10 +253,8 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
   # Add unique 'Id' column for grouping.
   if ("Size" %in% names(data)) {
-
     # Check if numeric.
     if (!is.numeric(data$Size)) {
-
       # Convert to numeric.
       data$Size <- as.numeric(data$Size)
 
@@ -269,7 +265,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     # This can preserve 'OL' peaks but may also result in two peaks for alleles.
     data$Id <- paste(round(data$Size, 0), data$Marker, sep = "")
   } else {
-
     # Combine 'Allele' and 'Marker'.
     # This will add all 'OL' in one marker even if originally at different size.
     data$Id <- paste(data$Allele, data$Marker, sep = "")
@@ -351,7 +346,6 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
   # Check if numeric.
   if (!is.numeric(data$Size)) {
-
     # Convert to numeric.
     data$Size <- as.numeric(data$Size)
 
@@ -413,11 +407,9 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
   # Check scale.
   if (scale == "free_x") {
-
     # This means y max is equal for all dyes.
     mYmax <- rep(max(tmpYmax$Max), sum(mYtimes))
   } else {
-
     # Different y max for each dye.
     mYmax <- rep(tmpYmax$Max, mYtimes)
   }
@@ -441,18 +433,15 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
 
   # Plot data.
   if (!boxplot) {
-
     # Plot height as peaks.
     gp <- gp + geom_polygon(aes_string(group = "Id", fill = "Dye"), data = dataPeaks)
   } else {
-
     # Plot boxplots for distributions.
     gp <- gp + geom_boxplot(aes_string(group = "Id", color = "Dye"),
       outlier.size = 1, data = data
     )
 
     if (peaks) {
-
       # Plot mean peak height as peaks.
       gp <- gp + geom_polygon(aes_string(group = "Id", fill = "Dye"),
         data = dataMean
@@ -467,12 +456,13 @@ generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
     # Add marker regions, names, and wrap by colour.
 
     # Add marker regions.
-    gp <- gp + geom_rect(aes_string(
-      xmin = "Xmin", xmax = "Xmax",
-      ymin = "Height", ymax = "Top"
-    ),
-    alpha = .2, data = markerRanges,
-    fill = "blue", color = "red"
+    gp <- gp + geom_rect(
+      aes_string(
+        xmin = "Xmin", xmax = "Xmax",
+        ymin = "Height", ymax = "Top"
+      ),
+      alpha = .2, data = markerRanges,
+      fill = "blue", color = "red"
     )
 
     # Add marker names.

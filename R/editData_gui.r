@@ -220,7 +220,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -251,7 +250,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -306,7 +304,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -315,7 +312,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       .refreshInfo()
       .refreshTbl()
     } else {
-
       # Clear info.
       .refreshInfo(clear = TRUE)
     }
@@ -431,7 +427,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     }
 
     if (!is.na(val_name) && !is.null(val_name)) {
-
       # Copy and add attributes (retain names).
       names(.gData) <- names(datanew)
       attributes(datanew) <- attributes(.gData)
@@ -466,7 +461,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   })
 
   addHandlerChanged(export_btn, handler = function(h, ...) {
-
     # Open GUI.
     export_gui(env = env, savegui = savegui, debug = debug, parent = parent)
   })
@@ -493,7 +487,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
     if (val_attr & !is.null(.gData)) {
       if (!isExtant(w_attributes)) {
-
         # Re-create window.
         w_attributes <<- gwindow(
           title = strWinTitleAttributes,
@@ -518,7 +511,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
       # Loop over list of attributes and att to text object.
       for (a in seq(along = attrNames)) {
-
         # Insert text for current attribute.
         insert(attr_text, paste(attrNames[a], attributeList[a], sep = ": "))
       }
@@ -609,14 +601,12 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
         message("Showing all data.")
       }
     } else {
-
       # Update with place holder.
       data_tbl[] <<- data.frame(Data = strLblNoData)
     }
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -660,7 +650,6 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_editData_gui_savegui", value = svalue(savegui_chk), envir = env)

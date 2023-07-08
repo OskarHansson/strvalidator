@@ -11,7 +11,6 @@ context("calculateDropout")
 # test_dir("tests/testthat")
 
 test_that("calculateDropout", {
-
   # Get test data.
   data(set4)
   data(ref4)

@@ -38,17 +38,14 @@
 
 getStrings <- function(language = NA, gui = NA, key = NA,
                        encoding = NA, about = FALSE) {
-
   # If language is not specified.
   if (is.na(language)) {
-
     # Get language from settings.
     language <- getSetting("language")
   }
 
   # If encoding is not specified.
   if (is.na(encoding)) {
-
     # Get language from settings.
     encoding <- getSetting("encoding")
   }
@@ -67,13 +64,11 @@ getStrings <- function(language = NA, gui = NA, key = NA,
   packagePath <- path.package("strvalidator", quiet = FALSE)
 
   if (about) {
-
     # Create path to language files.
     aboutFilePath <- paste(packagePath, subFolder, aboutFile, sep = fileSep)
 
     # If file exist.
     if (file.exists(aboutFilePath)) {
-
       # Read file.
       result <- readLines(con = aboutFilePath, encoding = encoding)
 
@@ -90,13 +85,11 @@ getStrings <- function(language = NA, gui = NA, key = NA,
       result <- NULL
     }
   } else {
-
     # Create path to language files.
     langFilePath <- paste(packagePath, subFolder, languageFile, sep = fileSep)
 
     # If file exist.
     if (file.exists(langFilePath)) {
-
       # Read file.
       dtAll <- fread(
         file = langFilePath, sep = "\t",
@@ -123,7 +116,6 @@ getStrings <- function(language = NA, gui = NA, key = NA,
           # Set NULL as return value.
           result <- NULL
         } else {
-
           # Fix new line character.
           result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
         }
@@ -136,7 +128,6 @@ getStrings <- function(language = NA, gui = NA, key = NA,
         # Get the specific gui function value by key.
         result <- result[key]$value
       } else {
-
         # Fix new line character.
         if (!is.null(result)) {
           result[, value := gsub("\\n", "\n", value, fixed = TRUE)]

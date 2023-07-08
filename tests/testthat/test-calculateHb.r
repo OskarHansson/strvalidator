@@ -12,7 +12,6 @@ context("calculateHb")
 # test_dir("tests/testthat")
 
 test_that("calculateHb", {
-
   # Get SGM Plus test data.
   data("set2")
   data("ref2")

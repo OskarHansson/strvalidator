@@ -196,7 +196,6 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
     message("Adding other group labels...")
 
     for (g in seq(from = 2, to = length(bins))) {
-
       # Add group label.
       DT[Peaks > bins[g - 1] & Peaks <= bins[g]]$Group <- labels[g]
     }

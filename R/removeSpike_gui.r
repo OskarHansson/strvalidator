@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 02.05.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -32,7 +33,6 @@
 
 
 removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -62,7 +62,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strChkInvert <- "Invert (remove all but spikes)"
   strFrmSave <- "Save as"
   strLblSave <- "Name for result:"
-  strMsgNull <- "Select datasets!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
   strBtnRemove <- "Remove"
 
@@ -112,8 +112,8 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     strtmp <- dtStrings["strLblSave"]$value
     strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -129,7 +129,6 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -161,7 +160,6 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -213,7 +211,6 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -266,7 +263,6 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     )
 
     if (ok) {
-
       # Load or change components.
       .gSpike <<- get(val_obj, envir = env)
       .gSpikeName <<- val_obj
@@ -311,8 +307,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     val_name <- svalue(save_edt)
     val_invert <- svalue(f1_invert_chk)
 
-    if ((!is.na(val_data) && !is.null(val_data)) &
-      (!is.na(val_spike) && !is.null(val_spike))) {
+    if (is.data.frame(val_data) & is.data.frame(val_spike)) {
       datanew <- removeSpike(
         data = val_data, spike = val_spike,
         invert = val_invert, debug = debug
@@ -343,7 +338,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -353,7 +348,6 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -386,7 +380,6 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_removeSpike_gui_savegui", value = svalue(savegui_chk), envir = env)

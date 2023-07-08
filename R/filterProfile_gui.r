@@ -246,7 +246,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -278,7 +277,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -333,7 +331,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -346,7 +343,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(g0_dataset_drp, index = TRUE) <- 1
@@ -396,14 +392,12 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     )
 
     if (ok) {
-
       # Load or change components.
       .gRef <<- get(val_obj, envir = env)
       .gRefName <<- val_obj
       ref <- length(unique(.gRef$Sample.Name))
       svalue(g1_ref_lbl) <- paste("", ref, strLblRef)
     } else {
-
       # Reset components.
       .gRef <<- NULL
       svalue(refset_drp, index = TRUE) <- 1
@@ -438,7 +432,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   check_btn <- gbutton(text = strBtnCheck, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -597,7 +590,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     # Check if filter by kit bins.
     if (val_filter == 2) {
-
       # Get markers, bins and flag for virtual bins.
       val_ref <- getKit(kit = val_kit, what = "VIRTUAL")
 
@@ -608,7 +600,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     }
 
     if (!is.null(val_data) & !is.null(val_ref)) {
-
       # Change button.
       blockHandlers(filter_btn)
       svalue(filter_btn) <- strBtnProcessing
@@ -703,7 +694,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   }
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -760,7 +750,6 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_filterProfile_gui_savegui", value = svalue(savegui_chk), envir = env)

@@ -42,7 +42,6 @@
 
 
 calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, debug = FALSE) {
-
   # BIN OVERLAP.
 
   if (debug) {
@@ -61,7 +60,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
   # Check db if provided.
   if (!is.null(db)) {
-
     # Check if all markers are in the provided frequency database.
     chkMarkers <- unique(data$Marker)
     if (!all(chkMarkers %in% names(db))) {
@@ -106,7 +104,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
     # Loop to construct matrix rows.
     for (i in 1:msize) {
-
       # Calculate indexes:
       a <- ifelse(i == 1, 0, 1)
       b <- i - 1
@@ -137,7 +134,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
   # Loop over all kits.
   for (k in seq(along = kits)) {
-
     # Initiate variable.
     totalOverlap <- 0
 
@@ -190,7 +186,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
       # Check if using virtual alleles.
       if (!virtual) {
-
         # Remove all elements corresponding to virtual alleles.
         xLower <- xLower[!virtualAlleles]
         xUpper <- xUpper[!virtualAlleles]
@@ -205,7 +200,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
       # c2<-2
       # Loop over all colors. This loop is colors to compare to.
       for (c2 in seq(along = colors)) {
-
         # Do not compare to same color.
         if (colors[c] != colors[c2]) {
           if (debug) {
@@ -225,7 +219,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
           # Check if using virtual alleles.
           if (!virtual) {
-
             # Remove all elements corresponding to virtual alleles.
             xLower2 <- xLower2[!virtualAlleles2]
             xUpper2 <- xUpper2[!virtualAlleles2]
@@ -240,7 +233,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
           # Loop over all bins in current color.
           for (x in seq(along = xLower)) {
-
             # Get current values.
             cMarker <- as.character(marker[x])
             cAllele <- as.character(allele[x])
@@ -287,13 +279,11 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
               # Score overlap.
               if (length(overlap) != 0) {
-
                 # Calculate size of overlap in base pair.
                 bp <- max(overlap) - min(overlap)
 
                 # Adjust score by allele frequency.
                 if (!is.null(db)) {
-
                   # X and Y is NA
                   if (is.na(cAllele)) {
                     freq <- 1
@@ -309,7 +299,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
 
                   # Check if frequence was found.
                   if (length(freq) == 0 || is.na(freq)) {
-
                     # Use min freq (5/2N).
                     freq <- 5 / (2 * db$N[1])
 
@@ -331,7 +320,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
                       ))
                     }
                   } else {
-
                     # Adjust overlap score.
                     bp <- bp * freq
                   }
@@ -357,7 +345,6 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
           # Same color.
           overlapMatrix[c, c2] <- totalOverlap
         } else {
-
           # Same color.
           overlapMatrix[c, c2] <- NA
         }

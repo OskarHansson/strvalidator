@@ -9,7 +9,6 @@ context("calculateStutter")
 # test_dir("tests/testthat")
 
 test_that("calculateStutter", {
-
   # Get test data.
   data(set4)
   data(ref4)

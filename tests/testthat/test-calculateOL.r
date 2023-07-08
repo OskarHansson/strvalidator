@@ -10,7 +10,6 @@ context("calculateOL")
 # test_dir("tests/testthat")
 
 test_that("calculateOL", {
-
   # Load test data.
   database <- getDb("ESX 17 Hill")
   kitInfo <- getKit("ESX17")

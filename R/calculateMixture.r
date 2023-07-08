@@ -222,7 +222,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
 
   # Loop over unique reference sample names.
   for (r in seq(1:smpl)) {
-
     # Create combined regex name.
     combRegex <- paste(".*", sampleNamesRef1[r], ".*", sampleNamesRef2[r], ".*", sep = "")
     # Select current mixture samples.
@@ -230,7 +229,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
 
     # Enter loop only if matching samples.
     if (any(selection)) {
-
       # Get unique mixture samples and marker names.
       sampleNames <- unique(data$Sample.Name[selection])
       markerNames <- unique(data$Marker[selection])
@@ -244,7 +242,6 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
 
       # Loop over all sample names.
       for (s in seq(along = sampleNames)) {
-
         # Progress.
         message(paste("Calculate mixture for sample:", sampleNames[s]))
 

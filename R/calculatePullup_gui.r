@@ -43,7 +43,6 @@
 
 calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
                                 debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -212,7 +211,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -243,7 +241,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -310,7 +307,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
-
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
@@ -363,7 +359,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         strLblRef
       )
     } else {
-
       # Reset components.
       .gRef <<- NULL
       .gRefName <<- NULL
@@ -377,7 +372,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   check_btn <- gbutton(text = strBtnCheck, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -495,7 +489,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
-
     # Get values.
     val_data <- .gData
     val_ref <- .gRef
@@ -535,10 +528,8 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if data.
     if (!is.null(.gData) & !is.null(.gRef)) {
-
       # Check for NA's in dye column.
       if (!any(is.na(.gData$Dye))) {
-
         # Change button.
         blockHandlers(calculate_btn)
         svalue(calculate_btn) <- strBtnProcessing
@@ -612,7 +603,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   # INTERNAL FUNCTIONS ########################################################
 
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -663,7 +653,6 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_calculatePullup_gui_savegui", value = svalue(savegui_chk), envir = env)

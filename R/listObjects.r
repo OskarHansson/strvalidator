@@ -75,19 +75,16 @@ listObjects <- function(env = parent.frame(), obj.class = NULL,
       }
     }
   } else {
-
     # Return all objects.
     res <- wsObj
   }
 
   # Check if sorting is requested.
   if (!is.null(sort)) {
-
     # Create sorting vector.
     new.order <- vector(mode = "character", length = length(res))
 
     if (sort == "time") {
-
       # Loop over objects and retrieve attribute.
       for (o in seq(along = res)) {
         tmp <- attr(
@@ -121,7 +118,6 @@ listObjects <- function(env = parent.frame(), obj.class = NULL,
     }
 
     if (sort == "size") {
-
       # Loop over objects and retrieve attribute.
       for (o in seq(along = res)) {
         new.order[o] <- object.size(x = get(x = res[o], envir = env))

@@ -162,7 +162,6 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
 
       # Loop over groups.
       for (g in seq(along = group)) {
-
         # Auto detect kit. If multiple matches, use the first.
         kit[g] <- detectKit(
           data = data[data$Group == group[g], ],
@@ -170,7 +169,6 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
         )[1]
       }
     } else {
-
       # Check number of groups matches number of given kits.
       if (length(group) != length(kit)) {
         kit <- rep(kit[1], length(group))
@@ -182,7 +180,6 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
 
     # Loop over groups.
     for (g in seq(along = group)) {
-
       # Get kit information.
       kitData <- getKit(kit = kit[g])
 

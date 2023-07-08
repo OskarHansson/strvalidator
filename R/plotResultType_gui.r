@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 02.05.2020: Added language support.
 # 24.02.2019: Compacted and tweaked gui for tcltk.
@@ -48,7 +49,6 @@
 #'
 
 plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -102,7 +102,7 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   strLblXTitleType <- "Result type"
   strLblYTitleProportion <- "Proportion"
   strLblYTitleCount <- "Count"
-  strMsgNull <- "Data frame is NULL or NA!"
+  strMsgNotDf <- "Data set must be a data.frame!"
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
@@ -202,8 +202,8 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     strtmp <- dtStrings["strLblYTitleCount"]$value
     strLblYTitleCount <- ifelse(is.na(strtmp), strLblYTitleCount, strtmp)
 
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
+    strtmp <- dtStrings["strMsgNotDf"]$value
+    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
 
     strtmp <- dtStrings["strMsgTitleError"]$value
     strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
@@ -216,7 +216,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
-
     # Save GUI state.
     .saveSettings()
 
@@ -247,7 +246,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   help_btn <- gbutton(text = strBtnHelp, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
-
     # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
@@ -295,7 +293,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     )
 
     if (ok) {
-
       # Load or change components.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
@@ -312,7 +309,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       # Enable buttons.
       enabled(plot_btn) <- TRUE
     } else {
-
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
@@ -449,7 +445,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # FUNCTIONS #################################################################
 
   .plot <- function() {
-
     # Get values.
     val_titles <- svalue(titles_chk)
     val_title <- svalue(title_edt)
@@ -488,7 +483,7 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     }
 
     # Check if data.
-    if (!is.na(.gData) && !is.null(.gData)) {
+    if (is.data.frame(.gData)) {
       if (debug) {
         print("Before plot: str(.gData)")
         print(str(.gData))
@@ -533,7 +528,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
       # Check if labels should be added.
       if (val_print) {
-
         # Add columns cumulative sum and position.
         .gData$Cum <- NA
         .gData$Pos <- NA
@@ -543,7 +537,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
         # Loop over result types.
         for (t in seq(along = type)) {
-
           # Calculate the cumulative sum.
           .gData[.gData$Type == type[t], ]$Cum <-
             rev(cumsum(rev(.gData[.gData$Type == type[t], ]$freq)))
@@ -578,7 +571,7 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgNull,
+        msg = strMsgNotDf,
         title = strMsgTitleError,
         icon = "error"
       )
@@ -588,7 +581,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # INTERNAL FUNCTIONS ########################################################
 
   .updateGui <- function() {
-
     # Override titles.
     val <- svalue(titles_chk)
     if (val) {
@@ -598,7 +590,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     }
   }
   .loadSavedSettings <- function() {
-
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -659,7 +650,6 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   }
 
   .saveSettings <- function() {
-
     # Then save settings if true.
     if (svalue(savegui_chk)) {
       assign(x = ".strvalidator_plotResultType_gui_savegui", value = svalue(savegui_chk), envir = env)

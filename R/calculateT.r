@@ -36,7 +36,6 @@
 
 
 calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.95, debug = FALSE) {
-
   # Calculate alpha for prediction interval.
   pred.int.alpha <- 1 - pred.int
 
