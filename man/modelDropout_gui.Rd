@@ -63,8 +63,8 @@ marker is excluded from the dataset used for modeling, and the peak height
 is used as explanatory variable. The logarithm of the average peak height 'H'
 can be used instead of the allele/locus peak height [3] (The implementation
 of 'H' has limitations when dropout is present. See \code{\link{calculateHeight}}).
-To evaluate the goodness of fit for the logistic regression the 
-Hosmer-Lemeshow test is used [4]. A value below 0.05 indicates a poor fit. 
+To evaluate the goodness of fit for the logistic regression the
+Hosmer-Lemeshow test is used [4]. A value below 0.05 indicates a poor fit.
 Alternatives to the logistic regression method are discussed in reference [5]
 and [6].
 

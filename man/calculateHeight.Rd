@@ -71,9 +71,9 @@ always be between half the analytical threshold (AT/2) and the peak height of
 the observed allele (if only one). For this reason Tvedebrink et al. actually
 modified the estimate to take the number of expected alleles into account
 when estimating the expected peak height (reference [3]). Basically, they adjust
-the estimated peak height for the fact that they know how many alleles that 
+the estimated peak height for the fact that they know how many alleles that
 fall below the AT, such that the expected peak height could be estimated lower
-than AT. In addition, they account for degradation using a log-linear 
+than AT. In addition, they account for degradation using a log-linear
 relationship on peak heights and fragment length.
 
 Tip: If it is known that all expected peaks are observed and no unexpected

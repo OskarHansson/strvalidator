@@ -13,6 +13,7 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 BuildType: Package
-PackageInstallArgs: --with-keep.source --no-html --no-multiarch
+PackageUseDevtools: Yes
+PackageInstallArgs: --no-html --no-multiarch
 PackageCheckArgs: --as-cran
 PackageRoxygenize: rd,namespace
