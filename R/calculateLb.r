@@ -3,6 +3,8 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.08.2024: Added new option 'marker' to ratio of min and max TPH.
+# 08.08.2024: Added correction for number of allele copies for option 'peak'.
 # 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 10.05.2020: Added 'peak' in parameter description.
 # 20.03.2019: Added new definition of balance (Issue:#14).
@@ -24,18 +26,18 @@
 #' Calculates the inter-locus balance.
 #'
 #' @details The inter-locus balance (Lb), or profile balance, can be calculated
-#' as a proportion of the whole, normalized, or as centred quantities (as in
-#' the reference but using the mean total marker peak height instead of H).
+#' as a proportion of the whole, normalized, or as centered quantities (as in
+#' the cited paper, but using the mean total marker peak height instead of H).
 #' Lb can be calculated globally across the complete profile or within each dye
-#' channel. All markers must be present in each sample. Data can be unfiltered
-#' or filtered since the sum of peak heights by marker is used. A reference
+#' channel. All markers must be present in each sample. Data can be filtered
+#' or unfiltered when the sum of peak heights by marker is used. A reference
 #' dataset is required to filter the dataset, which also adds any missing
 #' markers. A kit should be provided for filtering of known profile, sex
-#' markers, or quality sensors. If not automatic detection will be attempted.
-#' If missing, dye will be added according to kit. Off-ladder alleles and
-#' quality sensors are by default removed from the dataset.
-#' Sex markers are optionally removed.
-#' Some columns in the result may vary:
+#' markers, or quality sensors. If kit is not provided, automatic detection will
+#' be attempted. If 'Dye' column is missing, it will be added according to kit.
+#' Off-ladder alleles and quality sensors are by default removed from the dataset.
+#' Sex markers are optionally removed, which is recommended if the 'peak' or 
+#' 'marker' option is used. Some columns in the result may vary:
 #' TPH: Total (marker) Peak Height.
 #' TPPH: Total Profile Peak Height.
 #' MTPH: Maximum (sample) Total Peak Height.
@@ -47,7 +49,8 @@
 #' If provided alleles matching 'ref' will be extracted from 'data'
 #' (see \code{\link{filterProfile}}).
 #' @param option character: 'prop' for proportional Lb, 'norm' for normalized
-#' LB, 'cent' for centred Lb, and 'peak' for the min and max peak height ratio.
+#' LB, 'cent' for centred Lb, 'marker' for the min and max marker peak height ratio,
+#' .and 'peak' for the min and max peak height ratio.
 #' @param by.dye logical. Default is FALSE for global Lb, if TRUE Lb is calculated
 #' within each dye channel.
 #' @param ol.rm logical. Default is TRUE indicating that off-ladder 'OL' alleles
@@ -62,8 +65,8 @@
 #' @param kit character providing the kit name. Attempt to auto detect if NULL.
 #' @param ignore.case logical indicating if sample matching should ignore case.
 #' Only used if 'ref' is provided and 'data' is filtered.
-#' @param word logical indicating if word boundaries should be added before sample matching.
-#' Only used if 'ref' is provided and 'data' is filtered.
+#' @param word logical indicating if word boundaries should be added before
+#' sample matching. Only used if 'ref' is provided and 'data' is filtered.
 #' @param exact logical indicating if exact sample matching should be used.
 #' Only used if 'ref' is provided and 'data' is filtered.
 #' @param debug logical indicating printing debug information.
@@ -283,6 +286,18 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
         )
       }
     }
+
+    # Add number of allele copies per peak.
+    if (option == "peak") {
+      if (is.null((data$Copies))) {
+        data <- calculateCopies(
+          data = data, observed = FALSE, copies = TRUE,
+          heterozygous = FALSE, debug = FALSE
+        )
+
+        message("Added number of allele copies per known peak.")
+      }
+    }
   } else {
     message("Reference dataset not provided.")
 
@@ -300,7 +315,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   if (!is.numeric((data$Height))) {
     data$Height <- as.numeric(data$Height)
 
-    message("'Height' converted to numeric.")
+    message("Converted 'Height' to numeric.")
   }
 
   # Replace missing values.
@@ -391,23 +406,46 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   } else if (option == "peak") {
     if (by.dye) {
       message("Calculating minimum and maximum peak height by sample and dye.")
-      res <- DT[, list(Min = min(Height), Max = max(Height), Peaks = .N),
+      res <- DT[, list(Min.Height = min(Height / Copies), Max.Height = max(Height / Copies), Peaks = .N),
         by = list(Sample.Name, Dye)
       ]
 
       message("Calculating peak ratio by sample and dye.")
-      res[, Lb := Min / Max, by = list(Sample.Name, Dye)]
+      res[, Lb := Min.Height / Max.Height, by = list(Sample.Name, Dye)]
     } else {
       message("Calculating minimum and maximum peak height by sample.")
-      res <- DT[, list(Min = min(Height), Max = max(Height), Peaks = .N),
+      res <- DT[, list(Min.Height = min(Height / Copies), Max.Height = max(Height / Copies), Peaks = .N),
         by = list(Sample.Name)
       ]
 
       message("Calculating peak ratio by sample.")
-      res[, Lb := Min / Max, by = list(Sample.Name)]
+      res[, Lb := Min.Height / Max.Height, by = list(Sample.Name)]
+    }
+  } else if (option == "marker") {
+    message("Calculating total peak height by sample and marker.")
+    res <- DT[, list(TPH = sum(Height), Peaks = .N, Dye = unique(Dye)),
+      by = list(Sample.Name, Marker)
+    ]
+
+    if (by.dye) {
+      message("Calculating minimum and maximum marker peak height sum by sample and dye.")
+      res <- res[, list(Min.TPH = min(TPH), Max.TPH = max(TPH), Peaks = .N),
+        by = list(Sample.Name, Dye)
+      ]
+
+      message("Calculating marker ratio by sample and dye.")
+      res[, Lb := Min.TPH / Max.TPH, by = list(Sample.Name, Dye)]
+    } else {
+      message("Calculating minimum and maximum marker peak height sum by sample.")
+      res <- res[, list(Min.TPH = min(TPH), Max.TPH = max(TPH), Peaks = .N),
+        by = list(Sample.Name)
+      ]
+
+      message("Calculating marker ratio by sample.")
+      res[, Lb := Min.TPH / Max.TPH, by = list(Sample.Name)]
     }
   } else {
-    stop("option = ", option, "not implemented!")
+    stop("option = ", option, " not implemented!")
   }
 
   # Convert to data.frame.

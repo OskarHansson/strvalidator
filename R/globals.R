@@ -29,6 +29,7 @@ if (base::getRversion() >= "2.15.1") {
     "Height", "Masked", "Sample.File.Name", "Dye",
     "Hb", "Marker", "Lb", "H", "Amount", "Size",
     "Sample.Name", "TPH", "MPH", "TPPH", "MTPH", "Min", "Max",
+    "Min.Height", "Max.Height", "Min.TPH", "Max.TPH",
     "Group", "Allele", "Id", "Kit", "Lower", "Slope",
     "Error", "Peaks", "Upper", "Total.Peaks",
     "Allele.Proportion", "Sum.Peaks", "Allele.Frequency",

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.08.2024: Added new option 'marker' to ratio of min and max TPH.
 # 05.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Added language support.
 # 20.03.2019: Added new option to calculate balance (Issue:#14).
@@ -80,7 +81,8 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   strRadProp <- "Proportional"
   strRadNorm <- "Normalised"
   strRadCent <- "Centred Quantities"
-  strRadRatio <- "Peak Ratio"
+  strRadPeak <- "Peak Ratio"
+  strRadMarker <- "Marker Ratio"
   strChkDye <- "Calculate Lb by dye channel"
   strLblMatching <- "Reference sample name matching:"
   strChkIgnore <- "Ignore case"
@@ -173,9 +175,12 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     strtmp <- dtStrings["strRadCent"]$value
     strRadCent <- ifelse(is.na(strtmp), strRadCent, strtmp)
 
-    strtmp <- dtStrings["strRadRatio"]$value
-    strRadRatio <- ifelse(is.na(strtmp), strRadRatio, strtmp)
+    strtmp <- dtStrings["strRadPeak"]$value
+    strRadPeak <- ifelse(is.na(strtmp), strRadPeak, strtmp)
 
+    strtmp <- dtStrings["strRadMarker"]$value
+    strRadMarker <- ifelse(is.na(strtmp), strRadMarker, strtmp)
+    
     strtmp <- dtStrings["strChkDye"]$value
     strChkDye <- ifelse(is.na(strtmp), strChkDye, strtmp)
 
@@ -499,7 +504,8 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     strRadProp,
     strRadNorm,
     strRadCent,
-    strRadRatio
+    strRadPeak,
+    strRadMarker
   )
 
   f1_lb_opt <- gradio(
@@ -621,6 +627,8 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
           val_option <- "cent"
         } else if (val_option == 4) {
           val_option <- "peak"
+        } else if (val_option == 5) {
+          val_option <- "marker"
         } else {
           stop("val_option =", val_option, "not implemented!")
         }
