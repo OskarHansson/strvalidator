@@ -351,25 +351,26 @@ calculateLb_gui	19	strLblMethod	Calcular equilibrio del locus:
 calculateLb_gui	20	strRadProp	Proporcional
 calculateLb_gui	21	strRadNorm	Normalizado
 calculateLb_gui	22	strRadCent	Cantidades centradas
-calculateLb_gui	23	strRadRatio	Ratio de pico
-calculateLb_gui	24	strChkDye	Calcular Lb por canal de fluorocromo
-calculateLb_gui	25	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
-calculateLb_gui	26	strChkIgnore	Ignorar mayúsculas y minúsculas
-calculateLb_gui	27	strChkWord	Añadir límites de palabras
-calculateLb_gui	28	strChkExact	Coincidencia exacta
-calculateLb_gui	29	strLblPost	Post-procesando:
-calculateLb_gui	30	strChkAverage	Calcular altura promedio de pico
-calculateLb_gui	31	strFrmSave	Guardar como
-calculateLb_gui	32	strLblSave	Nombre del resultado:
-calculateLb_gui	33	strBtnCalculate	Calcular
-calculateLb_gui	34	strBtnProcessing	Procesando…
-calculateLb_gui	35	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
-calculateLb_gui	36	strMsgTitleDataset	Datos no seleccionados
-calculateLb_gui	37	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
-calculateLb_gui	38	strWinTitleCheck	Comprobar subconjunto
-calculateLb_gui	39	strMsgTitleError	Error
-calculateLb_gui	40	strMsgNA	"NA" en la columna 'Marcaje'. \nUsar la función añadir marcaje para arreglarlo.
-calculateLb_gui	41	strMsgTitleNA	NA detectado!
+calculateLb_gui	23	strRadPeak	Ratio de pico
+calculateLb_gui	24	strRadMarker	Ratio de marcadores
+calculateLb_gui	25	strChkDye	Calcular Lb por canal de fluorocromo
+calculateLb_gui	26	strLblMatching	Correspondencia en el nombre de la muestra de referencia:
+calculateLb_gui	27	strChkIgnore	Ignorar mayúsculas y minúsculas
+calculateLb_gui	28	strChkWord	Añadir límites de palabras
+calculateLb_gui	29	strChkExact	Coincidencia exacta
+calculateLb_gui	30	strLblPost	Post-procesando:
+calculateLb_gui	31	strChkAverage	Calcular altura promedio de pico
+calculateLb_gui	32	strFrmSave	Guardar como
+calculateLb_gui	33	strLblSave	Nombre del resultado:
+calculateLb_gui	34	strBtnCalculate	Calcular
+calculateLb_gui	35	strBtnProcessing	Procesando…
+calculateLb_gui	36	strMsgDataset	Se deben seleccionar los datos de las muestras y los datos de la referencia.
+calculateLb_gui	37	strMsgTitleDataset	Datos no seleccionados
+calculateLb_gui	38	strMsgCheck	El marco de datos es NULO!\n\ nAsegúrese de seleccionar un conjunto de datos.
+calculateLb_gui	39	strWinTitleCheck	Comprobar subconjunto
+calculateLb_gui	40	strMsgTitleError	Error
+calculateLb_gui	41	strMsgNA	NA en la columna 'Marcaje'. \nUsar la función añadir marcaje para arreglarlo.
+calculateLb_gui	42	strMsgTitleNA	NA detectado!
 calculateMixture_gui	1	strWinTitle	Calcular Mezcla
 calculateMixture_gui	2	strChkGui	Guardar configuración de GUI
 calculateMixture_gui	3	strBtnHelp	Ayuda
@@ -1944,51 +1945,52 @@ strvalidator	149	strLblLb	Calcular equilibrio del perfil
 strvalidator	150	strLblPlotBalance	Crear gráficos para datos analizados
 strvalidator	151	strLblStatBalanceGlobal	Calcular estadísticas resumen globales
 strvalidator	152	strLblStatBalanceMarker	Calcular estadísticas resumen por marcador
-strvalidator	153	strFrmCapillary	Equilibrio entre capilares
-strvalidator	154	strLblCapillary	Calcular el equilibrio de capilares para un conjunto de datos
-strvalidator	155	strLblPlotCapillary	Crear gráficos para datos de equilibrio de capilares
-strvalidator	156	strLblStatCapillaryCap	Calcular estadísticas resumen por capilar
-strvalidator	157	strLblStatCapillaryInj	Calcular estadísticas resumen por inyección
-strvalidator	158	strLblStatCapillaryRow	Calcular estadísticas resumen por fila de la placa
-strvalidator	159	strLblStatCapillaryRun	Calcular estadísticas resumen por run
-strvalidator	160	strLblStatCapillaryIns	Calcular estadísticas resumen por equipo
-strvalidator	161	strFrmRatio	Ratio de altura del pico en el marcador
-strvalidator	162	strLblRatio	Calcular el locus ratio para un conjunto de datos
-strvalidator	163	strLblPlotRatio	Crear gráficos para datos de marker ratio
-strvalidator	164	strLblConcordance	Calcular concordancia entre múltiples conjuntos de datos
-strvalidator	165	strBtnScore	Puntuación
-strvalidator	166	strLblScore	Puntuación dropout para un conjunto de datos
-strvalidator	167	strLblDropout	Calcular umbrales estocásticos
-strvalidator	168	strBtnModel	Modelizar
-strvalidator	169	strLblModel	Modelizar y hacer gráfico del riesgo de dropout
-strvalidator	170	strLblPlotDropout	Crear gráficos para datos analizados
-strvalidator	171	strLblMixture	Calcular mezcla para un conjunto de datos
-strvalidator	172	strFrmType	Tipos de resultado
-strvalidator	173	strLblType	Calcular tipos de resultado para un conjunto de datos
-strvalidator	174	strLblPlotType	Crear gráficos para datos de tipo de resultado
-strvalidator	175	strFrmPeaks	Número de picos
-strvalidator	176	strLblPeaks	Contar el número de picos en la muestra
-strvalidator	177	strLblPlotPeaks	Crear gráficos para datos de pico
-strvalidator	178	strFrmStatistics	Estadísticas resumen
-strvalidator	179	strLblStatistics	Calcular estadísticas resumen
-strvalidator	180	strFrmDistribution	Distribuciones
-strvalidator	181	strLblDistribution	Representar gráficamente la distribución de los datos
-strvalidator	182	strLblGroups	Gráfico de distribución acumulativa para múltiples grupos
-strvalidator	183	strFrmDropin	Herramientas de drop-in
-strvalidator	184	strLblSpikes	Identificar posibles spikes
-strvalidator	185	strLblFilterSpikes	Eliminar spikes
-strvalidator	186	strLblArtefacts	Identificar posibles artefactos
-strvalidator	187	strLblFilterArtefacts	Eliminar artefactos
-strvalidator	188	strLblPlotContamination	Gráfico de contaminación
-strvalidator	189	strFrmSlope	Pendiente del perfil
-strvalidator	190	strLblSlope	Calcular la pendiente del perfil
-strvalidator	191	strLblPlotSlope	Gráfico de datos de pendiente
-strvalidator	192	strLblPrecision	Crear gráficos de precisión
-strvalidator	193	strLblStatPrecisionSize	Calcular estadísticas resumen por tamaño
-strvalidator	194	strLblStatPrecisionDataPoint	Calcular estadísticas resumen por Data.Point
-strvalidator	195	strLblStatPrecisionHeight	Calcular estadísticas resumen por Altura
-strvalidator	196	strLblPullup	Calcular pull-up espectral/depurar
-strvalidator	197	strLblPlotPullup	Crear gráficos para datos de pull-up
+strvalidator	153	strLblStatBalanceDye	Calcular estadísticas resumen por tinte
+strvalidator	154	strFrmCapillary	Equilibrio entre capilares
+strvalidator	155	strLblCapillary	Calcular el equilibrio de capilares para un conjunto de datos
+strvalidator	156	strLblPlotCapillary	Crear gráficos para datos de equilibrio de capilares
+strvalidator	157	strLblStatCapillaryCap	Calcular estadísticas resumen por capilar
+strvalidator	158	strLblStatCapillaryInj	Calcular estadísticas resumen por inyección
+strvalidator	159	strLblStatCapillaryRow	Calcular estadísticas resumen por fila de la placa
+strvalidator	160	strLblStatCapillaryRun	Calcular estadísticas resumen por run
+strvalidator	161	strLblStatCapillaryIns	Calcular estadísticas resumen por equipo
+strvalidator	162	strFrmRatio	Ratio de altura del pico en el marcador
+strvalidator	163	strLblRatio	Calcular el locus ratio para un conjunto de datos
+strvalidator	164	strLblPlotRatio	Crear gráficos para datos de marker ratio
+strvalidator	165	strLblConcordance	Calcular concordancia entre múltiples conjuntos de datos
+strvalidator	166	strBtnScore	Puntuación
+strvalidator	167	strLblScore	Puntuación dropout para un conjunto de datos
+strvalidator	168	strLblDropout	Calcular umbrales estocásticos
+strvalidator	169	strBtnModel	Modelizar
+strvalidator	170	strLblModel	Modelizar y hacer gráfico del riesgo de dropout
+strvalidator	171	strLblPlotDropout	Crear gráficos para datos analizados
+strvalidator	172	strLblMixture	Calcular mezcla para un conjunto de datos
+strvalidator	173	strFrmType	Tipos de resultado
+strvalidator	174	strLblType	Calcular tipos de resultado para un conjunto de datos
+strvalidator	175	strLblPlotType	Crear gráficos para datos de tipo de resultado
+strvalidator	176	strFrmPeaks	Número de picos
+strvalidator	177	strLblPeaks	Contar el número de picos en la muestra
+strvalidator	178	strLblPlotPeaks	Crear gráficos para datos de pico
+strvalidator	179	strFrmStatistics	Estadísticas resumen
+strvalidator	180	strLblStatistics	Calcular estadísticas resumen
+strvalidator	181	strFrmDistribution	Distribuciones
+strvalidator	182	strLblDistribution	Representar gráficamente la distribución de los datos
+strvalidator	183	strLblGroups	Gráfico de distribución acumulativa para múltiples grupos
+strvalidator	184	strFrmDropin	Herramientas de drop-in
+strvalidator	185	strLblSpikes	Identificar posibles spikes
+strvalidator	186	strLblFilterSpikes	Eliminar spikes
+strvalidator	187	strLblArtefacts	Identificar posibles artefactos
+strvalidator	188	strLblFilterArtefacts	Eliminar artefactos
+strvalidator	189	strLblPlotContamination	Gráfico de contaminación
+strvalidator	190	strFrmSlope	Pendiente del perfil
+strvalidator	191	strLblSlope	Calcular la pendiente del perfil
+strvalidator	192	strLblPlotSlope	Gráfico de datos de pendiente
+strvalidator	193	strLblPrecision	Crear gráficos de precisión
+strvalidator	194	strLblStatPrecisionSize	Calcular estadísticas resumen por tamaño
+strvalidator	195	strLblStatPrecisionDataPoint	Calcular estadísticas resumen por Data.Point
+strvalidator	196	strLblStatPrecisionHeight	Calcular estadísticas resumen por Altura
+strvalidator	197	strLblPullup	Calcular pull-up espectral/depurar
+strvalidator	198	strLblPlotPullup	Crear gráficos para datos de pull-up
 trim_gui	1	strWinTitle	Cortar datos
 trim_gui	2	strChkGui	Guardar configuración de GUI
 trim_gui	3	strBtnHelp	Ayuda

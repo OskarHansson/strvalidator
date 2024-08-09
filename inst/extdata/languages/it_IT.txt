@@ -351,25 +351,26 @@ calculateLb_gui	19	strLblMethod	Calcola l'equilibrio del locus:
 calculateLb_gui	20	strRadProp	Proportionale
 calculateLb_gui	21	strRadNorm	Normalizzato
 calculateLb_gui	22	strRadCent	Quantità centrate
-calculateLb_gui	23	strRadRatio	Rapporto di picco
-calculateLb_gui	24	strChkDye	Calcola Lb per canale di fluorocromo
-calculateLb_gui	25	strLblMatching	Corrispondenza nel nome del campione di reference:
-calculateLb_gui	26	strChkIgnore	Ignora Maiuscole/minuscole
-calculateLb_gui	27	strChkWord	Aggiungi i limiti/confini delle parole
-calculateLb_gui	28	strChkExact	Corrispondenza esatta
-calculateLb_gui	29	strLblPost	Post-elaborazione:
-calculateLb_gui	30	strChkAverage	Calcola l'altezza media di picco
-calculateLb_gui	31	strFrmSave	Salva come
-calculateLb_gui	32	strLblSave	Nome per il risultato:
-calculateLb_gui	33	strBtnCalculate	Calcola
-calculateLb_gui	34	strBtnProcessing	In elaborazione?
-calculateLb_gui	35	strMsgDataset	Devono essere selezionati un dataset dei campioni ed un dataset dei reference.
-calculateLb_gui	36	strMsgTitleDataset	Dataset non selezionato
-calculateLb_gui	37	strMsgCheck	Il data frame è NULL!\n\nAssicurati di selezionare un dataset di campioni
-calculateLb_gui	38	strWinTitleCheck	Controllo del subsetting
-calculateLb_gui	39	strMsgTitleError	Errore
-calculateLb_gui	40	strMsgNA	'NA' nella colonna 'Dye'. \nUsare la funzione aggiungi dye per risolvere il problema.
-calculateLb_gui	41	strMsgTitleNA	individuati NA!
+calculateLb_gui	23	strRadPeak	Rapporto di picco
+calculateLb_gui	24	strRadMarker	Rapporto di marcatori
+calculateLb_gui	25	strChkDye	Calcola Lb per canale di fluorocromo
+calculateLb_gui	26	strLblMatching	Corrispondenza nel nome del campione di reference:
+calculateLb_gui	27	strChkIgnore	Ignora Maiuscole/minuscole
+calculateLb_gui	28	strChkWord	Aggiungi i limiti/confini delle parole
+calculateLb_gui	29	strChkExact	Corrispondenza esatta
+calculateLb_gui	30	strLblPost	Post-elaborazione:
+calculateLb_gui	31	strChkAverage	Calcola l'altezza media di picco
+calculateLb_gui	32	strFrmSave	Salva come
+calculateLb_gui	33	strLblSave	Nome per il risultato:
+calculateLb_gui	34	strBtnCalculate	Calcola
+calculateLb_gui	35	strBtnProcessing	In elaborazione?
+calculateLb_gui	36	strMsgDataset	Devono essere selezionati un dataset dei campioni ed un dataset dei reference.
+calculateLb_gui	37	strMsgTitleDataset	Dataset non selezionato
+calculateLb_gui	38	strMsgCheck	Il data frame è NULL!\n\nAssicurati di selezionare un dataset di campioni
+calculateLb_gui	39	strWinTitleCheck	Controllo del subsetting
+calculateLb_gui	40	strMsgTitleError	Errore
+calculateLb_gui	41	strMsgNA	'NA' nella colonna 'Dye'. \nUsare la funzione aggiungi dye per risolvere il problema.
+calculateLb_gui	42	strMsgTitleNA	individuati NA!
 calculateMixture_gui	1	strWinTitle	Calcola la mixture
 calculateMixture_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 calculateMixture_gui	3	strBtnHelp	Aiuto
@@ -1944,51 +1945,52 @@ strvalidator	149	strLblLb	Calcola l'equilibrio balance del profilo
 strvalidator	150	strLblPlotBalance	Crea grafici per i dati analizzati
 strvalidator	151	strLblStatBalanceGlobal	Calcola la statistica riassuntiva per i dati di balance
 strvalidator	152	strLblStatBalanceMarker	Calcola la statistica riassuntiva per marcatore
-strvalidator	153	strFrmCapillary	Capillary balance
-strvalidator	154	strLblCapillary	 per un dataset
-strvalidator	155	strLblPlotCapillary	Crea grafici per i dati di capillary balance
-strvalidator	156	strLblStatCapillaryCap	Calcola la statistica riassuntiva per capillare
-strvalidator	157	strLblStatCapillaryInj	Calcola la statistica riassuntiva per iniezione
-strvalidator	158	strLblStatCapillaryRow	Calcola la statistica riassuntiva per righe della piastra
-strvalidator	159	strLblStatCapillaryRun	Calcola la statistica riassuntiva per corsa
-strvalidator	160	strLblStatCapillaryIns	Calcola la statistica riassuntiva per strumento
-strvalidator	161	strFrmRatio	PHR del marker
-strvalidator	162	strLblRatio	Calcola il rapporto tra locus per un dataset
-strvalidator	163	strLblPlotRatio	Crea grafici per i dati di rapporto tra marker
-strvalidator	164	strLblConcordance	Calcola la concordanza tra più dataset
-strvalidator	165	strBtnScore	Score
-strvalidator	166	strLblScore	Score dei dropout per un dataset
-strvalidator	167	strLblDropout	Calcola le soglie stocastiche
-strvalidator	168	strBtnModel	Modellizza
-strvalidator	169	strLblModel	Modellizza e rendi graficamente il rischio di dropout
-strvalidator	170	strLblPlotDropout	Crea grafici per i dati analizzati
-strvalidator	171	strLblMixture	Calcola la mixture per un dataset
-strvalidator	172	strFrmType	Tipi di risultato
-strvalidator	173	strLblType	Calcola il tipo di risultati per un dataset
-strvalidator	174	strLblPlotType	Crea grafici per i dati sul tipo di risultato
-strvalidator	175	strFrmPeaks	Numero di picchi
-strvalidator	176	strLblPeaks	Conta il numero di picchi nel campione
-strvalidator	177	strLblPlotPeaks	Crea grafici per i dati di picco
-strvalidator	178	strFrmStatistics	Statistica riassuntiva
-strvalidator	179	strLblStatistics	Calcola statistica riassuntiva
-strvalidator	180	strFrmDistribution	Distribuzioni
-strvalidator	181	strLblDistribution	Rendi graficamente la distribuzione dei dati
-strvalidator	182	strLblGroups	Rendi graficamente la distribuzione cumulativa per più gruppi
-strvalidator	183	strFrmDropin	Strumenti per il drop-in
-strvalidator	184	strLblSpikes	Identifica possibili spike
-strvalidator	185	strLblFilterSpikes	Rimuovi gli spike
-strvalidator	186	strLblArtefacts	Identifica possibili spike
-strvalidator	187	strLblFilterArtefacts	Rimuovi artefatti
-strvalidator	188	strLblPlotContamination	Rendi graficamente la contaminazione
-strvalidator	189	strFrmSlope	Slope del profilo
-strvalidator	190	strLblSlope	Calcola la slope del profilo
-strvalidator	191	strLblPlotSlope	Rendi graficamente i dati di slope
-strvalidator	192	strLblPrecision	Crea grafici per la precisione
-strvalidator	193	strLblStatPrecisionSize	Calcola la statistica riassuntiva per la precisione
-strvalidator	194	strLblStatPrecisionDataPoint	Calcola la statistica riassuntiva per la precisione
-strvalidator	195	strLblStatPrecisionHeight	Calcola la statistica riassuntiva per la precisione
-strvalidator	196	strLblPullup	Calcola il pull-up spettrale/bleed-through
-strvalidator	197	strLblPlotPullup	Crea grafici per i dati di pull-up
+strvalidator	153	strLblStatBalanceDye	Calcola la statistica riassuntiva per colorante
+strvalidator	154	strFrmCapillary	Capillary balance
+strvalidator	155	strLblCapillary	 per un dataset
+strvalidator	156	strLblPlotCapillary	Crea grafici per i dati di capillary balance
+strvalidator	157	strLblStatCapillaryCap	Calcola la statistica riassuntiva per capillare
+strvalidator	158	strLblStatCapillaryInj	Calcola la statistica riassuntiva per iniezione
+strvalidator	159	strLblStatCapillaryRow	Calcola la statistica riassuntiva per righe della piastra
+strvalidator	160	strLblStatCapillaryRun	Calcola la statistica riassuntiva per corsa
+strvalidator	161	strLblStatCapillaryIns	Calcola la statistica riassuntiva per strumento
+strvalidator	162	strFrmRatio	PHR del marker
+strvalidator	163	strLblRatio	Calcola il rapporto tra locus per un dataset
+strvalidator	164	strLblPlotRatio	Crea grafici per i dati di rapporto tra marker
+strvalidator	165	strLblConcordance	Calcola la concordanza tra più dataset
+strvalidator	166	strBtnScore	Score
+strvalidator	167	strLblScore	Score dei dropout per un dataset
+strvalidator	168	strLblDropout	Calcola le soglie stocastiche
+strvalidator	169	strBtnModel	Modellizza
+strvalidator	170	strLblModel	Modellizza e rendi graficamente il rischio di dropout
+strvalidator	171	strLblPlotDropout	Crea grafici per i dati analizzati
+strvalidator	172	strLblMixture	Calcola la mixture per un dataset
+strvalidator	173	strFrmType	Tipi di risultato
+strvalidator	174	strLblType	Calcola il tipo di risultati per un dataset
+strvalidator	175	strLblPlotType	Crea grafici per i dati sul tipo di risultato
+strvalidator	176	strFrmPeaks	Numero di picchi
+strvalidator	177	strLblPeaks	Conta il numero di picchi nel campione
+strvalidator	178	strLblPlotPeaks	Crea grafici per i dati di picco
+strvalidator	179	strFrmStatistics	Statistica riassuntiva
+strvalidator	180	strLblStatistics	Calcola statistica riassuntiva
+strvalidator	181	strFrmDistribution	Distribuzioni
+strvalidator	182	strLblDistribution	Rendi graficamente la distribuzione dei dati
+strvalidator	183	strLblGroups	Rendi graficamente la distribuzione cumulativa per più gruppi
+strvalidator	184	strFrmDropin	Strumenti per il drop-in
+strvalidator	185	strLblSpikes	Identifica possibili spike
+strvalidator	186	strLblFilterSpikes	Rimuovi gli spike
+strvalidator	187	strLblArtefacts	Identifica possibili spike
+strvalidator	188	strLblFilterArtefacts	Rimuovi artefatti
+strvalidator	189	strLblPlotContamination	Rendi graficamente la contaminazione
+strvalidator	190	strFrmSlope	Slope del profilo
+strvalidator	191	strLblSlope	Calcola la slope del profilo
+strvalidator	192	strLblPlotSlope	Rendi graficamente i dati di slope
+strvalidator	193	strLblPrecision	Crea grafici per la precisione
+strvalidator	194	strLblStatPrecisionSize	Calcola la statistica riassuntiva per la precisione
+strvalidator	195	strLblStatPrecisionDataPoint	Calcola la statistica riassuntiva per la precisione
+strvalidator	196	strLblStatPrecisionHeight	Calcola la statistica riassuntiva per la precisione
+strvalidator	197	strLblPullup	Calcola il pull-up spettrale/bleed-through
+strvalidator	198	strLblPlotPullup	Crea grafici per i dati di pull-up
 trim_gui	1	strWinTitle	Procedi con 'Trim' sul dataset
 trim_gui	2	strChkGui	Salva i settaggi dell'interfaccia grafica
 trim_gui	3	strBtnHelp	Aiuto

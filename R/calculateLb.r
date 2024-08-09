@@ -3,6 +3,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.08.2024: Always check for 'Dye' and add if missing.
 # 08.08.2024: Added new option 'marker' to ratio of min and max TPH.
 # 08.08.2024: Added correction for number of allele copies for option 'peak'.
 # 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
@@ -215,18 +216,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     message(kit, " detected.")
   }
 
-  # Check if calculation by dye and add dye if not available.
-  if (by.dye) {
-    if (is.null(data$Dye)) {
-      message("Dye is required to calculate by dye. Adding dye according to 'kit'.")
-
-      data <- addColor(
-        data = data, kit = kit, need = "Dye",
-        ignore.case = ignore.case, overwrite = TRUE, debug = debug
-      )
-    }
-  }
-
   # Remove off-ladder alleles.
   if (ol.rm) {
     tmp1 <- nrow(data)
@@ -250,16 +239,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       # Add missing markers.
       data <- addMarker(data = data, marker = marker, ignore.case = ignore.case, debug = debug)
 
-      # Check and fix dye.
-      if (!is.null((data$Dye))) {
-        if (any(is.na(data$Dye))) {
-          # Fix broken dye.
-          data <- addColor(
-            data = data, kit = kit, need = "Dye",
-            ignore.case = ignore.case, overwrite = TRUE, debug = debug
-          )
-        }
-      }
     }
   }
 
@@ -274,18 +253,6 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       ignore.case = ignore.case, exact = exact, word = word,
       sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug
     )
-
-    # Check if Dye exist.
-    if (!is.null((data$Dye))) {
-      # Check and fix dye.
-      if (any(is.na(data$Dye))) {
-        # Fix broken dye.
-        data <- addColor(
-          data = data, kit = kit, need = "Dye",
-          ignore.case = ignore.case, overwrite = TRUE, debug = debug
-        )
-      }
-    }
 
     # Add number of allele copies per peak.
     if (option == "peak") {
@@ -338,6 +305,16 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     message("The following samples are incomplete:")
     print(tmp[tmp$Marker != max(tmp$Marker), ])
     stop("Missing markers detected!")
+  }
+
+  # Check if dye if not available.
+  if (is.null(data$Dye)) {
+    message("Adding dye according to 'kit'.")
+    
+    data <- addColor(
+      data = data, kit = kit, need = "Dye",
+      ignore.case = ignore.case, overwrite = TRUE, debug = debug
+    )
   }
 
   # Analyse -------------------------------------------------------------------

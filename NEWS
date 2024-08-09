@@ -4,6 +4,8 @@ Version 2.4.1.9000
   - calculateLb
   Option 'peak' now adjust for homozygotes by division by 2
   New option 'marker' similar to 'peaks' but use the marker peak height sum instead.
+  - strvalidator
+  Added button to calculate summary statistics by Dye.
 
 Version 2.4.1
 ------------------------------------------------------------------------------

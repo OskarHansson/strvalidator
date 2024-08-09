@@ -26,6 +26,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.08.2024: Added button to calculate Lb by Dye.
 # 14.09.2022: Added export buttons to DT table for View.
 # 10.09.2022: Fixed warning when selecting multiple objects for export.
 # 02.09.2022: Added "datatables" to supported classes in view function.
@@ -45,10 +46,6 @@
 # 19.02.2019: Expand text box in welcome tab.
 # 15.02.2019: Rearranged buttons on welcome tab.
 # 14.02.2019: Adaptations to gWidgets2tcltk and updated welcome tab.
-# 19.01.2019: Adaptations to gWidgets2tcltk.
-# 18.07.2018: Added button to plot groups in 'Result' tab.
-# 17.07.2018: Added button to calculate stochastic thresholds in 'Dropout' tab.
-# 02.08.2017: Allow multiple objects to be removed from workspace.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -269,6 +266,7 @@ strvalidator <- function(debug = FALSE) {
   strLblPlotBalance <- "Create plots for analysed data"
   strLblStatBalanceGlobal <- "Calculate global summary statistics"
   strLblStatBalanceMarker <- "Calculate summary statistics by marker"
+  strLblStatBalanceDye <- "Calculate summary statistics by dye"
   strFrmCapillary <- "Capillary balance"
   strLblCapillary <- "Calculate capillary balance for a dataset"
   strLblPlotCapillary <- "Create plots for capillary balance data"
@@ -778,6 +776,9 @@ strvalidator <- function(debug = FALSE) {
     strtmp <- dtStrings["strLblStatBalanceMarker"]$value
     strLblStatBalanceMarker <- ifelse(is.na(strtmp), strLblStatBalanceMarker, strtmp)
 
+    strtmp <- dtStrings["strLblStatBalanceDye"]$value
+    strLblStatBalanceDye <- ifelse(is.na(strtmp), strLblStatBalanceDye, strtmp)
+    
     strtmp <- dtStrings["strFrmCapillary"]$value
     strFrmCapillary <- ifelse(is.na(strtmp), strFrmCapillary, strtmp)
 
@@ -2798,12 +2799,12 @@ strvalidator <- function(debug = FALSE) {
 
   # SUMMARY STATISTICS GLOBAL -------------------------------------------------
 
-  balance_lb[3, 1] <- balance_stats_global_btn <- gbutton(
+  balance_lb[1, 3] <- balance_stats_global_btn <- gbutton(
     text = strBtnStatistics,
     container = balance_lb
   )
 
-  balance_lb[3, 2] <- glabel(
+  balance_lb[1, 4] <- glabel(
     text = strLblStatBalanceGlobal,
     container = balance_lb
   )
@@ -2818,7 +2819,7 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Lb"),
-      group = NULL, count = NULL, quant = 0.05,
+      group = NULL, count = NULL, quant = 0.5,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2826,12 +2827,12 @@ strvalidator <- function(debug = FALSE) {
 
   # SUMMARY STATISTICS MARKER -------------------------------------------------
 
-  balance_lb[4, 1] <- balance_stats_marker_btn <- gbutton(
+  balance_lb[2, 3] <- balance_stats_marker_btn <- gbutton(
     text = strBtnStatistics,
     container = balance_lb
   )
 
-  balance_lb[4, 2] <- glabel(
+  balance_lb[2, 4] <- glabel(
     text = strLblStatBalanceMarker,
     container = balance_lb
   )
@@ -2846,12 +2847,40 @@ strvalidator <- function(debug = FALSE) {
     # Open GUI.
     calculateStatistics_gui(
       data = tmp[1], target = c("Lb"),
-      group = c("Marker"), count = NULL, quant = 0.05,
+      group = c("Marker"), count = NULL, quant = 0.5,
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
   })
 
+  # SUMMARY STATISTICS DYE ----------------------------------------------------
+  
+  balance_lb[3, 3] <- balance_stats_dye_btn <- gbutton(
+    text = strBtnStatistics,
+    container = balance_lb
+  )
+  
+  balance_lb[3, 4] <- glabel(
+    text = strLblStatBalanceDye,
+    container = balance_lb
+  )
+  
+  addHandlerChanged(balance_stats_dye_btn, handler = function(h, ...) {
+    # Get most recent object.
+    tmp <- listObjects(
+      env = .strvalidator_env, obj.class = "data.frame",
+      sort = "time", decreasing = TRUE, debug = debug
+    )
+    
+    # Open GUI.
+    calculateStatistics_gui(
+      data = tmp[1], target = c("Lb"),
+      group = c("Dye"), count = NULL, quant = 0.5,
+      env = .strvalidator_env, savegui = .save_gui,
+      debug = debug, parent = w
+    )
+  })
+  
   # CAPILLARY BALANCE =========================================================
 
   balance_f3 <- gframe(

@@ -351,25 +351,26 @@ calculateLb_gui	19	strLblMethod	Calculate locus balance:
 calculateLb_gui	20	strRadProp	Proportional
 calculateLb_gui	21	strRadNorm	Normalised
 calculateLb_gui	22	strRadCent	Centred Quantities
-calculateLb_gui	23	strRadRatio	Peak Ratio
-calculateLb_gui	24	strChkDye	Calculate Lb by dye channel
-calculateLb_gui	25	strLblMatching	Reference sample name matching:
-calculateLb_gui	26	strChkIgnore	Ignore case
-calculateLb_gui	27	strChkWord	Add word boundaries
-calculateLb_gui	28	strChkExact	Exact matching
-calculateLb_gui	29	strLblPost	Post-processing:
-calculateLb_gui	30	strChkAverage	Calculate average peak height
-calculateLb_gui	31	strFrmSave	Save as
-calculateLb_gui	32	strLblSave	Name for result:
-calculateLb_gui	33	strBtnCalculate	Calculate
-calculateLb_gui	34	strBtnProcessing	Processing...
-calculateLb_gui	35	strMsgDataset	A sample dataset and a reference dataset must be selected.
-calculateLb_gui	36	strMsgTitleDataset	Dataset not selected
-calculateLb_gui	37	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
-calculateLb_gui	38	strWinTitleCheck	Check subsetting
-calculateLb_gui	39	strMsgTitleError	Error
-calculateLb_gui	40	strMsgNA	'NA' in 'Dye' column. \nUse add dye function to fix.
-calculateLb_gui	41	strMsgTitleNA	NA detected!
+calculateLb_gui	23	strRadPeak	Peak Ratio
+calculateLb_gui	24	strRadMarker	Marker Ratio
+calculateLb_gui	25	strChkDye	Calculate Lb by dye channel
+calculateLb_gui	26	strLblMatching	Reference sample name matching:
+calculateLb_gui	27	strChkIgnore	Ignore case
+calculateLb_gui	28	strChkWord	Add word boundaries
+calculateLb_gui	29	strChkExact	Exact matching
+calculateLb_gui	30	strLblPost	Post-processing:
+calculateLb_gui	31	strChkAverage	Calculate average peak height
+calculateLb_gui	32	strFrmSave	Save as
+calculateLb_gui	33	strLblSave	Name for result:
+calculateLb_gui	34	strBtnCalculate	Calculate
+calculateLb_gui	35	strBtnProcessing	Processing...
+calculateLb_gui	36	strMsgDataset	A sample dataset and a reference dataset must be selected.
+calculateLb_gui	37	strMsgTitleDataset	Dataset not selected
+calculateLb_gui	38	strMsgCheck	Data set is NULL!\n\nMake sure to select a sample dataset.
+calculateLb_gui	39	strWinTitleCheck	Check subsetting
+calculateLb_gui	40	strMsgTitleError	Error
+calculateLb_gui	41	strMsgNA	'NA' in 'Dye' column. \nUse add dye function to fix.
+calculateLb_gui	42	strMsgTitleNA	NA detected!
 calculateMixture_gui	1	strWinTitle	Calculate Mixture
 calculateMixture_gui	2	strChkGui	Save GUI settings
 calculateMixture_gui	3	strBtnHelp	Help
@@ -1944,51 +1945,52 @@ strvalidator	149	strLblLb	Calculate profile balance
 strvalidator	150	strLblPlotBalance	Create plots for analysed data
 strvalidator	151	strLblStatBalanceGlobal	Calculate global summary statistics
 strvalidator	152	strLblStatBalanceMarker	Calculate summary statistics by marker
-strvalidator	153	strFrmCapillary	Capillary balance
-strvalidator	154	strLblCapillary	Calculate capillary balance for a dataset
-strvalidator	155	strLblPlotCapillary	Create plots for capillary balance data
-strvalidator	156	strLblStatCapillaryCap	Calculate summary statistics by capillary
-strvalidator	157	strLblStatCapillaryInj	Calculate summary statistics by injection
-strvalidator	158	strLblStatCapillaryRow	Calculate summary statistics by plate row
-strvalidator	159	strLblStatCapillaryRun	Calculate summary statistics by run
-strvalidator	160	strLblStatCapillaryIns	Calculate summary statistics by instrument
-strvalidator	161	strFrmRatio	Marker peak height ratio
-strvalidator	162	strLblRatio	Calculate locus ratio for a dataset
-strvalidator	163	strLblPlotRatio	Create plots for marker ratio data
-strvalidator	164	strLblConcordance	Calculate concordance between multiple datasets
-strvalidator	165	strBtnScore	Score
-strvalidator	166	strLblScore	Score dropouts for a dataset
-strvalidator	167	strLblDropout	Calculate stochastic thresholds
-strvalidator	168	strBtnModel	Model
-strvalidator	169	strLblModel	Model and plot dropout risk
-strvalidator	170	strLblPlotDropout	Create plots for analysed data
-strvalidator	171	strLblMixture	Calculate mixture for a dataset
-strvalidator	172	strFrmType	Result types
-strvalidator	173	strLblType	Calculate result types for a dataset
-strvalidator	174	strLblPlotType	Create plots for result type data
-strvalidator	175	strFrmPeaks	Number of peaks
-strvalidator	176	strLblPeaks	Count the number of peaks in sample
-strvalidator	177	strLblPlotPeaks	Create plots for peak data
-strvalidator	178	strFrmStatistics	Summary statistics
-strvalidator	179	strLblStatistics	Calculate summary statistics
-strvalidator	180	strFrmDistribution	Distributions
-strvalidator	181	strLblDistribution	Plot distributions for data
-strvalidator	182	strLblGroups	Plot cumulative distribution for multiple groups
-strvalidator	183	strFrmDropin	Drop-in tools
-strvalidator	184	strLblSpikes	Identify possible spikes
-strvalidator	185	strLblFilterSpikes	Remove spikes
-strvalidator	186	strLblArtefacts	Identify possible artefacts
-strvalidator	187	strLblFilterArtefacts	Remove artefacts
-strvalidator	188	strLblPlotContamination	Plot contamination
-strvalidator	189	strFrmSlope	Profile slope
-strvalidator	190	strLblSlope	Calculate the profile slope
-strvalidator	191	strLblPlotSlope	Plot slope data
-strvalidator	192	strLblPrecision	Create precision plots
-strvalidator	193	strLblStatPrecisionSize	Calculate summary statistics for Size
-strvalidator	194	strLblStatPrecisionDataPoint	Calculate summary statistics for Data.Point
-strvalidator	195	strLblStatPrecisionHeight	Calculate summary statistics for Height
-strvalidator	196	strLblPullup	Calculate spectral pull-up/bleed-through
-strvalidator	197	strLblPlotPullup	Create plots for pull-up data
+strvalidator	153	strLblStatBalanceDye	Calculate summary statistics by dye
+strvalidator	154	strFrmCapillary	Capillary balance
+strvalidator	155	strLblCapillary	Calculate capillary balance for a dataset
+strvalidator	156	strLblPlotCapillary	Create plots for capillary balance data
+strvalidator	157	strLblStatCapillaryCap	Calculate summary statistics by capillary
+strvalidator	158	strLblStatCapillaryInj	Calculate summary statistics by injection
+strvalidator	159	strLblStatCapillaryRow	Calculate summary statistics by plate row
+strvalidator	160	strLblStatCapillaryRun	Calculate summary statistics by run
+strvalidator	161	strLblStatCapillaryIns	Calculate summary statistics by instrument
+strvalidator	162	strFrmRatio	Marker peak height ratio
+strvalidator	163	strLblRatio	Calculate locus ratio for a dataset
+strvalidator	164	strLblPlotRatio	Create plots for marker ratio data
+strvalidator	165	strLblConcordance	Calculate concordance between multiple datasets
+strvalidator	166	strBtnScore	Score
+strvalidator	167	strLblScore	Score dropouts for a dataset
+strvalidator	168	strLblDropout	Calculate stochastic thresholds
+strvalidator	169	strBtnModel	Model
+strvalidator	170	strLblModel	Model and plot dropout risk
+strvalidator	171	strLblPlotDropout	Create plots for analysed data
+strvalidator	172	strLblMixture	Calculate mixture for a dataset
+strvalidator	173	strFrmType	Result types
+strvalidator	174	strLblType	Calculate result types for a dataset
+strvalidator	175	strLblPlotType	Create plots for result type data
+strvalidator	176	strFrmPeaks	Number of peaks
+strvalidator	177	strLblPeaks	Count the number of peaks in sample
+strvalidator	178	strLblPlotPeaks	Create plots for peak data
+strvalidator	179	strFrmStatistics	Summary statistics
+strvalidator	180	strLblStatistics	Calculate summary statistics
+strvalidator	181	strFrmDistribution	Distributions
+strvalidator	182	strLblDistribution	Plot distributions for data
+strvalidator	183	strLblGroups	Plot cumulative distribution for multiple groups
+strvalidator	184	strFrmDropin	Drop-in tools
+strvalidator	185	strLblSpikes	Identify possible spikes
+strvalidator	186	strLblFilterSpikes	Remove spikes
+strvalidator	187	strLblArtefacts	Identify possible artefacts
+strvalidator	188	strLblFilterArtefacts	Remove artefacts
+strvalidator	189	strLblPlotContamination	Plot contamination
+strvalidator	190	strFrmSlope	Profile slope
+strvalidator	191	strLblSlope	Calculate the profile slope
+strvalidator	192	strLblPlotSlope	Plot slope data
+strvalidator	193	strLblPrecision	Create precision plots
+strvalidator	194	strLblStatPrecisionSize	Calculate summary statistics for Size
+strvalidator	195	strLblStatPrecisionDataPoint	Calculate summary statistics for Data.Point
+strvalidator	196	strLblStatPrecisionHeight	Calculate summary statistics for Height
+strvalidator	197	strLblPullup	Calculate spectral pull-up/bleed-through
+strvalidator	198	strLblPlotPullup	Create plots for pull-up data
 trim_gui	1	strWinTitle	Trim dataset
 trim_gui	2	strChkGui	Save GUI settings
 trim_gui	3	strBtnHelp	Help
