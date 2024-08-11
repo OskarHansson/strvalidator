@@ -29,7 +29,8 @@ If provided alleles matching 'ref' will be extracted from 'data'
 (see \code{\link{filterProfile}}).}
 
 \item{option}{character: 'prop' for proportional Lb, 'norm' for normalized
-LB, 'cent' for centred Lb, and 'peak' for the min and max peak height ratio.}
+LB, 'cent' for centred Lb, 'marker' for the min and max marker peak height ratio,
+.and 'peak' for the min and max peak height ratio.}
 
 \item{by.dye}{logical. Default is FALSE for global Lb, if TRUE Lb is calculated
 within each dye channel.}
@@ -52,8 +53,8 @@ Default is NULL indicating that NA will be treated as missing values.}
 \item{ignore.case}{logical indicating if sample matching should ignore case.
 Only used if 'ref' is provided and 'data' is filtered.}
 
-\item{word}{logical indicating if word boundaries should be added before sample matching.
-Only used if 'ref' is provided and 'data' is filtered.}
+\item{word}{logical indicating if word boundaries should be added before
+sample matching. Only used if 'ref' is provided and 'data' is filtered.}
 
 \item{exact}{logical indicating if exact sample matching should be used.
 Only used if 'ref' is provided and 'data' is filtered.}
@@ -69,18 +70,18 @@ Calculates the inter-locus balance.
 }
 \details{
 The inter-locus balance (Lb), or profile balance, can be calculated
-as a proportion of the whole, normalized, or as centred quantities (as in
-the reference but using the mean total marker peak height instead of H).
+as a proportion of the whole, normalized, or as centered quantities (as in
+the cited paper, but using the mean total marker peak height instead of H).
 Lb can be calculated globally across the complete profile or within each dye
-channel. All markers must be present in each sample. Data can be unfiltered
-or filtered since the sum of peak heights by marker is used. A reference
+channel. All markers must be present in each sample. Data can be filtered
+or unfiltered when the sum of peak heights by marker is used. A reference
 dataset is required to filter the dataset, which also adds any missing
 markers. A kit should be provided for filtering of known profile, sex
-markers, or quality sensors. If not automatic detection will be attempted.
-If missing, dye will be added according to kit. Off-ladder alleles and
-quality sensors are by default removed from the dataset.
-Sex markers are optionally removed.
-Some columns in the result may vary:
+markers, or quality sensors. If kit is not provided, automatic detection will
+be attempted. If 'Dye' column is missing, it will be added according to kit.
+Off-ladder alleles and quality sensors are by default removed from the dataset.
+Sex markers are optionally removed, which is recommended if the 'peak' or 
+'marker' option is used. Some columns in the result may vary:
 TPH: Total (marker) Peak Height.
 TPPH: Total Profile Peak Height.
 MTPH: Maximum (sample) Total Peak Height.
