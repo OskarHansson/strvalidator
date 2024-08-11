@@ -3,6 +3,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.08.2024: Corrected calculation of number of peaks for option 'marker'.
 # 09.08.2024: Always check for 'Dye' and add if missing.
 # 08.08.2024: Added new option 'marker' to ratio of min and max TPH.
 # 08.08.2024: Added correction for number of allele copies for option 'peak'.
@@ -400,24 +401,41 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     }
   } else if (option == "marker") {
     message("Calculating total peak height by sample and marker.")
-    res <- DT[, list(TPH = sum(Height), Peaks = .N, Dye = unique(Dye)),
-      by = list(Sample.Name, Marker)
+    # Calculate TPH and Dye for each Sample and Marker
+    res <- DT[, .(TPH = sum(Height), Dye = unique(Dye)),
+              by = .(Sample.Name, Marker)
     ]
-
+    
     if (by.dye) {
-      message("Calculating minimum and maximum marker peak height sum by sample and dye.")
-      res <- res[, list(Min.TPH = min(TPH), Max.TPH = max(TPH), Peaks = .N),
-        by = list(Sample.Name, Dye)
+      message("Calculating number of peaks for each sample and dye.")
+      peaks_count <- DT[, .(Peaks = .N),
+                        by = .(Sample.Name, Dye)
       ]
-
+      
+      # Merge Peaks data back to the res table based on Sample.Name and Dye
+      res <- merge(res, peaks_count, by = c("Sample.Name", "Dye"), all.x = TRUE)
+      
+      message("Calculating minimum and maximum marker peak height sum by sample and dye.")
+      res <- res[, list(Min.TPH = min(TPH), Max.TPH = max(TPH)),
+        by = list(Sample.Name, Dye, Peaks)
+      ]
+      
       message("Calculating marker ratio by sample and dye.")
       res[, Lb := Min.TPH / Max.TPH, by = list(Sample.Name, Dye)]
     } else {
-      message("Calculating minimum and maximum marker peak height sum by sample.")
-      res <- res[, list(Min.TPH = min(TPH), Max.TPH = max(TPH), Peaks = .N),
-        by = list(Sample.Name)
+      message("Calculating number of peaks for each sample.")
+      peaks_count <- DT[, .(Peaks = .N),
+                        by = .(Sample.Name)
       ]
-
+      
+      # Merge Peaks data back to the res table based on Sample.Name and Dye
+      res <- merge(res, peaks_count, by = c("Sample.Name"), all.x = TRUE)
+      
+      message("Calculating minimum and maximum marker peak height sum by sample.")
+      res <- res[, list(Min.TPH = min(TPH), Max.TPH = max(TPH)),
+        by = list(Sample.Name, Peaks)
+      ]
+      
       message("Calculating marker ratio by sample.")
       res[, Lb := Min.TPH / Max.TPH, by = list(Sample.Name)]
     }

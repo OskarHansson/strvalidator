@@ -543,7 +543,7 @@ test_that("calculateLb", {
 
   # Analyse dataframe.
   res <- calculateLb(
-    data = set2, ref = NULL, option = "peak", by.dye = TRUE,
+    data = set2, ref = ref2, option = "peak", by.dye = TRUE,
     ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
     ignore.case = TRUE, word = FALSE, exact = FALSE
   )
@@ -568,12 +568,12 @@ test_that("calculateLb", {
   expect_true(any(is.na(res$Lb)))
 
   # Check result: Locus balance.
-  expect_that(res$Lb[1], equals(402 / 723))
-  expect_that(res$Lb[2], equals(361 / 766))
-  expect_that(res$Lb[3], equals(359 / 592))
+  expect_that(res$Lb[1], equals(253 / 491))
+  expect_that(res$Lb[2], equals(309.5 / 632))
+  expect_that(res$Lb[3], equals(212.5 / 384))
 
-  expect_that(res$Lb[4], equals(198 / 347))
-  expect_that(res$Lb[5], equals(195 / 402))
+  expect_that(res$Lb[4], equals(152 / 241))
+  expect_that(res$Lb[5], equals(154.5 / 326))
   expect_that(res$Lb[6], equals(as.numeric(NA)))
 
   # Check result: Peaks.
@@ -586,10 +586,10 @@ test_that("calculateLb", {
   expect_that(res$Peaks[6], equals(4))
 
   # Check result: Min peak height.
-  expect_that(unique(res$Min), equals(c(402, 361, 359, 198, 195, NA)))
+  expect_that(unique(res$Min), equals(c(253, 309.5, 212.5, 152, 154.5, NA)))
 
   # Check result: Max peak height.
-  expect_that(unique(res$Max), equals(c(723, 766, 592, 347, 402, NA)))
+  expect_that(unique(res$Max), equals(c(491, 632, 384, 241, 326, NA)))
 
 
   # TEST 08 -------------------------------------------------------------------
@@ -597,7 +597,7 @@ test_that("calculateLb", {
   # one locus dropout.
 
   res <- calculateLb(
-    data = set2, ref = NULL, option = "peak", by.dye = FALSE,
+    data = set2, ref = ref2, option = "peak", by.dye = FALSE,
     ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
     ignore.case = TRUE, word = FALSE, exact = FALSE
   )
@@ -620,7 +620,7 @@ test_that("calculateLb", {
   expect_true(any(is.na(res$Lb)))
 
   # Check result: Locus balance.
-  expect_that(res$Lb[1], equals(359 / 766))
+  expect_that(res$Lb[1], equals(212.5 / 632))
 
   expect_that(res$Lb[2], equals(as.numeric(NA)))
 
@@ -630,10 +630,10 @@ test_that("calculateLb", {
   expect_that(res$Peaks[2], equals(16))
 
   # Check result: Min peak height.
-  expect_that(unique(res$Min), equals(c(359, NA)))
+  expect_that(unique(res$Min), equals(c(212.5, NA)))
 
   # Check result: Max peak height.
-  expect_that(unique(res$Max), equals(c(766, NA)))
+  expect_that(unique(res$Max), equals(c(632, NA)))
 
 
   # TEST 09 -------------------------------------------------------------------
@@ -1155,4 +1155,106 @@ test_that("calculateLb", {
 
   # Expect error due to 'fat' data.
   expect_error(calculateLb(data = set1Fat))
+  
+  
+  # NEW TEST for option "marker" ----------------------------------------------
+  # TEST 18 -------------------------------------------------------------------
+  # Test that marker ratio Lb by dye can be calculated for data including
+  # one locus dropout.
+  
+  # Analyse dataframe for "marker" option by dye
+  res <- calculateLb(
+    data = set2, ref = ref2, option = "marker", by.dye = TRUE,
+    ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
+    ignore.case = TRUE, word = FALSE, exact = FALSE
+  )
+  
+  # Check return class.
+  expect_match(class(res), class(data.frame()))
+  
+  # Check that expected columns exist.
+  expect_false(is.null(res$Sample.Name))
+  expect_false(is.null(res$Dye))
+  expect_false(is.null(res$Min.TPH))
+  expect_false(is.null(res$Max.TPH))
+  expect_false(is.null(res$Peaks))
+  expect_false(is.null(res$Lb))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_false(any(is.na(res$Dye)))
+  expect_true(any(is.na(res$Min.TPH)))
+  expect_true(any(is.na(res$Max.TPH)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_true(any(is.na(res$Lb)))
+  
+  # Check result: Locus balance.
+  expect_that(res$Lb[1], equals(506 / 914))
+  expect_that(res$Lb[2], equals(619 / 1219))
+  expect_that(res$Lb[3], equals(425 / 743))
+  
+  expect_that(res$Lb[4], equals(304 / 440))
+  expect_that(res$Lb[5], equals(309 / 638))
+  expect_that(res$Lb[6], equals(as.numeric(NA)))
+  
+  # Check result: Markers.
+  expect_that(res$Peaks[1], equals(6))
+  expect_that(res$Peaks[2], equals(6))
+  expect_that(res$Peaks[3], equals(4))
+  
+  expect_that(res$Peaks[4], equals(6))
+  expect_that(res$Peaks[5], equals(6))
+  expect_that(res$Peaks[6], equals(4))
+  
+  # Check result: Min marker height.
+  expect_that(unique(res$Min.TPH), equals(c(506, 619, 425, 304, 309, NA)))
+  
+  # Check result: Max marker height.
+  expect_that(unique(res$Max.TPH), equals(c(914, 1219, 743, 440, 638, NA)))
+  
+  
+  # TEST 19 -------------------------------------------------------------------
+  # Test that marker ratio Lb can be calculated for data including
+  # one locus dropout globally.
+  
+  res <- calculateLb(
+    data = set2, ref = ref2, option = "marker", by.dye = FALSE,
+    ol.rm = FALSE, sex.rm = FALSE, na = NULL, kit = "SGMplus",
+    ignore.case = TRUE, word = FALSE, exact = FALSE
+  )
+  
+  # Check return class.
+  expect_match(class(res), class(data.frame()))
+  
+  # Check that expected columns exist.
+  expect_false(is.null(res$Sample.Name))
+  expect_false(is.null(res$Min.TPH))
+  expect_false(is.null(res$Max.TPH))
+  expect_false(is.null(res$Peaks))
+  expect_false(is.null(res$Lb))
+  
+  # Check for NA's.
+  expect_false(any(is.na(res$Sample.Name)))
+  expect_true(any(is.na(res$Min.TPH)))
+  expect_true(any(is.na(res$Max.TPH)))
+  expect_false(any(is.na(res$Peaks)))
+  expect_true(any(is.na(res$Lb)))
+  
+  # Check result: Locus balance.
+  expect_that(res$Lb[1], equals(425 / 1219))
+  
+  expect_that(res$Lb[2], equals(as.numeric(NA)))
+  
+  # Check result: Markers.
+  expect_that(res$Peaks[1], equals(16))
+  
+  expect_that(res$Peaks[2], equals(16))
+  
+  # Check result: Min marker height.
+  expect_that(unique(res$Min.TPH), equals(c(425, NA)))
+  
+  # Check result: Max marker height.
+  expect_that(unique(res$Max.TPH), equals(c(1219, NA)))
+  
+  
 })

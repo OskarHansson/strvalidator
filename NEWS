@@ -1,3 +1,16 @@
+Version 2.4.1.9001
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateLb
+  Corrected calculation of number of peaks for option 'marker'.
+  - test-calculateLb
+  Updated the tests for 'peak' to adjust for homozygotes by division by 2.
+  Added tests for new option 'marker'.
+  - test-calculateAllT
+  Updated RNG and consequently some values. Added Depends R (>= 3.6.0) in DECSRIPTION file.
+  - test-addSize
+  Modernized and simplified the code.
+
 Version 2.4.1.9000
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

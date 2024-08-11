@@ -2,6 +2,7 @@ context("calculateStatistics")
 
 ################################################################################
 # CHANGE LOG
+# 10.08.2024: Updated test 4 to match strvalidator > 2.4.1 
 # 23.05.2020: First version.
 #
 # require(testthat)
@@ -319,30 +320,30 @@ test_that("calculateStatistics", {
   # Check result: Min inter-locus balance.
   expect_equal(res$Lb.Min[1], 0.3550158, tolerance = threshold)
   expect_equal(res$Lb.Min[2], 0.503657, tolerance = threshold)
-  expect_equal(res$Lb.Min[3], 0.3320323, tolerance = threshold)
+  expect_equal(res$Lb.Min[3], 0.4636628, tolerance = threshold)
   expect_equal(res$Lb.Min[4], 0.2922748, tolerance = threshold)
 
   # Check result: Mean inter-locus balance.
   expect_equal(res$Lb.Mean[1], 0.4834055, tolerance = threshold)
   expect_equal(res$Lb.Mean[2], 0.5898666, tolerance = threshold)
-  expect_equal(res$Lb.Mean[3], 0.4148376, tolerance = threshold)
+  expect_equal(res$Lb.Mean[3], 0.5875694, tolerance = threshold)
   expect_equal(res$Lb.Mean[4], 0.3749627, tolerance = threshold)
 
   # Check result: Inter-locus balance standard deviation.
   expect_equal(res$Lb.Sd[1], 0.1059861, tolerance = threshold)
   expect_equal(res$Lb.Sd[2], 0.0681509, tolerance = threshold)
-  expect_equal(res$Lb.Sd[3], 0.07747881, tolerance = threshold)
+  expect_equal(res$Lb.Sd[3], 0.09618440, tolerance = threshold)
   expect_equal(res$Lb.Sd[4], 0.08144057, tolerance = threshold)
 
   # Check result: Max inter-locus balance.
   expect_equal(res$Lb.Max[1], 0.6892895, tolerance = threshold)
   expect_equal(res$Lb.Max[2], 0.6788171, tolerance = threshold)
-  expect_equal(res$Lb.Max[3], 0.5664227, tolerance = threshold)
+  expect_equal(res$Lb.Max[3], 0.7592627, tolerance = threshold)
   expect_equal(res$Lb.Max[4], 0.5070651, tolerance = threshold)
 
   # Check result: 75 percentile for inter-locus balance.
   expect_equal(res$Lb.Perc.75[1], 0.5130642, tolerance = threshold)
   expect_equal(res$Lb.Perc.75[2], 0.6371951, tolerance = threshold)
-  expect_equal(res$Lb.Perc.75[3], 0.446667, tolerance = threshold)
+  expect_equal(res$Lb.Perc.75[3], 0.6304735, tolerance = threshold)
   expect_equal(res$Lb.Perc.75[4], 0.4351632, tolerance = threshold)
 })
