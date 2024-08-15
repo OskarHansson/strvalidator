@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2024: Fixed 'Error in !is.na(predictionDf) && !is.null(predictionDf)'.
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 10.04.2020: Added language support.
@@ -19,9 +20,6 @@
 # 16.06.2016: 'Save as' textbox expandable.
 # 11.11.2015: Added importFrom ggplot2.
 # 29.08.2015: Added importFrom.
-# 19.08.2015: Added more information to the description.
-# 18.06.2015: Rounded printed probabilities to three decimals.
-# 20.03.2015: Rounded printed conservative drop-out threshold to integer.
 
 #' @title Model And Plot Drop-out Events
 #'
@@ -1312,7 +1310,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     # PLOT ####################################################################
 
-    if (!is.na(predictionDf) && !is.null(predictionDf)) {
+    if (is.data.frame(predictionDf)) {
       # Plotting global dropout probability.
       gp <- ggplot(
         data = predictionDf,

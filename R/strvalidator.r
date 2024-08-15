@@ -26,6 +26,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2024: Added dom 'l' in View data to show control for number of rows per page.
 # 09.08.2024: Added button to calculate Lb by Dye.
 # 14.09.2022: Added export buttons to DT table for View.
 # 10.09.2022: Fixed warning when selecting multiple objects for export.
@@ -45,7 +46,6 @@
 # 19.02.2019: Fixed previous project activated in Description, Projects tab.
 # 19.02.2019: Expand text box in welcome tab.
 # 15.02.2019: Rearranged buttons on welcome tab.
-# 14.02.2019: Adaptations to gWidgets2tcltk and updated welcome tab.
 
 #' @title Graphical User Interface For The STR-validator Package
 #'
@@ -1689,7 +1689,7 @@ strvalidator <- function(debug = FALSE) {
         # Convert to DT and view.
         dt <- DT::datatable(val_data,
           rownames = FALSE, filter = "top",
-          extensions = "Buttons", options = list(dom = "Bfrtip", buttons = c("copy", "csv", "excel", "pdf", "print"))
+          extensions = "Buttons", options = list(dom = "Blfrtip", buttons = c("copy", "csv", "excel", "pdf", "print"))
         )
         print(dt)
       } else if (any(c("ggplot", "plotly", "datatables") %in% val_class)) {

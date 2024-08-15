@@ -402,14 +402,14 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   } else if (option == "marker") {
     message("Calculating total peak height by sample and marker.")
     # Calculate TPH and Dye for each Sample and Marker
-    res <- DT[, .(TPH = sum(Height), Dye = unique(Dye)),
-              by = .(Sample.Name, Marker)
+    res <- DT[, list(TPH = sum(Height), Dye = unique(Dye)),
+              by = list(Sample.Name, Marker)
     ]
     
     if (by.dye) {
       message("Calculating number of peaks for each sample and dye.")
-      peaks_count <- DT[, .(Peaks = .N),
-                        by = .(Sample.Name, Dye)
+      peaks_count <- DT[, list(Peaks = .N),
+                        by = list(Sample.Name, Dye)
       ]
       
       # Merge Peaks data back to the res table based on Sample.Name and Dye
@@ -424,8 +424,8 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       res[, Lb := Min.TPH / Max.TPH, by = list(Sample.Name, Dye)]
     } else {
       message("Calculating number of peaks for each sample.")
-      peaks_count <- DT[, .(Peaks = .N),
-                        by = .(Sample.Name)
+      peaks_count <- DT[, list(Peaks = .N),
+                        by = list(Sample.Name)
       ]
       
       # Merge Peaks data back to the res table based on Sample.Name and Dye

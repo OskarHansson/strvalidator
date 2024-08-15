@@ -1,3 +1,17 @@
+Version 2.4.1.9002
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - editData_gui
+  Changed default to FALSE for the 'limit number of rows' checkbox.
+  Added dom 'l' to show control for number of rows per page.
+  - strvalidator
+  Added dom 'l' to show control for number of rows per page.
+  - modelDropout_gui
+  Fixed 'Error in !is.na(predictionDf) && !is.null(predictionDf)'.
+  - getStrings
+  Fixed spelling error, removed unnecessary duplicate code.
+
+
 Version 2.4.1.9001
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:
@@ -10,6 +24,7 @@ Version 2.4.1.9001
   Updated RNG and consequently some values. Added Depends R (>= 3.6.0) in DECSRIPTION file.
   - test-addSize
   Modernized and simplified the code.
+
 
 Version 2.4.1.9000
 ------------------------------------------------------------------------------

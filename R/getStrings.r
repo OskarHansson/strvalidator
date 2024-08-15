@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2024: Fixed spelling error, removed unnecessary duplicate code.
 # 07.07.2022: Fixed Warning message: In !is.na(result) && !is.na(gui):'length(x) = 780 > 1' in coercion to 'logical(1)'
 # 08.07.2020: Fix warnings about improper quoting.
 # 04.07.2020: Defined unbound variables.
@@ -97,14 +98,14 @@ getStrings <- function(language = NA, gui = NA, key = NA,
       )
 
       # Set key column.
-      setkey(dtAll, key = "key")
+      setkey(dtAll, "key")
 
       # Return all data as default.
       result <- dtAll
 
       # If gui function is specified.
       if (!is.na(gui)) {
-        message("Get langugage strings for gui = ", gui)
+        message("Get language strings for gui = ", gui)
 
         # Get strings for the specific function.
         result <- result[scope == gui, ]
@@ -115,23 +116,20 @@ getStrings <- function(language = NA, gui = NA, key = NA,
 
           # Set NULL as return value.
           result <- NULL
-        } else {
-          # Fix new line character.
-          result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
         }
       }
 
       # If gui function and key is specified.
       if (!is.null(result) && !is.na(gui) && !is.na(key)) {
-        message("Get langugage strings for key = ", key)
+        message("Get language strings for key = ", key)
 
         # Get the specific gui function value by key.
         result <- result[key]$value
-      } else {
-        # Fix new line character.
-        if (!is.null(result)) {
-          result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
-        }
+      }
+
+      # Fix new line character.
+      if (!is.null(result)) {
+        result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
       }
     } else { # If file doesn't exist.
 

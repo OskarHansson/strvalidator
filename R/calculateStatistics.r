@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 11.08.2024: Added escape characters to \{0,1\} in parameter description.
 # 04.08.2022: Added parameter decimals for rounding of result.
 # 13.06.2020: Fixed error in argument checks.
 # 09.06.2020: Added parameter count.
@@ -24,7 +25,7 @@
 #' @param target character column to calculate summary statistics for.
 #' @param group character vector of column(s) to group by, if any.
 #' @param count character column to count unique values in, if any.
-#' @param quant numeric quantile to calculate {0,1}, default 0.95.
+#' @param quant numeric quantile to calculate \{0,1\}, default 0.95.
 #' @param decimals numeric number of decimals. Negative does not round.
 #' @param debug logical indicating printing debug information.
 #'

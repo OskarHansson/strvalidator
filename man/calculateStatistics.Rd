@@ -19,7 +19,7 @@ calculateStatistics(
 
 \item{target}{character column to calculate summary statistics for.}
 
-\item{quant}{numeric quantile to calculate {0,1}, default 0.95.}
+\item{quant}{numeric quantile to calculate \{0,1\}, default 0.95.}
 
 \item{group}{character vector of column(s) to group by, if any.}
 

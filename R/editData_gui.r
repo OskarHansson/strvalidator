@@ -1,5 +1,7 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.08.2024: Changed default to FALSE for the 'limit number of rows' checkbox.
+# 15.08.2024: Added dom 'l' to show control for number of rows per page.
 # 14.09.2022: Added export buttons to DT table for View.
 # 09.09.2022: Fixed dataset info when NULL. Added view button. Now default to limit.
 # 17.10.2021: Try to expand dropdown for dataset under tcltk.
@@ -19,10 +21,6 @@
 # 07.07.2017: Removed argument 'border' for 'gbutton'.
 # 07.07.2017: Replaced gWidgets:: with gWidgets2::
 # 24.06.2016: 'Save as' textbox expandable.
-# 14.04.2016: Limit number of rows now FALSE by default + tooltip.
-# 06.01.2016: Fixed attributes window bug. Error when close using X.
-# 26.10.2015: Fixed attributes window bug.
-# 04.10.2015: Added options to limit number of rows, and show attributes.
 
 #' @title Edit or View Data Frames
 #'
@@ -336,7 +334,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
   g1[2, 1] <- f1_limit_chk <- gcheckbox(
     text = strChkLimit,
-    checked = TRUE, container = g1
+    checked = FALSE, container = g1
   )
   tooltip(f1_limit_chk) <- strTipLimit
 
@@ -388,7 +386,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     dt <- DT::datatable(val_tbl,
       rownames = FALSE,
       filter = "top", extensions = "Buttons",
-      options = list(dom = "Bfrtip", buttons = c("copy", "csv", "excel", "pdf", "print"))
+      options = list(dom = "Blfrtip", buttons = c("copy", "csv", "excel", "pdf", "print"))
     )
     print(dt)
 
