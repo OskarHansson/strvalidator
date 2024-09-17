@@ -2063,7 +2063,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(dry_kit_btn, handler = function(h, ...) {
     # Open GUI.
-    makeKit_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    manageKits_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   addHandlerChanged(dry_plot_kit_btn, handler = function(h, ...) {

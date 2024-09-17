@@ -9,24 +9,24 @@ getStrings(language = NA, gui = NA, key = NA, encoding = NA, about = FALSE)
 \arguments{
 \item{language}{character name of the language.}
 
-\item{gui}{character the function name for the gui to 'translate'.}
+\item{gui}{character the function name for the GUI to 'translate'.}
 
 \item{key}{character the key to 'translate'. Only used in combination with 'gui'.}
 
 \item{encoding}{character encoding to be assumed for input strings.}
 
-\item{about}{logical FALSE (default) to read key value pairs,
+\item{about}{logical FALSE (default) to read key-value pairs,
 TRUE to read about file as plain text.}
 }
 \value{
 character vector or data.table with the retrieved values.
-NULL if file or gui was not found.
+NULL if file or GUI was not found.
 }
 \description{
-Accepts a language code and gui. Returns the corresponding language strings.
+Accepts a language code and GUI. Returns the corresponding language strings.
 }
 \details{
-Accepts a language code, gui, and key. Returns the corresponding language strings
-for the specified gui function or key from a text file named as the language code.
-Replaces backslash + n with new line character (only if 'gui' is specified).
+Accepts a language code, GUI, and key. Returns the corresponding language strings
+for the specified GUI function or key from a text file named as the language code.
+Replaces backslash + n with a new line character (only if 'GUI' is specified).
 }
