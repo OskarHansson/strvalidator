@@ -14,8 +14,8 @@ manageKits_gui(
 \arguments{
 \item{env}{Environment in which to search for data frames.}
 
-\item{savegui}{Logical indicating if GUI settings should be saved in the environment.
-(Currently not in use)}
+\item{savegui}{Logical indicating if GUI settings should be saved in the
+environment (Currently not in use).}
 
 \item{debug}{Logical indicating whether to print debug information.}
 
@@ -25,11 +25,13 @@ manageKits_gui(
 TRUE if the operation completes successfully.
 }
 \description{
-Manage kits, import new kits, or edit the kit file through a graphical user interface.
+Manage kits, import new kits, or edit the kit file through a graphical user
+ interface.
 }
 \details{
-This function provides a graphical user interface (GUI) for managing kits, including the ability to
-import new kits, edit the short and full names of existing kits, or remove kits.
-The gender marker of each kit is auto-detected but can be manually adjusted.
-Note that the short name for each kit must be unique.
+This function provides a graphical user interface (GUI) for managing kits,
+including the ability to import new kits, edit the short and full names of
+existing kits, or remove kits. The gender marker of each kit is auto-detected
+but can be manually adjusted. Note that the short name for each kit must be
+unique.
 }

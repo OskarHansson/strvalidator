@@ -7,7 +7,8 @@
 #' Select the kit bins and panels file using the file picker.
 #'
 #' @param env environment in which to search for data frames.
-#' @param savegui logical indicating if GUI settings should be saved in the environment.
+#' @param savegui logical indicating if GUI settings should be
+#' saved in the environment.
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #'
@@ -15,11 +16,14 @@
 #'
 #' @export
 #'
-#' @importFrom gWidgets2 gwindow ggroup gfilebrowse gcombobox addHandlerChanged svalue gmessage gbutton enabled visible
+#' @importFrom gWidgets2 gwindow ggroup gfilebrowse gcombobox
+#' addHandlerChanged svalue gmessage gbutton enabled visible
 #' @importFrom xml2 read_xml xml_find_all xml_text
 #' @importFrom utils read.table
 #'
-readGeneMapperKit_gui <- function(env = globalenv(), savegui = TRUE, debug = FALSE, parent = NULL, callback = NULL) {
+read_gene_mapper_kit_gui <- function(env = globalenv(), savegui = TRUE,
+                                     debug = FALSE, parent = NULL,
+                                     callback = NULL) {
   if (debug) message("Initializing GUI elements...")
 
   # Create GUI elements
@@ -27,8 +31,14 @@ readGeneMapperKit_gui <- function(env = globalenv(), savegui = TRUE, debug = FAL
   group <- ggroup(cont = window, horizontal = FALSE, expand = TRUE)
 
   # File selection for bins and panels file
-  bins_file_browser <- gfilebrowse(text = "Select GeneMapper Bins File", type = "open", cont = group)
-  panels_file_browser <- gfilebrowse(text = "Select GeneMapper Panels File", type = "open", cont = group)
+  bins_file_browser <- gfilebrowse(
+    text = "Select GeneMapper Bins File",
+    type = "open", cont = group
+  )
+  panels_file_browser <- gfilebrowse(
+    text = "Select GeneMapper Panels File",
+    type = "open", cont = group
+  )
 
   # Panel selection dropdown (initially empty but visible and inactive)
   panel_combo <- gcombobox(c(""), cont = group)
@@ -52,11 +62,17 @@ readGeneMapperKit_gui <- function(env = globalenv(), savegui = TRUE, debug = FAL
 
     if (file.exists(bins_file_path) && file.exists(panels_file_path)) {
       # Read and combine the bins and panels files into kit_info
-      kit_info <<- try(readGeneMapperKit(bin.files = bins_file_path, panel.files = panels_file_path, debug = debug), silent = TRUE)
+      kit_info <<- try(read_gene_mapper_kit(
+        bin_files = bins_file_path,
+        panel_files = panels_file_path,
+        debug = debug
+      ), silent = TRUE)
 
       # Handle errors
       if (inherits(kit_info, "try-error") || is.null(kit_info) || nrow(kit_info) == 0) {
-        gmessage("Failed to read GeneMapper Kit files or no data found.", parent = window)
+        gmessage("Failed to read GeneMapper Kit files or no data found.",
+          parent = window
+        )
         enabled(panel_combo) <- FALSE
         enabled(confirm_button) <- FALSE
         kit_info <<- NULL
@@ -64,7 +80,9 @@ readGeneMapperKit_gui <- function(env = globalenv(), savegui = TRUE, debug = FAL
       }
 
       if (!"Panel" %in% colnames(kit_info)) {
-        gmessage("The selected files do not contain Panel data.", parent = window)
+        gmessage("The selected files do not contain Panel data.",
+          parent = window
+        )
         enabled(panel_combo) <- FALSE
         enabled(confirm_button) <- FALSE
         kit_info <<- NULL
@@ -83,6 +101,7 @@ readGeneMapperKit_gui <- function(env = globalenv(), savegui = TRUE, debug = FAL
       # Populate panel selection and enable UI
       panel_combo[] <- c("All Panels", panels)
       enabled(panel_combo) <- TRUE
+      svalue(panel_combo) <- "All Panels"
       enabled(confirm_button) <- TRUE
       if (debug) message("Panels found: ", paste(panels, collapse = ", "))
 
@@ -112,7 +131,11 @@ readGeneMapperKit_gui <- function(env = globalenv(), savegui = TRUE, debug = FAL
     }
 
     selected_panel <- svalue(panel_combo)
-    panel_data <- if (selected_panel == "All Panels" || selected_panel == "") kit_info else kit_info[kit_info$Panel == selected_panel, ]
+    if (selected_panel == "All Panels") {
+      panel_data <- kit_info
+    } else {
+      panel_data <- kit_info[kit_info$Panel == selected_panel, ]
+    }
 
     if (nrow(panel_data) == 0) {
       gmessage("No data found for the selected panel.", parent = window)

@@ -18,11 +18,12 @@
 #' @importFrom xml2 read_xml xml_find_all xml_text xml_find_first xml_attr
 #'
 
-readGeneMapperKit <- function(bin.files = NULL, panel.files = NULL, debug = FALSE) {
+read_gene_mapper_kit <- function(bin_files = NULL, panel_files = NULL,
+                                 debug = FALSE) {
   # Helper function to read Bins file
-  readBinsFile <- function(file, debug = FALSE) {
-    keyPanel <- "Panel Name"
-    keyMarker <- "Marker Name"
+  read_bins_file <- function(file, debug = FALSE) {
+    key_panel <- "Panel Name"
+    key_marker <- "Marker Name"
     delimiter <- "\t"
 
     if (!file.exists(file)) {
@@ -53,7 +54,7 @@ readGeneMapperKit <- function(bin.files = NULL, panel.files = NULL, debug = FALS
       current_row <- split_content[[i]]
       current_tag <- current_row[1]
 
-      if (current_tag == keyPanel) {
+      if (current_tag == key_panel) {
         panel_name <- current_row[2]
         if (debug) message("Processing Panel: ", panel_name)
 
@@ -61,7 +62,7 @@ readGeneMapperKit <- function(bin.files = NULL, panel.files = NULL, debug = FALS
         next
       }
 
-      if (current_tag == keyMarker) {
+      if (current_tag == key_marker) {
         marker_name <- current_row[2]
         if (debug) message("Processing Marker: ", marker_name)
 
@@ -74,7 +75,8 @@ readGeneMapperKit <- function(bin.files = NULL, panel.files = NULL, debug = FALS
         allele_size <- as.numeric(current_row[2])
         allele_min <- as.numeric(current_row[3])
         allele_max <- as.numeric(current_row[4])
-        allele_virtual <- ifelse(is.na(current_row[5]) || nchar(current_row[5]) == 0, 0, 1)
+        allele_virtual <- ifelse(is.na(current_row[5]) ||
+                                  nchar(current_row[5]) == 0, 0, 1)
 
         results[[length(results) + 1]] <- data.frame(
           Panel = panel_name,
@@ -96,8 +98,8 @@ readGeneMapperKit <- function(bin.files = NULL, panel.files = NULL, debug = FALS
   }
 
   # Helper function to read Panels file
-  readPanelsFile <- function(file, debug = FALSE) {
-    keyPanel <- "Panel"
+  read_panels_file <- function(file, debug = FALSE) {
+    key_panel <- "Panel"
     delimiter <- "\t"
 
     if (!file.exists(file)) {
@@ -126,7 +128,7 @@ readGeneMapperKit <- function(bin.files = NULL, panel.files = NULL, debug = FALS
       current_row <- split_content[[row]]
       current_tag <- current_row[1]
 
-      if (current_tag == keyPanel) {
+      if (current_tag == key_panel) {
         panel_name <- current_row[2]
         if (debug) message("Processing Panel: ", panel_name)
         next
@@ -155,25 +157,25 @@ readGeneMapperKit <- function(bin.files = NULL, panel.files = NULL, debug = FALS
     return(panels_df)
   }
 
-  # Main function logic, now including combineBinsAndPanels
-  if (is.null(bin.files) && is.null(panel.files)) {
-    stop("At least one of 'bin.files' or 'panel.files' must be provided.")
+  # Check if files are provided
+  if (is.null(bin_files) && is.null(panel_files)) {
+    stop("At least one of 'bin_files' or 'panel_files' must be provided.")
   }
 
   bins_result <- NULL
   panels_result <- NULL
 
-  if (!is.null(bin.files)) {
-    bins_result <- readBinsFile(bin.files, debug)
+  if (!is.null(bin_files)) {
+    bins_result <- read_bins_file(bin_files, debug)
   }
 
-  if (!is.null(panel.files)) {
-    panels_result <- readPanelsFile(panel.files, debug)
+  if (!is.null(panel_files)) {
+    panels_result <- read_panels_file(panel_files, debug)
   }
 
-  # Combine the results if both files are provided using combineBinsAndPanels
+  # Combine the results if both files are provided using combine_bins_and_panels
   if (!is.null(bins_result) && !is.null(panels_result)) {
-    combined_result <- combineBinsAndPanels(bins_result, panels_result)
+    combined_result <- combine_bins_and_panels(bins_result, panels_result)
     return(combined_result)
   } else if (!is.null(bins_result)) {
     return(bins_result)
@@ -184,8 +186,8 @@ readGeneMapperKit <- function(bin.files = NULL, panel.files = NULL, debug = FALS
   return(NULL)
 }
 
-# The combineBinsAndPanels function as provided
-combineBinsAndPanels <- function(bin, panel) {
+# Combine bins and panels function
+combine_bins_and_panels <- function(bin, panel) {
   kit <- bin
 
   # Add new columns
@@ -196,38 +198,38 @@ combineBinsAndPanels <- function(bin, panel) {
   kit$Offset <- NA
 
   # Get panels
-  binPanel <- unique(bin$Panel)
-  binPanel2 <- unique(panel$Panel)
+  bin_panel <- unique(bin$Panel)
+  bin_panel2 <- unique(panel$Panel)
 
-  if (!all(binPanel == binPanel2)) {
-    print(paste("bin panels:", paste(binPanel, collapse = ",")))
-    print(paste("panel panels:", paste(binPanel2, collapse = ",")))
+  if (!all(bin_panel == bin_panel2)) {
+    print(paste("bin panels:", paste(bin_panel, collapse = ",")))
+    print(paste("panel panels:", paste(bin_panel2, collapse = ",")))
     stop("Panels in 'bin' and 'panel' files not identical")
   }
 
   # Loop over all panels
-  for (p in seq(along = binPanel)) {
+  for (p in seq(along = bin_panel)) {
     # Get markers for current panel
-    binMarker <- unique(bin$Marker[bin$Panel == binPanel[p]])
+    bin_marker <- unique(bin$Marker[bin$Panel == bin_panel[p]])
 
-    for (m in seq(along = binMarker)) {
+    for (m in seq(along = bin_marker)) {
       # Add new info for current marker in current panel
 
       # Color
-      kit$Color[kit$Panel == binPanel[p] & kit$Marker == binMarker[m]] <-
-        panel[panel$Panel == binPanel[p] & panel$Marker == binMarker[m], ]$Color
+      kit$Color[kit$Panel == bin_panel[p] & kit$Marker == bin_marker[m]] <-
+        panel[panel$Panel == bin_panel[p] & panel$Marker == bin_marker[m], ]$Color
 
       # Repeat unit size
-      kit$Repeat[kit$Panel == binPanel[p] & kit$Marker == binMarker[m]] <-
-        panel[panel$Panel == binPanel[p] & panel$Marker == binMarker[m], ]$Repeat
+      kit$Repeat[kit$Panel == bin_panel[p] & kit$Marker == bin_marker[m]] <-
+        panel[panel$Panel == bin_panel[p] & panel$Marker == bin_marker[m], ]$Repeat
 
       # Marker size range min
-      kit$Marker.Min[kit$Panel == binPanel[p] & kit$Marker == binMarker[m]] <-
-        panel[panel$Panel == binPanel[p] & panel$Marker == binMarker[m], ]$Marker.Min
+      kit$Marker.Min[kit$Panel == bin_panel[p] & kit$Marker == bin_marker[m]] <-
+        panel[panel$Panel == bin_panel[p] & panel$Marker == bin_marker[m], ]$Marker.Min
 
       # Marker size range max
-      kit$Marker.Max[kit$Panel == binPanel[p] & kit$Marker == binMarker[m]] <-
-        panel[panel$Panel == binPanel[p] & panel$Marker == binMarker[m], ]$Marker.Max
+      kit$Marker.Max[kit$Panel == bin_panel[p] & kit$Marker == bin_marker[m]] <-
+        panel[panel$Panel == bin_panel[p] & panel$Marker == bin_marker[m], ]$Marker.Max
     }
   }
 
@@ -241,7 +243,7 @@ combineBinsAndPanels <- function(bin, panel) {
   # Loop over all panels
   for (p in seq(along = panel)) {
     # Select current panel
-    selPanel <- kit$Panel == panel[p]
+    sel_panel <- kit$Panel == panel[p]
 
     # Get markers for current panel
     marker <- unique(kit$Marker[kit$Panel == panel[p]])
@@ -249,29 +251,29 @@ combineBinsAndPanels <- function(bin, panel) {
     # Loop over all markers
     for (m in seq(along = marker)) {
       # Select current marker
-      selMarker <- kit$Marker == marker[m]
+      sel_marker <- kit$Marker == marker[m]
 
       # Get smallest physical ladder fragment
-      fragments <- kit$Size[selPanel & selMarker & kit$Virtual == 0]
-      minFragment <- min(fragments)
+      fragments <- kit$Size[sel_panel & sel_marker & kit$Virtual == 0]
+      min_fragment <- min(fragments)
 
       # Get corresponding allele and convert to numeric
-      minAllele <- kit$Allele[selPanel & selMarker & kit$Size == minFragment]
-      if (minAllele == "X") {
-        minAllele <- 1
+      min_allele <- kit$Allele[sel_panel & sel_marker & kit$Size == min_fragment]
+      if (min_allele == "X") {
+        min_allele <- 1
       }
-      minAllele <- as.numeric(minAllele)
+      min_allele <- as.numeric(min_allele)
 
       # Get the repeat unit
-      repeatUnit <- kit$Repeat[selPanel & selMarker & kit$Size == minFragment]
+      repeat_unit <- kit$Repeat[sel_panel & sel_marker & kit$Size == min_fragment]
 
       # Calculate offset
-      minFragment <- round(minFragment)
-      alleleSize <- floor(minAllele) * repeatUnit + ((minAllele %% 1) * 10)
-      markerOffset <- minFragment - alleleSize
+      min_fragment <- round(min_fragment)
+      allele_size <- floor(min_allele) * repeat_unit + ((min_allele %% 1) * 10)
+      marker_offset <- min_fragment - allele_size
 
       # Add new info for current marker in current panel
-      kit$Offset[selPanel & selMarker] <- markerOffset
+      kit$Offset[sel_panel & sel_marker] <- marker_offset
     }
   }
 
