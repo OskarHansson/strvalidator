@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 28.09.2024: Fixed save to environment.
 # 17.08.2024: New function to import kit from GeneMarker files.
 
 #' @title Read GeneMarker Kit Definition
@@ -133,9 +134,7 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
 
       # Use tryCatch to handle errors and ensure buttons are re-enabled.
       tryCatch({
-        message("Debug: before read_gene_marker_kit")
         panel_data <- read_gene_marker_kit(selected_file, selected_panel)
-        message("Debug: after read_gene_marker_kit")
 
         # Use callback or return directly
         if (!is.null(callback)) {
@@ -144,9 +143,16 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
           dispose(window) # Close the GUI
           return(invisible(NULL)) # No return in callback mode
         } else {
-          if (debug) message("Return the data synchronously")
-          dispose(window) # Close the GUI before returning data
-          return(panel_data) # Return the data synchronously if no callback
+          # Use input filename as name for datasest.
+          val_name <- tools::file_path_sans_ext(basename(selected_file))
+          # Save kitinfo to the environment.
+          saveObject(
+            name = val_name, object = panel_data,
+            parent = window, env = env
+          )
+          if (debug) message("Save the data in environment")
+          dispose(window) # Close the GUI
+          return(invisible(NULL))
         }
       }, error = function(e) {
         gmessage(paste(strings$strErrorOccurred, e$message), parent = window)

@@ -1,3 +1,8 @@
+################################################################################
+# CHANGE LOG (last 20 changes)
+# 28.09.2024: Fixed plot order.
+# 17.08.2024: New function to import kit from GeneMarker files.
+
 #' @title Read GeneMarker Kit Definition
 #'
 #' @description
@@ -14,7 +19,7 @@
 #'
 #' @importFrom xml2 read_xml xml_find_all xml_text xml_find_first xml_attr
 #'
-read_gene_marker_kit <- function(xml_file_path, panel_name) {
+read_gene_marker_kit <- function(xml_file_path, panel_name, debug = FALSE) {
   # Check if file exists
   if (!file.exists(xml_file_path)) {
     stop("The specified XML file does not exist.")
@@ -82,10 +87,12 @@ read_gene_marker_kit <- function(xml_file_path, panel_name) {
         xml_text(xml_find_first(marker, "./UpperBoundary"))
       )
 
-      # Debugging output to verify marker boundaries
-      message("Processing Marker: ", marker_title)
-      message("  LowerBoundary: ", marker_min)
-      message("  UpperBoundary: ", marker_max)
+      if (debug) {
+        # Debugging output to verify marker boundaries
+        message("Processing Marker: ", marker_title)
+        message("  LowerBoundary: ", marker_min)
+        message("  UpperBoundary: ", marker_max)
+      }
 
       alleles <- xml_find_all(marker, "./Allele")
 
@@ -103,7 +110,7 @@ read_gene_marker_kit <- function(xml_file_path, panel_name) {
           Size.Min = size - left_binning,
           Size.Max = size + right_binning,
           Virtual = as.integer(xml_attr(allele, "Control")),
-          Color = dye_index,
+          Color = NA,
           Repeat = nucleotide_repeats,
           Marker.Min = marker_min,
           Marker.Max = marker_max,
@@ -112,6 +119,7 @@ read_gene_marker_kit <- function(xml_file_path, panel_name) {
           Full.Name = NA,
           Sex.Marker = FALSE,
           Quality.Sensor = FALSE,
+          Dye.Index = dye_index,
           stringsAsFactors = FALSE
         )
         index <- index + 1
@@ -122,15 +130,52 @@ read_gene_marker_kit <- function(xml_file_path, panel_name) {
   # Convert the list to a data frame
   df <- do.call(rbind, result_list)
 
-  # Replace integer values for Color with the color mapping
-  color_mapping <- c(
-    "blue", "green", "yellow", "red", "orange",
-    "purple", "cyan", "brown"
+  # Define the dye translation table
+  dye_translation_table <- data.frame(
+    Dye.Index = c(1, 2, 7, 3, 4, 6, 5, 8),
+    Plot.Order = c(1, 2, 3, 4, 5, 6, 7, 8),
+    Color = c(
+      "blue", "green", "cyan",
+      "yellow", "red", "purple", "orange", "brown"
+    ),
+    # Are fluorescent marker constant over all kits?
+    # Dye.Marker = c(
+    #  "Fluorescein", "JOE", "AQA",
+    #  "TMR", "CXR", "TOM", "WEN", "CCO"
+    # ),
+    stringsAsFactors = FALSE
   )
-  df$Color <- ifelse(df$Color > length(color_mapping) | df$Color < 1,
-    NA,
-    color_mapping[df$Color]
-  )
+
+  # # Merge with the translation table based on Dye_Index
+  # df <- merge(df, dye_translation_table,
+  #   by = "Dye.Index",
+  #   all.x = TRUE, sort = FALSE
+  # )
+
+  # Use 'match' to map 'Dye.Index' to 'Color'
+  df$Color <- dye_translation_table$Color[match(
+    df$Dye.Index, dye_translation_table$Dye.Index
+  )]
+
+  # Assign 'Plot.Order' using 'match'
+  df$Plot.Order <- dye_translation_table$Plot.Order[match(
+    df$Dye.Index, dye_translation_table$Dye.Index
+  )]
+
+
+  # Handle unmapped Dye_Index values
+  if (any(is.na(df$Color))) {
+    message("Unmapped Dye.Index values:")
+    print(df[is.na(df$Color), ])
+    warning("Some dyes could not be mapped. Update dye translation table.")
+  }
+  
+  # Reorder the data frame based on Dye_Index and marker order
+  df <- df[order(df$Plot.Order), ]
+
+  # Remove unused columns
+  df$Dye.Index <- NULL
+  df$Plot.Order <- NULL
 
   return(df)
 }
