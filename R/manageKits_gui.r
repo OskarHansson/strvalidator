@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 24.10.2024: Added auto detection of QI* quality sensors.
 # 15.09.2024: Re-worked function replaces makeKit_gui.
 
 #' @title Manage Kits
@@ -736,7 +737,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
       # Detect quality sensors or retrieve them from existing kits
       if (add_kit) {
         # For new kits, attempt to auto-detect quality sensors
-        quality_sensors <- grep("QS", markers, ignore.case = TRUE, value = TRUE)
+        quality_sensors <- grep("^(QS|QI)", markers, ignore.case = TRUE, value = TRUE)
       } else {
         # For existing kits, use stored quality sensors
         quality_sensors <- unique(kit_info_input$Marker[kit_info_input$Panel == panels[p] & kit_info_input$Quality.Sensor])
