@@ -1,3 +1,9 @@
+Version 2.4.1.9006
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+- calculateMixture
+  Fixed bug when NA alleles, leading to dropin count. Added testthat case. 
+
 Version 2.4.1.9005
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

@@ -2,6 +2,7 @@ context("calculateMixture")
 
 ################################################################################
 # CHANGE LOG
+# 13.04.2025: Added test 05 to ensure dropin count handles NA correctly.
 # 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 31.07.2014: First version.
 #
@@ -881,4 +882,34 @@ test_that("calculateMixture", {
     res$Dropin[res$Sample.Name == "major_minor_2"],
     equals(c(1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0))
   )
+
+  # TEST 05 -------------------------------------------------------------------
+  # Test that dropin count handles NA correctly.
+
+  # Minimal case with NA allele
+  mixture <- data.frame(
+    Sample.Name = "mix1",
+    Marker = "YIndel",
+    Allele = NA,
+    Height = 1000,
+    stringsAsFactors = FALSE
+  )
+
+  ref1 <- data.frame(
+    Sample.Name = "ref1",
+    Marker = "YIndel",
+    Allele = "1",
+    stringsAsFactors = FALSE
+  )
+
+  ref2 <- data.frame(
+    Sample.Name = "ref2",
+    Marker = "YIndel",
+    Allele = "2",
+    stringsAsFactors = FALSE
+  )
+
+  result <- calculateMixture(data = mixture, ref1 = ref1, ref2 = ref2)
+
+  expect_equal(result$Dropin, 0)
 })

@@ -6,6 +6,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 13.04.2025: Fixed bug when NA alleles, resulting in dropin count.
 # 07.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
 # 06.08.2017: Added audit trail.
 # 30.09.2016: Fixed a sample name mathcing bug (now really works as check subsetting in gui).
@@ -55,8 +56,13 @@
 #'  missing alleles.
 #' @param debug logical indicating printing debug information.
 #'
-#' @return data.frame with columns 'Sample.Name', 'Marker', 'Style', 'Mx',
-#'  'Average', 'Difference', 'Observed', 'Expected', 'Profile', and 'Dropin'.
+#' @return data.frame with columns 'Sample.Name', 'Marker', 
+#'  (mixture proportion calculation) 'Style', 'Mx',
+#'  'Average' (sample Mx), 'Difference' (from average),
+#'  'Observed' (minor unique alleles), 
+#'  'Expected' (minor unique alleles), 
+#'  'Profile' (percentage of minor unique alleles), 
+#'  and 'Dropin' (unexplained alleles).
 #'
 #' @export
 #'
@@ -284,7 +290,7 @@ calculateMixture <- function(data, ref1, ref2, ol.rm = TRUE,
           obsMinor <- sum(unsharedMinor %in% observedAlleles)
 
           # First count drop-in artefacts...
-          dropin <- setdiff(observedAlleles, expAlleles)
+          dropin <- na.omit(setdiff(observedAlleles, expAlleles))
           # ..then remove artefacts from heights, and finally from alleles.
           observedHeights <- observedHeights[observedAlleles %in% expAlleles]
           observedAlleles <- observedAlleles[observedAlleles %in% expAlleles]
