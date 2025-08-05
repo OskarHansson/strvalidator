@@ -50,7 +50,7 @@
 #'
 #' @return TRUE
 #'
-#' @seealso \code{\link{log}}, \code{\link{geom_density}}
+#' @seealso \code{\link[base]{log}}, \code{\link[ggplot2]{geom_density}}
 
 
 plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
