@@ -25,7 +25,7 @@
 #' @param target character column to calculate summary statistics for.
 #' @param group character vector of column(s) to group by, if any.
 #' @param count character column to count unique values in, if any.
-#' @param quant numeric quantile to calculate \{0,1\}, default 0.95.
+##' @param quant numeric quantile to calculate between 0 and 1, default 0.95.
 #' @param decimals numeric number of decimals. Negative does not round.
 #' @param debug logical indicating printing debug information.
 #'
