@@ -28,7 +28,7 @@
 #' GUI for combining two datasets.
 #'
 #' @details
-#' Simple GUI to combine two datasets using the \code{\link{rbind.fill}}
+#' Simple GUI to combine two datasets using the \code{\link{rbind.fill}}[plyr
 #' function.
 #' NB! Datasets must have identical column names but not necessarily
 #' in the same order.
