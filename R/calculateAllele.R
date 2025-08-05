@@ -36,7 +36,7 @@
 #'
 #' @importFrom data.table data.table := .N
 #'
-#' @return data.fra[data.table]me with columns 'Marker', 'Allele', 'Peaks', 'Size.Min',
+#' @return data.frame with columns 'Marker', 'Allele', 'Peaks', 'Size.Min',
 #' 'Size.Mean', 'Size.Max', 'Height.Min', 'Height.Mean', 'Height.Max',
 #' 'Total.Peaks', 'Allele.Proportion', 'Sum.Peaks', and 'Allele.Frequency'.
 
