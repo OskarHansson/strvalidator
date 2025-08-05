@@ -34,7 +34,7 @@
 #'
 #' @return TRUE
 #'
-#' @seealso \code{\link{stat_ecdf}}
+#' @seealso \code{\link[ggplot2]{stat_ecdf}}
 
 
 plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
