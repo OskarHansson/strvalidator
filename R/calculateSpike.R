@@ -48,7 +48,7 @@
 #'
 #' @return data.frame
 #'
-#' @#' @seealso \code{\link[data.table]{data.table}}
+#' @seealso \code{\link[data.table]{data.table}}
 
 
 
