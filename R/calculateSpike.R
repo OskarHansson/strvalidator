@@ -48,7 +48,8 @@
 #'
 #' @return data.frame
 #'
-#' @seealso \code{\link{data.table}}
+#' @#' @seealso \code{\link[data.table]{data.table}}
+
 
 
 calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
