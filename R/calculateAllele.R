@@ -41,7 +41,7 @@
 #' 'Total.Peaks', 'Allele.Proportion', 'Sum.Peaks', and 'Allele.Frequency'.
 
 #'
-#' @seealso \code{\link{data.table}}
+#' @seealso \code{\link[data.table]{data.table}}
 
 
 calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,

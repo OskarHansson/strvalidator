@@ -37,8 +37,8 @@
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param data data.frame for instant viewing.
 #' @param name character string with the name of the provided dataset.
-#' @param edit logical TRUE to enable edit (uses \code{\link{gdf}}), FALSE to
-#' view and enable sorting by clicking a column header (uses \code{\link{gtable}}).
+#' @param edit logical TRUE to enable edit (uses \code{\link[gWidgets2]{gdf}}), FALSE to
+#' view and enable sorting by clicking a column header (uses \code{\link[gWidgets2]{gtable}}).
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #'

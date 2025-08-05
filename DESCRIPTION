@@ -2,11 +2,10 @@ Roxygen: list()
 Package: strvalidator
 Type: Package
 Title: Process Control and Validation of Forensic STR Kits
-Version: 2.4.1.9006
-Author: Oskar Hansson
-Maintainer: Oskar Hansson <oskhan@ous-hf.no>
+Version: 2.4.1.9007
 URL: https://sites.google.com/site/forensicapps/strvalidator
 BugReports: https://github.com/OskarHansson/strvalidator/issues
+Authors@R: person(given = "Oskar", family = "Hansson", role = c("aut", "cre"), email = "oskhan@ous-hf.no")
 Depends: R (>= 3.6.0)
 Imports:
     ggplot2 (>= 2.0.0),
