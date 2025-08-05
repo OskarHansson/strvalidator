@@ -48,7 +48,7 @@
 #' @importFrom utils help
 #' @importFrom grDevices dev.cur dev.list dev.size
 #'
-#' @seealso \code{\link{ggsave}}
+#' @seealso \code{\link[ggplot2]{ggsave}}
 
 ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
                        savegui = NULL, debug = FALSE, parent = NULL) {
