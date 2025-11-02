@@ -1,0 +1,961 @@
+Version 2.4.2
+------------------------------------------------------------------------------
+* Fixes minor CRAN notes:
+  - Add Authors@R field in DESCRIPTION
+  - calculateStatistics
+  Add escape characters to \{0,1\} in parameter description.
+  - calculateAllele, calculateSpike, combine_gui, editData_gui, ggsave_gui, 
+  plotDistribution_gui, plotGroups_gui
+  Specified the package anchor in link.
+
+Version 2.4.1
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - plotContamination_gui, plotDistribution_gui, plotRatio_gui, plotGroups_gui,
+    calculateAllele_gui, removeArtefact_gui, removeSpike_gui, plotAT_gui,
+    plotPullup_gui, plotPeaks_gui, plotBalance_gui, plotResultType_gui.r, 
+    plotSlope_gui, plotStutter_gui, plotDropout_gui, plotCapillary_gui,
+    plotPrecision_gui
+  Fixed error introduced in R 4.3.0:
+  Error in if (!is.null(val_data) && !is.na(val_data)){
+  Error in if (!is.na(.gData) && !is.null(.gData)){
+  - plotPrecision_gui
+  Fixed Error in facet_wrap [...] `ncol` must be a whole number or `NULL`, not an
+  integer vector.
+  - en_GB.txt, es_ES.txt, it_IT.txt
+  Updated related error messages.
+  - test-calculateAllT
+  Updated expected Hosmer-Lemeshow_p values due to a change in
+  the ResourceSelection package 0.3-6, which involves changes to the Hosmer-Lemeshov
+  test because the test degrees of freedom was incorrectly determined for 
+  certain small data sets.
+  - Run code through styler.
+
+Version 2.4.0
+------------------------------------------------------------------------------
+* The graphical user interface (GUI) was optimized for gWidgets2tcltk. The GUI
+  is now a lot more compact to improve the user experience on small computer screens. The
+  GUI has been rearranged such that dropdown menues for selecting datasets expands to the
+  right. Expansion to the widest string was automatic under RGtk2, but tcltk had a fixed width often too narrow to show the full names. 
+* Now uses DT (https://rstudio.github.io/DT/) to view datasets as interactive tables with export functions.
+* New functions:
+  - plotEPG2/plotEPG2_gui/sample_tableToList
+  Interactive EPG plot and converter function (adapted from package euroformix by ?yvind Bleka)
+* Removed functions (deprecated in 2.3.0):
+  - tableBalance/tableBalance_gui
+  - tableCapillary/tableCapillary_gui
+  - tablePrecision/tablePrecision_gui
+  - tableStutter/tableStutter_gui
+* Added gWidgets2tcltk (> 1.0.6)to imports as gWidgets2RGtk2 was removed from CRAN 2021-11-08. This version fixes a bug: https://github.com/jverzani/gWidgets2tcltk/commit/9388900afc57454b6521b00a187ca4a16829df53 The workaround (https://stackoverflow.com/questions/54285836/how-to-retrieve-checkbox-state-in-gwidgets2tcltk-works-in-gwidgets2rgtk2) for the above bug was removed for all *_gui functions.
+* All code run through styler_1.7.0
+* Bug fixes and improvements with the most significant listed below:
+  - editData_gui, strvalidator
+  Added export buttons to DT table shown by view button.
+  - ggsave_gui
+  Reworked to avoid 'dispose' error https://github.com/jverzani/gWidgets2/issues/103
+  - import_gui
+  Filename as suggested name for dataset for single file import.
+  - calculateHeight/modelDropout_gui
+  Added information about limitations of the calculation of average peak height H, when dropout is present.
+  - editData_gui
+  Fixed dataset info when NULL. Added view button. Now defaults to limit to 100 rows.
+  - strvalidator
+  Fixed warning when selecting multiple objects for export. Added 'datatables' and 'plotly' to supported classes in view function.
+  Fixed workspace not refreshed when no supported objects in environment and after loading a previous project.
+  - calculateStutter_gui
+  Fixed 'Replace false stutters' table not working under gWidgets2tcltk. 
+  - calculateStatistics/calculateStatistics_gui
+  Added parameter 'decimals' for rounding of result.
+  - en_GB.txt/es_ES.txt/it_IT.txt
+  Updated with new strings related to changes. Cleared strings for removed functions.
+  - calculateStatistics_gui
+  Fixed "missing value where TRUE/FALSE needed" due to no matching 'target' or 'count' column names in the default (most recent) data.frame.
+  Fixed saved gui state cleared when opening with pre set parameters.
+  - columns
+  Fixed "Found if() conditions comparing class() to string.
+  - getStrings
+  Fixed Warning message: In !is.na(result) && !is.na(gui):'length(x) = 780 > 1' in coercion to 'logical(1)'
+  - calculateMixture, calculateHeight_gui, calculateHeight, calculateAT, calculateAT6,
+  calculateDropout, modelDropout_gui, plotContamination_gui, calculateLb
+  Fixed url-> doi in references.
+  - plotSlope_gui
+  Fixes issue #19 "Error in exists(name, envir = env, inherits = FALSE)"
+
+Version 2.3.0
+------------------------------------------------------------------------------
+* Implemented language support.
+* Italian and Spanish language files.
+* New functions:
+  - calculateStatistics/calculateStatistics_gui
+  General funcion to calculate summary statistics.
+* Deprecated functions:
+  - tableBalance/tableBalance_gui
+  - tableCapillary/tableCapillary_gui
+  - tablePrecision/tablePrecision_gui
+  - tableStutter/tableStutter_gui
+  Use calculateStatistics/calculateStatistics_gui instead.
+* Bug fixes and improvements with the most significant listed below:
+  - auditTrail
+  Added timestamp attribute.
+  - listObjects
+  Added parameters "sort" and "decreasing". Now returns NULL if no result.
+  - getKit
+  Better description of parameter 'what'.
+  - calculateDropout_gui
+  Changed LDT to AT for analytical threshold in gui.
+  - strvalidator
+  Made Decsription in Projects tab hidden and inactive as default.
+  Fixed potential "memory leak" by adding parent = emptyenv() to new.env()
+  - plotSlope_gui
+  Fixed narrow dropdown with hidden argument ellipsize = "none".
+  - plotStutter_gui, plotPrecision_gui
+  Added controls of main, x, y and facet titles.
+  - readBinsFile
+  Fixed failed detection of "virtual" when trailing tabs, leading to error in combineBinsAndPanels.
+  - plotKit_gui
+  Made the scrollable checkbox expand with the window.
+  - tablePrecision_gui
+  Further adjustments to gui.
+  - export_gui
+  Compacted and tweaked gui for tcltk.
+  - export
+  Added support for comma separated names.
+  - calculateMixture_gui
+  Compacted gui and expand text field under tcltk.
+  - tablePrecision_gui
+  Fixed strange behaviour when selecting from tables (double click/drag and drop).
+  - tablePrecision_gui
+  Improved tables with set initial height.
+  Fixed save field not expanded (tcltk).
+  - calculateResultType_gui
+  Fixed Error in paste(parent$ID, parent$env$num.subwin... (tcltk)
+* Intended to fix Travis error:
+  Moved gWidgets2tcltk to suggests in DESCRIPTION. Removed gWidgets2RGtk2.
+
+ Version 2.2.0
+------------------------------------------------------------------------------
+* The package is now optimized for both the tcltk and the RGtk2 graphical user
+ interface packages through the gWidgets2 APIs gWidgets2tcltk and gWidgets2RGtk2.
+ In English: installing strvalidator should be easier, especially in restricted IT environments.
+* The graphical user interface STR-validator and functions have been compacted to work better on laptops with small screens.
+* The welcome tab has been updated and now includes important direct links.
+* Cleaning code formatting with styler package.
+* New functionality and changes:
+  - calculateLb/calculateLb_gui
+  New option to calculate locus balance as peak height ratio.
+  - import_gui
+  More intuitive layout.
+  - modelDropout_gui
+  Added option to use log10 y scale on plots.
+  - auditTrail
+  No longer print messages to console.
+* Bug fixes and improvements with the most significant listed below:
+  - strvalidator (the main GUI, STR-validator)
+  Fixed behaviour of project list and description field in Projects tab.
+  - calculateT
+  Fixed "Error: $operator..." when ResourceSelection is not installed.
+  - modelDropout_gui
+  Fixed "save object" triggered when plotting if object was previously saved (RGtk2).
+* Fixed settings not saved after running some functions. 
+  
+Version 2.1.0
+------------------------------------------------------------------------------
+* New functions
+  - calculateT
+  - calculateAllT
+  - calculateAllT_gui
+  - plotGroups_gui
+* New tests
+  - test-calculateAllT
+  New file for testing of the function calculateAllT (indirectly tests calculateT).
+* Bug fixes and improvements with the most significant listed below:
+  - auditTrail
+  Now logs R version.
+  - cropData_gui
+  Fixed error replacing NA's.
+  - modelDropout_gui
+  Converts dependent and explanatory values to numeric if necessary.
+  - export_gui
+  Fixed initial export error and improved error message.
+  - modelDropout_gui
+  Added option to dump model data for manual inspection and verification.
+  Changed default P(D) to 0.01 (previous 0.05).
+  - plotKit_gui
+  Fixed x title and size not saved.
+  - ggsave_gui
+  Fixed initial save error and improved error message.
+
+Version 2.0.0
+------------------------------------------------------------------------------
+* The package now use gWidgets2 instead of gWidgets (changes in all "_gui" functions).
+  - Improved GUI speed by 10-100% (https://github.com/jverzani/gWidgets2).
+* Improved audit trail logging.
+  - New function auditTrail used internally to log audit trail from functions.
+  - Extensive logging, now handles multiple runs of the same function.
+* Bug fixes and improvements with the most significant listed below:
+  - strvalidator (the main GUI)
+  Button 'Delete' in tab 'Workspace' now support multiple selections.
+  Across all tabs the 'Edit' button was changed to 'View'.
+  The 'Edit' button is available in the 'Tools' tab.
+  - import
+  Prefix now works as intended (previously worked as 'contain').
+  - import_gui
+  Implemented last used directory as default
+  Partly changed layout.
+  - export_gui
+  Implemented last used directory as default.
+  Now closes after export.
+  - ggsave_gui
+  Implemented last used directory.
+  Minor GUI improvements.
+  - tableBalance_gui
+  Added 'kit' attribute to result.
+  - tableStutter / tableStutter_gui
+  Added attributes to result.
+* Exported functions (previously internal)
+  - export
+  - export_gui
+
+Version 1.9.0
+------------------------------------------------------------------------------
+* New functions
+  - addOrder (implemented in addDye_gui)
+* Bug fixes and improvements with the most significant listed below:
+  - addDye_gui
+  New options to add marker 'Dye', 'Color', 'R.Color', and 'Order'.
+  - addData
+  Fixed data saved as attribute (new.data)
+  - plotStutter_gui
+  Added option to drop unused levels.
+  - plotDistribution_gui
+  Changed y axis title from 'Probability' to 'Density'.
+  - modelDropout_gui
+  Added reference "Estimating the probability of allelic drop-out...".
+  - cropData_gui
+  New options "containing", "not containing".
+  Added attributes to result.
+  - calculateAT6
+  Fixes "Error in calculateHeight: 'kit' can't be NULL if sex.rm=TRUE
+  - plotDistribution_gui
+  Added controls for x and y axis range.
+  No longer required to select a group if column Group is present.
+  - combine_gui
+  Changed to rbind.fill to handle filling in missing columns.
+  Check for column names no longer require identical order.
+
+Version 1.8.0
+------------------------------------------------------------------------------
+* New built in datasets intended for tutorials and tests:
+  - Fusion example data for dropout analysis (Thanks to Dixie Peters).
+  set6 (dataset)
+  ref61 (Marker order is different from set6. Includes a Y marker with NA.)
+  ref62 (Marker order is same as set6. Includes a Y marker with NA.)
+  - ESSplex SE QS example data for inhibition analysis.
+  set7 (dataset)
+  ref7 (reference dataset)
+* New functions
+  - plotContamination_gui
+  - calculateCopies
+  - calculateCopies_gui
+  - calculateHb
+  - calculateHb_gui
+  - tableHb
+  - tableHb_gui
+* Removed functions
+  - calculateBalance
+  - calculateBalance_gui
+* Replaced functions:
+  - calculateHeterozygous -> calculateCopies (faster and more functions)
+  - calculateHeterozygous_gui -> calculateCopies_gui (faster and more functions)
+  - calculateBalance -> calculateHb (faster and more robust)
+  - calculateBalance_gui -> calculateHb_gui (faster and more robust)
+* Bug fixes and improvements with the most significant listed below:
+  - addColor
+  Fixed dataset saved to attributes.
+  Fixed attribute 'kit' saved with wrong name.
+  - calculateDropout
+  Fixed dataset saved to attributes.
+  Implemented new filterProfile function to remove sex markers and quality sensors.
+  - calculateHb
+  Fixed dataset saved to attributes.
+  - calculateHeight
+  Fixed parameter 'word' not saved to attributes.
+  Fixed error when homozygotes are given as double notation in reference dataset.
+  - calculatePeaks
+  Rewritten for efficiency using the data.table package.
+  Added factors to Group for correct order when creating plot.
+  - calculatePeaks_gui
+  Changed some labels, added tooltips, changed one widget.
+  - filterProfile
+  Now retains information in 'File.Name' and 'File.Time' when adding markers.
+  Fixed attribute 'kit' saved with wrong name.
+  New options to filter sex markers and quality sensors.
+  - filterProfile_gui
+  Kit dropdown always active and now passes 'kit' to command line function.
+  New options to filter sex markers and quality sensors.
+  - calculateLb
+  Implemented the new filterProfile.
+  Fixed 'data' saved as attribute.
+  - calculateHeight
+  Implemented the new filterProfile, with word boundary option.
+  - plotDistribution_gui
+  Fixed factor levels in 'Group' drop-down after change in calculatePeaks.
+  - tableHb_gui
+  Removed 'Lb' as a required column.
+  - calculateConcordance / calculateConcordance_gui
+  Added option 'list.all' to return missing samples in the result.
+  - calculateSlope / calculateSlope_gui
+  Implemented the new filterProfile, with word boundary option.
+  - calculateHeight_gui
+  Completely rewritten using data.table for better performance.
+  Calculates total peak height (TPH) and number of peaks (Peaks) by default.
+  Given a reference dataset, average peak height (H) and profile proportion (Proportion) are calculated.
+  Fixed options 'sex.rm' and 'qs.rm' not saved.
+  - addData
+  Now handles empty dataset by returning unchanged.
+  Fixed detection and conversion of data.table.
+  - calculateDropout_gui
+  Implemented the new calculateHeight.
+  - calculateLb_gui
+  Implemented the new calculateHeight.
+  - calculateBalance_gui
+  Added missing argument to attribute list (per.dye).
+  Implemented the new calculateHeight.
+  - calculateAT6
+  Implemented the new calculateHeight.
+  - maskAT
+  Fixed error if NA in reference profiles (Y markers in female profiles).
+  - tableBalance / tableBalance_gui
+  Rewritten to use data.table for increased efficiency.
+  Now calculates summary statistics for both Hb and Lb data.
+  - calculateMixture
+  Fixed name matching bug. Now works as shown in check subsetting.
+* Added attributes for the following functions:
+  - calculateResultType / calculateResultType_gui
+  - calculatePeaks_gui
+  - calculatePeaks
+* New tests
+  - test-calculateHeight
+  Uppdated with tests for complete negative samples.
+  Uppdated with test for homozygous double notation.
+  - test-calculateConcordance
+  Added test for option 'list.all'.
+
+Version 1.7.0
+------------------------------------------------------------------------------
+* Updated kit file to support quality sensors (new column) and added:
+  Investigator 24plex GO! Kit
+  Investigator ESSplex Plus Kit
+  Investigator ESSplex SE QS Kit
+  Updated panel for 'Investigator ESSplex SE Plus Kit' from v1 to v4.
+  Defined 'Yindel' and 'DYS391' as sex markers for 'GlobalFiler'.
+* Bug fixes and improvements with the most significant listed below:
+  - calculateAT / calculateAT_gui
+  Implemented method AT7 assuming log normal-distribution of noise.
+  Changed some column names.
+  - calculateAT_gui
+  Fixed bug in plot sample masking range (ESX17 hardcoded).
+  Now all excluded peaks are marked in plot (not only high peaks).
+  Prepare button and drop-down menu now disabled while processing.
+  -detectKit
+  Now check for and removes NA in markers to handle SamplePlotSizingTable.
+  - plotDistribution_gui
+  Fixed update of drop-down and information when selecting a new dataset without selected column.
+  Implemented log option and number of bins. Changed layout.
+  Default binwidth changed from 1 to 'empty', which will use default 'bins=30'.
+  - calculateSpike
+  Implemented accurate method.
+  Fixed multiple peaks in same dye triggers treshold by adding additional check
+  that number of unique dyes must be > threshold.
+  - addSize
+  Fixed message returing string + 'TRUE'.
+  - saveObject
+  Fixed object not saved if an object existed and the new object is renamed.
+  - columns / columns_gui
+  Added option to extract a substring.
+  - plotStutter_gui
+  Enabling of plot buttons after changing some plot options.
+  Fixed some plot error and implemented check for missing values.
+  - calculatePullup/calculatePullup_gui
+  Now handles missing alleles in the reference dataset (e.g. sex markers).
+  New option 'limit' that by default removes ratios > 1, unlikely pull-ups.
+  - plotPullup_gui
+  Enabling of plot buttons after changing some plot options.
+  Implemented check for missing values.
+  - heightToPeak
+  Fixed error when no peaks in sample.
+  - plotDropout_gui
+  New option 'Round to digits' (x-tick labels).
+  - editData_gui
+  Limit number of rows now FALSE by default + tooltip.
+  - calculateAT
+  Handles missing ILS dye.
+  - getKit
+  Added support for quality sensors.
+  - calculateLb / calculateLb_gui
+  Added option to remove quality sensors.
+  Fixed missing markers after removing OL alleles when only OL alles were observed.
+  Fixed problem with replacing NAs.
+  - calculateDropout / calculateDropout_gui
+  Added option to remove sex markers and quality sensors.
+  - calculateHeight / calculateHeight_gui
+  Added option to remove sex markers and quality sensors.
+  Fixed attribute saved dataset.
+  - generateEPG / generateEPG_gui
+  Fixed bug in plotting of marker ranges.
+  - makeKit_gui
+  Fixed bug removing space within marker names.
+  Added support for quality sensors.
+* New functions
+  - calculateSlope
+  - calculateSlope_gui
+  - plotSlope_gui
+  - removeSpike
+  - removeSpike_gui
+  - removeArtefact
+  - removeArtefact_gui
+* Name changes.
+  - blockAT
+  Changed to maskAT to better reflect the function.
+  Parameter names changed from 'block*' to 'mask*'.
+  - calculateAT / calculateAT_gui
+  Parameter names changed from 'block*' to 'mask*'.
+* Minor changes
+  - plotDropout_gui
+  Removed units on automatic titles.
+  - calculateAT_gui
+  Removed check for reference samples if masking is active (does no harm).
+* Added button to create new project in the 'Workspace' tab.
+* Added attributes for the following functions:
+  - columns/columns_gui
+  - calculatePullup/calculatePullup_gui
+* Added expand=TRUE to 'save as' textbox:
+  - addDye_gui
+  - addMarker_gui
+  - calculateRatio_gui
+  - calculateDropout_gui
+  - calculateCapillary_gui
+  - calculateHeterozygous_gui
+  - calculateAT6_gui
+  - calculateAT_gui
+  - calculateBalance_gui
+  - calculateStutter_gui
+  - calculateResultType_gui
+  - calculatePeaks_gui
+  - calculatePullup_gui
+  - calculateHeight_gui
+  - columns_gui
+  - cropData_gui
+  - editData_gui
+  - filterProfile_gui
+  - modelDropout_gui
+  - plotDistribution_gui
+  - plotResultType_gui
+  - plotBalance_gui
+  - plotStutter_gui
+  - plotPeaks_gui
+  - plotDropout_gui
+  - plotPullup_gui
+  - plotCapillary_gui
+  - slim_gui
+  - tableCapillary_gui
+  - trim_gui
+
+Version 1.6.0
+------------------------------------------------------------------------------
+* STR-validator now requires R version >= 3.1.3 and ggplot2 version >= 2.0.0
+* Updated kit file. Added 'Fusion 6C', removed 'ESI17'.
+  Kit sorted roughly according to vendor and release.
+* Bug fixes and improvements with the most significant listed below:
+  - calculateDropout / calculateDropout_gui
+  Handles the case when a reference allele is NA (skip to next marker).
+  Reverted fix in 1.5.2.9000 and instead removed all NA rows from reference prior to analysis.
+  - calculateDropout_gui
+  Added automatic calculation of average peak height 'H'.
+  - calculateDropout
+  Fixed reference sample name subsetting bug. Confirmed with new test #09.
+  Some 'warnings' changed to 'stop'.
+  Better information in stop messages.
+  - readPanelsFile
+  Convert all color names to lower case. Fixes kit plot D16 bug in Fusion 6C.
+  - calculateBalance / calculateBalance_gui
+  Added option to calculate Hb by LMW/HMW, and updated test-calculateBalance accordingly.
+  - calculateBalance_gui
+  Added automatic calculation of average peak height 'H'.
+  Added option for exact matching, and drop sex markers, fixed word option not saved.
+  - plotBalance_gui
+  Added new plot options 'Hb vs. Marker' and 'Lb vs. Marker'.
+  Added options to plot all data 'Facet per marker and wrap by dye'. 
+  Implemented by dye.
+  Better default values reduce risk of plot error.
+  - editData_gui
+  Added option to limit number of rows.
+  Added option to show attributes.
+  - plotDistribution_gui
+  NA's now removed prior to plotting and subtracted from number of observations.
+  - cropData_gui
+  Option to remove NA (earlier NA was automatically removed).
+  Fixed 'Info' not updated when selecting a column.
+  - import / import_gui
+  New parameter 'na.strings' to specify what gets converted to NA.
+  - addData / addData_gui
+  New parameter to specify columns to add.
+  - heightToPeak
+  Improved implementation.
+  - checkSubset_gui
+  'Marker' is no longer a required column.
+  - filterProfile / filterProfile_gui
+  New parameter 'exact' for sample name matching.
+  - checkSubset / checkSubset_gui
+  New parameter 'exact' for sample name matching.
+  - columns / columns_gui
+  Now possible to add new column without combining with an existing column.
+  - ggsave_gui
+  Updated to work with ggplot2 2.0. Fixes error 'dev' function not found.
+  - generateEPG / generateEPG_gui
+  Rewrote funtion and fixed dye channel bug introduced in ggplot2 2.0.
+* New functions:
+  - scrambleAlleles
+  Scrambles alleles in a dataset to anonymise the profile.
+  - colConvert
+  - calculateSpike / calculateSpike_gui
+  Detection of spikes in profiles.
+  - calculateAllele
+  Counts the number of each allele per marker over the entire dataset.
+  - calculateLb / calculateLb_gui
+  Implemented locus balance calculations using data.table wich is much faster.
+  Does not require a reference dataset. Calculates as proportion, normalised,
+  or centred quantities (sum to 0). Global or by dye.
+  - calculateRatio / calculateRatio_gui / plotRatio_gui
+  Implemented calculation of locus ratios and plotting of the result.
+* New exported function:
+  - detectKit
+* New tests:
+  test-filterProfile
+    - Test for unfiltered data.
+  test-calculateDropout
+    - Test for reference subsetting bug.
+  test-calculateLb
+    - Tests for new function.
+* Removed global variables for ggplot2 in 'globals.R', added importFrom in functions.
+* Functions removed:
+  - compact
+* Added attributes for the following functions:
+  - addColor/addDye_gui
+  - addData/addData_gui
+  - addMarker/addMarker_gui
+  - addSize/addSize_gui
+  - calculateAT/calculateAT_gui
+  - calculateBalance/calculateBalance_gui
+  - calculateDropout/calculateDropout_gui
+  - calculateHeight/calculateHeight_gui
+  - calculateStutter/calculateStutter_gui
+  - filterProfile/filterProfile_gui
+  - heightToPeak
+  - import/import_gui
+  - slim/slim_gui
+  - tableBalance/tableBalance_gui
+  - trim/trim_gui
+
+Version 1.5.2
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - calculateAT6 / calculateAT6_gui
+  Now use 'standard error of the regression' (or 'sigma') instead of 'standard error of the intercept'.
+  - slim / slim_gui
+  Fixed error when 'stack' and 'slim' is empty or "" (replaced by 'NULL').
+  Now handle no columns to slim/stack (return unchanged data.frame).
+  - Plot AT confidence interval now matches the one-sided used in calculateAT6.
+* Corrections in documentation or GUI:
+  - calculateBalance / calculateBalance_gui
+  Parameter description for 'hb=2' changed to 'Max2(Ph)/Max1(Ph)'.
+  Changes drop-down menu to 'Smaller peak / larger peak'.
+  - modelDropout_gui
+  More information in the detailes.
+* Use of 'importFrom' as required in R 3.3.0 pre-release.
+* Now fully enforces the version numbering convention (http://r-pkgs.had.co.nz/release.html)
+ x.y.z.9XXX, where x is a major release, y is a minor release, z is a bug fix, 
+ and 9XXX is a in-development version. Development versions will be synchronised to
+ GitHub (https://github.com/OskarHansson/strvalidator) and possibly made available at
+ the website (https://sites.google.com/site/forensicapps/strvalidator) as file
+ for manual download and installation (binary package).
+
+Version 1.5.1
+------------------------------------------------------------------------------
+* AT function now calculate global AT per dye.
+* Bug fixes and improvements with the most significant listed below:
+  - Fixed bug in calculateAT (hardcoded dyes)
+  - Changed from two-sided critical t-value to one-sided in calculateAT6.
+
+Version 1.5.0
+------------------------------------------------------------------------------
+* New functions to estimate analytical threshold (tab 'AT').
+* New function to perform actions (concatenate, add, multiply, subtract,
+  divide) on columns in a dataset (tab 'Tools').
+* New plot option 'Histogram' in funtion plotDistribution_gui.
+* Bug fixes and improvements with the most significant listed below:
+  - Fixed bug in calculatePullup (https://github.com/OskarHansson/strvalidator/issues/8) partial column name match.
+  - Fixed bug in calculateBalance (https://github.com/OskarHansson/strvalidator/issues/9) error when NA.
+  - Fixed bug in plotDropout_gui (https://github.com/OskarHansson/strvalidator/issues/10) colors in dotplot hardcoded as ESX17.
+  - checkSubset, editData_gui, and trim
+  Now accept columns named 'Sample.File.Name' or the first occurance of any
+  column name containing '*Sample*' as alternative to 'Sample.Name'.
+  - colNames
+  New option to require number suffix on repeated columns improve autodetection
+  for the 'import' and 'slim' function. 
+  - editData
+  Fixed bug column name changes not saved (introduced in 1.4.0)
+  - filterProfile / filterProfile_gui
+  Now have and option 'invert' to filter peaks NOT in the reference profile
+  - import / import_gui
+  Function parameter name changed from 'file.name' to 'import.file',
+  New options to autotrim and autolim the imported data,
+  New options to import file name and time stamp.
+  - calculateBalance_gui
+  Option to drop sex markers.
+  - plotBalance_gui
+  Implemented check for plot facet error caused by all NA'.
+  - slim / slim_gui
+  Fixed problems with partial column name matching.
+  Function parameter name changed from 'keepAllFixed' to 'keep.na',
+* Changed parameter names to the same naming convention (period.separated)
+  for checkDataset.
+* New functions:
+  - blockAT
+  - calculateAT
+  - calculateAT_gui
+  - calculateAT6
+  - calculateAT6_gui
+  - plotAT_gui
+  - columns
+  - columns_gui
+* Removed unused function: loadPackage.
+* New tests:
+  test-filterProfile
+    - Test for parameter 'invert'.
+
+
+Version 1.4.0
+------------------------------------------------------------------------------
+* GUI changes: Tab 'Edit' changed to 'Tools'.
+* New function to analyse and plot pull-up (bleed-through) peaks (tab 'Pull-up').
+* New function to generate EPG like plot to visualise profiles (tab 'Tools').
+* New structure of kit file to support multiple sex markers.
+* Changed all parameter names to the same naming convention (period.separated)
+  for all functions except for in checkDataset and getKit (will be changed in the future).
+* Minor bug fixes and improvements with the most significant listed below:
+  addColor
+  - Fixed error NA Dye for e.g. Yfiler Plus.
+  addSize_gui
+  - Fixed bug (https://github.com/OskarHansson/strvalidator/issues/7).
+  calculateBalance
+  - Fixed error when NA's in markerPeakHeightSum.
+  calculateBalance_gui / calculateDropout_gui
+  - Added kit dropdown and kit attribute to result.
+  editData_gui
+  - Now copy attribute list to new object upon 'Save As'.
+  getKit
+  - what='Gender' changed to 'Sex.Marker' and now return vector.
+  makeKit_gui
+  - Fixed "Error in read.table..." when 'Save' is pressed without data.
+  - Fixed "Error in basename(x) : a character vector argument expected"
+  - Changed single gender marker to general sex markers (multiple).
+  modelDropout_gui
+  - Added option to use average peak height 'H'.
+  plotStutter_gui
+  - Option to drop sex markers.
+* New functions:
+  - calculatePullup
+  - calculatePullup_gui
+  - plotPullup_gui
+  - generateEPG
+  - generateEPG_gui
+
+
+Version 1.3.1
+------------------------------------------------------------------------------
+* Now handles window focus correctly.
+* Explicit export of functions in NAMESPACE.
+* Minor bug fixes and improvements with the most significant listed below:
+  calculateBalance_gui
+  - Added 'word' option (word boundary) for subsetting of samples.
+  calculateHeight / calculateHeight_gui
+  - New parameter 'exclude' for allele designations to exclude from dataset.
+  - Now also calculate the total peak height.
+  calculateMixture
+  - Check for uniqueness between reference datasets.
+  - Fixed bug in drop-out of minor in if: AA:AB | (A-B)/(A+B). 
+  calculateMixture_gui
+  - Fixed bug in 'Check subsetting' showing extra combinations in many cases.
+  getDb
+  - Fixed error when package is not loaded.
+  getKit
+  - Fixed error if kit=NULL and what!=NA.
+  - what="Offset" and what="Repeat" now returns identical data frames.
+  ggsave_gui
+  - Fixed wrong size to pixel conversion.
+  plotPrecision_gui
+  - Filter rows with Allele=NA (Fixes issue #6).
+  strvalidator
+  - 'View' button in 'Workspace' tab can now be used on plot objects.
+  - Fixed error message when no projects in projects folder.
+* Renamed or replaced functions:
+  - calculateH -> calculateHeight
+  - calculateH_gui -> calculateHeight_gui
+  - test-calculateH -> test-calculateHeight
+* Updated tests:
+  test-calculateHeight
+    - Tests for parameter 'exclude'.
+    - Tests for TPH - total peak height.
+
+Version 1.3.0
+------------------------------------------------------------------------------
+* This version includes a new project manager tab and improved workspace functions.
+* New analysis modules for concordance and mixture analysis.
+* Version number now visible in STR-validator GUI.
+* Help buttons available throughout the GUI, and improved documentation.
+* Numerous bug fixes and improvements with the most significant listed below:
+  calculateBalance_gui
+  - Added check and error message for 'NA' in 'Dye'.
+  calculateStutter_gui
+  - Added detection of kit and add attribute 'kit' to result.
+  detectKit
+  - Added support for 'kit' attribute.
+  export
+  - Fixed 'NA' bug when recycling names.
+  getKit
+  - Added option to return kit index.
+  modelDropout_gui
+  - Changed notation on plot to be more correct.
+  plotCapillary_gui
+  - Fixed boxplot error.
+  saveObject (internal function)
+  - Added syntactically valid name check.
+  - Added 'remove' and 'suggested' parameter.
+  tableCapillary, tableCapillary_gui
+  - Added scope=RUN.
+* New example datasets:
+  - 'set5', 'ref51', and 'ref52' (ESX17 example data for mixture analysis).
+* New functions:
+  - calculateConcordance, calculateConcordance_gui, calculateMixture, calculateMixture_gui.
+* Renamed or replaced functions:
+  - concatenate_gui -> combine_gui
+* New tests:
+  - test-calculateConcordance, test-calculateMixture.
+
+
+
+Version 1.2.0
+------------------------------------------------------------------------------
+* Kit definition file 'kit.txt'.
+    - Added support for 'Fusion'.
+    - Added support for 'GlobalFiler'.
+* Allele frequency database file 'database.txt'.
+    - Removed column 'AM'.
+* Numerous bug fixes and improvements with the most significant listed below:
+  addColor/addDye_gui
+    - Option to ignore case in marker names.
+  - Added 'orange' and 'purple'.
+  addSize/addSize_gui
+  - Option to ignore case in marker names.
+  - Option 'bins' and option to calculate an estimate of size.
+  - Fixed bug, kit always "ESX17" (issue#4 @ GitHub).
+  calculateBalance/calculateBalance_gui
+    - New column 'TPH' (Total locus Peak Height) in result table.
+  plotBalance_gui
+  - 'position_jitter height' now fixed to zero, previously 'default'.
+  - Implemented new column 'TPH' for X-axis when plot Lb.
+  - Fixed bug when no observation in an entire dye channel.
+  plotDistribution_gui
+  - Fixed boxplot bug.
+  plotDropout_gui
+  - 'position_jitter height' now fixed to zero, previously 'default'.
+  plotStutter_gui
+  - 'position_jitter height' now fixed to zero, previously 'default'.
+  - Fixed same color scale for all sub plots in complex plots.
+  - Fixed different y max for complex plot, when supposed to be fixed.
+  - Fixed bug when no observation in an entire dye channel.
+  trim
+  - Made more robust and handles '+' and '-' in sample names.
+* New experimental functions for capillary balance analysis:
+  - Functions: calculateCapillary, calculateCapillary_gui, plotCapillary_gui, tableCapillary, and tableCapillary_gui.
+  - Internal lane standard definition file (ils.txt).
+* New function:
+  - checkDataset.
+* Updated test:
+  test-calculateBalance
+    - Updated in response to new column 'TPH' and NA in 'MPH' if homozygous.
+* New tests:
+  - test-addSize, test-tableBalance, test-trim.
+* New file:
+  - database_readme.
+
+
+Version 1.1.0
+------------------------------------------------------------------------------
+* NB! Version 1.1.0 include an important bug fix for estimating a prediction
+range for the stochastic threshold (see bug fixes in 'modelDropout').
+* Updated for compatibility with 'testthat' version 0.8.
+* Kit definition file 'kit.txt'.
+    - Added support for 'PowerPlex ESX 16'.
+    - Added support for 'Investigator ESSplex Plus'.
+    - Fixed errors in 'virtual alleles' for 'Investigator ESSplex SE Plus Kit'
+      D2S1338 14 (1->0), D2S441 11.3 (0->1), FGA 30.2 (1->0), FGA 46.2 (0->1).
+* New functions for process control (plotting distributions).
+* Added package 'gWidgetsRGtk2' in suggestests.
+* Numerous bug fixes and improvements made to the following functions.
+  The most significant changes are listed below:
+  addDye_gui
+    - 'Sample.Name' column not required in dataset (only 'Marker' is required).
+  calculateBalance/calculateBalance_gui
+    - Removed 'perSample' parameter. Use 'tableBalance' for summary statistics.
+  calculateH/calculateH_gui
+    - New option to add directly to dataframe.
+    - New option to replace NA's.
+  ggsave_gui
+    - Removed unsupported unit 'px', but added info for size in pixels.
+  guessProfile/guessProfile_gui
+    - Option to remove off-ladder ('OL') alleles.
+  modelDropout_gui
+    - Removed erroneously implemented prediction interval for T.
+    - Implemented conserative T estimate.
+  plotBalance_gui
+    - Fixed plot bugs.
+    - Implemented theme.
+  plotDropout_gui
+    - Fixed NA in title for ecdp.
+    - Fixed heatmap by 'H' loosing samples with equal 'H'.
+  plotPrecision_gui
+    - Implemented new dot/box plot and plot all data (insted of min/max).
+    - Implemented theme and colour.
+  plotStutter_gui
+    - Fixed plot bugs.
+    - Implemented theme.
+  slim/slim_gui
+    - Fixed minor bug when only one column in 'fix' (issue#3 @ GitHub).
+  strvalidator (Main GUI)
+    - Added 'Summarize' balance data button in 'Balance' tab.
+    - Added 'Add Size' button in 'Edit' tab.
+    - Added 'Plot' button for plotting distributions in 'Result' tab.
+    - Added 'Summarize' precision data button in 'Precision' tab.
+* Example dataset 'Set2' and 'Ref2', changed 'Amelogenin' to 'AMEL'.
+* New functions: addSize, addSize_gui, plotDistribution_gui, tableBalance,
+    tableBalance_gui, tablePrecision, tablePrecision_gui, 
+* Removed functions: calculatePrecision, calculatePrecision_gui.
+* Renamed or replaced functions: test-All.R -> testthat.R.
+
+
+Version 1.0.0
+------------------------------------------------------------------------------
+* NB! Version 1.0.0 includes many fixes and it is recommended to re-import
+   and re-analyse previous data.
+* New kit file structure pre-loaded with ESI17, ESI17Fast, ESX17, ESX17Fast,
+    Y23, Identifiler, NGM, ESSPlexSE (fixed virtual alleles), NGMSElect, SGMPlus
+* New functions for creating new kit definitions and edit the kit definition file.
+* New functions for analysis of 'bins' and 'panels' files.
+* New functions for process control (e.g. contamination).
+* New 'database.txt' file including allele frequency databases:
+    "SGM Norway", R. Andreassen et al. / Forensic Science International 170 (2007) 59-61
+    "ESX 17 Hill", C.R. Hill et al. / Forensic Science International: Genetics 5 (2011) 269-275
+* New function for saving plots as various formats.
+* Numerous bug fixes and improvements made to the following functions.
+  The most significant changes are listed below:
+  calculateBalance/calculateBalance_gui
+    - Alleles are now filtered and only peaks matching reference are considered.
+    - Added calculation of 'delta' i.e. difference in repeat number.
+    - Fixed bug when two peaks have identical height.
+    - Added a second definition of Hb (HMW/LMW).
+    - Additional data checks.
+  calculateDropout/calculateDropout_gui
+    - Now complies with the recommendations from the ISFG DNA commission.
+    - Implemented a scoring threshold (LDT).
+    - Multiple scoring methods implemented.
+  filterProfile/filterProfile_gui
+    - Possible to use 'ref' without 'Sample.Name' column i.e. one profile for all.
+    - Does not discard columns anymore.
+    - Fixed bug when adding missing loci.
+  getKit
+    - Changed to support new kit file structure.
+    - New parameter 'what' for specifying the information returned.
+  import
+    - Changed name on some parameters.
+    - Progress messages added.
+    - Strings "NA" and "" now replaced with NA.
+    - All data is imported as character data.
+  modelDropout_gui
+    - Implemented modelling from several dropout scoring methods.
+    - Removed subset modelling because a subset must be scored again.
+    - Changed logistic regression in accordance to ref. 2012.
+    - Implemented 'Hosmer-Lemeshow test'.
+    - Improved control over plot.
+  plotBalance_gui
+    - New plot option 'Hb by Delta'.
+    - Correctly handles different number of markers per dye.
+    - Better control over plot elements, and fixed zoom.
+  plotDropout_gui
+    - New plot options 'plot by sample name' and empirical cumulative distribution plot.
+    - Correctly handles different number of markers per dye.
+    - Better control over plot elements, and fixed zoom.
+  plotStutter
+    - Correctly handles different number of markers per dye.
+    - Better control over plot elements, and fixed zoom.
+  slim
+    - Re-written for better performance.
+  tableStutter/tableStutter_gui
+    - User defined quantile.
+  trim/trim_gui
+    - Supports dataframe without 'Sample.Name' column.
+    - Fixed bug when samples=NULL, and invertS=TRUE.
+  calculatePeaks (former countPeaks)
+    - Completely re-written.
+* Various bug fixes and improvements in functions:
+    addData, calculateResultType, colNames, cropData_gui, detectKit,
+    editData_gui, export_gui, addColor, sortMarker.
+* New functions: addMarker, addMarker_gui, calculateOL, calculateOL_gui,
+    calculateOverlap, calculateOverlap_gui, calculatePeaks_gui,
+    calculatePrecision, calculatePrecision_gui, calculateResultType_gui,
+    combineBinsAndPanels, getDb, ggsave_gui, loadPackage, makeKit_gui,
+    plotKit_gui, plotPeaks_gui, plotPrecision_gui, plotResultType_gui,
+    readBinsFile, readPanelsFile.
+* Removed functions: addKitInfo, calculateMx (dev. version), dyeToColor,
+    calculateMean, calculateSummary, combineRef, getDropoutData
+* Renamed or replaced functions: addDye -> addColor, sortMarkers -> sortMarker,
+    countPeaks -> calculatePeaks, modelDropout -> modelDropout_gui.
+* Renamed files: kits.txt -> kit.txt
+* Files moved: inst\tests\ -> tests\testthat\
+* Added tests for calculateOL
+
+
+Version 0.3.0
+------------------------------------------------------------------------------
+
+* Save GUI state option added.
+* Removed dependency on pcrsim.
+* Numerous bug fixes and some clean-up.
+* New functions: colNames, cropData_gui, dyeToColor, export, export_gui,
+    saveObject, tableStutter_gui
+* Functions removed: savePlot_gui
+* Added external data: set3.txt, ref3.txt
+* Added datasets: set4, ref4
+
+
+Version 0.2.0
+------------------------------------------------------------------------------
+
+* Graphical user interface added: strvalidator - Main GUI.
+* New functions: calculateHeterozygous, concatenate_gui, detectKit, 
+    editData_gui, guessProfile, guessProfile_gui, listObjects,
+    savePlot_gui.
+* GUI wrappers added for most functions: addData_gui, addDye_gui,
+    calculateBalance_gui, calculateDropoout_gui, calculateH_gui,
+    calculateHeterozygous_gui, calculateStutter_gui, checkSubset_gui,
+    filterProfile_gui, import_gui, modelDropout_gui, plotBalance_gui,
+    plotDropout_gui, plotStutter_gui, slim_gui, trim_gui.
+* Functions removed: addZvalue, addZygosity, getDropoutData,
+* Functions renamed: importGM -> import
+* Added globals.R to suppress NOTES when checking package.
+
+Version 0.1
+------------------------------------------------------------------------------
+
+* Initial release

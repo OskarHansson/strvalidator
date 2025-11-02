@@ -1,0 +1,33 @@
+Package: strvalidator
+Type: Package
+Title: Process Control and Validation of Forensic STR Kits
+Version: 2.4.2
+Authors@R: person(given = "Oskar",
+                    family = "Hansson",
+                    role = c("aut", "cre"),
+                    email = "oskhan@ous-hf.no")
+URL: https://sites.google.com/site/forensicapps/strvalidator
+BugReports: https://github.com/OskarHansson/strvalidator/issues
+Depends: R (>= 3.1.3)
+Imports: ggplot2 (>= 2.0.0), gWidgets2, gWidgets2tcltk (> 1.0.6),
+        gridExtra, grid, gtable, plyr, scales, data.table, DT, dplyr,
+        plotly, grDevices, graphics, stats, utils, MASS
+Suggests: ResourceSelection, testthat
+Description: An open source platform for validation and process control.
+    Tools to analyze data from internal validation of forensic short tandem
+    repeat (STR) kits are provided. The tools are developed to provide
+    the necessary data to conform with guidelines for internal validation
+    issued by the European Network of Forensic Science Institutes (ENFSI)
+    DNA Working Group, and the Scientific Working Group on DNA Analysis Methods
+    (SWGDAM). A front-end graphical user interface is provided.
+    More information about each function can be found in the
+    respective help documentation.
+License: GPL-2
+RoxygenNote: 7.3.2
+Encoding: UTF-8
+NeedsCompilation: no
+Packaged: 2025-10-16 08:18:26 UTC; oskar
+Author: Oskar Hansson [aut, cre]
+Maintainer: Oskar Hansson <oskhan@ous-hf.no>
+Repository: CRAN
+Date/Publication: 2025-10-16 08:40:02 UTC

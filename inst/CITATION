@@ -1,0 +1,16 @@
+year <- sub("-.*", "", meta$Date)
+
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Article",
+         title = "STR-validator: An open source platform for validation and process control",
+         author = c(person(given = "Oskar", family = "Hansson", role = "aut"),
+                    person(given = "Peter", family = "Gill"),
+                    person(given = "Thore", family = "Egeland")),
+         year = "2014",
+         journal = "Forensic Science International: Genetics",
+         note = note,
+         volume = "13",
+         pages = "154-166",
+         url = "https://sites.google.com/site/forensicapps/strvalidator",
+         doi = "10.1016/j.fsigen.2014.07.009")
