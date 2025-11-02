@@ -1,9 +1,8 @@
 ################################################################################
 # TODO LIST
-# TODO: Re-write to simplify and for efficiency.
-
-################################################################################
+#
 # CHANGE LOG (last 20 changes)
+# 22.09.2025: Refactored and support for 8 dyes.
 # 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 06.08.2017: Fixed warning "if (!is.na(need)):the condition has length > 1".
@@ -18,310 +17,222 @@
 # 04.10.2013: Added some debug information.
 # 18.09.2013: Added support for vector conversion.
 # 17.09.2013: First version.
-
+#
 #' @title Add Color Information.
 #'
 #' @description
-#' Add color information 'Color', 'Dye' or 'R Color'.
+#' Add color information 'Color', 'Dye' or 'R Color' to either a vector
+#' or a data frame.  The function supports up to eight fluorescent dye
+#' channels corresponding to modern STR kits and will gracefully handle
+#' older kits with fewer dyes.
 #'
 #' @details
-#' Primers in forensic STR typing kits are labeled with a fluorescent
-#' dye. The dyes are represented with single letters (Dye) in exported result
-#' files or with strings (Color) in 'panels' files.
-#' For visualization in R the R color names are used (R.Color).
-#' The function can add new color schemes matched to the existing, or
-#' it can convert a vector containing one scheme to another.
+#' Primers in forensic STR typing kits are labelled with fluorescent dyes.
+#' The dyes are represented with single letters (Dye) in exported result files,
+#' with strings (Color) in 'panels' files and with R colour names for plotting
+#' (R.Color).  This function can add missing colour columns to a data frame
+#' based on another colour column, convert between schemes, or derive colours
+#' from a kit definition via `getKit()`.  Conversions are case insensitive and
+#' missing or unrecognised values will be mapped to NA.
 #'
 #' @param data data frame or vector.
-#' @param kit string representing the forensic STR kit used.
-#' Default is NA, in which case 'have' must contain a valid column.
-#' @param have character string to specify color column to be matched.
-#' Default is NA, in which case color information is derived from 'kit' and added
-#' to a column named 'Color'.
-#' If 'data' is a vector 'have' must be a single string.
-#' @param need character string or string vector to specify color columns to be added.
-#' Default is NA, in which case all columns will be added.
-#' If 'data' is a vector 'need' must be a single string.
-#' @param overwrite logical if TRUE and column exist it will be overwritten.
-#' @param ignore.case logical if TRUE case in marker names will be ignored.
-#' @param debug logical indicating printing debug information.
+#' @param kit string representing the forensic STR kit used.  Default is NA,
+#'   in which case 'have' must contain a valid column name.
+#' @param have character string specifying which colour scheme is present
+#'   in the data.  Acceptable values are 'Color', 'Dye' or 'R.Color' (case
+#'   insensitive).  If data is a vector 'have' must be supplied.
+#' @param need character string or vector specifying which colour schemes
+#'   should be added.  Acceptable values are 'Color', 'Dye' and 'R.Color'.
+#'   Default NA means that all missing colour columns will be added.
+#'   If data is a vector 'need' must be a single value.
+#' @param overwrite logical.  If TRUE and the column to be created already
+#'   exists in the data frame it will be removed before adding new values.
+#' @param ignore.case logical.  If TRUE marker names will be matched ignoring
+#'   case when deriving colours from a kit.
+#' @param debug logical indicating whether to print debug information.
 #'
-#' @return data.frame with additional columns for added colors,
-#' or vector with converted values.
+#' @return For data frames, returns a data frame with additional columns
+#'   corresponding to the requested colour schemes.  For vectors, returns a
+#'   vector converted to the requested scheme.
 #'
 #' @export
 #'
 #' @importFrom utils str
-#'
-#' @examples
-#' # Get marker and colors for SGM Plus.
-#' df <- getKit("SGMPlus", what = "Color")
-#' # Add dye color.
-#' dfDye <- addColor(data = df, need = "Dye")
-#' # Add all color alternatives.
-#' dfAll <- addColor(data = df)
-#' # Convert a dye vector to R colors
-#' addColor(data = c("R", "G", "Y", "B"), have = "dye", need = "r.color")
-addColor <- function(data, kit = NA, have = NA, need = NA, overwrite = FALSE,
-                     ignore.case = FALSE, debug = FALSE) {
+addColor <- function(data, kit = NA, have = NA, need = NA,
+                     overwrite = FALSE, ignore.case = FALSE, debug = FALSE) {
+  # Debug print of the call.
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
-
-  # Names:
-  colorSchemes <- toupper(c("Color", "Dye", "R.Color"))
-
-  # Definitions:
-  schemeColor <- c("black", "blue", "green", "yellow", "red", "orange", "purple")
-  schemeDye <- c("X", "B", "G", "Y", "R", "O", "P")
-  schemeRColor <- c("black", "blue", "green3", "black", "red", "orange", "purple")
-  # Numeric values corresponding to color abreviations:
-  # NB! There are 8 colors that can be represented by a single number character, palette():
-  # 1="black", 2="red", 3="green3", 4="blue", 5="cyan", 6="magenta", 7="yellow", 8="gray"
-
-  if (debug) {
-    print("data")
-    print(str(data))
-    print("kit")
-    print(kit)
-    print("have")
-    print(have)
-    print("need")
-    print(need)
-    print("overwrite")
-    print(overwrite)
-    print("ignore.case")
-    print(ignore.case)
+  
+  ## ---------------------------------------------------------------------------
+  ## Lookup table describing the mapping between colour names (Color),
+  ## dye letters (Dye) and the colour names used by R for plotting (R.Color).
+  ## The order of rows corresponds to the order along the fluorescent spectrum
+  ## with the internal lane standard first (black/X) followed by blue, green,
+  ## cyan, yellow, red, orange and purple.  Kits with fewer dyes will not
+  ## utilise all rows but the ordering remains consistent to allow proper
+  ## sorting of markers.  To add support for additional dye channels, extend
+  ## this table.
+  ## ---------------------------------------------------------------------------
+  map <- data.frame(
+    Color   = c("black", "blue", "green", "cyan", "yellow",
+                "red", "orange", "purple"),
+    Dye     = c("X",     "B",    "G",    "C",    "Y",
+                "R",     "O",    "P"),
+    R.Color = c("black", "blue", "green3", "cyan", "yellow",
+                "red", "orange", "purple"),
+    stringsAsFactors = FALSE
+  )
+  # Valid scheme names (upper case) for convenience.
+  colorSchemes <- toupper(colnames(map))
+  
+  # Helper: convert a vector from one scheme to another using the map.
+  convertVector <- function(x, fromScheme, toScheme) {
+    fromVals <- map[[fromScheme]]
+    toVals   <- map[[toScheme]]
+    idx <- match(toupper(x), toupper(fromVals))
+    return(toVals[idx])
   }
-
-  # Check if overwrite.
-  if (overwrite) {
-    if ("R.COLOR" %in% toupper(names(data))) {
+  
+  # When overwrite is requested remove existing colour columns from a data frame.
+  if (overwrite && is.data.frame(data)) {
+    nms <- toupper(names(data))
+    if ("R.COLOR" %in% nms) {
       message("Column 'R.Color' will be overwritten!")
       data$R.Color <- NULL
     }
-    if ("COLOR" %in% toupper(names(data))) {
+    if ("COLOR" %in% nms) {
       message("Column 'Color' will be overwritten!")
       data$Color <- NULL
     }
-    if ("DYE" %in% toupper(names(data))) {
+    if ("DYE" %in% nms) {
       message("Column 'Dye' will be overwritten!")
       data$Dye <- NULL
     }
   }
-
-  # A vector with factors gives 'FALSE' for is.vector but dim always gives 'NULL'.
-  if (is.vector(data) | is.null(dim(data))) {
+  
+  # Vector conversion mode.  For factors is.vector returns FALSE but dim is NULL.
+  if (is.vector(data) || is.null(dim(data))) {
     if (debug) {
       print("data is vector OR dim is NULL")
     }
-
-    # Add color if not exist and kit is provided.
-    if (any(is.na(have)) | any(is.na(need))) {
+    # Validate arguments.
+    if (any(is.na(have)) || any(is.na(need))) {
       warning("For vector conversion 'have' and 'need' must be provided!")
     } else {
-      if (toupper(have) == "COLOR") {
-        if (toupper(need) == "DYE") {
-          data <- schemeDye[match(toupper(data), toupper(schemeColor))]
-        }
-        if (toupper(need) == "R.COLOR") {
-          data <- schemeRColor[match(toupper(data), toupper(schemeColor))]
-        }
-      }
-
-      if (toupper(have) == "DYE") {
-        if (toupper(need) == "COLOR") {
-          data <- schemeColor[match(toupper(data), toupper(schemeDye))]
-        }
-        if (toupper(need) == "R.COLOR") {
-          data <- schemeRColor[match(toupper(data), toupper(schemeDye))]
-        }
-      }
-
-      if (toupper(have) == "R.COLOR") {
-        if (toupper(need) == "COLOR") {
-          data <- schemeColor[match(toupper(data), toupper(schemeRColor))]
-        }
-
-        if (toupper(need) == "DYE") {
-          data <- schemeDye[match(toupper(data), toupper(schemeRColor))]
-        }
+      fromScheme <- toupper(have[1])
+      toScheme   <- toupper(need[1])
+      if (!(fromScheme %in% colorSchemes)) {
+        warning(sprintf("'have' scheme '%s' is not supported!", fromScheme))
+      } else if (!(toScheme %in% colorSchemes)) {
+        warning(sprintf("'need' scheme '%s' is not supported!", toScheme))
+      } else {
+        data <- convertVector(data, fromScheme, toScheme)
       }
     }
   } else if (is.data.frame(data)) {
     if (debug) {
       print("data is data.frame")
     }
-
-    # Add color if not exist and kit is provided.
-    if (is.na(have) & !is.na(kit)) {
-      # Check if exist.
+    # If 'kit' is supplied and no 'have' scheme is specified, derive colours
+    # from the kit definition and populate a new 'Color' column.  Colour
+    # assignment is based on marker names.  Case sensitivity can be controlled
+    # via ignore.case.
+    if (is.na(have) && !is.na(kit)) {
+      # Only add 'Color' if it doesn't already exist.
       if (!"COLOR" %in% toupper(names(data))) {
-        # Get markers and their color.
         kitInfo <- getKit(kit, what = "Color")
-        marker <- kitInfo$Marker
-        # NB! Color case is not consistent between kits, so use lower case.
-        mColor <- tolower(kitInfo$Color)
-
+        marker  <- kitInfo$Marker
+        # Colour strings provided by getKit may vary in case; normalise to lower.
+        mColor  <- tolower(kitInfo$Color)
         if (debug) {
-          print("marker")
-          print(str(marker))
-          print("mColor")
-          print(str(mColor))
+          print("marker"); print(str(marker))
+          print("mColor"); print(str(mColor))
         }
-
         if (ignore.case) {
-          # Loop over all markers.
-          for (m in seq(along = marker)) {
-            # Add new column and colors per marker.
+          # Assign colours ignoring case.
+          for (m in seq_along(marker)) {
             data$Color[toupper(data$Marker) == toupper(marker[m])] <- mColor[m]
           }
         } else {
-          # Loop over all markers.
-          for (m in seq(along = marker)) {
-            # Add new column and colors per marker.
+          for (m in seq_along(marker)) {
             data$Color[data$Marker == marker[m]] <- mColor[m]
           }
         }
       }
-
-      # Add to have.
+      # Use 'Color' as the scheme we have for further conversions.
       have <- "Color"
     }
-
-    # Find existing colors and convert to upper case.
+    
+    # Determine which scheme(s) we have.
     if (is.na(have)) {
-      have <- toupper(names(data)[toupper(names(data)) %in% colorSchemes])
+      existing <- toupper(names(data))
+      have <- existing[existing %in% colorSchemes]
     } else {
       have <- toupper(have)
     }
-
-    # Convert to upper case.
+    
+    # Determine which scheme(s) we need to add.
     if (!is.na(need[1])) {
       need <- toupper(need)
     } else {
       need <- colorSchemes
     }
-
-    # Check if supported.
+    # Warn if any requested scheme is not supported.
     if (!any(need %in% colorSchemes)) {
       warning(paste(paste(need, collapse = ","), "not supported!"))
     }
-
-    count <- 1
-    repeat{
-      if ("COLOR" %in% need) {
-        # Check if exist.
-        if ("COLOR" %in% toupper(names(data))) {
-          message("A column 'Color' already exist in data frame!")
-        } else {
-          # Convert using Dye.
-          if ("DYE" %in% have) {
-            if ("DYE" %in% toupper(names(data))) {
-              # Convert dye to color.
-              data$Color <- schemeColor[match(toupper(data$Dye), toupper(schemeDye))]
-            } else {
-              warning("Can't find column 'Dye'!\n'Color' was not added!")
-            }
-          }
-
-          # Convert using R color.
-          if ("R.COLOR" %in% have) {
-            if ("R.COLOR" %in% toupper(names(data))) {
-              # Convert dye to color.
-              data$Color <- schemeColor[match(toupper(data$R.Color), toupper(schemeRColor))]
-            } else {
-              warning("Can't find column 'R.Color'!\n'Color' was not added!")
-            }
-          }
-        }
-
-        # Remove from need.
-        need <- need[need != "COLOR"]
+    
+    # Sequentially add missing schemes.
+    for (scheme in need) {
+      # Skip if scheme already exists.
+      if (scheme %in% toupper(names(data))) {
+        message(sprintf("A column '%s' already exists in data frame!",
+                        switch(scheme,
+                               "COLOR"   = "Color",
+                               "DYE"     = "Dye",
+                               "R.COLOR" = "R.Color")))
+        next
       }
-
-      if ("DYE" %in% need) {
-        # Check if exist.
-        if ("DYE" %in% toupper(names(data))) {
-          message("A column 'Dye' already exist in data frame!")
-        } else {
-          # Convert using Color.
-          if ("COLOR" %in% have) {
-            if ("COLOR" %in% toupper(names(data))) {
-              # Convert color to dye.
-              data$Dye <- schemeDye[match(toupper(data$Color), toupper(schemeColor))]
-            } else {
-              warning("Can't find column 'Color'!\n'Dye' was not added!")
-            }
-          }
-
-          # Convert using R color.
-          if ("R.COLOR" %in% have) {
-            if ("R.COLOR" %in% toupper(names(data))) {
-              # Convert R color to dye.
-              data$Dye <- schemeDye[match(toupper(data$R.Color), toupper(schemeRColor))]
-            } else {
-              warning("Can't find column 'R.Color'!\n'Dye' was not added!")
-            }
-          }
-        }
-
-        # Remove from need.
-        need <- need[need != "DYE"]
+      # Determine which existing scheme can be used for conversion.
+      if (length(have) == 0) {
+        warning(sprintf("No existing colour scheme available to derive '%s'!", scheme))
+        next
       }
-
-      if ("R.COLOR" %in% need) {
-        # Check if exist.
-        if ("R.COLOR" %in% toupper(names(data))) {
-          message("A column 'R.Color' already exist in data frame!")
-        } else {
-          # Convert using Color.
-          if ("COLOR" %in% have) {
-            if ("COLOR" %in% toupper(names(data))) {
-              # Convert color to R color.
-              data$R.Color <- schemeRColor[match(toupper(data$Color), toupper(schemeColor))]
-            } else {
-              warning("Can't find column 'Color'!\n'R.Color' was not added!")
-            }
-          }
-
-          # Convert using Dye.
-          if ("DYE" %in% have) {
-            if ("DYE" %in% toupper(names(data))) {
-              # Convert dye to R color.
-              data$R.Color <- schemeRColor[match(toupper(data$Dye), toupper(schemeDye))]
-            } else {
-              warning("Can't find column 'Dye'! \n'R.Color' was not added!")
-            }
-          }
-        }
-
-        # Remove from need.
-        need <- need[need != "R.COLOR"]
+      # Prefer the first available scheme.
+      fromScheme <- have[1]
+      # Prepare names to match R's column names (case sensitive):
+      colName <- switch(scheme,
+                        "COLOR"   = "Color",
+                        "DYE"     = "Dye",
+                        "R.COLOR" = "R.Color")
+      fromCol <- switch(fromScheme,
+                        "COLOR"   = "Color",
+                        "DYE"     = "Dye",
+                        "R.COLOR" = "R.Color")
+      # Perform conversion.
+      if (fromCol %in% names(data)) {
+        data[[colName]] <- convertVector(data[[fromCol]], fromScheme, scheme)
+      } else {
+        warning(sprintf("Can't find column '%s'!\n'%s' was not added!", fromCol, colName))
       }
-
-      # Exit loop.
-      if (length(need) == 0 | count > 1) {
-        break
-      }
-
-      # Increase loop counter.
-      count <- count + 1
-    } # End repeat.
+      # Update 'have' to include the newly created scheme for subsequent conversions.
+      have <- unique(c(have, scheme))
+    }
   } else {
-    warning("Unsupported data type!\n No color was added!")
+    warning("Unsupported data type!\n No colour was added!")
   }
-
-  # Add attributes to result.
+  
+  # Attach the kit attribute to the result for downstream functions.
   attr(data, which = "kit") <- kit
-
-  # Update audit trail.
+  
+  # Update audit trail if available.
   data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
-
+  
   if (debug) {
-    print("Return")
-    print(str(data))
+    print("Return"); print(str(data))
   }
-
+  
   return(data)
 }

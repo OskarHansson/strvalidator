@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 31.10.2024: Added support for a known profile. Changed "NO"-strings to "MISSING".
 # 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 20.07.2016: Added attributes to result.
@@ -34,7 +35,7 @@
 #' they will be numbered.
 #' @param no.marker character vector for string when marker is missing.
 #' @param no.sample character vector for string when sample is missing.
-#' @param delimeter character to separate the alleles in a genotype.
+#' @param delimiter character to separate the alleles in a genotype.
 #' Default is comma e.g '12,16'.
 #' @param list.all logical TRUE to return missing samples.
 #' @param debug logical indicating printing debug information.
@@ -46,9 +47,10 @@
 #' @importFrom utils str combn
 #'
 
-calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
-                                 no.sample = "NO SAMPLE",
-                                 delimeter = ",", list.all = FALSE, debug = FALSE) {
+calculateConcordance <- function(data, kit.name = NA, no.marker = "[MISSING MARKER]",
+                                 no.sample = "[MISSING SAMPLE]",
+                                 delimiter = ",", list.all = FALSE, 
+                                 known.profile = NULL, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -60,12 +62,16 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
     print(no.marker)
     print("no.sample")
     print(no.sample)
-    print("delimeter")
-    print(delimeter)
+    print("delimiter")
+    print(delimiter)
   }
 
   # CHECK DATA ----------------------------------------------------------------
 
+  if (no.marker == no.sample) {
+    stop("'no.marker' and 'no.sample' must be distinct values.")
+  }
+  
   # Check each dataset in list.
   for (d in seq(along = data)) {
     if (!"Sample.Name" %in% names(data[[d]])) {
@@ -118,10 +124,16 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
   }
 
   # Check parameter.
-  if (!is.character(delimeter)) {
-    stop("'delimeter' must be of type character.",
+  if (!is.character(delimiter)) {
+    stop("'delimiter' must be of type character.",
       call. = TRUE
     )
+  }
+  
+  if (!is.null(known.profile)) {
+    if (!all(c("Marker", "Allele") %in% names(known.profile))) {
+      stop("'known.profile' must contain columns 'Marker' and 'Allele'.")
+    }
   }
 
   # PREPARE -----------------------------------------------------------------
@@ -135,13 +147,23 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
   markerNames <- NULL # Unique marker names.
 
 
-  # Loop over all datasets.
-  for (d in seq(along = data)) {
-    # Get all unique sample names and marker names.
-    sampleNames <- unique(c(sampleNames, data[[d]]$Sample.Name))
-    markerNames <- unique(c(markerNames, data[[d]]$Marker))
+  if (!is.null(known.profile)) {
+    # Get marker names from known profile if provided.
+    markerNames <- unique(c(markerNames, known.profile$Marker))
+  } else {
+    # Get marker names from all datasets.
+    
+    for (d in seq(along = data)) {
+      markerNames <- unique(c(markerNames, data[[d]]$Marker))
+    }
+
   }
 
+  # Get all unique sample names.
+  for (d in seq(along = data)) {
+    sampleNames <- unique(c(sampleNames, data[[d]]$Sample.Name))
+  }
+  
   if (debug) {
     print("sampleNames:")
     print(sampleNames)
@@ -157,7 +179,7 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
   }
 
   # CALCULATE -----------------------------------------------------------------
-  # 1) A list of all disconcordant results across datasets.
+  # 1) A list of all discordant results across datasets.
 
   # Loop over all sample names.
   for (s in seq(along = sampleNames)) {
@@ -202,6 +224,23 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
           alleleSet[[d]] <- data[[d]][data[[d]]$Sample.Name == sampleNames[s] & data[[d]]$Marker == markerNames[m], "Allele"]
         }
       }
+      
+      if (debug) {
+        print("alleleSet#1:")
+        print(alleleSet)
+      }
+
+      # Add known profile allele.
+      if (any(known.profile$Marker == markerNames[m])) {
+        alleleSet[[length(data) + 1]] <- known.profile[known.profile$Marker == markerNames[m], "Allele"]
+      } else {
+        alleleSet[[length(data) + 1]] <- no.marker
+      }
+      
+      if (debug) {
+        print("alleleSet#2:")
+        print(alleleSet)
+      }
 
       if (list.all) {
         # Check for discordant results excluding if only difference is missing
@@ -222,7 +261,7 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
 
         # Loop through all datasets.
         for (d in seq(along = data)) {
-          resAlleleVec <- c(resAlleleVec, paste(alleleSet[[d]], collapse = delimeter))
+          resAlleleVec <- c(resAlleleVec, paste(alleleSet[[d]], collapse = delimiter))
         }
 
         # Add data to result vector.
@@ -300,8 +339,8 @@ calculateConcordance <- function(data, kit.name = NA, no.marker = "NO MARKER",
       k2 <- resAlleleList[[r]][iComb[2, i]]
 
       # Split into alleles.
-      k1 <- strsplit(k1, delimeter)
-      k2 <- strsplit(k2, delimeter)
+      k1 <- strsplit(k1, delimiter)
+      k2 <- strsplit(k2, delimiter)
 
       # Only add if sample...
       if (!(no.sample %in% k1 | no.sample %in% k2)) {

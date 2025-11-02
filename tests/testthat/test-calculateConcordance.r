@@ -2,6 +2,7 @@ context("calculateConcordance")
 
 ################################################################################
 # CHANGE LOG
+# 31.10.2024: Replaced misspelled delimeter with delimiter.
 # 22.03.2019: Changed deprecated 'matches' to 'expect_match'.
 # 20.07.2016: Added test 04 for option list.all
 # 28.04.2014: First tests for 'calculateConcordance'.
@@ -101,15 +102,15 @@ test_that("calculateConcordance", {
   expect_true(res1$Kit.1[5] == "25")
   expect_true(res1$Kit.1[6] == "14")
   expect_true(res1$Kit.1[7] == "NA")
-  expect_true(res1$Kit.1[8] == "NO SAMPLE")
+  expect_true(res1$Kit.1[8] == "[MISSING SAMPLE]")
   expect_true(res1$Kit.2[1] == "15,")
-  expect_true(res1$Kit.2[2] == "NO MARKER")
+  expect_true(res1$Kit.2[2] == "[MISSING MARKER]")
   expect_true(res1$Kit.2[3] == "19")
   expect_true(res1$Kit.2[4] == "31.2,16")
-  expect_true(res1$Kit.2[5] == "NO MARKER")
-  expect_true(res1$Kit.2[6] == "NO MARKER")
-  expect_true(res1$Kit.2[7] == "NO MARKER")
-  expect_true(res1$Kit.2[8] == "NO SAMPLE")
+  expect_true(res1$Kit.2[5] == "[MISSING MARKER]")
+  expect_true(res1$Kit.2[6] == "[MISSING MARKER]")
+  expect_true(res1$Kit.2[7] == "[MISSING MARKER]")
+  expect_true(res1$Kit.2[8] == "[MISSING SAMPLE]")
   expect_true(res1$Kit.3[1] == "15,18")
   expect_true(res1$Kit.3[2] == "14")
   expect_true(res1$Kit.3[3] == "OL")
@@ -173,7 +174,7 @@ test_that("calculateConcordance", {
   # Analyse dataframe.
   resList <- calculateConcordance(
     data = dataList, kit.name = kitVector,
-    no.marker = "M", no.sample = "S", delimeter = "|",
+    no.marker = "M", no.sample = "S", delimiter = "|",
     debug = FALSE
   )
 
@@ -419,15 +420,15 @@ test_that("calculateConcordance", {
   expect_true(res1$Kit.1[5] == "25")
   expect_true(res1$Kit.1[6] == "14")
   expect_true(res1$Kit.1[7] == "NA")
-  expect_true(all(res1$Kit.1[8:29] == "NO SAMPLE"))
+  expect_true(all(res1$Kit.1[8:29] == "[MISSING SAMPLE]"))
   expect_true(res1$Kit.2[1] == "15,")
-  expect_true(res1$Kit.2[2] == "NO MARKER")
+  expect_true(res1$Kit.2[2] == "[MISSING MARKER]")
   expect_true(res1$Kit.2[3] == "19")
   expect_true(res1$Kit.2[4] == "31.2,16")
-  expect_true(res1$Kit.2[5] == "NO MARKER")
-  expect_true(res1$Kit.2[6] == "NO MARKER")
-  expect_true(res1$Kit.2[7] == "NO MARKER")
-  expect_true(all(res1$Kit.2[8:29] == "NO SAMPLE"))
+  expect_true(res1$Kit.2[5] == "[MISSING MARKER]")
+  expect_true(res1$Kit.2[6] == "[MISSING MARKER]")
+  expect_true(res1$Kit.2[7] == "[MISSING MARKER]")
+  expect_true(all(res1$Kit.2[8:29] == "[MISSING SAMPLE]"))
   expect_true(res1$Kit.3[1] == "15,18")
   expect_true(res1$Kit.3[2] == "14")
   expect_true(res1$Kit.3[3] == "OL")
@@ -475,7 +476,7 @@ test_that("calculateConcordance", {
   expect_true(res1$Kit.4[16] == "16")
   expect_true(res1$Kit.4[17] == "25")
   expect_true(res1$Kit.4[18] == "6,10")
-  expect_true(all(res1$Kit.4[19:29] == "NO SAMPLE"))
+  expect_true(all(res1$Kit.4[19:29] == "[MISSING SAMPLE]"))
 
   expect_true(res2$Kits[1] == "Kit.1 vs. Kit.2")
   expect_true(res2$Kits[2] == "Kit.1 vs. Kit.3")
