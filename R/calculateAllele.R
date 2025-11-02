@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.10.2025: Specified the package anchor in link.
 # 24.08.2018: Removed unused variables.
 # 06.08.2017: Added audit trail.
 # 02.05.2016: Added parameters 'sex.rm' and 'kit'.
@@ -41,7 +42,7 @@
 #' 'Total.Peaks', 'Allele.Proportion', 'Sum.Peaks', and 'Allele.Frequency'.
 
 #'
-#' @seealso \code{\link[data.table]{data.table}}
+#' @seealso \code{\link[data.table:data.table]{data.table}}
 
 
 calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,

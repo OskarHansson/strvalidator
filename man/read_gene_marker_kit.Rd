@@ -4,7 +4,7 @@
 \alias{read_gene_marker_kit}
 \title{Read GeneMarker Kit Definition}
 \usage{
-read_gene_marker_kit(xml_file_path, panel_name)
+read_gene_marker_kit(xml_file_path, panel_name, debug = FALSE)
 }
 \arguments{
 \item{xml_file_path}{the path to the XML file.}

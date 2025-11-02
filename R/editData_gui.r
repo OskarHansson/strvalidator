@@ -2,6 +2,7 @@
 # CHANGE LOG (last 20 changes)
 # 15.08.2024: Changed default to FALSE for the 'limit number of rows' checkbox.
 # 15.08.2024: Added dom 'l' to show control for number of rows per page.
+# 15.10.2025: Specified the package anchor in link.
 # 14.09.2022: Added export buttons to DT table for View.
 # 09.09.2022: Fixed dataset info when NULL. Added view button. Now default to limit.
 # 17.10.2021: Try to expand dropdown for dataset under tcltk.
@@ -37,8 +38,8 @@
 #' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param data data.frame for instant viewing.
 #' @param name character string with the name of the provided dataset.
-#' @param edit logical TRUE to enable edit (uses \code{\link[gWidgets2]{gdf}}), FALSE to
-#' view and enable sorting by clicking a column header (uses \code{\link[gWidgets2]{gtable}}).
+#' @param edit logical TRUE to enable edit (uses \code{\link[gWidgets2:gdf]{gdf}}, FALSE to
+#' view and enable sorting by clicking a column header (uses \code{\link[gtable:gtable]{gtable}}).
 #' @param debug logical indicating printing debug information.
 #' @param parent widget to get focus when finished.
 #'

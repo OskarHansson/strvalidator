@@ -52,5 +52,5 @@ NB! The quick method may not catch all spikes since two peaks can be
 separated by rounding e.g. 200.5 and 200.6 becomes 200 and 201 respectively.
 }
 \seealso{
-\code{\link{data.table}}
+\code{\link[data.table:data.table]{data.table}}
 }

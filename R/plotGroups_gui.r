@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.10.2025: Specified the package anchor in link.
 # 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 26.04.2020: Added language support.
@@ -34,7 +35,7 @@
 #'
 #' @return TRUE
 #'
-#' @seealso \code{\link[ggplot2]{stat_ecdf}}
+#' @seealso \code{\link[ggplot2:stat_ecdf]{stat_ecdf}}
 
 
 plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {

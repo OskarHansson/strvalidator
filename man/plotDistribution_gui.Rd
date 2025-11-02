@@ -38,5 +38,5 @@ A name for the result is automatically suggested.
 The resulting plot can be saved as either a plot object or as an image.
 }
 \seealso{
-\code{\link{log}}, \code{\link{geom_density}}
+\code{\link{log}}, \code{\link[ggplot2:geom_density]{geom_density}}
 }

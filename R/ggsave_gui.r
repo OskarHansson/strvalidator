@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.10.2025: Specified the package anchor in link.
 # 12.09.2022: Reworked to avoid 'dispose' error https://github.com/jverzani/gWidgets2/issues/103
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 15.03.2020: Added language support.
@@ -26,7 +27,7 @@
 #' @title Save Image
 #'
 #' @description
-#' A simple GUI wrapper for \code{\link{ggsave}}.
+#' A simple GUI wrapper for \code{\link[ggplot2:ggsave]{ggsave}}.
 #'
 #' @details
 #' Simple GUI wrapper for ggsave.
@@ -48,7 +49,7 @@
 #' @importFrom utils help
 #' @importFrom grDevices dev.cur dev.list dev.size
 #'
-#' @seealso \code{\link[ggplot2]{ggsave}}
+#' @seealso \code{\link[ggplot2:ggsave]{ggsave}}
 
 ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
                        savegui = NULL, debug = FALSE, parent = NULL) {

@@ -1,33 +1,18 @@
-Roxygen: list()
 Package: strvalidator
 Type: Package
 Title: Process Control and Validation of Forensic STR Kits
-Version: 2.4.1.9007
+Version: 2.4.2
+Authors@R: person(given = "Oskar",
+                    family = "Hansson",
+                    role = c("aut", "cre"),
+                    email = "oskhan@ous-hf.no")
 URL: https://sites.google.com/site/forensicapps/strvalidator
 BugReports: https://github.com/OskarHansson/strvalidator/issues
-Authors@R: person(given = "Oskar", family = "Hansson", role = c("aut", "cre"), email = "oskhan@ous-hf.no")
-Depends: R (>= 3.6.0)
-Imports:
-    ggplot2 (>= 2.0.0),
-    gWidgets2,
-    gWidgets2tcltk (> 1.0.6),
-    gridExtra,
-    grid,
-    gtable,
-    plyr,
-    scales,
-    data.table,
-    DT,
-    dplyr,
-    plotly,
-    grDevices,
-    graphics,
-    stats,
-    utils,
-    MASS
-Suggests:
-    ResourceSelection,
-    testthat
+Depends: R (>= 3.1.3)
+Imports: ggplot2 (>= 2.0.0), gWidgets2, gWidgets2tcltk (> 1.0.6),
+        gridExtra, grid, gtable, plyr, scales, data.table, DT, dplyr,
+        plotly, grDevices, graphics, stats, utils, MASS, magrittr, xml2
+Suggests: ResourceSelection, testthat
 Description: An open source platform for validation and process control.
     Tools to analyze data from internal validation of forensic short tandem
     repeat (STR) kits are provided. The tools are developed to provide
@@ -40,3 +25,9 @@ Description: An open source platform for validation and process control.
 License: GPL-2
 RoxygenNote: 7.3.2
 Encoding: UTF-8
+NeedsCompilation: no
+Packaged: 2025-10-16 08:18:26 UTC; oskar
+Author: Oskar Hansson [aut, cre]
+Maintainer: Oskar Hansson <oskhan@ous-hf.no>
+Repository: CRAN
+Date/Publication: 2025-10-16 08:40:02 UTC

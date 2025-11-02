@@ -32,11 +32,11 @@ and to get focus when finished.}
 TRUE
 }
 \description{
-A simple GUI wrapper for \code{\link{ggsave}}.
+A simple GUI wrapper for \code{\link[ggplot2:ggsave]{ggsave}}.
 }
 \details{
 Simple GUI wrapper for ggsave.
 }
 \seealso{
-\code{\link{ggsave}}
+\code{\link[ggplot2:ggsave]{ggsave}}
 }

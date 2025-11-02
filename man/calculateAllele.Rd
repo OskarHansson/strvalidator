@@ -43,5 +43,5 @@ statistics is calculated.
 NB! The function removes NA's and OL's prior to analysis.
 }
 \seealso{
-\code{\link{data.table}}
+\code{\link[data.table:data.table]{data.table}}
 }

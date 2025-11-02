@@ -4,6 +4,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.10.2025: Specified the package anchor in link.
 # 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 27.06.2016: Added: @importFrom stats dist
@@ -48,8 +49,7 @@
 #'
 #' @return data.frame
 #'
-#' @seealso \code{\link[data.table]{data.table}}
-
+#' @seealso \code{\link[data.table:data.table]{data.table}}
 
 
 calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,

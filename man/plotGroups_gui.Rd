@@ -37,5 +37,5 @@ Group names can be changed. A name for the result is automatically suggested.
 The resulting plot can be saved as either a plot object or as an image.
 }
 \seealso{
-\code{\link{stat_ecdf}}
+\code{\link[ggplot2:stat_ecdf]{stat_ecdf}}
 }

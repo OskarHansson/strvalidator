@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 15.10.2025: Specified the package anchor in link.
 # 09.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 08.03.2020: Added check for data selected.
 # 08.03.2020: Added language support.
@@ -18,9 +19,6 @@
 # 29.07.2014: Changed name concatenate_gui -> combine_gui.
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
-# 18.07.2013: Check before overwrite object.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 17.05.2013: First version.
 
 #' @title Combine Datasets
 #'
@@ -28,7 +26,7 @@
 #' GUI for combining two datasets.
 #'
 #' @details
-#' Simple GUI to combine two datasets using the \code{\link[plyr]{rbind.fill}}
+#' Simple GUI to combine two datasets using the \code{\link[plyr:rbind.fill]{rbind.fill}}
 #' function.
 #' NB! Datasets must have identical column names but not necessarily
 #' in the same order.

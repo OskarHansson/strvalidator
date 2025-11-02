@@ -30,8 +30,13 @@ missing alleles.}
 \item{debug}{logical indicating printing debug information.}
 }
 \value{
-data.frame with columns 'Sample.Name', 'Marker', 'Style', 'Mx',
- 'Average', 'Difference', 'Observed', 'Expected', 'Profile', and 'Dropin'.
+data.frame with columns 'Sample.Name', 'Marker', 
+ (mixture proportion calculation) 'Style', 'Mx',
+ 'Average' (sample Mx), 'Difference' (from average),
+ 'Observed' (minor unique alleles), 
+ 'Expected' (minor unique alleles), 
+ 'Profile' (percentage of minor unique alleles), 
+ and 'Dropin' (unexplained alleles).
 }
 \description{
 Calculate Mx, drop-in, and % profile for mixtures.

@@ -23,8 +23,8 @@ editData_gui(
 
 \item{name}{character string with the name of the provided dataset.}
 
-\item{edit}{logical TRUE to enable edit (uses \code{\link{gdf}}), FALSE to
-view and enable sorting by clicking a column header (uses \code{\link{gtable}}).}
+\item{edit}{logical TRUE to enable edit (uses \code{\link[gWidgets2:gdf]{gdf}}, FALSE to
+view and enable sorting by clicking a column header (uses \code{\link[gtable:gtable]{gtable}}).}
 
 \item{debug}{logical indicating printing debug information.}
 
