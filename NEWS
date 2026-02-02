@@ -7,6 +7,8 @@ Version 2.5.0.9001
 - The deprecated functions will continue to work and automatically map old argument names.
   Please update your scripts to the new naming convention.
 * Bug fixes and improvements with the most significant listed below:
+  - calculateHb_gui
+  Fixed option exact not propagated to check_subsetting.
   - slim
   More robust autodetection of (numbered) repeated columns to stack.
   - auditTrail, audit_trail
