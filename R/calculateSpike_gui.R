@@ -66,7 +66,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   strMsgTitleDataset <- "Dataset not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -227,7 +227,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "File.Name", "Size")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Size",
       env = env, parent = w, debug = debug
@@ -341,7 +341,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       )
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

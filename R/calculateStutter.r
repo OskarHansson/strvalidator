@@ -15,6 +15,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 31.12.2025: Changed data quality messages into warnings.
 # 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 17.01.2016: Fixed save attribute saves dataset.
@@ -145,17 +146,34 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
   }
 
   # Prepare -------------------------------------------------------------------
-
-  # Check data type.
+  
+  # Allele must be character
   if (!is.character(data$Allele)) {
-    message("'Allele' must be character. 'data' converted!")
+    warning("'Allele' must be character. Coercing to character.", call. = FALSE)
     data$Allele <- as.character(data$Allele)
   }
+  
+  # Height must be numeric
   if (!is.numeric(data$Height)) {
-    message("'Height' must be numeric. 'data' converted!")
-    data$Height <- suppressWarnings(as.numeric(data$Height))
+    old_na <- sum(is.na(data$Height))
+    new_height <- suppressWarnings(as.numeric(data$Height))
+    new_na <- sum(is.na(new_height))
+    
+    warning("'Height' must be numeric. Coercing to numeric.", call. = FALSE)
+    
+    if (new_na > old_na) {
+      warning(
+        sprintf(
+          "Height coercion introduced %d additional NA values.",
+          new_na - old_na
+        ),
+        call. = FALSE
+      )
+    }
+    
+    data$Height <- new_height
   }
-
+  
   # GET VARIABLES -------------------------------------------------------------
 
   # Get columns.
@@ -651,8 +669,8 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
   }
 
   # Update audit trail.
-  stutterRatio <- auditTrail(
-    obj = stutterRatio, f.call = match.call(),
+  stutterRatio <- audit_trail(
+    obj = stutterRatio, f_call = match.call(),
     package = "strvalidator"
   )
 

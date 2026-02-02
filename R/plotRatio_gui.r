@@ -95,7 +95,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -274,7 +274,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
     # Check if suitable.
     requiredCol <- c("Sample.Name")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )

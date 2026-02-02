@@ -196,7 +196,7 @@ calculateStatistics <- function(data, target, quant = 0.95,
   res <- as.data.frame(res)
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   return(res)
 }

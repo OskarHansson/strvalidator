@@ -397,7 +397,7 @@ calculateAllT <- function(data, kit, p.dropout = 0.01, p.conservative = 0.05, rm
   df[, 8] <- round(x = as.numeric(df[, 8]), digits = 0)
 
   # Update audit trail.
-  df <- auditTrail(obj = df, f.call = match.call(), package = "strvalidator")
+  df <- audit_trail(obj = df, f_call = match.call(), package = "strvalidator")
 
   return(df)
 }

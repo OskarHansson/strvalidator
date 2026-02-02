@@ -138,7 +138,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -433,7 +433,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     # Check if suitable.
     requiredCol <- NULL
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )

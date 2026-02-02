@@ -289,7 +289,7 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
   attr(res, which = "kit") <- kit
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print("head(res):")

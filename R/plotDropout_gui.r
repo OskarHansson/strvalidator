@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2025: addColor -> add_color
 # 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 04.08.2022: Added a reference.
@@ -131,7 +132,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -391,7 +392,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       "Sample.Name", "Marker", "Allele", "Height",
       "Dropout", "Rfu", "Heterozygous"
     )
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -479,7 +480,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "H")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -501,7 +502,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Amount")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -523,7 +524,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Concentration")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -545,7 +546,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -586,7 +587,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Height", "Heterozygous")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -608,7 +609,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     # Check if suitable for plot.
     requiredCol <- c("Sample.Name", "Marker", "Dropout", "Height", "Heterozygous")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -784,7 +785,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Color information.
       if (is.null(.gData$Dye)) {
-        .gData <- addColor(data = .gData, kit = val_kit, need = "Dye")
+        .gData <- add_color(data = .gData, kit = val_kit, need = "Dye")
       }
 
       # Sort by marker in kit
@@ -1192,7 +1193,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # Create plot.
         plotColor <- getKit(kit = val_kit, what = "Color")
         plotColor <- unique(plotColor$Color)
-        plotColor <- addColor(plotColor, need = "R.Color", have = "Color")
+        plotColor <- add_color(plotColor, need = "R.Color", have = "Color")
 
         # Create plot.
         gp <- ggplot(data = .gData, aes_string(x = "Marker", y = "Height"))
@@ -1257,7 +1258,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         # .gData <- .gData [order(.gData$Proportion),]
 
         # Mx data SGM Plus.
-        # .gData<-addColor()
+        # .gData<-add_color()
         # .gData<-sortMarker(.gData,"SGM Plus")
 
         # Mx Data:

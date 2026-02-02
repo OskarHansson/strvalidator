@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.11.2025: Changed 'checkSubset' to 'check_subset' and parameter 'ignore.case' to 'ignore_case'.
 # 08.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 04.03.2020: Added language support.
 # 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
@@ -37,7 +38,7 @@
 #' @importFrom utils help head str
 #' @importFrom graphics title
 #'
-#' @seealso \code{\link{calculatePullup}}, \code{\link{checkSubset}}
+#' @seealso \code{\link{calculatePullup}}, \code{\link{check_subset}}
 #'
 
 
@@ -95,7 +96,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleNA <- "NA detected!"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -282,7 +283,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Allele", "Marker", "Dye", "Height", "Size", "Data.Point")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Height",
       env = env, parent = w, debug = debug
@@ -343,7 +344,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -386,11 +387,11 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
         ref = val_ref,
         console = FALSE,
-        ignore.case = val_ignore,
+        ignore_case = val_ignore,
         word = val_word
       )
 
@@ -564,7 +565,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         )
 
         # Update audit trail.
-        datanew <- auditTrail(
+        datanew <- audit_trail(
           obj = datanew, key = keys, value = values,
           label = fnc, arguments = FALSE,
           package = "strvalidator"

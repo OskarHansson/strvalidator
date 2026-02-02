@@ -107,7 +107,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -442,7 +442,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   opt_slim_chk <- gcheckbox(
     text = strChkSlim,
-    checked = FALSE, container = opt_frm
+    checked = TRUE, container = opt_frm
   )
 
   addHandlerChanged(opt_slim_chk, handler = function(h, ...) {
@@ -636,7 +636,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         )
 
         # Update audit trail.
-        datanew <- auditTrail(
+        datanew <- audit_trail(
           obj = datanew, key = keys, value = values,
           label = fnc, arguments = FALSE,
           package = "strvalidator"

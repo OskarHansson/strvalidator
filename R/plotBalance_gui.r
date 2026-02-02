@@ -144,7 +144,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -442,7 +442,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -578,7 +578,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Hb", "MPH")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -595,7 +595,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Delta", "Hb")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -612,7 +612,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Hb", "H")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -629,7 +629,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Hb")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -646,7 +646,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Lb", "TPH")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -663,7 +663,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Lb", "H")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -680,7 +680,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Lb")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -910,7 +910,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Call functions.
       # Add color information.
       if (is.null(.gData$Dye)) {
-        .gData <- addColor(data = .gData, kit = val_kit, need = "Dye")
+        .gData <- add_color(data = .gData, kit = val_kit, need = "Dye")
         message("'Dye' is missing. Dye information added!")
       }
       # Sort by marker in kit
@@ -967,7 +967,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Make data frame from dataset marker levels.
       markerDye <- data.frame(Marker = levels(.gData$Marker))
       # Add colors.
-      markerDye <- addColor(data = markerDye, kit = val_kit)
+      markerDye <- add_color(data = markerDye, kit = val_kit)
       # Get Marker and Dye column.
       markerDye <- markerDye[c("Marker", "Dye")]
       # Extract unique elements.
@@ -983,7 +983,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       # Make palette.
       val_palette <- unique(getKit(val_kit, what = "Color")$Color)
-      val_palette <- addColor(val_palette, have = "Color", need = "R.Color")
+      val_palette <- add_color(val_palette, have = "Color", need = "R.Color")
 
       if (debug) {
         print("Before plot: str(.gData)")
@@ -1265,7 +1265,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Get kit colors and convert to dyes.
         dyes <- unique(getKit(val_kit, what = "Color")$Color)
-        dyes <- addColor(dyes, have = "Color", need = "Dye")
+        dyes <- add_color(dyes, have = "Color", need = "Dye")
         # Number of dyes.
         noDyes <- length(dyes)
         # Number of rows in table object (one for each dye + title + x title).
@@ -1286,7 +1286,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Get all markers to be plotted and add dye for subsetting.
         gLevel <- data.frame(Marker = levels(.gData$Marker))
-        gLevel <- addColor(gLevel, kit = val_kit)
+        gLevel <- add_color(gLevel, kit = val_kit)
 
         # Loop over all dyes.
         for (d in seq(along = dyes)) {

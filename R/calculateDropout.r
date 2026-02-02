@@ -43,7 +43,7 @@
 #' reference set but not in the data set will be added to the result.
 #' NB! 'Sample.Name' in 'ref' must be unique core name of replicate sample
 #' names in 'data'.
-#' Use \code{checkSubset} to make sure subsetting works as intended.
+#' Use \code{check_subset} to make sure subsetting works as intended.
 #' There are options to remove sex markers and quality sensors from analysis.
 #'
 #' NB! There are several methods of scoring drop-out events for regression.
@@ -944,7 +944,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
   attr(dataDrop, which = "kit") <- kit
 
   # Update audit trail.
-  dataDrop <- auditTrail(obj = dataDrop, f.call = match.call(), package = "strvalidator")
+  dataDrop <- audit_trail(obj = dataDrop, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

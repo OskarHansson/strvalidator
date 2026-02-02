@@ -1,128 +1,150 @@
-################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 15.12.2015: Added 'exact' option.
-# 27.05.2015: Accepts (the first) column name containing the string 'Sample'
-#             as alternative (case insensitive).
-# 05.05.2015: Added alternative column 'Sample.File.Name'.
-# 05.05.2015: Changed parameter name of ignoreCase to 'ignore.case'.
-# 25.07.2013: Added 'debug' option.
-# 25.07.2013: Fixed bug option 'word' was not correctly implemented.
-# 15.07.2013: Added parameter 'ingoreCase' and 'fixed'.
-# <15.07.2013: Added option 'console'.
-# <15.07.2013: Roxygenized.
-# <15.07.2013: Works with atomic vector.
-
 #' @title Check Subset
 #'
 #' @description
-#' Check the result of subsetting
+#' Check the result of subsetting, optionally reversing the match direction.
 #'
 #' @details
-#' Check if ref and sample names are unique for subsetting.
-#' Prints the result to the R-prompt.
+#' When \code{reverse = FALSE} (default), checks which data sample names
+#' contain each reference name.  
+#' When \code{reverse = TRUE}, checks which reference names are found
+#' within each data sample name (useful for mixture naming).
 #'
-#' @param data a data frame in GeneMapper format containing column 'Sample.Name'.
-#' @param ref a data frame in GeneMapper format containing column 'Sample.Name',
-#'  OR an atomic vector e.g. a single sample name string.
-#' @param console logical, if TRUE result is printed to R console,
-#' if FALSE a string is returned.
-#' @param ignore.case logical, if TRUE case insensitive matching is used.
-#' @param word logical, if TRUE only word matching (regex).
-#' @param exact logical, if TRUE only exact match.
-#' @param debug logical indicating printing debug information.
+#' @param data a data frame in GeneMapper format containing column \code{Sample.Name}.
+#' @param ref a data frame in GeneMapper format containing column \code{Sample.Name},
+#'  or an atomic vector (e.g. a single sample name string).
+#' @param console logical; if \code{TRUE}, result is printed to the console,
+#' otherwise a string is returned.
+#' @param ignore_case logical; if \code{TRUE}, case-insensitive matching is used.
+#' @param word logical; if \code{TRUE}, only word matching (regex word boundaries).
+#' @param exact logical; if \code{TRUE}, requires an exact match.
+#' @param reverse logical; if \code{TRUE}, reverses direction to data→ref matching.
+#' @param debug logical indicating printing of debug information.
 #'
-#' @export
+#' @return If \code{console = TRUE}, prints results to the console.
+#' If \code{console = FALSE}, returns a character string with formatted results.
 #'
 #' @seealso \code{\link{grep}}
+#' @aliases checkSubset
+#' @export
 
-checkSubset <- function(data, ref, console = TRUE, ignore.case = TRUE,
-                        word = FALSE, exact = FALSE, debug = FALSE) {
+check_subset <- function(data, ref, console = TRUE, ignore_case = TRUE,
+                        word = FALSE, exact = FALSE, reverse = FALSE,
+                        debug = FALSE) {
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    message("--- check_subset() debug ---")
+    print(list(ignore_case = ignore_case, word = word, exact = exact, reverse = reverse))
   }
-
-  # Result list.
+  
   res <- list()
-
-  # Get reference name(s).
+  
+  # ---- Extract reference names ----
   if (is.atomic(ref)) {
-    ref.names <- ref
+    ref_names <- ref
   } else if ("Sample.Name" %in% names(ref)) {
-    ref.names <- unique(ref$Sample.Name)
+    ref_names <- unique(ref$Sample.Name)
   } else if ("Sample.File.Name" %in% names(ref)) {
-    ref.names <- unique(ref$Sample.File.Name)
+    ref_names <- unique(ref$Sample.File.Name)
   } else if (any(grepl("SAMPLE", names(ref), ignore.case = TRUE))) {
-    # Get (first) column name containing "Sample".
-    sampleCol <- names(ref)[grep("SAMPLE", names(ref), ignore.case = TRUE)[1]]
-    # Grab sample names.
-    ref.names <- unique(ref[, sampleCol])
+    sample_col <- names(ref)[grep("SAMPLE", names(ref), ignore.case = TRUE)[1]]
+    ref_names <- unique(ref[[sample_col]])
   } else {
-    stop("'ref' must contain a column 'Sample.Name', 'Sample.File.Name',
-         or 'Sample'")
+    stop("'ref' must contain a column 'Sample.Name', 'Sample.File.Name', or 'Sample'")
   }
-
+  
+  # ---- Extract data sample names ----
   if ("Sample.Name" %in% names(data)) {
     samples <- unique(data$Sample.Name)
   } else if ("Sample.File.Name" %in% names(data)) {
     samples <- unique(data$Sample.File.Name)
   } else if (any(grepl("SAMPLE", names(data), ignore.case = TRUE))) {
-    # Get (first) column name containing "Sample".
-    sampleCol <- names(data)[grep("SAMPLE", names(data), ignore.case = TRUE)[1]]
-    # Grab sample names.
-    samples <- unique(data[, sampleCol])
+    sample_col <- names(data)[grep("SAMPLE", names(data), ignore.case = TRUE)[1]]
+    samples <- unique(data[[sample_col]])
   } else {
-    stop("'data' must contain a column 'Sample.Name', 'Sample.File.Name',
-         or 'Sample'")
+    stop("'data' must contain a column 'Sample.Name', 'Sample.File.Name', or 'Sample'")
   }
-
-  # Subset 'data$Sample.Name' using 'ref.name'.
-  for (n in seq(along = ref.names)) {
-    cRef <- ref.names[n]
-
-    # Add word anchor.
-    if (word) {
-      cRef <- paste("\\b", cRef, "\\b", sep = "")
-    }
-
-    if (exact) {
-      cRef <- paste("^", cRef, "$", sep = "")
-    }
-
-    if (debug) {
-      print("cRef")
-      print(cRef)
-      print("samples")
-      print(samples)
-      print("ignore.case")
-      print(ignore.case)
-      print("word")
-      print(word)
-      print("exact")
-      print(exact)
-    }
-
-    cSamples <- grep(cRef, samples,
-      value = TRUE, fixed = FALSE, ignore.case = ignore.case
-    )
-
-    res[n] <- paste("Reference name: ", ref.names[n], "\n",
-      "Subsetted samples: ", paste(cSamples, collapse = ", "), "\n\n",
-      sep = ""
-    )
-
-    if (debug) {
-      print("cSamples")
-      print(cSamples)
-    }
+  
+  # ---- Defensive checks ----
+  if (length(ref_names) == 0) {
+    warning("No reference names found.")
+    return(invisible(NULL))
   }
-
-  if (console) {
-    cat(unlist(res))
+  if (length(samples) == 0) {
+    warning("No sample names found in 'data'.")
+    return(invisible(NULL))
+  }
+  
+  # ---- Pattern helper ----
+  make_pattern <- function(x) {
+    if (word)  x <- paste0("\\b", x, "\\b")
+    if (exact) x <- paste0("^", x, "$")
+    x
+  }
+  
+  # ---- Matching direction ----
+  if (!reverse) {
+    # normal direction: which data samples match each reference name?
+    for (n in seq_along(ref_names)) {
+      cRef <- make_pattern(ref_names[n])
+      cSamples <- grep(cRef, samples, value = TRUE, ignore.case = ignore_case)
+      matched <- if (length(cSamples) == 0) "<none>" else paste(cSamples, collapse = ", ")
+      res[n] <- paste("Reference name: ", ref_names[n], "\n",
+                      "Matched samples: ", matched, "\n\n", sep = "")
+      if (debug) print(list(ref = cRef, matched_samples = cSamples))
+    }
   } else {
-    return(unlist(res))
+    # reversed direction: which reference names are found in each data sample?
+    for (n in seq_along(samples)) {
+      matched_refs <- c()
+      for (r in ref_names) {
+        pattern <- make_pattern(r)
+        if (length(grep(pattern, samples[n], ignore.case = ignore_case)) > 0) {
+          matched_refs <- c(matched_refs, r)
+        }
+      }
+      matched <- if (length(matched_refs) == 0) "<none>" else paste(matched_refs, collapse = ", ")
+      res[n] <- paste("Sample name: ", samples[n], "\n",
+                      "Matched references: ", matched, "\n\n", sep = "")
+      if (debug) print(list(sample = samples[n], matched_refs = matched_refs))
+    }
   }
+  
+  # ---- Output ----
+  txt <- paste(unlist(res), collapse = "")
+  if (console) cat(txt, sep = "\n") else return(txt)
+}
+
+################################################################################
+#' @rdname check_subset
+#' @export
+#' @usage NULL
+#' @keywords internal
+#'
+#' @description
+#' **Deprecated.** Use [check_subset()] instead.
+################################################################################
+
+checkSubset <- function(data, 
+                        ref, 
+                        console = TRUE, 
+                        ignore.case = TRUE,
+                        word = FALSE, 
+                        exact = FALSE, 
+                        reverse = FALSE,
+                        debug = FALSE,
+                        ...) {
+  
+  .Deprecated("check_subset", package = "strvalidator")
+  
+  # Remap arguments
+  check_subset(
+    data = data,
+    ref = ref,
+    console = console,
+    ignore_case = ignore.case,
+    word = word,
+    exact = exact,
+    reverse = reverse,
+    debug = debug,
+    ...
+  )
 }

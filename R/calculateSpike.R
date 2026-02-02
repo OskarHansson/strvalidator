@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: Allow to use Data.Point
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2025: addColor -> add_color
 # 15.10.2025: Specified the package anchor in link.
 # 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
@@ -109,7 +106,7 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
 
   # Getdye channels.
   kitColors <- unique(getKit(kit = kit, what = "Color", debug = debug)$Color)
-  kitDyes <- addColor(data = kitColors, have = "Color", need = "Dye")
+  kitDyes <- add_color(data = kitColors, have = "Color", need = "Dye")
 
   if (is.null(threshold)) {
     # Default to number of dyes minus one to allow for one unlabeled spike.
@@ -129,7 +126,7 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
 
   # Add Dye if not present.
   if (!"Dye" %in% names(DT)) {
-    DT <- addColor(data = DT, kit = kit, need = "Dye")
+    DT <- add_color(data = DT, kit = kit, need = "Dye")
   }
 
   # Add Id if not present.
@@ -243,7 +240,7 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
   attr(res, which = "kit") <- attr_kit
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

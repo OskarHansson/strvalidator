@@ -343,7 +343,7 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
   )
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

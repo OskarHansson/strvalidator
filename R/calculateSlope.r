@@ -184,7 +184,7 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
       kitData <- getKit(kit = kit[g])
 
       # Add size in base pair.
-      data.tmp <- addSize(
+      data.tmp <- add_size(
         data = data[data$Group == group[g], ],
         kit = kitData, debug = debug
       )
@@ -255,7 +255,7 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
   attr(data, which = "kit") <- kit
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   return(res)
 }

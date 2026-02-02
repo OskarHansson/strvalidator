@@ -67,7 +67,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   strBtnRemove <- "Remove"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -205,7 +205,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -257,7 +257,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -326,7 +326,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       values <- list(val_name_data, val_name_spike, val_na, val_threshold)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

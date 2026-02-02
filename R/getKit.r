@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2025: Added fallback for locating the kit definition file (for testing).
 # 03.01.2019: Elaborated description for parameter "what".
 # 28.06.2016: Added support for 'Quality Sensor'.
 # 02.12.2016: Possible to return multiple kits by specifying a vector.
@@ -35,6 +36,12 @@
 #'
 #' If no matching kit or kit index is found NA is returned.
 #' If kit='NULL' or '0' a vector of available kits is printed and NA returned.
+#' 
+#' Note:
+#' The function automatically searches for the kit definition file in both the
+#' installed package directory (`extdata/`) and the package source tree
+#' (`inst/extdata/`).  This allows the function to work seamlessly during
+#' development and testing without requiring reinstallation of the package.
 #'
 #' @param kit string or integer to specify the kit.
 #' @param what string to specify which information to return. Default is 'NA' which return all info.
@@ -50,6 +57,7 @@
 #' @export
 #'
 #' @importFrom utils read.delim
+#' @importFrom rprojroot find_root has_file
 #'
 #' @examples
 #' # Show all information stored for kit with short name 'ESX17'.
@@ -64,17 +72,40 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
   # LOAD KIT INFO  ############################################################
 
   if (is.null(.kit.info)) {
-    # Get package path.
-    packagePath <- path.package("strvalidator", quiet = FALSE)
+    # Get package path (works after installation)
+    packagePath <- path.package("strvalidator", quiet = TRUE)
     subFolder <- "extdata"
     fileName <- "kit.txt"
-
-    filePath <- paste(packagePath, subFolder, fileName, sep = .separator)
-
+    filePath <- file.path(packagePath, subFolder, fileName)
+    
+    # Fallback: when running tests from source tree, system.file() may fail
+    if (!file.exists(filePath)) {
+      # Try to locate inst/extdata in the current or parent directories
+      sourcePath <- normalizePath(file.path(getwd(), "inst", "extdata", fileName), mustWork = FALSE)
+      if (file.exists(sourcePath)) {
+        filePath <- sourcePath
+      } else {
+        # Last resort: find the project root from the package DESCRIPTION
+        descPath <- tryCatch(
+          suppressWarnings(rprojroot::find_root(rprojroot::has_file("DESCRIPTION"))),
+          error = function(e) NA
+        )
+        if (!is.na(descPath)) {
+          altPath <- file.path(descPath, "inst", "extdata", fileName)
+          if (file.exists(altPath)) filePath <- altPath
+        }
+      }
+    }
+    
+    if (!file.exists(filePath)) {
+      stop(sprintf("Cannot locate '%s' in package or source directory.", fileName))
+    }
+    
     .kit.info <- read.delim(
       file = filePath, header = TRUE, sep = "\t", quote = "\"",
       dec = ".", fill = TRUE, stringsAsFactors = FALSE
     )
+    
   }
 
   # Available kits. Must match else if construct.

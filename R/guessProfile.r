@@ -194,7 +194,7 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
   data <- data[keepRows, ]
 
   # Update audit trail.
-  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+  data <- audit_trail(obj = data, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

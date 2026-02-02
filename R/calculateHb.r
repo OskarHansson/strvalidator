@@ -147,13 +147,13 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
     if (hb != 3) {
       message("Estimating size of alleles...")
 
-      # Get repeat size and offset.
-      kitSize <- getKit(kit = kit, what = "Repeat")
+      # Get size information.
+      kitSize <- getKit(kit = kit)
 
       # Add estimated size to data.
-      data <- addSize(
-        data = data, kit = kitSize, bins = FALSE,
-        ignore.case = ignore.case, debug = debug
+      data <- add_size(
+        data = data, kit = kitSize,
+        ignore_case = ignore.case, debug = debug
       )
     } else {
       # Size not needed.
@@ -243,7 +243,7 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
   attr(res, which = "kit") <- kit
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

@@ -1,18 +1,3 @@
-################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 06.08.2017: Added audit trail.
-# 09.01.2016: Added more attributes to result.
-# 28.08.2015: Added importFrom
-# 15.12.2014: Changed parameter names to format: lower.case
-# 15.01.2014: Added message to show progress.
-# 30.11.2013: Specified package for function in 'plyr' -> 'plyr::rbind.fill'
-# 27.11.2013: Fixed uppercase marker names when ignore.case=TRUE.
-# 10.11.2013: First version.
-
 #' @title Add Missing Markers.
 #'
 #' @description
@@ -144,7 +129,7 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
   # RETURN --------------------------------------------------------------------
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
 
   if (debug) {

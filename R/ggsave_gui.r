@@ -91,7 +91,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   strMsgFileExist <- "The file already exist!\n\nClick [Yes] to overwrite or [No] to cancel and type a new name."
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {

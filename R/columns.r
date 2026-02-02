@@ -182,7 +182,7 @@ columns <- function(data, col1 = NA, col2 = NA, operator = "&",
   data[target] <- valueNew
 
   # Update audit trail.
-  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+  data <- audit_trail(obj = data, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

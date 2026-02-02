@@ -3,6 +3,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2025: addColor -> add_color
 # 01.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 29.02.2020: Added language support.
@@ -50,7 +51,7 @@
 #'  aes_string scale_colour_manual geom_rect
 #'
 #' @seealso \code{\link{calculateAT}}, \code{\link{maskAT}},
-#'  \code{\link{checkSubset}}
+#'  \code{\link{check_subset}}
 
 
 calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
@@ -116,7 +117,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleDataset <- "Datasets not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -333,7 +334,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       "Dye.Sample.Peak", "Sample.File.Name", "Marker", "Allele",
       "Marker", "Height", "Data.Point"
     )
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = c("Allele", "Height", "Data.Point"),
       env = env, parent = w, debug = debug
@@ -397,7 +398,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -452,11 +453,11 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
         ref = val_ref,
         console = FALSE,
-        ignore.case = val_ignore,
+        ignore_case = val_ignore,
         word = val_word
       )
 
@@ -690,7 +691,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
         # Get all dyes.
         dyes <- as.character(unique(val_data$Dye))
         colorsKit <- unique(getKit(val_kit, what = "Color")$Color)
-        dyesKit <- addColor(colorsKit, have = "Color", need = "Dye")
+        dyesKit <- add_color(colorsKit, have = "Color", need = "Dye")
         dyeILS <- setdiff(dyes, dyesKit)
 
         # Refactor and keep order of levels.
@@ -744,7 +745,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
                 xmin = "Xmin", xmax = "Xmax"
               ),
               alpha = 0.2,
-              fill = addColor(ilsDye, have = "Dye", need = "Color")
+              fill = add_color(ilsDye, have = "Dye", need = "Color")
             )
           }
         }
@@ -970,19 +971,19 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Update audit trail.
-      datanew[[1]] <- auditTrail(
+      datanew[[1]] <- audit_trail(
         obj = datanew[[1]], key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
-      datanew[[2]] <- auditTrail(
+      datanew[[2]] <- audit_trail(
         obj = datanew[[2]], key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"
       )
 
-      datanew[[3]] <- auditTrail(
+      datanew[[3]] <- audit_trail(
         obj = datanew[[3]], key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

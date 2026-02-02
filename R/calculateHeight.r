@@ -395,7 +395,7 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
   attr(res, which = "kit") <- kit
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   # Return result.
   return(res)

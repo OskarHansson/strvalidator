@@ -17,46 +17,43 @@ addColor(
 \arguments{
 \item{data}{data frame or vector.}
 
-\item{kit}{string representing the forensic STR kit used.
-Default is NA, in which case 'have' must contain a valid column.}
+\item{kit}{string representing the forensic STR kit used.  Default is NA,
+in which case 'have' must contain a valid column name.}
 
-\item{have}{character string to specify color column to be matched.
-Default is NA, in which case color information is derived from 'kit' and added
-to a column named 'Color'.
-If 'data' is a vector 'have' must be a single string.}
+\item{have}{character string specifying which colour scheme is present
+in the data.  Acceptable values are 'Color', 'Dye' or 'R.Color' (case
+insensitive).  If data is a vector 'have' must be supplied.}
 
-\item{need}{character string or string vector to specify color columns to be added.
-Default is NA, in which case all columns will be added.
-If 'data' is a vector 'need' must be a single string.}
+\item{need}{character string or vector specifying which colour schemes
+should be added.  Acceptable values are 'Color', 'Dye' and 'R.Color'.
+Default NA means that all missing colour columns will be added.
+If data is a vector 'need' must be a single value.}
 
-\item{overwrite}{logical if TRUE and column exist it will be overwritten.}
+\item{overwrite}{logical.  If TRUE and the column to be created already
+exists in the data frame it will be removed before adding new values.}
 
-\item{ignore.case}{logical if TRUE case in marker names will be ignored.}
+\item{ignore.case}{logical.  If TRUE marker names will be matched ignoring
+case when deriving colours from a kit.}
 
-\item{debug}{logical indicating printing debug information.}
+\item{debug}{logical indicating whether to print debug information.}
 }
 \value{
-data.frame with additional columns for added colors,
-or vector with converted values.
+For data frames, returns a data frame with additional columns
+  corresponding to the requested colour schemes.  For vectors, returns a
+  vector converted to the requested scheme.
 }
 \description{
-Add color information 'Color', 'Dye' or 'R Color'.
+Add color information 'Color', 'Dye' or 'R Color' to either a vector
+or a data frame.  The function supports up to eight fluorescent dye
+channels corresponding to modern STR kits and will gracefully handle
+older kits with fewer dyes.
 }
 \details{
-Primers in forensic STR typing kits are labeled with a fluorescent
-dye. The dyes are represented with single letters (Dye) in exported result
-files or with strings (Color) in 'panels' files.
-For visualization in R the R color names are used (R.Color).
-The function can add new color schemes matched to the existing, or
-it can convert a vector containing one scheme to another.
-}
-\examples{
-# Get marker and colors for SGM Plus.
-df <- getKit("SGMPlus", what = "Color")
-# Add dye color.
-dfDye <- addColor(data = df, need = "Dye")
-# Add all color alternatives.
-dfAll <- addColor(data = df)
-# Convert a dye vector to R colors
-addColor(data = c("R", "G", "Y", "B"), have = "dye", need = "r.color")
+Primers in forensic STR typing kits are labelled with fluorescent dyes.
+The dyes are represented with single letters (Dye) in exported result files,
+with strings (Color) in 'panels' files and with R colour names for plotting
+(R.Color).  This function can add missing colour columns to a data frame
+based on another colour column, convert between schemes, or derive colours
+from a kit definition via `getKit()`.  Conversions are case insensitive and
+missing or unrecognised values will be mapped to NA.
 }

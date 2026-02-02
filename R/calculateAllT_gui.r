@@ -63,7 +63,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   strBtnProcessing <- "Processing..."
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -200,7 +200,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       "Sample.Name", "MethodX", "Method1", "Method2", "MethodL",
       "Height", "H", "MethodL.Ph"
     )
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -334,7 +334,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     values <- list(val_data_name, val_kit, val_p, val_pcons, val_sex)
 
     # Update audit trail.
-    datanew <- auditTrail(
+    datanew <- audit_trail(
       obj = datanew, key = keys, value = values,
       label = fnc, arguments = FALSE,
       package = "strvalidator"

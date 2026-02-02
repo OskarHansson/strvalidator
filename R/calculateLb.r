@@ -3,6 +3,7 @@
 
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2025: addColor -> add_color
 # 11.08.2024: Corrected calculation of number of peaks for option 'marker'.
 # 09.08.2024: Always check for 'Dye' and add if missing.
 # 08.08.2024: Added new option 'marker' to ratio of min and max TPH.
@@ -312,9 +313,9 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   if (is.null(data$Dye)) {
     message("Adding dye according to 'kit'.")
     
-    data <- addColor(
+    data <- add_color(
       data = data, kit = kit, need = "Dye",
-      ignore.case = ignore.case, overwrite = TRUE, debug = debug
+      ignore_case = ignore.case, overwrite = TRUE, debug = debug
     )
   }
 
@@ -450,7 +451,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
   attr(res, which = "kit") <- kit
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

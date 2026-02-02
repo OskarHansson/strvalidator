@@ -102,7 +102,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -287,7 +287,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Height",
       env = env, parent = w, debug = debug
@@ -348,7 +348,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -400,11 +400,11 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
         ref = val_ref,
         console = FALSE,
-        ignore.case = val_ignore,
+        ignore_case = val_ignore,
         exact = val_exact,
         word = val_word
       )
@@ -564,7 +564,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       )
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

@@ -38,7 +38,7 @@
 #' @importFrom utils help head str
 #' @importFrom graphics title
 #'
-#' @seealso \code{link{calculateLb}}, \code{link{checkSubset}}
+#' @seealso \code{link{calculateLb}}, \code{link{check_subset}}
 #'
 
 calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
@@ -103,7 +103,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleNA <- "NA detected!"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -314,7 +314,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Height",
       env = env, parent = w, debug = debug
@@ -376,7 +376,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -439,11 +439,11 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
         ref = val_ref,
         console = FALSE,
-        ignore.case = val_ignore,
+        ignore_case = val_ignore,
         word = val_word
       )
 
@@ -698,7 +698,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
         )
 
         # Update audit trail.
-        datanew <- auditTrail(
+        datanew <- audit_trail(
           obj = datanew, key = keys, value = values,
           label = fnc, arguments = FALSE,
           package = "strvalidator"

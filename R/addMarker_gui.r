@@ -1,24 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 02.09.2022: Compacted the gui.
-# 03.03.2020: Fixed reference to function name.
-# 23.02.2020: Added language support.
-# 03.03.2019: Compacted and tweaked widgets under tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 27.06.2016: Added expand=TRUE to save as field.
-# 09.01.2016: Added more attributes to result.
-# 28.08.2015: Added importFrom
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 06.05.2014: Implemented 'checkDataset'.
-# 27.11.2013: First version.
-
-
 #' @title Add Missing Markers
 #'
 #' @description
@@ -73,7 +52,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   strBtnProcessing <- "Processing..."
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -204,7 +183,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -311,7 +290,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     values <- list(val_data_name, val_kit, val_ignore)
 
     # Update audit trail.
-    datanew <- auditTrail(
+    datanew <- audit_trail(
       obj = datanew, key = keys, value = values,
       label = fnc, arguments = FALSE,
       package = "strvalidator"

@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.11.2025: Changed 'checkSubset' to 'check_subset' and parameter 'ignore.case' to 'ignore_case'.
 # 02.09.2022: Compacted the gui.
 # 03.03.2020: Fixed reference to function name.
 # 01.03.2020: Added language support.
@@ -40,7 +41,7 @@
 #' @importFrom utils help head
 #' @importFrom graphics title
 #'
-#' @seealso \code{\link{calculateDropout}}, \code{\link{checkSubset}}
+#' @seealso \code{\link{calculateDropout}}, \code{\link{check_subset}}
 
 calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
                                  debug = FALSE, parent = NULL) {
@@ -91,7 +92,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -274,7 +275,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -334,7 +335,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -385,11 +386,11 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
         ref = val_ref,
         console = FALSE,
-        ignore.case = val_ignore,
+        ignore_case = val_ignore,
         word = FALSE
       )
 
@@ -582,7 +583,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

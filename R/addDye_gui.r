@@ -1,34 +1,10 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 01.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 03.03.2020: Fixed reference to function name.
-# 23.02.2020: Added language support.
-# 03.03.2019: Compacted and tweaked widgets under tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 09.02.2017: New options to add color, r.color, and marker order.
-# 27.06.2016: Added expand=TRUE to save as field.
-# 09.01.2016: Added attributes to result.
-# 28.08.2015: Added importFrom
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 11.05.2014: Implemented new option 'Ignore case' and save user settings functions.
-# 06.05.2014: Implemented 'checkDataset'.
-# 23.02.2014: Removed requirement for 'Sample.Name'.
-# 11.02.2014: Pass debug to 'addColor'.
-# 27.11.2013: Added parameter 'overwrite=TRUE'.
-
 #' @title Add Dye Information
 #'
 #' @description
-#' GUI wrapper to the \code{\link{addColor}} function.
+#' GUI wrapper to the \code{\link{add_color}} function.
 #'
 #' @details
-#' Convenience GUI for the use of \code{\link{addColor}} and
+#' Convenience GUI for the use of \code{\link{add_color}} and
 #' \code{\link{addOrder}} to add 'Dye', 'Color', 'R.Color', and marker 'Order'
 #' to a dataset.
 #' 'Dye' is the one letter abbreviations for the fluorophores commonly used
@@ -49,7 +25,7 @@
 #'
 #' @importFrom utils head help
 #'
-#' @seealso \code{\link{addColor}}
+#' @seealso \code{\link{add_color}}
 
 addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
@@ -87,7 +63,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   strBtnProcessing <- "Processing..."
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -227,7 +203,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Check if suitable.
     requiredCol <- c("Marker")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -320,7 +296,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     val_r <- svalue(f1_r_chk)
     val_order <- svalue(f1_order_chk)
 
-    # Initialise what information is needed from the addColor function.
+    # Initialise what information is needed from the add_color function.
     need <- NULL
     if (val_dye) {
       need <- c(need, "Dye")
@@ -361,9 +337,9 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         paste(need, collapse = ", ")
       )
 
-      val_data <- addColor(
+      val_data <- add_color(
         data = val_data, kit = val_kit, need = need,
-        overwrite = TRUE, ignore.case = val_ignore,
+        overwrite = TRUE, ignore_case = val_ignore,
         debug = debug
       )
     }
@@ -393,7 +369,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     )
 
     # Update audit trail.
-    datanew <- auditTrail(
+    datanew <- audit_trail(
       obj = datanew, key = keys, value = values,
       label = fnc, arguments = FALSE,
       package = "strvalidator"

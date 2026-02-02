@@ -1,518 +1,593 @@
-################################################################################
-# TODO LIST
-# TODO: Fix problem with overplotting resulting in 'invisible' peaks.
-
-################################################################################
-# CHANGE LOG
-# 01.07.2016: Fixed bug in plotting of marker ranges.
-# 31.12.2015: Rewritten function.
-# 11.11.2015: Added importFrom ggplot2.
-# 29.08.2015: Added importFrom.
-# 31.05.2015: Added 'numbered=TRUE' to 'slim' function.
-# 10.02.2015: Changed error message.
-# 09.12.2014: Function moved from PCRsim package.
-
-#' @title Generate EPG
+#' @title Generate Electropherogram (EPG)
 #'
 #' @description
-#' Visualizes an EPG from DNA profiling data.
+#' Generate an electropherogram (EPG) plot from STR peak data with optional
+#' aggregation, boxplots, and mean peak overlays. The function supports
+#' kit-based marker ranges, canonical allele sizing, dye-based faceting, and
+#' both classic peak polygon plots and allele-based boxplots.
 #'
 #' @details
-#' Generates a electropherogram like plot from 'data' and 'kit'.
-#' If 'Size' is not present it is estimated from kit information and allele values.
-#' If 'Height' is not present a default of 1000 RFU is used.
-#' Off-ladder alleles can be plotted if 'Size' is provided.
-#' There are various options to customize the plot scale and labels.
-#' It is also possible to plot 'distributions' of peak heights as boxplots.
+#' The function performs the following steps:
+#' \itemize{
+#'   \item Validates required input columns.
+#'   \item Adds missing dye and color information from the kit definition.
+#'   \item Ensures numeric peak heights and character allele designations.
+#'   \item Assigns canonical allele sizes using the kit size table when needed.
+#'   \item Optionally sums peak heights across profiles for peak polygon plots.
+#'   \item Generates either classic peak polygons or allele-based boxplots.
+#'   \item Optionally overlays mean peak heights as pseudo-peaks.
+#' }
 #'
-#' @param data data frame containing at least columns 'Sample.Name', 'Allele', and 'Marker'.
-#' @param kit string or integer representing the STR typing kit.
-#' @param title string providing the title for the EPG.
-#' @param wrap logical TRUE to wrap by dye.
-#' @param peaks logical TRUE to plot peaks for distributions using mean peak height.
-#' @param boxplot logical TRUE to plot distributions of peak heights as boxplots.
-#' @param collapse logical TRUE to add the peak heights of identical alleles peaks within each marker.
-#' NB! Removes off-ladder alleles.
-#' @param silent logical FALSE to show plot.
-#' @param ignore.case logical FALSE for case sensitive marker names.
-#' @param at numeric analytical threshold (Height <= at will not be plotted).
-#' @param scale character "free" free x and y scale, alternatively "free_y" or "free_x".
-#' @param limit.x logical TRUE to fix x-axis to size range.
-#' To get a common x scale set scale="free_y" and limit.x=TRUE.
-#' @param label.size numeric for allele label text size.
-#' @param label.angle numeric for allele label print angle.
-#' @param label.vjust numeric for vertical justification of allele labels.
-#' @param label.hjust numeric for horizontal justification of allele labels.
-#' @param expand numeric for plot are expansion (to avoid clipping of labels).
-#' @param debug logical for printing debug information to the console.
+#' When \code{boxplot = TRUE}, peak height distributions are calculated from
+#' uncollapsed, per-sample data and grouped by marker and allele designation.
+#' Off-ladder (OL) alleles are excluded from boxplots by default. Canonical
+#' allele sizes from the kit definition are used to position boxplots, ensuring
+#' consistent alignment and eliminating minor electrophoretic size variation.
 #'
-#' @return ggplot object.
+#' @param data A \code{data.frame} containing STR peak data. Must include at
+#'   least the columns \code{Marker} and \code{Allele}. If \code{Height},
+#'   \code{Dye}, \code{R.Color}, or \code{Size} are missing, they may be added
+#'   automatically when possible.
+#' @param kit Character string identifying the STR kit definition to use.
+#' @param title Optional character string used as the plot title.
+#' @param wrap Logical. If \code{TRUE}, facets the plot by dye.
+#' @param boxplot Logical. If \code{TRUE}, plots allele-based boxplots of peak
+#'   height distributions instead of classic peak polygons.
+#' @param peaks Logical. If \code{TRUE}, overlays mean peak heights as
+#'   pseudo-peaks. For boxplots, the mean is calculated per marker and allele.
+#' @param sum_profiles Logical. If \code{TRUE}, peak heights are summed across
+#'   profiles for identical markers and alleles before plotting peak polygons,
+#'   resulting in a single composite electropherogram. If \code{FALSE}, peak
+#'   polygons from individual profiles are overplotted. This argument does not
+#'   affect boxplot distributions.
+#' @param ol_filter Character vector of text patterns used to identify
+#'   off-ladder (OL) alleles based on the \code{Allele} column. Alleles matching
+#'   any of these patterns (via \code{grepl}) are excluded from boxplots.
+#' @param silent Logical. If \code{TRUE}, suppresses printing of the plot.
+#' @param ignore_case Logical. If \code{TRUE}, marker name matching is
+#'   case-insensitive.
+#' @param at Numeric. Analytical threshold (RFU). Peaks below this value are
+#'   excluded from plotting.
+#' @param scale Character. Passed to \code{facet_wrap(scales = ...)}. Typical
+#'   values are \code{"fixed"}, \code{"free"}, or \code{"free_y"}.
+#' @param limit_x Logical. If \code{TRUE}, limits the x-axis to the marker
+#'   ranges defined in the kit.
+#' @param label_size Numeric. Text size for allele labels.
+#' @param label_angle Numeric. Rotation angle for allele labels.
+#' @param label_vjust Numeric. Vertical justification for allele labels.
+#' @param label_hjust Numeric. Horizontal justification for allele labels.
+#' @param expand Numeric. Expansion factor for the y-axis.
+#' @param debug Logical. If \code{TRUE}, prints additional diagnostic output.
+#'
+#' @return A \code{ggplot} object representing the electropherogram.
 #'
 #' @export
 #'
-#' @importFrom utils str head tail
-#' @importFrom stats as.formula
-#' @importFrom ggplot2 geom_polygon ggplot aes_string scale_fill_manual
-#' geom_boxplot scale_colour_manual geom_rect geom_text scale_y_continuous
-#' facet_grid facet_wrap coord_cartesian theme element_blank labs xlab ylab
-#'
-
-generateEPG <- function(data, kit, title = NULL, wrap = TRUE, boxplot = FALSE,
-                        peaks = TRUE, collapse = TRUE, silent = FALSE,
-                        ignore.case = TRUE, at = 0, scale = "free",
-                        limit.x = TRUE, label.size = 3, label.angle = 0,
-                        label.vjust = 1, label.hjust = 0.5, expand = 0.1,
-                        debug = FALSE) {
-  # Debug info.
-  if (debug) {
-    print(paste("IN:", match.call()[[1]]))
-    print("data:")
-    print(str(data))
-    print(head(data))
-    print(tail(data))
-  }
-
-  if (!"Sample.Name" %in% names(data)) {
-    stop("'data' must contain a column 'Sample.Name'", call. = TRUE)
-  }
-
-  if (!"Marker" %in% names(data)) {
-    stop("'data' must contain a column 'Marker'", call. = TRUE)
-  }
-
-  if (length(grep("Allele", names(data))) == 0) {
-    stop("'data' must contain a column 'Allele'.", call. = TRUE)
-  }
-
-  if (!is.logical(wrap)) {
-    stop("'wrap' must be logical.", call. = TRUE)
-  }
-
-  if (!is.logical(boxplot)) {
-    stop("'boxplot' must be logical.", call. = TRUE)
-  }
-
-  if (!is.logical(peaks)) {
-    stop("'peaks' must be logical.", call. = TRUE)
-  }
-
-  if (!is.logical(collapse)) {
-    stop("'collapse' must be logical.", call. = TRUE)
-  }
-
-  if (!is.logical(silent)) {
-    stop("'silent' must be logical.", call. = TRUE)
-  }
-
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical.", call. = TRUE)
-  }
-
-  if (!is.numeric(at)) {
-    stop("'at' must be numeric.", call. = TRUE)
-  }
-
-  if (!is.numeric(label.size)) {
-    stop("'label.size' must be numeric.", call. = TRUE)
-  }
-
-  if (!is.numeric(label.angle)) {
-    stop("'label.angle' must be numeric.", call. = TRUE)
-  }
-
-  if (!is.numeric(label.vjust)) {
-    stop("'label.vjust' must be numeric.", call. = TRUE)
-  }
-
-  if (!is.numeric(label.hjust)) {
-    stop("'label.hjust' must be numeric.", call. = TRUE)
-  }
-
-  if (!is.numeric(expand)) {
-    stop("'expand' must be numeric.", call. = TRUE)
-  }
-
-  # Prepare -------------------------------------------------------------------
-
-  # Width of peaks in base pair.
-  width <- 1
-
-  if (!collapse) {
-    if (boxplot) {
-      boxplot <- FALSE
-      message("boxplot set to FALSE since collapse=FALSE")
-    }
-
-    if (peaks) {
-      peaks <- FALSE
-      message("peaks set to FALSE since collapse=FALSE")
-    }
-  }
-
-  # Add missing columns .......................................................
-
-  # Check if height column exist.
-  if (!"Height" %in% names(data)) {
-    # Add Height if not present.
-    data$Height <- 1000
-
-    message("'Height' is missing. Using default!")
-  }
-
-  # Check NA's.
-  if (any(is.na(data$Height))) {
-    tmp1 <- nrow(data)
-
-    # Remove rows with zero height.
-    data <- data[!is.na(data$Height), ]
-
-    tmp2 <- nrow(data)
-
-    message(tmp1 - tmp2, " peaks with Height = NA removed from data")
-  }
-
-  # Check height.
-  if (any(data$Height == 0)) {
-    tmp1 <- nrow(data)
-
-    # Remove rows with zero height.
-    data <- data[data$Height != 0, ]
-
-    tmp2 <- nrow(data)
-
-    message(tmp1 - tmp2, " peaks with Height = 0 removed from data")
-  }
-
-  # Check if dye column exist.
-  if (!"Dye" %in% names(data)) {
-    message("'Dye' information not in 'data'.")
-
-    # Add dye information.
-    data <- addColor(data = data, kit = kit)
-
-    message("Added 'Dye' information.")
-  }
-
-  # Check format ..............................................................
-
-  if (!is.numeric(data$Height)) {
-    data$Height <- as.numeric(data$Height)
-  }
-
-  # Check if 'fat' format.
-  if (length(grep("Allele", names(data))) > 1) {
-    message("'fat' data format detected.")
-
-    fixCol <- colNames(
-      data = data, slim = TRUE, numbered = TRUE,
-      concatenate = NULL, debug = debug
-    )
-
-    stackCol <- colNames(
-      data = data, slim = FALSE, numbered = TRUE,
-      concatenate = NULL, debug = debug
-    )
-
-    # Slim data frame.
-    data <- slim(data = data, fix = fixCol, stack = stackCol, debug = debug)
-
-    message("data converted to 'slim' format.")
-  }
-
-  # Filter data ...............................................................
-
-  # Apply analytical threshold (AT).
-  if (any(data$Height < at)) {
-    tmp1 <- nrow(data)
-    data <- data[!(data$Height < at), ]
-    tmp2 <- nrow(data)
-    message("Removed", tmp1 - tmp2, "peaks below at =", at, "RFU")
-  }
-
-
-  # Get kit information .......................................................
-
-  # Get kit markers, ranges, and colors.
-  kitInfo <- getKit(kit = kit, what = "Range")
-  kitInfo <- addColor(kitInfo, have = "Color", need = "Dye")
-  kitInfo <- sortMarker(data = kitInfo, kit = kit)
-
-  # Get unique Dyes.
-  kitDye <- unique(kitInfo$Dye)
-
-  # Get unique Colors.
-  kitColors <- unique(kitInfo$Color)
-
-  # Convert R colors.
-  manualPlotColors <- addColor(kitColors, have = "Color", need = "R.Color")
-
-
-  # Create EPG ----------------------------------------------------------------
-
-  # Create id .................................................................
-
-  # Add unique 'Id' column for grouping.
-  if ("Size" %in% names(data)) {
-    # Check if numeric.
-    if (!is.numeric(data$Size)) {
-      # Convert to numeric.
-      data$Size <- as.numeric(data$Size)
-
-      message("'Size' must be numeric. 'data' converted!")
-    }
-
-    # Combine rounded 'Size' and 'Marker'.
-    # This can preserve 'OL' peaks but may also result in two peaks for alleles.
-    data$Id <- paste(round(data$Size, 0), data$Marker, sep = "")
-  } else {
-    # Combine 'Allele' and 'Marker'.
-    # This will add all 'OL' in one marker even if originally at different size.
-    data$Id <- paste(data$Allele, data$Marker, sep = "")
-  }
-
-  # Collapse ..................................................................
-
-  # 'Collapse' will add peak heights of identical alleles.
-  # Not collapsing will 'overplot' samples on top of each other
-  # without adding peak heights.
-  if (collapse) {
-    message("Collapse dataset to mean peak heights over multiple samples.")
-
-    # Convert to data.table for performance.
-    DT <- data.table::data.table(data)
-
-    # Calculate sum of peak heights for identical alleles in each sample.
-    # to be used in boxplot.
-    DT <- DT[, list(Height = sum(Height)),
-      by = list(Sample.Name, Marker, Dye, Allele, Id)
-    ]
-
-    # Calculate mean peak height for each allele across all samples.
-    # If plot peaks are true for boxplot.
-    dataMean <- DT[, list(Sample.Name = "Mean", Height = mean(Height)),
-      by = list(Marker, Dye, Allele, Id)
-    ]
-
-    # Add size.
-    dataMean <- addSize(
-      data = dataMean, kit = getKit(kit = kit, what = "Offset"),
-      bins = FALSE, ignore.case = ignore.case, debug = debug
-    )
-
-    # Remove NA rows.
-    if (any(is.na(dataMean$Size))) {
-      tmp1 <- nrow(dataMean)
-      data <- dataMean[!is.na(dataMean$Size), ]
-      tmp2 <- nrow(dataMean)
-      if (debug) {
-        print(tmp1 - tmp2, " rows with Size=NA removed from 'dataMean'.")
-      }
-    }
-
-    # Check if distribution (boxplot).
-    if (!boxplot) {
-      message("Collapse dataset by adding peak heights for all profiles.")
-
-      # Calculate sum of peak heights for identical alleles across all samples.
-      DT <- DT[, list(Sample.Name = "Profile", Height = sum(Height)),
-        by = list(Marker, Dye, Allele, Id)
-      ]
-    } # end distribution.
-
-    # Convert to data.frame to make sure strvalidator functions are working.
-    data <- data.frame(DT)
-  } # end collapse.
-
-  # Check if size column exist.
-  if (!"Size" %in% names(data)) {
-    message("'Size' information not in 'data'.")
-
-    # Add estimated size.
-    data <- addSize(
-      data = data, kit = getKit(kit = kit, what = "Offset"),
-      bins = FALSE, ignore.case = ignore.case
-    )
-
-    message("Added estimated 'Size' information.")
-
-    # Remove NA rows.
-    if (any(is.na(data$Size))) {
-      tmp1 <- nrow(data)
-      data <- data[!is.na(data$Size), ]
-      tmp2 <- nrow(data)
-      message(tmp1 - tmp2, " rows with Size=NA removed.")
-    }
-  }
-
-  # Check if numeric.
-  if (!is.numeric(data$Size)) {
-    # Convert to numeric.
-    data$Size <- as.numeric(data$Size)
-
-    message("'Size' must be numeric. 'data' converted!")
-  }
-
-  # Sort 'Marker' and 'Dye' factors according 'kit'.
-  data <- sortMarker(data = data, kit = kit)
-  if (peaks) {
-    dataMean <- sortMarker(data = dataMean, kit = kit)
-  }
-
-  # Calculate coordinates for plotting peaks ..................................
-
-  # Create new dataframe.
-  dataPeaks <- heightToPeak(data = data, width = width, debug = debug)
-  if (peaks) {
-    dataMean <- heightToPeak(data = dataMean, width = width, debug = debug)
-  }
-
-  # Create allele labels ......................................................
-
-  # Copy unique 'Marker'-'Allele' combinations in 'data'
-  # to a new data frame for handling allele names.
-  alleleInfo <- data[data$Height != 0, ]
-  # Remove duplicates.
-  alleleInfo <- alleleInfo[!duplicated(alleleInfo[c("Marker", "Allele", "Size")]), ]
-
-  # Check if NA's in Size.
-  if (any(is.na(alleleInfo$Size))) {
-    tmp1 <- sum(is.na(alleleInfo$Size))
-
-    message("NA's in allele info Size")
-
-    # Replace NA with the smallest size in kit (plot can't handle all NAs).
-    alleleInfo$Size[is.na(alleleInfo$Size)] <- min(kitInfo$Marker.Min)
-
-    tmp2 <- sum(is.na(alleleInfo$Size))
-
-    message(tmp1 - tmp2, "NA's replaced by", min(kitInfo$Marker.Min))
-  }
-
-  # Create marker ranges ......................................................
-
-  # Get information for annotation of markers.
-  mDye <- kitInfo$Dye
-  mXmin <- kitInfo$Marker.Min
-  mXmax <- kitInfo$Marker.Max
-  mText <- kitInfo$Marker
-  mYmax <- vector()
-
-  # Find max peak height by dye channel.
-  DT <- data.table::data.table(data)
-
-  # NB! Use keyby instead of key to sort the result.
-  tmpYmax <- DT[, list(Max = max(Height)), keyby = Dye]
-  # NB! Dye must be sorted factors, or they will be sorted alphabetically.
-  mYtimes <- as.vector(table(kitInfo$Dye))
-
-  # Check scale.
-  if (scale == "free_x") {
-    # This means y max is equal for all dyes.
-    mYmax <- rep(max(tmpYmax$Max), sum(mYtimes))
-  } else {
-    # Different y max for each dye.
-    mYmax <- rep(tmpYmax$Max, mYtimes)
-  }
-
-  # Create annotation data frame for loci.
-  markerRanges <- data.frame(
-    Dye = factor(mDye, levels = unique(mDye)), # Facet.
-    Color = mDye, # Dye.
-    Xmin = mXmin, # Marker lower range.
-    Xmax = mXmax, # Marker upper range.
-    Size = (mXmin + mXmax) / 2, # Midpoint of marker range.
-    Height = mYmax, # Lower edge of marker range.
-    Top = mYmax * 1.1, # Upper edge of marker range.
-    Text = mText
-  ) # Marker names.
-
-  # Create plot ...............................................................
-
-  # Create plot.
-  gp <- ggplot(data = dataPeaks, aes_string(x = "Size", y = "Height"))
-
-  # Plot data.
-  if (!boxplot) {
-    # Plot height as peaks.
-    gp <- gp + geom_polygon(aes_string(group = "Id", fill = "Dye"), data = dataPeaks)
-  } else {
-    # Plot boxplots for distributions.
-    gp <- gp + geom_boxplot(aes_string(group = "Id", color = "Dye"),
-      outlier.size = 1, data = data
-    )
-
-    if (peaks) {
-      # Plot mean peak height as peaks.
-      gp <- gp + geom_polygon(aes_string(group = "Id", fill = "Dye"),
-        data = dataMean
+#' @importFrom ggplot2 ggplot aes geom_polygon geom_boxplot geom_rect geom_text
+#' @importFrom ggplot2 coord_cartesian scale_y_continuous labs theme expansion
+#' @importFrom ggplot2 facet_wrap
+
+# -----------------------------------------------------------------------------
+
+generate_epg <- function(
+  data,
+  kit,
+  title = NULL,
+  wrap = TRUE,
+  boxplot = FALSE,
+  peaks = TRUE,
+  sum_profiles = TRUE,
+  ol_filter = c("OL", "OMR", "?"),
+  silent = FALSE,
+  ignore_case = TRUE,
+  at = 0,
+  scale = "free",
+  limit_x = TRUE,
+  label_size = 3,
+  label_angle = 0,
+  label_vjust = 1,
+  label_hjust = 0.5,
+  expand = 0.1,
+  debug = FALSE
+) {
+  # ---------------------------------------------------------------------------
+  # VALIDATION
+  # ---------------------------------------------------------------------------
+
+  required_cols <- c("Marker", "Allele")
+  if (!all(required_cols %in% names(data))) {
+    missing <- required_cols[!required_cols %in% names(data)]
+    stop(
+      paste0(
+        "Data must contain columns: ",
+        paste(required_cols, collapse = ", "),
+        ". Missing: ",
+        paste(missing, collapse = ", ")
       )
+    )
+  }
+
+  # Copy data to avoid overwriting input
+  raw_data <- data
+
+  # Height column
+  if (!"Height" %in% names(raw_data)) {
+    message("'Height' missing. Using default=1000 RFU.")
+    raw_data$Height <- 1000
+  }
+
+  n0 <- nrow(raw_data)
+  raw_data <- raw_data[!is.na(raw_data$Height) & raw_data$Height > 0, ]
+  n1 <- nrow(raw_data)
+  if (n0 > n1) {
+    message(paste0("Removed ", n0 - n1, " rows where 'Height' was NA or 0."))
+  }
+
+  # Allele column
+  if (!is.character(raw_data$Allele)) {
+    raw_data$Allele <- as.character(raw_data$Allele)
+    message("'Allele' column converted to character.")
+  }
+
+  # ---------------------------------------------------------------------------
+  # ADD DYE + R.Color
+  # ---------------------------------------------------------------------------
+
+  need_dye <- !"Dye" %in% names(raw_data)
+  need_r_color <- !"R.Color" %in% names(raw_data)
+
+  if (need_dye && need_r_color) {
+    message("'Dye' and 'R.Color' missing. Adding both from kit definition.")
+    raw_data <- add_color(
+      data        = raw_data,
+      kit         = kit,
+      need        = c("Dye", "R.Color"),
+      ignore_case = ignore_case
+    )
+  } else if (need_dye && !need_r_color) {
+    message("'Dye' missing. Adding from kit definition.")
+    raw_data <- add_color(
+      data        = raw_data,
+      kit         = kit,
+      need        = "Dye",
+      ignore_case = ignore_case
+    )
+  } else if (!need_dye && need_r_color) {
+    message("'R.Color' missing. Adding from kit definition using existing Dye.")
+    raw_data <- add_color(
+      data        = raw_data,
+      kit         = kit,
+      have        = "Dye",
+      need        = "R.Color",
+      ignore_case = ignore_case
+    )
+  } else {
+    # message("Both 'Dye' and 'R.Color' found in data.")
+  }
+
+  # ---------------------------------------------------------------------------
+  # NORMALIZE MARKER NAMES
+  # ---------------------------------------------------------------------------
+
+  if (ignore_case) {
+    raw_data$Marker <- toupper(raw_data$Marker)
+  }
+
+  # ---------------------------------------------------------------------------
+  # KIT INFORMATION
+  # ---------------------------------------------------------------------------
+
+  kit_range <- getKit(kit, what = "Range") # Marker shading
+  kit_size <- getKit(kit, what = "Size") # Size table
+
+  if (ignore_case) {
+    kit_range$Marker <- toupper(kit_range$Marker)
+    kit_size$Marker <- toupper(kit_size$Marker)
+  }
+
+  # ---------------------------------------------------------------------------
+  # SIZE HANDLING
+  # ---------------------------------------------------------------------------
+
+  # Note: For boxplots, canonical allele sizes from the kit are used
+  # for x-positioning to eliminate minor electrophoretic size variation.
+
+  if (!"Size" %in% names(raw_data)) {
+    message("'Size' information not in data. Estimating from kit.")
+    raw_data <- add_size(raw_data, kit_size, ignore_case = ignore_case, debug = debug)
+  }
+
+  # Remove unknown sizes
+  raw_data <- raw_data[!is.na(raw_data$Size), ]
+
+  # ---------------------------------------------------------------------------
+  # BOXPLOT DATA PREPARATION (allele-based, OL excluded)
+  # ---------------------------------------------------------------------------
+
+  if (boxplot) {
+    is_ol <- grepl(
+      paste(ol_filter, collapse = "|"),
+      raw_data$Allele,
+      ignore.case = TRUE
+    )
+
+    # Boxplot uses uncollapsed, allele-based data
+    box_data <- raw_data[!is_ol & !is.na(raw_data$Allele), ]
+
+    if (nrow(box_data) == 0) {
+      warning("Boxplot requested but no non-OL alleles available.")
+    }
+
+    # Use canonical allele size for boxplot positioning
+    box_data <- add_size(
+      data        = box_data,
+      kit         = kit_size,
+      ignore_case = ignore_case,
+      debug       = debug
+    )
+  }
+
+  # ---------------------------------------------------------------------------
+  # APPLY AT (analytical threshold)
+  # ---------------------------------------------------------------------------
+
+  below <- sum(raw_data$Height < at)
+  if (below > 0) {
+    message(below, " peaks removed below AT = ", at)
+  }
+
+  raw_data <- raw_data[raw_data$Height >= at, ]
+
+  if (boxplot) {
+    box_data <- box_data[box_data$Height >= at, ]
+  }
+
+  # ---------------------------------------------------------------------------
+  # ORDER MARKER & DYE FACTORS ACCORDING TO KIT
+  # ---------------------------------------------------------------------------
+
+  if (debug) {
+    message("Marker levels before sortMarker():")
+    print(levels(raw_data$Marker))
+    message("Dye levels before sortMarker():")
+    print(levels(raw_data$Dye))
+  }
+
+  raw_data <- sort_markers(data = raw_data, kit = kit)
+
+  if (debug) {
+    message("Marker levels after sortMarker():")
+    print(levels(raw_data$Marker))
+    message("Dye levels after sortMarker():")
+    print(levels(raw_data$Dye))
+  }
+
+  # ---------------------------------------------------------------------------
+  # COLLAPSE LOGIC
+  # ---------------------------------------------------------------------------
+
+  dt <- data.table::data.table(raw_data)
+
+  if (sum_profiles) {
+    message("Summing peak heights across profiles.")
+    peak_data <- dt[, list(Height = sum(.data$Height)),
+      by = list(.data$Marker, .data$Dye, .data$Allele, .data$Size)
+    ]
+  } else {
+    peak_data <- dt
+  }
+
+  # For boxplots, use prepared allele-based data
+  if (boxplot) {
+    box_data <- data.table::data.table(box_data)
+  }
+
+  # ---------------------------------------------------------------------------
+  # PEAK POLYGON CONVERSION
+  # ---------------------------------------------------------------------------
+
+  height_to_peak <- function(df, width = 1) {
+    # Construct triangles: left, top, right
+    df_key <- paste(df$Marker, df$Allele, df$Size, sep = "_")
+
+    left <- data.frame(
+      Size = df$Size - width / 2,
+      Height = 0,
+      group = df_key,
+      Dye = df$Dye
+    )
+    top <- data.frame(
+      Size = df$Size,
+      Height = df$Height,
+      group = df_key,
+      Dye = df$Dye
+    )
+    right <- data.frame(
+      Size = df$Size + width / 2,
+      Height = 0,
+      group = df_key,
+      Dye = df$Dye
+    )
+
+    rbind(left, top, right)
+  }
+
+  peaks_poly <- height_to_peak(peak_data)
+
+  if (boxplot && peaks) {
+    mean_data <- box_data[, list(Height = mean(.data$Height)),
+      by = list(.data$Marker, .data$Dye, .data$Allele, .data$Size)
+    ]
+    peaks_mean_poly <- height_to_peak(mean_data)
+
+    if (debug) {
+      message("mean_data:")
+      print(summary(mean_data$Height))
+      message("peaks_mean_poly:")
+      print(summary(peaks_mean_poly$Height))
     }
   }
 
-  # Add colours.
-  gp <- gp + scale_fill_manual(values = manualPlotColors)
+  # ---------------------------------------------------------------------------
+  # INITIALIZE PLOT
+  # ---------------------------------------------------------------------------
+
+  gp <- ggplot2::ggplot()
+
+  # ---------------------------------------------------------------------------
+  # PLOT: PEAK POLYGONS OR BOXPLOTS
+  # ---------------------------------------------------------------------------
+
+  if (!boxplot) {
+    gp <- gp +
+      geom_polygon(
+        data = peaks_poly,
+        aes(x = .data$Size, y = .data$Height, group = .data$group, fill = .data$Dye),
+        colour = NA,
+        alpha = 0.7
+      )
+  } else {
+    n_per_group <- box_data[, .N, by = list(.data$Marker, .data$Allele)]
+    if (!any(n_per_group$N > 1)) {
+      warning("Boxplot requested, but no allele has multiple observations; boxes may collapse to lines.")
+    }
+
+    # Distribution (uses raw uncollapsed data)
+    gp <- gp +
+      geom_boxplot(
+        data = box_data,
+        aes(
+          x = .data$Size, # canonical allele size
+          y = .data$Height,
+          group = interaction(.data$Marker, .data$Allele), # allele-based grouping
+          colour = .data$Dye
+        ),
+        width = 1,
+        outlier.size = 1
+      )
+
+    # Optional: overlay mean as pseudo peak
+    if (peaks) {
+      mean_data <- data.table::data.table(box_data)[
+        , list(Height = mean(.data$Height)),
+        by = list(.data$Marker, .data$Dye, .data$Allele, .data$Size)
+      ]
+
+      peaks_mean_poly <- height_to_peak(mean_data)
+
+      gp <- gp +
+        geom_polygon(
+          data = peaks_mean_poly,
+          aes(x = .data$Size, y = .data$Height, group = .data$group, 
+              fill = .data$Dye),
+          colour = NA,
+          alpha = 0.6
+        )
+    }
+  }
+
+  # ---------------------------------------------------------------------------
+  # MARKER HEADERS (floating above panel, independent of RFU range)
+  # ---------------------------------------------------------------------------
 
   if (wrap) {
-    # Add marker regions, names, and wrap by colour.
+    marker_dye <- unique(raw_data[, c("Marker", "Dye")])
 
-    # Add marker regions.
-    gp <- gp + geom_rect(
-      aes_string(
-        xmin = "Xmin", xmax = "Xmax",
-        ymin = "Height", ymax = "Top"
-      ),
-      alpha = .2, data = markerRanges,
-      fill = "blue", color = "red"
+    kit_range_dye <- kit_range
+
+    # Which height source should define the panel scale?
+    height_source <- if (sum_profiles) peak_data else raw_data
+    height_source <- data.table::as.data.table(height_source)
+
+    # Per-dye maximum height (facet-local)
+    y_by_dye <- height_source[
+      , list(y_top = max(.data$Height, na.rm = TRUE)),
+      by = .data$Dye
+    ]
+    y_by_dye$y_top[!is.finite(y_by_dye$y_top)] <- 0
+
+    # Merge panel heights into range table
+    kit_range_dye <- merge(
+      kit_range_dye,
+      y_by_dye,
+      by = "Dye",
+      all.x = TRUE
     )
 
-    # Add marker names.
-    gp <- gp + geom_text(aes_string(label = "Text", y = "Top"),
-      data = markerRanges, size = 3, vjust = 1
-    )
+    # Global fallback (if a dye has no peaks)
+    global_y_top <- max(height_source$Height, na.rm = TRUE)
+    kit_range_dye$y_top[is.na(kit_range_dye$y_top)] <- global_y_top
 
-    # Add allele names.
-    gp <- gp + geom_text(aes_string(label = "Allele", x = "Size", y = 0),
-      data = alleleInfo, size = label.size,
-      angle = label.angle, vjust = label.vjust,
-      hjust = label.hjust
-    )
+    # Decide header height logic depending on user scale settings
+    # free_y → panel-specific headers
+    # free/free_x/fixed → global header height
+    if (scale == "free_y") {
+      ref_y <- kit_range_dye$y_top
+    } else {
+      ref_y <- global_y_top
+    }
 
-    # expand plot area (to avoid clipping).
-    gp <- gp + scale_y_continuous(expand = c(expand, 0))
+    # Header band height (as fraction of local top)
+    ymin_offset <- 0.03
+    ymax_offset <- 0.11
 
-    # NB! 'facet_wrap' does not seem to support strings.
-    #     Use 'as.formula(paste("string1", "string2"))' as a workaround.
-    gp <- gp + facet_wrap(as.formula(paste("~", "Dye")),
-      ncol = 1,
-      drop = FALSE, scales = scale
-    )
+    kit_range_dye$ymin_header <- ref_y * (1 + ymin_offset)
+    kit_range_dye$ymax_header <- ref_y * (1 + ymax_offset)
+    kit_range_dye$y_label <- (kit_range_dye$ymin_header + kit_range_dye$ymax_header) / 2
+
+    # Add rectangles + labels (facet-aware)
+    gp <- gp +
+      ggplot2::geom_rect(
+        data = kit_range_dye,
+        aes(
+          xmin = .data$Marker.Min,
+          xmax = .data$Marker.Max,
+          ymin = .data$ymin_header,
+          ymax = .data$ymax_header
+        ),
+        fill = "blue",
+        alpha = 0.2,
+        colour = "black",
+        linewidth = 0.3,
+        inherit.aes = FALSE
+      ) +
+      ggplot2::geom_text(
+        data = kit_range_dye,
+        aes(
+          x = (.data$Marker.Min + .data$Marker.Max) / 2,
+          y = .data$y_label,
+          label = .data$Marker
+        ),
+        fontface = "bold",
+        size = 3,
+        vjust = 0.5,
+        inherit.aes = FALSE
+      )
   }
 
-  # Set limits.
-  if (limit.x) {
-    # Set x-axis limits to total marker range.
-    gp <- gp + coord_cartesian(xlim = c(min(mXmin), max(mXmax)))
+  # ---------------------------------------------------------------------------
+  # ALLELE LABELS
+  # ---------------------------------------------------------------------------
+
+  allele_labels <- unique(peak_data[, c("Marker", "Allele", "Size", "Dye")])
+
+  gp <- gp +
+    geom_text(
+      data = allele_labels,
+      aes(x = .data$Size, y = 0, label = Allele),
+      vjust = label_vjust,
+      hjust = label_hjust,
+      angle = label_angle,
+      size = label_size
+    )
+
+  # ---------------------------------------------------------------------------
+  # FACETING
+  # ---------------------------------------------------------------------------
+
+  if (wrap) {
+    gp <- gp +
+      facet_wrap(~Dye, ncol = 1, scales = scale)
   }
 
-  # Strip facet labels and background.
-  gp <- gp + theme(strip.text = element_blank())
-  gp <- gp + theme(strip.background = element_blank())
+  # ---------------------------------------------------------------------------
+  # AXIS LIMITS
+  # ---------------------------------------------------------------------------
 
-  # Add title and axis labels.
-  gp <- gp + labs(title = title)
-  gp <- gp + xlab("Size (bp)")
-  gp <- gp + ylab("Peak height (RFU)")
+  if (limit_x) {
+    gp <- gp +
+      coord_cartesian(
+        xlim = c(min(kit_range$Marker.Min), max(kit_range$Marker.Max))
+      )
+  }
 
-  # Show plot.
+  gp <- gp +
+    scale_y_continuous(expand = ggplot2::expansion(mult = c(expand, 0.15))) +
+    labs(title = title, x = "Size (bp)", y = "Peak height (RFU)") +
+    theme(
+      strip.text = element_blank(),
+      strip.background = element_blank()
+    )
+
+  # ---------------------------------------------------------------------------
+  # APPLY TRUE DYE COLORS (R.Color / R.Colors) WITH DEBUG OUTPUT
+  # ---------------------------------------------------------------------------
+
+  if ("R.Color" %in% names(raw_data)) {
+    message("Using dye colors from column 'R.Color'.")
+
+    dye_colors <- unique(raw_data[, c("Dye", "R.Color")])
+
+    # Rename R.Color -> color so we can build a clean named color vector for
+    # scale_fill_manual()/scale_colour_manual() without special-case handling.
+    names(dye_colors)[names(dye_colors) == "R.Color"] <- "color"
+
+    if (debug) print(dye_colors)
+    
+    dye_map <- setNames(dye_colors$color, dye_colors$Dye)
+
+    gp <- gp +
+      scale_fill_manual(values = dye_map, drop = FALSE) +
+      scale_colour_manual(values = dye_map, drop = FALSE)
+  } else {
+    message("No 'R.Color' column found in data; using ggplot default dye colors.")
+  }
+
   if (!silent) {
     print(gp)
   }
 
-  # Debug info.
-  if (debug) {
-    print(paste("EXIT:", match.call()[[1]]))
-  }
-
-  # Return plot object.
   return(gp)
+}
+
+################################################################################
+#' @rdname generate_epg
+#' @export
+#' @usage NULL
+#' @keywords internal
+#'
+#' @description
+#' **Deprecated.** Use [generate_epg()] instead.
+################################################################################
+
+generateEPG <- function(data,
+                        kit,
+                        title = NULL,
+                        wrap = TRUE,
+                        boxplot = FALSE,
+                        peaks = TRUE,
+                        collapse = TRUE,
+                        silent = FALSE,
+                        ignore.case = TRUE,
+                        at = 0,
+                        scale = "free",
+                        limit.x = TRUE,
+                        label.size = 3,
+                        label.angle = 0,
+                        label.vjust = 1,
+                        label.hjust = 0.5,
+                        expand = 0.1,
+                        debug = FALSE) {
+  .Deprecated("generate_epg", package = "strvalidator")
+
+  generate_epg(
+    data = data,
+    kit = kit,
+    title = title,
+    wrap = wrap,
+    boxplot = boxplot,
+    peaks = peaks,
+    sum_profiles = collapse,
+    silent = silent,
+    ignore_case = ignore.case,
+    at = at,
+    scale = scale,
+    limit_x = limit.x,
+    label_size = label.size,
+    label_angle = label.angle,
+    label_vjust = label.vjust,
+    label_hjust = label.hjust,
+    expand = expand,
+    debug = debug
+  )
 }

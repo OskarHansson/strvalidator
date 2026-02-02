@@ -189,7 +189,7 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
   # RETURN --------------------------------------------------------------------
 
   # Update audit trail.
-  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+  data <- audit_trail(obj = data, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

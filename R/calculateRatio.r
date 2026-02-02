@@ -302,7 +302,7 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
   }
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

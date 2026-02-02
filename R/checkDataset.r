@@ -1,171 +1,197 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 13.04.2020: Added language support.
-# 13.04.2020: Added @export.
-# 04.05.2015: 'slimcol' and 'stringcol' now accept vectors.
-# 06.05.2014: First version.
-
 #' @title Check Dataset
 #'
 #' @description
-#' Check a data.frame before analysis.
+#' Validate that a dataset exists and contains the required structure before 
+#' analysis.
 #'
-#' @details Check that the object exist, there are rows, the required columns exist,
-#' if data.frame is 'fat', and if invalid strings exist. Show error message if not.
+#' @details
+#' Performs these checks in order:
+#' * dataset exists in the specified environment
+#' * dataset has at least one row
+#' * required columns exist
+#' * slim/fat structure is correct (substring-based column matching)
+#' * specified columns do not contain invalid string values
 #'
-#' @param name character name of data.frame.
-#' @param reqcol character vector with required column names.
-#' @param slim logical TRUE to check if 'slim' data.
-#' @param slimcol character vector with column names to check if 'slim' data.
-#' @param string character vector with invalid strings in 'stringcol', return FALSE if found.
-#' @param stringcol character vector with column names to check for 'string'.
-#' @param env environment where to look for the data frame.
-#' @param parent parent gWidget.
-#' @param debug logical indicating printing debug information.
+#' Returns `TRUE` if all checks pass, otherwise returns `FALSE` and
+#' displays a message in the console or via a GUI parent widget.
+#'
+#' @param name Character name of the data.frame to check.
+#' @param reqcol Character vector of required column names.
+#' @param slim Logical indicating whether to enforce "slim" structure.
+#' @param slimcol Character vector of substrings used to test slim/fat structure.
+#' @param string Character vector of invalid values.
+#' @param stringcol Character vector of columns to scan for invalid values.
+#' @param env Environment in which the dataset is located.
+#' @param parent Optional gWidgets widget for displaying GUI messages.
+#' @param debug Logical; print debugging output.
 #'
 #' @export
-#'
-
-checkDataset <- function(name, reqcol = NULL, slim = FALSE, slimcol = NULL,
-                         string = NULL, stringcol = NULL,
-                         env = parent.frame(), parent = NULL, debug = FALSE) {
-  # Language ------------------------------------------------------------------
-
-  # Get this functions name from call.
-  fnc <- as.character(match.call()[[1]])
-
+check_dataset <- function(
+    name,
+    reqcol     = NULL,
+    slim       = FALSE,
+    slimcol    = NULL,
+    string     = NULL,
+    stringcol  = NULL,
+    env        = parent.frame(),
+    parent     = NULL,
+    debug      = FALSE
+) {
+  fnc <- get_gui_scope()
+  
   if (debug) {
-    print(paste("IN:", fnc))
+    message("IN: ", fnc)
+    print(list(
+      name      = name,
+      reqcol    = reqcol,
+      slim      = slim,
+      slimcol   = slimcol,
+      string    = string,
+      stringcol = stringcol,
+      env       = environmentName(env),
+      parent    = parent
+    ))
   }
-
-  # Default strings.
-  strMsgNoRows <- "Dataset contain no rows!"
-  strMsgAdditionalCols <- "Additional columns required:\n"
-  strMsgFat1 <- "The dataset is too fat!\n\nThere can only be 1 column:"
-  strMsgFat2 <- "\nPlease slim the dataset."
-  strMsgDetected1 <- "detected in column"
-  strMsgDetected2 <- "Please make sure that data is clean/filtered.\n"
-
-  # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-  }
-
-  # FUNCTION ##################################################################
-
-  if (debug) {
-    print("Parameters:")
-    print("name")
-    print(name)
-    print("reqcol")
-    print(reqcol)
-    print("slim")
-    print(slim)
-    print("stringcol")
-    print(stringcol)
-    print("env")
-    print(environmentName(env))
-    print("parent")
-    print(parent)
-  }
-
-  # Initiate variables.
-  ok <- TRUE
-  messageText <- NULL
-
-  # Check if dataset exist in environment.
-  if (exists(name, envir = env, inherits = FALSE)) {
-    # Get dataset.
-    df <- get(name, envir = env)
-
-    # Check if empty dataset.
-    if (nrow(df) == 0) {
-      # Construct error message.
-      messageText <- strMsgNoRows
-
-      # Change flag.
-      ok <- FALSE
-    } else if (!is.null(reqcol) & !all(reqcol %in% colnames(df))) {
-      # Check for required column names.
-
-      missingCol <- reqcol[!reqcol %in% colnames(df)]
-
-      # Construct error message.
-      messageText <- paste(strMsgAdditionalCols,
-        paste(missingCol, collapse = "\n"),
-        sep = ""
-      )
-
-      # Change flag.
-      ok <- FALSE
-    } else if (slim & !is.null(slimcol)) {
-      # Loop over columns to check.
-      for (c in seq(along = slimcol)) {
-        # Check if slimmed.
-        slimmed <- sum(grepl(slimcol[c], names(df), fixed = TRUE)) == 1
-
-        if (!slimmed) {
-          # Construct error message.
-          messageText <- paste(strMsgFat1, slimcol[c], strMsgFat2)
-
-          # Change flag.
-          ok <- FALSE
-        }
-      }
-    } else if (!is.null(string) & !is.null(stringcol)) {
-      # Loop over columns to check.
-      for (c in seq(along = stringcol)) {
-        if (any(string %in% df[, stringcol[c]])) {
-          # Construct error message.
-          messageText <- paste("'", string, "' ", strMsgDetected1, " ",
-            stringcol[c], "!\n", strMsgDetected2,
-            sep = ""
-          )
-
-          # Change flag.
-          ok <- FALSE
-        }
-      }
-    } else {
-      # Dataset passed!
-      ok <- TRUE
-    }
-  } else {
-    # Construct error message.
-    messageText <- NULL # NB! Can't show error message because "<Select dataset>" is in drop-downs.
-
-    # Change flag.
-    ok <- FALSE
-  }
-
-  if (debug) {
-    print("ok")
-    print(ok)
-    print("messageText")
-    print(messageText)
-  }
-
-  # Show error message.
-  if (!ok & !is.null(messageText)) {
+  
+  # ---------------------------------------------------------------------------
+  # Language Strings
+  # ---------------------------------------------------------------------------
+  
+  # Load language file for this function
+  lng_strings <- get_strings(gui = fnc)
+  
+  # Default strings
+  default_strings <- list(
+    STR_MSG_NA             = "Dataset does not exist.",
+    STR_MSG_NO_DF          = "Object exists but is not a data.frame.",
+    STR_MSG_NO_ROWS        = "Dataset contain no rows!",
+    STR_MSG_REQ_COLS       = "Additional columns required:\n",
+    STR_MSG_FAT1           = "The dataset is too fat!\n\nThere can only be 1 column:",
+    STR_MSG_FAT2           = "\nPlease slim the dataset.",
+    STR_MSG_DETECTED1      = "detected in column",
+    STR_MSG_DETECTED2      = "Please make sure that data is clean/filtered.\n"
+  )
+  
+  # Override defaults with language-specific values
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
+  
+  # ---------------------------------------------------------------------------
+  # Helper to show errors
+  # ---------------------------------------------------------------------------
+  show_error <- function(msg) {
     if (is.null(parent)) {
-      # Write in command prompt.
-      message(messageText)
+      message(msg)
     } else {
-      # Show message box.
-      gmessage(messageText,
-        title = fnc,
-        icon = "error", parent = parent
-      )
+      gmessage(msg, title = fnc, icon = "error", parent = parent)
     }
   }
-
-  if (debug) {
-    print(paste("EXIT:", fnc))
+  
+  # ---------------------------------------------------------------------------
+  # Main Validation Logic
+  # ---------------------------------------------------------------------------
+  
+  # 1) Dataset exists
+  if (!exists(name, envir = env, inherits = FALSE)) {
+    show_error(strings$STR_MSG_NA)
+    return(FALSE)
   }
+  
+  df <- get(name, envir = env)
+  
+  # 2) Must be a data.frame
+  if (!is.data.frame(df)) {
+    show_error(strings$STR_MSG_NO_DF)
+    return(FALSE)
+  }
+  
+  # 3) Must have rows
+  if (nrow(df) == 0) {
+    show_error(strings$STR_MSG_NO_ROWS)
+    return(FALSE)
+  }
+  
+  # 4) Required columns
+  if (!is.null(reqcol)) {
+    missing_cols <- setdiff(reqcol, colnames(df))
+    if (length(missing_cols) > 0) {
+      msg <- paste0(strings$STR_MSG_REQ_COLS,
+                    paste(missing_cols, collapse = "\n"))
+      show_error(msg)
+      return(FALSE)
+    }
+  }
+  
+  # 5) Slim/fat structure
+  if (slim && !is.null(slimcol)) {
+    for (pattern in slimcol) {
+      matched <- grep(pattern, colnames(df), fixed = TRUE)
+      if (length(matched) != 1) {
+        msg <- paste0(
+          strings$STR_MSG_FAT1, " ", pattern, strings$STR_MSG_FAT2
+        )
+        show_error(msg)
+        return(FALSE)
+      }
+    }
+  }
+  
+  # 6) Invalid strings
+  if (!is.null(string) && !is.null(stringcol)) {
+    for (col in stringcol) {
+      if (!col %in% colnames(df)) next
+      
+      values <- df[[col]]
+      found <- string[string %in% values]
+      
+      if (length(found) > 0) {
+        msg <- paste0(
+          "'", paste(found, collapse = ", "), "' ",
+          strings$STR_MSG_DETECTED1, " ", col, "!\n",
+          strings$STR_MSG_DETECTED2
+        )
+        show_error(msg)
+        return(FALSE)
+      }
+    }
+  }
+  
+  if (debug) message("EXIT: ", fnc, " (ok = TRUE)")
+  return(TRUE)
+}
 
-  # Return result.
-  return(ok)
+################################################################################
+#' @rdname check_dataset
+#' @export
+#' @usage NULL
+#' @keywords internal
+#'
+#' @description
+#' **Deprecated.** Use [check_dataset()] instead.
+################################################################################
+
+checkDataset <- function(name,
+                         reqcol = NULL,
+                         slim = FALSE,
+                         slimcol = NULL,
+                         string = NULL,
+                         stringcol = NULL,
+                         env = parent.frame(),
+                         parent = NULL,
+                         debug = FALSE,
+                         ...) {
+  
+  .Deprecated("check_dataset", package = "strvalidator")
+  
+  check_dataset(
+    name      = name,
+    reqcol    = reqcol,
+    slim      = slim,
+    slimcol   = slimcol,
+    string    = string,
+    stringcol = stringcol,
+    env       = env,
+    parent    = parent,
+    debug     = debug,
+    ...
+  )
 }

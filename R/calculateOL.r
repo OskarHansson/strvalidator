@@ -214,7 +214,7 @@ calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
   }
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print("res:")

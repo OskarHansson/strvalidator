@@ -1,26 +1,55 @@
 #' @title Read GeneMapper Kit Definition (GUI)
 #'
 #' @description
-#' Import GeneMapper kit definition files through a graphical user interface.
+#' Launch a graphical user interface (GUI) for importing GeneMapper kit
+#' definition files (\code{.bins} and \code{.panels}) and previewing panel data.
 #'
 #' @details
-#' Select the kit bins and panels file using the file picker.
+#' This interactive interface allows users to browse and select GeneMapper
+#' kit files from disk, automatically read them via
+#' \code{\link{read_gene_mapper_kit}}, and optionally filter or return data
+#' for a specific panel. The GUI validates file selection and provides feedback
+#' if any file is invalid or contains no data.
 #'
-#' @param env environment in which to search for data frames.
-#' @param savegui logical indicating if GUI settings should be
-#' saved in the environment.
-#' @param debug logical indicating printing debug information.
-#' @param parent widget to get focus when finished.
+#' When both valid bins and panels files are selected, the available panels
+#' are listed in a dropdown for inspection. The "Import Kit" button becomes
+#' enabled once valid files are loaded. Data are returned either directly or
+#' via a callback function, depending on the context.
 #'
-#' @return data.frame
+#' @param env Environment in which GUI settings are stored (default: 
+#' \code{globalenv()}).
+#' @param savegui Logical indicating if GUI settings should be saved between
+#' sessions.
+#' @param debug Logical indicating whether to print detailed diagnostic 
+#' messages.
+#' @param parent Optional parent window to assign focus after closing.
+#' @param callback Optional function to receive the imported data instead of
+#' returning it directly. The callback will be called as \code{callback(data)}.
 #'
+#' @return
+#' If \code{callback} is \code{NULL}, returns a \code{data.frame} containing
+#' the parsed GeneMapper kit definition. Otherwise, returns 
+#' \code{invisible(NULL)} after passing the data to the callback function.
+#'
+#' @seealso
+#' \code{\link{read_gene_mapper_kit}} for reading kits programmatically,  
+#' \code{\link{combine_bins_and_panels}} for merging bins and panels data.
+#'
+#' @examples
+#' \dontrun{
+#' # Launch the GeneMapper Kit Import GUI
+#' read_gene_mapper_kit_gui(debug = TRUE)
+#'
+#' # Launch with callback
+#' read_gene_mapper_kit_gui(callback = function(data) {
+#'   print(head(data))
+#' })
+#' }
+#'
+#' @importFrom gWidgets2 gwindow ggroup gfilebrowse gcombobox gbutton
+#'   gmessage addHandlerChanged svalue enabled visible focus dispose
 #' @export
-#'
-#' @importFrom gWidgets2 gwindow ggroup gfilebrowse gcombobox
-#' addHandlerChanged svalue gmessage gbutton enabled visible
-#' @importFrom xml2 read_xml xml_find_all xml_text
-#' @importFrom utils read.table
-#'
+
 read_gene_mapper_kit_gui <- function(env = globalenv(), savegui = TRUE,
                                      debug = FALSE, parent = NULL,
                                      callback = NULL) {
@@ -28,24 +57,38 @@ read_gene_mapper_kit_gui <- function(env = globalenv(), savegui = TRUE,
 
   # Create GUI elements
   window <- gwindow("GeneMapper Kit Import", parent = parent)
-  group <- ggroup(cont = window, horizontal = FALSE, expand = TRUE)
+  group <- ggroup(container = window, horizontal = FALSE, expand = TRUE)
 
-  # File selection for bins and panels file
+  # File selection for bins file
+  bins_frame <- gframe(
+    text = "GeneMapper bins file",
+    horizontal = FALSE,
+    container = group
+  )
+  
   bins_file_browser <- gfilebrowse(
     text = "Select GeneMapper Bins File",
-    type = "open", cont = group
+    type = "open", container = bins_frame
   )
-  panels_file_browser <- gfilebrowse(
-    text = "Select GeneMapper Panels File",
-    type = "open", cont = group
+    
+  # File selection for panels file
+  panels_frame <- gframe(
+    text = "GeneMapper panels file",
+    horizontal = FALSE,
+    container = group
   )
 
+  panels_file_browser <- gfilebrowse(
+    text = "Select GeneMapper Panels File",
+    type = "open", container = panels_frame
+  )
+  
   # Panel selection dropdown (initially empty but visible and inactive)
-  panel_combo <- gcombobox(c(""), cont = group)
+  panel_combo <- gcombobox(c(""), container = group)
   enabled(panel_combo) <- FALSE
 
   # Confirm button (visible but inactive)
-  confirm_button <- gbutton("Import Kit", cont = group)
+  confirm_button <- gbutton("Import Kit", container = group)
   enabled(confirm_button) <- FALSE
 
   kit_info <- NULL # Store kit_info locally

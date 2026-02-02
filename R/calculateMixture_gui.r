@@ -1,28 +1,10 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 05.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 03.03.2020: Added language support.
-# 03.05.2019: Compacted gui and expand text field under tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 12.09.2018: 'Save as' textbox expandable.
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 28.08.2015: Added importFrom.
-# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.08.2014: Fixed bug in 'Check subsetting' showing extra combinations in many cases.
-# 08.07.2014: First version.
-
 #' @title Calculate Mixture
 #'
 #' @description
-#' GUI wrapper for the \code{\link{calculateMixture}} function.
+#' GUI wrapper for the \code{\link{calculate_mixture}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{\link{calculateMixture}} function by
+#' Simplifies the use of the \code{\link{calculate_mixture}} function by
 #' providing a graphical user interface.
 #'
 #' @param env environment in which to search for data frames and save result.
@@ -32,143 +14,76 @@
 #'
 #' @return TRUE
 #'
-#' @export
-#'
 #' @importFrom utils help head str
 #' @importFrom graphics title
 #'
-#' @seealso \code{\link{calculateMixture}}, \code{\link{checkSubset}}
+#' @seealso \code{\link{calculate_mixture}}, \code{\link{checkSubset}}
+#' @aliases calculateMixture_gui
+#' @export
 
-calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_mixture_gui <- function(env = parent.frame(), savegui = NULL,
                                  debug = FALSE, parent = NULL) {
   # Global variables.
-  .gData <- NULL
-  .gRef1 <- NULL
-  .gRef2 <- NULL
-  .gNameData <- NULL
-  .gNameRef1 <- NULL
-  .gNameRef2 <- NULL
-
-  # Language ------------------------------------------------------------------
+  .g_data <- NULL
+  .g_ref <- NULL
+  .g_name_data <- NULL
+  .g_name_ref <- NULL
 
   # Get this functions name from call.
-  fnc <- as.character(match.call()[[1]])
-
+  fnc <- get_gui_scope()
+  
   if (debug) {
     print(paste("IN:", fnc))
   }
+  
+  # Language ------------------------------------------------------------------
 
-  # Default strings.
-  strWinTitle <- "Calculate Mixture"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Datasets"
-  strLblDataset <- "Sample dataset:"
-  strDrpDefault <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblRefMajor <- "Reference dataset (major):"
-  strLblRefMinor <- "Reference dataset (minor):"
-  strLblRef <- "references"
-  strBtnCheck <- "Check subsetting"
-  strFrmOptions <- "Options"
-  strChkOL <- "Remove off-ladder alleles (affects number of drop-in)"
-  strChkDrop <- "Ignore drop-out (calculate Mx anyway)"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
-  strMsgDataset <- "A sample dataset and two reference datasets must be selected."
-  strMsgTitleDataset <- "Dataset not selected"
-  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset."
-  strWinTitleCheck <- "Check subsetting"
-  strMsgTitleError <- "Error"
+  # Load the language file for this specific GUI scope
+  lng_strings <- get_strings(gui = fnc)
 
-  # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDefault"]$value
-    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblRefMajor"]$value
-    strLblRefMajor <- ifelse(is.na(strtmp), strLblRefMajor, strtmp)
-
-    strtmp <- dtStrings["strLblRefMinor"]$value
-    strLblRefMinor <- ifelse(is.na(strtmp), strLblRefMinor, strtmp)
-
-    strtmp <- dtStrings["strLblRef"]$value
-    strLblRef <- ifelse(is.na(strtmp), strLblRef, strtmp)
-
-    strtmp <- dtStrings["strBtnCheck"]$value
-    strBtnCheck <- ifelse(is.na(strtmp), strBtnCheck, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkOL"]$value
-    strChkOL <- ifelse(is.na(strtmp), strChkOL, strtmp)
-
-    strtmp <- dtStrings["strChkDrop"]$value
-    strChkDrop <- ifelse(is.na(strtmp), strChkDrop, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgCheck"]$value
-    strMsgCheck <- ifelse(is.na(strtmp), strMsgCheck, strtmp)
-
-    strtmp <- dtStrings["strWinTitleCheck"]$value
-    strWinTitleCheck <- ifelse(is.na(strtmp), strWinTitleCheck, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
-
+  # Define default strings
+  default_strings <- list(
+    STR_WIN_TITLE = "Calculate Mixture",
+    STR_CHK_GUI = "Save GUI settings",
+    STR_BTN_HELP = "Help",
+    STR_FRM_DATASET = "Datasets",
+    STR_LBL_DATASET = "Sample dataset:",
+    STR_DRP_DEFAULT = "<Select dataset>",
+    STR_LBL_SAMPLES = "samples",
+    STR_LBL_REFERENCE = "Reference dataset:",
+    STR_LBL_REF_WORD = "references",
+    STR_BTN_CHECK = "Check subsetting",
+    STR_FRM_OPTIONS = "Options",
+    STR_CHK_OL = "Remove off-ladder alleles (affects number of drop-in)",
+    STR_LBL_OL = "Off-ladder alleles contain",
+    STR_CHK_DROP = "Include drop-out (calculate Mx anyway)",
+    STR_OPT_SAMPLE = "Sample-level summaries",
+    STR_OPT_MARKER = "Per marker result",
+    STR_CHK_MATCH_CASE = "Match case (case-sensitive sample, marker, and allele names)",
+    STR_CHK_AUTO_MINOR = "Auto swap major/minor if Mx > 0.5",
+    STR_FRM_SAVE = "Save as",
+    STR_LBL_SAVE = "Name for result:",
+    STR_BTN_CALCULATE = "Calculate",
+    STR_BTN_PROCESSING = "Processing...",
+    STR_MSG_DATASET = "A sample dataset and a reference dataset must be selected.",
+    STR_MSG_TITLE_DATASET = "Dataset not selected",
+    STR_MSG_CHECK = "Data frame is NULL!\n\nMake sure to select a sample dataset.",
+    STR_WIN_TITLE_CHECK = "Check subsetting",
+    STR_MSG_TITLE_ERROR = "Error"
+  )
+  
+  # Update default strings with language-specific values
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
+  
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
     # Save GUI state.
-    .saveSettings()
+    .save_settings()
 
     # Focus on parent window.
     if (!is.null(parent)) {
@@ -190,11 +105,11 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -204,7 +119,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv,
@@ -216,14 +131,14 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   data_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = g0
   )
 
-  dfs <- c(strDrpDefault, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DEFAULT, listObjects(env = env, obj.class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -240,7 +155,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -250,36 +165,36 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       # Load or change components.
 
       # get dataset.
-      .gData <<- get(val_obj, envir = env)
-      .gNameData <<- val_obj
+      .g_data <<- get(val_obj, envir = env)
+      .g_name_data <<- val_obj
       svalue(data_samples_lbl) <- paste(
-        length(unique(.gData$Sample.Name)),
-        strLblSamples
+        length(unique(.g_data$Sample.Name)),
+        strings$STR_LBL_SAMPLES
       )
       svalue(save_edt) <- paste(val_obj, "_mixture", sep = "")
     } else {
       # Reset components.
-      .gData <<- NULL
-      .gNameData <<- NULL
+      .g_data <<- NULL
+      .g_name_data <<- NULL
       svalue(data_drp, index = TRUE) <- 1
-      svalue(data_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(data_samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLES)
       svalue(save_edt) <- ""
     }
   })
 
-  # Reference 1 ---------------------------------------------------------------
+  # Reference -----------------------------------------------------------------
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblRefMajor, container = g1)
+  glabel(text = strings$STR_LBL_REFERENCE, container = g1)
 
-  ref1_samples_lbl <- glabel(
-    text = paste(" 0", strLblRef),
+  ref_samples_lbl <- glabel(
+    text = paste(" 0", strings$STR_LBL_REF_WORD),
     container = g1
   )
 
   # NB! dfs defined in previous section.
-  ref1_drp <- gcombobox(
+  ref_drp <- gcombobox(
     items = dfs,
     selected = 1,
     editable = FALSE,
@@ -289,12 +204,12 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     fill = "x"
   )
 
-  addHandlerChanged(ref1_drp, handler = function(h, ...) {
-    val_obj <- svalue(ref1_drp)
+  addHandlerChanged(ref_drp, handler = function(h, ...) {
+    val_obj <- svalue(ref_drp)
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -303,112 +218,63 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     if (ok) {
       # Load or change components.
 
-      .gRef1 <<- get(val_obj, envir = env)
-      .gNameRef1 <<- val_obj
-      svalue(ref1_samples_lbl) <- paste(
-        length(unique(.gRef1$Sample.Name)),
-        strLblRef
+      .g_ref <<- get(val_obj, envir = env)
+      .g_name_ref <<- val_obj
+      svalue(ref_samples_lbl) <- paste(
+        length(unique(.g_ref$Sample.Name)),
+        strings$STR_LBL_REF_WORD
       )
     } else {
       # Reset components.
-      .gRef1 <<- NULL
-      .gNameRef1 <<- NULL
-      svalue(ref1_drp, index = TRUE) <- 1
-      svalue(ref1_samples_lbl) <- paste(" 0", strLblRef)
-    }
-  })
-
-  # Reference 2 ---------------------------------------------------------------
-
-  g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
-
-  glabel(text = strLblRefMinor, container = g2)
-
-  ref2_samples_lbl <- glabel(
-    text = paste(" 0", strLblRef),
-    container = g2
-  )
-
-  # NB! dfs defined in previous section.
-  ref2_drp <- gcombobox(
-    items = dfs,
-    selected = 1,
-    editable = FALSE,
-    container = g2,
-    ellipsize = "none",
-    expand = TRUE,
-    fill = "x"
-  )
-
-  addHandlerChanged(ref2_drp, handler = function(h, ...) {
-    val_obj <- svalue(ref2_drp)
-
-    # Check if suitable.
-    requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
-      name = val_obj, reqcol = requiredCol,
-      slim = TRUE, slimcol = "Allele",
-      env = env, parent = w, debug = debug
-    )
-
-    if (ok) {
-      # Load or change components.
-
-      .gRef2 <<- get(val_obj, envir = env)
-      .gNameRef2 <<- val_obj
-      svalue(ref2_samples_lbl) <- paste(
-        length(unique(.gRef2$Sample.Name)),
-        strLblRef
-      )
-    } else {
-      # Reset components.
-      .gRef2 <<- NULL
-      .gNameRef2 <<- NULL
-      svalue(ref2_drp, index = TRUE) <- 1
-      svalue(ref2_samples_lbl) <- paste(" 0", strLblRef)
+      .g_ref <<- NULL
+      .g_name_ref <<- NULL
+      svalue(ref_drp, index = TRUE) <- 1
+      svalue(ref_samples_lbl) <- paste(" 0", strings$STR_LBL_REF_WORD)
     }
   })
 
   # CHECK #####################################################################
 
-  check_btn <- gbutton(text = strBtnCheck, container = gv)
+  check_btn <- gbutton(text = strings$STR_BTN_CHECK, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
     # Get values.
-    val_data <- .gData
-    val_ref1 <- .gRef1
-    val_ref2 <- .gRef2
-    val_ignore <- FALSE
-    val_word <- FALSE
+    val_data <- .g_data
+    val_ref <- .g_ref
+    val_ignore <- svalue(f1_match_case_chk)
+    # val_word <- svalue(f1_word_case_chk)
+    # val_exact <- svalue(f1_exact_case_chk)
 
-    if (!is.null(.gData) || !is.null(.gRef1) || !is.null(.gRef2)) {
+    if (!is.null(val_data) && !is.null(val_ref)) {
       chksubset_w <- gwindow(
-        title = strWinTitleCheck,
+        title = strings$STR_WIN_TITLE_CHECK,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
       )
+      
+      # # Create pattern.
+      # tmp <- paste(".*", unique(.g_ref$Sample.Name), ".*",
+      #   unique(.g_ref$Sample.Name), ".*",
+      #   sep = ""
+      # )
+      # 
+      # # Save as dataframe.
+      # val_pattern <- data.frame(Sample.Name = tmp, stringsAsFactors = FALSE)
 
-      # Create pattern.
-      tmp <- paste(".*", unique(.gRef1$Sample.Name), ".*",
-        unique(.gRef2$Sample.Name), ".*",
-        sep = ""
-      )
+      # if (debug) {
+      #   print("Pattern")
+      #   print(val_pattern)
+      # }
 
-      # Save as dataframe.
-      val_pattern <- data.frame(Sample.Name = tmp, stringsAsFactors = FALSE)
-
-      if (debug) {
-        print("Pattern")
-        print(val_pattern)
-      }
-
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
-        ref = val_pattern,
+        ref = val_ref,
         console = FALSE,
-        ignore.case = val_ignore,
-        word = val_word,
+        ignore_case = val_ignore,
+        word = FALSE,
+        exact = FALSE,
+        reverse = TRUE,
         debug = debug
       )
 
@@ -420,8 +286,8 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }
@@ -430,54 +296,103 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions, horizontal = FALSE,
+    text = strings$STR_FRM_OPTIONS, horizontal = FALSE,
     spacing = 1, container = gv
   )
 
   f1_ol_chk <- gcheckbox(
-    text = strChkOL,
+    text = strings$STR_CHK_OL,
     checked = TRUE, container = f1
   )
 
+  glabel(text = strings$STR_LBL_OL, container = f1)
+  
+  f1_ol_edt <- gedit(text = "OL",
+                     expand = TRUE, 
+                     fill = TRUE, 
+                     container = f1)
+
+  
   f1_drop_chk <- gcheckbox(
-    text = strChkDrop,
+    text = strings$STR_CHK_DROP,
     checked = TRUE, container = f1
   )
 
+  f1_match_case_chk <- gcheckbox(
+    text = strings$STR_CHK_MATCH_CASE,
+    checked = FALSE, container = f1
+  )
+
+  # f1_match_word_chk <- gcheckbox(
+  #   text = strings$STR_CHK_MATCH_WORD,
+  #   checked = FALSE, container = f1
+  # )
+  # 
+  # f1_match_exact_chk <- gcheckbox(
+  #   text = strings$STR_CHK_MATCH_EXACT,
+  #   checked = FALSE, container = f1
+  # )
+  
+  f1_auto_minor_chk <- gcheckbox(
+    text = strings$STR_CHK_AUTO_MINOR,
+    checked = FALSE, container = f1
+  )
+  
+  f1_scope_opt <- gradio(
+    items = c(strings$STR_OPT_SAMPLE, strings$STR_OPT_MARKER),
+    horizontal = TRUE, container = f1
+  )
+  
+  f1_at_spb <- gspinbutton(
+    from = 0, to = 50000,
+    by = 1, value = 0,
+    container = f1
+  )
+  
+  f1_drop_rfu_spb <- gspinbutton(
+    from = 0, to = 50000,
+    by = 1, value = 0,
+    container = f1
+  )
+  
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
+  calculate_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     # Get values.
-    val_data <- .gData
-    val_ref1 <- .gRef1
-    val_ref2 <- .gRef2
-    val_name_data <- .gNameData
-    val_name_ref1 <- .gNameRef1
-    val_name_ref2 <- .gNameRef2
+    val_data <- .g_data
+    val_ref <- .g_ref
+    val_name_data <- .g_name_data
+    val_name_ref <- .g_name_ref
     val_name <- svalue(save_edt)
-    val_ol <- svalue(f1_ol_chk)
+    val_ol_rm <- svalue(f1_ol_chk)
+    val_ol_str <- svalue(f1_ol_edt)
     val_drop <- svalue(f1_drop_chk)
+    val_drop_rfu <- if (svalue(f1_drop_rfu_spb) > 0) svalue(f1_drop_rfu_spb) else NULL
+    val_at <- svalue(f1_at_spb)
+    val_match_case <- svalue(f1_match_case_chk)
+    #val_match_word <- svalue(f1_match_word_chk)
+    #val_match_exact <- svalue(f1_match_exact_chk)
+    val_auto_minor <- svalue(f1_auto_minor_chk)
+    val_scope <- ifelse(svalue(f1_scope_opt) == strings$STR_OPT_SAMPLE, "sample", "marker")
 
     if (debug) {
       print("Read Values:")
       print("val_data")
       print(head(val_data))
-      print("val_ref1")
-      print(head(val_ref1))
-      print("val_ref2")
-      print(head(val_ref2))
-      print("val_ol")
-      print(val_ol)
+      print("val_ref")
+      print(head(val_ref))
+      print("val_ol_rm")
+      print(val_ol_rm)
       print("val_drop")
       print(val_drop)
       print("val_name")
@@ -485,35 +400,40 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Check if data.
-    if (!is.null(.gData) & !is.null(.gRef1) & !is.null(.gRef2)) {
+    if (!is.null(.g_data) & !is.null(.g_ref)) {
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- strBtnProcessing
+      svalue(calculate_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateMixture(
+      datanew <- calculate_mixture(
         data = val_data,
-        ref1 = val_ref1,
-        ref2 = val_ref2,
-        ol.rm = val_ol,
-        ignore.dropout = val_drop,
-        debug = debug
+        ref_profiles_df = val_ref,
+        threshold = val_at,
+        dropout_pseudo_rfu = val_drop_rfu,
+        include_dropout = val_drop,
+        match_case = val_match_case,
+        ol_rm = val_ol_rm,
+        ol_str = val_ol_str,
+        auto_minor_from_mx = val_auto_minor,
+        output_level = val_scope
       )
-
+      
       # Create key-value pairs to log.
-      keys <- list(
-        "data", "ref1", "ref2",
-        "ol.rm", "ignore.dropout"
-      )
-
-      values <- list(
-        val_name_data, val_name_ref1, val_name_ref2,
-        val_ol, val_drop
-      )
+      keys <- list("data", "ref_profiles_df", "threshold", "dropout_pseudo_rfu",
+                   "include_dropout", "match_case", "ol_rm", "ol_str",
+                   "auto_minor_from_mx", "output_level")
+      
+      values <- list(val_name_data, val_name_ref,
+                     val_at, val_drop_rfu,
+                     val_drop, val_match_case,
+                     val_ol_rm, val_ol_str,
+                     val_auto_minor,
+                     val_scope)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"
@@ -530,12 +450,12 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Close GUI.
-      .saveSettings()
+      .save_settings()
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error",
         parent = w
       )
@@ -544,7 +464,7 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
   # INTERNAL FUNCTIONS ########################################################
 
-  .loadSavedSettings <- function() {
+  .load_saved_settings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
@@ -554,8 +474,8 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateMixture_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateMixture_gui_savegui", envir = env)
+      if (exists(".strvalidator_calculate_mixture_gui_savegui", envir = env, inherits = FALSE)) {
+        svalue(savegui_chk) <- get(".strvalidator_calculate_mixture_gui_savegui", envir = env)
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -567,11 +487,23 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Then load settings if true.
     if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateMixture_gui_ol", envir = env, inherits = FALSE)) {
-        svalue(f1_ol_chk) <- get(".strvalidator_calculateMixture_gui_ol", envir = env)
+      if (exists(".strvalidator_calculate_mixture_gui_ol", envir = env, inherits = FALSE)) {
+        svalue(f1_ol_chk) <- get(".strvalidator_calculate_mixture_gui_ol", envir = env)
       }
-      if (exists(".strvalidator_calculateMixture_gui_dropout", envir = env, inherits = FALSE)) {
-        svalue(f1_drop_chk) <- get(".strvalidator_calculateMixture_gui_dropout", envir = env)
+      if (exists(".strvalidator_calculate_mixture_gui_dropout", envir = env, inherits = FALSE)) {
+        svalue(f1_drop_chk) <- get(".strvalidator_calculate_mixture_gui_dropout", envir = env)
+      }
+      if (exists(".strvalidator_calculate_mixture_gui_matchcase", envir = env, inherits = FALSE)) {
+        svalue(f1_match_case_chk) <- get(".strvalidator_calculate_mixture_gui_matchcase", envir = env)
+      }
+      if (exists(".strvalidator_calculate_mixture_gui_autominor", envir = env, inherits = FALSE)) {
+        svalue(f1_auto_minor_chk) <- get(".strvalidator_calculate_mixture_gui_autominor", envir = env)
+      }
+      if (exists(".strvalidator_calculate_mixture_gui_threshold", envir = env, inherits = FALSE)) {
+        svalue(f1_at_spb) <- get(".strvalidator_calculate_mixture_gui_threshold", envir = env)
+      }
+      if (exists(".strvalidator_calculate_mixture_gui_droprfu", envir = env, inherits = FALSE)) {
+        svalue(f1_drop_rfu_spb) <- get(".strvalidator_calculate_mixture_gui_droprfu", envir = env)
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -579,24 +511,40 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
     }
   }
 
-  .saveSettings <- function() {
+  .save_settings <- function() {
     # Then save settings if true.
     if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateMixture_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateMixture_gui_ol", value = svalue(f1_ol_chk), envir = env)
-      assign(x = ".strvalidator_calculateMixture_gui_dropout", value = svalue(f1_drop_chk), envir = env)
+      assign(x = ".strvalidator_calculate_mixture_gui_savegui", value = svalue(savegui_chk), envir = env)
+      assign(x = ".strvalidator_calculate_mixture_gui_ol", value = svalue(f1_ol_chk), envir = env)
+      assign(x = ".strvalidator_calculate_mixture_gui_dropout", value = svalue(f1_drop_chk), envir = env)
+      assign(x = ".strvalidator_calculate_mixture_gui_matchcase", value = svalue(f1_match_case_chk), envir = env)
+      assign(x = ".strvalidator_calculate_mixture_gui_autominor", value = svalue(f1_auto_minor_chk), envir = env)
+      assign(x = ".strvalidator_calculate_mixture_gui_threshold", value = svalue(f1_at_spb), envir = env)
+      assign(x = ".strvalidator_calculate_mixture_gui_droprfu", value = svalue(f1_drop_rfu_spb), envir = env)
     } else { # or remove all saved values if false.
 
-      if (exists(".strvalidator_calculateMixture_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateMixture_gui_savegui", envir = env)
+      if (exists(".strvalidator_calculate_mixture_gui_savegui", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_calculate_mixture_gui_savegui", envir = env)
       }
-      if (exists(".strvalidator_calculateMixture_gui_ol", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateMixture_gui_ol", envir = env)
+      if (exists(".strvalidator_calculate_mixture_gui_ol", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_calculate_mixture_gui_ol", envir = env)
       }
-      if (exists(".strvalidator_calculateMixture_gui_dropout", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateMixture_gui_dropout", envir = env)
+      if (exists(".strvalidator_calculate_mixture_gui_dropout", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_calculate_mixture_gui_dropout", envir = env)
       }
-
+      if (exists(".strvalidator_calculate_mixture_gui_matchcase", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_calculate_mixture_gui_matchcase", envir = env)
+      }
+      if (exists(".strvalidator_calculate_mixture_gui_autominor", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_calculate_mixture_gui_autominor", envir = env)
+      }
+      if (exists(".strvalidator_calculate_mixture_gui_threshold", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_calculate_mixture_gui_threshold", envir = env)
+      }
+      if (exists(".strvalidator_calculate_mixture_gui_droprfu", envir = env, inherits = FALSE)) {
+        remove(".strvalidator_calculate_mixture_gui_droprfu", envir = env)
+      }
+      
       if (debug) {
         print("Settings cleared!")
       }
@@ -610,9 +558,37 @@ calculateMixture_gui <- function(env = parent.frame(), savegui = NULL,
   # END GUI ###################################################################
 
   # Load GUI settings.
-  .loadSavedSettings()
+  .load_saved_settings()
 
   # Show GUI.
   visible(w) <- TRUE
   focus(w)
+}
+
+################################################################################
+#' @rdname calculate_mixture_gui
+#' @export
+#' @usage NULL
+#' @keywords internal
+#'
+#' @description
+#' **Deprecated.** Use [calculate_mixture_gui()] instead.
+################################################################################
+
+calculateMixture_gui <- function(env = parent.frame(),
+                                 savegui = NULL,
+                                 debug = FALSE, 
+                                 parent = NULL, 
+                                 ...) {
+  
+  .Deprecated("calculate_mixture_gui", package = "strvalidator")
+  
+  # Remap arguments
+  calculate_mixture_gui(
+    env = env,
+    savegui = savegui,
+    debug = debug,
+    parent = parent,
+    ...
+  )
 }

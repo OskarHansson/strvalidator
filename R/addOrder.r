@@ -1,13 +1,3 @@
-################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 08.02.2017: First version.
-
 #' @title Add Marker Order.
 #'
 #' @description
@@ -108,7 +98,7 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
     attr(data, which = "kit") <- kit
 
     # Update audit trail.
-    data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+    data <- audit_trail(obj = data, f_call = match.call(), package = "strvalidator")
   }
 
   if (debug) {

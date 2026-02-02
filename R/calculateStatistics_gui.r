@@ -86,7 +86,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -383,7 +383,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       # Check if suitable.
       requiredCol <- c(val_target, val_group, val_count)
       requiredCol <- requiredCol[requiredCol != strDrpColumn]
-      ok <- checkDataset(
+      ok <- check_dataset(
         name = val_obj, reqcol = requiredCol,
         env = env, parent = w, debug = debug
       )
@@ -425,7 +425,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
         values <- list(val_obj, val_target, val_group, val_count, val_quant)
 
         # Update audit trail.
-        datanew <- auditTrail(
+        datanew <- audit_trail(
           obj = datanew, key = keys, value = values,
           label = fnc, arguments = FALSE,
           package = "strvalidator"

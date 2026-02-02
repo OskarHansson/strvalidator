@@ -1,54 +1,57 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 08.11.2025: Changed to UPPER_SNAKE_CASE constants.
 # 28.09.2024: Fixed save to environment.
 # 17.08.2024: New function to import kit from GeneMarker files.
 
 #' @title Read GeneMarker Kit Definition
 #'
 #' @description
-#' Read GeneMarker kit definition file.
+#' Launch a GUI to import kit definitions from GeneMarker XML files.
 #'
-#' @details Select the kit definition XML-file using the file picker.
-#' The unique Panel Names will appear in the drop-down menu.
-#' Select the panel to import.
-#' Kit information for the selected panel will be extracted.
+#' @details
+#' The user selects a GeneMarker kit definition XML file using a file picker.
+#' Unique panel names are extracted and shown in a drop-down menu. After selecting
+#' a panel, kit information for the selected panel is imported and either returned,
+#' saved in the current environment, or passed to a callback function.
 #'
-#' @param env environment in which to search for data frames.
-#' @param savegui logical indicating if GUI settings should be saved in
-#' the environment.
-#' @param debug logical indicating printing debug information.
-#' @param parent widget to get focus when finished.
+#' @param env environment in which to save the imported data.
+#' @param savegui logical; reserved for future use (currently ignored).
+#' @param debug logical; if `TRUE`, print debug information to the console.
+#' @param parent optional GUI widget to receive focus when finished.
+#' @param callback optional function to receive the imported kit data.
 #'
-#' @return data.frame
+#' @return A data frame containing kit information if run interactively.
+#' Invisibly returns `NULL` when using a callback or after saving to the environment.
 #'
 #' @export
 #'
 #' @importFrom gWidgets2 gwindow ggroup gfilebrowse gcombobox addHandlerChanged
-#' svalue gmessage gbutton enabled visible
+#'   svalue gmessage gbutton enabled visible
 #' @importFrom xml2 read_xml xml_find_all xml_text
 #' @importFrom magrittr %>%
 #' @importFrom utils help
 #' @importFrom graphics par
+#' @importFrom tools file_path_sans_ext
 #' @import gWidgets2tcltk
 
 read_gene_marker_kit_gui <- function(env = parent.frame(),
                                      savegui = NULL, debug = FALSE,
                                      parent = NULL, callback = NULL) {
   # Load the language file for this specific GUI scope
-  lng_strings <- getStrings(gui = "read_gene_marker_kit_gui")
+  lng_strings <- get_strings(gui = get_gui_scope())
 
   # Define default strings
   default_strings <- list(
-    strWinTitle = "GeneMarker Kit Import",
-    strBtnSelectFile = "Select panel",
-    strBtnTransform = "Import Kit",
-    strMsgFileNotExist = "The selected file does not exist.",
-    strMsgReadError = "Failed to read XML file:",
-    strMsgNoPanelNames = "No panel names found in the selected XML file.",
-    strMsgSelectFileFirst = "You must select an XML file first.",
-    strMsgSelectPanel = "You must select the panel to extract from the
-    dropdown menu",
-    strErrorOccurred = "An error occurred:"
+    STR_WIN_TITLE = "GeneMarker Kit Import",
+    STR_BTN_SELECT_FILE = "Select panel",
+    STR_BTN_TRANSFORM = "Import Kit",
+    STR_MSG_FILE_NOT_EXIST = "The selected file does not exist.",
+    STR_MSG_READ_ERROR = "Failed to read XML file:",
+    STR_MSG_NO_PANELS = "No panel names found in the selected XML file.",
+    STR_MSG_SELECT_FILE = "You must select an XML file first.",
+    STR_MSG_SELECT_PANEL = "You must select the panel to extract from the dropdown menu",
+    STR_ERROR_OCCURRED = "An error occurred:"
   )
 
   # Update default strings with language-specific values
@@ -58,13 +61,13 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
   options(guiToolkit = "tcltk")
 
   # Create main window
-  window <- gwindow(title = strings$strWinTitle, visible = FALSE)
+  window <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Create main group
   group <- ggroup(horizontal = FALSE, container = window)
 
   # Button to select XML file
-  file_button <- gfilebrowse(text = strings$strBtnSelectFile, container = group)
+  file_button <- gfilebrowse(text = strings$STR_BTN_SELECT_FILE, container = group)
 
   # Dropdown for panel selection
   panel_dropdown <- gcombobox("", container = group)
@@ -75,7 +78,7 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
     file_path <- svalue(file_button)
 
     if (!file.exists(file_path)) {
-      gmessage(strings$strMsgFileNotExist, parent = window)
+      gmessage(strings$STR_MSG_FILE_NOT_EXIST, parent = window)
       return()
     }
 
@@ -85,7 +88,7 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
         xml2::read_xml(file_path)
       },
       error = function(e) {
-        gmessage(paste(strings$strMsgReadError, e$message), parent = window)
+        gmessage(paste(strings$STR_MSG_READ_ERROR, e$message), parent = window)
         return(NULL)
       }
     )
@@ -101,7 +104,7 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
     ) %>% xml_text()
 
     if (length(panel_names) == 0) {
-      gmessage(strings$strMsgNoPanelNames, parent = window)
+      gmessage(strings$STR_MSG_NO_PANELS, parent = window)
       return()
     }
 
@@ -113,18 +116,18 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
 
   # Button to execute transformation
   action_button <- gbutton(
-    text = strings$strBtnTransform,
+    text = strings$STR_BTN_TRANSFORM,
     container = group, handler = function(h, ...) {
       selected_file <- svalue(file_button)
       selected_panel <- svalue(panel_dropdown)
 
       if (selected_file == "") {
-        gmessage(strings$strMsgSelectFileFirst, parent = window)
+        gmessage(strings$STR_MSG_SELECT_FILE, parent = window)
         return()
       }
 
       if (is.null(selected_panel) || selected_panel == "" || is.na(selected_panel)) {
-        gmessage(strings$strMsgSelectPanel, parent = window)
+        gmessage(strings$STR_MSG_SELECT_PANEL, parent = window)
         return()
       }
 
@@ -155,7 +158,7 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
           return(invisible(NULL))
         }
       }, error = function(e) {
-        gmessage(paste(strings$strErrorOccurred, e$message), parent = window)
+        gmessage(paste(strings$STR_ERROR_OCCURRED, e$message), parent = window)
       }, finally = {
         # Re-enable buttons after function execution
         enabled(file_button) <- TRUE

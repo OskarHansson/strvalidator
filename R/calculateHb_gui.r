@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 02.12.2025: Fixed option exact not propagated to check_subsetting.
 # 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 03.03.2020: Fixed reference to function name.
 # 01.03.2020: Added language support.
@@ -34,7 +35,7 @@
 #' @importFrom utils help head str
 #' @importFrom graphics title
 #'
-#' @seealso \code{link{calculateHb}}, \code{link{checkSubset}}
+#' @seealso \code{link{calculateHb}}, \code{link{check_subset}}
 
 calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
                             debug = FALSE, parent = NULL) {
@@ -88,7 +89,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -272,7 +273,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Dye", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Height",
       env = env, parent = w, debug = debug
@@ -327,7 +328,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -359,7 +360,8 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
     val_ref <- .gRef
     val_ignore <- svalue(f1_ignore_chk)
     val_word <- svalue(f1_word_chk)
-
+    val_exact <- svalue(f1_exact_chk)
+    
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
         title = strWinTitleCheck,
@@ -368,10 +370,10 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data, ref = val_ref,
-        console = FALSE, ignore.case = val_ignore,
-        word = val_word
+        console = FALSE, ignore_case = val_ignore,
+        word = val_word, exact = val_exact
       )
 
       gtext(
@@ -515,7 +517,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

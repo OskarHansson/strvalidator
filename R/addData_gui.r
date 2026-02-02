@@ -1,26 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 10.09.2022: Prepended .strvalidator_ to saved settings.
-# 01.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 03.03.2020: Fixed reference to function name.
-# 23.02.2020: Added language support.
-# 03.03.2019: Compacted and tweaked widgets under tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 19.07.2018: Minor changes to some labels (clarity).
-# 11.07.2018: 'Save as' textbox expandable.
-# 10.07.2018: Fixed blank drop-down menues after selecting a dataset.
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 30.11.2015: Added attributes to result.
-# 30.11.2015: Added new option for columns to add.
-# 28.08.2015: Added importFrom
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 06.05.2014: Implemented 'checkDataset'.
-
 #' @title Add Data
 #'
 #' @description
@@ -83,7 +60,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   strMsgTitleDataset <- "Datasets not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -233,7 +210,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = NULL,
       env = env, parent = w, debug = debug
     )
@@ -305,7 +282,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     val_obj <- svalue(refset_drp)
 
     # Check if suitable.
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = NULL,
       env = env, parent = w, debug = debug
     )
@@ -524,7 +501,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       )
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

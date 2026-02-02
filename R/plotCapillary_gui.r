@@ -102,7 +102,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -304,7 +304,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       "Instrument", "Instrument.ID", "Run",
       "Mean.Height", "SQ", "Injection", "Capillary", "Well"
     )
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -395,7 +395,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       "Instrument", "Instrument.ID", "Run", "Mean.Height",
       "Injection", "Capillary", "Well", "Comment"
     )
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -415,7 +415,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       "Instrument", "Instrument.ID", "Run", "Mean.Height",
       "Injection", "Capillary", "Well", "Comment"
     )
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -435,7 +435,7 @@ plotCapillary_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       "Instrument", "Instrument.ID", "Run", "Mean.Height",
       "Injection", "Capillary", "Well", "Comment"
     )
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )

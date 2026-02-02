@@ -266,7 +266,7 @@ import <- function(folder = TRUE, extension = "txt",
   }
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   # Convert common known numeric columns.
   res <- colConvert(data = res)

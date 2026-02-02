@@ -96,7 +96,7 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -299,7 +299,7 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Check if suitable.
     requiredCol <- c("Amount", "Height", "AT6")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )

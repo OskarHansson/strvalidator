@@ -56,7 +56,7 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {

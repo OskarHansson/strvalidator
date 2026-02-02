@@ -69,7 +69,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -211,7 +211,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -323,7 +323,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       values <- list(val_name_data, val_threshold, val_sex, val_kit)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

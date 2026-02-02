@@ -420,7 +420,7 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
   }
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

@@ -7,10 +7,11 @@
 calculateConcordance(
   data,
   kit.name = NA,
-  no.marker = "NO MARKER",
-  no.sample = "NO SAMPLE",
-  delimeter = ",",
+  no.marker = "[MISSING MARKER]",
+  no.sample = "[MISSING SAMPLE]",
+  delimiter = ",",
   list.all = FALSE,
+  known.profile = NULL,
   debug = FALSE
 )
 }
@@ -26,7 +27,7 @@ they will be numbered.}
 
 \item{no.sample}{character vector for string when sample is missing.}
 
-\item{delimeter}{character to separate the alleles in a genotype.
+\item{delimiter}{character to separate the alleles in a genotype.
 Default is comma e.g '12,16'.}
 
 \item{list.all}{logical TRUE to return missing samples.}

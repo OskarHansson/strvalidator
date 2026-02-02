@@ -67,7 +67,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strBtnRemove <- "Remove"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -205,7 +205,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Size", "File.Name")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -257,7 +257,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Allele", "Id", "Marker")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -319,7 +319,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       values <- list(val_name_data, val_name_spike, val_invert)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

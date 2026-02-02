@@ -1,84 +1,76 @@
-Version 2.4.1.9007
+Version 2.5.0.9001
 ------------------------------------------------------------------------------
+- Adds support for GeneMarker kit definition files and 8-dyes.
+- New and refactored functions moved to `snake_case` e.g.`calculate_concordance()`.
+- Existing `CamelCase` functions e.g. `calculateConcordance()` remain available.
+  for backward compatibility but are now **deprecated**.
+- The deprecated functions will continue to work and automatically map old argument names.
+  Please update your scripts to the new naming convention.
 * Bug fixes and improvements with the most significant listed below:
-  Adding missing package anchors in documentation fields. 
-
-Version 2.4.1.9006
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-- calculateMixture
-  Fixed bug when NA alleles, leading to dropin count. Added testthat case. 
-
-Version 2.4.1.9005
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - manageKits_gui
-  Added auto detection of QI* quality sensors.
-
-Version 2.4.1.9004
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - readGeneMarker, readGeneMarker_gui
-  Now reorder output to match correct plot order. Fixed save to environment.
-
-Version 2.4.1.9003
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - manageKits_gui
-  Replaces makeKit_gui.
-  - readGeneMapper, readGeneMapper_gui
-  New functions. Imports kit information from GeneMapperID-X bins and panels file.
-  Replaces readBinsFile, readPanelFiles, and combineBinsAndPanels.
-  - readGeneMarker, readGeneMarker_gui
-  New functions. Imports kit information from GeneMarker kit files.
-* Removed functions:
-  - makeKit_gui
-  Replaced with manageKits_gui.
-  - readBinsFile
-  Replaced with readGeneMapper and readGeneMapper_gui
-  - readPanelFiles
-  Replaced with readGeneMapper and readGeneMapper_gui
-  - combineBinsAndPanels.
-  Replaced with readGeneMapper and readGeneMapper_gui
-
-
-Version 2.4.1.9002
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
+  - slim
+  More robust autodetection of (numbered) repeated columns to stack.
+  - auditTrail, audit_trail
+  Fixed a bug that "addSize" was hardcoded meaning no matter what function is 
+  passed, the fname becomes "addSize"
+  - checkSubset, checkSubset_gui
+  Refactored and added reverse parameter for data -> ref matching.
+  - strvalidator
+  Added dom 'l' to show control for number of rows per page.
+  Added button to calculate summary statistics by Dye.
   - editData_gui
   Changed default to FALSE for the 'limit number of rows' checkbox.
-  Added dom 'l' to show control for number of rows per page.
-  - strvalidator
   Added dom 'l' to show control for number of rows per page.
   - modelDropout_gui
   Fixed 'Error in !is.na(predictionDf) && !is.null(predictionDf)'.
   - getStrings
   Fixed spelling error, removed unnecessary duplicate code.
-
-
-Version 2.4.1.9001
-------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
   - calculateLb
-  Corrected calculation of number of peaks for option 'marker'.
+  Option 'peak' now adjust for homozygotes by division by 2
+  New option 'marker' similar to 'peaks' but use the marker peak height sum instead.
   - test-calculateLb
   Updated the tests for 'peak' to adjust for homozygotes by division by 2.
   Added tests for new option 'marker'.
   - test-calculateAllT
-  Updated RNG and consequently some values. Added Depends R (>= 3.6.0) in DECSRIPTION file.
+  Updated RNG and consequently some values.
+  Added Depends R (>= 3.6.0) in DESCRIPTION file.
   - test-addSize
   Modernized and simplified the code.
+* New functions:
+  - calculate_mixture, calculate_mixture_gui
+  Refactored function. Fixed bug when NA alleles, leading to dropin count. 
+  Replaces calculateMixture
+  - manageKits_gui
+  Replaces makeKit_gui.
+  Added auto detection of QI* quality sensors.
+  - readGeneMapper, readGeneMapper_gui
+  Imports kit information from GeneMapperID-X bins and panels file.
+  Replaces readBinsFile, readPanelFiles, and combineBinsAndPanels.
+  - readGeneMarker, readGeneMarker_gui
+  Imports kit information from GeneMarker kit files.
+* Removed functions:
+  - calculateMixture
+  Replaced by calculate_mixture
+  - makeKit_gui
+  Replaced by manageKits_gui
+  - readBinsFile
+  Replaced by readGeneMapper and readGeneMapper_gui
+  - readPanelFiles
+  Replaced by readGeneMapper and readGeneMapper_gui
+  - combineBinsAndPanels.
+  Replaced by readGeneMapper and readGeneMapper_gui
+  - heightToPeak
+  Legacy helper not used by the refactored generateEPG function
 
-
-Version 2.4.1.9000
+Version 2.4.2
 ------------------------------------------------------------------------------
-* Bug fixes and improvements with the most significant listed below:
-  - calculateLb
-  Option 'peak' now adjust for homozygotes by division by 2
-  New option 'marker' similar to 'peaks' but use the marker peak height sum instead.
-  - strvalidator
-  Added button to calculate summary statistics by Dye.
-
+* Fixes minor CRAN notes:
+  - Add Authors@R field in DESCRIPTION
+  - calculateStatistics
+  Add escape characters to \{0,1\} in parameter description.
+  - calculateAllele, calculateSpike, combine_gui, editData_gui, ggsave_gui, 
+  plotDistribution_gui, plotGroups_gui
+  Specified the package anchor in link.
+  
 Version 2.4.1
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

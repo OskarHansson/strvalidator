@@ -1,402 +1,309 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 03.03.2020: Fixed reference to function name.
-# 25.02.2020: Added language support.
-# 03.03.2019: Compacted and tweaked widgets under tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 09.01.2016: Added attributes to result.
-# 28.08.2015: Added importFrom
-# 27.11.2014: Fixed bug (GitHub issue #7) introduced in strvalidator version 1.3.1.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 06.05.2014: Implemented 'checkDataset'.
-# 02.03.2014: Added 'saveGUI' and 'bins' option.
-# 11.02.2014: First version.
-
-
 #' @title Add Size Information
 #'
 #' @description
-#' GUI wrapper for the \code{\link{addSize}} function.
+#' GUI wrapper for \code{\link{add_size}}.
 #'
 #' @details
-#' Simplifies the use of the \code{\link{addSize}} function by providing a
-#' graphical user interface to it.
+#' Provides a simple graphical interface for assigning allele sizes using the
+#' STR kit definition file.
 #'
-#' @param env environment in which to search for data frames and save result.
-#' @param savegui logical indicating if GUI settings should be saved in the environment.
-#' @param debug logical indicating printing debug information.
-#' @param parent widget to get focus when finished.
+#' @param env environment used to look up datasets and store results.
+#' @param savegui logical indicating whether GUI settings should be saved.
+#' @param debug logical for printing debug information.
+#' @param parent optional parent widget.
 #'
-#' @return TRUE
+#' @return TRUE (invisibly)
 #'
 #' @export
 #'
 #' @importFrom utils help str head
+#' @seealso \code{\link{add_size}}
 #'
-#' @seealso \code{\link{addSize}}
 
-addSize_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
-  # Global variables.
-  .gData <- NULL
-  .gDataName <- NULL
-  .gKit <- 1
-
-  # Language ------------------------------------------------------------------
-
-  # Get this functions name from call.
-  fnc <- as.character(match.call()[[1]])
-
+add_size_gui <- function(env = parent.frame(),
+                         savegui = NULL,
+                         debug = FALSE,
+                         parent = NULL) {
+  
+  # ---------------------------------------------------------------------------
+  # GLOBAL STATE
+  # ---------------------------------------------------------------------------
+  
+  .g_data      <- NULL       # dataset content
+  .g_data_name <- NULL       # dataset name
+  .g_kit       <- 1          # selected kit index
+  
+  # ---------------------------------------------------------------------------
+  # LANGUAGE STRINGS
+  # ---------------------------------------------------------------------------
+  
+  fnc <- get_gui_scope()
+  
   if (debug) {
     print(paste("IN:", fnc))
   }
-
-  # Default strings.
-  strWinTitle <- "Add size to dataset"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset and kit"
-  strLblDataset <- "Sample dataset:"
-  strDrpDefault <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strRadItem1 <- "Get size as defined in bins file (NA if not defined)"
-  strRadItem2 <- "Calculate an estimate from locus offset and number of repeats"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnAdd <- "Add"
-  strBtnProcessing <- "Processing..."
-
-  # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDefault"]$value
-    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strRadItem1"]$value
-    strRadItem1 <- ifelse(is.na(strtmp), strRadItem1, strtmp)
-
-    strtmp <- dtStrings["strRadItem2"]$value
-    strRadItem2 <- ifelse(is.na(strtmp), strRadItem2, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnAdd"]$value
-    strBtnAdd <- ifelse(is.na(strtmp), strBtnAdd, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-  }
-
-  # ---------------------------------------------------------------------------
-
-  # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
-
-  # Runs when window is closed.
-  addHandlerUnrealize(w, handler = function(h, ...) {
-    # Save GUI state.
-    .saveSettings()
-
-    # Focus on parent window.
-    if (!is.null(parent)) {
-      focus(parent)
-    }
-
-    # Destroy window.
-    return(FALSE)
-  })
-
-  # Vertical main group.
-  gv <- ggroup(
-    horizontal = FALSE,
-    spacing = 1,
-    use.scrollwindow = FALSE,
-    container = w,
-    expand = TRUE
+  
+  default_strings <- list(
+    STR_WIN_TITLE     = "Add size to dataset",
+    STR_CHK_GUI       = "Save GUI settings",
+    STR_BTN_HELP      = "Help",
+    
+    STR_FRM_DATASET   = "Dataset and kit",
+    STR_LBL_DATASET   = "Sample dataset:",
+    STR_DRP_DEFAULT   = "<Select dataset>",
+    STR_LBL_SAMPLES   = "samples",
+    STR_LBL_KIT       = "Kit:",
+    
+    STR_FRM_OPTIONS   = "Options",
+    STR_LBL_OPTIONS   = "Assign allele sizes using kit definitions",
+    
+    STR_FRM_SAVE      = "Save as",
+    STR_LBL_SAVE      = "Name for result:",
+    STR_BTN_ADD       = "Add",
+    STR_BTN_PROCESSING = "Processing..."
   )
-
-  # Help button group.
-  gh <- ggroup(container = gv, expand = FALSE, fill = "both")
-
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
-
+  
+  lng_strings <- get_strings(gui = fnc)
+  strings <- update_strings_with_language_file(default_strings,
+                                               if (!is.null(lng_strings)) lng_strings$value else NULL)
+  
+  # ---------------------------------------------------------------------------
+  # MAIN WINDOW
+  # ---------------------------------------------------------------------------
+  
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
+  
+  addHandlerUnrealize(w, handler = function(h, ...) {
+    .save_settings()
+    if (!is.null(parent)) focus(parent)
+    FALSE
+  })
+  
+  gv <- ggroup(horizontal = FALSE, spacing = 1, container = w, expand = TRUE)
+  
+  # ---------------------------------------------------------------------------
+  # HEADER: Save GUI + Help
+  # ---------------------------------------------------------------------------
+  
+  gh <- ggroup(container = gv)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
+  
   addSpring(gh)
-
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
-
+  
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
   addHandlerChanged(help_btn, handler = function(h, ...) {
-    # Open help page for function.
     print(help(fnc, help_type = "html"))
   })
-
-  # FRAME 0 ###################################################################
-
-  f0 <- gframe(
-    text = strFrmDataset, horizontal = FALSE,
-    spacing = 1, expand = FALSE, fill = "x", container = gv
-  )
-
-  # DATASET -------------------------------------------------------------------
-
-  f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
-
-  glabel(text = strLblDataset, container = f0g1)
-
-  dataset_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
-    container = f0g1
-  )
-
+  
+  # ---------------------------------------------------------------------------
+  # FRAME 0: DATASET AND KIT
+  # ---------------------------------------------------------------------------
+  
+  f0 <- gframe(text = strings$STR_FRM_DATASET, container = gv, spacing = 1)
+  
+  # Dataset selector
+  g0 <- ggroup(container = f0, expand = TRUE, fill = "x")
+  glabel(strings$STR_LBL_DATASET, container = g0)
+  
+  dataset_samples_lbl <- glabel(text = paste("0", strings$STR_LBL_SAMPLES),
+                                container = g0)
+  
   dataset_drp <- gcombobox(
-    items = c(
-      strDrpDefault,
-      listObjects(
-        env = env,
-        obj.class = "data.frame"
-      )
-    ),
-    selected = 1,
-    editable = FALSE,
-    container = f0g1,
+    items     = c(strings$STR_DRP_DEFAULT, listObjects(env, "data.frame")),
+    selected  = 1,
+    editable  = FALSE,
     ellipsize = "none",
-    expand = TRUE,
-    fill = "x"
+    container = g0,
+    expand    = TRUE,
+    fill      = "x"
   )
-
+  
+  # KIT selector
+  g1 <- ggroup(container = f0, expand = TRUE, fill = "x")
+  glabel(strings$STR_LBL_KIT, container = g1)
+  
+  kit_drp <- gcombobox(
+    items     = getKit(),
+    selected  = 1,
+    editable  = FALSE,
+    ellipsize = "none",
+    container = g1,
+    expand    = TRUE,
+    fill      = "x"
+  )
+  
+  # ---------------------------------------------------------------------------
+  # Dataset selection handler
+  # ---------------------------------------------------------------------------
+  
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
-
-    # Check if suitable.
-    requiredCol <- c("Marker", "Allele")
-    ok <- checkDataset(
-      name = val_obj, reqcol = requiredCol,
-      env = env, parent = w, debug = debug
+    
+    ok <- check_dataset(
+      name   = val_obj,
+      reqcol = c("Marker", "Allele"),
+      env    = env,
+      parent = w,
+      debug  = debug
     )
-
+    
     if (ok) {
-      # Load or change components.
-
-      .gData <<- get(val_obj, envir = env)
-      .gDataName <<- val_obj
-      samples <- length(unique(.gData$Sample.Name))
-      svalue(dataset_samples_lbl) <- paste(" ", samples, strLblSamples)
-      .gKit <<- detectKit(.gData, index = TRUE)
-      svalue(kit_drp, index = TRUE) <- .gKit
-      svalue(save_edt) <- paste(.gDataName, "_size", sep = "")
+      .g_data      <<- get(val_obj, envir = env)
+      .g_data_name <<- val_obj
+      
+      samples <- length(unique(.g_data$Sample.Name))
+      svalue(dataset_samples_lbl) <- paste(samples, strings$STR_LBL_SAMPLES)
+      
+      .g_kit <- detectKit(.g_data, index = TRUE)
+      svalue(kit_drp, index = TRUE) <- .g_kit
+      
+      svalue(save_edt) <- paste0(.g_data_name, "_size")
+      
     } else {
-      # Reset components.
-      .gData <<- data.frame(No.Data = NA)
-      .gDataName <<- NULL
-      svalue(dataset_samples_lbl) <- paste(" 0", strLblSamples)
-      svalue(save_edt) <- ""
+      .g_data      <<- NULL
+      .g_data_name <<- NULL
+      svalue(dataset_samples_lbl) <- paste("0", strings$STR_LBL_SAMPLES)
+      svalue(save_edt)            <- ""
     }
   })
-
-  # KIT -----------------------------------------------------------------------
-
-  f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
-
-  glabel(text = strLblKit, container = f0g2)
-
-  kit_drp <- gcombobox(
-    items = getKit(),
-    selected = 1,
-    editable = FALSE,
-    container = f0g2,
-    ellipsize = "none",
-    expand = TRUE,
-    fill = "x"
-  )
-
-  # FRAME 1 ###################################################################
-
-  # OPTIONS -----------------------------------------------------------------------
-
-  f1 <- gframe(
-    text = strFrmOptions,
-    horizontal = FALSE,
-    spacing = 1,
-    container = gv
-  )
-
-  f1_items <- c(strRadItem1, strRadItem2)
-
-  f1_size_opt <- gradio(items = f1_items, selected = 2, container = f1)
-
-  # SAVE ######################################################################
-
-  save_frame <- gframe(text = strFrmSave, container = gv)
-
-  glabel(text = strLblSave, container = save_frame)
-
+  
+  # ---------------------------------------------------------------------------
+  # FRAME 1: OPTIONS
+  # ---------------------------------------------------------------------------
+  
+  f1 <- gframe(text = strings$STR_FRM_OPTIONS, container = gv, spacing = 1)
+  
+  glabel(strings$STR_LBL_OPTIONS, container = f1)
+  
+  # (No radio buttons anymore. add_size() handles all logic automatically.)
+  
+  # ---------------------------------------------------------------------------
+  # FRAME 2: SAVE
+  # ---------------------------------------------------------------------------
+  
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
+  
+  glabel(strings$STR_LBL_SAVE, container = save_frame)
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
-
-  # BUTTON ####################################################################
-
-  add_btn <- gbutton(text = strBtnAdd, container = gv)
-
+  
+  # ---------------------------------------------------------------------------
+  # ACTION BUTTON
+  # ---------------------------------------------------------------------------
+  
+  add_btn <- gbutton(text = strings$STR_BTN_ADD, container = gv)
+  
   addHandlerClicked(add_btn, handler = function(h, ...) {
-    # Get values.
-    val_kit <- svalue(kit_drp)
-    val_data <- .gData
-    val_data_name <- .gDataName
-    val_name <- svalue(save_edt)
-    val_bins <- svalue(f1_size_opt, index = TRUE) == 1 # TRUE / FALSE
-
+    val_data      <- .g_data
+    val_data_name <- .g_data_name
+    val_name      <- svalue(save_edt)
+    val_kit       <- svalue(kit_drp)
+    
     if (debug) {
       print("val_data:")
       print(str(val_data))
-      print(head(val_data))
-      print("val_kit")
+      print("val_kit:")
       print(val_kit)
     }
-
-    if (val_bins) {
-      # Get kit with size information.
-      val_kitinfo <- getKit(kit = val_kit, what = "Size")
-    } else {
-      # Get kit with offset and repeat information.
-      val_kitinfo <- getKit(kit = val_kit, what = "Offset")
-    }
-
-    # Change button.
+    
+    # Update button state
     blockHandlers(add_btn)
-    svalue(add_btn) <- strBtnProcessing
+    svalue(add_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(add_btn)
     enabled(add_btn) <- FALSE
-
-    datanew <- addSize(
-      data = val_data, kit = val_kitinfo,
-      bins = val_bins, debug = debug
+    
+    # Merge Size + Offset/Repeat into one kit table for add_size()
+    kit_size   <- getKit(val_kit, what = "Size")
+    kit_offset <- getKit(val_kit, what = "Offset")
+    kit_small  <- unique(kit_offset[, c("Marker", "Offset", "Repeat")])
+    kit_merged <- merge(kit_size, kit_small, by = "Marker", all.x = TRUE)
+    
+    # Apply add_size()
+    datanew <- add_size(
+      data        = val_data,
+      kit         = kit_merged,
+      ignore_case = TRUE,
+      debug       = debug
     )
-
-    # Add attributes to result.
-    attr(datanew, which = "kit") <- val_kit
-
-    # Create key-value pairs to log.
-    keys <- list("data", "kit", "bins")
-
-    values <- list(val_data_name, val_kit, val_bins)
-
-    # Update audit trail.
-    datanew <- auditTrail(
-      obj = datanew, key = keys, value = values,
-      label = fnc, arguments = FALSE,
-      package = "strvalidator"
+    
+    # Audit trail
+    keys   <- list("data", "kit")
+    values <- list(val_data_name, val_kit)
+    
+    datanew <- audit_trail(
+      obj       = datanew,
+      key       = keys,
+      value     = values,
+      label     = fnc,
+      arguments = FALSE,
+      package   = "strvalidator"
     )
-
-    # Save data.
-    saveObject(name = val_name, object = datanew, parent = w, env = env)
-
-    # Close GUI.
-    .saveSettings()
+    
+    # Save result
+    saveObject(val_name, datanew, parent = w, env = env)
+    
+    # Close GUI
+    .save_settings()
     dispose(w)
   })
-
-  # INTERNAL FUNCTIONS ########################################################
-
-  .loadSavedSettings <- function() {
-    # First check status of save flag.
+  
+  # ---------------------------------------------------------------------------
+  # INTERNAL SETTINGS MANAGEMENT
+  # ---------------------------------------------------------------------------
+  
+  .load_settings <- function() {
     if (!is.null(savegui)) {
       svalue(savegui_chk) <- savegui
       enabled(savegui_chk) <- FALSE
-      if (debug) {
-        print("Save GUI status set!")
-      }
+    } else if (exists(".strvalidator_add_size_gui_savegui", envir = env)) {
+      svalue(savegui_chk) <- get(".strvalidator_add_size_gui_savegui", envir = env)
+    }
+  }
+  
+  .save_settings <- function() {
+    if (svalue(savegui_chk)) {
+      assign(".strvalidator_add_size_gui_savegui",
+             svalue(savegui_chk), envir = env)
     } else {
-      # Load save flag.
-      if (exists(".strvalidator_addSize_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_addSize_gui_savegui", envir = env)
-      }
-      if (debug) {
-        print("Save GUI status loaded!")
-      }
-    }
-    if (debug) {
-      print(svalue(savegui_chk))
-    }
-
-    # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_addSize_gui_bins", envir = env, inherits = FALSE)) {
-        svalue(f1_size_opt) <- get(".strvalidator_addSize_gui_bins", envir = env)
-      }
-      if (debug) {
-        print("Saved settings loaded!")
-      }
+      if (exists(".strvalidator_add_size_gui_savegui", envir = env))
+        remove(".strvalidator_add_size_gui_savegui", envir = env)
     }
   }
-
-  .saveSettings <- function() {
-    # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_addSize_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_addSize_gui_bins", value = svalue(f1_size_opt), envir = env)
-    } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_addSize_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addSize_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_addSize_gui_bins", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addSize_gui_bins", envir = env)
-      }
-
-      if (debug) {
-        print("Settings cleared!")
-      }
-    }
-
-    if (debug) {
-      print("Settings saved!")
-    }
-  }
-
-  # END GUI ###################################################################
-
-  # Load GUI settings.
-  .loadSavedSettings()
-
-  # Show GUI.
+  
+  # ---------------------------------------------------------------------------
+  # INITIALIZE GUI
+  # ---------------------------------------------------------------------------
+  
+  .load_settings()
+  
   visible(w) <- TRUE
   focus(w)
+  
+  invisible(TRUE)
+}
+
+################################################################################
+#' @rdname add_size_gui
+#' @export
+#' @usage NULL
+#' @keywords internal
+#'
+#' @description
+#' **Deprecated.** Use [add_size_gui()] instead.
+################################################################################
+
+addSize_gui <- function(env = parent.frame(), 
+                        savegui = NULL,
+                        debug = FALSE, 
+                        parent = NULL,
+                        ...) {
+  
+  .Deprecated("add_size_gui", package = "strvalidator")
+  
+  add_size_gui(
+    env     = env,
+    savegui = savegui,
+    debug   = debug,
+    parent  = parent,
+    ...
+  )
 }

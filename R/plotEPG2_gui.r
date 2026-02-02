@@ -70,7 +70,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   strMsgTitleDataset <- "Datasets not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -253,7 +253,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )

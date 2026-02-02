@@ -78,7 +78,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleDataset <- "Datasets not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -225,7 +225,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       "Sample.File", "Sample.Name", "Size.Standard",
       "Instrument.Type", "Instrument.ID", "Cap", "Well", "SQ"
     )
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -277,7 +277,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.File.Name", "Size", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -389,7 +389,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       values <- list(val_name_samples, val_name_plot, val_sq, val_run)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

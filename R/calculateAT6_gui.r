@@ -34,7 +34,7 @@
 #' @importFrom graphics title
 #'
 #' @seealso \code{\link{calculateAT6}}, \code{\link{calculateAT}},
-#'  \code{\link{calculateAT_gui}}, \code{\link{checkSubset}}
+#'  \code{\link{calculateAT_gui}}, \code{\link{check_subset}}
 
 calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
                              debug = FALSE, parent = NULL) {
@@ -85,7 +85,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleDataset <- "Datasets not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -253,7 +253,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -307,7 +307,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -357,7 +357,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Amount")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -396,11 +396,11 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
         ref = val_ref,
         console = FALSE,
-        ignore.case = val_ignore,
+        ignore_case = val_ignore,
         word = FALSE
       )
 
@@ -515,7 +515,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

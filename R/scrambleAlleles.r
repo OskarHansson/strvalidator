@@ -130,10 +130,10 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
     tmpSize <- data$Size
 
     # Calculate size for the new alleles.
-    data <- addSize(
+    data <- add_size(
       data = data,
       kit = getKit(kit = kit, what = "Offset"),
-      bins = FALSE, ignore.case = TRUE
+      ignore_case = TRUE
     )
 
     # Use original size for off-ladder peaks.
@@ -141,7 +141,7 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
   }
 
   # Update audit trail.
-  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+  data <- audit_trail(obj = data, f_call = match.call(), package = "strvalidator")
 
   return(data)
 }

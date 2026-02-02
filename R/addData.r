@@ -1,27 +1,3 @@
-################################################################################
-# TODO LIST
-# TODO: make 'exact' a vector.
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 19.07.2018: Changed 'warning' to 'message' for better visibility.
-# 06.08.2017: Added audit trail.
-# 06.02.2017: Fixed data saved as attributes (new.data).
-# 15.08.2016: Fixed check for data.table.
-# 12.08.2016: Handles empty dataset by returning unchanged.
-# 09.07.2016: Added check for data.table and conversion to data.frame.
-# 09.01.2016: Added more attributes to result.
-# 30.11.2015: Added attributes to result.
-# 30.11.2015: Added parameter 'what' to specify columns to add.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 30.09.2013: Fixed bug when exact=FALSE
-# 17.09.2013: Updated example to support new 'getKit' structure.
-# 31.07.2013: Added parameter 'ignore.case'.
-# 28.05.2013: Fixed bug any(..., na.rm=TRUE)
-# 21.05.2013: Added a second 'by' level and bugs fixed.
-# 20.05.2013: Handle keys with no match.
-
 #' @title Adds New Data Columns to a Data Frame
 #'
 #' @description
@@ -244,7 +220,7 @@ addData <- function(data, new.data, by.col, then.by.col = NULL, exact = TRUE,
   }
 
   # Update audit trail.
-  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
+  data <- audit_trail(obj = data, f_call = match.call(), package = "strvalidator")
 
   if (debug) {
     print(paste("EXIT:", match.call()[[1]]))

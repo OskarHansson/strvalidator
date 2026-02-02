@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.11.2025: Changed 'checkSubset' to 'check_subset' and parameter 'ignore.case' to 'ignore_case'.
 # 02.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 14.03.2020: Added language support and minor gui adjustments.
 # 02.03.2019: Tweaked widgets under tcltk.
@@ -45,7 +46,7 @@
 #'
 #' @return TRUE
 #'
-#' @seealso \code{\link{filterProfile}}, \code{\link{checkSubset}}
+#' @seealso \code{\link{filterProfile}}, \code{\link{check_subset}}
 
 filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   .gData <- NULL
@@ -107,7 +108,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -324,7 +325,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -385,7 +386,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       slim = TRUE, slimcol = "Allele",
       env = env, parent = w, debug = debug
@@ -447,11 +448,11 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
         ref = val_ref,
         console = FALSE,
-        ignore.case = val_ignore,
+        ignore_case = val_ignore,
         exact = val_exact,
         word = val_word
       )
@@ -638,7 +639,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       )
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

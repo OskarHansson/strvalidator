@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2025: addColor -> add_color
 # 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 02.05.2020: Added language support.
@@ -135,7 +136,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -402,7 +403,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele", "HeightA", "Stutter", "Type")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -914,7 +915,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Call functions.
       # Add color information.
       if (!"Dye" %in% names(.gData)) {
-        .gData <- addColor(data = .gData, kit = val_kit, need = "Dye", debug = debug)
+        .gData <- add_color(data = .gData, kit = val_kit, need = "Dye", debug = debug)
         message("'Dye' added to dataset!")
       }
 
@@ -971,7 +972,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Make data frame from dataset marker levels.
       markerDye <- data.frame(Marker = levels(.gData$Marker))
       # Add colors.
-      markerDye <- addColor(data = markerDye, kit = val_kit)
+      markerDye <- add_color(data = markerDye, kit = val_kit)
       # Get Marker and Dye column.
       markerDye <- markerDye[c("Marker", "Dye")]
       # Extract unique elements.
@@ -1166,7 +1167,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Get kit colors and convert to dyes.
         dyes <- unique(getKit(val_kit, what = "Color")$Color)
-        dyes <- addColor(dyes, have = "Color", need = "Dye")
+        dyes <- add_color(dyes, have = "Color", need = "Dye")
         # Number of dyes.
         noDyes <- length(dyes)
         # Number of rows in table object (one per dye + title + x title).
@@ -1222,7 +1223,7 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Get all markers to be plotted and add dye for subsetting.
         gLevel <- data.frame(Marker = levels(.gData$Marker))
-        gLevel <- addColor(gLevel, kit = val_kit)
+        gLevel <- add_color(gLevel, kit = val_kit)
 
         # Make palette.
         gTypeLevel <- levels(.gData$Type)

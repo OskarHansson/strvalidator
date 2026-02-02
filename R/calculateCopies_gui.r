@@ -81,7 +81,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   strMsgTitleDataset <- "Dataset not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -224,7 +224,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -309,7 +309,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       values <- list(val_data_name, val_obs, val_cop, val_het)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

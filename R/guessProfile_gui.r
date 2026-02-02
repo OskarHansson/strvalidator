@@ -40,7 +40,7 @@
 #'
 #' @return TRUE
 #'
-#' @seealso \code{\link{guessProfile}}, \code{\link{checkSubset}}
+#' @seealso \code{\link{guessProfile}}
 
 guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
@@ -77,7 +77,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   strMsgTitleDataset <- "Dataset not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -219,7 +219,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -324,7 +324,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       values <- list(val_name_data, val_ratio, val_height, val_NA, val_OL)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

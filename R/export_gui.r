@@ -96,7 +96,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
   strBtnRetry <- "Retry"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {

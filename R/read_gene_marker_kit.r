@@ -12,6 +12,7 @@
 #' kit definition data frame.
 #' @param xml_file_path the path to the XML file.
 #' @param panel_name the name of the panel to be imported.
+#' @param debug Logical; if \code{TRUE}, print detailed diagnostic messages.
 #'
 #' @return data.frame
 #'

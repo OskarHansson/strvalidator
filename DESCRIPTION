@@ -1,18 +1,22 @@
 Package: strvalidator
 Type: Package
 Title: Process Control and Validation of Forensic STR Kits
-Version: 2.4.2
+Version: 2.5.0.9001
 Authors@R: person(given = "Oskar",
                     family = "Hansson",
                     role = c("aut", "cre"),
                     email = "oskhan@ous-hf.no")
 URL: https://sites.google.com/site/forensicapps/strvalidator
 BugReports: https://github.com/OskarHansson/strvalidator/issues
-Depends: R (>= 3.1.3)
+Depends: R (>= 4.1.0)
 Imports: ggplot2 (>= 2.0.0), gWidgets2, gWidgets2tcltk (> 1.0.6),
         gridExtra, grid, gtable, plyr, scales, data.table, DT, dplyr,
-        plotly, grDevices, graphics, stats, utils, MASS, magrittr, xml2
-Suggests: ResourceSelection, testthat
+        plotly, grDevices, graphics, stats, utils, MASS, magrittr, xml2,
+        ResourceSelection, tibble, stringr, tidyr, htmlwidgets, rlang,
+        rprojroot
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 Description: An open source platform for validation and process control.
     Tools to analyze data from internal validation of forensic short tandem
     repeat (STR) kits are provided. The tools are developed to provide
@@ -23,7 +27,7 @@ Description: An open source platform for validation and process control.
     More information about each function can be found in the
     respective help documentation.
 License: GPL-2
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Encoding: UTF-8
 NeedsCompilation: no
 Packaged: 2025-10-16 08:18:26 UTC; oskar

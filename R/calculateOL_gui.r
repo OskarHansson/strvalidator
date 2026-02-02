@@ -71,7 +71,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   strMsgTitleKit <- "No kit selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -313,7 +313,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       values <- list(val_kits, val_db_selected, val_virtual, val_limit)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

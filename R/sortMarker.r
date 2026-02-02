@@ -1,172 +1,202 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 07.08.2017: Added audit trail.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 02.12.2013: Fixed not sorting 'Dye' levels, and add missing dye levels.
-# 27.11.2013: Fixed check of kit now case insensitive.
-# 10.11.2013: Extended error handling and 'debug' flag.
-# 10.11.2013: Changed name to 'sortMarker' for consistency.
-# 18.09.2013: Updated to support new 'getKit' structure.
-# <18.09.2013: Roxygenized.
-# <18.09.2013: New parameter 'add.missing.levels'
-# <18.09.2013: First working version.
-
-#' @title Sort Markers
+#' @title Sort Marker and Dye Levels According to Kit Definition
 #'
 #' @description
-#' Sort markers and dye as they appear in the EPG.
+#' Sort factor levels for `Marker` and `Dye` so they follow the natural
+#' electropherogram (EPG) order defined by the provided kit. This function
+#' replaces `sortMarker()` and includes improved validation, an `ignore_case`
+#' option, better mismatch reporting, and predictable factor behavior.
 #'
 #' @details
-#' Change the order of factor levels for 'Marker' and 'Dye' according to 'kit'.
-#' Levels in data must be identical with kit information.
+#' Sorting markers and dyes to match the kit definition is essential for
+#' correct ordering in EPG plots (e.g., facet order, x-axis order).
 #'
-#' @param data data.frame containing a column 'Marker' and optionally 'Dye'.
-#' @param kit string or integer indicating kit.
-#' @param add.missing.levels logical, TRUE missing markers are added,
-#' FALSE missing markers are not added.
-#' @param debug logical indicating printing debug information.
+#' The function:
+#' * Normalizes marker names when `ignore_case = TRUE`
+#' * Ensures `Marker` and `Dye` levels match the kit specification
+#' * Optionally adds missing factor levels (for consistency in multi-sample data)
+#' * Provides detailed debugging messages when `debug = TRUE`
+#'
+#' @param data data.frame  
+#'   Must contain column `Marker`. If present, column `Dye` will also be sorted.
+#'
+#' @param kit character or integer  
+#'   Kit name as used by `getKit()`.
+#'
+#' @param add_missing_levels logical  
+#'   If `TRUE`, missing kit markers/dyes are added as unused factor levels.
+#'
+#' @param ignore_case logical  
+#'   If `TRUE`, marker names are matched case-insensitively by normalizing to
+#'   upper-case for comparison and factor-level generation.
+#'
+#' @param strict logical  
+#'   If `TRUE`, unknown markers or dyes cause an error.  
+#'   If `FALSE`, a warning is issued and unmatched values are dropped or left as-is.
+#'
+#' @param debug logical  
+#'   Print detailed debugging information.
+#'
+#' @return
+#' A modified `data.frame` with sorted factor levels for `Marker` and `Dye`.
 #'
 #' @export
 #'
-#' @return data.frame with factor levels sorted according to 'kit'.
+#' @seealso [generate_epg()], [add_color()], [getKit()]
 #'
+################################################################################
 
-sortMarker <- function(data, kit, add.missing.levels = FALSE, debug = FALSE) {
+sort_markers <- function(data,
+                         kit,
+                         add_missing_levels = FALSE,
+                         ignore_case = TRUE,
+                         strict = TRUE,
+                         debug = FALSE) {
+  
+  debug_msg <- function(...) if (debug) message(...)
+  
+  # ---------------------------------------------------------------------------
+  # VALIDATION
+  # ---------------------------------------------------------------------------
+  if (!is.data.frame(data))
+    stop("'data' must be a data.frame")
+  
+  if (!"Marker" %in% names(data))
+    stop("'data' must contain a 'Marker' column")
+  
+  # Confirm kit exists
+  if (!toupper(kit) %in% toupper(getKit()))
+    stop("Unknown kit: ", kit,
+         "\nAvailable kits: ", paste(getKit(), collapse = ", "))
+  
+  # ---------------------------------------------------------------------------
+  # FETCH KIT TABLES
+  # ---------------------------------------------------------------------------
+  kit_markers <- getKit(kit, what = "Marker")
+  kit_colors  <- getKit(kit, what = "Color")  # includes dye information
+  
+  # Normalize case if needed
+  if (ignore_case) {
+    debug_msg("Normalizing case for Marker names (toupper)...")
+    data$Marker       <- toupper(data$Marker)
+    kit_markers       <- toupper(kit_markers)
+    kit_colors$Marker <- toupper(kit_colors$Marker)
+  }
+  
+  # Unique dye levels as defined by kit
+  kit_dye_levels <- unique(kit_colors$Dye)
+  
+  # ---------------------------------------------------------------------------
+  # MARKER ORDERING
+  # ---------------------------------------------------------------------------
+  current_markers <- unique(as.character(data$Marker))
+  
+  missing_markers <- setdiff(kit_markers, current_markers)
+  extra_markers   <- setdiff(current_markers, kit_markers)
+  
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
+    debug_msg("Current markers: ", paste(current_markers, collapse = ", "))
+    debug_msg("Kit markers    : ", paste(kit_markers, collapse = ", "))
+    debug_msg("Missing markers: ", paste(missing_markers, collapse = ", "))
+    debug_msg("Extra markers  : ", paste(extra_markers,   collapse = ", "))
   }
-
-
-  # CHECK DATA ----------------------------------------------------------------
-
-  # Check dataset.
-  if (!is.data.frame(data)) {
-    stop("'data' must be a data.frame containing a column 'Marker'",
-      call. = TRUE
-    )
+  
+  if (length(extra_markers) > 0) {
+    msg <- paste0("Markers not found in kit: ", paste(extra_markers, collapse = ", "))
+    if (strict) stop(msg) else warning(msg, call. = FALSE)
   }
-  if (!"Marker" %in% names(data)) {
-    stop("'data' must contain a column 'Marker'",
-      call. = TRUE
-    )
+  
+  # Add missing markers as unused factor levels
+  if (add_missing_levels && length(missing_markers) > 0) {
+    debug_msg("Adding missing marker levels: ", paste(missing_markers, collapse = ", "))
+    kit_markers <- unique(c(kit_markers, missing_markers))
   }
-
-  if (!toupper(kit) %in% toupper(getKit())) {
-    stop(paste(
-      "'kit' does not exist", "\nAvailable kits:",
-      paste(getKit(), collapse = ", ")
-    ), call. = TRUE)
-  }
-
-  # METHOD --------------------------------------------------------------------
-
-  currentMarkerLevels <- levels(data$Marker)
-
+  
+  data$Marker <- factor(data$Marker, levels = kit_markers)
+  
+  # ---------------------------------------------------------------------------
+  # DYE ORDERING
+  # ---------------------------------------------------------------------------
   if ("Dye" %in% names(data)) {
-    currentDyeLevels <- levels(data$Dye)
-  } else {
-    currentDyeLevels <- NULL
-  }
-
-  if (debug) {
-    print(paste(
-      "currentMarkerLevels:",
-      paste(currentMarkerLevels, collapse = ", ")
-    ))
-    print(paste(
-      "currentDyeLevels:",
-      paste(currentDyeLevels, collapse = ", ")
-    ))
-  }
-
-  # Get kit information.
-  newMarkerLevels <- getKit(kit, what = "Marker")
-  newDyeLevels <- unique(getKit(kit, what = "Color")$Color)
-  newDyeLevels <- addColor(data = newDyeLevels, have = "Color", need = "Dye")
-
-  if (debug) {
-    print(paste(
-      "newMarkerLevels:",
-      paste(newMarkerLevels, collapse = ", ")
-    ))
-    print(paste(
-      "newDyeLevels:",
-      paste(newDyeLevels, collapse = ", ")
-    ))
-  }
-
-  # Check if identical levels.
-  if (all(currentMarkerLevels %in% newMarkerLevels)) {
-    # Add any missing factor levels.
-    if (add.missing.levels) {
-      for (m in seq(along = newMarkerLevels)) {
-        if (!newMarkerLevels[m] %in% currentMarkerLevels) {
-          levels(data$Marker)[length(levels(data$Marker)) + 1] <- newMarkerLevels[m]
-
-          if (debug) {
-            print(paste("Missing Marker level added:", newMarkerLevels[m]))
-          }
-        }
-      }
-    }
-
-    # Change marker order as defined in kit.
-    data$Marker <- factor(data$Marker, levels = newMarkerLevels)
-
-    if (debug) {
-      print("Marker level order changed!")
-    }
-  } else {
-    warning("Locus names in 'data' are not identical with locus names in 'kit'",
-      call. = TRUE, immediate. = FALSE, domain = NULL
-    )
-  }
-
-  # Check if Dye is available.
-  if ("Dye" %in% names(data)) {
-    # Check if identical levels.
-    if (all(currentDyeLevels %in% newDyeLevels)) {
-      # Add any missing factor levels.
-      if (add.missing.levels) {
-        for (d in seq(along = newDyeLevels)) {
-          if (!newDyeLevels[d] %in% currentDyeLevels) {
-            levels(data$Dye)[length(levels(data$Dye)) + 1] <- newDyeLevels[d]
-
-            if (debug) {
-              print(paste("Missing Dye level added:", newDyeLevels[d]))
-            }
-          }
-        }
-      }
-
-      # Change dye order as defined in kit.
-      data$Dye <- factor(data$Dye, levels = newDyeLevels)
-
-      if (debug) {
-        print("Dye level order changed!")
-      }
-    } else {
-      warning("Dye names in 'data' are not identical with dye names in 'kit'",
-        call. = TRUE, immediate. = FALSE, domain = NULL
+    
+    # Derive kit dye levels (e.g. B/G/Y/R) from kit Color table.
+    # Color table typically has columns like Marker, Color (e.g. "blue").
+    if ("Dye" %in% names(kit_colors)) {
+      kit_dye_levels <- unique(kit_colors$Dye)
+    } else if ("Color" %in% names(kit_colors)) {
+      dye_info <- add_color(
+        data = kit_colors,
+        kit = kit,
+        need = "Dye",
+        ignore_case = ignore_case
       )
+      kit_dye_levels <- unique(dye_info$Dye)
+    } else {
+      stop("Kit 'Color' table does not contain 'Color' or 'Dye' columns; 
+           cannot determine dye levels.")
     }
+    
+    current_dyes <- unique(as.character(data$Dye))
+    
+    missing_dyes <- setdiff(kit_dye_levels, current_dyes)
+    extra_dyes   <- setdiff(current_dyes, kit_dye_levels)
+    
+    if (debug) {
+      debug_msg("Current dyes: ", paste(current_dyes, collapse = ", "))
+      debug_msg("Kit dyes    : ", paste(kit_dye_levels, collapse = ", "))
+      debug_msg("Missing dyes: ", paste(missing_dyes, collapse = ", "))
+      debug_msg("Extra dyes  : ", paste(extra_dyes,   collapse = ", "))
+    }
+    
+    if (length(extra_dyes) > 0) {
+      msg <- paste0("Dye levels not found in kit: ", paste(extra_dyes, collapse = ", "))
+      if (strict) stop(msg) else warning(msg, call. = FALSE)
+    }
+    
+    if (add_missing_levels && length(missing_dyes) > 0) {
+      debug_msg("Adding missing dye levels: ", paste(missing_dyes, collapse = ", "))
+      kit_dye_levels <- unique(c(kit_dye_levels, missing_dyes))
+    }
+    
+    data$Dye <- factor(data$Dye, levels = kit_dye_levels)
   }
-
-  # RETURN --------------------------------------------------------------------
-
-  # Add attributes to result.
-  attr(data, which = "kit") <- kit
-
-  # Update audit trail.
-  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
-
-  if (debug) {
-    print(paste("EXIT:", match.call()[[1]]))
-  }
-
+  
+  # ---------------------------------------------------------------------------
+  # AUDIT TRAIL
+  # ---------------------------------------------------------------------------
+  attr(data, "kit") <- kit
+  data <- audit_trail(
+    obj     = data,
+    f_call  = match.call(),
+    package = "strvalidator"
+  )
+  
   return(data)
+}
+
+################################################################################
+#' @rdname sort_markers
+#' @export
+#' @usage NULL
+#' @keywords internal
+#'
+#' @description
+#' **Deprecated.** Use [sort_markers()] instead.
+################################################################################
+
+sortMarker <- function(data,
+                       kit,
+                       add.missing.levels = FALSE,
+                       debug = FALSE,
+                       ...) {
+  
+  .Deprecated("sort_markers", package = "strvalidator")
+  
+  sort_markers(
+    data                = data,
+    kit                 = kit,
+    add_missing_levels  = add.missing.levels,
+    debug               = debug,
+    ...
+  )
 }

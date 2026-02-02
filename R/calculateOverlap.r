@@ -387,7 +387,7 @@ calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, de
   } # Kit loop ends!
 
   # Update audit trail.
-  dfRes <- auditTrail(obj = dfRes, f.call = match.call(), package = "strvalidator")
+  dfRes <- audit_trail(obj = dfRes, f_call = match.call(), package = "strvalidator")
 
 
   if (debug) {

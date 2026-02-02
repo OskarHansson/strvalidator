@@ -81,7 +81,7 @@
 #' @importFrom utils str head tail
 #' @importFrom data.table data.table setnames
 #'
-#' @seealso \code{\link{maskAT}}, \code{\link{checkSubset}}
+#' @seealso \code{\link{maskAT}}
 #'
 #' @references
 #'  J. Bregu et.al.,
@@ -462,8 +462,8 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   at.sample.dye$Total.Samples <- nSamples
 
   # Update audit trail.
-  at.sample.dye <- auditTrail(
-    obj = at.sample.dye, f.call = match.call(),
+  at.sample.dye <- audit_trail(
+    obj = at.sample.dye, f_call = match.call(),
     package = "strvalidator"
   )
 
@@ -481,8 +481,8 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   )
 
   # Update audit trail.
-  at.rank <- auditTrail(
-    obj = at.rank, f.call = match.call(),
+  at.rank <- audit_trail(
+    obj = at.rank, f_call = match.call(),
     package = "strvalidator"
   )
 
@@ -493,8 +493,8 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   # Masked data ---------------------------------------------------------------
 
   # Update audit trail.
-  data <- auditTrail(
-    obj = data, f.call = match.call(),
+  data <- audit_trail(
+    obj = data, f_call = match.call(),
     package = "strvalidator"
   )
 

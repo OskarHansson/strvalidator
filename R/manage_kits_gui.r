@@ -1,8 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.10.2024: Added auto detection of QI* quality sensors.
-# 15.09.2024: Re-worked function replaces makeKit_gui.
-
 #' @title Manage Kits
 #'
 #' @description
@@ -24,16 +19,16 @@
 #'
 #' @return TRUE if the operation completes successfully.
 #'
-#' @export
-#'
 #' @importFrom gWidgets2 gwindow ggroup gframe gradio gbutton gedit glabel
 #' addSpring visible svalue size focus gmessage
 #' @import gWidgets2tcltk
 #' @importFrom utils write.table read.delim help
+#' @aliases manageKits_gui
+#' @export
 
 # Core GUI function
-manageKits_gui <- function(env = parent.frame(), savegui = NULL,
-                           debug = FALSE, parent = NULL) {
+manage_kits_gui <- function(env = parent.frame(), savegui = NULL,
+                            debug = FALSE, parent = NULL) {
   # Define the file path using the provided snippet
   separator <- .Platform$file.sep # Platform-dependent path separator
   package_path <- path.package("strvalidator", quiet = FALSE)
@@ -63,44 +58,44 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   # Get language-specific strings
-  dt_strings <- getStrings(gui = "manageKits_gui")
+  dt_strings <- get_strings(gui = "manage_kits_gui")
 
   # Default strings for GUI labels and messages
   default_strings <- list(
-    str_win_title = "Manage kits",
-    str_btn_help = "Help",
-    str_frm_action = "Action",
-    str_rad_edit = "Edit kit file (overwrite)",
-    str_rad_add = "Add new kits (append)",
-    str_frm_file = "Path to current kit file",
-    str_frm_new = "Import kit information from",
-    str_btn_gene_mapperid = "Gene MapperID-X",
-    str_btn_gene_marker = "Gene Marker",
-    str_frm_save = "Save options",
-    str_btn_save = "Save to kit definition file",
-    str_btn_saving = "Saving...",
-    str_btn_view = "View Kit File",
-    str_msg_file_not_found = "The kit file was not found",
-    str_msg_title_file_not_found = "File not found",
-    str_msg_duplicate1 = "A kit with short name",
-    str_msg_duplicate2 = "already exists! Short name must be unique!",
-    str_msg_title_duplicate = "Duplicate short name",
-    str_msg_missing = "A short name must be provided for all new kits",
-    str_msg_title_missing = "Missing short name",
-    str_lbl_sex = "List sex markers (separate by comma)",
-    str_lbl_sensors = "List quality sensors (separate by comma)",
-    str_lbl_remove = "Remove",
-    str_lbl_panel = "Panel",
-    str_lbl_short_name = "Short name",
-    str_lbl_full_name = "Full name",
-    str_lbl_none = "<none>",
-    str_msg_updated = "Kit definition file updated!",
-    str_msg_no_kit_info_returned = "No kit information was returned.",
-    str_msg_no_kit_info_loaded = "No kit information loaded.",
-    str_msg_no_kit_info_to_save = "No kit information to save.",
-    str_msg_title_error = "Error",
-    str_msg_error_reading_file = "Error reading file:",
-    str_msg_error_writing_file = "Error writing to file:"
+    STR_WIN_TITLE = "Manage kits",
+    STR_BTN_HELP = "Help",
+    STR_FRM_ACTION = "Action",
+    STR_RAD_EDIT = "Edit kit file (overwrite)",
+    STR_RAD_ADD = "Add new kits (append)",
+    STR_FRM_FILE = "Path to current kit file",
+    STR_FRM_NEW = "Import kit information from",
+    STR_BTN_GENE_MAPPERID = "Gene MapperID-X",
+    STR_BTN_GENE_MARKER = "Gene Marker",
+    STR_FRM_SAVE = "Save options",
+    STR_BTN_SAVE = "Save to kit definition file",
+    STR_BTN_SAVING = "Saving...",
+    STR_BTN_VIEW = "View Kit File",
+    STR_MSG_FILE_NOT_FOUND = "The kit file was not found",
+    STR_MSG_TITLE_FILE_NOT_FOUND = "File not found",
+    STR_MSG_DUPLICATE1 = "A kit with short name",
+    STR_MSG_DUPLICATE2 = "already exists! Short name must be unique!",
+    STR_MSG_TITLE_DUPLICATE = "Duplicate short name",
+    STR_MSG_MISSING = "A short name must be provided for all new kits",
+    STR_MSG_TITLE_MISSING = "Missing short name",
+    STR_LBL_SEX = "List sex markers (separate by comma)",
+    STR_LBL_SENSORS = "List quality sensors (separate by comma)",
+    STR_LBL_REMOVE = "Remove",
+    STR_LBL_PANEL = "Panel",
+    STR_LBL_SHORT_NAME = "Short name",
+    STR_LBL_FULL_NAME = "Full name",
+    STR_LBL_NONE = "<none>",
+    STR_MSG_UPDATED = "Kit definition file updated!",
+    STR_MSG_NO_KIT_INFO_RETURNED = "No kit information was returned.",
+    STR_MSG_NO_KIT_INFO_LOADED = "No kit information loaded.",
+    STR_MSG_NO_KIT_INFO_TO_SAVE = "No kit information to save.",
+    STR_MSG_TITLE_ERROR = "Error",
+    STR_MSG_ERROR_READING_FILE = "Error reading file:",
+    STR_MSG_ERROR_WRITING_FILE = "Error writing to file:"
   )
 
   # Update strings with language-specific values
@@ -112,7 +107,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
   # ----------------------------------------------------------------------------
 
   # Main window
-  main_window <- gwindow(title = strings$str_win_title, visible = FALSE)
+  main_window <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed
   addHandlerUnrealize(main_window, handler = function(h, ...) {
@@ -135,22 +130,22 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
   # Help Button
   help_group <- ggroup(container = main_group, expand = FALSE, fill = "both")
   addSpring(help_group)
-  help_btn <- gbutton(text = strings$str_btn_help, container = help_group)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = help_group)
 
   addHandlerClicked(help_btn, handler = function(h, ...) {
-    print(help("manageKits_gui", help_type = "html"))
+    print(help("manage_kits_gui", help_type = "html"))
   })
 
   # ACTION FRAME ###############################################################
 
   # Action Selection (Edit or Add Kits)
   action_selection_frame <- gframe(
-    text = strings$str_frm_action,
+    text = strings$STR_FRM_ACTION,
     horizontal = FALSE, spacing = 1,
     container = main_group
   )
   option_radio <- gradio(
-    items = c(strings$str_rad_add, strings$str_rad_edit),
+    items = c(strings$STR_RAD_ADD, strings$STR_RAD_EDIT),
     selected = 1, container = action_selection_frame
   )
 
@@ -186,19 +181,19 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Kit File Path
   file_path_frame <- gframe(
-    text = strings$str_frm_file, horizontal = TRUE,
+    text = strings$STR_FRM_FILE, horizontal = TRUE,
     spacing = 1, container = main_group
   )
   gedit(
     text = file_path, container = file_path_frame,
     expand = TRUE, fill = TRUE
   )
-  enabled(file_path_frame) <- FALSE # Disabled since loading is automatic
+  enabled(file_path_frame) <- TRUE # Disabled since loading is automatic
 
   # VIEW KIT FILE ##############################################################
 
   # Button to view the current kit file
-  view_btn <- gbutton(strings$str_btn_view, container = main_group)
+  view_btn <- gbutton(strings$STR_BTN_VIEW, container = main_group)
 
   addHandlerClicked(view_btn, handler = function(h, ...) {
     if (!is.null(existing_kit_info)) {
@@ -212,7 +207,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
       )
       print(dt)
     } else {
-      gmessage(strings$str_msg_no_kit_info_loaded, parent = main_window)
+      gmessage(strings$STR_MSG_NO_KIT_INFO_LOADED, parent = main_window)
     }
   })
 
@@ -220,16 +215,16 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Import Kit Information Section
   import_kit_info_frame <- gframe(
-    text = strings$str_frm_new,
+    text = strings$STR_FRM_NEW,
     horizontal = FALSE, spacing = 1,
     container = main_group
   )
   gene_mapperid_btn <- gbutton(
-    text = strings$str_btn_gene_mapperid,
+    text = strings$STR_BTN_GENE_MAPPERID,
     container = import_kit_info_frame
   )
   gene_marker_btn <- gbutton(
-    text = strings$str_btn_gene_marker,
+    text = strings$STR_BTN_GENE_MARKER,
     container = import_kit_info_frame
   )
 
@@ -247,7 +242,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
           # Populate GUI with new kit information
           populate_gui_with_kits(imported_kit_info, add_kit = TRUE)
         } else {
-          gmessage(str_msg_no_kit_info_returned, parent = main_window)
+          gmessage(strings$STR_MSG_NO_KIT_INFO_RETURNED, parent = main_window)
         }
       }
     )
@@ -267,7 +262,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
           # Populate GUI with new kit information
           populate_gui_with_kits(imported_kit_info)
         } else {
-          gmessage(str_msg_no_kit_info_returned, parent = main_window)
+          gmessage(strings$STR_MSG_NO_KIT_INFO_RETURNED, parent = main_window)
         }
       }
     )
@@ -292,12 +287,12 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Save options (Append, Overwrite)
   save_options_frame <- gframe(
-    text = strings$str_frm_save, horizontal = FALSE,
+    text = strings$STR_FRM_SAVE, horizontal = FALSE,
     expand = FALSE, spacing = 1,
     container = main_group
   )
   save_file_btn <- gbutton(
-    text = strings$str_btn_save, expand = TRUE,
+    text = strings$STR_BTN_SAVE, expand = TRUE,
     container = save_options_frame
   )
 
@@ -307,13 +302,13 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     if (is.null(kit_info)) {
-      gmessage(strings$str_msg_no_kit_info_to_save, parent = main_window)
+      gmessage(strings$STR_MSG_NO_KIT_INFO_TO_SAVE, parent = main_window)
       return()
     }
 
     # Disable and update button text
     enabled(save_file_btn) <- FALSE
-    svalue(save_file_btn) <- strings$str_btn_saving
+    svalue(save_file_btn) <- strings$STR_BTN_SAVING
 
     # Get status of add_kit flag
     add_kit <- svalue(option_radio, index = TRUE) == 1
@@ -345,12 +340,12 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
             print(tail(existing_kit_info))
           }
 
-          gmessage(strings$str_msg_updated, parent = main_window)
+          gmessage(strings$STR_MSG_UPDATED, parent = main_window)
         },
         error = function(e) {
           gmessage(
-            msg = paste(strings$str_msg_error_writing_file, e$message),
-            title = strings$str_msg_title_error,
+            msg = paste(strings$STR_MSG_ERROR_WRITING_FILE, e$message),
+            title = strings$STR_MSG_TITLE_ERROR,
             icon = "error",
             parent = main_window
           )
@@ -380,12 +375,12 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
             print(tail(existing_kit_info))
           }
 
-          gmessage(strings$str_msg_updated, parent = main_window)
+          gmessage(strings$STR_MSG_UPDATED, parent = main_window)
         },
         error = function(e) {
           gmessage(
-            msg = paste(strings$str_msg_error_writing_file, e$message),
-            title = strings$str_msg_title_error,
+            msg = paste(strings$STR_MSG_ERROR_WRITING_FILE, e$message),
+            title = strings$STR_MSG_TITLE_ERROR,
             icon = "error",
             parent = main_window
           )
@@ -401,7 +396,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Enable and update button text
     enabled(save_file_btn) <- TRUE
-    svalue(save_file_btn) <- strings$str_btn_save
+    svalue(save_file_btn) <- strings$STR_BTN_SAVE
   })
 
   # INTERNAL FUNCTIONS #########################################################
@@ -501,19 +496,19 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
       } else {
         gmessage(
           msg = paste(
-            strings$str_msg_duplicate1,
+            strings$STR_MSG_DUPLICATE1,
             short_name[existing_short_names][1],
-            strings$str_msg_duplicate2
+            strings$STR_MSG_DUPLICATE2
           ),
-          title = strings$str_msg_title_duplicate,
+          title = strings$STR_MSG_TITLE_DUPLICATE,
           icon = "error",
           parent = main_window
         )
       }
     } else {
       gmessage(
-        msg = strings$str_msg_missing,
-        title = strings$str_msg_title_missing,
+        msg = strings$STR_MSG_MISSING,
+        title = strings$STR_MSG_TITLE_MISSING,
         icon = "error",
         parent = main_window
       )
@@ -549,7 +544,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
       kit_info[[flag_name]] <<- NA
     }
     current_markers <- unlist(strsplit(markers, split = ",", fixed = TRUE))
-    current_markers <- current_markers[current_markers != strings$str_lbl_none]
+    current_markers <- current_markers[current_markers != strings$STR_LBL_NONE]
     sel_panel <- kit_info$Panel == panel
     sel_marker <- kit_info$Marker %in% current_markers
     kit_info[[flag_name]][sel_panel] <<- FALSE
@@ -559,7 +554,9 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
     if (!all(current_markers %in% kit_info$Marker[sel_panel])) {
       stop(paste(
         "Given", flag_name, ":",
-        paste(current_markers[!current_markers %in% kit_info$Marker[sel_panel]], collapse = ","), "not found in", panel
+        paste(current_markers[!current_markers %in% kit_info$Marker[sel_panel]],
+          collapse = ","
+        ), "not found in", panel
       ))
     }
   }
@@ -661,36 +658,36 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
 
     # Calculate width based on maximum string length
     max_full_name_length <- max(nchar(kit_info_input$Full.Name), na.rm = TRUE)
-    str_lbl_full_name_padded <- pad_label(
-      strings$str_lbl_full_name,
+    strings$STR_LBL_FULL_NAME_PADDED <- pad_label(
+      strings$STR_LBL_FULL_NAME,
       max_full_name_length
     )
 
     # Add titles to the layout
     kit_info_layout[1, 1] <- glabel(
-      text = strings$str_lbl_remove,
+      text = strings$STR_LBL_REMOVE,
       container = kit_info_layout
     )
     kit_info_layout[1, 2] <- glabel(
-      text = strings$str_lbl_panel,
+      text = strings$STR_LBL_PANEL,
       container = kit_info_layout
     )
     kit_info_layout[1, 3] <- glabel(
-      text = strings$str_lbl_short_name,
+      text = strings$STR_LBL_SHORT_NAME,
       container = kit_info_layout
     )
     kit_info_layout[1, 4] <- glabel(
-      text = str_lbl_full_name_padded,
+      text = strings$STR_LBL_FULL_NAME_PADDED,
       expand = TRUE, fill = "both",
       container = kit_info_layout
     )
     kit_info_layout[1, 5] <- glabel(
-      text = strings$str_lbl_sex,
+      text = strings$STR_LBL_SEX,
       expand = TRUE, fill = "both",
       container = kit_info_layout
     )
     kit_info_layout[1, 6] <- glabel(
-      text = strings$str_lbl_sensors,
+      text = strings$STR_LBL_SENSORS,
       expand = TRUE, fill = "both",
       container = kit_info_layout
     )
@@ -729,7 +726,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
 
       sex_markers <- ifelse(
         length(sex_markers) == 0,
-        strings$str_lbl_none,
+        strings$STR_LBL_NONE,
         paste(sex_markers, collapse = ",")
       )
 
@@ -737,7 +734,9 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
       # Detect quality sensors or retrieve them from existing kits
       if (add_kit) {
         # For new kits, attempt to auto-detect quality sensors
-        quality_sensors <- grep("^(QS|QI)", markers, ignore.case = TRUE, value = TRUE)
+        quality_sensors <- grep("^(QS|QI)", markers,
+          ignore.case = TRUE, value = TRUE
+        )
       } else {
         # For existing kits, use stored quality sensors
         quality_sensors <- unique(kit_info_input$Marker[kit_info_input$Panel == panels[p] & kit_info_input$Quality.Sensor])
@@ -745,7 +744,7 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
 
       quality_sensors <- ifelse(
         length(quality_sensors) == 0,
-        strings$str_lbl_none,
+        strings$STR_LBL_NONE,
         paste(quality_sensors, collapse = ",")
       )
 
@@ -788,4 +787,32 @@ manageKits_gui <- function(env = parent.frame(), savegui = NULL,
   focus(main_window)
 
   if (debug) message("GUI ready for interaction.")
+}
+
+################################################################################
+#' @rdname manage_kits_gui
+#' @export
+#' @usage NULL
+#' @keywords internal
+#'
+#' @description
+#' **Deprecated.** Use [manage_kits_gui()] instead.
+################################################################################
+
+manageKits_gui <- function(env = parent.frame(),
+                           savegui = NULL,
+                           debug = FALSE, 
+                           parent = NULL,
+                           ...) {
+  
+  .Deprecated("manage_kits_gui", package = "strvalidator")
+  
+  # Remap arguments
+  manage_kits_gui(
+    env = env,
+    savegui = savegui,
+    debug = debug,
+    parent = parent,
+    ...
+  )
 }

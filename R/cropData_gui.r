@@ -114,7 +114,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -347,7 +347,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     val_obj <- svalue(dataset_drp)
 
     # Check if suitable.
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = NULL,
       env = env, parent = w, debug = debug
     )
@@ -701,7 +701,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       )
 
       # Update audit trail.
-      .gData <- auditTrail(
+      .gData <- audit_trail(
         obj = .gData, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

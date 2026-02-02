@@ -1,40 +1,50 @@
-# Hack to avoid NOTES in R CMD check
-# Hadley does not seem to like it:
-# http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
-# Alternatively '::' can be used: https://stat.ethz.ch/pipermail/r-devel/2007-June/046048.html
+# -------------------------------------------------------------------------
+# Avoid NOTES in R CMD check caused by non-standard evaluation (NSE)
+# -------------------------------------------------------------------------
+# Reference:
+# https://stackoverflow.com/questions/9439256/
+# https://stat.ethz.ch/pipermail/r-devel/2007-June/046048.html
+# -------------------------------------------------------------------------
 
-## Needed to avoid notes when using gWidgets.
 if (base::getRversion() >= "2.15.1") {
+  
+  # -----------------------------------------------------------------------
+  # gWidgets global bindings (legacy GUI support)
+  # -----------------------------------------------------------------------
   utils::globalVariables(c(
-    "gwindow", "ggroup", "glayout", "glabel", "gcombobox",
-    "addHandlerChanged", "svalue", "svalue<-", "gmessage",
-    "gframe", "gedit", "gbutton", "enabled<-", "dispose",
-    "gradio", "gcheckbox", "visible", "visible<-",
-    "gtable", "gspinbutton", "gtext", "delete",
-    "gfilebrowse", "gbasicdialog", "gexpandgroup",
-    "addHandlerDoubleclick", "addDropSource", "addDropTarget",
-    "blockHandler", "addHandlerFocus", "ginput", "gfile",
-    "gnotebook"
+    "addDropSource", "addDropTarget", "addHandlerChanged",
+    "addHandlerDoubleclick", "addHandlerFocus", "blockHandler",
+    "dispose", "enabled<-", "gbasicdialog", "gbutton", "gcheckbox",
+    "gcombobox", "gedit", "gexpandgroup", "gfile", "gfilebrowse",
+    "gframe", "ggroup", "ginput", "glayout", "glabel", "gmessage",
+    "gnotebook", "gradio", "gspinbutton", "gtable", "gtext",
+    "gwindow", "svalue", "svalue<-", "visible", "visible<-"
   ))
-}
-
-## Needed to avoid notes when using data.table in functions:
-## calculateAllele, calculateAT, calculateAT_gui, calculateAT6,
-## calculateAT6_gui, plotBalance_gui, calculateLb, calculateRatio,
-## generateEPG, calculateSlope, calculateAllele, plotStutter_gui,
-## calculateCopies, calculateHeight, plotContamination, calculateHb,
-## plotGroups_gui
-if (base::getRversion() >= "2.15.1") {
+  
+  # -----------------------------------------------------------------------
+  # data.table and calculation globals (used across multiple functions)
+  # -----------------------------------------------------------------------
   utils::globalVariables(c(
-    "Height", "Masked", "Sample.File.Name", "Dye",
-    "Hb", "Marker", "Lb", "H", "Amount", "Size",
-    "Sample.Name", "TPH", "MPH", "TPPH", "MTPH", "Min", "Max",
-    "Min.Height", "Max.Height", "Min.TPH", "Max.TPH",
-    "Group", "Allele", "Id", "Kit", "Lower", "Slope",
-    "Error", "Peaks", "Upper", "Total.Peaks",
-    "Allele.Proportion", "Sum.Peaks", "Allele.Frequency",
-    "Ratio", "Observed", "N.Alleles", "Copies",
-    "Expected", "Proportion", "Samples", "Delta",
-    "HMW", "LMW", "Small", "Large", "Axis", "By", "N"
+    "Allele", "Allele.Frequency", "Allele.Proportion", "Amount",
+    "Axis", "By", "Copies", "Delta", "Dye", "Error", "Expected",
+    "Group", "H", "Hb", "Height", "HMW", "Id", "Kit", "Large",
+    "Lb", "LMW", "Lower", "Marker", "Masked", "Max", "Max.Height",
+    "Max.TPH", "Min", "Min.Height", "Min.TPH", "MPH", "MTPH",
+    "N", "N.Alleles", "Observed", "Peaks", "Proportion", "Ratio",
+    "Samples", "Sample.File.Name", "Sample.Name", "Size", "Slope",
+    "Small", "Sum.Peaks", "TPH", "TPPH", "Total.Peaks", "Upper"
   ))
+  
+  # -----------------------------------------------------------------------
+  # Mixture calculation, STR-validator 3.x specific globals
+  # -----------------------------------------------------------------------
+  utils::globalVariables(c(
+    # Column variables created/used by calculate_mixture()
+    "Average", "Difference", "Dropin", "Expected", "Marker_lc",
+    "Mx", "Observed", "Profile", "Sample.Name_lc", "Sample_lc",
+    "Style", "unshared_major", "unshared_minor", "shared",
+    # Internal temporary helpers
+    "ref_profiles_df", "obs_alleles_for_mx", "exp_alleles"
+  ))
+  
 }

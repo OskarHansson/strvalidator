@@ -1,10 +1,6 @@
-# NOTE: As of version 2.2.0 of strvalidator gdf generates an error when gui is closed.
-# (R version 3.6.2, gWidgets2RGtk2_1.0-7, gWidgets2_1.0-8, RGtk2_2.20.36)
-# (rsession.exe:20768): Gtk-CRITICAL **: gtk_tree_view_unref_tree_helper: assertion `node != NULL' failed
-# Issue reported here: https://github.com/jverzani/gWidgets2/issues/11
-
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 16.11.2025: Changed 'checkSubset' to 'check_subset' and parameter 'ignore.case' to 'ignore_case'.
 # 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
 # 31.08.2022: Compacted the gui. Fixed Replacement table not expanding.
 # 12.08.2022: Changed logical (-> NA in tcltk) to strings in replace-false-stutter df + check for NAs.
@@ -25,9 +21,6 @@
 # 28.06.2014: Added help button and moved save gui checkbox.
 # 08.05.2014: Implemented 'checkDataset'.
 # 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
-# 18.07.2013: Check before overwrite object.
-# 17.07.2013: Added save GUI settings.
-# 17.07.2013: 'false' allele checkboxes replaced by gdf table.
 
 #' @title Calculate Stutter
 #'
@@ -50,7 +43,7 @@
 #'
 #' @return TRUE
 #'
-#' @seealso \code{\link{calculateStutter}}, \code{\link{checkSubset}}
+#' @seealso \code{\link{calculateStutter}}, \code{\link{check_subset}}
 
 calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
@@ -101,7 +94,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -283,7 +276,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele", "Height")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -339,7 +332,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
     # Check if suitable.
     requiredCol <- c("Sample.Name", "Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -390,11 +383,11 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
         handler = NULL, action = NULL
       )
 
-      chksubset_txt <- checkSubset(
+      chksubset_txt <- check_subset(
         data = val_data,
         ref = val_ref,
         console = FALSE,
-        ignore.case = TRUE,
+        ignore_case = TRUE,
         word = FALSE
       )
 
@@ -576,7 +569,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       )
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

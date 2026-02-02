@@ -1,221 +1,281 @@
-################################################################################
-# TODO LIST
-# TODO: ...
+# ---------------------------------------------------------------------------
+# Deprecated wrapper
+# ---------------------------------------------------------------------------
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 06.08.2017: Added audit trail.
-# 26.04.2016: Fixed message returning string + 'TRUE'.
-# 09.01.2016: Added attributes to result.
-# 28.08.2015: Added importFrom
-# 26.08.2014: Fixed bug when scrambled markers (issue#5)
-# 27.04.2014: Added option to ignore case in marker names.
-# 01.03.2014: Added options 'bins' and calculation of size.
-# 01.03.2014: Fixed bug kit always "ESX17".
-# 11.09.2014: First version.
+addSize <- function(data,
+                    kit = NA,
+                    bins = TRUE,
+                    ignore.case = FALSE,
+                    debug = FALSE) {
+  .Deprecated("add_size", package = "strvalidator")
+  
+  if (!missing(bins)) {
+    message("Argument 'bins' is deprecated and ignored. ",
+            "Allele-specific sizes from 'kit' are always used when available.")
+  }
+  
+  add_size(
+    data        = data,
+    kit         = kit,
+    ignore_case = ignore.case,
+    debug       = debug
+  )
+}
 
-#' @title Add Size Information.
+#' @title Add Size Information
 #'
 #' @description
-#' Add size information to alleles.
+#' Assigns base-pair size to alleles using kit definitions.
 #'
 #' @details
-#' Adds a column 'Size' with the fragment size in base pair (bp) for each allele as
-#' estimated from kit bins OR calculated from offset and repeat. The bins
-#' option return NA for alleles not in bin. The calculate option handles
-#' all named alleles including micro variants (e.g. '9.3').
-#' Handles 'X' and 'Y' by replacing them with '1' and '2'.
+#' The function follows this priority:
 #'
-#' @param data data.frame with at least columns 'Marker' and 'Allele'.
-#' @param kit data.frame with columns 'Marker', 'Allele', and 'Size' (for bins=TRUE) or
-#'  'Marker', 'Allele', 'Offset' and 'Repeat' (for bins=FALSE).
-#' @param bins logical TRUE alleles get size from corresponding bin.
-#'  If FALSE the size is calculated from the locus offset and repeat unit.
-#' @param ignore.case logical TRUE case in marker names are ignored.
-#' @param debug logical indicating printing debug information.
+#' **1. Exact match in kit**  
+#' For each `Marker` + `Allele` combination, if the kit contains a row with
+#' the same values, the corresponding `Size` from the kit is used.
 #'
-#' @return data.frame with additional columns for added size.
+#' **2. Numeric alleles missing from kit**  
+#' If an allele is numeric (e.g. `16`, `16.3`, `22`) and not present in the
+#' kit:
+#' \itemize{
+#'   \item If two numeric neighbors exist in the kit, the size is
+#'         \strong{interpolated} between them.
+#'   \item If only one neighbor exists, the marker `Repeat` unit from the kit 
+#'         definition, is used to \strong{extrapolated} from the neighbor.
+#'   \item If no neighbors exist but `Offset` and `Repeat` are available,
+#'         an \strong{offset-based} estimate is used.
+#' }
+#' A message is printed whenever interpolation, extrapolation, or
+#' offset-based fallback is used.
 #'
+#' **3. Non-numeric alleles missing from kit**  
+#' Non-numeric alleles (e.g. OL) that are not present in the kit and
+#' have no size information cannot be placed and are removed from the
+#' result. A message is printed.
+#'
+#' @param data data.frame containing at least columns `Marker` and `Allele`.
+#' @param kit data.frame containing at least:
+#'   \itemize{
+#'     \item `Marker`
+#'     \item `Allele`
+#'     \item `Size`
+#'   }
+#'   and optionally:
+#'   \itemize{
+#'     \item `Offset`
+#'     \item `Repeat`
+#'   }
+#'   which are used for extrapolation and offset-based fallback when needed.
+#' @param ignore_case logical. If TRUE, marker names are matched
+#'   case-insensitive.
+#' @param debug logical. If TRUE, debug information is printed.
+#'
+#' @return A data.frame with a numeric `Size` column added and rows with
+#'   unresolved alleles removed.
+#'
+#' @aliases addSize
 #' @export
 #'
-#' @importFrom utils head str
+#' @importFrom utils str head
 #'
 
-addSize <- function(data, kit = NA, bins = TRUE, ignore.case = FALSE, debug = FALSE) {
+add_size <- function(data,
+                     kit,
+                     ignore_case = FALSE,
+                     debug = FALSE) {
+  
   if (debug) {
-    print(paste("IN:", match.call()[[1]]))
-    print("PARAMETERS:")
+    print("===== add_size() DEBUG START =====")
     print("data:")
     print(str(data))
-    print(head(data))
     print("kit:")
     print(str(kit))
-    print(head(kit))
   }
-
-  # CHECK DATA ----------------------------------------------------------------
-
-  # Check dataset.
+  
+  # ---------------------------------------------------------------------------
+  # CHECK INPUT
+  # ---------------------------------------------------------------------------
   if (!"Marker" %in% names(data)) {
-    stop("'data' must contain a column 'Marker'",
-      call. = TRUE
-    )
+    stop("'data' must contain column 'Marker'")
   }
-
   if (!"Allele" %in% names(data)) {
-    stop("'data' must contain a column 'Allele'",
-      call. = TRUE
-    )
+    stop("'data' must contain column 'Allele'")
   }
-
-  # Check kit depending on 'bins'.
-  if (bins) {
-    if (!"Size" %in% names(kit)) {
-      stop("'kit' must contain a column 'Size'",
-        call. = TRUE
-      )
-    }
-
-    if (!"Allele" %in% names(kit)) {
-      stop("'kit' must contain a column 'Allele'",
-        call. = TRUE
-      )
-    }
-  } else {
-    if (!"Offset" %in% names(kit)) {
-      stop("'kit' must contain a column 'Offset'",
-        call. = TRUE
-      )
-    }
-
-    if (!"Repeat" %in% names(kit)) {
-      stop("'kit' must contain a column 'Repeat'",
-        call. = TRUE
-      )
-    }
+  
+  req_cols <- c("Marker", "Allele", "Size")
+  if (!all(req_cols %in% names(kit))) {
+    stop("'kit' must contain columns: 'Marker', 'Allele', and 'Size'")
   }
-
-  # Check kit.
-  if (!"Marker" %in% names(kit)) {
-    stop("'kit' must contain a column 'Marker'",
-      call. = TRUE
-    )
-  }
-
-  # Check if character data.
+  
+  # Optional columns for fallback.
+  has_offset <- "Offset" %in% names(kit)
+  has_repeat <- "Repeat" %in% names(kit)
+  
+  # Ensure Allele is character.
   if (!is.character(data$Allele)) {
-    message("'Allele' must be character. 'data' converted")
+    message("'Allele' must be character. Converting 'data$Allele'.")
     data$Allele <- as.character(data$Allele)
   }
-
-  # PREPARE -----------------------------------------------------------------
-
-  # Check for column 'Size'
-  if ("Size" %in% names(data)) {
-    message("'data' already contain a column 'Size'")
-    message("Size will be overwritten!")
+  
+  # Case handling for markers.
+  if (ignore_case) {
+    data$Marker <- toupper(data$Marker)
+    kit$Marker  <- toupper(kit$Marker)
   }
-
-  # Add a column 'Size'
-  data$Size <- NA
-
-  # Get markers in dataset.
-  marker <- unique(data$Marker)
-
-  # Check if case in marker names should be ignored.
-  if (ignore.case) {
-    kit$Marker <- toupper(kit$Marker)
-    marker <- toupper(marker)
+  
+  # Prepare Size column.
+  data$Size <- NA_real_
+  
+  # Split kit by marker for faster lookup.
+  kit_by_marker <- split(kit, kit$Marker)
+  
+  # Helper: find numeric neighbors safely -------------------------------------
+  
+  find_numeric_neighbors <- function(allele_num, known_numeric) {
+    lower_candidates <- known_numeric[known_numeric < allele_num]
+    upper_candidates <- known_numeric[known_numeric > allele_num]
+    
+    has_lower <- length(lower_candidates) > 0
+    has_upper <- length(upper_candidates) > 0
+    
+    lower_val <- if (has_lower) max(lower_candidates) else NA_real_
+    upper_val <- if (has_upper) min(upper_candidates) else NA_real_
+    
+    list(
+      has_lower = has_lower,
+      has_upper = has_upper,
+      lower     = lower_val,
+      upper     = upper_val
+    )
   }
-
-  # ADD SIZE ------------------------------------------------------------------
-
-  if (debug) {
-    print("Markers:")
-    print(marker)
-  }
-
-  # Loop over markers.
-  for (m in seq(along = marker)) {
-    if (debug) {
-      print("Current marker:")
-      print(marker[m])
+  
+  # ---------------------------------------------------------------------------
+  # MAIN LOOP OVER MARKERS
+  # ---------------------------------------------------------------------------
+  
+  for (m in unique(data$Marker)) {
+    rows_m <- which(data$Marker == m)
+    
+    if (!m %in% names(kit_by_marker)) {
+      warning("Marker '", m, "' not found in kit. Cannot assign size for these rows.")
+      next
     }
-
-    if (ignore.case) {
-      # Select rows for current marker and ignore case in marker names.
-      cMarker <- toupper(data$Marker) == toupper(marker[m])
-    } else {
-      # Select rows for current marker.
-      cMarker <- data$Marker == marker[m]
+    
+    km <- kit_by_marker[[m]]
+    
+    # Repeat and offset may be missing; handle gracefully.
+    repeat_len <- NA_real_
+    offset_val <- NA_real_
+    
+    if (has_repeat && any(!is.na(km$Repeat))) {
+      repeat_len <- unique(km$Repeat[!is.na(km$Repeat)])[1L]
     }
-
-    # Get alleles for current marker.
-    allele <- unique(data$Allele[cMarker])
-    # Remove NAs.
-    allele <- allele[!is.na(allele)]
-
-    if (debug) {
-      print("Alleles:")
-      print(allele)
+    if (has_offset && any(!is.na(km$Offset))) {
+      offset_val <- unique(km$Offset[!is.na(km$Offset)])[1L]
     }
-
-    # Loop over allele in current marker.
-    for (a in seq(along = allele)) {
-      # Select rows for current allele.
-      cAllele <- data$Allele == allele[a]
-
-      # Combine selections.
-      selection <- cMarker & cAllele
-
-      if (bins) {
-        # Get size from matching bins.
-        size <- kit$Size[kit$Marker == marker[m] & kit$Allele == allele[a]]
-      } else {
-        # Calculate size from 'offset' and 'repeat'.
-
-        # Copy to temporary working variable.
-        alleleTmp <- toupper(allele[a])
-
-        # Check presence of X/Y.
-        if ("X" %in% alleleTmp || "Y" %in% alleleTmp) {
-          # Use 1 and 2 for X and Y.
-          alleleTmp <- sub(pattern = "X", replacement = 1, x = alleleTmp)
-          alleleTmp <- sub(pattern = "Y", replacement = 2, x = alleleTmp)
+    
+    known_alleles <- km$Allele
+    known_sizes   <- km$Size
+    
+    # Numeric alleles in kit (for interpolation/extrapolation).
+    known_numeric <- suppressWarnings(as.numeric(known_alleles))
+    valid_numeric_idx    <- which(!is.na(known_numeric))
+    known_numeric_vals   <- known_numeric[valid_numeric_idx]
+    known_numeric_sizes  <- known_sizes[valid_numeric_idx]
+    
+    # Loop over rows for this marker.
+    for (idx in rows_m) {
+      allele <- data$Allele[idx]
+      
+      # 1. Exact match in kit -------------------------------------------------
+      kit_match <- km[km$Allele == allele, , drop = FALSE]
+      if (nrow(kit_match) > 0) {
+        data$Size[idx] <- kit_match$Size[1L]
+        next
+      }
+      
+      # 2. Non-numeric alleles not in kit ------------------------------------
+      allele_num <- suppressWarnings(as.numeric(allele))
+      if (is.na(allele_num)) {
+        message("Non-numeric allele '", allele, "' for marker '", m,
+                "' not found in kit and has no size. Removing.")
+        data$Size[idx] <- NA_real_
+        next
+      }
+      
+      # 3. Interpolation / extrapolation for numeric alleles -----------------
+      if (length(known_numeric_vals) > 0) {
+        neigh <- find_numeric_neighbors(allele_num, known_numeric_vals)
+        
+        # 3A. Interpolate between neighbors (no need for repeat_len).
+        if (neigh$has_lower && neigh$has_upper) {
+          size_low  <- known_numeric_sizes[known_numeric_vals == neigh$lower][1L]
+          size_high <- known_numeric_sizes[known_numeric_vals == neigh$upper][1L]
+          
+          fraction <- (allele_num - neigh$lower) / (neigh$upper - neigh$lower)
+          est <- size_low + fraction * (size_high - size_low)
+          
+          data$Size[idx] <- est
+          message("Interpolated size for marker '", m, "', allele ", allele,
+                  " between ", neigh$lower, " and ", neigh$upper, ".")
+          next
         }
-
-        # Convert to numeric.
-        alleleTmp <- as.numeric(alleleTmp)
-
-        # Calculate estimated size.
-        tmpOffset <- kit$Offset[kit$Marker == marker[m]]
-        tmpRepeat <- kit$Repeat[kit$Marker == marker[m]]
-        size <- tmpOffset + floor(alleleTmp) * tmpRepeat + (alleleTmp %% 1) * 10
+        
+        # 3B. Extrapolate upwards from the largest known numeric allele.
+        if (neigh$has_lower && !neigh$has_upper && !is.na(repeat_len)) {
+          size_low <- known_numeric_sizes[known_numeric_vals == neigh$lower][1L]
+          est <- size_low + (allele_num - neigh$lower) * repeat_len
+          
+          data$Size[idx] <- est
+          message("Extrapolated upward for marker '", m, "', allele ", allele,
+                  " from nearest known allele ", neigh$lower,
+                  " using repeat length ", repeat_len, ".")
+          next
+        }
+        
+        # 3C. Extrapolate downwards from the smallest known numeric allele.
+        if (!neigh$has_lower && neigh$has_upper && !is.na(repeat_len)) {
+          size_high <- known_numeric_sizes[known_numeric_vals == neigh$upper][1L]
+          est <- size_high - (neigh$upper - allele_num) * repeat_len
+          
+          data$Size[idx] <- est
+          message("Extrapolated downward for marker '", m, "', allele ", allele,
+                  " from nearest known allele ", neigh$upper,
+                  " using repeat length ", repeat_len, ".")
+          next
+        }
       }
-
-      # Store size for current allele in current marker.
-      if (length(size) != 0) {
-        data$Size[selection] <- size
+      
+      # 4. Final fallback: Offset + repeat (if available) --------------------
+      if (!is.na(offset_val) && !is.na(repeat_len)) {
+        est <- offset_val + allele_num * repeat_len
+        data$Size[idx] <- est
+        message("Offset-based size estimation used for marker '", m,
+                "', allele ", allele, " (no neighbors available).")
       } else {
-        message(paste(
-          "Allele", allele[a],
-          "for marker", marker[m], "not in kit definition file."
-        ))
+        message("No neighbors and no offset/repeat available for marker '",
+                m, "', allele ", allele, ". Removing.")
+        data$Size[idx] <- NA_real_
       }
     }
   }
-
+  
+  # Remove rows with NA Size (unresolved or invalid alleles).
+  na_rows <- which(is.na(data$Size))
+  if (length(na_rows)) {
+    message("Removed ", length(na_rows),
+            " alleles with no resolvable size information.")
+    data <- data[-na_rows, , drop = FALSE]
+  }
+  
   if (debug) {
-    print("Return:")
+    print("===== add_size() DEBUG END =====")
     print(str(data))
     print(head(data))
   }
-
-  # Add attributes to result.
-  attr(data, which = "kit") <- kit
-
-  # Update audit trail.
-  data <- auditTrail(obj = data, f.call = match.call(), package = "strvalidator")
-
+  
+  attr(data, "kit") <- kit
+  data <- audit_trail(obj = data, f_call = match.call(), package = "strvalidator")
+  
   return(data)
 }

@@ -1,9 +1,6 @@
 ################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
 # CHANGE LOG (last 20 changes)
+# 10.11.2025: Added fallback for locating the kit definition file (for testing).
 # 29.08.2015: Added importFrom.
 # 15.12.2014: Changed parameter names to format: lower.case
 # 30.09.2014: Check if package is loaded to avoid error in path.package.
@@ -32,6 +29,7 @@
 #' @export
 #'
 #' @importFrom utils read.delim
+#' @importFrom rprojroot find_root has_file
 #'
 #' @examples
 #' # Show available allele frequency databases.
@@ -45,18 +43,34 @@ getDb <- function(db.name.or.index = NULL, debug = FALSE) {
 
   # LOAD DATABASE INFO  #######################################################
 
-  # Get package path.
-  if (require(strvalidator)) {
-    packagePath <- path.package("strvalidator", quiet = FALSE)
-  } else {
-    warning("Package path for strvalidator not found!")
-    return(NULL)
-  }
+  # Get package path (works after installation)
+  packagePath <- path.package("strvalidator", quiet = FALSE)
   subFolder <- "extdata"
   fileName <- "database.txt"
-
-  # Create complete file path.
   filePath <- paste(packagePath, subFolder, fileName, sep = .separator)
+
+  # Fallback: when running tests from source tree, system.file() may fail
+  if (!file.exists(filePath)) {
+    # Try to locate inst/extdata in the current or parent directories
+    sourcePath <- normalizePath(file.path(getwd(), "inst", "extdata", fileName), mustWork = FALSE)
+    if (file.exists(sourcePath)) {
+      filePath <- sourcePath
+    } else {
+      # Last resort: find the project root from the package DESCRIPTION
+      descPath <- tryCatch(
+        suppressWarnings(rprojroot::find_root(rprojroot::has_file("DESCRIPTION"))),
+        error = function(e) NA
+      )
+      if (!is.na(descPath)) {
+        altPath <- file.path(descPath, "inst", "extdata", fileName)
+        if (file.exists(altPath)) filePath <- altPath
+      }
+    }
+  }
+  
+  if (!file.exists(filePath)) {
+    stop(sprintf("Cannot locate '%s' in package or source directory.", fileName))
+  }
 
   .db <- read.delim(
     file = filePath, header = TRUE, sep = "\t", quote = "\"",

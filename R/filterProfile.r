@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2025: addColor -> add_color.
 # 24.08.2018: Removed unused variables.
 # 07.08.2017: Added audit trail.
 # 18.09.2016: Now retains information in 'File.Name' and 'File.Time' when add markers.
@@ -635,9 +636,9 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       message("Adding Dye to result using kit ", kit, ".")
 
       # Fix broken dyes.
-      res <- addColor(
+      res <- add_color(
         data = res, kit = kit, need = "Dye",
-        overwrite = TRUE, ignore.case = TRUE,
+        overwrite = TRUE, ignore_case = TRUE,
         debug = debug
       )
     }
@@ -647,7 +648,7 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
   attr(res, which = "kit") <- kit
 
   # Update audit trail.
-  res <- auditTrail(obj = res, f.call = match.call(), package = "strvalidator")
+  res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   # RETURN --------------------------------------------------------------------
 

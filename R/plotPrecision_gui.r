@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 09.11.2025: addColor -> add_color
 # 20.06.2023: Fixed Error in facet_wrap, `ncol` must be a whole number or `NULL`, not an integer vector.
 # 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
 # 10.09.2022: Compacted the gui. Removed destroy workaround.
@@ -142,7 +143,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   strMsgTitleError <- "Error"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -429,7 +430,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     # Check if suitable.
     requiredCol <- c("Marker", "Allele")
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       string = "OL", stringcol = "Allele",
       env = env, parent = w, debug = debug
@@ -635,7 +636,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Check if suitable for plot.
     requiredCol <- c("Marker", "Allele", "Size")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -658,7 +659,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Check if suitable for plot.
     requiredCol <- c("Marker", "Allele", "Height")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -681,7 +682,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Check if suitable for plot.
     requiredCol <- c("Marker", "Allele", "Data.Point")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -718,7 +719,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Check if suitable for plot.
     requiredCol <- c("Marker", "Allele", "Size")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -741,7 +742,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Check if suitable for plot.
     requiredCol <- c("Marker", "Allele", "Height")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -764,7 +765,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Check if suitable for plot.
     requiredCol <- c("Marker", "Allele", "Data.Point")
 
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = requiredCol,
       env = env, parent = w, debug = debug
     )
@@ -1148,7 +1149,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       # Call functions.
       # Add color information.
       if (!"Dye" %in% names(val_data)) {
-        val_data <- addColor(
+        val_data <- add_color(
           data = val_data, kit = val_kit,
           need = "Dye", debug = debug
         )
@@ -1371,7 +1372,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
         # Get kit colors and convert to dyes.
         dyes <- unique(getKit(val_kit, what = "Color")$Color)
-        dyes <- addColor(dyes, have = "Color", need = "Dye")
+        dyes <- add_color(dyes, have = "Color", need = "Dye")
         # Number of dyes.
         noDyes <- length(dyes)
         # Number of rows in table object (one per dye + title + x title).

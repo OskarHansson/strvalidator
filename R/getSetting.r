@@ -1,5 +1,6 @@
 ################################################################################
 # CHANGE LOG (last 20 changes)
+# 29.11.2025: Ontly print settings in debug mode.
 # 22.02.2020: First version.
 
 #' @title Get Settings.
@@ -46,7 +47,7 @@ getSetting <- function(key) {
 
     # Get value.
     value <- dtable[key]$value
-    message("Settings: ", key, "=", value)
+    if (isTRUE(debug)) message("Settings: ", key, "=", value)
   } else { # If file don't exist.
 
     # Show file not found message.

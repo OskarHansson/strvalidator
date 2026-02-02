@@ -77,7 +77,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   strMsgTitleDataset <- "Dataset not selected"
 
   # Get strings from language file.
-  dtStrings <- getStrings(gui = fnc)
+  dtStrings <- get_strings(gui = fnc)
 
   # If language file is found.
   if (!is.null(dtStrings)) {
@@ -212,7 +212,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
     val_obj <- svalue(data1_drp)
 
     # Check if suitable.
-    ok <- checkDataset(
+    ok <- check_dataset(
       name = val_obj, reqcol = NULL,
       env = env, parent = w, debug = debug
     )
@@ -311,7 +311,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       values <- list(val_data_1, val_data_2)
 
       # Update audit trail.
-      datanew <- auditTrail(
+      datanew <- audit_trail(
         obj = datanew, key = keys, value = values,
         label = fnc, arguments = FALSE,
         package = "strvalidator"

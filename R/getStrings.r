@@ -1,62 +1,57 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 17.08.2024: Added helper functions for string handling and updated getStrings.
-# 15.08.2024: Fixed spelling error, removed unnecessary duplicate code.
-# 07.07.2022: Fixed Warning message: In !is.na(result) && !is.na(gui):'length(x) = 780 > 1' in coercion to 'logical(1)'
-# 08.07.2020: Fix warnings about improper quoting.
-# 04.07.2020: Defined unbound variables.
-# 09.06.2020: Fixed Error in `:=`(value, gsub("\\n", "\n", value, fixed = TRUE))...
-# 22.02.2020: First version.
-
 #' @title Get Language Strings
 #'
 #' @description
-#' Accepts a language code and GUI. Returns the corresponding language strings.
+#' Returns language-specific strings for a given GUI or key from the package’s
+#' localization files.
 #'
 #' @details
-#' Accepts a language code, GUI, and key. Returns the corresponding language strings
-#' for the specified GUI function or key from a text file named as the language code.
-#' Replaces backslash + n with a new line character (only if 'GUI' is specified).
+#' Language files are stored under `inst/extdata/languages/` in tab-delimited
+#' format with columns `scope`, `key`, and `value`. When a GUI name is provided,
+#' the function returns all strings for that scope; when both `gui` and `key`
+#' are provided, it returns the specific translation value.
 #'
-#' @param language character name of the language.
-#' @param gui character the function name for the GUI to 'translate'.
-#' @param key character the key to 'translate'. Only used in combination with 'gui'.
-#' @param encoding character encoding to be assumed for input strings.
-#' @param about logical FALSE (default) to read key-value pairs,
-#' TRUE to read about file as plain text.
+#' @param language character; language code (e.g. `"en"`, `"sv"`).
+#' @param gui character; the GUI function name to retrieve strings for.
+#' @param key character; specific key to retrieve within the selected GUI.
+#' @param encoding character; file encoding to assume (default taken from settings).
+#' @param about logical; if `TRUE`, reads the `_about.txt` file as plain text.
+#' @param debug Logical; if \code{TRUE}, print detailed diagnostic messages.
 #'
-#' @return character vector or data.table with the retrieved values.
-#' NULL if file or GUI was not found.
+#' @return A `data.table` or character vector containing the requested strings,
+#' or `NULL` if the file or scope was not found.
 #'
+#' @importFrom data.table fread setkey
+#' @importFrom utils read.table
+#'
+#' @aliases getStrings
 #' @export
-#'
 
-getStrings <- function(language = NA, gui = NA, key = NA,
-                       encoding = NA, about = FALSE) {
+get_strings <- function(language = NA, gui = NA, key = NA,
+                        encoding = NA, about = FALSE, debug = FALSE) {
   if (is.na(language)) {
     language <- getSetting("language")
   }
-  
+
   if (is.na(encoding)) {
     encoding <- getSetting("encoding")
   }
-  
+
   scope <- NULL
   value <- NULL
-  
+
   file_sep <- .Platform$file.sep
   language_file <- paste0(language, ".txt")
   about_file <- paste0(language, "_about.txt")
   sub_folder <- paste("extdata", "languages", sep = file_sep)
-  
+
   package_path <- path.package("strvalidator", quiet = FALSE)
-  
+
   if (about) {
     about_file_path <- file.path(package_path, sub_folder, about_file)
-    
+
     if (file.exists(about_file_path)) {
       result <- readLines(con = about_file_path, encoding = encoding)
-      
+
       if (!is.null(result)) {
         result <- gsub("\\n", "\n", result, fixed = TRUE)
       }
@@ -66,27 +61,30 @@ getStrings <- function(language = NA, gui = NA, key = NA,
     }
   } else {
     lang_file_path <- file.path(package_path, sub_folder, language_file)
-    
+
     if (file.exists(lang_file_path)) {
-      dt_all <- fread(file = lang_file_path, sep = "\t", header = "auto", encoding = encoding, quote = "")
+      dt_all <- fread(file = lang_file_path, sep = "\t", 
+                      header = "auto", 
+                      encoding = encoding, quote = "")
       setkey(dt_all, "key")
       result <- dt_all
-      
+
       if (!is.na(gui)) {
-        message("Get language strings for gui = ", gui)
+        if (isTRUE(debug)) message("Get language strings for gui = ", gui)
         result <- result[scope == gui, ]
-        
+
         if (nrow(result) == 0) {
-          message("No rows found for gui = ", gui, ". Returning NULL.")
+          if (isTRUE(debug)) message("No rows found for gui = ", 
+                                     gui, ". Returning NULL.")
           result <- NULL
         }
       }
-      
+
       if (!is.null(result) && !is.na(gui) && !is.na(key)) {
-        message("Get language strings for key = ", key)
+        if (isTRUE(debug)) message("Get language strings for key = ", key)
         result <- result[key]$value
       }
-      
+
       if (!is.null(result)) {
         result[, value := gsub("\\n", "\n", value, fixed = TRUE)]
       }
@@ -95,33 +93,110 @@ getStrings <- function(language = NA, gui = NA, key = NA,
       result <- NULL
     }
   }
-  
-  return(result)
+
+  invisible(result)
 }
 
 #' @title Update Strings with Language File
 #'
 #' @description
-#' Updates the default strings with the values from the language file.
+#' Merges a set of default strings with overrides from a language file.
 #'
 #' @param default_strings list of default strings.
-#' @param language_strings list of language-specific strings.
+#' @param language_strings list of language-specific replacements.
 #'
-#' @return list of updated strings.
-#'
+#' @return A list of updated strings with localized overrides applied.
 #' @export
-#'
-
-update_strings_with_language_file <- function(default_strings, language_strings) {
+update_strings_with_language_file <- function(default_strings, 
+                                              language_strings) {
   if (is.null(language_strings)) {
     return(default_strings)
   }
-  
+
   for (key in names(default_strings)) {
     if (key %in% names(language_strings)) {
       default_strings[[key]] <- language_strings[[key]]
     }
   }
-  
-  return(default_strings)
+
+  invisible(default_strings)
 }
+
+#' @title Get the GUI scope name safely
+#'
+#' @description
+#' Detects the name of the currently running GUI function automatically.
+#' This is typically used to load the correct language string set for the
+#' active GUI (for example, in `get_strings(gui = ...)`).
+#'
+#' It works by inspecting the current function call stack via
+#' [base::sys.call()], and safely extracting the function name.
+#'
+#' If detection fails (for example, when called from an event handler,
+#' `do.call()`, or interactive context), it returns a fallback name
+#' (`"default"` by default).
+#'
+#' @param default character. The name to return if automatic detection fails.
+#' Defaults to `"default"`.
+#'
+#' @return A character string containing the current function name or the
+#' fallback value.
+#'
+#' @examples
+#' \dontrun{
+#' calculate_concordance_gui <- function() {
+#'   gui_scope <- get_gui_scope()
+#'   lng_strings <- get_strings(gui = gui_scope)
+#'   print(gui_scope)
+#' }
+#' calculate_concordance_gui()
+#' #> "calculate_concordance_gui"
+#' }
+#'
+#' @export
+#'
+get_gui_scope <- function(default = "default") {
+  gui_name <- tryCatch(
+    as.character(sys.call()[[1]]),
+    error = function(e) NA
+  )
+  
+  if (is.na(gui_name) || gui_name == "") {
+    gui_name <- default
+  }
+  
+  return(gui_name)
+}
+
+################################################################################
+#' @rdname get_strings
+#' @export
+#' @usage NULL
+#' @keywords internal
+#'
+#' @description
+#' **Deprecated.** Use [get_strings()] instead.
+################################################################################
+
+getStrings <- function(language = NA, 
+                        gui = NA, 
+                        key = NA,
+                        encoding = NA, 
+                        about = FALSE, 
+                        debug = FALSE,
+                        ...) {
+  
+  .Deprecated("get_strings", package = "strvalidator")
+  
+  # Remap arguments
+  get_strings(
+    language = language,
+    gui = gui,
+    key = key,
+    encoding = encoding,
+    about = about,
+    debug = debug,
+    ...
+  )
+}
+
