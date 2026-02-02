@@ -38,6 +38,12 @@ Version 2.5.0.9001
   - test-addSize
   Modernized and simplified the code.
 * New functions:
+- calculate_precision 
+  Fixed incorrect sizing precision/reproducibility calculation. The previous
+  plotPrecision_gui implementation used an improper aggregation/SD approach that
+  could mask run-to-run variation. Precision is now calculated relative to
+  expected allele sizes using population SD, with proper separation
+  of within-injection repeatability and across-injection reproducibility.
   - calculate_mixture, calculate_mixture_gui
   Refactored function. Fixed bug when NA alleles, leading to dropin count. 
   Replaces calculateMixture
