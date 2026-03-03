@@ -1,3 +1,11 @@
+Version 2.5.0.9002
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - GUI language handling
+  Refactored legacy GUI language handling to use `default_strings` together
+  with `update_strings_with_language_file()` and standardized string keys from
+  `strCamelCase` to `STR_UPPER_SNAKE_CASE` across legacy GUI files.
+
 Version 2.5.0.9001
 ------------------------------------------------------------------------------
 - Adds support for GeneMarker kit definition files and 8-dyes.
