@@ -1,28 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.11.2025: addColor -> add_color.
-# 24.08.2018: Removed unused variables.
-# 07.08.2017: Added audit trail.
-# 18.09.2016: Now retains information in 'File.Name' and 'File.Time' when add markers.
-# 18.09.2016: Fixed attribute kit not save correct.
-# 06.09.2016: Added check for conflicting options filter.alleles and add.missing.loci.
-# 28.08.2016: Added option to use word boundaries for sample name matching.
-# 28.08.2016: Added options to remove sex markers and quality sensors.
-# 28.04.2016: Fixed numeric 'Allele' in 'ref' dataset not converted to character.
-# 09.01.2016: Added more attributes to result.
-# 16.12.2015: Added attributes to result and improved use of 'grepl'.
-# 15.12.2015: Added option to use 'exact' matching of sample names.
-# 29.08.2015: Added importFrom.
-# 09.04.2015: Added option 'invert' to filter peaks NOT in reference.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 22.01.2014: Fixed bug. add.missing.loci=TRUE now overrides keep.na=FALSE.
-# 10.12.2013: Fixed bug returning all NAs when add.missing.loci=TRUE.
-# 08.12.2013: Does not discard columns anymore.
-# 08.12.2013: Possible to use a 'ref' without 'Sample.Name' i.e. one profile
-#             for all samples in 'data'.
-# 06.06.2013: Fixed bug in checking for 'fat' data.
-# 03.06.2013: Fixed bug discarding NA loci when add.missing.loci=TRUE.
-
 #' @title Filter Profile
 #'
 #' @description

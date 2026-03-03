@@ -1,11 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 10.11.2025: Added fallback for locating the kit definition file (for testing).
-# 29.08.2015: Added importFrom.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 30.09.2014: Check if package is loaded to avoid error in path.package.
-# 01.10.2013: First version.
-
 #' @title Get Allele Frequency Database
 #'
 #' @description

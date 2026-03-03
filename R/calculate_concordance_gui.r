@@ -431,6 +431,26 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_calculate_concordance_gui_"
+  settings_widgets <- list(
+    delimeter = f1_delimeter_edt,
+    sample = f1_no_sample_edt,
+    marker = f1_no_marker_edt,
+    all = f1_all_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -441,8 +461,9 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculate_concordance_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculate_concordance_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -453,18 +474,12 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculate_concordance_gui_delimeter", envir = env, inherits = FALSE)) {
-        svalue(f1_delimeter_edt) <- get(".strvalidator_calculate_concordance_gui_delimeter", envir = env)
-      }
-      if (exists(".strvalidator_calculate_concordance_gui_sample", envir = env, inherits = FALSE)) {
-        svalue(f1_no_sample_edt) <- get(".strvalidator_calculate_concordance_gui_sample", envir = env)
-      }
-      if (exists(".strvalidator_calculate_concordance_gui_marker", envir = env, inherits = FALSE)) {
-        svalue(f1_no_marker_edt) <- get(".strvalidator_calculate_concordance_gui_marker", envir = env)
-      }
-      if (exists(".strvalidator_calculate_concordance_gui_all", envir = env, inherits = FALSE)) {
-        svalue(f1_all_chk) <- get(".strvalidator_calculate_concordance_gui_all", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -474,28 +489,17 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculate_concordance_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculate_concordance_gui_delimeter", value = svalue(f1_delimeter_edt), envir = env)
-      assign(x = ".strvalidator_calculate_concordance_gui_sample", value = svalue(f1_no_sample_edt), envir = env)
-      assign(x = ".strvalidator_calculate_concordance_gui_marker", value = svalue(f1_no_marker_edt), envir = env)
-      assign(x = ".strvalidator_calculate_concordance_gui_all", value = svalue(f1_all_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculate_concordance_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculate_concordance_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculate_concordance_gui_delimeter", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculate_concordance_gui_delimeter", envir = env)
-      }
-      if (exists(".strvalidator_calculate_concordance_gui_sample", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculate_concordance_gui_sample", envir = env)
-      }
-      if (exists(".strvalidator_calculate_concordance_gui_marker", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculate_concordance_gui_marker", envir = env)
-      }
-      if (exists(".strvalidator_calculate_concordance_gui_all", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculate_concordance_gui_all", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

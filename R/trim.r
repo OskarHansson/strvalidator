@@ -1,26 +1,4 @@
-################################################################################
-# TODO LIST
-# TODO: ...
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 07.08.2017: Added audit trail.
-# 09.01.2016: Added attributes to result.
-# 29.08.2015: Added importFrom.
-# 25.05.2015: Corrected parameter description.
-# 11.05.2015: Accepts (the first) column name containing the string 'Sample'
-# as alternative to colum name 'Sample.Name'. 'Sample' is case in-sensitive.
-# 04.05.2015: Added 'Sample.File.Name' as a defined alternative to Sample.Name.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 28.04.2014: More robust and handles '+' and '-' in sample names.
-# 14.01.2014: Support dataframes without a 'Sample.Name' column.
-# 27.10.2013: Fixed bug when 'samples'=NULL and 'invert.s'=TRUE.
-# 27.04.2013: Fixed error when result is only 1 column.
-# <27.04.2013: Roxygenized.
-# <27.04.2013: new name 'trimData' -> 'trim'
-# <27.04.2013: remove NA/empty cols.
-# <27.04.2013: handle no sample/ no columns.
 
 #' @title Trim Data
 #'

@@ -1,29 +1,4 @@
-################################################################################
-# NOTE: Column names used for calculations with data.table is declared
-# in globals.R to avoid NOTES in R CMD CHECK.
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 13.04.2020: Added language support.
-# 13.04.2020: Implemented function checkDataset.
-# 23.02.2019: Compacted and tweaked gui for tcltk.
-# 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed expanded 'gexpandgroup'.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 10.05.2016: 'Save as' textbox expandable.
-# 06.01.2016: Fixed theme methods not found and added more themes.
-# 04.01.2016: Fixed error object 'val_ncol' not found when val_wrap=1.
-# 30.12.2015: Wrapping options changed to radio button and implemented by Dye.
-# 30.12.2015: Changed default for drop sex markers to FALSE.
-# 30.12.2015: Wrapped 'is.numeric' with checking that columns exist.
-# 19.11.2015: Changed axes default to 'fixed' to avoid common plot error.
-# 11.11.2015: Added importFrom gridExtra arrangeGrob, and ggplot2.
-# 11.11.2015: Added more themes.
 
 #' @title Plot Balance
 #'
@@ -1293,6 +1268,42 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
   }
 
+  settings_prefix <- ".strvalidator_plotBalance_gui_"
+  settings_widgets <- list(
+    sex = f1_drop_chk,
+    log = f1_logHb_chk,
+    title = title_edt,
+    title_chk = titles_chk,
+    x_title = x_title_edt,
+    y_title = y_title_edt,
+    points_shape = e2_shape_spb,
+    points_alpha = e2_alpha_spb,
+    points_jitter = e2_jitter_edt,
+    axes_y_min = e3_y_min_edt,
+    axes_y_max = e3_y_max_edt,
+    axes_x_min = e3_x_min_edt,
+    axes_x_max = e3_x_max_edt,
+    axes_scales = e3_scales_opt,
+    xlabel_size = e4_size_edt,
+    xlabel_angle = e4_angle_spb,
+    xlabel_justh = e4_hjust_spb,
+    xlabel_justv = e4_vjust_spb,
+    theme = f1_theme_drp,
+    wrap = f1_wrap_opt
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -1303,8 +1314,9 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_plotBalance_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_plotBalance_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -1315,68 +1327,13 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_plotBalance_gui_title", envir = env, inherits = FALSE)) {
-        svalue(title_edt) <- get(".strvalidator_plotBalance_gui_title", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_plotBalance_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(titles_chk) <- get(".strvalidator_plotBalance_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(x_title_edt) <- get(".strvalidator_plotBalance_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(y_title_edt) <- get(".strvalidator_plotBalance_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_sex", envir = env, inherits = FALSE)) {
-        svalue(f1_drop_chk) <- get(".strvalidator_plotBalance_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_log", envir = env, inherits = FALSE)) {
-        svalue(f1_logHb_chk) <- get(".strvalidator_plotBalance_gui_log", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_points_shape", envir = env, inherits = FALSE)) {
-        svalue(e2_shape_spb) <- get(".strvalidator_plotBalance_gui_points_shape", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_points_alpha", envir = env, inherits = FALSE)) {
-        svalue(e2_alpha_spb) <- get(".strvalidator_plotBalance_gui_points_alpha", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_points_jitter", envir = env, inherits = FALSE)) {
-        svalue(e2_jitter_edt) <- get(".strvalidator_plotBalance_gui_points_jitter", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_y_min", envir = env, inherits = FALSE)) {
-        svalue(e3_y_min_edt) <- get(".strvalidator_plotBalance_gui_axes_y_min", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_y_max", envir = env, inherits = FALSE)) {
-        svalue(e3_y_max_edt) <- get(".strvalidator_plotBalance_gui_axes_y_max", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_x_min", envir = env, inherits = FALSE)) {
-        svalue(e3_x_min_edt) <- get(".strvalidator_plotBalance_gui_axes_x_min", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_x_max", envir = env, inherits = FALSE)) {
-        svalue(e3_x_max_edt) <- get(".strvalidator_plotBalance_gui_axes_x_max", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_scales", envir = env, inherits = FALSE)) {
-        svalue(e3_scales_opt) <- get(".strvalidator_plotBalance_gui_axes_scales", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_xlabel_size", envir = env, inherits = FALSE)) {
-        svalue(e4_size_edt) <- get(".strvalidator_plotBalance_gui_xlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_xlabel_angle", envir = env, inherits = FALSE)) {
-        svalue(e4_angle_spb) <- get(".strvalidator_plotBalance_gui_xlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_xlabel_justh", envir = env, inherits = FALSE)) {
-        svalue(e4_hjust_spb) <- get(".strvalidator_plotBalance_gui_xlabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_xlabel_justv", envir = env, inherits = FALSE)) {
-        svalue(e4_vjust_spb) <- get(".strvalidator_plotBalance_gui_xlabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_theme", envir = env, inherits = FALSE)) {
-        svalue(f1_theme_drp) <- get(".strvalidator_plotBalance_gui_theme", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_wrap", envir = env, inherits = FALSE)) {
-        svalue(f1_wrap_opt) <- get(".strvalidator_plotBalance_gui_wrap", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -1385,92 +1342,17 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_plotBalance_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_sex", value = svalue(f1_drop_chk), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_log", value = svalue(f1_logHb_chk), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_title_chk", value = svalue(titles_chk), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_x_title", value = svalue(x_title_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_y_title", value = svalue(y_title_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_points_shape", value = svalue(e2_shape_spb), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_points_alpha", value = svalue(e2_alpha_spb), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_points_jitter", value = svalue(e2_jitter_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_axes_y_min", value = svalue(e3_y_min_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_axes_y_max", value = svalue(e3_y_max_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_axes_x_min", value = svalue(e3_x_min_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_axes_x_max", value = svalue(e3_x_max_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_axes_scales", value = svalue(e3_scales_opt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_xlabel_size", value = svalue(e4_size_edt), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_xlabel_angle", value = svalue(e4_angle_spb), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_xlabel_justh", value = svalue(e4_hjust_spb), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_xlabel_justv", value = svalue(e4_vjust_spb), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_theme", value = svalue(f1_theme_drp), envir = env)
-      assign(x = ".strvalidator_plotBalance_gui_wrap", value = svalue(f1_wrap_opt), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_plotBalance_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_title", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_title_chk", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_x_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_y_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_sex", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_log", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_log", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_points_shape", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_points_shape", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_points_alpha", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_points_alpha", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_points_jitter", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_points_jitter", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_y_min", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_axes_y_min", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_y_max", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_axes_y_max", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_x_min", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_axes_x_min", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_x_max", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_axes_x_max", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_axes_scales", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_axes_scales", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_xlabel_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_xlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_xlabel_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_xlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_xlabel_justh", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_xlabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_xlabel_justv", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_xlabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_theme", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_theme", envir = env)
-      }
-      if (exists(".strvalidator_plotBalance_gui_wrap", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotBalance_gui_wrap", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

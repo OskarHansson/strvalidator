@@ -1,13 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 07.06.2020: Added check for NA. Return NULL.
-# 06.06.2020: Added parameters "sort" and "decreasing".
-# 28.06.2015: Changed parameter names to format: lower.case
-# 26.07.2013: 'obj.class' can now be a vector.
-# 17.05.2013: New parameters 'obj.class', 'debug'.
-# 17.05.2013: Made general. Changed name from listDataFrames -> listObjects.
-# <17.05.2013: First version.
-
 #' @title List Objects
 #'
 #' @description

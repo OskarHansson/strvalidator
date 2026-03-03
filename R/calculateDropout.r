@@ -1,35 +1,9 @@
-################################################################################
-# TODO LIST
+
 # TODO: Re-write the whole function when a preferred model has been found.
 #       The function has become very complex and messy...
 # TODO: Option to perform multiple random selections in one go. Which would mean
 #       multiple 'ModelX' columns.
 
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 18.09.2016: Fixed dataset saved to attributes.
-# 15.09.2016: Implemented new filterProfile function to remove sex markers and qs.
-# 29.06.2016: Added option to remove sex markers and quality sensor.
-# 09.01.2016: Added more attributes to result.
-# 07.12.2015: Fixed reference sample name subsetting bug.
-# 05.12.2015: More information in 'stop' messages.
-#            'warning' for unhandled combinations changed to 'stop'.
-# 05.10.2015: Added attributes to result.
-# 28.09.2015: Remove rows with missing alleles from the reference dataset.
-# 11.09.2015: Handle reference allele is NA.
-# 28.08.2015: Added importFrom
-# 26.06.2015: More precise warning messages (include sample name and marker).
-# 15.12.2014: Changed parameter names to format: lower.case
-# 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
-# 16.01.2014: Adde option for selection of one or more scoring methods.
-# 16.01.2014: Changed names 'Model[]'/'Method[]'.
-# 02.12.2013: Changed name 'Hybrid'/'Hybrid.Ph' to 'ModelL'/'ModelL.Ph'.
-# 13.11.2013: Concurrently score both Random, Allele1, and Allele2.
-# 07.11.2013: Fixed dropout check for homozygous loci in 'Hybrid' method.
 
 #' @title Calculate Drop-out Events
 #'

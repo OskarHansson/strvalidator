@@ -1,8 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 29.11.2025: Ontly print settings in debug mode.
-# 22.02.2020: First version.
-
 #' @title Get Settings.
 #'
 #' @description

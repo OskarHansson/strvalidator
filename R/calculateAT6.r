@@ -1,27 +1,4 @@
-################################################################################
-# TODO LIST
-# TODO: Calculate per dye channel.
-# TODO: Implement 'kit' and use that for arguments sex.rm and qs.rm.
 
-# NOTE: Column names used for calculations with data.table is declared
-# in globals.R to avoid NOTES in R CMD CHECK.
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
-# 06.08.2017: Added audit trail.
-# 21.10.2016: calculateHeterozygous sex.rm and qs.rm set to FALSE.
-# 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
-# 30.11.2015: Added 'NB!' in the description.
-# 30.11.2015: Remove rows with NA. Added 'what' parameter to 'addData'.
-# 24.11.2015: Added message to print data to be used in regression.
-# 28.08.2015: Added importFrom
-# 20.08.2015: Now use 'sigma' instead of 'standard error of the intercept'.
-# 26.06.2015: Changed to a one-sided critical t-value (alpha/2 -> alpha).
-# 24.06.2015: Added some debug information.
-# 18.06.2015: Flipped the signs when calculating 'Lower' and 'AT6' and added 'lower.tail = FALSE'.
-#   Will give identical result but is easier to follow.
-# 30.05.2015: First version.
 
 #' @title Calculate Analytical Threshold
 #'

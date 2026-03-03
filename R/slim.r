@@ -3,27 +3,6 @@
 # TODO: option to drop/keep unspecified columns.
 # TODO: option to drop/keep 'OL'.
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 07.08.2017: Added audit trail.
-# 09.01.2016: Added more attributes to result.
-# 06.01.2016: Added attributes to result.
-# 29.08.2015: Added importFrom.
-# 25.08.2015: Fixed error when 'stack' and 'slim' is empty or "".
-# 01.06.2015: Fixed columns is found using 'match' instead of 'grep'
-#  (fixes problem with partial matching).
-# 25.05.2015: Renamed parameters (keepAllFixed -> keep.na)
-# 23.05.2014: Improved error message.
-# 23.01.2014: Fixed bug when only one column in 'fix'.
-# 13.01.2014: Completely re-written for improved performance.
-# <13.01.2014: Renamed parameters (slim.col -> stack / fix.col -> fix (as earlier)
-# <13.01.2014: Fixed returned factor levels. Added as.matrix to return value.
-# <13.01.2014: Renamed parameters (slim -> slim.col / fixed -> fix.col
-# <13.01.2014: to avoid function/parameter slim to crash.
-# <13.01.2014: Roxygenized.
-# <13.01.2014: new parameter 'keep.na' - WORKING for two key kolumns, but not for unslim
-# <13.01.2014: new name flattenGM() -> slim(), new parameter names.
-
 #' @title Slim Data Frames
 #'
 #' @description

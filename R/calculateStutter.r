@@ -1,5 +1,4 @@
-################################################################################
-# TODO LIST
+
 # TODO: New (simpler) complementary function for calculating stutters.
 #   Pros: possibility to get proportion with stutter/no stutter
 #   Cons: difficult to include microvariant stutters.
@@ -12,26 +11,6 @@
 # TODO: option to filter peaks below (LOD) or above a treshold
 #  (e.g. <50 or >5000 rfu)?
 # TODO: Detect pull-ups and other noise within stutter range?
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 31.12.2025: Changed data quality messages into warnings.
-# 24.08.2018: Removed unused variables.
-# 07.08.2017: Added audit trail.
-# 17.01.2016: Fixed save attribute saves dataset.
-# 09.01.2016: Added more attributes to result.
-# 26.10.2015: Added attributes.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 30.11.2013: 'warning' changed to 'message' when data is converted.
-# 01.07.2013: Added "Sample.Name" in result.
-# 01.07.2013: Fixed "NAs introduced by coercion".
-# 25.06.2013: Fixed bug for 'interference = 1'.
-# 25.06.2013: Fixed bug for 'interference = 2'.
-# 25.06.2013: Fixed bug excluding homozygotes when using 'double notation' (16/16).
-# 25.06.2013: Fixed bug excluding homozygotes when using 'single notation' (16).
-# 30.05.2013: New parameters 'replace.val' and 'by.val' to fix 'false' stutters.
-# 30.05.2013: 'Type' rounded to 1 digit (avoid floating point 'bug' when ==)
-# 11.04.2013: Added some more data controls.
 
 #' @title Calculate Stutter
 #'

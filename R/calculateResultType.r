@@ -1,24 +1,6 @@
-################################################################################
-# TODO LIST
+
 # TODO: use string constants instead of hard coded.
 # TODO: add reference dataset for true complete profiles.
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 07.08.2017: Added audit trail.
-# 18.09.2016: Added attributes to result.
-# 28.08.2015: Added importFrom.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 22.01.2014: Fixed bug by adding check that 'Height' is numeric and convert.
-# 15.01.2014: Fixed NA's when 'mixture.limits' and 'partial.limits' is NULL.
-# 15.01.2014: Added message to show progress.
-# 03.11.2013: Added debug parameter and data check.
-# <03.11.2013: Roxygenized.
-# <03.11.2013: Added factors.
-# <03.11.2013: Grouping of mixed results.
-# <03.11.2013: Grouping of partial results.
-# <03.11.2013: First version.
 
 #' @title Calculate Result Type
 #'

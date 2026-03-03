@@ -1,27 +1,4 @@
-# NOTE: Column names used for calculations with data.table is declared
-# in globals.R to avoid NOTES in R CMD CHECK.
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.11.2025: addColor -> add_color
-# 11.08.2024: Corrected calculation of number of peaks for option 'marker'.
-# 09.08.2024: Always check for 'Dye' and add if missing.
-# 08.08.2024: Added new option 'marker' to ratio of min and max TPH.
-# 08.08.2024: Added correction for number of allele copies for option 'peak'.
-# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
-# 10.05.2020: Added 'peak' in parameter description.
-# 20.03.2019: Added new definition of balance (Issue:#14).
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 06.09.2016: Fixed implementation of filterProfile function.
-# 29.08.2016: Implemented updated filterProfile function.
-# 13.07.2016: Fixed 'data' save as attribute.
-# 28.06.2016: Added option to remove quality sensor.
-# 27.06.2016: Fixed problem with replacing NAs.
-# 19.02.2016: Add fix broken dye after removing OL alleles.
-# 18.02.2016: Add missing markers after removing OL alleles.
-# 09.01.2016: Added more attributes to result.
-# 22.12.2015: First version.
 
 #' @title Calculate Inter-locus Balance
 #'

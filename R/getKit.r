@@ -1,26 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.11.2025: Added fallback for locating the kit definition file (for testing).
-# 03.01.2019: Elaborated description for parameter "what".
-# 28.06.2016: Added support for 'Quality Sensor'.
-# 02.12.2016: Possible to return multiple kits by specifying a vector.
-# 29.08.2015: Added importFrom.
-# 28.06.2015: Changed parameter names to format: lower.case
-# 14.12.2014: what='Gender' changed to 'Sex.Marker' now return vector.
-# 26.09.2014: Fixed error if kit=NULL and what!=NA.
-# 26.08.2014: what=Offset/Repeat, now returns identical data frames.
-# 03.08.2014: Added option to return kit index.
-# 02.03.2014: Removed factor levels from 'Marker' before returning 'OFFSET'/'REPEAT'.
-# 09.12.2013: Removed factor levels from 'Marker' before returning 'VIRTUAL'.
-# 20.11.2013: Change parameter name 'kitNameOrIndex' to 'kit'.
-# 10.11.2013: 'Marker' returns vector instead of factor.
-# 24.10.2013: Fixed error when no matching kit and 'what'!=NA, return NA.
-# 04.10.2013: Removed factor levels from 'Marker' before returning 'COLOR'.
-# 17.09.2013: Added new parameter 'what' to specify return values.
-# 16.09.2013: Changed to support new kits file structure.
-# 05.06.2013: Added 'gender.marker'
-# 19.05.2013: Re-written for reading data from text file.
-
 #' @title Get Kit
 #'
 #' @description

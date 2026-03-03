@@ -1,11 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 12.08.2022: Removed 'Save as image' option. ggsave not compatible with plotly.
-# 04.08.2022: Fixed switched options for Y-scale radio button.
-# 04.08.2022: Removed unused strings.
-# 18.07.2022: First version.
-
 
 #' @title Plot EPG
 #'
@@ -382,6 +374,25 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     }
   }
 
+  settings_prefix <- ".strvalidator_plotEPG2_gui_"
+  settings_widgets <- list(
+    at = f1_at_spb,
+    st = f1_st_spb,
+    scale = f1_scale_opt
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -392,8 +403,9 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_plotEPG2_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_plotEPG2_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -404,15 +416,12 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_plotEPG2_gui_at", envir = env, inherits = FALSE)) {
-        svalue(f1_at_spb) <- get(".strvalidator_plotEPG2_gui_at", envir = env)
-      }
-      if (exists(".strvalidator_plotEPG2_gui_st", envir = env, inherits = FALSE)) {
-        svalue(f1_st_spb) <- get(".strvalidator_plotEPG2_gui_st", envir = env)
-      }
-      if (exists(".strvalidator_plotEPG2_gui_scale", envir = env, inherits = FALSE)) {
-        svalue(f1_scale_opt) <- get(".strvalidator_plotEPG2_gui_scale", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -422,24 +431,17 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_plotEPG2_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotEPG2_gui_at", value = svalue(f1_at_spb), envir = env)
-      assign(x = ".strvalidator_plotEPG2_gui_st", value = svalue(f1_st_spb), envir = env)
-      assign(x = ".strvalidator_plotEPG2_gui_scale", value = svalue(f1_scale_opt), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_plotEPG2_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotEPG2_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_plotEPG2_gui_at", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotEPG2_gui_at", envir = env)
-      }
-      if (exists(".strvalidator_plotEPG2_gui_st", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotEPG2_gui_st", envir = env)
-      }
-      if (exists(".strvalidator_plotEPG2_gui_scale", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotEPG2_gui_scale", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

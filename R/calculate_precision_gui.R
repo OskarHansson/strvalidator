@@ -102,10 +102,7 @@ calculate_precision_gui <- function(env = parent.frame(), savegui = NULL,
   w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
   
   addHandlerUnrealize(w, handler = function(h, ...) {
-    # Save GUI state (if your framework provides .saveSettings in scope)
-    if (exists(".saveSettings", mode = "function", inherits = TRUE)) {
-      # TODO: .saveSettings()
-    }
+    .saveSettings()
     
     # Focus parent window
     if (!is.null(parent)) {
@@ -359,7 +356,89 @@ calculate_precision_gui <- function(env = parent.frame(), savegui = NULL,
   addHandlerChanged(close_btn, handler = function(h, ...) {
     dispose(w)
   })
+
+  settings_prefix <- ".strvalidator_calculate_precision_gui_"
+  settings_widgets <- list(
+    plate_id = plate_id_edt,
+    include_ladder = include_ladder_chk,
+    save_within = save_within_edt,
+    save_across = save_across_edt
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
+  .loadSavedSettings <- function() {
+    # First check status of save flag.
+    if (!is.null(savegui)) {
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
+      if (debug) {
+        print("Save GUI status set!")
+      }
+    } else {
+      # Load save flag.
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
+      }
+      if (debug) {
+        print("Save GUI status loaded!")
+      }
+    }
+    if (debug) {
+      print(svalue(savegui_chk))
+    }
+
+    # Then load settings if true.
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
+      }
+      if (debug) {
+        print("Saved settings loaded!")
+      }
+    }
+  }
+
+  .saveSettings <- function() {
+    # Then save settings if true.
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
+    } else { # or remove all saved values if false.
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
+      }
+
+      if (debug) {
+        print("Settings cleared!")
+      }
+    }
+
+    if (debug) {
+      print("Settings saved!")
+    }
+  }
   
+  .loadSavedSettings()
   visible(w) <- TRUE
   return(TRUE)
 }

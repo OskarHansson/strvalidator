@@ -1,27 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 16.11.2025: Changed 'checkSubset' to 'check_subset' and parameter 'ignore.case' to 'ignore_case'.
-# 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 31.08.2022: Compacted the gui. Fixed Replacement table not expanding.
-# 12.08.2022: Changed logical (-> NA in tcltk) to strings in replace-false-stutter df + check for NAs.
-# 07.03.2020: Added language support.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 07.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 28.04.2016: 'Save as' textbox expandable.
-# 26.10.2015: Added attributes.
-# 28.08.2015: Added importFrom.
-# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
-# 05.01.2015: Added kit dropdown and kit attribute to result.
-# 07.10.2014: Added 'focus', added 'parent' parameter.
-# 03.08.2014: Added detection of kit and add attribute to result.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 08.05.2014: Implemented 'checkDataset'.
-# 26.07.2013: Changed parameter 'fixed' to 'word' for 'checkSubset' function.
-
 #' @title Calculate Stutter
 #'
 #' @description
@@ -505,6 +481,25 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_calculateStutter_gui_"
+  settings_widgets <- list(
+    back = f1g1_range_b_spb,
+    forward = f1g1_range_f_spb,
+    interference = interference_opt
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -515,8 +510,9 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateStutter_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateStutter_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -527,18 +523,12 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateStutter_gui_back", envir = env, inherits = FALSE)) {
-        svalue(f1g1_range_b_spb) <- get(".strvalidator_calculateStutter_gui_back", envir = env)
-      }
-      if (exists(".strvalidator_calculateStutter_gui_forward", envir = env, inherits = FALSE)) {
-        svalue(f1g1_range_f_spb) <- get(".strvalidator_calculateStutter_gui_forward", envir = env)
-      }
-      if (exists(".strvalidator_calculateStutter_gui_interference", envir = env, inherits = FALSE)) {
-        svalue(interference_opt) <- get(".strvalidator_calculateStutter_gui_interference", envir = env)
-      }
-      if (exists(".strvalidator_calculateStutter_gui_replace", envir = env, inherits = FALSE)) {
-        default_gdf[, ] <- get(".strvalidator_calculateStutter_gui_replace", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -548,28 +538,17 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateStutter_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateStutter_gui_back", value = svalue(f1g1_range_b_spb), envir = env)
-      assign(x = ".strvalidator_calculateStutter_gui_forward", value = svalue(f1g1_range_f_spb), envir = env)
-      assign(x = ".strvalidator_calculateStutter_gui_interference", value = svalue(interference_opt), envir = env)
-      assign(x = ".strvalidator_calculateStutter_gui_replace", value = default_gdf[], envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculateStutter_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStutter_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculateStutter_gui_back", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStutter_gui_back", envir = env)
-      }
-      if (exists(".strvalidator_calculateStutter_gui_forward", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStutter_gui_forward", envir = env)
-      }
-      if (exists(".strvalidator_calculateStutter_gui_interference", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStutter_gui_interference", envir = env)
-      }
-      if (exists(".strvalidator_calculateStutter_gui_replace", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStutter_gui_replace", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

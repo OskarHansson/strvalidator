@@ -1,9 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 08.11.2025: Changed to UPPER_SNAKE_CASE constants.
-# 28.09.2024: Fixed save to environment.
-# 17.08.2024: New function to import kit from GeneMarker files.
-
 #' @title Read GeneMarker Kit Definition
 #'
 #' @description
@@ -16,7 +10,7 @@
 #' saved in the current environment, or passed to a callback function.
 #'
 #' @param env environment in which to save the imported data.
-#' @param savegui logical; reserved for future use (currently ignored).
+#' @param savegui logical indicating if GUI settings should be saved in the environment.
 #' @param debug logical; if `TRUE`, print debug information to the console.
 #' @param parent optional GUI widget to receive focus when finished.
 #' @param callback optional function to receive the imported kit data.
@@ -27,7 +21,7 @@
 #' @export
 #'
 #' @importFrom gWidgets2 gwindow ggroup gfilebrowse gcombobox addHandlerChanged
-#'   svalue gmessage gbutton enabled visible
+#'   svalue gmessage gbutton enabled visible gcheckbox addSpring focus
 #' @importFrom xml2 read_xml xml_find_all xml_text
 #' @importFrom magrittr %>%
 #' @importFrom utils help
@@ -44,6 +38,8 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
   # Define default strings
   default_strings <- list(
     STR_WIN_TITLE = "GeneMarker Kit Import",
+    STR_CHK_GUI = "Save GUI settings",
+    STR_BTN_HELP = "Help",
     STR_BTN_SELECT_FILE = "Select panel",
     STR_BTN_TRANSFORM = "Import Kit",
     STR_MSG_FILE_NOT_EXIST = "The selected file does not exist.",
@@ -63,8 +59,24 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
   # Create main window
   window <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
+  addHandlerUnrealize(window, handler = function(h, ...) {
+    .save_settings()
+    if (!is.null(parent)) {
+      focus(parent)
+    }
+    FALSE
+  })
+
   # Create main group
   group <- ggroup(horizontal = FALSE, container = window)
+
+  header_group <- ggroup(container = group, expand = FALSE, fill = "both")
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = header_group)
+  addSpring(header_group)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = header_group)
+  addHandlerChanged(help_btn, handler = function(h, ...) {
+    print(help("read_gene_marker_kit_gui", help_type = "html"))
+  })
 
   # Button to select XML file
   file_button <- gfilebrowse(text = strings$STR_BTN_SELECT_FILE, container = group)
@@ -167,6 +179,38 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
     }
   )
 
+  .load_settings <- function() {
+    if (!is.null(savegui)) {
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
+    } else if (exists(".strvalidator_read_gene_marker_kit_gui_savegui", envir = env, inherits = FALSE)) {
+      svalue(savegui_chk) <- get(".strvalidator_read_gene_marker_kit_gui_savegui", envir = env)
+    }
+
+    if (isTRUE(svalue(savegui_chk))) {
+      if (exists(".strvalidator_read_gene_marker_kit_gui_file", envir = env, inherits = FALSE)) {
+        saved_file <- get(".strvalidator_read_gene_marker_kit_gui_file", envir = env)
+        if (is.character(saved_file) && length(saved_file) == 1 && nzchar(saved_file) && file.exists(saved_file)) {
+          svalue(file_button) <- saved_file
+        }
+      }
+    }
+  }
+
+  .save_settings <- function() {
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(".strvalidator_read_gene_marker_kit_gui_savegui", svalue(savegui_chk), envir = env)
+      assign(".strvalidator_read_gene_marker_kit_gui_file", svalue(file_button), envir = env)
+    } else {
+      for (nm in c(".strvalidator_read_gene_marker_kit_gui_savegui", ".strvalidator_read_gene_marker_kit_gui_file")) {
+        if (exists(nm, envir = env, inherits = FALSE)) {
+          remove(list = nm, envir = env)
+        }
+      }
+    }
+  }
+
   # Show the main window
+  .load_settings()
   visible(window) <- TRUE
 }

@@ -1,17 +1,4 @@
-################################################################################
-# TODO LIST
-# TODO: ...
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 10.05.2016: Added new option 'limit' to remove high ratios from the result.
-# 10.05.2016: Saved attributes to result.
-# 10.05.2016: Remove NA's in reference Allele column prior to analysis.
-# 28.08.2015: Added importFrom.
-# 29.01.2015: Fixed $Sample -> $Sample.Name bug.
-# 27.11.2014: First version.
 
 #' @title Calculate Spectral Pull-up
 #'

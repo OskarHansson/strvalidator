@@ -1,17 +1,4 @@
-################################################################################
-# TODO LIST
-# TODO: ...
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 18.09.2016: Implemented data.table and added attributes, and factors to result.
-# 28.08.2015: Added importFrom.
-# 01.06.2015: Changed column name 'File' to 'File.Name'.
-# 15.01.2014: Added message to show progress .
-# 12.01.2014: Replaced 'subset' with native code.
-# 11.01.2014: First version.
 
 #' @title Calculate Peaks
 #'

@@ -1,25 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 15.10.2025: Specified the package anchor in link.
-# 09.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 08.03.2020: Added check for data selected.
-# 08.03.2020: Added language support.
-# 16.03.2019: Fixed R Check note.
-# 03.03.2019: Compacted and tweaked widgets under tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 07.08.2017: Added audit trail.
-# 26.07.2017: Added expand=TRUE to save name text field.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 10.10.2016: Changed to rbind.fill
-# 10.10.2016: Check for column names no longer require identical order.
-# 28.08.2015: Added importFrom.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 29.07.2014: Changed name concatenate_gui -> combine_gui.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 08.05.2014: Implemented 'checkDataset'.
-
 #' @title Combine Datasets
 #'
 #' @description

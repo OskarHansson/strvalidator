@@ -1,3 +1,14 @@
+Version 2.5.0.9003
+------------------------------------------------------------------------------
+* Bug fixes and improvements with the most significant listed below:
+  - GUI save-state handling
+  Refactored legacy GUI save-state code to a consistent mapped pattern across
+  GUI files and added save-state support to newer GUI functions that previously
+  lacked it.
+  - In-file change logs
+  Removed in-file `# CHANGE LOG` blocks in R source files; project history is
+  maintained in GitHub.
+
 Version 2.5.0.9002
 ------------------------------------------------------------------------------
 * Bug fixes and improvements with the most significant listed below:

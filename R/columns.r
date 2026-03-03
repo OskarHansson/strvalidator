@@ -1,14 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.07.2022: Fixed "Found if() conditions comparing class() to string.
-# 24.08.2018: Removed unused variables.
-# 07.08.2017: Added audit trail.
-# 09.05.2016: Added attributes to result.
-# 09.05.2016: Added action 'substr' to extract a substring.
-# 22.12.2015: Added option to add new column by setting col1=NA.
-# 28.08.2015: Added importFrom.
-# 24.05.2015: First version.
-
 #' @title Column Actions
 #'
 #' @description

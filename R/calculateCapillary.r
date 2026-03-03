@@ -1,13 +1,4 @@
-################################################################################
-# TODO LIST
 # TODO: Hard-coded plate/injection information, should be put in a text file instead.
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 06.08.2017: Added audit trail.
-# 28.08.2015: Added importFrom
-# 15.12.2014: Changed parameter names to format: lower.case
-# 28.10.2013: First version.
 
 #' @title Calculate Capillary Balance
 #'

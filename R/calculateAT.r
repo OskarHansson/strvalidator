@@ -1,23 +1,4 @@
-# NOTE: Column names used for calculations with data.table is declared
-# in globals.R to avoid NOTES in R CMD CHECK.
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 23.05.2016: Changed name on some result columns.
-# 22.05.2016: Added masked data to result for manual investigation.
-# 20.05.2016: 'Blocked' changed to 'masked' throughout.
-# 20.05.2016: Implemented method 7 (assumes log-normal distribution).
-# 28.02.2016: Added check for ILS dye.
-# 09.01.2016: Added more attributes to result.
-# 21.10.2015: Added attributes.
-# 06.10.2015: Added importFrom for data.table
-# 28.08.2015: Added importFrom
-# 26.06.2015: Added global AT per dye.
-# 26.06.2015: Fixed hard-coded kit/dye set.
-# 03.05.2015: First version.
 
 #' @title Calculate Analytical Threshold
 #'

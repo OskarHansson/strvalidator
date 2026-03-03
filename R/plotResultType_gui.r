@@ -1,25 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 02.05.2020: Added language support.
-# 24.02.2019: Compacted and tweaked gui for tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 18.07.2017: Fixed 'ymax' warning (removed) and label order (added 'rev').
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 29.04.2016: 'Save as' textbox expandable.
-# 11.11.2015: Added importFrom ggplot2.
-# 29.08.2015: Added importFrom.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 08.05.2014: Implemented 'checkDataset'.
-# 20.01.2014: Changed 'saveImage_gui' for 'ggsave_gui'.
-# 12.01.2014: Updated with more options.
-# 28.10.2013: First version.
-
 #' @title Plot Result Type
 #'
 #' @description
@@ -489,6 +467,32 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       enabled(titles_group) <- FALSE
     }
   }
+  settings_prefix <- ".strvalidator_plotResultType_gui_"
+  settings_widgets <- list(
+    title_chk = titles_chk,
+    title = title_edt,
+    x_title = x_title_edt,
+    y_title = y_title_edt,
+    base_size = f1_base_size_edt,
+    label_size = f1_lab_size_edt,
+    print = f1_print_chk,
+    prop = f1_prop_chk,
+    palette = f1_palette_drp,
+    decimal = f1_decimal_spb
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -499,8 +503,9 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_plotResultType_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_plotResultType_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -511,38 +516,13 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_plotResultType_gui_title", envir = env, inherits = FALSE)) {
-        svalue(title_edt) <- get(".strvalidator_plotResultType_gui_title", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_plotResultType_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(titles_chk) <- get(".strvalidator_plotResultType_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(x_title_edt) <- get(".strvalidator_plotResultType_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(y_title_edt) <- get(".strvalidator_plotResultType_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_base_size", envir = env, inherits = FALSE)) {
-        svalue(f1_base_size_edt) <- get(".strvalidator_plotResultType_gui_base_size", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_label_size", envir = env, inherits = FALSE)) {
-        svalue(f1_lab_size_edt) <- get(".strvalidator_plotResultType_gui_label_size", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_print", envir = env, inherits = FALSE)) {
-        svalue(f1_print_chk) <- get(".strvalidator_plotResultType_gui_print", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_prop", envir = env, inherits = FALSE)) {
-        svalue(f1_prop_chk) <- get(".strvalidator_plotResultType_gui_prop", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_palette", envir = env, inherits = FALSE)) {
-        svalue(f1_palette_drp) <- get(".strvalidator_plotResultType_gui_palette", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_decimal", envir = env, inherits = FALSE)) {
-        svalue(f1_decimal_spb) <- get(".strvalidator_plotResultType_gui_decimal", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -551,52 +531,17 @@ plotResultType_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_plotResultType_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_title_chk", value = svalue(titles_chk), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_x_title", value = svalue(x_title_edt), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_y_title", value = svalue(y_title_edt), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_base_size", value = svalue(f1_base_size_edt), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_label_size", value = svalue(f1_lab_size_edt), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_print", value = svalue(f1_print_chk), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_prop", value = svalue(f1_prop_chk), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_palette", value = svalue(f1_palette_drp), envir = env)
-      assign(x = ".strvalidator_plotResultType_gui_decimal", value = svalue(f1_decimal_spb), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_plotResultType_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_title_chk", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_title", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_x_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_y_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_base_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_base_size", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_label_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_label_size", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_print", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_print", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_prop", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_prop", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_palette", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_palette", envir = env)
-      }
-      if (exists(".strvalidator_plotResultType_gui_decimal", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotResultType_gui_decimal", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

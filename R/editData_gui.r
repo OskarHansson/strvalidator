@@ -553,6 +553,25 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
     }
   }
 
+  settings_prefix <- ".strvalidator_editData_gui_"
+  settings_widgets <- list(
+    attr = f1_show_attr_chk,
+    limit = f1_limit_chk,
+    maxrow = f1_max_edt
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -563,33 +582,26 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_editData_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_editData_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
       }
     }
-
     if (debug) {
       print(svalue(savegui_chk))
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_editData_gui_attr", envir = env, inherits = FALSE)) {
-        svalue(f1_show_attr_chk) <- get(".strvalidator_editData_gui_attr", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_editData_gui_limit", envir = env, inherits = FALSE)) {
-        svalue(f1_limit_chk) <- get(".strvalidator_editData_gui_limit", envir = env)
-      }
-      if (exists(".strvalidator_editData_gui_maxrow", envir = env, inherits = FALSE)) {
-        svalue(f1_max_edt) <- get(".strvalidator_editData_gui_maxrow", envir = env)
-      }
-      if (exists(".strvalidator_editData_gui_hide", envir = env, inherits = FALSE)) {
-        .hideMsg <<- get(".strvalidator_editData_gui_hide", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -598,28 +610,17 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_editData_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_editData_gui_attr", value = svalue(f1_show_attr_chk), envir = env)
-      assign(x = ".strvalidator_editData_gui_limit", value = svalue(f1_limit_chk), envir = env)
-      assign(x = ".strvalidator_editData_gui_maxrow", value = svalue(f1_max_edt), envir = env)
-      assign(x = ".strvalidator_editData_gui_hide", value = .hideMsg, envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_editData_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_editData_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_editData_gui_attr", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_editData_gui_attr", envir = env)
-      }
-      if (exists(".strvalidator_editData_gui_limit", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_editData_gui_limit", envir = env)
-      }
-      if (exists(".strvalidator_editData_gui_maxrow", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_editData_gui_maxrow", envir = env)
-      }
-      if (exists(".strvalidator_editData_gui_hide", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_editData_gui_hide", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {
