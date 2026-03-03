@@ -1,27 +1,3 @@
-################################################################################
-# CHANGE LOG
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 16.03.2020: Added language support.
-# 03.03.2019: Compacted and tweaked widgets under tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 07.08.2017: Added audit trail.
-# 26.07.2017: Added expand=TRUE to save name text field.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 08.05.2014: Implemented 'checkDataset'.
-# 23.02.2014: Implemented new option 'ol.rm'.
-# 18.07.2013: Check before overwrite object.
-# 11.06.2013: Added 'inherits=FALSE' to 'exists'.
-# 10.06.2013: New parameter 'savegui'.
-# 06.06.2013: Added save GUI settings.
-# 04.06.2013: Fixed bug in 'missingCol'.
-# 29.05.2013: Disabled button and adding "processing..." after press.
-# 24.05.2013: Improved error message for missing columns.
-
 #' @title Guess Profile
 #'
 #' @description
@@ -294,6 +270,26 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_guessProfile_gui_"
+  settings_widgets <- list(
+    ratio = f1g1_ratio_spb,
+    height = f1g1_height_edt,
+    na = f1g1_na_chk,
+    ol = f1g1_ol_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -304,8 +300,9 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_guessProfile_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_guessProfile_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -316,18 +313,12 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_guessProfile_gui_ratio", envir = env, inherits = FALSE)) {
-        svalue(f1g1_ratio_spb) <- get(".strvalidator_guessProfile_gui_ratio", envir = env)
-      }
-      if (exists(".strvalidator_guessProfile_gui_height", envir = env, inherits = FALSE)) {
-        svalue(f1g1_height_edt) <- get(".strvalidator_guessProfile_gui_height", envir = env)
-      }
-      if (exists(".strvalidator_guessProfile_gui_na", envir = env, inherits = FALSE)) {
-        svalue(f1g1_na_chk) <- get(".strvalidator_guessProfile_gui_na", envir = env)
-      }
-      if (exists(".strvalidator_guessProfile_gui_ol", envir = env, inherits = FALSE)) {
-        svalue(f1g1_ol_chk) <- get(".strvalidator_guessProfile_gui_ol", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -337,28 +328,17 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_guessProfile_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_guessProfile_gui_ratio", value = svalue(f1g1_ratio_spb), envir = env)
-      assign(x = ".strvalidator_guessProfile_gui_height", value = svalue(f1g1_height_edt), envir = env)
-      assign(x = ".strvalidator_guessProfile_gui_na", value = svalue(f1g1_na_chk), envir = env)
-      assign(x = ".strvalidator_guessProfile_gui_ol", value = svalue(f1g1_ol_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_guessProfile_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_guessProfile_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_guessProfile_gui_ratio", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_guessProfile_gui_ratio", envir = env)
-      }
-      if (exists(".strvalidator_guessProfile_gui_height", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_guessProfile_gui_height", envir = env)
-      }
-      if (exists(".strvalidator_guessProfile_gui_na", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_guessProfile_gui_na", envir = env)
-      }
-      if (exists(".strvalidator_guessProfile_gui_ol", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_guessProfile_gui_ol", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

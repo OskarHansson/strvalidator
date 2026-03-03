@@ -1,14 +1,4 @@
-################################################################################
-# TODO LIST
-# TODO: ...
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 05.08.2016: Fixed wrong variable 'res' -> 'data'.
-# 04.08.2016: Added attributes.
-# 20.07.2016: First version
 
 
 #' @title Calculate Allele Copies

@@ -1,28 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 16.09.2022: Filename as suggested name for dataset for single file import.
-# 10.09.2022: Compacted the gui. Removed destroy workaround.
-# 16.03.2020: Added language support.
-# 17.03.2019: Fixed widgets not enabled.
-# 01.03.2019: Rearranged widgets and changed visibility for more intuitive options.
-# 22.02.2019: Compressed tcltk gui.
-# 15.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 07.08.2017: Added audit trail.
-# 17.07.2017: Added label "Selected for import".
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed expanded 'gexpandgroup'.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 11.07.2017: Changed part of layout and Implemented last directory as default.
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 15.12.2015: Removed "0" from the default 'na.strings'.
-# 04.12.2015: Implemented new parameter 'na.strings'.
-# 05.10.2015: Added attributes.
-# 29.08.2015: Added importFrom.
-# 23.05.2015: Added new options available in 'import'.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-
 #' @title Import Data
 #'
 #' @description
@@ -562,6 +537,35 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     }
   }
 
+  settings_prefix <- ".strvalidator_import_gui_"
+  settings_widgets <- list(
+    file = opt_file_chk,
+    time = opt_time_chk,
+    sep = opt_sep_drp,
+    na = opt_na_edt,
+    ignore = multi_case_chk,
+    prefix = multi_pre_edt,
+    suffix = multi_suf_edt,
+    extension = multi_ext_edt,
+    trim = opt_trim_chk,
+    trim_samples = trim_samples_edt,
+    trim_invert = trim_invert_chk,
+    slim = opt_slim_chk,
+    slim_fix = slim_fix_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -572,8 +576,9 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_import_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_import_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -584,54 +589,12 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_import_gui_last_dir", envir = env, inherits = FALSE)) {
-        .default_dir <<- get(".strvalidator_import_gui_last_dir", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_last_file_dir", envir = env, inherits = FALSE)) {
-        .default_file_dir <<- get(".strvalidator_import_gui_last_file_dir", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_last_file_name", envir = env, inherits = FALSE)) {
-        .default_file_name <<- get(".strvalidator_import_gui_last_file_name", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_file", envir = env, inherits = FALSE)) {
-        svalue(opt_file_chk) <- get(".strvalidator_import_gui_file", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_time", envir = env, inherits = FALSE)) {
-        svalue(opt_time_chk) <- get(".strvalidator_import_gui_time", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_sep", envir = env, inherits = FALSE)) {
-        svalue(opt_sep_drp) <- get(".strvalidator_import_gui_sep", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_na", envir = env, inherits = FALSE)) {
-        svalue(opt_na_edt) <- get(".strvalidator_import_gui_na", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_ignore", envir = env, inherits = FALSE)) {
-        svalue(multi_case_chk) <- get(".strvalidator_import_gui_ignore", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_prefix", envir = env, inherits = FALSE)) {
-        svalue(multi_pre_edt) <- get(".strvalidator_import_gui_prefix", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_suffix", envir = env, inherits = FALSE)) {
-        svalue(multi_suf_edt) <- get(".strvalidator_import_gui_suffix", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_extension", envir = env, inherits = FALSE)) {
-        svalue(multi_ext_edt) <- get(".strvalidator_import_gui_extension", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_trim", envir = env, inherits = FALSE)) {
-        svalue(opt_trim_chk) <- get(".strvalidator_import_gui_trim", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_trim_samples", envir = env, inherits = FALSE)) {
-        svalue(trim_samples_edt) <- get(".strvalidator_import_gui_trim_samples", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_trim_invert", envir = env, inherits = FALSE)) {
-        svalue(trim_invert_chk) <- get(".strvalidator_import_gui_trim_invert", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_slim", envir = env, inherits = FALSE)) {
-        svalue(opt_slim_chk) <- get(".strvalidator_import_gui_slim", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_slim_fix", envir = env, inherits = FALSE)) {
-        svalue(slim_fix_chk) <- get(".strvalidator_import_gui_slim_fix", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -641,76 +604,17 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_import_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_import_gui_last_dir", value = .default_dir, envir = env)
-      assign(x = ".strvalidator_import_gui_last_file_dir", value = .default_file_dir, envir = env)
-      assign(x = ".strvalidator_import_gui_last_file_name", value = .default_file_name, envir = env)
-      assign(x = ".strvalidator_import_gui_file", value = svalue(opt_file_chk), envir = env)
-      assign(x = ".strvalidator_import_gui_time", value = svalue(opt_time_chk), envir = env)
-      assign(x = ".strvalidator_import_gui_sep", value = svalue(opt_sep_drp), envir = env)
-      assign(x = ".strvalidator_import_gui_na", value = svalue(opt_na_edt), envir = env)
-      assign(x = ".strvalidator_import_gui_ignore", value = svalue(multi_case_chk), envir = env)
-      assign(x = ".strvalidator_import_gui_prefix", value = svalue(multi_pre_edt), envir = env)
-      assign(x = ".strvalidator_import_gui_suffix", value = svalue(multi_suf_edt), envir = env)
-      assign(x = ".strvalidator_import_gui_extension", value = svalue(multi_ext_edt), envir = env)
-      assign(x = ".strvalidator_import_gui_trim", value = svalue(opt_trim_chk), envir = env)
-      assign(x = ".strvalidator_import_gui_trim_samples", value = svalue(trim_samples_edt), envir = env)
-      assign(x = ".strvalidator_import_gui_trim_invert", value = svalue(trim_invert_chk), envir = env)
-      assign(x = ".strvalidator_import_gui_slim", value = svalue(opt_slim_chk), envir = env)
-      assign(x = ".strvalidator_import_gui_slim_fix", value = svalue(slim_fix_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_import_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_last_dir", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_last_dir", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_last_file_dir", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_last_file_dir", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_last_file_name", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_last_file_name", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_file", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_file", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_time", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_time", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_sep", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_sep", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_na", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_na", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_ignore", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_ignore", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_prefix", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_prefix", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_suffix", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_suffix", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_extension", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_extension", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_trim", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_trim", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_trim_samples", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_trim_samples", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_trim_invert", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_trim_invert", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_slim", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_slim", envir = env)
-      }
-      if (exists(".strvalidator_import_gui_slim_fix", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_import_gui_slim_fix", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

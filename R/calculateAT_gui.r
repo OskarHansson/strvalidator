@@ -1,30 +1,4 @@
-# NOTE: Column names used for calculations with data.table is declared
-# in globals.R to avoid NOTES in R CMD CHECK.
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.11.2025: addColor -> add_color
-# 01.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 03.03.2020: Fixed reference to function name.
-# 29.02.2020: Added language support.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 20.07.2018: Fixed dropdown gets blank when dataset is selected.
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 27.06.2016: Added kit drop-down to fix hardcoded kit in mask plot.
-# 27.06.2016: Removed check for reference sample if masking is selected (no harm).
-# 16.06.2016: Fixed bug in plot sample masking range.
-# 16.06.2016: Now all excluded peaks are marked (not only high peaks).
-# 15.06.2016: Prepare button and drop-down menu now disabled while processing.
-# 22.05.2016: Added masked data to result for manual investigation.
-# 20.05.2016: 'Blocked' changed to 'masked' throughout.
-# 25.04.2016: 'Save as' textbox expandable.
-# 11.11.2015: Added importFrom ggplot2.
-# 21.10.2015: Added attributes.
-# 28.08.2015: Added importFrom
 
 #' @title Calculate Analytical Threshold
 #'
@@ -931,6 +905,34 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
     }
   }
 
+  settings_prefix <- ".strvalidator_calculateAT_gui_"
+  settings_widgets <- list(
+    mask_h = f1_mask_h_chk,
+    mask = f1_mask_chk,
+    mask_ils = f1_mask_ils_chk,
+    dye = f1_mask_d_chk,
+    height = f1_mask_h_edt,
+    range = f1_mask_spb,
+    range_ils = f1_mask_ils_spb,
+    k = f1_k_spb,
+    t = f1_t_spb,
+    a = f1_a_spb,
+    ignore = f1_ignore_chk,
+    word = f1_word_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -941,8 +943,9 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateAT_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateAT_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -953,42 +956,12 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateAT_gui_mask_h", envir = env, inherits = FALSE)) {
-        svalue(f1_mask_h_chk) <- get(".strvalidator_calculateAT_gui_mask_h", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_mask", envir = env, inherits = FALSE)) {
-        svalue(f1_mask_chk) <- get(".strvalidator_calculateAT_gui_mask", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_mask_ils", envir = env, inherits = FALSE)) {
-        svalue(f1_mask_ils_chk) <- get(".strvalidator_calculateAT_gui_mask_ils", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_dye", envir = env, inherits = FALSE)) {
-        svalue(f1_mask_d_chk) <- get(".strvalidator_calculateAT_gui_dye", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_height", envir = env, inherits = FALSE)) {
-        svalue(f1_mask_h_edt) <- get(".strvalidator_calculateAT_gui_height", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_range", envir = env, inherits = FALSE)) {
-        svalue(f1_mask_spb) <- get(".strvalidator_calculateAT_gui_range", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_range_ils", envir = env, inherits = FALSE)) {
-        svalue(f1_mask_ils_spb) <- get(".strvalidator_calculateAT_gui_range_ils", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_k", envir = env, inherits = FALSE)) {
-        svalue(f1_k_spb) <- get(".strvalidator_calculateAT_gui_k", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_t", envir = env, inherits = FALSE)) {
-        svalue(f1_t_spb) <- get(".strvalidator_calculateAT_gui_t", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_a", envir = env, inherits = FALSE)) {
-        svalue(f1_a_spb) <- get(".strvalidator_calculateAT_gui_a", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_ignore", envir = env, inherits = FALSE)) {
-        svalue(f1_ignore_chk) <- get(".strvalidator_calculateAT_gui_ignore", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_word", envir = env, inherits = FALSE)) {
-        svalue(f1_word_chk) <- get(".strvalidator_calculateAT_gui_word", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -998,60 +971,17 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateAT_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_mask_h", value = svalue(f1_mask_h_chk), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_mask", value = svalue(f1_mask_chk), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_mask_ils", value = svalue(f1_mask_ils_chk), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_dye", value = svalue(f1_mask_d_chk), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_height", value = svalue(f1_mask_h_edt), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_range", value = svalue(f1_mask_spb), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_range_ils", value = svalue(f1_mask_ils_spb), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_k", value = svalue(f1_k_spb), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_t", value = svalue(f1_t_spb), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_a", value = svalue(f1_a_spb), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_ignore", value = svalue(f1_ignore_chk), envir = env)
-      assign(x = ".strvalidator_calculateAT_gui_word", value = svalue(f1_word_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculateAT_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_mask_h", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_mask_h", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_mask", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_mask", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_mask_ils", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_mask_ils", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_dye", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_dye", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_height", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_height", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_range", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_range", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_range_ils", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_range_ils", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_k", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_k", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_t", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_t", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_a", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_a", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_ignore", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_ignore", envir = env)
-      }
-      if (exists(".strvalidator_calculateAT_gui_word", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAT_gui_word", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

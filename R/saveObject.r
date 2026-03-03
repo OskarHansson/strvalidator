@@ -1,13 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 03.05.2020: Added language support.
-# 20.02.2019: Fixed "error in if(ok) argument not logical" using tcltk.
-# 29.04.2016: Fixed object not saved if an object existed and the new object is renamed.
-# 18.07.2014: Added syntactically valid name check.
-# 18.07.2014: Added 'remove' and 'suggested' parameter.
-# 20.01.2014: Added 'debug' parameter.
-# 17.07.2013: First version.
-
 #' @title Save Object
 #'
 #' @description

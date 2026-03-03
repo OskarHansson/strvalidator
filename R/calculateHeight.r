@@ -1,26 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 11.09.2022: Added information about limitations when dropout is present.
-# 07.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 18.09.2016: Fixed attribute word not saved.
-# 16.09.2016: Change keep.na=FALSE to keep.na=TRUE for filterProfile.
-# 14.09.2016: Fixed error when homozygotes are given with double notation in ref.
-# 06.09.2016: Implemented word boundaries (filterProfile).
-# 06.09.2016: Fixed implementation of updated filterProfile function.
-# 29.08.2016: Implemented updated filterProfile function.
-# 19.08.2016: Fixed bug resulting in wrong number of observed allele copies.
-# 15.08.2016: Rewritten to use data.table for efficiency and new metrics.
-# 29.06.2016: Added option to remove sex markers and quality sensor.
-# 25.01.2016: Fixed save attribute saves dataset.
-# 09.01.2016: Added more attributes to result.
-# 06.01.2016: Added attributes to result.
-# 12.10.2014: Fixed bug when NA in Allele column.
-# 26.09.2014: Accept vector for 'exclude'.
-# 12.09.2014: Included 'exclude' parameter.
-# 10.09.2014: Included total peak height in result.
-
 #' @title Calculate Peak Height.
 #'
 #' @description

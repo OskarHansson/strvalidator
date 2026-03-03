@@ -1,20 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 11.05.2021: Removed unused imports. Fixes issue#19.
-# 04.07.2020: Fixed no visible binding for variables.
-# 02.05.2020: Added language support.
-# 06.09.2019: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 24.02.2019: Compacted and tweaked gui for tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed expanded 'gexpandgroup'.
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 29.04.2016: 'Save as' textbox expandable.
-# 25.04.2016: First version.
-
 #' @title Plot Profile Slope
 #'
 #' @description
@@ -460,6 +443,31 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     }
   }
 
+  settings_prefix <- ".strvalidator_plotSlope_gui_"
+  settings_widgets <- list(
+    title = title_edt,
+    title_chk = titles_chk,
+    x_title = x_title_edt,
+    y_title = y_title_edt,
+    xlabel_size = e4_size_edt,
+    xlabel_angle = e4_angle_spb,
+    xlabel_justh = e4_hjust_spb,
+    xlabel_justv = e4_vjust_spb,
+    theme = f1_theme_drp
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -470,8 +478,9 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_plotSlope_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_plotSlope_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -482,35 +491,13 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_plotSlope_gui_title", envir = env, inherits = FALSE)) {
-        svalue(title_edt) <- get(".strvalidator_plotSlope_gui_title", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_plotSlope_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(titles_chk) <- get(".strvalidator_plotSlope_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(x_title_edt) <- get(".strvalidator_plotSlope_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(y_title_edt) <- get(".strvalidator_plotSlope_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_xlabel_size", envir = env, inherits = FALSE)) {
-        svalue(e4_size_edt) <- get(".strvalidator_plotSlope_gui_xlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_xlabel_angle", envir = env, inherits = FALSE)) {
-        svalue(e4_angle_spb) <- get(".strvalidator_plotSlope_gui_xlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_xlabel_justh", envir = env, inherits = FALSE)) {
-        svalue(e4_hjust_spb) <- get(".strvalidator_plotSlope_gui_xlabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_xlabel_justv", envir = env, inherits = FALSE)) {
-        svalue(e4_vjust_spb) <- get(".strvalidator_plotSlope_gui_xlabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_theme", envir = env, inherits = FALSE)) {
-        svalue(f1_theme_drp) <- get(".strvalidator_plotSlope_gui_theme", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -519,48 +506,17 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_plotSlope_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_title_chk", value = svalue(titles_chk), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_x_title", value = svalue(x_title_edt), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_y_title", value = svalue(y_title_edt), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_xlabel_size", value = svalue(e4_size_edt), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_xlabel_angle", value = svalue(e4_angle_spb), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_xlabel_justh", value = svalue(e4_hjust_spb), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_xlabel_justv", value = svalue(e4_vjust_spb), envir = env)
-      assign(x = ".strvalidator_plotSlope_gui_theme", value = svalue(f1_theme_drp), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_plotSlope_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_title", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_title_chk", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_x_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_y_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_xlabel_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_xlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_xlabel_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_xlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_xlabel_justh", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_xlabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_xlabel_justv", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_xlabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_plotSlope_gui_theme", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotSlope_gui_theme", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

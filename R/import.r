@@ -1,30 +1,5 @@
-################################################################################
-# TODO LIST
+
 # TODO: Update to use 'fread' when problem with colClasses is solved.
-
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 07.08.2017: Added audit trail.
-# 05.08.2017: Prefix now works as intended (contains -> prefix).
-# 09.01.2016: Added more attributes to result.
-# 15.12.2015: Removed "0" from the default 'na.strings'.
-# 04.12.2015: Added parameter 'na.strings'.
-# 09.11.2015: Added "0" to 'na.strings' in 'read.table'.
-# 06.10.2015: Added call to 'colConvert' to convert known numeric columns.
-# 05.10.2015: Added attributes.
-# 31.08.2015: Removed option to manually pick folder using 'choose.dir'.
-# 29.08.2015: Added importFrom.
-# 01.06.2015: Re-named column name 'File' to 'File.Name' to increase specificity in 'trim'.
-# 23.05.2015: Changed names on parameters 'file.name' -> 'import.file'.
-# 23.05.2015: Added parameters for auto trim and auto slim.
-# 22.05.2015: Added parameters 'file.name', 'time.stamp', and 'ignore.case'.
-# 22.05.2015: Re-wrote import loop.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 20.01.2014: Added parameter 'colClasses = "character"' to 'read.table'.
-# 15.01.2014: Added message to show progress.
-# 13.01.2014: Added parameter 'na.strings = c("NA","")' to 'read.table'.
-# 13.01.2014: Fixed bug when no matching files in folder.
 
 #' @title Import Data
 #'

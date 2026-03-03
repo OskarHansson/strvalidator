@@ -1,17 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
-# 18.04.2020: Added language support.
-# 23.02.2019: Compacted and tweaked gui for tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 04.08.2016: First version.
-
 #' @title Plot Contamination
 #'
 #' @description
@@ -453,6 +439,27 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     return(gp)
   }
 
+  settings_prefix <- ".strvalidator_plotContamination_gui_"
+  settings_widgets <- list(
+    title = title_edt,
+    title_chk = titles_chk,
+    x_title = x_title_edt,
+    y_title = y_title_edt,
+    theme = f1_theme_drp
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -463,8 +470,9 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_plotContamination_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_plotContamination_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -475,23 +483,13 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_plotContamination_gui_title", envir = env, inherits = FALSE)) {
-        svalue(title_edt) <- get(".strvalidator_plotContamination_gui_title", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_plotContamination_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(titles_chk) <- get(".strvalidator_plotContamination_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotContamination_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(x_title_edt) <- get(".strvalidator_plotContamination_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotContamination_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(y_title_edt) <- get(".strvalidator_plotContamination_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotContamination_gui_theme", envir = env, inherits = FALSE)) {
-        svalue(f1_theme_drp) <- get(".strvalidator_plotContamination_gui_theme", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -500,32 +498,17 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_plotContamination_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotContamination_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotContamination_gui_title_chk", value = svalue(titles_chk), envir = env)
-      assign(x = ".strvalidator_plotContamination_gui_x_title", value = svalue(x_title_edt), envir = env)
-      assign(x = ".strvalidator_plotContamination_gui_y_title", value = svalue(y_title_edt), envir = env)
-      assign(x = ".strvalidator_plotContamination_gui_theme", value = svalue(f1_theme_drp), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_plotContamination_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotContamination_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_plotContamination_gui_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotContamination_gui_title", envir = env)
-      }
-      if (exists(".strvalidator_plotContamination_gui_title_chk", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotContamination_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotContamination_gui_x_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotContamination_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotContamination_gui_y_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotContamination_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotContamination_gui_theme", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotContamination_gui_theme", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

@@ -1,21 +1,4 @@
-################################################################################
-# TODO LIST
-# TODO: ...
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 27.06.2016: Now check for and removes NA in markers to handle SamplePlotSizingTable.
-# 01.01.2016: Added support for vector.
-# 08.11.2015: Changed default to index=TRUE. Export function.
-# 03.08.2014: Added support for kit attribute.
-# 15.04.2014: Revert to previous match if no match in a method.
-# 24.10.2013: Improved matching.
-# 18.09.2013: Fixed error when compairing unequal length.
-# 17.09.2013: Updated to support new 'getKit' structure.
-# 05.06.2013: Added debug option.
-# 03.06.2013: Distinguish equal scores by marker position.
-# 28.04.2013: Best match from proportion instead of number of matching markers.
-# <28.04.2013: First version
 
 #' @title Detect Kit
 #'

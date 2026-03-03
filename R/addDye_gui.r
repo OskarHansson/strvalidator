@@ -327,6 +327,27 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_addDye_gui_"
+  settings_widgets <- list(
+    ignore = f1_ignore_chk,
+    dye = f1_dye_chk,
+    color = f1_color_chk,
+    r = f1_r_chk,
+    order = f1_order_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -337,8 +358,9 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_addDye_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_addDye_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -349,23 +371,13 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_addDye_gui_ignore", envir = env, inherits = FALSE)) {
-        svalue(f1_ignore_chk) <- get(".strvalidator_addDye_gui_ignore", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_addDye_gui_dye", envir = env, inherits = FALSE)) {
-        svalue(f1_dye_chk) <- get(".strvalidator_addDye_gui_dye", envir = env)
-      }
-      if (exists(".strvalidator_addDye_gui_color", envir = env, inherits = FALSE)) {
-        svalue(f1_color_chk) <- get(".strvalidator_addDye_gui_color", envir = env)
-      }
-      if (exists(".strvalidator_addDye_gui_r", envir = env, inherits = FALSE)) {
-        svalue(f1_r_chk) <- get(".strvalidator_addDye_gui_r", envir = env)
-      }
-      if (exists(".strvalidator_addDye_gui_order", envir = env, inherits = FALSE)) {
-        svalue(f1_order_chk) <- get(".strvalidator_addDye_gui_order", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -374,32 +386,17 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_addDye_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_addDye_gui_ignore", value = svalue(f1_ignore_chk), envir = env)
-      assign(x = ".strvalidator_addDye_gui_dye", value = svalue(f1_dye_chk), envir = env)
-      assign(x = ".strvalidator_addDye_gui_color", value = svalue(f1_color_chk), envir = env)
-      assign(x = ".strvalidator_addDye_gui_r", value = svalue(f1_r_chk), envir = env)
-      assign(x = ".strvalidator_addDye_gui_order", value = svalue(f1_order_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_addDye_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addDye_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_addDye_gui_ignore", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addDye_gui_ignore", envir = env)
-      }
-      if (exists(".strvalidator_addDye_gui_dye", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addDye_gui_dye", envir = env)
-      }
-      if (exists(".strvalidator_addDye_gui_color", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addDye_gui_color", envir = env)
-      }
-      if (exists(".strvalidator_addDye_gui_r", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addDye_gui_r", envir = env)
-      }
-      if (exists(".strvalidator_addDye_gui_order", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addDye_gui_order", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

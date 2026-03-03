@@ -1,22 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 05.09.2022: Compacted gui. Removed destroy workaround.
-# 03.03.2020: Added language support.
-# 03.03.2020: Expand scrollable checkbox view under RGtk2.
-# 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 28.08.2015: Added importFrom
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 06.01.2014: Fixed button name used as 'save as' name.
-# 20.11.2013: Fixed result now stored in variable 'datanew' insted of 'val_name'.
-# 29.09.2013: First version.
-
 
 #' @title Calculate Bins Overlap
 #'
@@ -476,6 +457,31 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_calculateOverlap_gui_"
+  settings_widgets <- list(
+    db = f1_db_chk,
+    db_name = f1_db_drp,
+    virtual = f1_virtual_chk,
+    penalty = f1_penalty_chk,
+    kit_p1 = f2_penalty1_spb,
+    kit_p2 = f2_penalty2_spb,
+    kit_p3 = f2_penalty3_spb,
+    kit_p4 = f2_penalty4_spb,
+    kit_p5 = f2_penalty5_spb
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -486,8 +492,9 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateOverlap_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateOverlap_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -498,35 +505,13 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateOverlap_gui_db", envir = env, inherits = FALSE)) {
-        svalue(f1_db_chk) <- get(".strvalidator_calculateOverlap_gui_db", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_calculateOverlap_gui_db_name", envir = env, inherits = FALSE)) {
-        svalue(f1_db_drp) <- get(".strvalidator_calculateOverlap_gui_db_name", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_virtual", envir = env, inherits = FALSE)) {
-        svalue(f1_virtual_chk) <- get(".strvalidator_calculateOverlap_gui_virtual", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_penalty", envir = env, inherits = FALSE)) {
-        svalue(f1_penalty_chk) <- get(".strvalidator_calculateOverlap_gui_penalty", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p1", envir = env, inherits = FALSE)) {
-        svalue(f2_penalty1_spb) <- get(".strvalidator_calculateOverlap_gui_kit_p1", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p2", envir = env, inherits = FALSE)) {
-        svalue(f2_penalty2_spb) <- get(".strvalidator_calculateOverlap_gui_kit_p2", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p3", envir = env, inherits = FALSE)) {
-        svalue(f2_penalty3_spb) <- get(".strvalidator_calculateOverlap_gui_kit_p3", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p4", envir = env, inherits = FALSE)) {
-        svalue(f2_penalty4_spb) <- get(".strvalidator_calculateOverlap_gui_kit_p4", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p5", envir = env, inherits = FALSE)) {
-        svalue(f2_penalty5_spb) <- get(".strvalidator_calculateOverlap_gui_kit_p5", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -535,50 +520,18 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateOverlap_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_db", value = svalue(f1_db_chk), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_db_name", value = svalue(f1_db_drp), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_virtual", value = svalue(f1_virtual_chk), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_penalty", value = svalue(f1_penalty_chk), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_kit_p1", value = svalue(f2_penalty1_spb), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_kit_p2", value = svalue(f2_penalty2_spb), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_kit_p3", value = svalue(f2_penalty3_spb), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_kit_p4", value = svalue(f2_penalty4_spb), envir = env)
-      assign(x = ".strvalidator_calculateOverlap_gui_kit_p5", value = svalue(f2_penalty5_spb), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculateOverlap_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_savegui", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
-      if (exists(".strvalidator_calculateOverlap_gui_db", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_db", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_db_name", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_db_name", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_virtual", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_virtual", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_penalty", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_penalty", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p1", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_kit_p1", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p2", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_kit_p2", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p3", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_kit_p3", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p4", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_kit_p4", envir = env)
-      }
-      if (exists(".strvalidator_calculateOverlap_gui_kit_p5", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateOverlap_gui_kit_p5", envir = env)
-      }
-
 
       if (debug) {
         print("Settings cleared!")

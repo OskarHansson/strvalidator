@@ -1,11 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 11.08.2024: Added escape characters to \{0,1\} in parameter description.
-# 04.08.2022: Added parameter decimals for rounding of result.
-# 13.06.2020: Fixed error in argument checks.
-# 09.06.2020: Added parameter count.
-# 22.05.2020: First version.
-
 #' @title Summary Statistics
 #'
 #' @description

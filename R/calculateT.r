@@ -1,8 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 12.03.2019: Fixed "Error: $operator..." when ResourceSelection is not installed.
-# 17.07.2018: First version.
-
 #' @title Calculate Stochastic Threshold
 #'
 #' @description

@@ -1,14 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.11.2025: addColor -> add_color
-# 15.10.2025: Specified the package anchor in link.
-# 24.08.2018: Removed unused variables.
-# 07.08.2017: Added audit trail.
-# 27.06.2016: Added: @importFrom stats dist
-# 19.05.2016: Implemented more accurat method and parameter 'quick'.
-# 18.05.2016: Now removes false positives (multiple peaks in same dye).
-# 12.10.2015: First version.
-
 #' @title Detect Spike
 #'
 #' @description

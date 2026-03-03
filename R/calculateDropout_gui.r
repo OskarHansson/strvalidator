@@ -1,28 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 16.11.2025: Changed 'checkSubset' to 'check_subset' and parameter 'ignore.case' to 'ignore_case'.
-# 02.09.2022: Compacted the gui.
-# 03.03.2020: Fixed reference to function name.
-# 01.03.2020: Added language support.
-# 10.01.2020: Changed "LDT" to "AT" following the book.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 17.07.2018: 'Save as' textbox expandable.
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
-# 29.06.2016: Added option to remove sex markers and quality sensor.
-# 16.06.2016: 'Save as' textbox expandable.
-# 05.10.2015: Added more attributes to result.
-# 04.10.2015: Added automatic calculation of average peak height 'H'.
-# 28.08.2015: Added importFrom
-# 05.05.2015: Changed parameter 'ignoreCase' to 'ignore.case' for 'checkSubset' function.
-# 13.12.2014: Added kit dropdown and kit attribute to result.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-
 #' @title Calculate Dropout Events
 #'
 #' @description
@@ -544,6 +519,30 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_calculateDropout_gui_"
+  settings_widgets <- list(
+    ignore = f1_ignore_case_chk,
+    sex = f1_sex_chk,
+    qs = f1_qs_chk,
+    h = f1_h_chk,
+    score1 = f1_score1_chk,
+    score2 = f1_score2_chk,
+    scorex = f1_scorex_chk,
+    scorel = f1_scorel_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -554,8 +553,9 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateDropout_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateDropout_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -566,32 +566,13 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateDropout_gui_ignore", envir = env, inherits = FALSE)) {
-        svalue(f1_ignore_case_chk) <- get(".strvalidator_calculateDropout_gui_ignore", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_calculateDropout_gui_sex", envir = env, inherits = FALSE)) {
-        svalue(f1_sex_chk) <- get(".strvalidator_calculateDropout_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_qs", envir = env, inherits = FALSE)) {
-        svalue(f1_qs_chk) <- get(".strvalidator_calculateDropout_gui_qs", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_h", envir = env, inherits = FALSE)) {
-        svalue(f1_h_chk) <- get(".strvalidator_calculateDropout_gui_h", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_score1", envir = env, inherits = FALSE)) {
-        svalue(f1_score1_chk) <- get(".strvalidator_calculateDropout_gui_score1", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_score2", envir = env, inherits = FALSE)) {
-        svalue(f1_score2_chk) <- get(".strvalidator_calculateDropout_gui_score2", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_scorex", envir = env, inherits = FALSE)) {
-        svalue(f1_scorex_chk) <- get(".strvalidator_calculateDropout_gui_scorex", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_scorel", envir = env, inherits = FALSE)) {
-        svalue(f1_scorel_chk) <- get(".strvalidator_calculateDropout_gui_scorel", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -600,44 +581,17 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateDropout_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateDropout_gui_ignore", value = svalue(f1_ignore_case_chk), envir = env)
-      assign(x = ".strvalidator_calculateDropout_gui_sex", value = svalue(f1_sex_chk), envir = env)
-      assign(x = ".strvalidator_calculateDropout_gui_qs", value = svalue(f1_qs_chk), envir = env)
-      assign(x = ".strvalidator_calculateDropout_gui_h", value = svalue(f1_h_chk), envir = env)
-      assign(x = ".strvalidator_calculateDropout_gui_score1", value = svalue(f1_score1_chk), envir = env)
-      assign(x = ".strvalidator_calculateDropout_gui_score2", value = svalue(f1_score2_chk), envir = env)
-      assign(x = ".strvalidator_calculateDropout_gui_scorex", value = svalue(f1_scorex_chk), envir = env)
-      assign(x = ".strvalidator_calculateDropout_gui_scorel", value = svalue(f1_scorel_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculateDropout_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_ignore", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_ignore", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_sex", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_qs", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_qs", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_h", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_h", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_score1", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_score1", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_score2", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_score2", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_scorex", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_scorex", envir = env)
-      }
-      if (exists(".strvalidator_calculateDropout_gui_scorel", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateDropout_gui_scorel", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

@@ -1,8 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 28.09.2024: Fixed plot order.
-# 17.08.2024: New function to import kit from GeneMarker files.
-
 #' @title Read GeneMarker Kit Definition
 #'
 #' @description

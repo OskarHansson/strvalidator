@@ -1,27 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 09.11.2025: addColor -> add_color
-# 07.07.2023: Fixed Error in !is.na(.gData) && !is.null(.gData) in coercion to 'logical(1)
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 02.05.2020: Added language support.
-# 07.09.2019: Added option to override labels and titles.
-# 24.02.2019: Compacted and tweaked gui for tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed expanded 'gexpandgroup'.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 10.01.2017: Added option to drop unused levels.
-# 10.05.2016: 'Save as' textbox expandable.
-# 10.05.2016: Fixed some plot error and included check for missing values.
-# 10.05.2016: New method '.enablePlotButtons' and called when changing plot options.
-# 06.01.2016: Fixed theme methods not found and added more themes.
-# 11.11.2015: Added importFrom grid and gridExtra arrangeGrob, and ggplot2.
-# 11.11.2015: Added more themes.
-# 29.08.2015: Added importFrom.
-# 05.01.2015: 'Save as object' now disabled when complex plot.
-
 #' @title Plot Stutter
 #'
 #' @description
@@ -1247,6 +1223,62 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     hcl(h = hues, l = 65, c = 100)[1:n]
   }
 
+  settings_prefix <- ".strvalidator_plotStutter_gui_"
+  settings_widgets <- list(
+    title_chk = titles_chk,
+    title = title_edt,
+    x_title = x_title_edt,
+    y_title = y_title_edt,
+    title_size = title_size_txt,
+    x_title_size = x_title_size_txt,
+    y_title_size = y_title_size_txt,
+    title_angle = title_angle_spb,
+    x_title_angle = x_title_angle_spb,
+    y_title_angle = y_title_angle_spb,
+    title_vjust = title_vjust_spb,
+    x_title_vjust = x_title_vjust_spb,
+    y_title_vjust = y_title_vjust_spb,
+    title_hjust = title_hjust_spb,
+    x_title_hjust = x_title_hjust_spb,
+    y_title_hjust = y_title_hjust_spb,
+    points_shape = shape_spb,
+    points_alpha = alpha_spb,
+    points_jitter = jitter_txt,
+    axes_y_min = y_min_txt,
+    axes_y_max = y_max_txt,
+    axes_x_min = x_min_txt,
+    axes_x_max = x_max_txt,
+    axes_scales = scales_opt,
+    labels_chk = labels_chk,
+    xlabel_size = size_txt,
+    ylabel_size = size_txt_y,
+    sxlabel_size = size_txt_sx,
+    sylabel_size = size_txt_sy,
+    xlabel_angle = angle_spb,
+    ylabel_angle = angle_spb_y,
+    sxlabel_angle = angle_spb_sx,
+    sylabel_angle = angle_spb_sy,
+    xlabel_justh = hjust_spb,
+    xlabel_justv = vjust_spb,
+    ylabel_justh = hjust_spb_y,
+    ylabel_justv = vjust_spb_y,
+    theme = f1_theme_drp,
+    sex = f1_drop_chk,
+    levels = f1_levels_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -1257,8 +1289,9 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_plotStutter_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_plotStutter_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -1269,128 +1302,13 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_plotStutter_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(titles_chk) <- get(".strvalidator_plotStutter_gui_title_chk", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_plotStutter_gui_title", envir = env, inherits = FALSE)) {
-        svalue(title_edt) <- get(".strvalidator_plotStutter_gui_title", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(x_title_edt) <- get(".strvalidator_plotStutter_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(y_title_edt) <- get(".strvalidator_plotStutter_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_size", envir = env, inherits = FALSE)) {
-        svalue(title_size_txt) <- get(".strvalidator_plotStutter_gui_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title_size", envir = env, inherits = FALSE)) {
-        svalue(x_title_size_txt) <- get(".strvalidator_plotStutter_gui_x_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title_size", envir = env, inherits = FALSE)) {
-        svalue(y_title_size_txt) <- get(".strvalidator_plotStutter_gui_y_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_angle", envir = env, inherits = FALSE)) {
-        svalue(title_angle_spb) <- get(".strvalidator_plotStutter_gui_title_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title_angle", envir = env, inherits = FALSE)) {
-        svalue(x_title_angle_spb) <- get(".strvalidator_plotStutter_gui_x_title_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title_angle", envir = env, inherits = FALSE)) {
-        svalue(y_title_angle_spb) <- get(".strvalidator_plotStutter_gui_y_title_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_vjust", envir = env, inherits = FALSE)) {
-        svalue(title_vjust_spb) <- get(".strvalidator_plotStutter_gui_title_vjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title_vjust", envir = env, inherits = FALSE)) {
-        svalue(x_title_vjust_spb) <- get(".strvalidator_plotStutter_gui_x_title_vjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title_vjust", envir = env, inherits = FALSE)) {
-        svalue(y_title_vjust_spb) <- get(".strvalidator_plotStutter_gui_y_title_vjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_hjust", envir = env, inherits = FALSE)) {
-        svalue(title_hjust_spb) <- get(".strvalidator_plotStutter_gui_title_hjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title_hjust", envir = env, inherits = FALSE)) {
-        svalue(x_title_hjust_spb) <- get(".strvalidator_plotStutter_gui_x_title_hjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title_hjust", envir = env, inherits = FALSE)) {
-        svalue(y_title_hjust_spb) <- get(".strvalidator_plotStutter_gui_y_title_hjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_points_shape", envir = env, inherits = FALSE)) {
-        svalue(shape_spb) <- get(".strvalidator_plotStutter_gui_points_shape", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_points_alpha", envir = env, inherits = FALSE)) {
-        svalue(alpha_spb) <- get(".strvalidator_plotStutter_gui_points_alpha", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_points_jitter", envir = env, inherits = FALSE)) {
-        svalue(jitter_txt) <- get(".strvalidator_plotStutter_gui_points_jitter", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_y_min", envir = env, inherits = FALSE)) {
-        svalue(y_min_txt) <- get(".strvalidator_plotStutter_gui_axes_y_min", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_y_max", envir = env, inherits = FALSE)) {
-        svalue(y_max_txt) <- get(".strvalidator_plotStutter_gui_axes_y_max", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_x_min", envir = env, inherits = FALSE)) {
-        svalue(x_min_txt) <- get(".strvalidator_plotStutter_gui_axes_x_min", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_x_max", envir = env, inherits = FALSE)) {
-        svalue(x_max_txt) <- get(".strvalidator_plotStutter_gui_axes_x_max", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_scales", envir = env, inherits = FALSE)) {
-        svalue(scales_opt) <- get(".strvalidator_plotStutter_gui_axes_scales", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_labels_chk", envir = env, inherits = FALSE)) {
-        svalue(labels_chk) <- get(".strvalidator_plotStutter_gui_labels_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_xlabel_size", envir = env, inherits = FALSE)) {
-        svalue(size_txt) <- get(".strvalidator_plotStutter_gui_xlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_ylabel_size", envir = env, inherits = FALSE)) {
-        svalue(size_txt_y) <- get(".strvalidator_plotStutter_gui_ylabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sxlabel_size", envir = env, inherits = FALSE)) {
-        svalue(size_txt_sx) <- get(".strvalidator_plotStutter_gui_sxlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sylabel_size", envir = env, inherits = FALSE)) {
-        svalue(size_txt_sy) <- get(".strvalidator_plotStutter_gui_sylabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_xlabel_angle", envir = env, inherits = FALSE)) {
-        svalue(angle_spb) <- get(".strvalidator_plotStutter_gui_xlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_ylabel_angle", envir = env, inherits = FALSE)) {
-        svalue(angle_spb_y) <- get(".strvalidator_plotStutter_gui_ylabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sxlabel_angle", envir = env, inherits = FALSE)) {
-        svalue(angle_spb_sx) <- get(".strvalidator_plotStutter_gui_sxlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sylabel_angle", envir = env, inherits = FALSE)) {
-        svalue(angle_spb_sy) <- get(".strvalidator_plotStutter_gui_sylabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_xlabel_justh", envir = env, inherits = FALSE)) {
-        svalue(hjust_spb) <- get(".strvalidator_plotStutter_gui_xlabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_ylabel_justh", envir = env, inherits = FALSE)) {
-        svalue(hjust_spb_y) <- get(".strvalidator_plotStutter_gui_ylabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_xlabel_justv", envir = env, inherits = FALSE)) {
-        svalue(vjust_spb) <- get(".strvalidator_plotStutter_gui_xlabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_ylabel_justv", envir = env, inherits = FALSE)) {
-        svalue(vjust_spb_y) <- get(".strvalidator_plotStutter_gui_ylabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_theme", envir = env, inherits = FALSE)) {
-        svalue(f1_theme_drp) <- get(".strvalidator_plotStutter_gui_theme", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sex", envir = env, inherits = FALSE)) {
-        svalue(f1_drop_chk) <- get(".strvalidator_plotStutter_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_levels", envir = env, inherits = FALSE)) {
-        svalue(f1_levels_chk) <- get(".strvalidator_plotStutter_gui_levels", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -1399,172 +1317,17 @@ plotStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_plotStutter_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_title_chk", value = svalue(titles_chk), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_x_title", value = svalue(x_title_edt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_y_title", value = svalue(y_title_edt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_title_size", value = svalue(title_size_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_x_title_size", value = svalue(x_title_size_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_y_title_size", value = svalue(y_title_size_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_title_angle", value = svalue(title_angle_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_x_title_angle", value = svalue(x_title_angle_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_y_title_angle", value = svalue(y_title_angle_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_title_vjust", value = svalue(title_vjust_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_x_title_vjust", value = svalue(x_title_vjust_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_y_title_vjust", value = svalue(y_title_vjust_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_title_hjust", value = svalue(title_hjust_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_x_title_hjust", value = svalue(x_title_hjust_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_y_title_hjust", value = svalue(y_title_hjust_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_points_shape", value = svalue(shape_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_points_alpha", value = svalue(alpha_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_points_jitter", value = svalue(jitter_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_axes_y_min", value = svalue(y_min_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_axes_y_max", value = svalue(y_max_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_axes_x_min", value = svalue(x_min_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_axes_x_max", value = svalue(x_max_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_axes_scales", value = svalue(scales_opt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_labels_chk", value = svalue(labels_chk), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_xlabel_size", value = svalue(size_txt), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_ylabel_size", value = svalue(size_txt_y), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_sxlabel_size", value = svalue(size_txt_sx), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_sylabel_size", value = svalue(size_txt_sy), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_xlabel_angle", value = svalue(angle_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_ylabel_angle", value = svalue(angle_spb_y), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_sxlabel_angle", value = svalue(angle_spb_sx), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_sylabel_angle", value = svalue(angle_spb_sy), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_xlabel_justh", value = svalue(hjust_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_xlabel_justv", value = svalue(vjust_spb), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_ylabel_justh", value = svalue(hjust_spb_y), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_ylabel_justv", value = svalue(vjust_spb_y), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_theme", value = svalue(f1_theme_drp), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_sex", value = svalue(f1_drop_chk), envir = env)
-      assign(x = ".strvalidator_plotStutter_gui_levels", value = svalue(f1_levels_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_plotStutter_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_chk", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_title", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_x_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_y_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_title_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_x_title_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_y_title_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_vjust", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_title_vjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title_vjust", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_x_title_vjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title_vjust", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_y_title_vjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_title_hjust", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_title_hjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_x_title_hjust", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_x_title_hjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_y_title_hjust", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_y_title_hjust", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_points_shape", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_points_shape", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_points_alpha", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_points_alpha", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_points_jitter", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_points_jitter", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_y_min", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_axes_y_min", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_y_max", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_axes_y_max", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_x_min", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_axes_x_min", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_x_max", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_axes_x_max", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_axes_scales", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_axes_scales", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_labels_chk", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_labels_chk", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_xlabel_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_xlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_ylabel_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_ylabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sxlabel_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_sxlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sylabel_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_sylabel_size", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_xlabel_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_xlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_ylabel_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_ylabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sxlabel_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_sxlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sylabel_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_sylabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_xlabel_justh", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_xlabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_xlabel_justv", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_xlabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_ylabel_justh", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_ylabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_ylabel_justv", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_ylabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_theme", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_theme", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_sex", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_plotStutter_gui_levels", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotStutter_gui_levels", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

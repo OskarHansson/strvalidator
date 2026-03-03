@@ -463,6 +463,23 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_addData_gui_"
+  settings_widgets <- list(
+    exact = f1_exact_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -473,8 +490,9 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_addData_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_addData_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -485,9 +503,12 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_addData_gui_exact", envir = env, inherits = FALSE)) {
-        svalue(f1_exact_chk) <- get(".strvalidator_addData_gui_exact", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -497,16 +518,17 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_addData_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_addData_gui_exact", value = svalue(f1_exact_chk), envir = env)
-    } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_addData_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addData_gui_savegui", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
       }
-      if (exists(".strvalidator_addData_gui_exact", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_addData_gui_exact", envir = env)
+    } else { # or remove all saved values if false.
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

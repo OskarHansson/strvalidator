@@ -13,7 +13,7 @@
 #'
 #' @param env Environment in which to search for data frames.
 #' @param savegui Logical indicating if GUI settings should be saved in the
-#' environment (Currently not in use).
+#' environment.
 #' @param debug Logical indicating whether to print debug information.
 #' @param parent Widget to get focus when finished.
 #'
@@ -63,6 +63,7 @@ manage_kits_gui <- function(env = parent.frame(), savegui = NULL,
   # Default strings for GUI labels and messages
   default_strings <- list(
     STR_WIN_TITLE = "Manage kits",
+    STR_CHK_GUI = "Save GUI settings",
     STR_BTN_HELP = "Help",
     STR_FRM_ACTION = "Action",
     STR_RAD_EDIT = "Edit kit file (overwrite)",
@@ -111,6 +112,8 @@ manage_kits_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Runs when window is closed
   addHandlerUnrealize(main_window, handler = function(h, ...) {
+    .save_settings()
+
     # Focus on parent window
     if (!is.null(parent)) {
       focus(parent)
@@ -129,6 +132,7 @@ manage_kits_gui <- function(env = parent.frame(), savegui = NULL,
 
   # Help Button
   help_group <- ggroup(container = main_group, expand = FALSE, fill = "both")
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = help_group)
   addSpring(help_group)
   help_btn <- gbutton(text = strings$STR_BTN_HELP, container = help_group)
 
@@ -781,6 +785,39 @@ manage_kits_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   # GUI READY ##################################################################
+
+  .load_settings <- function() {
+    if (!is.null(savegui)) {
+      svalue(savegui_chk) <- savegui
+      enabled(savegui_chk) <- FALSE
+    } else if (exists(".strvalidator_manage_kits_gui_savegui", envir = env, inherits = FALSE)) {
+      svalue(savegui_chk) <- get(".strvalidator_manage_kits_gui_savegui", envir = env)
+    }
+
+    if (isTRUE(svalue(savegui_chk))) {
+      if (exists(".strvalidator_manage_kits_gui_action", envir = env, inherits = FALSE)) {
+        saved_action <- get(".strvalidator_manage_kits_gui_action", envir = env)
+        if (is.numeric(saved_action) && length(saved_action) == 1 && saved_action %in% c(1, 2)) {
+          svalue(option_radio, index = TRUE) <- saved_action
+        }
+      }
+    }
+  }
+
+  .save_settings <- function() {
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(".strvalidator_manage_kits_gui_savegui", svalue(savegui_chk), envir = env)
+      assign(".strvalidator_manage_kits_gui_action", svalue(option_radio, index = TRUE), envir = env)
+    } else {
+      for (nm in c(".strvalidator_manage_kits_gui_savegui", ".strvalidator_manage_kits_gui_action")) {
+        if (exists(nm, envir = env, inherits = FALSE)) {
+          remove(list = nm, envir = env)
+        }
+      }
+    }
+  }
+
+  .load_settings()
 
   # Show the main window
   visible(main_window) <- TRUE

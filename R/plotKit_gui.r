@@ -1,24 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 10.09.2022: Compacted the gui. Removed destroy workaround.
-# 26.04.2020: Added language support.
-# 26.04.2020: Fixed bug when no kit selected.
-# 04.08.2019: Expand scrollable checkbox view.
-# 24.02.2019: Adjusted plot button.
-# 19.02.2019: Expand text field under tcltk. Scrollable checkbox view.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 25.07.2018: Fixed x title and size not saved.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Added temporary fix for issue #93: https://github.com/jverzani/gWidgets2/issues/93#issue-241974596
-# 07.07.2017: Removed argument 'border' for 'gbutton'
-# 11.11.2015: Added importFrom ggplot2.
-# 29.08.2015: Added importFrom.
-# 11.10.2014: Added 'focus', added 'parent' parameter.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 20.01.2014: Implemented ggsave with workaround for complex plots.
-# 23.10.2013: Added save as image.
-# 21.09.2013: First gui version.
-
 #' @title Plot Kit Marker Ranges
 #'
 #' @description
@@ -450,6 +429,31 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_plotKit_gui_"
+  settings_widgets <- list(
+    title = title_edt,
+    title_size = title_size_edt,
+    x_title = x_title_edt,
+    x_title_size = x_title_size_edt,
+    kit_size = kit_size_edt,
+    kit_spacing = kit_spacing_spb,
+    marker_size = marker_size_edt,
+    marker_hight = marker_hight_spb,
+    marker_alpha = marker_alpha_spb
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -460,8 +464,9 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_plotKit_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_plotKit_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -472,35 +477,13 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_plotKit_gui_title", envir = env, inherits = FALSE)) {
-        svalue(title_edt) <- get(".strvalidator_plotKit_gui_title", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_plotKit_gui_title_size", envir = env, inherits = FALSE)) {
-        svalue(title_size_edt) <- get(".strvalidator_plotKit_gui_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(x_title_edt) <- get(".strvalidator_plotKit_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_title_size", envir = env, inherits = FALSE)) {
-        svalue(x_title_size_edt) <- get(".strvalidator_plotKit_gui_x_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_kit_size", envir = env, inherits = FALSE)) {
-        svalue(kit_size_edt) <- get(".strvalidator_plotKit_gui_kit_size", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_kit_spacing", envir = env, inherits = FALSE)) {
-        svalue(kit_spacing_spb) <- get(".strvalidator_plotKit_gui_kit_spacing", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_marker_size", envir = env, inherits = FALSE)) {
-        svalue(marker_size_edt) <- get(".strvalidator_plotKit_gui_marker_size", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_marker_hight", envir = env, inherits = FALSE)) {
-        svalue(marker_hight_spb) <- get(".strvalidator_plotKit_gui_marker_hight", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_marker_alpha", envir = env, inherits = FALSE)) {
-        svalue(marker_alpha_spb) <- get(".strvalidator_plotKit_gui_marker_alpha", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -509,50 +492,18 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_plotKit_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_title_size", value = svalue(title_size_edt), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_x_title", value = svalue(x_title_edt), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_x_title_size", value = svalue(x_title_size_edt), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_kit_size", value = svalue(kit_size_edt), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_kit_spacing", value = svalue(kit_spacing_spb), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_marker_size", value = svalue(marker_size_edt), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_marker_hight", value = svalue(marker_hight_spb), envir = env)
-      assign(x = ".strvalidator_plotKit_gui_marker_alpha", value = svalue(marker_alpha_spb), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_plotKit_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_savegui", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
-      if (exists(".strvalidator_plotKit_gui_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_title", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_title_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_x_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_x_title_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_x_title_size", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_kit_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_kit_size", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_kit_spacing", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_kit_spacing", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_marker_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_marker_size", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_marker_hight", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_marker_hight", envir = env)
-      }
-      if (exists(".strvalidator_plotKit_gui_marker_alpha", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_plotKit_gui_marker_alpha", envir = env)
-      }
-
 
       if (debug) {
         print("Settings cleared!")

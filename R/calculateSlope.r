@@ -1,12 +1,4 @@
-# NOTE: Column names used for calculations with data.table is declared
-# in globals.R to avoid NOTES in R CMD CHECK.
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 07.08.2017: Added audit trail.
-# 11.05.2016: Changed from 'Peaks' to 'Peaks - 2' degrees of freedom.
-# 25.04.2016: First version.
 
 #' @title Calculate Profile Slope.
 #'

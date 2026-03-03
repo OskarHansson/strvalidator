@@ -1,13 +1,4 @@
-################################################################################
-# TODO LIST
-# TODO: ...
 
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 06.08.2017: Added audit trail.
-# 28.08.2015: Added importFrom
-# 21.01.2014: Added parameter 'limit'.
-# 17.01.2014: First version.
 
 #' @title Analyze Off-ladder Alleles
 #'

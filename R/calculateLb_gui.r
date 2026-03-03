@@ -1,22 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 08.08.2024: Added new option 'marker' to ratio of min and max TPH.
-# 05.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 03.03.2020: Added language support.
-# 20.03.2019: Added new option to calculate balance (Issue:#14).
-# 15.02.2019: Expand text fields in tcltk by setting fill = TRUE.
-# 11.02.2019: Minor adjustments to tcltk gui.
-# 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 15.08.2016: Implemented new calculateHeight, removed calculateHeterozygous.
-# 28.06.2016: Added option to remove quality sensor.
-# 02.12.2016: Fixed options save bug.
-# 30.12.2015: First version.
-
 #' @title Calculate Locus Balance
 #'
 #' @description
@@ -631,6 +612,32 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_calculateLb_gui_"
+  settings_widgets <- list(
+    option = f1_lb_opt,
+    dye = f1_dye_chk,
+    ol = f1_ol_chk,
+    sex = f1_sex_chk,
+    qs = f1_qs_chk,
+    na = f1_na_edt,
+    ignore = f1_ignore_chk,
+    word = f1_word_chk,
+    exact = f1_exact_chk,
+    h = f1_h_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -641,8 +648,9 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateLb_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateLb_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -653,36 +661,12 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateLb_gui_option", envir = env, inherits = FALSE)) {
-        svalue(f1_lb_opt) <- get(".strvalidator_calculateLb_gui_option", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_dye", envir = env, inherits = FALSE)) {
-        svalue(f1_dye_chk) <- get(".strvalidator_calculateLb_gui_dye", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_ol", envir = env, inherits = FALSE)) {
-        svalue(f1_ol_chk) <- get(".strvalidator_calculateLb_gui_ol", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_sex", envir = env, inherits = FALSE)) {
-        svalue(f1_sex_chk) <- get(".strvalidator_calculateLb_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_qs", envir = env, inherits = FALSE)) {
-        svalue(f1_qs_chk) <- get(".strvalidator_calculateLb_gui_qs", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_na", envir = env, inherits = FALSE)) {
-        svalue(f1_na_edt) <- get(".strvalidator_calculateLb_gui_na", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_ignore", envir = env, inherits = FALSE)) {
-        svalue(f1_ignore_chk) <- get(".strvalidator_calculateLb_gui_ignore", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_word", envir = env, inherits = FALSE)) {
-        svalue(f1_word_chk) <- get(".strvalidator_calculateLb_gui_word", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_exact", envir = env, inherits = FALSE)) {
-        svalue(f1_exact_chk) <- get(".strvalidator_calculateLb_gui_exact", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_h", envir = env, inherits = FALSE)) {
-        svalue(f1_h_chk) <- get(".strvalidator_calculateLb_gui_h", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -692,52 +676,17 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateLb_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_option", value = svalue(f1_lb_opt), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_dye", value = svalue(f1_dye_chk), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_ol", value = svalue(f1_ol_chk), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_sex", value = svalue(f1_sex_chk), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_qs", value = svalue(f1_qs_chk), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_na", value = svalue(f1_na_edt), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_ignore", value = svalue(f1_ignore_chk), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_word", value = svalue(f1_word_chk), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_exact", value = svalue(f1_exact_chk), envir = env)
-      assign(x = ".strvalidator_calculateLb_gui_h", value = svalue(f1_h_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculateLb_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_option", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_option", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_dye", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_dye", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_ol", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_ol", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_sex", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_qs", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_qs", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_na", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_na", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_ignore", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_ignore", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_word", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_word", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_exact", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_exact", envir = env)
-      }
-      if (exists(".strvalidator_calculateLb_gui_h", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateLb_gui_h", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

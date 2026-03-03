@@ -1,16 +1,4 @@
-################################################################################
-# TODO LIST
-# TODO: ...
 
-# NOTE: Column names used for calculations with data.table is declared
-# in globals.R to avoid NOTES in R CMD CHECK.
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 24.08.2018: Removed unused variables.
-# 07.08.2017: Added audit trail.
-# 09.01.2016: Added more attributes to result.
-# 22.12.2015: First version.
 
 #' @title Calculate Ratio
 #'

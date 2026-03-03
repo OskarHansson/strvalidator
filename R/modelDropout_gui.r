@@ -1,26 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 15.08.2024: Fixed 'Error in !is.na(predictionDf) && !is.null(predictionDf)'.
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 09.07.2022: Fixed "...URLs which should use \doi (with the DOI name only)".
-# 10.04.2020: Added language support.
-# 20.03.2019: Fixed save object triggered when plotting if label is changed.
-# 24.02.2019: Added option to use log10 y-axis scale.
-# 23.02.2019: Compacted and tweaked gui for tcltk.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 25.07.2018: Added option to dump model data. Changed default P(D) to 0.01.
-# 10.07.2018: Converts dependent and explanatory values to numeric if necessary.
-# 18.07.2017: Fixed issue with infinite loop for the 'model' button.
-# 13.07.2017: Fixed issue with button handlers.
-# 13.07.2017: Fixed expanded 'gexpandgroup'.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 18.11.2016: Added reference.
-# 16.06.2016: 'Save as' textbox expandable.
-# 11.11.2015: Added importFrom ggplot2.
-# 29.08.2015: Added importFrom.
-
 #' @title Model And Plot Drop-out Events
 #'
 #' @description
@@ -1395,6 +1372,54 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     }
   }
 
+  settings_prefix <- ".strvalidator_modelDropout_gui_"
+  settings_widgets <- list(
+    title = title_edt,
+    title_chk = titles_chk,
+    x_title = x_title_edt,
+    y_title = y_title_edt,
+    sex = f1_sex_chk,
+    column = f1_column_opt,
+    print_model = f1_printmodel_chk,
+    mark_threshold = e1f1_threshold_chk,
+    print_threshold = e1f1_print_chk,
+    risk = e1f1_risk_spn,
+    t_line = e1f1_t_linetype_drp,
+    t_color = e1f1_t_linecolor_drp,
+    print_interval = e1f2_print_interval_chk,
+    mark_interval = e1f2_mark_interval_chk,
+    interval_alpha = e1f2_interval_spb,
+    interval_color = e1f2_interval_drp,
+    points_plot = e2g1_plotpoints_chk,
+    points_shape = e2g1_shape_spb,
+    points_alpha = e2g1_alpha_spb,
+    points_jitterh = e2g1_jitterh_edt,
+    points_jitterv = e2g1_jitterv_edt,
+    axes_y_log10 = log10_y_scale_chk,
+    axes_y_min = e3g1_y_min_edt,
+    axes_y_max = e3g1_y_max_edt,
+    axes_x_min = e3g1_x_min_edt,
+    axes_x_max = e3g1_x_max_edt,
+    xlabel_size = e4g1_size_edt,
+    xlabel_angle = e4g1_angle_spb,
+    xlabel_justh = e4g1_hjust_spb,
+    xlabel_justv = e4g1_vjust_spb,
+    h = f1_h_chk,
+    dump = f1_dump_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -1405,8 +1430,9 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_modelDropout_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_modelDropout_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -1417,104 +1443,13 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_modelDropout_gui_title", envir = env, inherits = FALSE)) {
-        svalue(title_edt) <- get(".strvalidator_modelDropout_gui_title", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_modelDropout_gui_title_chk", envir = env, inherits = FALSE)) {
-        svalue(titles_chk) <- get(".strvalidator_modelDropout_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_x_title", envir = env, inherits = FALSE)) {
-        svalue(x_title_edt) <- get(".strvalidator_modelDropout_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_y_title", envir = env, inherits = FALSE)) {
-        svalue(y_title_edt) <- get(".strvalidator_modelDropout_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_sex", envir = env, inherits = FALSE)) {
-        svalue(f1_sex_chk) <- get(".strvalidator_modelDropout_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_column", envir = env, inherits = FALSE)) {
-        svalue(f1_column_opt) <- get(".strvalidator_modelDropout_gui_column", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_print_model", envir = env, inherits = FALSE)) {
-        svalue(f1_printmodel_chk) <- get(".strvalidator_modelDropout_gui_print_model", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_mark_threshold", envir = env, inherits = FALSE)) {
-        svalue(e1f1_threshold_chk) <- get(".strvalidator_modelDropout_gui_mark_threshold", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_risk", envir = env, inherits = FALSE)) {
-        svalue(e1f1_risk_spn) <- get(".strvalidator_modelDropout_gui_risk", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_print_threshold", envir = env, inherits = FALSE)) {
-        svalue(e1f1_print_chk) <- get(".strvalidator_modelDropout_gui_print_threshold", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_t_line", envir = env, inherits = FALSE)) {
-        svalue(e1f1_t_linetype_drp) <- get(".strvalidator_modelDropout_gui_t_line", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_t_color", envir = env, inherits = FALSE)) {
-        svalue(e1f1_t_linecolor_drp) <- get(".strvalidator_modelDropout_gui_t_color", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_print_interval", envir = env, inherits = FALSE)) {
-        svalue(e1f2_print_interval_chk) <- get(".strvalidator_modelDropout_gui_print_interval", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_mark_interval", envir = env, inherits = FALSE)) {
-        svalue(e1f2_mark_interval_chk) <- get(".strvalidator_modelDropout_gui_mark_interval", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_interval_alpha", envir = env, inherits = FALSE)) {
-        svalue(e1f2_interval_spb) <- get(".strvalidator_modelDropout_gui_interval_alpha", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_interval_color", envir = env, inherits = FALSE)) {
-        svalue(e1f2_interval_drp) <- get(".strvalidator_modelDropout_gui_interval_color", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_plot", envir = env, inherits = FALSE)) {
-        svalue(e2g1_plotpoints_chk) <- get(".strvalidator_modelDropout_gui_points_plot", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_shape", envir = env, inherits = FALSE)) {
-        svalue(e2g1_shape_spb) <- get(".strvalidator_modelDropout_gui_points_shape", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_alpha", envir = env, inherits = FALSE)) {
-        svalue(e2g1_alpha_spb) <- get(".strvalidator_modelDropout_gui_points_alpha", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_jitterh", envir = env, inherits = FALSE)) {
-        svalue(e2g1_jitterh_edt) <- get(".strvalidator_modelDropout_gui_points_jitterh", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_jitterv", envir = env, inherits = FALSE)) {
-        svalue(e2g1_jitterv_edt) <- get(".strvalidator_modelDropout_gui_points_jitterv", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_y_log10", envir = env, inherits = FALSE)) {
-        svalue(log10_y_scale_chk) <- get(".strvalidator_modelDropout_gui_axes_y_log10", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_y_min", envir = env, inherits = FALSE)) {
-        svalue(e3g1_y_min_edt) <- get(".strvalidator_modelDropout_gui_axes_y_min", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_y_max", envir = env, inherits = FALSE)) {
-        svalue(e3g1_y_max_edt) <- get(".strvalidator_modelDropout_gui_axes_y_max", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_x_min", envir = env, inherits = FALSE)) {
-        svalue(e3g1_x_min_edt) <- get(".strvalidator_modelDropout_gui_axes_x_min", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_x_max", envir = env, inherits = FALSE)) {
-        svalue(e3g1_x_max_edt) <- get(".strvalidator_modelDropout_gui_axes_x_max", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_xlabel_size", envir = env, inherits = FALSE)) {
-        svalue(e4g1_size_edt) <- get(".strvalidator_modelDropout_gui_xlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_xlabel_angle", envir = env, inherits = FALSE)) {
-        svalue(e4g1_angle_spb) <- get(".strvalidator_modelDropout_gui_xlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_xlabel_justh", envir = env, inherits = FALSE)) {
-        svalue(e4g1_hjust_spb) <- get(".strvalidator_modelDropout_gui_xlabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_xlabel_justv", envir = env, inherits = FALSE)) {
-        svalue(e4g1_vjust_spb) <- get(".strvalidator_modelDropout_gui_xlabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_h", envir = env, inherits = FALSE)) {
-        svalue(f1_h_chk) <- get(".strvalidator_modelDropout_gui_h", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_dump", envir = env, inherits = FALSE)) {
-        svalue(f1_dump_chk) <- get(".strvalidator_modelDropout_gui_dump", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -1523,140 +1458,17 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_modelDropout_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_title", value = svalue(title_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_title_chk", value = svalue(titles_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_x_title", value = svalue(x_title_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_y_title", value = svalue(y_title_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_sex", value = svalue(f1_sex_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_column", value = svalue(f1_column_opt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_print_model", value = svalue(f1_printmodel_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_mark_threshold", value = svalue(e1f1_threshold_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_print_threshold", value = svalue(e1f1_print_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_risk", value = svalue(e1f1_risk_spn), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_t_line", value = svalue(e1f1_t_linetype_drp), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_t_color", value = svalue(e1f1_t_linecolor_drp), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_print_interval", value = svalue(e1f2_print_interval_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_mark_interval", value = svalue(e1f2_mark_interval_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_interval_alpha", value = svalue(e1f2_interval_spb), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_interval_color", value = svalue(e1f2_interval_drp), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_points_plot", value = svalue(e2g1_plotpoints_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_points_shape", value = svalue(e2g1_shape_spb), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_points_alpha", value = svalue(e2g1_alpha_spb), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_points_jitterh", value = svalue(e2g1_jitterh_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_points_jitterv", value = svalue(e2g1_jitterv_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_axes_y_log10", value = svalue(log10_y_scale_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_axes_y_min", value = svalue(e3g1_y_min_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_axes_y_max", value = svalue(e3g1_y_max_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_axes_x_min", value = svalue(e3g1_x_min_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_axes_x_max", value = svalue(e3g1_x_max_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_xlabel_size", value = svalue(e4g1_size_edt), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_xlabel_angle", value = svalue(e4g1_angle_spb), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_xlabel_justh", value = svalue(e4g1_hjust_spb), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_xlabel_justv", value = svalue(e4g1_vjust_spb), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_h", value = svalue(f1_h_chk), envir = env)
-      assign(x = ".strvalidator_modelDropout_gui_dump", value = svalue(f1_dump_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_modelDropout_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_title", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_title_chk", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_title_chk", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_x_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_x_title", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_y_title", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_y_title", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_sex", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_sex", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_column", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_column", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_print_model", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_print_model", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_mark_threshold", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_mark_threshold", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_print_threshold", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_print_threshold", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_risk", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_risk", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_t_line", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_t_line", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_t_color", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_t_color", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_print_interval", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_print_interval", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_mark_interval", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_mark_interval", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_interval_alpha", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_interval_alpha", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_interval_color", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_interval_color", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_plot", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_points_plot", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_shape", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_points_shape", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_alpha", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_points_alpha", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_jitterh", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_points_jitterh", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_points_jitterv", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_points_jitterv", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_y_log10", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_axes_y_log10", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_y_min", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_axes_y_min", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_y_max", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_axes_y_max", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_x_min", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_axes_x_min", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_axes_x_max", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_axes_x_max", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_xlabel_size", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_xlabel_size", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_xlabel_angle", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_xlabel_angle", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_xlabel_justh", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_xlabel_justh", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_xlabel_justv", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_xlabel_justv", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_h", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_h", envir = env)
-      }
-      if (exists(".strvalidator_modelDropout_gui_dump", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_modelDropout_gui_dump", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

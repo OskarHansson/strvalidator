@@ -1,16 +1,3 @@
-################################################################################
-# TODO LIST
-# TODO: ...
-
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 15.10.2025: Specified the package anchor in link.
-# 24.08.2018: Removed unused variables.
-# 06.08.2017: Added audit trail.
-# 02.05.2016: Added parameters 'sex.rm' and 'kit'.
-# 02.05.2016: Implemented calculation of proportion and frequency.
-# 29.04.2016: Added more attributes.
-# 13.10.2015: First version.
 
 #' @title Calculate Allele
 #'

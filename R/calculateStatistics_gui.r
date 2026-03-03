@@ -1,18 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 08.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 20.08.2022: Fixed retaining new option decimals to quantile widget.
-# 09.08.2022: Added saving/retaining the new option decimals.
-# 05.08.2022: Decreased spacing in options. Added new option decimals.
-# 02.08.2022: Fixed bug "Error in if (length(value) == 0 || value == "")...".
-# 02.08.2022: Fixed saved gui state cleared when opening with pre set parameters.
-# 28.06.2020: Fixed bug dropdowns not populated in tcltk.
-# 13.06.2020: Fixed bug "The column <Select Columns> was not found in the dataset."
-# 12.06.2020: Fixed bug in call to checkDataset.
-# 09.06.2020: Added parameter count.
-# 06.06.2020: Fixed vector support for parameter group. Removed edit field for target.
-# 23.05.2020: First version.
-
 #' @title Calculate Statistics
 #'
 #' @description
@@ -449,6 +434,25 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     gWidgets2::enabled(calculate_btn) <- TRUE
   }
 
+  settings_prefix <- ".strvalidator_calculateStatistics_gui_"
+  settings_widgets <- list(
+    group = group_edt,
+    quant = quant_spb,
+    decimals = decimals_spb
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -459,8 +463,9 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateStatistics_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateStatistics_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -471,15 +476,12 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateStatistics_gui_group", envir = env, inherits = FALSE)) {
-        svalue(group_edt) <- get(".strvalidator_calculateStatistics_gui_group", envir = env)
-      }
-      if (exists(".strvalidator_calculateStatistics_gui_quant", envir = env, inherits = FALSE)) {
-        svalue(quant_spb) <- get(".strvalidator_calculateStatistics_gui_quant", envir = env)
-      }
-      if (exists(".strvalidator_calculateStatistics_gui_decimals", envir = env, inherits = FALSE)) {
-        svalue(decimals_spb) <- get(".strvalidator_calculateStatistics_gui_decimals", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -489,32 +491,26 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateStatistics_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateStatistics_gui_group", value = svalue(group_edt), envir = env)
-      assign(x = ".strvalidator_calculateStatistics_gui_quant", value = svalue(quant_spb), envir = env)
-      assign(x = ".strvalidator_calculateStatistics_gui_decimals", value = svalue(decimals_spb), envir = env)
-
-      if (debug) {
-        print("Settings saved!")
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
       }
-    } else if (.gSkipClear) {
-      # Do nothing when started with parameters.
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculateStatistics_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStatistics_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculateStatistics_gui_group", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStatistics_gui_group", envir = env)
-      }
-      if (exists(".strvalidator_calculateStatistics_gui_quant", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateStatistics_gui_quant", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {
         print("Settings cleared!")
       }
+    }
+
+    if (debug) {
+      print("Settings saved!")
     }
   }
 

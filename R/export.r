@@ -1,14 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 03.05.2019: Added support for comma separated names.
-# 21.07.2017: Function now exported.
-# 29.08.2015: Added importFrom.
-# 15.12.2014: Changed parameter names to format: lower.case
-# 24.07.2014: Fixed 'NA' bug when recycling names.
-# 26.07.2013: Added 'any' to class if-case.
-# 11.07.2013: Fixed scope bug.
-# 10.07.2013: First version.
-
 
 #' @title Export
 #'

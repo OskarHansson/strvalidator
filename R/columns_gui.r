@@ -1,22 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 08.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 07.03.2020: Added language support.
-# 03.03.2019: Compacted and tweaked widgets under tcltk.
-# 01.03.2019: Compacting gui and made text box expand (tcltk)
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 11.07.2018: Fixed field 'Fixed value' not always disabled when it should.
-# 10.08.2017: Fixed column dropdowns lose selection after selecting dataset.
-# 07.08.2017: Added audit trail.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 09.05.2016: Added attributes to result.
-# 09.05.2016: 'Save as' textbox expandable.
-# 22.12.2015: Removed colum check to enable no selected column etc.
-# 28.08.2015: Added importFrom.
-# 23.05.2015: First version.
-
 #' @title Column Actions
 #'
 #' @description
@@ -389,6 +370,26 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
   }
 
+  settings_prefix <- ".strvalidator_columns_gui_"
+  settings_widgets <- list(
+    fixed = f3g1_val_edt,
+    action = f3g1_action_drp,
+    start = f3g1_start_edt,
+    stop = f3g1_stop_edt
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -399,8 +400,9 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_columns_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_columns_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -411,21 +413,12 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_columns_gui_import_opt", envir = env, inherits = FALSE)) {
-        svalue(import_opt) <- get(".strvalidator_columns_gui_import_opt", envir = env)
-      }
-      if (exists(".strvalidator_columns_gui_fixed", envir = env, inherits = FALSE)) {
-        svalue(f3g1_val_edt) <- get(".strvalidator_columns_gui_fixed", envir = env)
-      }
-      if (exists(".strvalidator_columns_gui_action", envir = env, inherits = FALSE)) {
-        svalue(f3g1_action_drp) <- get(".strvalidator_columns_gui_action", envir = env)
-      }
-      if (exists(".strvalidator_columns_gui_start", envir = env, inherits = FALSE)) {
-        svalue(f3g1_start_edt) <- get(".strvalidator_columns_gui_start", envir = env)
-      }
-      if (exists(".strvalidator_columns_gui_stop", envir = env, inherits = FALSE)) {
-        svalue(f3g1_stop_edt) <- get(".strvalidator_columns_gui_stop", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -435,28 +428,17 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_columns_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_columns_gui_fixed", value = svalue(f3g1_val_edt), envir = env)
-      assign(x = ".strvalidator_columns_gui_action", value = svalue(f3g1_action_drp), envir = env)
-      assign(x = ".strvalidator_columns_gui_start", value = svalue(f3g1_start_edt), envir = env)
-      assign(x = ".strvalidator_columns_gui_stop", value = svalue(f3g1_stop_edt), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_columns_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_columns_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_columns_gui_fixed", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_columns_gui_fixed", envir = env)
-      }
-      if (exists(".strvalidator_columns_gui_action", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_columns_gui_action", envir = env)
-      }
-      if (exists(".strvalidator_columns_gui_start", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_columns_gui_start", envir = env)
-      }
-      if (exists(".strvalidator_columns_gui_stop", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_columns_gui_stop", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

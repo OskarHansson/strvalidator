@@ -1,18 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 20.06.2023: Fixed Error in !is.null(val_data) && !is.na(val_data) in coercion to 'logical(1)
-# 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 03.03.2020: Fixed reference to function name.
-# 25.02.2020: Added language support.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 06.08.2017: Added audit trail.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 02.05.2016: Added attributes.
-# 02.05.2016: Added new options 'sex.rm' and 'kit'.
-# 29.04.2016: First version.
-
 
 #' @title Calculate Allele
 #'
@@ -306,6 +291,24 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     }
   }
 
+  settings_prefix <- ".strvalidator_calculateAllele_gui_"
+  settings_widgets <- list(
+    threshold = f1_threshold_edt,
+    sex = f1_sex_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -316,8 +319,9 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateAllele_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateAllele_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -328,12 +332,12 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateAllele_gui_threshold", envir = env, inherits = FALSE)) {
-        svalue(f1_threshold_edt) <- get(".strvalidator_calculateAllele_gui_threshold", envir = env)
-      }
-      if (exists(".strvalidator_calculateAllele_gui_sex", envir = env, inherits = FALSE)) {
-        svalue(f1_sex_chk) <- get(".strvalidator_calculateAllele_gui_sex", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -343,20 +347,17 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateAllele_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateAllele_gui_threshold", value = svalue(f1_threshold_edt), envir = env)
-      assign(x = ".strvalidator_calculateAllele_gui_sex", value = svalue(f1_sex_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculateAllele_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAllele_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculateAllele_gui_threshold", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAllele_gui_threshold", envir = env)
-      }
-      if (exists(".strvalidator_calculateAllele_gui_sex", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAllele_gui_sex", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

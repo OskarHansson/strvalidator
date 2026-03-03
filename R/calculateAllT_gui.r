@@ -1,12 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 03.09.2022: Compacted gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 03.03.2020: Fixed reference to function name.
-# 25.02.2020: Added language support.
-# 17.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 25.07.2018: Added option to remove sex markers.
-# 17.07.2018: First version.
-
 #' @title Calculate Stochastic Thresholds
 #'
 #' @description
@@ -298,6 +289,25 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # INTERNAL FUNCTIONS ########################################################
 
+  settings_prefix <- ".strvalidator_calculateAllT_gui_"
+  settings_widgets <- list(
+    pdrop = f1_p_dropout,
+    pcons = f1_p_conservative,
+    sex = f1_sex_chk
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -308,8 +318,9 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_calculateAllT_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_calculateAllT_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -320,17 +331,13 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_calculateAllT_gui_pdrop", envir = env, inherits = FALSE)) {
-        svalue(f1_p_dropout) <- get(".strvalidator_calculateAllT_gui_pdrop", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
-      if (exists(".strvalidator_calculateAllT_gui_pcons", envir = env, inherits = FALSE)) {
-        svalue(f1_p_conservative) <- get(".strvalidator_calculateAllT_gui_pcons", envir = env)
-      }
-      if (exists(".strvalidator_calculateAllT_gui_sex", envir = env, inherits = FALSE)) {
-        svalue(f1_sex_chk) <- get(".strvalidator_calculateAllT_gui_sex", envir = env)
-      }
-
       if (debug) {
         print("Saved settings loaded!")
       }
@@ -339,24 +346,17 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_calculateAllT_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_calculateAllT_gui_pdrop", value = svalue(f1_p_dropout), envir = env)
-      assign(x = ".strvalidator_calculateAllT_gui_pcons", value = svalue(f1_p_conservative), envir = env)
-      assign(x = ".strvalidator_calculateAllT_gui_sex", value = svalue(f1_sex_chk), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_calculateAllT_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAllT_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_calculateAllT_gui_pdrop", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAllT_gui_pdrop", envir = env)
-      }
-      if (exists(".strvalidator_calculateAllT_gui_pcons", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAllT_gui_pcons", envir = env)
-      }
-      if (exists(".strvalidator_calculateAllT_gui_sex", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_calculateAllT_gui_sex", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {

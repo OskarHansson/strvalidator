@@ -1,29 +1,3 @@
-################################################################################
-# CHANGE LOG (last 20 changes)
-# 15.10.2025: Specified the package anchor in link.
-# 12.09.2022: Reworked to avoid 'dispose' error https://github.com/jverzani/gWidgets2/issues/103
-# 10.09.2022: Compacted the gui. Fixed narrow dropdowns. Removed destroy workaround.
-# 15.03.2020: Added language support.
-# 15.02.2019: Minor adjustments to tcltk gui. Expand gedit.
-# 11.02.2019: Minor adjustments to tcltk gui.
-# 11.02.2019: Fixed Error in if (svalue(savegui_chk)) { : argument is of length zero (tcltk)
-# 25.07.2018: Added instruction in error message.
-# 25.07.2018: Fixed: Error in if (nchar(val_path) == 0) { : argument is of length zero
-# 17.07.2017: Minor GUI improvements.
-# 17.07.2017: Added store path, and block/unblock when button text is changed.
-# 13.07.2017: Fixed narrow dropdown with hidden argument ellipsize = "none".
-# 07.07.2017: Replaced 'droplist' with 'gcombobox'.
-# 07.07.2017: Removed argument 'border' for 'gbutton'.
-# 16.06.2016: File name/path textbox made expandable.
-# 05.01.2016: Fixed 'dev' not find error in ggplot2 2.0.
-# 29.08.2015: Added importFrom.
-# 11.10.2014: Added 'focus'.
-# 06.10.2014: Correct pixel dimensions are now shown.
-# 28.06.2014: Added help button and moved save gui checkbox.
-# 25.02.2014: Pixel info now update when textbox is changed.
-# 09.02.2014: Added info for size in pixel.
-# 09.02.2014: Removed unsupported unit 'px'.
-
 #' @title Save Image
 #'
 #' @description
@@ -595,6 +569,31 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     #     svalue(f1g2_height_lbl) <- paste(" ", val_px[2],"pixels")
   }
 
+  settings_prefix <- ".strvalidator_ggsave_gui_"
+  settings_widgets <- list(
+    ext = f1g1_ext_drp,
+    replace = f1_replace_chk,
+    load = f1_load_chk,
+    unit = f1g2_unit_drp,
+    width = f1g2_width_edt,
+    height = f1g2_height_edt,
+    res = f1g2_res_edt,
+    scale = f1g2_scale_edt,
+    path = f1g3_save_brw
+  )
+
+  settings_key <- function(name) {
+    paste0(settings_prefix, name)
+  }
+
+  get_saved_setting <- function(name) {
+    key <- settings_key(name)
+    if (exists(key, envir = env, inherits = FALSE)) {
+      return(get(key, envir = env))
+    }
+    NULL
+  }
+
   .loadSavedSettings <- function() {
     # First check status of save flag.
     if (!is.null(savegui)) {
@@ -605,8 +604,9 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
       }
     } else {
       # Load save flag.
-      if (exists(".strvalidator_ggsave_gui_savegui", envir = env, inherits = FALSE)) {
-        svalue(savegui_chk) <- get(".strvalidator_ggsave_gui_savegui", envir = env)
+      saved_savegui <- get_saved_setting("savegui")
+      if (!is.null(saved_savegui)) {
+        svalue(savegui_chk) <- saved_savegui
       }
       if (debug) {
         print("Save GUI status loaded!")
@@ -617,33 +617,12 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     }
 
     # Then load settings if true.
-    if (svalue(savegui_chk)) {
-      if (exists(".strvalidator_ggsave_gui_ext", envir = env, inherits = FALSE)) {
-        svalue(f1g1_ext_drp) <- get(".strvalidator_ggsave_gui_ext", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_replace", envir = env, inherits = FALSE)) {
-        svalue(f1_replace_chk) <- get(".strvalidator_ggsave_gui_replace", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_load", envir = env, inherits = FALSE)) {
-        svalue(f1_load_chk) <- get(".strvalidator_ggsave_gui_load", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_unit", envir = env, inherits = FALSE)) {
-        svalue(f1g2_unit_drp) <- get(".strvalidator_ggsave_gui_unit", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_width", envir = env, inherits = FALSE)) {
-        svalue(f1g2_width_edt) <- get(".strvalidator_ggsave_gui_width", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_height", envir = env, inherits = FALSE)) {
-        svalue(f1g2_height_edt) <- get(".strvalidator_ggsave_gui_height", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_res", envir = env, inherits = FALSE)) {
-        svalue(f1g2_res_edt) <- get(".strvalidator_ggsave_gui_res", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_scale", envir = env, inherits = FALSE)) {
-        svalue(f1g2_scale_edt) <- get(".strvalidator_ggsave_gui_scale", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_path", envir = env, inherits = FALSE)) {
-        svalue(f1g3_save_brw) <- get(".strvalidator_ggsave_gui_path", envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      for (name in names(settings_widgets)) {
+        value <- get_saved_setting(name)
+        if (!is.null(value)) {
+          svalue(settings_widgets[[name]]) <- value
+        }
       }
       if (debug) {
         print("Saved settings loaded!")
@@ -653,48 +632,17 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
   .saveSettings <- function() {
     # Then save settings if true.
-    if (svalue(savegui_chk)) {
-      assign(x = ".strvalidator_ggsave_gui_savegui", value = svalue(savegui_chk), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_ext", value = svalue(f1g1_ext_drp), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_replace", value = svalue(f1_replace_chk), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_load", value = svalue(f1_load_chk), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_unit", value = svalue(f1g2_unit_drp), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_width", value = svalue(f1g2_width_edt), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_height", value = svalue(f1g2_height_edt), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_res", value = svalue(f1g2_res_edt), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_scale", value = svalue(f1g2_scale_edt), envir = env)
-      assign(x = ".strvalidator_ggsave_gui_path", value = svalue(f1g3_save_brw), envir = env)
+    if (isTRUE(svalue(savegui_chk))) {
+      assign(x = settings_key("savegui"), value = svalue(savegui_chk), envir = env)
+      for (name in names(settings_widgets)) {
+        assign(x = settings_key(name), value = svalue(settings_widgets[[name]]), envir = env)
+      }
     } else { # or remove all saved values if false.
-
-      if (exists(".strvalidator_ggsave_gui_savegui", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_savegui", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_ext", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_ext", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_replace", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_replace", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_load", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_load", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_unit", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_unit", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_width", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_width", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_height", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_height", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_res", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_res", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_scale", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_scale", envir = env)
-      }
-      if (exists(".strvalidator_ggsave_gui_path", envir = env, inherits = FALSE)) {
-        remove(".strvalidator_ggsave_gui_path", envir = env)
+      for (name in c("savegui", names(settings_widgets))) {
+        key <- settings_key(name)
+        if (exists(key, envir = env, inherits = FALSE)) {
+          remove(key, envir = env)
+        }
       }
 
       if (debug) {
