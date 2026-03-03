@@ -56,96 +56,35 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Analyse bins overlap"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmKits <- "Select kits"
-  strFrmOptions <- "Options"
-  strChkMultiply <- "Multiply overlap with allele frequency"
-  strChkVirtual <- "Include virtual bins in analysis"
-  strTipVirtual <- "NB! Not all vendors specify which alleles are virtual in the bins file. This can be done manually in the kit.txt file."
-  strChkPenalty <- "Apply spectral channel penalty"
-  strFrmPenalty <- "Penalty"
-  strLblPenalty <- "Define penalty by the distance between dye channels  (1st neighbor to 5th neighbor)"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
-  strMsgColor <- "Kit color set must be identical for multiple kit comparison!\nAnalyse one kit at a time!"
-  strMsgKit <- "At least one kit must be selected."
-  strMsgTitleKit <- "No kit selected"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Analyse bins overlap",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_KITS            = "Select kits",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_MULTIPLY        = "Multiply overlap with allele frequency",
+    STR_CHK_VIRTUAL         = "Include virtual bins in analysis",
+    STR_TIP_VIRTUAL         = "NB! Not all vendors specify which alleles are virtual in the bins file. This can be done manually in the kit.txt file.",
+    STR_CHK_PENALTY         = "Apply spectral channel penalty",
+    STR_FRM_PENALTY         = "Penalty",
+    STR_LBL_PENALTY         = "Define penalty by the distance between dye channels  (1st neighbor to 5th neighbor)",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_COLOR           = "Kit color set must be identical for multiple kit comparison!\nAnalyse one kit at a time!",
+    STR_MSG_KIT             = "At least one kit must be selected.",
+    STR_MSG_TITLE_KIT       = "No kit selected",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmKits"]$value
-    strFrmKits <- ifelse(is.na(strtmp), strFrmKits, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkMultiply"]$value
-    strChkMultiply <- ifelse(is.na(strtmp), strChkMultiply, strtmp)
-
-    strtmp <- dtStrings["strChkVirtual"]$value
-    strChkVirtual <- ifelse(is.na(strtmp), strChkVirtual, strtmp)
-
-    strtmp <- dtStrings["strTipVirtual"]$value
-    strTipVirtual <- ifelse(is.na(strtmp), strTipVirtual, strtmp)
-
-    strtmp <- dtStrings["strChkPenalty"]$value
-    strChkPenalty <- ifelse(is.na(strtmp), strChkPenalty, strtmp)
-
-    strtmp <- dtStrings["strFrmPenalty"]$value
-    strFrmPenalty <- ifelse(is.na(strtmp), strFrmPenalty, strtmp)
-
-    strtmp <- dtStrings["strLblPenalty"]$value
-    strLblPenalty <- ifelse(is.na(strtmp), strLblPenalty, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgColor"]$value
-    strMsgColor <- ifelse(is.na(strtmp), strMsgColor, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-
-    strtmp <- dtStrings["strMsgKit"]$value
-    strMsgKit <- ifelse(is.na(strtmp), strMsgKit, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleKit"]$value
-    strMsgTitleKit <- ifelse(is.na(strtmp), strMsgTitleKit, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -172,11 +111,11 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -186,7 +125,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmKits,
+    text = strings$STR_FRM_KITS,
     horizontal = TRUE,
     spacing = 1,
     container = gv,
@@ -284,8 +223,8 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       } else {
         # Show error message.
         gmessage(
-          msg = strMsgColor,
-          title = strMsgTitleError,
+          msg = strings$STR_MSG_COLOR,
+          title = strings$STR_MSG_TITLE_ERROR,
           icon = "error", parent = w
         )
 
@@ -311,14 +250,14 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   f1_db_chk <- gcheckbox(
-    text = strChkMultiply,
+    text = strings$STR_CHK_MULTIPLY,
     checked = TRUE,
     container = f1
   )
@@ -331,14 +270,14 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   )
 
   f1_virtual_chk <- gcheckbox(
-    text = strChkVirtual,
+    text = strings$STR_CHK_VIRTUAL,
     checked = TRUE,
     container = f1
   )
-  tooltip(f1_virtual_chk) <- strTipVirtual
+  tooltip(f1_virtual_chk) <- strings$STR_TIP_VIRTUAL
 
   f1_penalty_chk <- gcheckbox(
-    text = strChkPenalty,
+    text = strings$STR_CHK_PENALTY,
     checked = TRUE,
     container = f1
   )
@@ -366,14 +305,14 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   # FRAME 2 ###################################################################
 
   f2 <- gframe(
-    text = strFrmPenalty,
+    text = strings$STR_FRM_PENALTY,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   glabel(
-    text = strLblPenalty,
+    text = strings$STR_LBL_PENALTY,
     container = f2
   )
 
@@ -414,15 +353,15 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  analyse_btn <- gbutton(text = strBtnCalculate, container = gv)
+  analyse_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(analyse_btn, handler = function(h, ...) {
     val_name <- svalue(save_edt)
@@ -438,7 +377,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     if (length(val_kits) > 0) {
       # Change button.
       blockHandlers(analyse_btn)
-      svalue(analyse_btn) <- strBtnProcessing
+      svalue(analyse_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(analyse_btn)
       enabled(analyse_btn) <- FALSE
 
@@ -526,8 +465,8 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgKit,
-        title = strMsgTitleKit,
+        msg = strings$STR_MSG_KIT,
+        title = strings$STR_MSG_TITLE_KIT,
         icon = "error",
         parent = w
       )

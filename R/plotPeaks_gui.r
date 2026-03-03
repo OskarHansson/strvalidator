@@ -68,144 +68,47 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot peaks"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strFrmOptions <- "Options"
-  strChkOverride <- "Override automatic titles"
-  strLblTitlePlot <- "Plot title:"
-  strLblTitleX <- "X title:"
-  strLblTitleY <- "Y title:"
-  strChkProportion <- "Plot proportion"
-  strLblBaseSize <- "Base font size (pts):"
-  strLblPalette <- "Color palette:"
-  strChkLabels <- "Print value as bar labels"
-  strLblLabelDecimals <- "Bar label decimals:"
-  strLblLabelSize <- "Bar label font size (pts):"
-  strBtnPlot <- "Plot"
-  strBtnProcessing <- "Processing..."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
-  strBtnObjectSaved <- "Object saved"
-  strLblMainTitle <- "Analysis of peaks from"
-  strLblXTitle <- "Group"
-  strLblYTitleProp <- "Proportion"
-  strLblYTitleCount <- "Count"
-  strMsgNotDf <- "Data set must be a data.frame!"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot peaks",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_OVERRIDE        = "Override automatic titles",
+    STR_LBL_TITLE_PLOT      = "Plot title:",
+    STR_LBL_TITLE_X         = "X title:",
+    STR_LBL_TITLE_Y         = "Y title:",
+    STR_CHK_PROPORTION      = "Plot proportion",
+    STR_LBL_BASE_SIZE       = "Base font size (pts):",
+    STR_LBL_PALETTE         = "Color palette:",
+    STR_CHK_LABELS          = "Print value as bar labels",
+    STR_LBL_LABEL_DECIMALS  = "Bar label decimals:",
+    STR_LBL_LABEL_SIZE      = "Bar label font size (pts):",
+    STR_BTN_PLOT            = "Plot",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_SAVE_IMAGE      = "Save as image",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_LBL_MAIN_TITLE      = "Analysis of peaks from",
+    STR_LBL_X_TITLE         = "Group",
+    STR_LBL_Y_TITLE_PROP    = "Proportion",
+    STR_LBL_Y_TITLE_COUNT   = "Count",
+    STR_MSG_NOT_DF          = "Data set must be a data.frame!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkOverride"]$value
-    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
-
-    strtmp <- dtStrings["strLblTitlePlot"]$value
-    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-
-    strtmp <- dtStrings["strLblTitleX"]$value
-    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-
-    strtmp <- dtStrings["strLblTitleY"]$value
-    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
-
-    strtmp <- dtStrings["strChkProportion"]$value
-    strChkProportion <- ifelse(is.na(strtmp), strChkProportion, strtmp)
-
-    strtmp <- dtStrings["strLblBaseSize"]$value
-    strLblBaseSize <- ifelse(is.na(strtmp), strLblBaseSize, strtmp)
-
-    strtmp <- dtStrings["strLblPalette"]$value
-    strLblPalette <- ifelse(is.na(strtmp), strLblPalette, strtmp)
-
-    strtmp <- dtStrings["strChkLabels"]$value
-    strChkLabels <- ifelse(is.na(strtmp), strChkLabels, strtmp)
-
-    strtmp <- dtStrings["strLblLabelDecimals"]$value
-    strLblLabelDecimals <- ifelse(is.na(strtmp), strLblLabelDecimals, strtmp)
-
-    strtmp <- dtStrings["strLblLabelSize"]$value
-    strLblLabelSize <- ifelse(is.na(strtmp), strLblLabelSize, strtmp)
-
-    strtmp <- dtStrings["strBtnPlot"]$value
-    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitle"]$value
-    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
-
-    strtmp <- dtStrings["strLblXTitle"]$value
-    strLblXTitle <- ifelse(is.na(strtmp), strLblXTitle, strtmp)
-
-    strtmp <- dtStrings["strLblYTitleProp"]$value
-    strLblYTitleProp <- ifelse(is.na(strtmp), strLblYTitleProp, strtmp)
-
-    strtmp <- dtStrings["strLblYTitleCount"]$value
-    strLblYTitleCount <- ifelse(is.na(strtmp), strLblYTitleCount, strtmp)
-
-    strtmp <- dtStrings["strMsgNotDf"]$value
-    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -231,11 +134,11 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -245,22 +148,22 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblDataset, container = f0)
+  glabel(text = strings$STR_LBL_DATASET, container = f0)
 
   samples_lbl <- glabel(
-    text = paste(" 0 ", strLblSamples, sep = ""),
+    text = paste(" 0 ", strings$STR_LBL_SAMPLES, sep = ""),
     container = f0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -294,7 +197,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
       svalue(samples_lbl) <- paste(" ",
         length(unique(.gData$Id)),
-        " ", strLblSamples,
+        " ", strings$STR_LBL_SAMPLES,
         sep = ""
       )
 
@@ -305,21 +208,21 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(samples_lbl) <- paste(" 0 ", strLblSamples, sep = "")
+      svalue(samples_lbl) <- paste(" 0 ", strings$STR_LBL_SAMPLES, sep = "")
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = strChkOverride,
+    text = strings$STR_CHK_OVERRIDE,
     checked = FALSE, container = f1
   )
 
@@ -334,28 +237,28 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   )
 
   # Legends
-  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_PLOT, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_X, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_Y, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
 
   f1_prop_chk <- gcheckbox(
-    text = strChkProportion,
+    text = strings$STR_CHK_PROPORTION,
     checked = TRUE,
     container = f1
   )
 
   grid2 <- glayout(container = f1, spacing = 1)
-  grid2[1, 1] <- glabel(text = strLblBaseSize, container = grid2)
+  grid2[1, 1] <- glabel(text = strings$STR_LBL_BASE_SIZE, container = grid2)
   grid2[1, 2] <- f1_base_size_edt <- gedit(text = "18", width = 4, container = grid2)
 
   grid3 <- glayout(container = f1, spacing = 1)
-  grid3[1, 1] <- glabel(text = strLblPalette, container = grid3)
+  grid3[1, 1] <- glabel(text = strings$STR_LBL_PALETTE, container = grid3)
   grid3[1, 2] <- f1_palette_drp <- gcombobox(
     items = .palette,
     selected = 1,
@@ -366,20 +269,20 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   grid4 <- glayout(container = f1, spacing = 1)
   grid4[1, 1] <- f1_print_chk <- gcheckbox(
-    text = strChkLabels, checked = TRUE,
+    text = strings$STR_CHK_LABELS, checked = TRUE,
     container = grid4
   )
-  grid4[2, 1] <- glabel(text = strLblLabelDecimals, container = grid4)
+  grid4[2, 1] <- glabel(text = strings$STR_LBL_LABEL_DECIMALS, container = grid4)
   grid4[2, 2] <- f1_decimal_spb <- gspinbutton(
     from = 0, to = 9, by = 1, value = 4,
     container = grid4
   )
-  grid4[3, 1] <- glabel(text = strLblLabelSize, container = grid4)
+  grid4[3, 1] <- glabel(text = strings$STR_LBL_LABEL_SIZE, container = grid4)
   grid4[3, 2] <- f1_lab_size_edt <- gedit(text = "5", width = 4, container = grid4)
 
   # FRAME 7 ###################################################################
 
-  plot_btn <- gbutton(text = strBtnPlot, container = gv)
+  plot_btn <- gbutton(text = strings$STR_BTN_PLOT, container = gv)
 
   addHandlerChanged(plot_btn, handler = function(h, ...) {
     enabled(plot_btn) <- FALSE
@@ -391,26 +294,26 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = strFrmSave,
+    text = strings$STR_FRM_SAVE,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strings$STR_LBL_SAVE, container = f5)
 
   f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
+  f5_save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
+  f5_ggsave_btn <- gbutton(text = strings$STR_BTN_SAVE_IMAGE, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnProcessing
+    svalue(f5_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -422,7 +325,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnObjectSaved
+    svalue(f5_save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(f5_save_btn)
   })
 
@@ -493,12 +396,12 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
         xTitle <- val_x_title
         yTitle <- val_y_title
       } else {
-        mainTitle <- paste(strLblMainTitle, nrow(.gData), strLblSamples)
-        xTitle <- strLblXTitle
+        mainTitle <- paste(strings$STR_LBL_MAIN_TITLE, nrow(.gData), strings$STR_LBL_SAMPLES)
+        xTitle <- strings$STR_LBL_X_TITLE
         if (val_prop) {
-          yTitle <- strLblYTitleProp
+          yTitle <- strings$STR_LBL_Y_TITLE_PROP
         } else {
-          yTitle <- strLblYTitleCount
+          yTitle <- strings$STR_LBL_Y_TITLE_COUNT
         }
       }
 
@@ -539,12 +442,12 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gPlot <<- gp
 
       # Change save button.
-      svalue(f5_save_btn) <- strBtnSaveObject
+      svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgNotDf,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NOT_DF,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }

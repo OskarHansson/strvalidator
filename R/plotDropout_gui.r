@@ -77,228 +77,68 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot dropout data"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset and kit"
-  strLblDataset <- "Dataset:"
-  strLblKit <- "Kit:"
-  strDrpDataset <- "<Select dataset>"
-  strFrmOptions <- "Options"
-  strChkOverride <- "Override automatic titles"
-  strLblTitlePlot <- "Plot title:"
-  strLblTitleX <- "X title:"
-  strLblTitleY <- "Y title:"
-  strExpAxes <- "Axes (applies to continous axes)"
-  strLblNB <- "NB! Must provide both min and max value."
-  strLblLimitY <- "Limit Y axis (min-max)"
-  strLblLimitX <- "Limit X axis (min-max)"
-  strExpLabels <- "X labels"
-  strLblRound <- "Round to digits:"
-  strLblSize <- "Text size (pts):"
-  strLblAngle <- "Angle:"
-  strLblJustification <- "Justification (v/h):"
-  strFrmPlot <- "Plot heatmap by"
-  strBtnH <- "Average peak height"
-  strBtnAmount <- "Amount"
-  strBtnConcentration <- "Concentration"
-  strBtnSample <- "Sample"
-  strBtnProcessing <- "Processing..."
-  strFrmOther <- "Other plots"
-  strBtnECDP <- "ecdp"
-  strTipECDP <- "Empirical cumulative distribution plot"
-  strChkHom <- "Plot homozygous peaks."
-  strBtnDot <- "Dotplot"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
-  strBtnObjectSaved <- "Object saved"
-  strLblMainTitle <- "Allele and locus dropout"
-  strLblMainTitleECDP <- "Empirical cumulative distribution for"
-  strLblMainTitleAnd <- "and"
-  strLblMainTitleHeterozygous <- "heterozygous alleles (with dropout of the sister allele)"
-  strLblMainTitleHomozygous <- "homozygous peaks"
-  strLblXTitleAverage <- "Average peak height"
-  strLblXTitleAmount <- "Amount amplified DNA"
-  strLblXTitleConcentration <- "Concentration"
-  strLblXTitleSample <- "Sample name"
-  strLblXTitleHeight <- "Peak height (RFU)"
-  strLblXTitleSurvivingHeight <- "Peak height of surviving allele (RFU)"
-  strLblYTitleMarker <- "Marker"
-  strLblYTitleCP <- "Cumulative probability"
-  strMsgNotDf <- "Data set must be a data.frame!"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot dropout data",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset and kit",
+    STR_LBL_DATASET         = "Dataset:",
+    STR_LBL_KIT             = "Kit:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_OVERRIDE        = "Override automatic titles",
+    STR_LBL_TITLE_PLOT      = "Plot title:",
+    STR_LBL_TITLE_X         = "X title:",
+    STR_LBL_TITLE_Y         = "Y title:",
+    STR_EXP_AXES            = "Axes (applies to continous axes)",
+    STR_LBL_NB              = "NB! Must provide both min and max value.",
+    STR_LBL_LIMIT_Y         = "Limit Y axis (min-max)",
+    STR_LBL_LIMIT_X         = "Limit X axis (min-max)",
+    STR_EXP_LABELS          = "X labels",
+    STR_LBL_ROUND           = "Round to digits:",
+    STR_LBL_SIZE            = "Text size (pts):",
+    STR_LBL_ANGLE           = "Angle:",
+    STR_LBL_JUSTIFICATION   = "Justification (v/h):",
+    STR_FRM_PLOT            = "Plot heatmap by",
+    STR_BTN_H               = "Average peak height",
+    STR_BTN_AMOUNT          = "Amount",
+    STR_BTN_CONCENTRATION   = "Concentration",
+    STR_BTN_SAMPLE          = "Sample",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_OTHER           = "Other plots",
+    STR_BTN_ECDP            = "ecdp",
+    STR_TIP_ECDP            = "Empirical cumulative distribution plot",
+    STR_CHK_HOM             = "Plot homozygous peaks.",
+    STR_BTN_DOT             = "Dotplot",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_SAVE_IMAGE      = "Save as image",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_LBL_MAIN_TITLE      = "Allele and locus dropout",
+    STR_LBL_MAIN_TITLE_ECDP = "Empirical cumulative distribution for",
+    STR_LBL_MAIN_TITLE_AND  = "and",
+    STR_LBL_MAIN_TITLE_HETEROZYGOUS= "heterozygous alleles (with dropout of the sister allele)",
+    STR_LBL_MAIN_TITLE_HOMOZYGOUS= "homozygous peaks",
+    STR_LBL_X_TITLE_AVERAGE = "Average peak height",
+    STR_LBL_X_TITLE_AMOUNT  = "Amount amplified DNA",
+    STR_LBL_X_TITLE_CONCENTRATION= "Concentration",
+    STR_LBL_X_TITLE_SAMPLE  = "Sample name",
+    STR_LBL_X_TITLE_HEIGHT  = "Peak height (RFU)",
+    STR_LBL_X_TITLE_SURVIVING_HEIGHT= "Peak height of surviving allele (RFU)",
+    STR_LBL_Y_TITLE_MARKER  = "Marker",
+    STR_LBL_Y_TITLE_CP      = "Cumulative probability",
+    STR_MSG_NOT_DF          = "Data set must be a data.frame!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkOverride"]$value
-    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
-
-    strtmp <- dtStrings["strLblTitlePlot"]$value
-    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-
-    strtmp <- dtStrings["strLblTitleX"]$value
-    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-
-    strtmp <- dtStrings["strLblTitleY"]$value
-    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
-
-    strtmp <- dtStrings["strExpAxes"]$value
-    strExpAxes <- ifelse(is.na(strtmp), strExpAxes, strtmp)
-
-    strtmp <- dtStrings["strLblNB"]$value
-    strLblNB <- ifelse(is.na(strtmp), strLblNB, strtmp)
-
-    strtmp <- dtStrings["strLblLimitY"]$value
-    strLblLimitY <- ifelse(is.na(strtmp), strLblLimitY, strtmp)
-
-    strtmp <- dtStrings["strLblLimitX"]$value
-    strLblLimitX <- ifelse(is.na(strtmp), strLblLimitX, strtmp)
-
-    strtmp <- dtStrings["strExpLabels"]$value
-    strExpLabels <- ifelse(is.na(strtmp), strExpLabels, strtmp)
-
-    strtmp <- dtStrings["strLblRound"]$value
-    strLblRound <- ifelse(is.na(strtmp), strLblRound, strtmp)
-
-    strtmp <- dtStrings["strLblSize"]$value
-    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
-
-    strtmp <- dtStrings["strLblAngle"]$value
-    strLblAngle <- ifelse(is.na(strtmp), strLblAngle, strtmp)
-
-    strtmp <- dtStrings["strLblJustification"]$value
-    strLblJustification <- ifelse(is.na(strtmp), strLblJustification, strtmp)
-
-    strtmp <- dtStrings["strFrmPlot"]$value
-    strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnH"]$value
-    strBtnH <- ifelse(is.na(strtmp), strBtnH, strtmp)
-
-    strtmp <- dtStrings["strBtnAmount"]$value
-    strBtnAmount <- ifelse(is.na(strtmp), strBtnAmount, strtmp)
-
-    strtmp <- dtStrings["strBtnConcentration"]$value
-    strBtnConcentration <- ifelse(is.na(strtmp), strBtnConcentration, strtmp)
-
-    strtmp <- dtStrings["strBtnSample"]$value
-    strBtnSample <- ifelse(is.na(strtmp), strBtnSample, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmOther"]$value
-    strFrmOther <- ifelse(is.na(strtmp), strFrmOther, strtmp)
-
-    strtmp <- dtStrings["strBtnECDP"]$value
-    strBtnECDP <- ifelse(is.na(strtmp), strBtnECDP, strtmp)
-
-    strtmp <- dtStrings["strTipECDP"]$value
-    strTipECDP <- ifelse(is.na(strtmp), strTipECDP, strtmp)
-
-    strtmp <- dtStrings["strChkHom"]$value
-    strChkHom <- ifelse(is.na(strtmp), strChkHom, strtmp)
-
-    strtmp <- dtStrings["strBtnDot"]$value
-    strBtnDot <- ifelse(is.na(strtmp), strBtnDot, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitle"]$value
-    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitleECDP"]$value
-    strLblMainTitleECDP <- ifelse(is.na(strtmp), strLblMainTitleECDP, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitleAnd"]$value
-    strLblMainTitleAnd <- ifelse(is.na(strtmp), strLblMainTitleAnd, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitleHeterozygous"]$value
-    strLblMainTitleHeterozygous <- ifelse(is.na(strtmp), strLblMainTitleHeterozygous, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitleHomozygous"]$value
-    strLblMainTitleHomozygous <- ifelse(is.na(strtmp), strLblMainTitleHomozygous, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleAverage"]$value
-    strLblXTitleAverage <- ifelse(is.na(strtmp), strLblXTitleAverage, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleAmount"]$value
-    strLblXTitleAmount <- ifelse(is.na(strtmp), strLblXTitleAmount, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleConcentration"]$value
-    strLblXTitleConcentration <- ifelse(is.na(strtmp), strLblXTitleConcentration, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleSample"]$value
-    strLblXTitleSample <- ifelse(is.na(strtmp), strLblXTitleSample, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleHeight"]$value
-    strLblXTitleHeight <- ifelse(is.na(strtmp), strLblXTitleHeight, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleSurvivingHeight"]$value
-    strLblXTitleSurvivingHeight <- ifelse(is.na(strtmp), strLblXTitleSurvivingHeight, strtmp)
-
-    strtmp <- dtStrings["strLblYTitleMarker"]$value
-    strLblYTitleMarker <- ifelse(is.na(strtmp), strLblYTitleMarker, strtmp)
-
-    strtmp <- dtStrings["strLblYTitleCP"]$value
-    strLblYTitleCP <- ifelse(is.na(strtmp), strLblYTitleCP, strtmp)
-
-    strtmp <- dtStrings["strMsgNotDf"]$value
-    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -326,11 +166,11 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -340,7 +180,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -350,11 +190,11 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -372,7 +212,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = g1)
+  glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
     items = getKit(),
@@ -427,14 +267,14 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = strChkOverride,
+    text = strings$STR_CHK_OVERRIDE,
     checked = FALSE, container = f1
   )
 
@@ -449,30 +289,30 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   )
 
   # Legends
-  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_PLOT, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_X, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_Y, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
   # FRAME 7 ###################################################################
 
   f7 <- gframe(
-    text = strFrmPlot,
+    text = strings$STR_FRM_PLOT,
     horizontal = TRUE,
     container = gv
   )
 
-  f7_plot_h_btn <- gbutton(text = strBtnH, container = f7)
+  f7_plot_h_btn <- gbutton(text = strings$STR_BTN_H, container = f7)
 
-  f7_plot_amount_btn <- gbutton(text = strBtnAmount, container = f7)
+  f7_plot_amount_btn <- gbutton(text = strings$STR_BTN_AMOUNT, container = f7)
 
-  f7_plot_conc_btn <- gbutton(text = strBtnConcentration, container = f7)
+  f7_plot_conc_btn <- gbutton(text = strings$STR_BTN_CONCENTRATION, container = f7)
 
-  f7_plot_sample_btn <- gbutton(text = strBtnSample, container = f7)
+  f7_plot_sample_btn <- gbutton(text = strings$STR_BTN_SAMPLE, container = f7)
 
   addHandlerChanged(f7_plot_h_btn, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -492,7 +332,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
     # Change save button.
-    svalue(f5_save_btn) <- strBtnSaveObject
+    svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
     enabled(f5_save_btn) <- TRUE
   })
 
@@ -514,7 +354,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
     # Change save button.
-    svalue(f5_save_btn) <- strBtnSaveObject
+    svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
     enabled(f5_save_btn) <- TRUE
   })
 
@@ -536,7 +376,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
     # Change save button.
-    svalue(f5_save_btn) <- strBtnSaveObject
+    svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
     enabled(f5_save_btn) <- TRUE
   })
 
@@ -558,28 +398,28 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
     # Change save button.
-    svalue(f5_save_btn) <- strBtnSaveObject
+    svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
     enabled(f5_save_btn) <- TRUE
   })
 
   # FRAME 8 ###################################################################
 
   f8 <- gframe(
-    text = strFrmOther,
+    text = strings$STR_FRM_OTHER,
     horizontal = TRUE,
     container = gv
   )
 
-  f8_plot_ecdf_btn <- gbutton(text = strBtnECDP, container = f8)
-  tooltip(f8_plot_ecdf_btn) <- strTipECDP
+  f8_plot_ecdf_btn <- gbutton(text = strings$STR_BTN_ECDP, container = f8)
+  tooltip(f8_plot_ecdf_btn) <- strings$STR_TIP_ECDP
 
   f8_hom_chk <- gcheckbox(
-    text = strChkHom,
+    text = strings$STR_CHK_HOM,
     checked = FALSE,
     container = f8
   )
 
-  f8_plot_dot_btn <- gbutton(text = strBtnDot, container = f8)
+  f8_plot_dot_btn <- gbutton(text = strings$STR_BTN_DOT, container = f8)
 
   addHandlerChanged(f8_plot_ecdf_btn, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -599,7 +439,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
     # Change save button.
-    svalue(f5_save_btn) <- strBtnSaveObject
+    svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
     enabled(f5_save_btn) <- TRUE
   })
 
@@ -621,33 +461,33 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     }
 
     # Change save button.
-    svalue(f5_save_btn) <- strBtnSaveObject
+    svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
     enabled(f5_save_btn) <- TRUE
   })
 
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = strFrmSave,
+    text = strings$STR_FRM_SAVE,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strings$STR_LBL_SAVE, container = f5)
 
   f5_save_edt <- gedit(text = "", container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
+  f5_save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
+  f5_ggsave_btn <- gbutton(text = strings$STR_BTN_SAVE_IMAGE, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnProcessing
+    svalue(f5_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -659,7 +499,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnObjectSaved
+    svalue(f5_save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(f5_save_btn)
   })
 
@@ -678,7 +518,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 3 ###################################################################
 
   e3 <- gexpandgroup(
-    text = strExpAxes,
+    text = strings$STR_EXP_AXES,
     horizontal = FALSE,
     container = f1
   )
@@ -688,18 +528,18 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid3 <- glayout(container = e3, spacing = 1)
 
-  grid3[1, 1:2] <- glabel(text = strLblLimitY, container = grid3)
+  grid3[1, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_Y, container = grid3)
   grid3[2, 1] <- e3_y_min_edt <- gedit(text = "", width = 5, container = grid3)
   grid3[2, 2] <- e3_y_max_edt <- gedit(text = "", width = 5, container = grid3)
 
-  grid3[3, 1:2] <- glabel(text = strLblLimitX, container = grid3)
+  grid3[3, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_X, container = grid3)
   grid3[4, 1] <- e3_x_min_edt <- gedit(text = "", width = 5, container = grid3)
   grid3[4, 2] <- e3_x_max_edt <- gedit(text = "", width = 5, container = grid3)
 
   # FRAME 4 ###################################################################
 
   e4 <- gexpandgroup(
-    text = strExpLabels,
+    text = strings$STR_EXP_LABELS,
     horizontal = FALSE,
     container = f1
   )
@@ -709,22 +549,22 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid4 <- glayout(container = e4)
 
-  grid4[1, 1] <- glabel(text = strLblRound, container = grid4)
+  grid4[1, 1] <- glabel(text = strings$STR_LBL_ROUND, container = grid4)
   grid4[1, 2] <- e4_round_spb <- gspinbutton(
     from = 0, to = 10, by = 1,
     value = 3, container = grid4
   )
 
-  grid4[2, 1] <- glabel(text = strLblSize, container = grid4)
+  grid4[2, 1] <- glabel(text = strings$STR_LBL_SIZE, container = grid4)
   grid4[2, 2] <- e4_size_txt <- gedit(text = "10", width = 4, container = grid4)
 
-  grid4[2, 3] <- glabel(text = strLblAngle, container = grid4)
+  grid4[2, 3] <- glabel(text = strings$STR_LBL_ANGLE, container = grid4)
   grid4[2, 4] <- e4_angle_spb <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 270, container = grid4
   )
 
-  grid4[3, 1] <- glabel(text = strLblJustification, container = grid4)
+  grid4[3, 1] <- glabel(text = strings$STR_LBL_JUSTIFICATION, container = grid4)
   grid4[3, 2] <- e4_vjust_spb <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 0.3, container = grid4
@@ -812,9 +652,9 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       if (what == "heat_h") {
         # Create default titles.
         if (!val_titles) {
-          mainTitle <- strLblMainTitle
-          xTitle <- strLblXTitleAverage
-          yTitle <- strLblYTitleMarker
+          mainTitle <- strings$STR_LBL_MAIN_TITLE
+          xTitle <- strings$STR_LBL_X_TITLE_AVERAGE
+          yTitle <- strings$STR_LBL_Y_TITLE_MARKER
         }
 
         # Sort according to H.
@@ -866,9 +706,9 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       } else if (what == "heat_amount") {
         # Create default titles.
         if (!val_titles) {
-          mainTitle <- strLblMainTitle
-          xTitle <- strLblXTitleAmount
-          yTitle <- strLblYTitleMarker
+          mainTitle <- strings$STR_LBL_MAIN_TITLE
+          xTitle <- strings$STR_LBL_X_TITLE_AMOUNT
+          yTitle <- strings$STR_LBL_Y_TITLE_MARKER
         }
 
         # Sort according to average amount of DNA
@@ -921,9 +761,9 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Create default titles.
         if (!val_titles) {
-          mainTitle <- strLblMainTitle
-          xTitle <- strLblXTitleConcentration
-          yTitle <- strLblYTitleMarker
+          mainTitle <- strings$STR_LBL_MAIN_TITLE
+          xTitle <- strings$STR_LBL_X_TITLE_CONCENTRATION
+          yTitle <- strings$STR_LBL_Y_TITLE_MARKER
         }
 
         # Sort according to concentration.
@@ -976,9 +816,9 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Create default titles.
         if (!val_titles) {
-          mainTitle <- strLblMainTitle
-          xTitle <- strLblXTitleSample
-          yTitle <- strLblYTitleMarker
+          mainTitle <- strings$STR_LBL_MAIN_TITLE
+          xTitle <- strings$STR_LBL_X_TITLE_SAMPLE
+          yTitle <- strings$STR_LBL_Y_TITLE_MARKER
         }
 
         # Sort according to sample name.
@@ -1078,14 +918,14 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           # Create default titles.
           if (!val_titles) {
             mainTitle <- paste(
-              strLblMainTitleECDP,
+              strings$STR_LBL_MAIN_TITLE_ECDP,
               sum(.gData$Dropout == 1),
-              strLblMainTitleHeterozygous, strLblMainTitleAnd,
+              strings$STR_LBL_MAIN_TITLE_HETEROZYGOUS, strings$STR_LBL_MAIN_TITLE_AND,
               sum(.gData$Dropout == 0),
-              strLblMainTitleHomozygous
+              strings$STR_LBL_MAIN_TITLE_HOMOZYGOUS
             )
-            xTitle <- strLblXTitleHeight
-            yTitle <- strLblYTitleCP
+            xTitle <- strings$STR_LBL_X_TITLE_HEIGHT
+            yTitle <- strings$STR_LBL_Y_TITLE_CP
           }
 
           # NB! Convert numeric to character (continous to discrete).
@@ -1107,12 +947,12 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
           # Create default titles.
           if (!val_titles) {
             mainTitle <- paste(
-              strLblMainTitleECDP,
+              strings$STR_LBL_MAIN_TITLE_ECDP,
               sum(.gData$Dropout == 1),
-              strLblMainTitleHeterozygous
+              strings$STR_LBL_MAIN_TITLE_HETEROZYGOUS
             )
-            xTitle <- strLblXTitleSurvivingHeight
-            yTitle <- strLblYTitleCP
+            xTitle <- strings$STR_LBL_X_TITLE_SURVIVING_HEIGHT
+            yTitle <- strings$STR_LBL_Y_TITLE_CP
           }
 
           # With heterozygous dropout data.
@@ -1185,9 +1025,9 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Create default titles.
         if (!val_titles) {
-          mainTitle <- paste(nrow(.gData), strLblMainTitleHeterozygous)
-          xTitle <- strLblYTitleMarker
-          yTitle <- strLblXTitleSurvivingHeight
+          mainTitle <- paste(nrow(.gData), strings$STR_LBL_MAIN_TITLE_HETEROZYGOUS)
+          xTitle <- strings$STR_LBL_Y_TITLE_MARKER
+          yTitle <- strings$STR_LBL_X_TITLE_SURVIVING_HEIGHT
         }
 
         # Create plot.
@@ -1282,8 +1122,8 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNotDf,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NOT_DF,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }

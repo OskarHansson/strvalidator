@@ -44,51 +44,20 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strMsgName <- "Enter name"
-  strMsgSyntax <- "is not a syntactically valid name!\n\nThe object will be saved as:"
-  strMsgExists <- "already exist.\n\nDo you want to overwrite?"
-  strMsgNewName <- "New name"
-  strMsgMissing <- "A name must be provided."
-  strMsgTitleInput <- "Input"
-  strMsgTitleInvalid <- "Invalid name"
-  strMsgTitleWarning <- "Warning!"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_MSG_NAME            = "Enter name",
+    STR_MSG_SYNTAX          = "is not a syntactically valid name!\n\nThe object will be saved as:",
+    STR_MSG_EXISTS          = "already exist.\n\nDo you want to overwrite?",
+    STR_MSG_NEW_NAME        = "New name",
+    STR_MSG_MISSING         = "A name must be provided.",
+    STR_MSG_TITLE_INPUT     = "Input",
+    STR_MSG_TITLE_INVALID   = "Invalid name",
+    STR_MSG_TITLE_WARNING   = "Warning!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strMsgName"]$value
-    strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
-
-    strtmp <- dtStrings["strMsgSyntax"]$value
-    strMsgSyntax <- ifelse(is.na(strtmp), strMsgSyntax, strtmp)
-
-    strtmp <- dtStrings["strMsgExists"]$value
-    strMsgExists <- ifelse(is.na(strtmp), strMsgExists, strtmp)
-
-    strtmp <- dtStrings["strMsgNewName"]$value
-    strMsgNewName <- ifelse(is.na(strtmp), strMsgNewName, strtmp)
-
-    strtmp <- dtStrings["strMsgMissing"]$value
-    strMsgMissing <- ifelse(is.na(strtmp), strMsgMissing, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleInput"]$value
-    strMsgTitleInput <- ifelse(is.na(strtmp), strMsgTitleInput, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleInvalid"]$value
-    strMsgTitleInvalid <- ifelse(is.na(strtmp), strMsgTitleInvalid, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleWarning"]$value
-    strMsgTitleWarning <- ifelse(is.na(strtmp), strMsgTitleWarning, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # FUNCTION ##################################################################
 
@@ -106,8 +75,8 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
   if (is.null(name)) {
     # Show dialogue.
     name <- ginput(
-      msg = strMsgName, text = suggest,
-      title = strMsgTitleInput, icon = "info", parent = parent
+      msg = strings$STR_MSG_NAME, text = suggest,
+      title = strings$STR_MSG_TITLE_INPUT, icon = "info", parent = parent
     )
 
     if (is.na(name)) {
@@ -133,8 +102,8 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
     if (name != orgName) {
       # Show message.
       gmessage(
-        msg = paste(orgName, strMsgSyntax, name),
-        title = strMsgTitleInvalid,
+        msg = paste(orgName, strings$STR_MSG_SYNTAX, name),
+        title = strings$STR_MSG_TITLE_INVALID,
         icon = "warning",
         parent = parent
       )
@@ -147,8 +116,8 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
       }
 
       ok <- gconfirm(
-        msg = paste(name, strMsgExists),
-        title = strMsgTitleWarning,
+        msg = paste(name, strings$STR_MSG_EXISTS),
+        title = strings$STR_MSG_TITLE_WARNING,
         icon = "warning", parent = parent
       )
     }
@@ -163,9 +132,9 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
     } else {
       # Ask for new name.
       name <- ginput(
-        msg = strMsgNewName,
+        msg = strings$STR_MSG_NEW_NAME,
         text = name,
-        title = strMsgTitleInput,
+        title = strings$STR_MSG_TITLE_INPUT,
         icon = "info", parent = parent
       )
 
@@ -198,8 +167,8 @@ saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
     }
   } else {
     gmessage(
-      msg = strMsgMissing,
-      title = strMsgTitleError,
+      msg = strings$STR_MSG_MISSING,
+      title = strings$STR_MSG_TITLE_ERROR,
       icon = "error",
       parent = parent
     )

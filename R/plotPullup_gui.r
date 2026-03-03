@@ -76,188 +76,58 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot pull-up"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset and kit"
-  strLblDataset <- "Pull-up dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strChkOverride <- "Override automatic titles"
-  strLblTitlePlot <- "Plot title:"
-  strLblTitleX <- "X title:"
-  strLblTitleY <- "Y title:"
-  strLblTheme <- "Plot theme:"
-  strChkSex <- "Exclude sex markers"
-  strExpPoints <- "Data points"
-  strLblShape <- "Shape:"
-  strLblAlpha <- "Alpha:"
-  strLblJitter <- "Jitter (width):"
-  strExpAxes <- "Axes"
-  strLblLimitY <- "Limit Y axis (min-max)"
-  strLblLimitX <- "Limit X axis (min-max)"
-  strLblScales <- "Scales:"
-  strExpLabels <- "X labels"
-  strLblSize <- "Text size (pts):"
-  strLblAngle <- "Angle:"
-  strLblJustification <- "Justification (v/h):"
-  strFrmPlot <- "Plot pull-up data"
-  strBtnRatioVsHeight <- "Ratio vs. Height"
-  strBtnRatioVsAllele <- "Ratio vs. Allele"
-  strBtnProcessing <- "Processing..."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
-  strBtnObjectSaved <- "Object saved"
-  strLblMainTitle <- "Pull-up ratio"
-  strLblYTitle <- "Ratio"
-  strLblXTitleHeight <- "Allele peak height (RFU)"
-  strLblXTitleAllele <- "Allele designation"
-  strMsgNotDf <- "Data set must be a data.frame!"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot pull-up",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset and kit",
+    STR_LBL_DATASET         = "Pull-up dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_OVERRIDE        = "Override automatic titles",
+    STR_LBL_TITLE_PLOT      = "Plot title:",
+    STR_LBL_TITLE_X         = "X title:",
+    STR_LBL_TITLE_Y         = "Y title:",
+    STR_LBL_THEME           = "Plot theme:",
+    STR_CHK_SEX             = "Exclude sex markers",
+    STR_EXP_POINTS          = "Data points",
+    STR_LBL_SHAPE           = "Shape:",
+    STR_LBL_ALPHA           = "Alpha:",
+    STR_LBL_JITTER          = "Jitter (width):",
+    STR_EXP_AXES            = "Axes",
+    STR_LBL_LIMIT_Y         = "Limit Y axis (min-max)",
+    STR_LBL_LIMIT_X         = "Limit X axis (min-max)",
+    STR_LBL_SCALES          = "Scales:",
+    STR_EXP_LABELS          = "X labels",
+    STR_LBL_SIZE            = "Text size (pts):",
+    STR_LBL_ANGLE           = "Angle:",
+    STR_LBL_JUSTIFICATION   = "Justification (v/h):",
+    STR_FRM_PLOT            = "Plot pull-up data",
+    STR_BTN_RATIO_VS_HEIGHT = "Ratio vs. Height",
+    STR_BTN_RATIO_VS_ALLELE = "Ratio vs. Allele",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_SAVE_IMAGE      = "Save as image",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_LBL_MAIN_TITLE      = "Pull-up ratio",
+    STR_LBL_Y_TITLE         = "Ratio",
+    STR_LBL_X_TITLE_HEIGHT  = "Allele peak height (RFU)",
+    STR_LBL_X_TITLE_ALLELE  = "Allele designation",
+    STR_MSG_NOT_DF          = "Data set must be a data.frame!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkOverride"]$value
-    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
-
-    strtmp <- dtStrings["strLblTitlePlot"]$value
-    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-
-    strtmp <- dtStrings["strLblTitleX"]$value
-    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-
-    strtmp <- dtStrings["strLblTitleY"]$value
-    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
-
-    strtmp <- dtStrings["strLblTheme"]$value
-    strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
-
-    strtmp <- dtStrings["strChkSex"]$value
-    strChkSex <- ifelse(is.na(strtmp), strChkSex, strtmp)
-
-    strtmp <- dtStrings["strExpPoints"]$value
-    strExpPoints <- ifelse(is.na(strtmp), strExpPoints, strtmp)
-
-    strtmp <- dtStrings["strLblShape"]$value
-    strLblShape <- ifelse(is.na(strtmp), strLblShape, strtmp)
-
-    strtmp <- dtStrings["strLblAlpha"]$value
-    strLblAlpha <- ifelse(is.na(strtmp), strLblAlpha, strtmp)
-
-    strtmp <- dtStrings["strLblJitter"]$value
-    strLblJitter <- ifelse(is.na(strtmp), strLblJitter, strtmp)
-
-    strtmp <- dtStrings["strExpAxes"]$value
-    strExpAxes <- ifelse(is.na(strtmp), strExpAxes, strtmp)
-
-    strtmp <- dtStrings["strLblLimitY"]$value
-    strLblLimitY <- ifelse(is.na(strtmp), strLblLimitY, strtmp)
-
-    strtmp <- dtStrings["strLblLimitX"]$value
-    strLblLimitX <- ifelse(is.na(strtmp), strLblLimitX, strtmp)
-
-    strtmp <- dtStrings["strLblScales"]$value
-    strLblScales <- ifelse(is.na(strtmp), strLblScales, strtmp)
-
-    strtmp <- dtStrings["strExpLabels"]$value
-    strExpLabels <- ifelse(is.na(strtmp), strExpLabels, strtmp)
-
-    strtmp <- dtStrings["strLblSize"]$value
-    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
-
-    strtmp <- dtStrings["strLblAngle"]$value
-    strLblAngle <- ifelse(is.na(strtmp), strLblAngle, strtmp)
-
-    strtmp <- dtStrings["strLblJustification"]$value
-    strLblJustification <- ifelse(is.na(strtmp), strLblJustification, strtmp)
-
-    strtmp <- dtStrings["strFrmPlot"]$value
-    strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnRatioVsHeight"]$value
-    strBtnRatioVsHeight <- ifelse(is.na(strtmp), strBtnRatioVsHeight, strtmp)
-
-    strtmp <- dtStrings["strBtnRatioVsAllele"]$value
-    strBtnRatioVsAllele <- ifelse(is.na(strtmp), strBtnRatioVsAllele, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitle"]$value
-    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
-
-    strtmp <- dtStrings["strLblYTitle"]$value
-    strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleHeight"]$value
-    strLblXTitleHeight <- ifelse(is.na(strtmp), strLblXTitleHeight, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleAllele"]$value
-    strLblXTitleAllele <- ifelse(is.na(strtmp), strLblXTitleAllele, strtmp)
-
-    strtmp <- dtStrings["strMsgNotDf"]$value
-    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -285,11 +155,11 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -299,7 +169,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -309,16 +179,16 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   samples_lbl <- glabel(
-    text = paste(" 0 ", strLblSamples, sep = ""),
+    text = paste(" 0 ", strings$STR_LBL_SAMPLES, sep = ""),
     container = g0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -336,7 +206,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = g1)
+  glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
     items = getKit(),
@@ -376,7 +246,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       svalue(samples_lbl) <- paste(" ",
         length(unique(.gData$Sample.Name)),
-        " ", strLblSamples,
+        " ", strings$STR_LBL_SAMPLES,
         sep = ""
       )
 
@@ -392,21 +262,21 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(samples_lbl) <- paste(" 0 ", strLblSamples, sep = "")
+      svalue(samples_lbl) <- paste(" 0 ", strings$STR_LBL_SAMPLES, sep = "")
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = strChkOverride,
+    text = strings$STR_CHK_OVERRIDE,
     checked = FALSE, container = f1
   )
 
@@ -421,18 +291,18 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   )
 
   # Legends
-  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_PLOT, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_X, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_Y, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
 
   f1g2 <- glayout(container = f1)
-  f1g2[1, 1] <- glabel(text = strLblTheme, anchor = c(-1, 0), container = f1g2)
+  f1g2[1, 1] <- glabel(text = strings$STR_LBL_THEME, anchor = c(-1, 0), container = f1g2)
   f1g2[1, 2] <- f1_theme_drp <- gcombobox(
     items = .theme,
     selected = 1,
@@ -441,7 +311,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   )
 
   f1_drop_chk <- gcheckbox(
-    text = strChkSex,
+    text = strings$STR_CHK_SEX,
     checked = TRUE,
     container = f1
   )
@@ -454,14 +324,14 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FRAME 7 ###################################################################
 
   f7 <- gframe(
-    text = strFrmPlot,
+    text = strings$STR_FRM_PLOT,
     horizontal = TRUE,
     container = gv
   )
 
-  plot_height_btn <- gbutton(text = strBtnRatioVsHeight, container = f7)
+  plot_height_btn <- gbutton(text = strings$STR_BTN_RATIO_VS_HEIGHT, container = f7)
 
-  plot_allele_btn <- gbutton(text = strBtnRatioVsAllele, container = f7)
+  plot_allele_btn <- gbutton(text = strings$STR_BTN_RATIO_VS_ALLELE, container = f7)
 
   addHandlerChanged(plot_height_btn, handler = function(h, ...) {
     # Check if suitable for plot.
@@ -506,26 +376,26 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = strFrmSave,
+    text = strings$STR_FRM_SAVE,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strings$STR_LBL_SAVE, container = f5)
 
   f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
+  f5_save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
+  f5_ggsave_btn <- gbutton(text = strings$STR_BTN_SAVE_IMAGE, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnProcessing
+    svalue(f5_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -537,7 +407,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnObjectSaved
+    svalue(f5_save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(f5_save_btn)
   })
 
@@ -554,7 +424,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # ADVANCED OPTIONS ##########################################################
 
   e2 <- gexpandgroup(
-    text = strExpPoints,
+    text = strings$STR_EXP_POINTS,
     horizontal = FALSE,
     container = f1
   )
@@ -564,27 +434,27 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   grid2 <- glayout(container = e2)
 
-  grid2[1, 1] <- glabel(text = strLblShape, container = grid2)
+  grid2[1, 1] <- glabel(text = strings$STR_LBL_SHAPE, container = grid2)
   grid2[1, 2] <- e2_shape_spb <- gspinbutton(
     from = 0, to = 25,
     by = 1, value = 18,
     container = grid2
   )
 
-  grid2[1, 3] <- glabel(text = strLblAlpha, container = grid2)
+  grid2[1, 3] <- glabel(text = strings$STR_LBL_ALPHA, container = grid2)
   grid2[1, 4] <- e2_alpha_spb <- gspinbutton(
     from = 0, to = 1,
     by = 0.01, value = 0.60,
     container = grid2
   )
 
-  grid2[1, 5] <- glabel(text = strLblJitter, container = grid2)
+  grid2[1, 5] <- glabel(text = strings$STR_LBL_JITTER, container = grid2)
   grid2[1, 6] <- e2_jitter_edt <- gedit(text = "0", width = 4, container = grid2)
 
   # FRAME 3 ###################################################################
 
   e3 <- gexpandgroup(
-    text = strExpAxes,
+    text = strings$STR_EXP_AXES,
     horizontal = FALSE,
     container = f1
   )
@@ -594,17 +464,17 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   grid3 <- glayout(container = e3, spacing = 1)
 
-  grid3[1, 1:2] <- glabel(text = strLblLimitY, container = grid3)
+  grid3[1, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_Y, container = grid3)
   grid3[2, 1] <- e3_y_min_edt <- gedit(text = "", width = 5, container = grid3)
   grid3[2, 2] <- e3_y_max_edt <- gedit(text = "", width = 5, container = grid3)
 
-  grid3[3, 1:2] <- glabel(text = strLblLimitX, container = grid3)
+  grid3[3, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_X, container = grid3)
   grid3[4, 1] <- e3_x_min_edt <- gedit(text = "", width = 5, container = grid3)
   grid3[4, 2] <- e3_x_max_edt <- gedit(text = "", width = 5, container = grid3)
 
   grid3[1, 3] <- glabel(text = "    ", container = grid3) # Add some space.
 
-  grid3[1, 4] <- glabel(text = strLblScales, container = grid3)
+  grid3[1, 4] <- glabel(text = strings$STR_LBL_SCALES, container = grid3)
   grid3[2:4, 4] <- e3_scales_opt <- gradio(
     items = .scales,
     selected = 2,
@@ -621,7 +491,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FRAME 4 ###################################################################
 
   e4 <- gexpandgroup(
-    text = strExpLabels,
+    text = strings$STR_EXP_LABELS,
     horizontal = FALSE,
     container = f1
   )
@@ -631,17 +501,17 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   grid4 <- glayout(container = e4)
 
-  grid4[1, 1] <- glabel(text = strLblSize, container = grid4)
+  grid4[1, 1] <- glabel(text = strings$STR_LBL_SIZE, container = grid4)
   grid4[1, 2] <- e4_size_edt <- gedit(text = "8", width = 4, container = grid4)
 
-  grid4[1, 3] <- glabel(text = strLblAngle, container = grid4)
+  grid4[1, 3] <- glabel(text = strings$STR_LBL_ANGLE, container = grid4)
   grid4[1, 4] <- e4_angle_spb <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 270,
     container = grid4
   )
 
-  grid4[2, 1] <- glabel(text = strLblJustification, container = grid4)
+  grid4[2, 1] <- glabel(text = strings$STR_LBL_JUSTIFICATION, container = grid4)
   grid4[2, 2] <- e4_vjust_spb <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 0.5,
@@ -807,13 +677,13 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
         }
 
         if (what == "Height") {
-          mainTitle <- strLblMainTitle
-          xTitle <- strLblXTitleHeight
-          yTitle <- strLblYTitle
+          mainTitle <- strings$STR_LBL_MAIN_TITLE
+          xTitle <- strings$STR_LBL_X_TITLE_HEIGHT
+          yTitle <- strings$STR_LBL_Y_TITLE
         } else if (what == "Allele") {
-          mainTitle <- strLblMainTitle
-          xTitle <- strLblXTitleAllele
-          yTitle <- strLblYTitle
+          mainTitle <- strings$STR_LBL_MAIN_TITLE
+          xTitle <- strings$STR_LBL_X_TITLE_ALLELE
+          yTitle <- strings$STR_LBL_Y_TITLE
         } else {
           stop(paste("what=", what, " not handled!"))
         }
@@ -910,7 +780,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
         print(gp)
 
         # Change save button.
-        svalue(f5_save_btn) <- strBtnSaveObject
+        svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
         enabled(f5_save_btn) <- TRUE
       } else if (length(val_ncol) > 1) {
         # Complex plot, unequal number of markers per dye.
@@ -1056,7 +926,7 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
         gp <- gridExtra::arrangeGrob(g)
 
         # Change save button.
-        svalue(f5_save_btn) <- strBtnSaveObject
+        svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
         enabled(f5_save_btn) <- FALSE
       } else {
         # Not supported!
@@ -1067,8 +937,8 @@ plotPullup_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNotDf,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NOT_DF,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }

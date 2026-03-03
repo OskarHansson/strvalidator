@@ -64,208 +64,63 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Crop or replace data"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples,"
-  strLblColumns <- "columns,"
-  strLblRows <- "rows"
-  strFrmColumn <- "Column"
-  strLblTargetCol <- "Target column:"
-  strDrpColumn <- "<Select column>"
-  strLblInfo <- "Info:"
-  strLblMin <- "Min:"
-  strLblMax <- "Max:"
-  strChkNa <- "Ignore NA in info"
-  strFrmOptions <- "Options"
-  strChkRemNA <- "Remove NA"
-  strLblAction <- "Action:"
-  strRadDiscard <- "Discard values"
-  strRadReplace <- "Replace values"
-  strDrpAbove <- "above"
-  strDrpAboveEqual <- "above or equal to"
-  strDrpBelow <- "below"
-  strDrpBelowEqual <- "below or equal to"
-  strDrpEqual <- "equal to"
-  strDrpNotEqual <- "not equal to"
-  strDrpNA <- "is NA"
-  strDrpNotNA <- "is not NA"
-  strDrpContain <- "containing"
-  strDrpNotContain <- "not containing"
-  strDrpTarget <- "<Target value>"
-  strLblWith <- "with"
-  strLblTarget <- "Target column contain data of type:"
-  strRadNumeric <- "Numeric"
-  strRadCharacter <- "Character"
-  strBtnApply <- "Apply"
-  strBtnProcessing <- "Processing..."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSave <- "Save"
-  strBtnSaved <- "Saved!"
-  strMsgDrop <- "Do not make subsets of a drop-out dataset before modelling!\n1) Make a subset from the original data.\n2) Run calculate dropout on that subset.\n3) Model drop-out from the new drop-out dataset."
-  strMsgTitleDrop <- "Warning!"
-  strMsgDataset <- "A dataset must be selected."
-  strMsgTitleDataset <- "Dataset not selected"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Crop or replace data",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples,",
+    STR_LBL_COLUMNS         = "columns,",
+    STR_LBL_ROWS            = "rows",
+    STR_FRM_COLUMN          = "Column",
+    STR_LBL_TARGET_COL      = "Target column:",
+    STR_DRP_COLUMN          = "<Select column>",
+    STR_LBL_INFO            = "Info:",
+    STR_LBL_MIN             = "Min:",
+    STR_LBL_MAX             = "Max:",
+    STR_CHK_NA              = "Ignore NA in info",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_REM_NA          = "Remove NA",
+    STR_LBL_ACTION          = "Action:",
+    STR_RAD_DISCARD         = "Discard values",
+    STR_RAD_REPLACE         = "Replace values",
+    STR_DRP_ABOVE           = "above",
+    STR_DRP_ABOVE_EQUAL     = "above or equal to",
+    STR_DRP_BELOW           = "below",
+    STR_DRP_BELOW_EQUAL     = "below or equal to",
+    STR_DRP_EQUAL           = "equal to",
+    STR_DRP_NOT_EQUAL       = "not equal to",
+    STR_DRP_NA              = "is NA",
+    STR_DRP_NOT_NA          = "is not NA",
+    STR_DRP_CONTAIN         = "containing",
+    STR_DRP_NOT_CONTAIN     = "not containing",
+    STR_DRP_TARGET          = "<Target value>",
+    STR_LBL_WITH            = "with",
+    STR_LBL_TARGET          = "Target column contain data of type:",
+    STR_RAD_NUMERIC         = "Numeric",
+    STR_RAD_CHARACTER       = "Character",
+    STR_BTN_APPLY           = "Apply",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE            = "Save",
+    STR_BTN_SAVED           = "Saved!",
+    STR_MSG_DROP            = "Do not make subsets of a drop-out dataset before modelling!\n1) Make a subset from the original data.\n2) Run calculate dropout on that subset.\n3) Model drop-out from the new drop-out dataset.",
+    STR_MSG_TITLE_DROP      = "Warning!",
+    STR_MSG_DATASET         = "A dataset must be selected.",
+    STR_MSG_TITLE_DATASET   = "Dataset not selected",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblColumns"]$value
-    strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
-
-    strtmp <- dtStrings["strLblRows"]$value
-    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
-
-    strtmp <- dtStrings["strFrmColumn"]$value
-    strFrmColumn <- ifelse(is.na(strtmp), strFrmColumn, strtmp)
-
-    strtmp <- dtStrings["strLblTargetCol"]$value
-    strLblTargetCol <- ifelse(is.na(strtmp), strLblTargetCol, strtmp)
-
-    strtmp <- dtStrings["strDrpColumn"]$value
-    strDrpColumn <- ifelse(is.na(strtmp), strDrpColumn, strtmp)
-
-    strtmp <- dtStrings["strLblInfo"]$value
-    strLblInfo <- ifelse(is.na(strtmp), strLblInfo, strtmp)
-
-    strtmp <- dtStrings["strLblMin"]$value
-    strLblMin <- ifelse(is.na(strtmp), strLblMin, strtmp)
-
-    strtmp <- dtStrings["strLblMax"]$value
-    strLblMax <- ifelse(is.na(strtmp), strLblMax, strtmp)
-
-    strtmp <- dtStrings["strChkNa"]$value
-    strChkNa <- ifelse(is.na(strtmp), strChkNa, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkRemNA"]$value
-    strChkRemNA <- ifelse(is.na(strtmp), strChkRemNA, strtmp)
-
-    strtmp <- dtStrings["strLblAction"]$value
-    strLblAction <- ifelse(is.na(strtmp), strLblAction, strtmp)
-
-    strtmp <- dtStrings["strRadDiscard"]$value
-    strRadDiscard <- ifelse(is.na(strtmp), strRadDiscard, strtmp)
-
-    strtmp <- dtStrings["strRadReplace"]$value
-    strRadReplace <- ifelse(is.na(strtmp), strRadReplace, strtmp)
-
-    strtmp <- dtStrings["strDrpAbove"]$value
-    strDrpAbove <- ifelse(is.na(strtmp), strDrpAbove, strtmp)
-
-    strtmp <- dtStrings["strDrpAboveEqual"]$value
-    strDrpAboveEqual <- ifelse(is.na(strtmp), strDrpAboveEqual, strtmp)
-
-    strtmp <- dtStrings["strDrpBelow"]$value
-    strDrpBelow <- ifelse(is.na(strtmp), strDrpBelow, strtmp)
-
-    strtmp <- dtStrings["strDrpBelowEqual"]$value
-    strDrpBelowEqual <- ifelse(is.na(strtmp), strDrpBelowEqual, strtmp)
-
-    strtmp <- dtStrings["strDrpEqual"]$value
-    strDrpEqual <- ifelse(is.na(strtmp), strDrpEqual, strtmp)
-
-    strtmp <- dtStrings["strDrpNotEqual"]$value
-    strDrpNotEqual <- ifelse(is.na(strtmp), strDrpNotEqual, strtmp)
-
-    strtmp <- dtStrings["strDrpNA"]$value
-    strDrpNA <- ifelse(is.na(strtmp), strDrpNA, strtmp)
-
-    strtmp <- dtStrings["strDrpNotNA"]$value
-    strDrpNotNA <- ifelse(is.na(strtmp), strDrpNotNA, strtmp)
-
-    strtmp <- dtStrings["strDrpContain"]$value
-    strDrpContain <- ifelse(is.na(strtmp), strDrpContain, strtmp)
-
-    strtmp <- dtStrings["strDrpNotContain"]$value
-    strDrpNotContain <- ifelse(is.na(strtmp), strDrpNotContain, strtmp)
-
-    strtmp <- dtStrings["strDrpTarget"]$value
-    strDrpTarget <- ifelse(is.na(strtmp), strDrpTarget, strtmp)
-
-    strtmp <- dtStrings["strLblWith"]$value
-    strLblWith <- ifelse(is.na(strtmp), strLblWith, strtmp)
-
-    strtmp <- dtStrings["strLblTarget"]$value
-    strLblTarget <- ifelse(is.na(strtmp), strLblTarget, strtmp)
-
-    strtmp <- dtStrings["strRadNumeric"]$value
-    strRadNumeric <- ifelse(is.na(strtmp), strRadNumeric, strtmp)
-
-    strtmp <- dtStrings["strRadCharacter"]$value
-    strRadCharacter <- ifelse(is.na(strtmp), strRadCharacter, strtmp)
-
-    strtmp <- dtStrings["strBtnApply"]$value
-    strBtnApply <- ifelse(is.na(strtmp), strBtnApply, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSave"]$value
-    strBtnSave <- ifelse(is.na(strtmp), strBtnSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaved"]$value
-    strBtnSaved <- ifelse(is.na(strtmp), strBtnSaved, strtmp)
-
-    strtmp <- dtStrings["strMsgDrop"]$value
-    strMsgDrop <- ifelse(is.na(strtmp), strMsgDrop, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDrop"]$value
-    strMsgTitleDrop <- ifelse(is.na(strtmp), strMsgTitleDrop, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -293,11 +148,11 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -307,7 +162,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -317,11 +172,11 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -339,9 +194,9 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  samples_lbl <- glabel(text = paste(" <NA>", strLblSamples), container = g1)
-  columns_lbl <- glabel(text = paste(" <NA>", strLblColumns), container = g1)
-  rows_lbl <- glabel(text = paste(" <NA>", strLblRows), container = g1)
+  samples_lbl <- glabel(text = paste(" <NA>", strings$STR_LBL_SAMPLES), container = g1)
+  columns_lbl <- glabel(text = paste(" <NA>", strings$STR_LBL_COLUMNS), container = g1)
+  rows_lbl <- glabel(text = paste(" <NA>", strings$STR_LBL_ROWS), container = g1)
 
   addHandlerChanged(dataset_drp, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -361,8 +216,8 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       # Check for dropout dataset and warn.
       if ("Dropout" %in% names(.gData)) {
         gmessage(
-          msg = strMsgDrop,
-          title = strMsgTitleDrop,
+          msg = strings$STR_MSG_DROP,
+          title = strings$STR_MSG_TITLE_DROP,
           icon = "warning", parent = w
         )
       }
@@ -372,27 +227,27 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
       # Update info prior to action.
       samples <- length(unique(.gData$Sample.Name))
-      svalue(samples_lbl) <- paste(" ", samples, strLblSamples)
-      svalue(columns_lbl) <- paste(" ", ncol(.gData), strLblColumns)
-      svalue(rows_lbl) <- paste(" ", nrow(.gData), strLblRows)
+      svalue(samples_lbl) <- paste(" ", samples, strings$STR_LBL_SAMPLES)
+      svalue(columns_lbl) <- paste(" ", ncol(.gData), strings$STR_LBL_COLUMNS)
+      svalue(rows_lbl) <- paste(" ", nrow(.gData), strings$STR_LBL_ROWS)
       .refresh_column_drp()
 
       # Update 'Save as'.
       svalue(save_edt) <- .gDataName
       samples <- length(unique(.gData$Sample.Name))
-      svalue(f3_samples_lbl) <- paste(" ", samples, strLblSamples)
-      svalue(f3_columns_lbl) <- paste(" ", ncol(.gData), strLblColumns)
-      svalue(f3_rows_lbl) <- paste(" ", nrow(.gData), strLblRows)
+      svalue(f3_samples_lbl) <- paste(" ", samples, strings$STR_LBL_SAMPLES)
+      svalue(f3_columns_lbl) <- paste(" ", ncol(.gData), strings$STR_LBL_COLUMNS)
+      svalue(f3_rows_lbl) <- paste(" ", nrow(.gData), strings$STR_LBL_ROWS)
 
       # Update info:
-      svalue(f1_min_lbl) <- strLblMin
-      svalue(f1_max_lbl) <- strLblMax
+      svalue(f1_min_lbl) <- strings$STR_LBL_MIN
+      svalue(f1_max_lbl) <- strings$STR_LBL_MAX
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(samples_lbl) <- paste(" <NA>", strLblSamples)
-      svalue(columns_lbl) <- paste(" <NA>", strLblColumns)
-      svalue(rows_lbl) <- paste(" <NA>", strLblRows)
+      svalue(samples_lbl) <- paste(" <NA>", strings$STR_LBL_SAMPLES)
+      svalue(columns_lbl) <- paste(" <NA>", strings$STR_LBL_COLUMNS)
+      svalue(rows_lbl) <- paste(" <NA>", strings$STR_LBL_ROWS)
 
       # Update info:
       svalue(f1_min_lbl) <- " Min:"
@@ -400,35 +255,35 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
       # Update 'Save as'.
       svalue(save_edt) <- ""
-      svalue(f3_samples_lbl) <- paste(" <NA>", strLblSamples)
-      svalue(f3_columns_lbl) <- paste(" <NA>", strLblColumns)
-      svalue(f3_rows_lbl) <- paste(" <NA>", strLblRows)
+      svalue(f3_samples_lbl) <- paste(" <NA>", strings$STR_LBL_SAMPLES)
+      svalue(f3_columns_lbl) <- paste(" <NA>", strings$STR_LBL_COLUMNS)
+      svalue(f3_rows_lbl) <- paste(" <NA>", strings$STR_LBL_ROWS)
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmColumn,
+    text = strings$STR_FRM_COLUMN,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblTargetCol, container = f1)
+  glabel(text = strings$STR_LBL_TARGET_COL, container = f1)
 
   f1_column_drp <- gcombobox(
-    items = strDrpColumn,
+    items = strings$STR_DRP_COLUMN,
     selected = 1,
     editable = FALSE,
     container = f1,
     ellipsize = "none"
   )
 
-  glabel(text = strLblInfo, container = f1)
-  f1_min_lbl <- glabel(text = strLblMin, container = f1)
-  f1_max_lbl <- glabel(text = strLblMax, container = f1)
-  f1_na_chk <- gcheckbox(text = strChkNa, checked = TRUE, container = f1)
+  glabel(text = strings$STR_LBL_INFO, container = f1)
+  f1_min_lbl <- glabel(text = strings$STR_LBL_MIN, container = f1)
+  f1_max_lbl <- glabel(text = strings$STR_LBL_MAX, container = f1)
+  f1_na_chk <- gcheckbox(text = strings$STR_CHK_NA, checked = TRUE, container = f1)
 
   addHandlerChanged(f1_na_chk, handler = function(h, ...) {
     .refresh_info()
@@ -461,30 +316,30 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   # FRAME 2 ###################################################################
 
   f2 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
-  f2_na_rm_chk <- gcheckbox(text = strChkRemNA, checked = FALSE, container = f2)
+  f2_na_rm_chk <- gcheckbox(text = strings$STR_CHK_REM_NA, checked = FALSE, container = f2)
 
-  glabel(text = strLblAction, visible = FALSE, anchor = c(-1, -1), container = f2)
+  glabel(text = strings$STR_LBL_ACTION, visible = FALSE, anchor = c(-1, -1), container = f2)
 
   f2g1 <- glayout(container = f2, spacing = 1)
 
   f2g1[1, 1] <- f2g1_task_opt <- gradio(
-    items = c(strRadDiscard, strRadReplace),
+    items = c(strings$STR_RAD_DISCARD, strings$STR_RAD_REPLACE),
     selected = 1,
     container = f2g1
   )
 
   f2_items <- c(
-    strDrpAbove, strDrpAboveEqual,
-    strDrpBelow, strDrpBelowEqual,
-    strDrpEqual, strDrpNotEqual,
-    strDrpNA, strDrpNotNA,
-    strDrpContain, strDrpNotContain
+    strings$STR_DRP_ABOVE, strings$STR_DRP_ABOVE_EQUAL,
+    strings$STR_DRP_BELOW, strings$STR_DRP_BELOW_EQUAL,
+    strings$STR_DRP_EQUAL, strings$STR_DRP_NOT_EQUAL,
+    strings$STR_DRP_NA, strings$STR_DRP_NOT_NA,
+    strings$STR_DRP_CONTAIN, strings$STR_DRP_NOT_CONTAIN
   )
 
   f2g1[1, 2] <- f2g1_operator_drp <- gcombobox(
@@ -493,7 +348,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   )
 
   f2g1[1, 3] <- f2g1_target_cbo <- gcombobox(
-    items = strDrpTarget,
+    items = strings$STR_DRP_TARGET,
     selected = 1,
     editable = TRUE,
     container = f2g1,
@@ -501,7 +356,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   )
 
   f2g1[1, 4] <- f2g1_new_lbl <- glabel(
-    text = strLblWith,
+    text = strings$STR_LBL_WITH,
     visible = FALSE,
     anchor = c(0, -1),
     container = f2g1
@@ -515,12 +370,12 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   )
 
   glabel(
-    text = strLblTarget,
+    text = strings$STR_LBL_TARGET,
     visible = FALSE, anchor = c(-1, -1), container = f2
   )
 
   f2_type_opt <- gradio(
-    items = c(strRadNumeric, strRadCharacter),
+    items = c(strings$STR_RAD_NUMERIC, strings$STR_RAD_CHARACTER),
     horizontal = FALSE,
     selected = 1,
     container = f2
@@ -538,7 +393,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   # BUTTON ####################################################################
 
-  apply_btn <- gbutton(text = strBtnApply, container = gv)
+  apply_btn <- gbutton(text = strings$STR_BTN_APPLY, container = gv)
 
 
   addHandlerClicked(apply_btn, handler = function(h, ...) {
@@ -591,12 +446,12 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     # Change button.
     blockHandlers(apply_btn)
-    svalue(apply_btn) <- strBtnProcessing
+    svalue(apply_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(apply_btn)
     enabled(apply_btn) <- FALSE
 
     blockHandlers(save_btn)
-    svalue(save_btn) <- strBtnSave
+    svalue(save_btn) <- strings$STR_BTN_SAVE
     unblockHandlers(save_btn)
 
     if (!is.null(.gData) && !is.null(.gData)) {
@@ -719,15 +574,15 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       }
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }
 
     # Change button.
     blockHandlers(apply_btn)
-    svalue(apply_btn) <- strBtnApply
+    svalue(apply_btn) <- strings$STR_BTN_APPLY
     unblockHandlers(apply_btn)
     enabled(apply_btn) <- TRUE
 
@@ -743,17 +598,17 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
-  save_btn <- gbutton(text = strBtnSave, container = save_frame)
+  save_btn <- gbutton(text = strings$STR_BTN_SAVE, container = save_frame)
 
-  f3_samples_lbl <- glabel(text = paste(" <NA>", strLblSamples), container = save_frame)
-  f3_columns_lbl <- glabel(text = paste(" <NA>", strLblColumns), container = save_frame)
-  f3_rows_lbl <- glabel(text = paste(" <NA>", strLblRows), container = save_frame)
+  f3_samples_lbl <- glabel(text = paste(" <NA>", strings$STR_LBL_SAMPLES), container = save_frame)
+  f3_columns_lbl <- glabel(text = paste(" <NA>", strings$STR_LBL_COLUMNS), container = save_frame)
+  f3_rows_lbl <- glabel(text = paste(" <NA>", strings$STR_LBL_ROWS), container = save_frame)
 
   addHandlerChanged(save_btn, handler = function(h, ...) {
     val_name <- svalue(save_edt)
@@ -772,7 +627,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     # Save data.
     saveObject(name = val_name, object = datanew, parent = w, env = env)
     blockHandlers(save_btn)
-    svalue(save_btn) <- strBtnSaved
+    svalue(save_btn) <- strings$STR_BTN_SAVED
     unblockHandlers(save_btn)
   })
 
@@ -790,7 +645,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       blockHandler(f1_column_drp)
 
       # Populate drop list.
-      f1_column_drp[] <- c(strDrpColumn, dfs)
+      f1_column_drp[] <- c(strings$STR_DRP_COLUMN, dfs)
 
       # Select default value.
       svalue(f1_column_drp, index = TRUE) <- 1
@@ -816,41 +671,41 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         # Update info:
         if (is.factor(.gData[, val_col])) {
           svalue(f1_min_lbl) <- paste(
-            strLblMin,
+            strings$STR_LBL_MIN,
             min(as.character(.gData[, val_col]),
               na.rm = val_na
             )
           )
           svalue(f1_max_lbl) <- paste(
-            strLblMax,
+            strings$STR_LBL_MAX,
             max(as.character(.gData[, val_col]),
               na.rm = val_na
             )
           )
         } else {
           svalue(f1_min_lbl) <- paste(
-            strLblMin,
+            strings$STR_LBL_MIN,
             min(.gData[, val_col], na.rm = val_na)
           )
           svalue(f1_max_lbl) <- paste(
-            strLblMax,
+            strings$STR_LBL_MAX,
             max(.gData[, val_col], na.rm = val_na)
           )
         }
 
         # Update 'Save As'
         samples <- length(unique(.gData$Sample.Name))
-        svalue(f3_samples_lbl) <- paste(" ", samples, strLblSamples)
-        svalue(f3_columns_lbl) <- paste(" ", ncol(.gData), strLblColumns)
-        svalue(f3_rows_lbl) <- paste(" ", nrow(.gData), strLblRows)
+        svalue(f3_samples_lbl) <- paste(" ", samples, strings$STR_LBL_SAMPLES)
+        svalue(f3_columns_lbl) <- paste(" ", ncol(.gData), strings$STR_LBL_COLUMNS)
+        svalue(f3_rows_lbl) <- paste(" ", nrow(.gData), strings$STR_LBL_ROWS)
       } else {
         # Update info:
-        svalue(f1_min_lbl) <- strLblMin
-        svalue(f1_max_lbl) <- strLblMax
+        svalue(f1_min_lbl) <- strings$STR_LBL_MIN
+        svalue(f1_max_lbl) <- strings$STR_LBL_MAX
 
-        svalue(f3_samples_lbl) <- paste(" <NA>", strLblSamples)
-        svalue(f3_columns_lbl) <- paste(" <NA>", strLblColumns)
-        svalue(f3_rows_lbl) <- paste(" <NA>", strLblRows)
+        svalue(f3_samples_lbl) <- paste(" <NA>", strings$STR_LBL_SAMPLES)
+        svalue(f3_columns_lbl) <- paste(" <NA>", strings$STR_LBL_COLUMNS)
+        svalue(f3_rows_lbl) <- paste(" <NA>", strings$STR_LBL_ROWS)
       }
     }
 

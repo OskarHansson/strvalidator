@@ -56,96 +56,35 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Calculate capillary balance"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataSample <- "Samples Table:"
-  strDrpDefault <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblDataSizing <- "Sample Plot Sizing Table:"
-  strLblSampleFiles <- "sample files"
-  strFrmOptions <- "Options"
-  strLblRun <- "Run name:"
-  strLblRunMsg <- "Optional run name"
-  strLblThreshold <- "Sizing quality threshold:"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
-  strMsgDataset <- "A 'Samples Table' dataset and a 'SamplePlotSizing' dataset have to be selected."
-  strMsgTitleDataset <- "Datasets not selected"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Calculate capillary balance",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATA_SAMPLE     = "Samples Table:",
+    STR_DRP_DEFAULT         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_DATA_SIZING     = "Sample Plot Sizing Table:",
+    STR_LBL_SAMPLE_FILES    = "sample files",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_RUN             = "Run name:",
+    STR_LBL_RUN_MSG         = "Optional run name",
+    STR_LBL_THRESHOLD       = "Sizing quality threshold:",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_DATASET         = "A 'Samples Table' dataset and a 'SamplePlotSizing' dataset have to be selected.",
+    STR_MSG_TITLE_DATASET   = "Datasets not selected"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataSample"]$value
-    strLblDataSample <- ifelse(is.na(strtmp), strLblDataSample, strtmp)
-
-    strtmp <- dtStrings["strDrpDefault"]$value
-    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblDataSizing"]$value
-    strLblDataSizing <- ifelse(is.na(strtmp), strLblDataSizing, strtmp)
-
-    strtmp <- dtStrings["strLblSampleFiles"]$value
-    strLblSampleFiles <- ifelse(is.na(strtmp), strLblSampleFiles, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblRun"]$value
-    strLblRun <- ifelse(is.na(strtmp), strLblRun, strtmp)
-
-    strtmp <- dtStrings["strLblRunMsg"]$value
-    strLblRunMsg <- ifelse(is.na(strtmp), strLblRunMsg, strtmp)
-
-    strtmp <- dtStrings["strLblThreshold"]$value
-    strLblThreshold <- ifelse(is.na(strtmp), strLblThreshold, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -172,11 +111,11 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -186,7 +125,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv,
@@ -198,12 +137,12 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataSample, container = g0)
+  glabel(text = strings$STR_LBL_DATA_SAMPLE, container = g0)
 
-  dfs <- c(strDrpDefault, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DEFAULT, listObjects(env = env, obj.class = "data.frame"))
 
   g0_data_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = g0
   )
 
@@ -237,7 +176,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       .gSamplesName <<- val_obj
       svalue(g0_data_samples_lbl) <- paste(
         length(unique(.gSamples$Sample.Name)),
-        strLblSamples
+        strings$STR_LBL_SAMPLES
       )
       svalue(save_edt) <- paste(val_obj, "_cap", sep = "")
     } else {
@@ -245,7 +184,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       .gSamples <<- NULL
       .gSamplesName <<- NULL
       svalue(g0_data_drp, index = TRUE) <- 1
-      svalue(g0_data_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(g0_data_samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLES)
       svalue(save_edt) <- ""
     }
   })
@@ -254,10 +193,10 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataSizing, container = g1)
+  glabel(text = strings$STR_LBL_DATA_SIZING, container = g1)
 
   g0_ref_samples_lbl <- glabel(
-    text = paste(" 0", strLblSampleFiles),
+    text = paste(" 0", strings$STR_LBL_SAMPLE_FILES),
     container = g1
   )
 
@@ -296,14 +235,14 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       .gPlot <<- NULL
       .gPlotName <<- NULL
       svalue(g0_ref_drp, index = TRUE) <- 1
-      svalue(g0_ref_samples_lbl) <- paste(" 0", strLblSampleFiles)
+      svalue(g0_ref_samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLE_FILES)
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv,
@@ -316,7 +255,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
     expand = TRUE, fill = "x", container = f1
   )
   glabel(
-    text = strLblRun, initial.msg = strLblRunMsg,
+    text = strings$STR_LBL_RUN, initial.msg = strings$STR_LBL_RUN_MSG,
     anchor = c(-1, 0), container = f1g1
   )
 
@@ -324,7 +263,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
   f1g2 <- ggroup(horizontal = TRUE, spacing = 1, container = f1)
   glabel(
-    text = strLblThreshold,
+    text = strings$STR_LBL_THRESHOLD,
     anchor = c(-1, 0), container = f1g2
   )
   f1_sq_spb <- gspinbutton(
@@ -334,15 +273,15 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
+  calculate_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     # Get values.
@@ -371,7 +310,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
     if (!is.null(.gSamples) & !is.null(.gPlot)) {
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- strBtnProcessing
+      svalue(calculate_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -408,8 +347,8 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error",
         parent = w
       )

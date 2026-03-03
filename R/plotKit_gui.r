@@ -54,124 +54,42 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot kit"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmKit <- "Select kits"
-  strFrmOptions <- "Options"
-  strLblTitlePlot <- "Plot title:"
-  strLblTitleX <- "X title:"
-  strLblSize <- "Size:"
-  strLblKitSize <- "Kit name size:"
-  strLblKitSpacing <- "Spacing between kits:"
-  strLblMarkerSize <- "Marker name size:"
-  strLblMarkerHeight <- "Marker height:"
-  strLblMarkerAlpha <- "Marker transparency:"
-  strTipMarker <- "Marker range fill color alpha"
-  strBtnPlot <- "Plot"
-  strTipPlot <- "Plot marker ranges for kit"
-  strBtnProcessing <- "Processing..."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
-  strBtnObjectSaved <- "Object saved"
-  strLblMainTitle <- "Marker size range"
-  strLblXTitle <- "Size (bp)"
-  strMsgNull <- "At least one kit must be selected!"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot kit",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_KIT             = "Select kits",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_TITLE_PLOT      = "Plot title:",
+    STR_LBL_TITLE_X         = "X title:",
+    STR_LBL_SIZE            = "Size:",
+    STR_LBL_KIT_SIZE        = "Kit name size:",
+    STR_LBL_KIT_SPACING     = "Spacing between kits:",
+    STR_LBL_MARKER_SIZE     = "Marker name size:",
+    STR_LBL_MARKER_HEIGHT   = "Marker height:",
+    STR_LBL_MARKER_ALPHA    = "Marker transparency:",
+    STR_TIP_MARKER          = "Marker range fill color alpha",
+    STR_BTN_PLOT            = "Plot",
+    STR_TIP_PLOT            = "Plot marker ranges for kit",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_SAVE_IMAGE      = "Save as image",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_LBL_MAIN_TITLE      = "Marker size range",
+    STR_LBL_X_TITLE         = "Size (bp)",
+    STR_MSG_NULL            = "At least one kit must be selected!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmKit"]$value
-    strFrmKit <- ifelse(is.na(strtmp), strFrmKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblTitlePlot"]$value
-    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-
-    strtmp <- dtStrings["strLblTitleX"]$value
-    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-
-    strtmp <- dtStrings["strLblSize"]$value
-    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
-
-    strtmp <- dtStrings["strLblKitSize"]$value
-    strLblKitSize <- ifelse(is.na(strtmp), strLblKitSize, strtmp)
-
-    strtmp <- dtStrings["strLblKitSpacing"]$value
-    strLblKitSpacing <- ifelse(is.na(strtmp), strLblKitSpacing, strtmp)
-
-    strtmp <- dtStrings["strLblMarkerSize"]$value
-    strLblMarkerSize <- ifelse(is.na(strtmp), strLblMarkerSize, strtmp)
-
-    strtmp <- dtStrings["strLblMarkerHeight"]$value
-    strLblMarkerHeight <- ifelse(is.na(strtmp), strLblMarkerHeight, strtmp)
-
-    strtmp <- dtStrings["strLblMarkerAlpha"]$value
-    strLblMarkerAlpha <- ifelse(is.na(strtmp), strLblMarkerAlpha, strtmp)
-
-    strtmp <- dtStrings["strTipMarker"]$value
-    strTipMarker <- ifelse(is.na(strtmp), strTipMarker, strtmp)
-
-    strtmp <- dtStrings["strBtnPlot"]$value
-    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
-
-    strtmp <- dtStrings["strTipPlot"]$value
-    strTipPlot <- ifelse(is.na(strtmp), strTipPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitle"]$value
-    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
-
-    strtmp <- dtStrings["strLblXTitle"]$value
-    strLblXTitle <- ifelse(is.na(strtmp), strLblXTitle, strtmp)
-
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -199,11 +117,11 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -213,7 +131,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmKit,
+    text = strings$STR_FRM_KIT,
     horizontal = TRUE,
     spacing = 1,
     container = gv,
@@ -243,7 +161,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -251,26 +169,26 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   f1g1 <- glayout(container = f1, spacing = 1)
 
-  f1g1[1, 1] <- glabel(text = strLblTitlePlot, container = f1g1)
+  f1g1[1, 1] <- glabel(text = strings$STR_LBL_TITLE_PLOT, container = f1g1)
   f1g1[1, 2] <- title_edt <- gedit(
-    text = strLblMainTitle,
+    text = strings$STR_LBL_MAIN_TITLE,
     width = 40,
     container = f1g1
   )
-  f1g1[1, 3] <- glabel(text = strLblSize, container = f1g1)
+  f1g1[1, 3] <- glabel(text = strings$STR_LBL_SIZE, container = f1g1)
   f1g1[1, 4] <- title_size_edt <- gedit(
     text = "20",
     width = 4,
     container = f1g1
   )
 
-  f1g1[2, 1] <- glabel(text = strLblTitleX, container = f1g1)
+  f1g1[2, 1] <- glabel(text = strings$STR_LBL_TITLE_X, container = f1g1)
   f1g1[2, 2] <- x_title_edt <- gedit(
-    text = strLblXTitle,
+    text = strings$STR_LBL_X_TITLE,
     container = f1g1
   )
 
-  f1g1[2, 3] <- glabel(text = strLblSize, container = f1g1)
+  f1g1[2, 3] <- glabel(text = strings$STR_LBL_SIZE, container = f1g1)
   f1g1[2, 4] <- x_title_size_edt <- gedit(
     text = "10",
     width = 4,
@@ -279,35 +197,35 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   f1g2 <- glayout(container = f1, spacing = 1)
 
-  f1g2[1, 1] <- glabel(text = strLblKitSize, container = f1g2)
+  f1g2[1, 1] <- glabel(text = strings$STR_LBL_KIT_SIZE, container = f1g2)
   f1g2[1, 2] <- kit_size_edt <- gedit(
     text = "4",
     width = 4,
     container = f1g2
   )
 
-  f1g2[2, 1] <- glabel(text = strLblKitSpacing, container = f1g2)
+  f1g2[2, 1] <- glabel(text = strings$STR_LBL_KIT_SPACING, container = f1g2)
   f1g2[2, 2] <- kit_spacing_spb <- gspinbutton(
     from = 1, to = 10, by = 1,
     value = 2,
     container = f1g2
   )
 
-  f1g2[3, 1] <- glabel(text = strLblMarkerSize, container = f1g2)
+  f1g2[3, 1] <- glabel(text = strings$STR_LBL_MARKER_SIZE, container = f1g2)
   f1g2[3, 2] <- marker_size_edt <- gedit(
     text = "3",
     width = 4,
     container = f1g2
   )
 
-  f1g2[4, 1] <- glabel(text = strLblMarkerHeight, container = f1g2)
+  f1g2[4, 1] <- glabel(text = strings$STR_LBL_MARKER_HEIGHT, container = f1g2)
   f1g2[4, 2] <- marker_hight_spb <- gspinbutton(
     from = 0.1, to = 0.5, by = 0.1,
     value = 0.5,
     container = f1g2
   )
 
-  f1g2[5, 1] <- glabel(text = strLblMarkerAlpha, container = f1g2)
+  f1g2[5, 1] <- glabel(text = strings$STR_LBL_MARKER_ALPHA, container = f1g2)
   f1g2[5, 2] <- marker_alpha_spb <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 1,
@@ -317,8 +235,8 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
   # BUTTON ####################################################################
 
-  plot_btn <- gbutton(text = strBtnPlot, container = gv)
-  tooltip(plot_btn) <- strTipPlot
+  plot_btn <- gbutton(text = strings$STR_BTN_PLOT, container = gv)
+  tooltip(plot_btn) <- strings$STR_TIP_PLOT
 
   addHandlerClicked(plot_btn, handler = function(h, ...) {
     val_name <- svalue(plot_btn)
@@ -331,7 +249,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Change button.
     blockHandlers(plot_btn)
-    svalue(plot_btn) <- strBtnProcessing
+    svalue(plot_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(plot_btn)
     enabled(plot_btn) <- FALSE
 
@@ -340,7 +258,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Change button.
     blockHandlers(plot_btn)
-    svalue(plot_btn) <- strBtnPlot
+    svalue(plot_btn) <- strings$STR_BTN_PLOT
     unblockHandlers(plot_btn)
     enabled(plot_btn) <- TRUE
   })
@@ -348,26 +266,26 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = strFrmSave,
+    text = strings$STR_FRM_SAVE,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strings$STR_LBL_SAVE, container = f5)
 
   f5_save_edt <- gedit(text = "_ggplot", container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
+  f5_save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
+  f5_ggsave_btn <- gbutton(text = strings$STR_BTN_SAVE_IMAGE, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnProcessing
+    svalue(f5_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -379,7 +297,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnObjectSaved
+    svalue(f5_save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(f5_save_btn)
   })
 
@@ -523,8 +441,8 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NULL,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }

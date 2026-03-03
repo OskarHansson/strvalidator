@@ -61,108 +61,38 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Calculate summary statistics"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblRows <- "rows"
-  strFrmOptions <- "Options"
-  strLblTarget <- "Select target column:"
-  strLblGroupBy <- "Group by column(s):"
-  strLblCount <- "Count unique values in column:"
-  strDrpColumn <- "<Select Columns>"
-  strLblQuantile <- "Calculate quantile:"
-  strLblDecimals <- "Round to decimals (-1 for no rounding):"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
-  strMsgDataset <- "A dataset must be selected."
-  strMsgTitleDataset <- "Dataset not selected"
-  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset."
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Calculate summary statistics",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_ROWS            = "rows",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_TARGET          = "Select target column:",
+    STR_LBL_GROUP_BY        = "Group by column(s):",
+    STR_LBL_COUNT           = "Count unique values in column:",
+    STR_DRP_COLUMN          = "<Select Columns>",
+    STR_LBL_QUANTILE        = "Calculate quantile:",
+    STR_LBL_DECIMALS        = "Round to decimals (-1 for no rounding):",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_DATASET         = "A dataset must be selected.",
+    STR_MSG_TITLE_DATASET   = "Dataset not selected",
+    STR_MSG_CHECK           = "Data frame is NULL!\n\nMake sure to select a sample dataset.",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblRows"]$value
-    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblTarget"]$value
-    strLblTarget <- ifelse(is.na(strtmp), strLblTarget, strtmp)
-
-    strtmp <- dtStrings["strLblGroupBy"]$value
-    strLblGroupBy <- ifelse(is.na(strtmp), strLblGroupBy, strtmp)
-
-    strtmp <- dtStrings["strLblCount"]$value
-    strLblCount <- ifelse(is.na(strtmp), strLblCount, strtmp)
-
-    strtmp <- dtStrings["strDrpColumn"]$value
-    strDrpColumn <- ifelse(is.na(strtmp), strDrpColumn, strtmp)
-
-    strtmp <- dtStrings["strLblQuantile"]$value
-    strLblQuantile <- ifelse(is.na(strtmp), strLblQuantile, strtmp)
-
-    strtmp <- dtStrings["strLblDecimals"]$value
-    strLblDecimals <- ifelse(is.na(strtmp), strLblDecimals, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgCheck"]$value
-    strMsgCheck <- ifelse(is.na(strtmp), strMsgCheck, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -189,11 +119,11 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -203,7 +133,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   # FRAME 0 ###################################################################
 
   data_frm <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = TRUE,
     spacing = 1,
     container = gv
@@ -211,14 +141,14 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
   # Dataset -------------------------------------------------------------------
 
-  glabel(text = strLblDataset, container = data_frm)
+  glabel(text = strings$STR_LBL_DATASET, container = data_frm)
 
   data_rows_lbl <- glabel(
-    text = paste(" 0", strLblRows),
+    text = paste(" 0", strings$STR_LBL_ROWS),
     container = data_frm
   )
 
-  dfs <- c(strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DATASET, listObjects(env = env, obj.class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -237,7 +167,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   # OPTIONS ###################################################################
 
   option_frm <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -247,19 +177,19 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
   # Target --------------------------------------------------------------------
 
-  glabel(text = strLblTarget, container = option_frm)
+  glabel(text = strings$STR_LBL_TARGET, container = option_frm)
 
   target_drp <- gcombobox(
-    items = strDrpColumn,
+    items = strings$STR_DRP_COLUMN,
     container = option_frm, ellipsize = "none"
   )
 
   # Group ---------------------------------------------------------------------
 
-  glabel(text = strLblGroupBy, container = option_frm)
+  glabel(text = strings$STR_LBL_GROUP_BY, container = option_frm)
 
   group_drp <- gcombobox(
-    items = strDrpColumn,
+    items = strings$STR_DRP_COLUMN,
     container = option_frm, ellipsize = "none"
   )
 
@@ -273,7 +203,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     val_value <- svalue(group_edt)
 
     if (!is.null(val_column)) {
-      if (val_column != strDrpColumn) {
+      if (val_column != strings$STR_DRP_COLUMN) {
         # Add new value to selected.
         if (nchar(val_value) == 0) {
           svalue(group_edt) <- val_column
@@ -286,16 +216,16 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
   # Count ---------------------------------------------------------------------
 
-  glabel(text = strLblCount, container = option_frm)
+  glabel(text = strings$STR_LBL_COUNT, container = option_frm)
 
   count_drp <- gcombobox(
-    items = strDrpColumn,
+    items = strings$STR_DRP_COLUMN,
     container = option_frm, ellipsize = "none"
   )
 
   # Quantile ------------------------------------------------------------------
 
-  glabel(text = strLblQuantile, container = option_frm)
+  glabel(text = strings$STR_LBL_QUANTILE, container = option_frm)
 
   quant_spb <- gspinbutton(
     from = 0, to = 1,
@@ -305,7 +235,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
   # Decimals ------------------------------------------------------------------
 
-  glabel(text = strLblDecimals, container = option_frm)
+  glabel(text = strings$STR_LBL_DECIMALS, container = option_frm)
 
   decimals_spb <- gspinbutton(
     from = -1, to = 10,
@@ -315,15 +245,15 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
+  calculate_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     # Get values.
@@ -336,7 +266,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     val_quant <- svalue(quant_spb)
     val_decimals <- svalue(decimals_spb)
 
-    if (val_group == strDrpColumn) {
+    if (val_group == strings$STR_DRP_COLUMN) {
       val_group <- NULL
     }
 
@@ -360,20 +290,20 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
     # Check if data.
     if (!is.null(val_data)) {
-      if (!nchar(val_target) > 0 || val_target == strDrpColumn) {
+      if (!nchar(val_target) > 0 || val_target == strings$STR_DRP_COLUMN) {
         val_target <- NULL
       } else {
         # val_target <- unlist(strsplit(val_target, split = ","))
         val_target # Currently only implemented single target column.
       }
 
-      if (!nchar(val_group) > 0 || val_group == strDrpColumn) {
+      if (!nchar(val_group) > 0 || val_group == strings$STR_DRP_COLUMN) {
         val_group <- NULL
       } else {
         val_group <- unlist(strsplit(val_group, split = ","))
       }
 
-      if (!nchar(val_count) > 0 || val_count == strDrpColumn) {
+      if (!nchar(val_count) > 0 || val_count == strings$STR_DRP_COLUMN) {
         val_count <- NULL
       } else {
         # val_count <- unlist(strsplit(val_count, split = ","))
@@ -382,7 +312,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
       # Check if suitable.
       requiredCol <- c(val_target, val_group, val_count)
-      requiredCol <- requiredCol[requiredCol != strDrpColumn]
+      requiredCol <- requiredCol[requiredCol != strings$STR_DRP_COLUMN]
       ok <- check_dataset(
         name = val_obj, reqcol = requiredCol,
         env = env, parent = w, debug = debug
@@ -405,7 +335,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
         # Change button.
         blockHandlers(calculate_btn)
-        svalue(calculate_btn) <- strBtnProcessing
+        svalue(calculate_btn) <- strings$STR_BTN_PROCESSING
         unblockHandlers(calculate_btn)
         enabled(calculate_btn) <- FALSE
 
@@ -450,8 +380,8 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       }
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error",
         parent = w
       )
@@ -463,17 +393,17 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
   .updateWidgets <- function() {
     val_obj <- gWidgets2::svalue(data_drp)
 
-    if (val_obj != strDrpDataset) {
+    if (val_obj != strings$STR_DRP_DATASET) {
       # Load or change components.
 
       # get dataset.
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      gWidgets2::svalue(data_rows_lbl) <- paste(nrow(.gData), strLblRows)
+      gWidgets2::svalue(data_rows_lbl) <- paste(nrow(.gData), strings$STR_LBL_ROWS)
 
       # Update dropdown menues.
-      target_columns <- unique(c(strDrpColumn, names(.gData)))
+      target_columns <- unique(c(strings$STR_DRP_COLUMN, names(.gData)))
       target_drp[] <- target_columns
       group_drp[] <- target_columns
       count_drp[] <- target_columns
@@ -498,13 +428,13 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
       .gData <<- NULL
       .gDataName <<- NULL
       gWidgets2::svalue(data_drp, index = TRUE) <- 1
-      gWidgets2::svalue(data_rows_lbl) <- paste(" 0", strLblRows)
+      gWidgets2::svalue(data_rows_lbl) <- paste(" 0", strings$STR_LBL_ROWS)
       gWidgets2::svalue(save_edt) <- ""
 
       # Update dropdown menues.
-      target_drp[] <- strDrpColumn
-      group_drp[] <- strDrpColumn
-      count_drp[] <- strDrpColumn
+      target_drp[] <- strings$STR_DRP_COLUMN
+      group_drp[] <- strings$STR_DRP_COLUMN
+      count_drp[] <- strings$STR_DRP_COLUMN
 
       # Select default value.
       gWidgets2::svalue(target_drp, index = TRUE) <- 1
@@ -514,7 +444,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
 
     # Change button.
     gWidgets2::blockHandlers(calculate_btn)
-    gWidgets2::svalue(calculate_btn) <- strBtnCalculate
+    gWidgets2::svalue(calculate_btn) <- strings$STR_BTN_CALCULATE
     gWidgets2::unblockHandlers(calculate_btn)
     gWidgets2::enabled(calculate_btn) <- TRUE
   }

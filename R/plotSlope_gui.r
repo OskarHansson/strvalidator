@@ -61,140 +61,46 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot slope"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Slope dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strFrmOptions <- "Options"
-  strChkOverride <- "Override automatic titles"
-  strLblTitlePlot <- "Plot title:"
-  strLblTitleX <- "X title:"
-  strLblTitleY <- "Y title:"
-  strLblTheme <- "Plot theme:"
-  strExpLabels <- "X labels"
-  strLblSize <- "Text size (pts):"
-  strLblAngle <- "Angle:"
-  strLblJustification <- "Justification (v/h):"
-  strFrmPlot <- "Plot slope data"
-  strBtnPlot <- "Slope vs. Sample"
-  strBtnProcessing <- "Processing..."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
-  strBtnObjectSaved <- "Object saved"
-  strLblMainTitle <- "Profile slope"
-  strLblXTitle <- "Sample"
-  strLblYTitle <- "Slope"
-  strMsgNotDf <- "Data set must be a data.frame!"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot slope",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Slope dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_OVERRIDE        = "Override automatic titles",
+    STR_LBL_TITLE_PLOT      = "Plot title:",
+    STR_LBL_TITLE_X         = "X title:",
+    STR_LBL_TITLE_Y         = "Y title:",
+    STR_LBL_THEME           = "Plot theme:",
+    STR_EXP_LABELS          = "X labels",
+    STR_LBL_SIZE            = "Text size (pts):",
+    STR_LBL_ANGLE           = "Angle:",
+    STR_LBL_JUSTIFICATION   = "Justification (v/h):",
+    STR_FRM_PLOT            = "Plot slope data",
+    STR_BTN_PLOT            = "Slope vs. Sample",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_SAVE_IMAGE      = "Save as image",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_LBL_MAIN_TITLE      = "Profile slope",
+    STR_LBL_X_TITLE         = "Sample",
+    STR_LBL_Y_TITLE         = "Slope",
+    STR_MSG_NOT_DF          = "Data set must be a data.frame!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkOverride"]$value
-    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
-
-    strtmp <- dtStrings["strLblTitlePlot"]$value
-    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-
-    strtmp <- dtStrings["strLblTitleX"]$value
-    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-
-    strtmp <- dtStrings["strLblTitleY"]$value
-    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
-
-    strtmp <- dtStrings["strLblTheme"]$value
-    strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
-
-    strtmp <- dtStrings["strExpLabels"]$value
-    strExpLabels <- ifelse(is.na(strtmp), strExpLabels, strtmp)
-
-    strtmp <- dtStrings["strLblSize"]$value
-    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
-
-    strtmp <- dtStrings["strLblAngle"]$value
-    strLblAngle <- ifelse(is.na(strtmp), strLblAngle, strtmp)
-
-    strtmp <- dtStrings["strLblJustification"]$value
-    strLblJustification <- ifelse(is.na(strtmp), strLblJustification, strtmp)
-
-    strtmp <- dtStrings["strFrmPlot"]$value
-    strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnPlot"]$value
-    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitle"]$value
-    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
-
-    strtmp <- dtStrings["strLblXTitle"]$value
-    strLblXTitle <- ifelse(is.na(strtmp), strLblXTitle, strtmp)
-
-    strtmp <- dtStrings["strLblYTitle"]$value
-    strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
-
-    strtmp <- dtStrings["strMsgNotDf"]$value
-    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -222,11 +128,11 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -236,22 +142,22 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblDataset, container = f0)
+  glabel(text = strings$STR_LBL_DATASET, container = f0)
 
   samples_lbl <- glabel(
-    text = paste(" 0 ", strLblSamples, sep = ""),
+    text = paste(" 0 ", strings$STR_LBL_SAMPLES, sep = ""),
     container = f0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -287,7 +193,7 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
       svalue(samples_lbl) <- paste(" ",
         length(unique(.gData$Sample.Name)),
-        " ", strLblSamples,
+        " ", strings$STR_LBL_SAMPLES,
         sep = ""
       )
 
@@ -298,21 +204,21 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(samples_lbl) <- paste(" 0 ", strLblSamples, sep = "")
+      svalue(samples_lbl) <- paste(" 0 ", strings$STR_LBL_SAMPLES, sep = "")
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = strChkOverride,
+    text = strings$STR_CHK_OVERRIDE,
     checked = FALSE, container = f1
   )
 
@@ -326,18 +232,18 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   )
 
   # Legends
-  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_PLOT, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_X, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_Y, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
 
   f1g2 <- glayout(container = f1)
-  f1g2[1, 1] <- glabel(text = strLblTheme, anchor = c(-1, 0), container = f1g2)
+  f1g2[1, 1] <- glabel(text = strings$STR_LBL_THEME, anchor = c(-1, 0), container = f1g2)
   f1g2[1, 2] <- f1_theme_drp <- gcombobox(
     items = .theme,
     selected = 1,
@@ -348,7 +254,7 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # BUTTON ####################################################################
 
   plot_sample_btn <- gbutton(
-    text = strBtnPlot, container = gv,
+    text = strings$STR_BTN_PLOT, container = gv,
     expand = TRUE, fill = TRUE
   )
   tooltip(plot_sample_btn) <- "Plot slope by sample and group"
@@ -362,26 +268,26 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = strFrmSave,
+    text = strings$STR_FRM_SAVE,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strings$STR_LBL_SAVE, container = f5)
 
   f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
+  f5_save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
+  f5_ggsave_btn <- gbutton(text = strings$STR_BTN_SAVE_IMAGE, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnProcessing
+    svalue(f5_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -393,7 +299,7 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnObjectSaved
+    svalue(f5_save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(f5_save_btn)
   })
 
@@ -412,7 +318,7 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   # FRAME 4 ###################################################################
 
   e4 <- gexpandgroup(
-    text = strExpLabels,
+    text = strings$STR_EXP_LABELS,
     horizontal = FALSE,
     container = f1
   )
@@ -422,17 +328,17 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
   grid4 <- glayout(container = e4)
 
-  grid4[1, 1] <- glabel(text = strLblSize, container = grid4)
+  grid4[1, 1] <- glabel(text = strings$STR_LBL_SIZE, container = grid4)
   grid4[1, 2] <- e4_size_edt <- gedit(text = "8", width = 4, container = grid4)
 
-  grid4[1, 3] <- glabel(text = strLblAngle, container = grid4)
+  grid4[1, 3] <- glabel(text = strings$STR_LBL_ANGLE, container = grid4)
   grid4[1, 4] <- e4_angle_spb <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 0,
     container = grid4
   )
 
-  grid4[2, 1] <- glabel(text = strLblJustification, container = grid4)
+  grid4[2, 1] <- glabel(text = strings$STR_LBL_JUSTIFICATION, container = grid4)
   grid4[2, 2] <- e4_vjust_spb <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 0.5,
@@ -487,9 +393,9 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
         xtitle <- val_xtitle
         ytitle <- val_ytitle
       } else {
-        maintitle <- strLblMainTitle
-        xtitle <- strLblXTitle
-        ytitle <- strLblYTitle
+        maintitle <- strings$STR_LBL_MAIN_TITLE
+        xtitle <- strings$STR_LBL_X_TITLE
+        ytitle <- strings$STR_LBL_Y_TITLE
       }
 
       # Create plot with groups.
@@ -528,15 +434,15 @@ plotSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       print(gp)
 
       # Change save button.
-      svalue(f5_save_btn) <- strBtnSaveObject
+      svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
       enabled(f5_save_btn) <- TRUE
 
       # Store in global variable.
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNotDf,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NOT_DF,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }
