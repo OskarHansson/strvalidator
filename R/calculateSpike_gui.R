@@ -44,95 +44,34 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Calculate spikes"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Sample dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strLblThreshold <- "Threshold (number of peaks at similar size):"
-  strLblTolerance <- "Tolerance (bp):"
-  strChkQuick <- "Quick and dirty"
-  strTipQuick <- "NB! The quick method may not catch all spikes since two peaks can be separated by rounding e.g. 200.5 and 200.6 becomes 200 and 201 respectively!"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
-  strMsgDataset <- "A sample dataset must be selected."
-  strMsgTitleDataset <- "Dataset not selected"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Calculate spikes",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Sample dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_THRESHOLD       = "Threshold (number of peaks at similar size):",
+    STR_LBL_TOLERANCE       = "Tolerance (bp):",
+    STR_CHK_QUICK           = "Quick and dirty",
+    STR_TIP_QUICK           = "NB! The quick method may not catch all spikes since two peaks can be separated by rounding e.g. 200.5 and 200.6 becomes 200 and 201 respectively!",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_DATASET         = "A sample dataset must be selected.",
+    STR_MSG_TITLE_DATASET   = "Dataset not selected"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblThreshold"]$value
-    strLblThreshold <- ifelse(is.na(strtmp), strLblThreshold, strtmp)
-
-    strtmp <- dtStrings["strLblTolerance"]$value
-    strLblTolerance <- ifelse(is.na(strtmp), strLblTolerance, strtmp)
-
-    strtmp <- dtStrings["strChkQuick"]$value
-    strChkQuick <- ifelse(is.na(strtmp), strChkQuick, strtmp)
-
-    strtmp <- dtStrings["strTipQuick"]$value
-    strTipQuick <- ifelse(is.na(strtmp), strTipQuick, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -159,11 +98,11 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -173,7 +112,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -183,16 +122,16 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = g0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -210,7 +149,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = g1)
+  glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
     items = getKit(),
@@ -238,7 +177,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(samples_lbl) <- paste("", samples, strLblSamples)
+      svalue(samples_lbl) <- paste("", samples, strings$STR_LBL_SAMPLES)
       svalue(f2_save_edt) <- paste(.gDataName, "_spikes", sep = "")
 
       # Detect kit.
@@ -250,7 +189,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLES)
       svalue(f2_save_edt) <- ""
     }
   })
@@ -258,7 +197,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -267,7 +206,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   f1g1 <- glayout(container = f1, spacing = 1)
 
   f1g1[1, 1] <- glabel(
-    text = strLblThreshold,
+    text = strings$STR_LBL_THRESHOLD,
     container = f1g1
   )
   f1g1[1, 2] <- f1_threshold_spn <- gspinbutton(
@@ -275,30 +214,30 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     value = 3, container = f1g1
   )
 
-  f1g1[2, 1] <- glabel(text = strLblTolerance, container = f1g1)
+  f1g1[2, 1] <- glabel(text = strings$STR_LBL_TOLERANCE, container = f1g1)
   f1g1[2, 2] <- f1_tolerance_spn <- gspinbutton(
     from = 0, to = 10, by = 0.1,
     value = 2, container = f1g1
   )
 
   f1_quick_chk <- gcheckbox(
-    text = strChkQuick, checked = FALSE,
+    text = strings$STR_CHK_QUICK, checked = FALSE,
     container = f1
   )
-  tooltip(f1_quick_chk) <- strTipQuick
+  tooltip(f1_quick_chk) <- strings$STR_TIP_QUICK
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = strFrmSave, horizontal = TRUE, spacing = 1, container = gv)
+  f2 <- gframe(text = strings$STR_FRM_SAVE, horizontal = TRUE, spacing = 1, container = gv)
 
-  glabel(text = strLblSave, container = f2)
+  glabel(text = strings$STR_LBL_SAVE, container = f2)
 
   f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
 
   # BUTTON ####################################################################
 
 
-  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
+  calculate_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     # Get values.
@@ -313,7 +252,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (!is.null(val_data)) {
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- strBtnProcessing
+      svalue(calculate_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -360,8 +299,8 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error",
         parent = w
       )

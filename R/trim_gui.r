@@ -61,132 +61,44 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Trim dataset"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblColumns <- "columns"
-  strLblRows <- "rows"
-  strFrmSamples <- "Samples"
-  strLblSelectedSamples <- "Selected samples (separate by pipe |):"
-  strEdtMsg <- "Doubleklick or drag sample names to list"
-  strRadKeep <- "Keep"
-  strRadRemove <- "Remove"
-  strFrmColumns <- "Columns"
-  strLblSelectedColumns <- "Selected columns (separate by pipe |):"
-  strFrmOptions <- "Options"
-  strChkColumns <- "Remove empty columns"
-  strChkNA <- "Remove NA columns"
-  strChkWord <- "Add word boundaries"
-  strChkIgnore <- "Ignore case"
-  strLblReplace <- "Replace missing values with:"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strMsgName <- "A file name must be provided!"
-  strBtnTrim <- "Trim dataset"
-  strBtnProcessing <- "Processing..."
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Trim dataset",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_COLUMNS         = "columns",
+    STR_LBL_ROWS            = "rows",
+    STR_FRM_SAMPLES         = "Samples",
+    STR_LBL_SELECTED_SAMPLES= "Selected samples (separate by pipe |):",
+    STR_EDT_MSG             = "Doubleklick or drag sample names to list",
+    STR_RAD_KEEP            = "Keep",
+    STR_RAD_REMOVE          = "Remove",
+    STR_FRM_COLUMNS         = "Columns",
+    STR_LBL_SELECTED_COLUMNS= "Selected columns (separate by pipe |):",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_COLUMNS         = "Remove empty columns",
+    STR_CHK_NA              = "Remove NA columns",
+    STR_CHK_WORD            = "Add word boundaries",
+    STR_CHK_IGNORE          = "Ignore case",
+    STR_LBL_REPLACE         = "Replace missing values with:",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_MSG_NAME            = "A file name must be provided!",
+    STR_BTN_TRIM            = "Trim dataset",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblColumns"]$value
-    strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
-
-    strtmp <- dtStrings["strLblRows"]$value
-    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
-
-    strtmp <- dtStrings["strFrmSamples"]$value
-    strFrmSamples <- ifelse(is.na(strtmp), strFrmSamples, strtmp)
-
-    strtmp <- dtStrings["strLblSelectedSamples"]$value
-    strLblSelectedSamples <- ifelse(is.na(strtmp), strLblSelectedSamples, strtmp)
-
-    strtmp <- dtStrings["strEdtMsg"]$value
-    strEdtMsg <- ifelse(is.na(strtmp), strEdtMsg, strtmp)
-
-    strtmp <- dtStrings["strRadKeep"]$value
-    strRadKeep <- ifelse(is.na(strtmp), strRadKeep, strtmp)
-
-    strtmp <- dtStrings["strRadRemove"]$value
-    strRadRemove <- ifelse(is.na(strtmp), strRadRemove, strtmp)
-
-    strtmp <- dtStrings["strFrmColumns"]$value
-    strFrmColumns <- ifelse(is.na(strtmp), strFrmColumns, strtmp)
-
-    strtmp <- dtStrings["strLblSelectedColumns"]$value
-    strLblSelectedColumns <- ifelse(is.na(strtmp), strLblSelectedColumns, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkColumns"]$value
-    strChkColumns <- ifelse(is.na(strtmp), strChkColumns, strtmp)
-
-    strtmp <- dtStrings["strChkNA"]$value
-    strChkNA <- ifelse(is.na(strtmp), strChkNA, strtmp)
-
-    strtmp <- dtStrings["strChkWord"]$value
-    strChkWord <- ifelse(is.na(strtmp), strChkWord, strtmp)
-
-    strtmp <- dtStrings["strChkIgnore"]$value
-    strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
-
-    strtmp <- dtStrings["strLblReplace"]$value
-    strLblReplace <- ifelse(is.na(strtmp), strLblReplace, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strMsgName"]$value
-    strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
-
-    strtmp <- dtStrings["strBtnTrim"]$value
-    strBtnTrim <- ifelse(is.na(strtmp), strBtnTrim, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -214,11 +126,11 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -259,17 +171,17 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = TRUE,
     spacing = 1,
     container = g0
   )
 
-  glabel(text = strLblDataset, container = f0)
+  glabel(text = strings$STR_LBL_DATASET, container = f0)
 
-  info_txt <- paste(" 0 ", strLblSamples,
-    ", 0 ", strLblColumns,
-    ", 0 ", strLblRows,
+  info_txt <- paste(" 0 ", strings$STR_LBL_SAMPLES,
+    ", 0 ", strings$STR_LBL_COLUMNS,
+    ", 0 ", strings$STR_LBL_ROWS,
     sep = ""
   )
 
@@ -277,7 +189,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -312,17 +224,17 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       if ("SAMPLE.NAME" %in% toupper(names(.gData))) {
         samples <- length(unique(.gData$Sample.Name))
         svalue(info_lbl) <- paste(
-          " ", samples, " ", strLblSamples,
-          ", ", ncol(.gData), strLblColumns,
-          ", ", nrow(.gData), strLblRows,
+          " ", samples, " ", strings$STR_LBL_SAMPLES,
+          ", ", ncol(.gData), strings$STR_LBL_COLUMNS,
+          ", ", nrow(.gData), strings$STR_LBL_ROWS,
           sep = ""
         )
       } else if ("SAMPLE.FILE.NAME" %in% toupper(names(.gData))) {
         samples <- length(unique(.gData$Sample.File.Name))
         svalue(info_lbl) <- paste(
-          " ", samples, " ", strLblSamples,
-          ", ", ncol(.gData), strLblColumns,
-          ", ", nrow(.gData), strLblRows,
+          " ", samples, " ", strings$STR_LBL_SAMPLES,
+          ", ", ncol(.gData), strings$STR_LBL_COLUMNS,
+          ", ", nrow(.gData), strings$STR_LBL_ROWS,
           sep = ""
         )
       } else if (any(grepl("SAMPLE", names(.gData), ignore.case = TRUE))) {
@@ -330,16 +242,16 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
         sampleCol <- names(.gData)[grep("Sample", names(.gData), ignore.case = TRUE)[1]]
         samples <- length(unique(.gData[sampleCol]))
         svalue(info_lbl) <- paste(
-          " ", samples, " ", strLblSamples,
-          ", ", ncol(.gData), strLblColumns,
-          ", ", nrow(.gData), strLblRows,
+          " ", samples, " ", strings$STR_LBL_SAMPLES,
+          ", ", ncol(.gData), strings$STR_LBL_COLUMNS,
+          ", ", nrow(.gData), strings$STR_LBL_ROWS,
           sep = ""
         )
       } else {
         svalue(info_lbl) <- paste(
-          " <NA> ", strLblSamples,
-          ", ", ncol(.gData), strLblColumns,
-          ", ", nrow(.gData), strLblRows,
+          " <NA> ", strings$STR_LBL_SAMPLES,
+          ", ", ncol(.gData), strings$STR_LBL_COLUMNS,
+          ", ", nrow(.gData), strings$STR_LBL_ROWS,
           sep = ""
         )
       }
@@ -354,9 +266,9 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(column_edt) <- ""
       .refresh_samples_tbl()
       .refresh_columns_tbl()
-      svalue(info_lbl) <- paste(" ", "<NA> ", strLblSamples, ", ",
-        "<NA> ", strLblColumns, ", ",
-        "<NA> ", strLblRows,
+      svalue(info_lbl) <- paste(" ", "<NA> ", strings$STR_LBL_SAMPLES, ", ",
+        "<NA> ", strings$STR_LBL_COLUMNS, ", ",
+        "<NA> ", strings$STR_LBL_ROWS,
         sep = ""
       )
       svalue(save_edt) <- ""
@@ -369,27 +281,27 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     print("SAMPLES")
   }
 
-  sample_f <- gframe(strFrmSamples,
+  sample_f <- gframe(strings$STR_FRM_SAMPLES,
     horizontal = FALSE, container = g1,
     expand = TRUE, fill = TRUE
   )
 
 
   sample_opt <- gradio(
-    items = c(strRadKeep, strRadRemove),
+    items = c(strings$STR_RAD_KEEP, strings$STR_RAD_REMOVE),
     selected = 1,
     horizontal = FALSE,
     container = sample_f
   )
 
   sample_lbl <- glabel(
-    text = strLblSelectedSamples,
+    text = strings$STR_LBL_SELECTED_SAMPLES,
     container = sample_f,
     anchor = c(-1, 0)
   )
 
   sample_edt <- gedit(
-    initial.msg = strEdtMsg,
+    initial.msg = strings$STR_EDT_MSG,
     width = 40,
     container = sample_f
   )
@@ -441,7 +353,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
     print("COLUMNS")
   }
 
-  column_f <- gframe(strFrmColumns,
+  column_f <- gframe(strings$STR_FRM_COLUMNS,
     horizontal = FALSE,
     container = g1,
     expand = TRUE,
@@ -449,20 +361,20 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   column_opt <- gradio(
-    items = c(strRadKeep, strRadRemove),
+    items = c(strings$STR_RAD_KEEP, strings$STR_RAD_REMOVE),
     selected = 1,
     horizontal = FALSE,
     container = column_f
   )
 
   column_lbl <- glabel(
-    text = strLblSelectedColumns,
+    text = strings$STR_LBL_SELECTED_COLUMNS,
     container = column_f,
     anchor = c(-1, 0)
   )
 
   column_edt <- gedit(
-    initial.msg = strEdtMsg,
+    initial.msg = strings$STR_EDT_MSG,
     width = 40,
     container = column_f
   )
@@ -496,7 +408,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
   # OPTIONS ###################################################################
 
-  option_f <- gframe(strFrmOptions,
+  option_f <- gframe(strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     container = g1,
     expand = TRUE,
@@ -504,31 +416,31 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   empty_chk <- gcheckbox(
-    text = strChkColumns,
+    text = strings$STR_CHK_COLUMNS,
     checked = TRUE,
     container = option_f
   )
 
   na_chk <- gcheckbox(
-    text = strChkNA,
+    text = strings$STR_CHK_NA,
     checked = TRUE,
     container = option_f
   )
 
   word_chk <- gcheckbox(
-    text = strChkWord,
+    text = strings$STR_CHK_WORD,
     checked = FALSE,
     container = option_f
   )
 
   case_chk <- gcheckbox(
-    text = strChkIgnore,
+    text = strings$STR_CHK_IGNORE,
     checked = TRUE,
     container = option_f
   )
 
   glabel(
-    text = strLblReplace,
+    text = strings$STR_LBL_REPLACE,
     container = option_f
   )
   na_edt <- gedit(
@@ -538,15 +450,15 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = g2)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = g2)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  trim_btn <- gbutton(text = strBtnTrim, container = g2)
+  trim_btn <- gbutton(text = strings$STR_BTN_TRIM, container = g2)
 
   addHandlerChanged(trim_btn, handler = function(h, ...) {
     # Get new dataset name.
@@ -614,7 +526,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(trim_btn)
-      svalue(trim_btn) <- strBtnProcessing
+      svalue(trim_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(trim_btn)
       enabled(trim_btn) <- FALSE
 
@@ -652,8 +564,8 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgName,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NAME,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error",
         parent = w
       )

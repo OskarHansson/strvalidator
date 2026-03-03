@@ -58,116 +58,40 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Slim dataset"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblColumns <- "columns"
-  strLblRows <- "rows"
-  strFrmOptions <- "Options"
-  strChkKeep <- "Keep rows in fixed columns even if no data in stacked columns"
-  strLblKeep <- "(i.e. keep one row per marker for each sample even if no peak)"
-  strTipColumns <- "Tip: Manually edit the columns to fix and stack (e.g. stack='Allele' will stack 'Allele.1', 'Allele.2'...)"
-  strFrmFix <- "Fix"
-  strLblFix <- "Columns to keep fixed (separate by pipe |):"
-  strEdtMsg <- "Doubleklick or drag column names to list"
-  strFrmStack <- "Stack"
-  strLblStack <- "Columns to stack (separate by pipe |):"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strMsgName <- "A file name must be provided!"
-  strBtnSlim <- "Slim dataset"
-  strBtnProcessing <- "Processing..."
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Slim dataset",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_COLUMNS         = "columns",
+    STR_LBL_ROWS            = "rows",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_KEEP            = "Keep rows in fixed columns even if no data in stacked columns",
+    STR_LBL_KEEP            = "(i.e. keep one row per marker for each sample even if no peak)",
+    STR_TIP_COLUMNS         = "Tip: Manually edit the columns to fix and stack (e.g. stack='Allele' will stack 'Allele.1', 'Allele.2'...)",
+    STR_FRM_FIX             = "Fix",
+    STR_LBL_FIX             = "Columns to keep fixed (separate by pipe |):",
+    STR_EDT_MSG             = "Doubleklick or drag column names to list",
+    STR_FRM_STACK           = "Stack",
+    STR_LBL_STACK           = "Columns to stack (separate by pipe |):",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_MSG_NAME            = "A file name must be provided!",
+    STR_BTN_SLIM            = "Slim dataset",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblColumns"]$value
-    strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
-
-    strtmp <- dtStrings["strLblRows"]$value
-    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkKeep"]$value
-    strChkKeep <- ifelse(is.na(strtmp), strChkKeep, strtmp)
-
-    strtmp <- dtStrings["strLblKeep"]$value
-    strLblKeep <- ifelse(is.na(strtmp), strLblKeep, strtmp)
-
-    strtmp <- dtStrings["strTipColumns"]$value
-    strTipColumns <- ifelse(is.na(strtmp), strTipColumns, strtmp)
-
-    strtmp <- dtStrings["strFrmFix"]$value
-    strFrmFix <- ifelse(is.na(strtmp), strFrmFix, strtmp)
-
-    strtmp <- dtStrings["strLblFix"]$value
-    strLblFix <- ifelse(is.na(strtmp), strLblFix, strtmp)
-
-    strtmp <- dtStrings["strEdtMsg"]$value
-    strEdtMsg <- ifelse(is.na(strtmp), strEdtMsg, strtmp)
-
-    strtmp <- dtStrings["strFrmStack"]$value
-    strFrmStack <- ifelse(is.na(strtmp), strFrmStack, strtmp)
-
-    strtmp <- dtStrings["strLblStack"]$value
-    strLblStack <- ifelse(is.na(strtmp), strLblStack, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strMsgName"]$value
-    strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
-
-    strtmp <- dtStrings["strBtnSlim"]$value
-    strBtnSlim <- ifelse(is.na(strtmp), strBtnSlim, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -195,11 +119,11 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -241,30 +165,30 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = TRUE,
     spacing = 1,
     container = g0
   )
 
-  glabel(text = strLblDataset, container = f0)
+  glabel(text = strings$STR_LBL_DATASET, container = f0)
 
   samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = f0
   )
   columns_lbl <- glabel(
-    text = paste(" 0", strLblColumns),
+    text = paste(" 0", strings$STR_LBL_COLUMNS),
     container = f0
   )
   rows_lbl <- glabel(
-    text = paste(" 0", strLblRows),
+    text = paste(" 0", strings$STR_LBL_ROWS),
     container = f0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -301,21 +225,21 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       if ("Sample.Name" %in% names(.gData)) {
         samples <- length(unique(.gData$Sample.Name))
         svalue(samples_lbl) <- paste(" ", samples, " ",
-          strLblSamples, ", ",
+          strings$STR_LBL_SAMPLES, ", ",
           sep = ""
         )
       } else {
         svalue(samples_lbl) <- paste(" ", "<NA> ",
-          strLblSamples, ", ",
+          strings$STR_LBL_SAMPLES, ", ",
           sep = ""
         )
       }
       svalue(columns_lbl) <- paste(" ", ncol(.gData), " ",
-        strLblColumns, ", ",
+        strings$STR_LBL_COLUMNS, ", ",
         sep = ""
       )
       svalue(rows_lbl) <- paste(" ", nrow(.gData), " ",
-        strLblRows, ", ",
+        strings$STR_LBL_ROWS, ", ",
         sep = ""
       )
       # Result name.
@@ -334,7 +258,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Reset button.
-      svalue(slim_btn) <- strBtnSlim
+      svalue(slim_btn) <- strings$STR_BTN_SLIM
       enabled(slim_btn) <- TRUE
     } else {
       # Reset components.
@@ -345,15 +269,15 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       .refresh_fix_tbl()
       .refresh_stack_tbl()
       svalue(samples_lbl) <- paste(" ", "<NA> ",
-        strLblSamples, ", ",
+        strings$STR_LBL_SAMPLES, ", ",
         sep = ""
       )
       svalue(columns_lbl) <- paste(" ", "<NA> ",
-        strLblColumns, ", ",
+        strings$STR_LBL_COLUMNS, ", ",
         sep = ""
       )
       svalue(rows_lbl) <- paste(" ", "<NA> ",
-        strLblRows, ", ",
+        strings$STR_LBL_ROWS, ", ",
         sep = ""
       )
       svalue(save_edt) <- ""
@@ -368,23 +292,23 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   fix_f <- gframe(
-    text = strFrmFix,
+    text = strings$STR_FRM_FIX,
     horizontal = FALSE, container = g1,
     expand = TRUE, fill = TRUE
   )
 
   fix_lbl <- glabel(
-    text = strLblFix,
+    text = strings$STR_LBL_FIX,
     container = fix_f,
     anchor = c(-1, 0)
   )
 
   fix_edt <- gedit(
-    initial.msg = strEdtMsg,
+    initial.msg = strings$STR_EDT_MSG,
     width = 40,
     container = fix_f
   )
-  tooltip(fix_edt) <- strTipColumns
+  tooltip(fix_edt) <- strings$STR_TIP_COLUMNS
 
   fix_tbl <- gWidgets2::gtable(
     items = names(.gData),
@@ -427,23 +351,23 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   }
 
   stack_f <- gframe(
-    text = strFrmStack,
+    text = strings$STR_FRM_STACK,
     horizontal = FALSE, container = g1,
     expand = TRUE, fill = TRUE
   )
 
   stack_lbl <- glabel(
-    text = strLblStack,
+    text = strings$STR_LBL_STACK,
     container = stack_f,
     anchor = c(-1, 0)
   )
 
   stack_edt <- gedit(
-    initial.msg = strEdtMsg,
+    initial.msg = strings$STR_EDT_MSG,
     width = 40,
     container = stack_f
   )
-  tooltip(stack_edt) <- strTipColumns
+  tooltip(stack_edt) <- strings$STR_TIP_COLUMNS
 
   stack_tbl <- gWidgets2::gtable(
     items = names(.gData),
@@ -474,23 +398,23 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
 
   # OPTIONS ###################################################################
 
-  option_frm <- gframe(text = strFrmOptions, horizontal = FALSE, container = g0)
+  option_frm <- gframe(text = strings$STR_FRM_OPTIONS, horizontal = FALSE, container = g0)
 
-  keep_chk <- gcheckbox(text = strChkKeep, checked = TRUE, container = option_frm)
+  keep_chk <- gcheckbox(text = strings$STR_CHK_KEEP, checked = TRUE, container = option_frm)
 
-  glabel(text = strLblKeep, container = option_frm, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_KEEP, container = option_frm, anchor = c(-1, 0))
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = g2)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = g2)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  slim_btn <- gbutton(text = strBtnSlim, container = g2)
+  slim_btn <- gbutton(text = strings$STR_BTN_SLIM, container = g2)
 
   addHandlerClicked(slim_btn, handler = function(h, ...) {
     # Get new dataset name.
@@ -521,7 +445,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Change button.
       blockHandlers(slim_btn)
-      svalue(slim_btn) <- strBtnProcessing
+      svalue(slim_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(slim_btn)
       enabled(slim_btn) <- FALSE
 
@@ -554,8 +478,8 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgName,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NAME,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error",
         parent = w
       )

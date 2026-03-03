@@ -151,320 +151,91 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot dropout prediction"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Dropout dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strChkOverride <- "Override automatic titles"
-  strLblTitlePlot <- "Plot title:"
-  strLblTitleX <- "X title:"
-  strLblTitleY <- "Y title:"
-  strLblRange <- "Dataset peak height range:"
-  strChkLog <- "Log (Height)"
-  strChkSex <- "Exclude sex markers"
-  strLblNote <- "NB! Currently, the recommended methods are the first three options.\nThe fourth alternative has not been evaluated by the DNA Commission.\nSee 'Details' in 'Help' for more information."
-  strLblModels <- "Model drop-out from scoring method:"
-  strRadRandom <- "Relative a random allele and peak height of surviving allele"
-  strRadLMW <- "Relative the low molecular weight allele and peak height of surviving allele"
-  strRadHMW <- "Relative the high molecular weight allele and peak height of surviving allele"
-  strRadLocus <- "Relative the locus and peak height of surviving allele, or mean locus peak height"
-  strChkAverage <- "Use average peak height 'H' instead of allele/locus peak hight"
-  strChkPrint <- "Print model"
-  strChkDump <- "Dump model input"
-  strExpThreshold <- "Drop-out prediction and threshold"
-  strChkThreshold <- "Mark threshold @ P(D):"
-  strLblLineType <- "Line type"
-  strLblBlank <- "blank"
-  strLblSolid <- "solid"
-  strLblDashed <- "dashed"
-  strLblDotted <- "dotted"
-  strLblDotDash <- "dotdash"
-  strLblLongDash <- "longdash"
-  strLblTwoDash <- "twodash"
-  strLblLineColour <- "Line colour"
-  strChkPrintT <- "Print threshold value"
-  strLblPredictionInterval <- "Prediction interval:"
-  strChkPrintTcons <- "Print conservative T value"
-  strChkPredictionInterval <- "Draw prediction interval:"
-  strLblAlpha <- "Alpha:"
-  strLblFill <- "Fill colour:"
-  strExpPoints <- "Data points"
-  strChkPoints <- "Plot data points"
-  strLblShape <- "Shape:"
-  strLblJitter <- "Jitter (h/v):"
-  strExpAxes <- "Axes"
-  strChkScaleLog <- "Use log10 scale at Y axis"
-  strLblNbMinMax <- "NB! Must provide both min and max value."
-  strLblLimitY <- "Limit Y axis (min-max)"
-  strLblLimitX <- "Limit X axis (min-max)"
-  strExpLabels <- "X labels"
-  strLblSize <- "Text size (pts):"
-  strLblAngle <- "Angle:"
-  strLblJustification <- "Justification (v/h):"
-  strBtnPlot <- "Plot predicted drop-out probability"
-  strBtnProcessing <- "Processing..."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
-  strBtnObjectSaved <- "Object saved"
-  strLblMainTitleAverage <- "Drop-out probability as a function of average peak height"
-  strLblXTitleAverage <- "Average peak height 'H', (RFU)"
-  strLblMainTitleHeight <- "Drop-out probability as a function of present-allele height"
-  strLblXTitleHeight <- "Peak height, (RFU)"
-  strLblYTitle <- "Drop-out probability, P(D)"
-  strLblLegend <- "Model parameters:"
-  strLblHosmer <- "\nHosmer-Lemeshow test: p = "
-  strMsgDataset <- "A dataset must be selected."
-  strMsgTitleDataset <- "Dataset not selected"
-  strMsgNull <- "Data frame is NULL or NA!"
-  strMsgTitleError <- "Error"
-  strMsgIncomplete1 <- "Dataset is ok for drop-out analysis.\nHowever, additional columns are required for this analysis:\n"
-  strMsgIncomplete2 <- "\n\nPlease try modeling using another scoring method."
-  strMsgTitleIncomplete <- "Incomplete dataset"
-
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkOverride"]$value
-    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
-
-    strtmp <- dtStrings["strLblTitlePlot"]$value
-    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-
-    strtmp <- dtStrings["strLblTitleX"]$value
-    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-
-    strtmp <- dtStrings["strLblTitleY"]$value
-    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
-
-    strtmp <- dtStrings["strLblRange"]$value
-    strLblRange <- ifelse(is.na(strtmp), strLblRange, strtmp)
-
-    strtmp <- dtStrings["strChkLog"]$value
-    strChkLog <- ifelse(is.na(strtmp), strChkLog, strtmp)
-
-    strtmp <- dtStrings["strChkSex"]$value
-    strChkSex <- ifelse(is.na(strtmp), strChkSex, strtmp)
-
-    strtmp <- dtStrings["strLblNote"]$value
-    strLblNote <- ifelse(is.na(strtmp), strLblNote, strtmp)
-
-    strtmp <- dtStrings["strLblModels"]$value
-    strLblModels <- ifelse(is.na(strtmp), strLblModels, strtmp)
-
-    strtmp <- dtStrings["strRadRandom"]$value
-    strRadRandom <- ifelse(is.na(strtmp), strRadRandom, strtmp)
-
-    strtmp <- dtStrings["strRadLMW"]$value
-    strRadLMW <- ifelse(is.na(strtmp), strRadLMW, strtmp)
-
-    strtmp <- dtStrings["strRadHMW"]$value
-    strRadHMW <- ifelse(is.na(strtmp), strRadHMW, strtmp)
-
-    strtmp <- dtStrings["strRadLocus"]$value
-    strRadLocus <- ifelse(is.na(strtmp), strRadLocus, strtmp)
-
-    strtmp <- dtStrings["strChkAverage"]$value
-    strChkAverage <- ifelse(is.na(strtmp), strChkAverage, strtmp)
-
-    strtmp <- dtStrings["strChkPrint"]$value
-    strChkPrint <- ifelse(is.na(strtmp), strChkPrint, strtmp)
-
-    strtmp <- dtStrings["strChkDump"]$value
-    strChkDump <- ifelse(is.na(strtmp), strChkDump, strtmp)
-
-    strtmp <- dtStrings["strExpThreshold"]$value
-    strExpThreshold <- ifelse(is.na(strtmp), strExpThreshold, strtmp)
-
-    strtmp <- dtStrings["strChkThreshold"]$value
-    strChkThreshold <- ifelse(is.na(strtmp), strChkThreshold, strtmp)
-
-    strtmp <- dtStrings["strLblLineType"]$value
-    strLblLineType <- ifelse(is.na(strtmp), strLblLineType, strtmp)
-
-    strtmp <- dtStrings["strLblBlank"]$value
-    strLblBlank <- ifelse(is.na(strtmp), strLblBlank, strtmp)
-
-    strtmp <- dtStrings["strLblSolid"]$value
-    strLblSolid <- ifelse(is.na(strtmp), strLblSolid, strtmp)
-
-    strtmp <- dtStrings["strLblDashed"]$value
-    strLblDashed <- ifelse(is.na(strtmp), strLblDashed, strtmp)
-
-    strtmp <- dtStrings["strLblDotted"]$value
-    strLblDotted <- ifelse(is.na(strtmp), strLblDotted, strtmp)
-
-    strtmp <- dtStrings["strLblDotDash"]$value
-    strLblDotDash <- ifelse(is.na(strtmp), strLblDotDash, strtmp)
-
-    strtmp <- dtStrings["strLblLongDash"]$value
-    strLblLongDash <- ifelse(is.na(strtmp), strLblLongDash, strtmp)
-
-    strtmp <- dtStrings["strLblTwoDash"]$value
-    strLblTwoDash <- ifelse(is.na(strtmp), strLblTwoDash, strtmp)
-
-    strtmp <- dtStrings["strLblLineColour"]$value
-    strLblLineColour <- ifelse(is.na(strtmp), strLblLineColour, strtmp)
-
-    strtmp <- dtStrings["strChkPrintT"]$value
-    strChkPrintT <- ifelse(is.na(strtmp), strChkPrintT, strtmp)
-
-    strtmp <- dtStrings["strLblPredictionInterval"]$value
-    strLblPredictionInterval <- ifelse(is.na(strtmp), strLblPredictionInterval, strtmp)
-
-    strtmp <- dtStrings["strChkPrintTcons"]$value
-    strChkPrintTcons <- ifelse(is.na(strtmp), strChkPrintTcons, strtmp)
-
-    strtmp <- dtStrings["strChkPredictionInterval"]$value
-    strChkPredictionInterval <- ifelse(is.na(strtmp), strChkPredictionInterval, strtmp)
-
-    strtmp <- dtStrings["strLblAlpha"]$value
-    strLblAlpha <- ifelse(is.na(strtmp), strLblAlpha, strtmp)
-
-    strtmp <- dtStrings["strLblFill"]$value
-    strLblFill <- ifelse(is.na(strtmp), strLblFill, strtmp)
-
-    strtmp <- dtStrings["strExpPoints"]$value
-    strExpPoints <- ifelse(is.na(strtmp), strExpPoints, strtmp)
-
-    strtmp <- dtStrings["strChkPoints"]$value
-    strChkPoints <- ifelse(is.na(strtmp), strChkPoints, strtmp)
-
-    strtmp <- dtStrings["strLblShape"]$value
-    strLblShape <- ifelse(is.na(strtmp), strLblShape, strtmp)
-
-    strtmp <- dtStrings["strLblJitter"]$value
-    strLblJitter <- ifelse(is.na(strtmp), strLblJitter, strtmp)
-
-    strtmp <- dtStrings["strExpAxes"]$value
-    strExpAxes <- ifelse(is.na(strtmp), strExpAxes, strtmp)
-
-    strtmp <- dtStrings["strChkScaleLog"]$value
-    strChkScaleLog <- ifelse(is.na(strtmp), strChkScaleLog, strtmp)
-
-    strtmp <- dtStrings["strLblNbMinMax"]$value
-    strLblNbMinMax <- ifelse(is.na(strtmp), strLblNbMinMax, strtmp)
-
-    strtmp <- dtStrings["strLblLimitY"]$value
-    strLblLimitY <- ifelse(is.na(strtmp), strLblLimitY, strtmp)
-
-    strtmp <- dtStrings["strLblLimitX"]$value
-    strLblLimitX <- ifelse(is.na(strtmp), strLblLimitX, strtmp)
-
-    strtmp <- dtStrings["strExpLabels"]$value
-    strExpLabels <- ifelse(is.na(strtmp), strExpLabels, strtmp)
-
-    strtmp <- dtStrings["strLblSize"]$value
-    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
-
-    strtmp <- dtStrings["strLblAngle"]$value
-    strLblAngle <- ifelse(is.na(strtmp), strLblAngle, strtmp)
-
-    strtmp <- dtStrings["strLblJustification"]$value
-    strLblJustification <- ifelse(is.na(strtmp), strLblJustification, strtmp)
-
-    strtmp <- dtStrings["strBtnPlot"]$value
-    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitleAverage"]$value
-    strLblMainTitleAverage <- ifelse(is.na(strtmp), strLblMainTitleAverage, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleAverage"]$value
-    strLblXTitleAverage <- ifelse(is.na(strtmp), strLblXTitleAverage, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitleHeight"]$value
-    strLblMainTitleHeight <- ifelse(is.na(strtmp), strLblMainTitleHeight, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleHeight"]$value
-    strLblXTitleHeight <- ifelse(is.na(strtmp), strLblXTitleHeight, strtmp)
-
-    strtmp <- dtStrings["strLblYTitle"]$value
-    strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
-
-    strtmp <- dtStrings["strLblLegend"]$value
-    strLblLegend <- ifelse(is.na(strtmp), strLblLegend, strtmp)
-
-    strtmp <- dtStrings["strLblHosmer"]$value
-    strLblHosmer <- ifelse(is.na(strtmp), strLblHosmer, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgNull"]$value
-    strMsgNull <- ifelse(is.na(strtmp), strMsgNull, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-
-    strtmp <- dtStrings["strMsgIncomplete1"]$value
-    strMsgIncomplete1 <- ifelse(is.na(strtmp), strMsgIncomplete1, strtmp)
-
-    strtmp <- dtStrings["strMsgIncomplete2"]$value
-    strMsgIncomplete2 <- ifelse(is.na(strtmp), strMsgIncomplete2, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleIncomplete"]$value
-    strMsgTitleIncomplete <- ifelse(is.na(strtmp), strMsgTitleIncomplete, strtmp)
-  }
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot dropout prediction",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Dropout dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_OVERRIDE        = "Override automatic titles",
+    STR_LBL_TITLE_PLOT      = "Plot title:",
+    STR_LBL_TITLE_X         = "X title:",
+    STR_LBL_TITLE_Y         = "Y title:",
+    STR_LBL_RANGE           = "Dataset peak height range:",
+    STR_CHK_LOG             = "Log (Height)",
+    STR_CHK_SEX             = "Exclude sex markers",
+    STR_LBL_NOTE            = "NB! Currently, the recommended methods are the first three options.\nThe fourth alternative has not been evaluated by the DNA Commission.\nSee 'Details' in 'Help' for more information.",
+    STR_LBL_MODELS          = "Model drop-out from scoring method:",
+    STR_RAD_RANDOM          = "Relative a random allele and peak height of surviving allele",
+    STR_RAD_LMW             = "Relative the low molecular weight allele and peak height of surviving allele",
+    STR_RAD_HMW             = "Relative the high molecular weight allele and peak height of surviving allele",
+    STR_RAD_LOCUS           = "Relative the locus and peak height of surviving allele, or mean locus peak height",
+    STR_CHK_AVERAGE         = "Use average peak height 'H' instead of allele/locus peak hight",
+    STR_CHK_PRINT           = "Print model",
+    STR_CHK_DUMP            = "Dump model input",
+    STR_EXP_THRESHOLD       = "Drop-out prediction and threshold",
+    STR_CHK_THRESHOLD       = "Mark threshold @ P(D):",
+    STR_LBL_LINE_TYPE       = "Line type",
+    STR_LBL_BLANK           = "blank",
+    STR_LBL_SOLID           = "solid",
+    STR_LBL_DASHED          = "dashed",
+    STR_LBL_DOTTED          = "dotted",
+    STR_LBL_DOT_DASH        = "dotdash",
+    STR_LBL_LONG_DASH       = "longdash",
+    STR_LBL_TWO_DASH        = "twodash",
+    STR_LBL_LINE_COLOUR     = "Line colour",
+    STR_CHK_PRINT_T         = "Print threshold value",
+    STR_LBL_PREDICTION_INTERVAL= "Prediction interval:",
+    STR_CHK_PRINT_TCONS     = "Print conservative T value",
+    STR_CHK_PREDICTION_INTERVAL= "Draw prediction interval:",
+    STR_LBL_ALPHA           = "Alpha:",
+    STR_LBL_FILL            = "Fill colour:",
+    STR_EXP_POINTS          = "Data points",
+    STR_CHK_POINTS          = "Plot data points",
+    STR_LBL_SHAPE           = "Shape:",
+    STR_LBL_JITTER          = "Jitter (h/v):",
+    STR_EXP_AXES            = "Axes",
+    STR_CHK_SCALE_LOG       = "Use log10 scale at Y axis",
+    STR_LBL_NB_MIN_MAX      = "NB! Must provide both min and max value.",
+    STR_LBL_LIMIT_Y         = "Limit Y axis (min-max)",
+    STR_LBL_LIMIT_X         = "Limit X axis (min-max)",
+    STR_EXP_LABELS          = "X labels",
+    STR_LBL_SIZE            = "Text size (pts):",
+    STR_LBL_ANGLE           = "Angle:",
+    STR_LBL_JUSTIFICATION   = "Justification (v/h):",
+    STR_BTN_PLOT            = "Plot predicted drop-out probability",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_SAVE_IMAGE      = "Save as image",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_LBL_MAIN_TITLE_AVERAGE= "Drop-out probability as a function of average peak height",
+    STR_LBL_X_TITLE_AVERAGE = "Average peak height 'H', (RFU)",
+    STR_LBL_MAIN_TITLE_HEIGHT= "Drop-out probability as a function of present-allele height",
+    STR_LBL_X_TITLE_HEIGHT  = "Peak height, (RFU)",
+    STR_LBL_Y_TITLE         = "Drop-out probability, P(D)",
+    STR_LBL_LEGEND          = "Model parameters:",
+    STR_LBL_HOSMER          = "\nHosmer-Lemeshow test: p = ",
+    STR_MSG_DATASET         = "A dataset must be selected.",
+    STR_MSG_TITLE_DATASET   = "Dataset not selected",
+    STR_MSG_NULL            = "Data frame is NULL or NA!",
+    STR_MSG_TITLE_ERROR     = "Error",
+    STR_MSG_INCOMPLETE1     = "Dataset is ok for drop-out analysis.\nHowever, additional columns are required for this analysis:\n",
+    STR_MSG_INCOMPLETE2     = "\n\nPlease try modeling using another scoring method.",
+    STR_MSG_TITLE_INCOMPLETE= "Incomplete dataset"
+  )
+
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -491,11 +262,11 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -505,7 +276,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -515,11 +286,11 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -537,7 +308,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = g1)
+  glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
     items = getKit(),
@@ -596,14 +367,14 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = strChkOverride,
+    text = strings$STR_CHK_OVERRIDE,
     checked = FALSE, container = f1
   )
 
@@ -618,18 +389,18 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   )
 
   # Legends
-  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_PLOT, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_X, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_Y, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
   # Group 2.
   f1g2 <- ggroup(horizontal = TRUE, spacing = 1, container = f1)
-  glabel(text = strLblRange, container = f1g2)
+  glabel(text = strings$STR_LBL_RANGE, container = f1g2)
   f1g2_low_lbl <- glabel(text = "", width = 6, container = f1g2)
   glabel(text = "-", container = f1g2)
   f1g2_high_lbl <- glabel(text = "", width = 6, container = f1g2)
@@ -637,41 +408,41 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
 
   # Other options.
-  log_model <- gcheckbox(text = strChkLog, checked = FALSE, container = f1)
+  log_model <- gcheckbox(text = strings$STR_CHK_LOG, checked = FALSE, container = f1)
 
   f1_sex_chk <- gcheckbox(
-    text = strChkSex,
+    text = strings$STR_CHK_SEX,
     checked = TRUE,
     container = f1
   )
 
   glabel(
-    text = strLblNote,
+    text = strings$STR_LBL_NOTE,
     anchor = c(-1, 0), container = f1
   )
 
-  glabel(text = strLblModels, anchor = c(-1, 0), container = f1)
+  glabel(text = strings$STR_LBL_MODELS, anchor = c(-1, 0), container = f1)
   f1_column_opt <- gradio(
-    items = c(strRadRandom, strRadLMW, strRadHMW, strRadLocus),
+    items = c(strings$STR_RAD_RANDOM, strings$STR_RAD_LMW, strings$STR_RAD_HMW, strings$STR_RAD_LOCUS),
     selected = 2,
     horizontal = FALSE,
     container = f1
   )
 
   f1_h_chk <- gcheckbox(
-    text = strChkAverage,
+    text = strings$STR_CHK_AVERAGE,
     checked = FALSE,
     container = f1
   )
 
   f1_printmodel_chk <- gcheckbox(
-    text = strChkPrint,
+    text = strings$STR_CHK_PRINT,
     checked = FALSE,
     container = f1
   )
 
   f1_dump_chk <- gcheckbox(
-    text = strChkDump, checked = FALSE,
+    text = strings$STR_CHK_DUMP, checked = FALSE,
     container = f1
   )
 
@@ -686,7 +457,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # BUTTON ####################################################################
 
   plot_drop_btn <- gbutton(
-    text = strBtnPlot,
+    text = strings$STR_BTN_PLOT,
     container = gv
   )
 
@@ -696,20 +467,20 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       enabled(plot_drop_btn) <- FALSE
 
       blockHandlers(plot_drop_btn)
-      svalue(plot_drop_btn) <- strBtnProcessing
+      svalue(plot_drop_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(plot_drop_btn)
 
       .plotDrop()
 
       blockHandlers(plot_drop_btn)
-      svalue(plot_drop_btn) <- strBtnPlot
+      svalue(plot_drop_btn) <- strings$STR_BTN_PLOT
       unblockHandlers(plot_drop_btn)
 
       enabled(plot_drop_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error",
         parent = w
       )
@@ -720,26 +491,26 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = strFrmSave,
+    text = strings$STR_FRM_SAVE,
     horizontal = TRUE,
     spacing = 1,
     container = gv
   )
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strings$STR_LBL_SAVE, container = f5)
 
   f5_save_edt <- gedit(text = "", expand = TRUE, fill = TRUE, container = f5)
 
-  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
+  f5_save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
+  f5_ggsave_btn <- gbutton(text = strings$STR_BTN_SAVE_IMAGE, container = f5)
 
   addHandlerChanged(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnProcessing
+    svalue(f5_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -751,7 +522,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnObjectSaved
+    svalue(f5_save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(f5_save_btn)
   })
 
@@ -771,7 +542,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # EXPAND 1 ##################################################################
 
   e1 <- gexpandgroup(
-    text = strExpThreshold,
+    text = strings$STR_EXP_THRESHOLD,
     horizontal = FALSE,
     container = f1
   )
@@ -788,7 +559,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e1f1g2 <- ggroup(horizontal = TRUE, spacing = 1, container = e1f1)
 
   e1f1_threshold_chk <- gcheckbox(
-    text = strChkThreshold,
+    text = strings$STR_CHK_THRESHOLD,
     checked = TRUE,
     container = e1f1g2
   )
@@ -803,12 +574,12 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e1f1g3 <- ggroup(horizontal = TRUE, spacing = 1, container = e1f1)
 
   e1_linetypes <- c(
-    strLblBlank, strLblSolid, strLblDashed,
-    strLblDotted, strLblDotDash, strLblLongDash,
-    strLblTwoDash
+    strings$STR_LBL_BLANK, strings$STR_LBL_SOLID, strings$STR_LBL_DASHED,
+    strings$STR_LBL_DOTTED, strings$STR_LBL_DOT_DASH, strings$STR_LBL_LONG_DASH,
+    strings$STR_LBL_TWO_DASH
   )
 
-  glabel(strLblLineType, container = e1f1g3)
+  glabel(strings$STR_LBL_LINE_TYPE, container = e1f1g3)
 
   e1f1_t_linetype_drp <- gcombobox(
     items = e1_linetypes,
@@ -817,7 +588,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     ellipsize = "none"
   )
 
-  glabel(strLblLineColour, container = e1f1g3)
+  glabel(strings$STR_LBL_LINE_COLOUR, container = e1f1g3)
 
   e1f1_t_linecolor_drp <- gcombobox(
     items = palette(),
@@ -830,7 +601,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e1f1g4 <- ggroup(horizontal = TRUE, spacing = 1, container = e1f1)
 
   e1f1_print_chk <- gcheckbox(
-    text = strChkPrintT,
+    text = strings$STR_CHK_PRINT_T,
     checked = TRUE,
     container = e1f1g4
   )
@@ -844,7 +615,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e1f2g1 <- ggroup(horizontal = TRUE, spacing = 1, container = e1f2)
 
 
-  glabel(text = strLblPredictionInterval, container = e1f2g1)
+  glabel(text = strings$STR_LBL_PREDICTION_INTERVAL, container = e1f2g1)
 
   e1f2_conf_spn <- gspinbutton(
     from = 0, to = 1, by = 0.001,
@@ -856,7 +627,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e1f2g2 <- ggroup(horizontal = TRUE, spacing = 1, container = e1f2)
 
   e1f2_print_interval_chk <- gcheckbox(
-    text = strChkPrintTcons,
+    text = strings$STR_CHK_PRINT_TCONS,
     checked = TRUE,
     container = e1f2g2
   )
@@ -865,12 +636,12 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e1f2g3 <- ggroup(horizontal = TRUE, spacing = 1, container = e1f2)
 
   e1f2_mark_interval_chk <- gcheckbox(
-    text = strChkPredictionInterval,
+    text = strings$STR_CHK_PREDICTION_INTERVAL,
     checked = TRUE,
     container = e1f2g3
   )
 
-  glabel(text = strLblAlpha, container = e1f2g3)
+  glabel(text = strings$STR_LBL_ALPHA, container = e1f2g3)
 
   e1f2_interval_spb <- gspinbutton(
     from = 0, to = 1, by = 0.01,
@@ -878,7 +649,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     container = e1f2g3
   )
 
-  glabel(text = strLblFill, container = e1f2g3)
+  glabel(text = strings$STR_LBL_FILL, container = e1f2g3)
   e1f2_interval_drp <- gcombobox(
     items = palette(),
     selected = 2,
@@ -889,7 +660,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   # EXPAND 2 ##################################################################
 
   e2 <- gexpandgroup(
-    text = strExpPoints,
+    text = strings$STR_EXP_POINTS,
     horizontal = FALSE,
     container = f1
   )
@@ -902,32 +673,32 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e2g1 <- glayout(container = e2f1)
 
   e2g1[1, 1] <- e2g1_plotpoints_chk <- gcheckbox(
-    text = strChkPoints,
+    text = strings$STR_CHK_POINTS,
     checked = TRUE,
     container = e2g1
   )
-  e2g1[1, 2] <- glabel(text = strLblShape, container = e2g1)
+  e2g1[1, 2] <- glabel(text = strings$STR_LBL_SHAPE, container = e2g1)
   e2g1[1, 3] <- e2g1_shape_spb <- gspinbutton(
     from = 0, to = 25,
     by = 1, value = 18,
     container = e2g1
   )
 
-  e2g1[1, 4] <- glabel(text = strLblAlpha, container = e2g1)
+  e2g1[1, 4] <- glabel(text = strings$STR_LBL_ALPHA, container = e2g1)
   e2g1[1, 5] <- e2g1_alpha_spb <- gspinbutton(
     from = 0, to = 1,
     by = 0.01, value = 0.60,
     container = e2g1
   )
 
-  e2g1[1, 6] <- glabel(text = strLblJitter, container = e2g1)
+  e2g1[1, 6] <- glabel(text = strings$STR_LBL_JITTER, container = e2g1)
   e2g1[1, 7] <- e2g1_jitterh_edt <- gedit(text = "0", width = 4, container = e2g1)
   e2g1[1, 8] <- e2g1_jitterv_edt <- gedit(text = "0", width = 4, container = e2g1)
 
   # EXPAND 3 ##################################################################
 
   e3 <- gexpandgroup(
-    text = strExpAxes,
+    text = strings$STR_EXP_AXES,
     horizontal = FALSE,
     container = f1
   )
@@ -938,29 +709,29 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   e3f1 <- gframe(text = "", horizontal = FALSE, container = e3)
 
   log10_y_scale_chk <- gcheckbox(
-    text = strChkScaleLog,
+    text = strings$STR_CHK_SCALE_LOG,
     checked = FALSE,
     container = e3f1
   )
 
   glabel(
-    text = strLblNbMinMax,
+    text = strings$STR_LBL_NB_MIN_MAX,
     anchor = c(-1, 0), container = e3f1
   )
 
   e3g1 <- glayout(container = e3f1, spacing = 1)
-  e3g1[1, 1:2] <- glabel(text = strLblLimitY, container = e3g1)
+  e3g1[1, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_Y, container = e3g1)
   e3g1[2, 1] <- e3g1_y_min_edt <- gedit(text = "", width = 5, container = e3g1)
   e3g1[2, 2] <- e3g1_y_max_edt <- gedit(text = "", width = 5, container = e3g1)
 
-  e3g1[3, 1:2] <- glabel(text = strLblLimitX, container = e3g1)
+  e3g1[3, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_X, container = e3g1)
   e3g1[4, 1] <- e3g1_x_min_edt <- gedit(text = "", width = 5, container = e3g1)
   e3g1[4, 2] <- e3g1_x_max_edt <- gedit(text = "", width = 5, container = e3g1)
 
   # FRAME 4 ###################################################################
 
   e4 <- gexpandgroup(
-    text = strExpLabels,
+    text = strings$STR_EXP_LABELS,
     horizontal = FALSE,
     container = f1
   )
@@ -972,17 +743,17 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
   e4g1 <- glayout(container = e4f1)
 
-  e4g1[1, 1] <- glabel(text = strLblSize, container = e4g1)
+  e4g1[1, 1] <- glabel(text = strings$STR_LBL_SIZE, container = e4g1)
   e4g1[1, 2] <- e4g1_size_edt <- gedit(text = "8", width = 4, container = e4g1)
 
-  e4g1[1, 3] <- glabel(text = strLblAngle, container = e4g1)
+  e4g1[1, 3] <- glabel(text = strings$STR_LBL_ANGLE, container = e4g1)
   e4g1[1, 4] <- e4g1_angle_spb <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 0,
     container = e4g1
   )
 
-  e4g1[2, 1] <- glabel(text = strLblJustification, container = e4g1)
+  e4g1[2, 1] <- glabel(text = strings$STR_LBL_JUSTIFICATION, container = e4g1)
   e4g1[2, 2] <- e4g1_vjust_spb <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 0.5,
@@ -1219,13 +990,13 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       yTitle <- val_ytitle
     } else {
       if (val_h) {
-        mainTitle <- strLblMainTitleAverage
-        xTitle <- strLblXTitleAverage
+        mainTitle <- strings$STR_LBL_MAIN_TITLE_AVERAGE
+        xTitle <- strings$STR_LBL_X_TITLE_AVERAGE
       } else {
-        mainTitle <- strLblMainTitleHeight
-        xTitle <- strLblXTitleHeight
+        mainTitle <- strings$STR_LBL_MAIN_TITLE_HEIGHT
+        xTitle <- strings$STR_LBL_X_TITLE_HEIGHT
       }
-      yTitle <- strLblYTitle
+      yTitle <- strings$STR_LBL_Y_TITLE
     }
 
     # Extract model parameters.
@@ -1259,7 +1030,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     yplot <- plogis(ypred$fit)
 
     # Create legend text.
-    legendModel <- paste(strLblLegend, " \u03B20=", round(b0, 3),
+    legendModel <- paste(strings$STR_LBL_LEGEND, " \u03B20=", round(b0, 3),
       ", \u03B21=", round(b1, 3),
       sep = ""
     )
@@ -1267,7 +1038,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     if (hosOk) {
       # Add Hosmer-Lemeshow test.
       legendModel <- paste(legendModel,
-        strLblHosmer, round(hos$p.value, 4),
+        strings$STR_LBL_HOSMER, round(hos$p.value, 4),
         sep = ""
       )
     } else {
@@ -1532,8 +1303,8 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNull,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NULL,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }
@@ -1608,12 +1379,12 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 
       if (!is.null(missingCol)) {
         gmessage(
-          msg = paste(strMsgIncomplete1,
+          msg = paste(strings$STR_MSG_INCOMPLETE1,
             paste(missingCol, collapse = "\n"),
-            strMsgIncomplete2,
+            strings$STR_MSG_INCOMPLETE2,
             sep = ""
           ),
-          title = strMsgTitleIncomplete,
+          title = strings$STR_MSG_TITLE_INCOMPLETE,
           icon = "info",
           parent = w
         )

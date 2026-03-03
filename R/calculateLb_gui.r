@@ -58,188 +58,58 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Calculate locus balance"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Datasets"
-  strLblDataset <- "Sample dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblRefDataset <- "Reference dataset:"
-  strTipRef <- "If provided, known alleles will be extracted from data"
-  strLblRef <- "references"
-  strBtnCheck <- "Check subsetting"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strLblPre <- "Pre-processing:"
-  strChkOL <- "Remove off-ladder alleles"
-  strChkSex <- "Remove sex markers"
-  strChkSensors <- "Remove quality sensors"
-  strLblMissing <- "Replace missing data with peak height:"
-  strLblMethod <- "Calculate locus balance:"
-  strRadProp <- "Proportional"
-  strRadNorm <- "Normalised"
-  strRadCent <- "Centred Quantities"
-  strRadPeak <- "Peak Ratio"
-  strRadMarker <- "Marker Ratio"
-  strChkDye <- "Calculate Lb by dye channel"
-  strLblMatching <- "Reference sample name matching:"
-  strChkIgnore <- "Ignore case"
-  strChkWord <- "Add word boundaries"
-  strChkExact <- "Exact matching"
-  strLblPost <- "Post-processing:"
-  strChkAverage <- "Calculate average peak height"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
-  strMsgDataset <- "A sample dataset and a reference dataset must be selected."
-  strMsgTitleDataset <- "Dataset not selected"
-  strMsgCheck <- "Data frame is NULL!\n\nMake sure to select a sample dataset."
-  strWinTitleCheck <- "Check subsetting"
-  strMsgTitleError <- "Error"
-  strMsgNA <- "'NA' in 'Dye' column. \nUse add dye function to fix."
-  strMsgTitleNA <- "NA detected!"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Calculate locus balance",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Datasets",
+    STR_LBL_DATASET         = "Sample dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_REF_DATASET     = "Reference dataset:",
+    STR_TIP_REF             = "If provided, known alleles will be extracted from data",
+    STR_LBL_REF             = "references",
+    STR_BTN_CHECK           = "Check subsetting",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_PRE             = "Pre-processing:",
+    STR_CHK_OL              = "Remove off-ladder alleles",
+    STR_CHK_SEX             = "Remove sex markers",
+    STR_CHK_SENSORS         = "Remove quality sensors",
+    STR_LBL_MISSING         = "Replace missing data with peak height:",
+    STR_LBL_METHOD          = "Calculate locus balance:",
+    STR_RAD_PROP            = "Proportional",
+    STR_RAD_NORM            = "Normalised",
+    STR_RAD_CENT            = "Centred Quantities",
+    STR_RAD_PEAK            = "Peak Ratio",
+    STR_RAD_MARKER          = "Marker Ratio",
+    STR_CHK_DYE             = "Calculate Lb by dye channel",
+    STR_LBL_MATCHING        = "Reference sample name matching:",
+    STR_CHK_IGNORE          = "Ignore case",
+    STR_CHK_WORD            = "Add word boundaries",
+    STR_CHK_EXACT           = "Exact matching",
+    STR_LBL_POST            = "Post-processing:",
+    STR_CHK_AVERAGE         = "Calculate average peak height",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_DATASET         = "A sample dataset and a reference dataset must be selected.",
+    STR_MSG_TITLE_DATASET   = "Dataset not selected",
+    STR_MSG_CHECK           = "Data frame is NULL!\n\nMake sure to select a sample dataset.",
+    STR_WIN_TITLE_CHECK     = "Check subsetting",
+    STR_MSG_TITLE_ERROR     = "Error",
+    STR_MSG_NA              = "'NA' in 'Dye' column. \nUse add dye function to fix.",
+    STR_MSG_TITLE_NA        = "NA detected!"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblRefDataset"]$value
-    strLblRefDataset <- ifelse(is.na(strtmp), strLblRefDataset, strtmp)
-
-    strtmp <- dtStrings["strTipRef"]$value
-    strTipRef <- ifelse(is.na(strtmp), strTipRef, strtmp)
-
-    strtmp <- dtStrings["strLblRef"]$value
-    strLblRef <- ifelse(is.na(strtmp), strLblRef, strtmp)
-
-    strtmp <- dtStrings["strBtnCheck"]$value
-    strBtnCheck <- ifelse(is.na(strtmp), strBtnCheck, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblPre"]$value
-    strLblPre <- ifelse(is.na(strtmp), strLblPre, strtmp)
-
-    strtmp <- dtStrings["strChkOL"]$value
-    strChkOL <- ifelse(is.na(strtmp), strChkOL, strtmp)
-
-    strtmp <- dtStrings["strChkSex"]$value
-    strChkSex <- ifelse(is.na(strtmp), strChkSex, strtmp)
-
-    strtmp <- dtStrings["strChkSensors"]$value
-    strChkSensors <- ifelse(is.na(strtmp), strChkSensors, strtmp)
-
-    strtmp <- dtStrings["strLblMissing"]$value
-    strLblMissing <- ifelse(is.na(strtmp), strLblMissing, strtmp)
-
-    strtmp <- dtStrings["strLblMethod"]$value
-    strLblMethod <- ifelse(is.na(strtmp), strLblMethod, strtmp)
-
-    strtmp <- dtStrings["strRadProp"]$value
-    strRadProp <- ifelse(is.na(strtmp), strRadProp, strtmp)
-
-    strtmp <- dtStrings["strRadNorm"]$value
-    strRadNorm <- ifelse(is.na(strtmp), strRadNorm, strtmp)
-
-    strtmp <- dtStrings["strRadCent"]$value
-    strRadCent <- ifelse(is.na(strtmp), strRadCent, strtmp)
-
-    strtmp <- dtStrings["strRadPeak"]$value
-    strRadPeak <- ifelse(is.na(strtmp), strRadPeak, strtmp)
-
-    strtmp <- dtStrings["strRadMarker"]$value
-    strRadMarker <- ifelse(is.na(strtmp), strRadMarker, strtmp)
-    
-    strtmp <- dtStrings["strChkDye"]$value
-    strChkDye <- ifelse(is.na(strtmp), strChkDye, strtmp)
-
-    strtmp <- dtStrings["strLblMatching"]$value
-    strLblMatching <- ifelse(is.na(strtmp), strLblMatching, strtmp)
-
-    strtmp <- dtStrings["strChkIgnore"]$value
-    strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
-
-    strtmp <- dtStrings["strChkWord"]$value
-    strChkWord <- ifelse(is.na(strtmp), strChkWord, strtmp)
-
-    strtmp <- dtStrings["strChkExact"]$value
-    strChkExact <- ifelse(is.na(strtmp), strChkExact, strtmp)
-
-    strtmp <- dtStrings["strLblPost"]$value
-    strLblPost <- ifelse(is.na(strtmp), strLblPost, strtmp)
-
-    strtmp <- dtStrings["strChkAverage"]$value
-    strChkAverage <- ifelse(is.na(strtmp), strChkAverage, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgCheck"]$value
-    strMsgCheck <- ifelse(is.na(strtmp), strMsgCheck, strtmp)
-
-    strtmp <- dtStrings["strWinTitleCheck"]$value
-    strWinTitleCheck <- ifelse(is.na(strtmp), strWinTitleCheck, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-
-    strtmp <- dtStrings["strMsgNA"]$value
-    strMsgNA <- ifelse(is.na(strtmp), strMsgNA, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleNA"]$value
-    strMsgTitleNA <- ifelse(is.na(strtmp), strMsgTitleNA, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -266,11 +136,11 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -280,7 +150,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -290,14 +160,14 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   data_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = g0
   )
 
-  dfs <- c(strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DATASET, listObjects(env = env, obj.class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -328,7 +198,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       .gDataName <<- val_obj
       svalue(data_samples_lbl) <- paste(
         length(unique(.gData$Sample.Name)),
-        strLblSamples
+        strings$STR_LBL_SAMPLES
       )
 
       # Suggest a name for the result.
@@ -343,7 +213,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(data_drp, index = TRUE) <- 1
-      svalue(data_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(data_samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLES)
       svalue(save_edt) <- ""
     }
   })
@@ -352,10 +222,10 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblRefDataset, container = g1)
+  glabel(text = strings$STR_LBL_REF_DATASET, container = g1)
 
   ref_samples_lbl <- glabel(
-    text = paste(" 0", strLblRef),
+    text = paste(" 0", strings$STR_LBL_REF),
     container = g1
   )
 
@@ -369,7 +239,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     expand = TRUE,
     fill = "x"
   )
-  tooltip(ref_drp) <- strTipRef
+  tooltip(ref_drp) <- strings$STR_TIP_REF
 
   addHandlerChanged(ref_drp, handler = function(h, ...) {
     val_obj <- svalue(ref_drp)
@@ -389,7 +259,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       .gRefName <<- val_obj
       svalue(ref_samples_lbl) <- paste(
         length(unique(.gRef$Sample.Name)),
-        strLblRef
+        strings$STR_LBL_REF
       )
       # Enable checkbox to calculate H.
       enabled(f1_h_chk) <- TRUE
@@ -398,7 +268,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       .gRef <<- NULL
       .gRefName <<- NULL
       svalue(ref_drp, index = TRUE) <- 1
-      svalue(ref_samples_lbl) <- paste(" 0", strLblRef)
+      svalue(ref_samples_lbl) <- paste(" 0", strings$STR_LBL_REF)
 
       # Disable checkbox to calculate H.
       enabled(f1_h_chk) <- FALSE
@@ -409,7 +279,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = g2)
+  glabel(text = strings$STR_LBL_KIT, container = g2)
 
   kit_drp <- gcombobox(
     items = getKit(), selected = 1,
@@ -421,7 +291,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   # CHECK #####################################################################
 
-  check_btn <- gbutton(text = strBtnCheck, container = gv)
+  check_btn <- gbutton(text = strings$STR_BTN_CHECK, container = gv)
 
   addHandlerChanged(check_btn, handler = function(h, ...) {
     # Get values.
@@ -433,7 +303,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
     if (!is.null(.gData) || !is.null(.gRef)) {
       chksubset_w <- gwindow(
-        title = strWinTitleCheck,
+        title = strings$STR_WIN_TITLE_CHECK,
         visible = FALSE, name = title,
         width = NULL, height = NULL, parent = w,
         handler = NULL, action = NULL
@@ -455,8 +325,8 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       visible(chksubset_w) <- TRUE
     } else {
       gmessage(
-        msg = strMsgCheck,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_CHECK,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }
@@ -466,46 +336,46 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   #----------------------------------------------------------------------------
-  glabel(text = strLblPre, anchor = c(-1, 0), container = f1)
+  glabel(text = strings$STR_LBL_PRE, anchor = c(-1, 0), container = f1)
 
   f1_ol_chk <- gcheckbox(
-    text = strChkOL, checked = TRUE,
+    text = strings$STR_CHK_OL, checked = TRUE,
     container = f1
   )
 
   f1_sex_chk <- gcheckbox(
-    text = strChkSex, checked = FALSE,
+    text = strings$STR_CHK_SEX, checked = FALSE,
     container = f1
   )
 
   f1_qs_chk <- gcheckbox(
-    text = strChkSensors, checked = TRUE,
+    text = strings$STR_CHK_SENSORS, checked = TRUE,
     container = f1
   )
 
   #----------------------------------------------------------------------------
   glabel(
-    text = strLblMissing, anchor = c(-1, 0),
+    text = strings$STR_LBL_MISSING, anchor = c(-1, 0),
     container = f1
   )
   f1_na_edt <- gedit(expand = TRUE, container = f1)
 
   #----------------------------------------------------------------------------
-  glabel(text = strLblMethod, anchor = c(-1, 0), container = f1)
+  glabel(text = strings$STR_LBL_METHOD, anchor = c(-1, 0), container = f1)
 
   f1_options_lb <- c(
-    strRadProp,
-    strRadNorm,
-    strRadCent,
-    strRadPeak,
-    strRadMarker
+    strings$STR_RAD_PROP,
+    strings$STR_RAD_NORM,
+    strings$STR_RAD_CENT,
+    strings$STR_RAD_PEAK,
+    strings$STR_RAD_MARKER
   )
 
   f1_lb_opt <- gradio(
@@ -516,36 +386,36 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   f1_dye_chk <- gcheckbox(
-    text = strChkDye, checked = FALSE,
+    text = strings$STR_CHK_DYE, checked = FALSE,
     container = f1
   )
 
   #----------------------------------------------------------------------------
   glabel(
-    text = strLblMatching, anchor = c(-1, 0),
+    text = strings$STR_LBL_MATCHING, anchor = c(-1, 0),
     container = f1
   )
 
   f1_ignore_chk <- gcheckbox(
-    text = strChkIgnore, checked = TRUE,
+    text = strings$STR_CHK_IGNORE, checked = TRUE,
     container = f1
   )
 
   f1_word_chk <- gcheckbox(
-    text = strChkWord, checked = FALSE,
+    text = strings$STR_CHK_WORD, checked = FALSE,
     container = f1
   )
 
   f1_exact_chk <- gcheckbox(
-    text = strChkExact, checked = FALSE,
+    text = strings$STR_CHK_EXACT, checked = FALSE,
     container = f1
   )
 
   #----------------------------------------------------------------------------
-  glabel(text = strLblPost, anchor = c(-1, 0), container = f1)
+  glabel(text = strings$STR_LBL_POST, anchor = c(-1, 0), container = f1)
 
   f1_h_chk <- gcheckbox(
-    text = strChkAverage, checked = TRUE,
+    text = strings$STR_CHK_AVERAGE, checked = TRUE,
     container = f1
   )
 
@@ -554,15 +424,15 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
+  calculate_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     # Get values.
@@ -661,7 +531,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Change button.
         blockHandlers(calculate_btn)
-        svalue(calculate_btn) <- strBtnProcessing
+        svalue(calculate_btn) <- strings$STR_BTN_PROCESSING
         unblockHandlers(calculate_btn)
         enabled(calculate_btn) <- FALSE
 
@@ -743,16 +613,16 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
         dispose(w)
       } else {
         gmessage(
-          msg = strMsgNA,
-          title = strMsgTitleNA,
+          msg = strings$STR_MSG_NA,
+          title = strings$STR_MSG_TITLE_NA,
           icon = "error",
           parent = w
         )
       }
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error",
         parent = w
       )

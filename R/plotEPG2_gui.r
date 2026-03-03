@@ -43,116 +43,40 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot electropherogram (EPG)"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Datasets"
-  strLblDataset <- "Sample dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblSample <- "Sample:"
-  strDrpSample <- "<Select sample>"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strLblScale <- "Y axis scale:"
-  strOptYmax <- "Across dye max y-scale"
-  strOptYind <- "Individual dye y-scale"
-  strLblAT <- "Analytical threshold:"
-  strLblST <- "Stochastic threshold:"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnObjectSaved <- "Object saved"
-  strBtnPlot <- "Plot EPG"
-  strBtnProcessing <- "Processing..."
-  strMsgDataset <- "A dataset must be selected. Sample is optional."
-  strMsgTitleDataset <- "Datasets not selected"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot electropherogram (EPG)",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Datasets",
+    STR_LBL_DATASET         = "Sample dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_SAMPLE          = "Sample:",
+    STR_DRP_SAMPLE          = "<Select sample>",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_SCALE           = "Y axis scale:",
+    STR_OPT_YMAX            = "Across dye max y-scale",
+    STR_OPT_YIND            = "Individual dye y-scale",
+    STR_LBL_AT              = "Analytical threshold:",
+    STR_LBL_ST              = "Stochastic threshold:",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_BTN_PLOT            = "Plot EPG",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_DATASET         = "A dataset must be selected. Sample is optional.",
+    STR_MSG_TITLE_DATASET   = "Datasets not selected"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblSample"]$value
-    strLblSample <- ifelse(is.na(strtmp), strLblSample, strtmp)
-
-    strtmp <- dtStrings["strDrpSample"]$value
-    strDrpSample <- ifelse(is.na(strtmp), strDrpSample, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblScale"]$value
-    strLblScale <- ifelse(is.na(strtmp), strLblScale, strtmp)
-
-    strtmp <- dtStrings["strOptYmax"]$value
-    strOptYmax <- ifelse(is.na(strtmp), strOptYmax, strtmp)
-
-    strtmp <- dtStrings["strOptYind"]$value
-    strOptYind <- ifelse(is.na(strtmp), strOptYind, strtmp)
-
-    strtmp <- dtStrings["strLblAT"]$value
-    strLblAT <- ifelse(is.na(strtmp), strLblAT, strtmp)
-
-    strtmp <- dtStrings["strLblST"]$value
-    strLblST <- ifelse(is.na(strtmp), strLblST, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strBtnPlot"]$value
-    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -176,11 +100,11 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -190,7 +114,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -200,14 +124,14 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   data_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = g0
   )
 
-  dfs <- c(strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DATASET, listObjects(env = env, obj.class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -223,7 +147,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = g1)
+  glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
     items = getKit(), selected = 1,
@@ -235,10 +159,10 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblSample, container = g2)
+  glabel(text = strings$STR_LBL_SAMPLE, container = g2)
 
   sample_drp <- gcombobox(
-    items = strDrpSample, selected = 1,
+    items = strings$STR_DRP_SAMPLE, selected = 1,
     editable = FALSE, container = g2,
     ellipsize = "none",
     expand = TRUE,
@@ -269,7 +193,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
       svalue(data_samples_lbl) <- paste(
         length(unique(.gData$Sample.Name)),
-        strLblSamples
+        strings$STR_LBL_SAMPLES
       )
 
       # Detect kit.
@@ -287,7 +211,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       .gData <<- NULL
       svalue(save_edt) <- ""
       svalue(data_drp, index = TRUE) <- 1
-      svalue(data_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(data_samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLES)
     }
   })
 
@@ -296,7 +220,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     val_sample <- svalue(sample_drp)
 
     if (!is.null(val_sample)) {
-      if (val_sample != strDrpSample) {
+      if (val_sample != strings$STR_DRP_SAMPLE) {
         # Enable buttons.
         enabled(plot_epg_btn) <- TRUE
       }
@@ -306,26 +230,26 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions, horizontal = FALSE,
+    text = strings$STR_FRM_OPTIONS, horizontal = FALSE,
     spacing = 1, container = gv
   )
 
-  glabel(text = strLblScale, anchor = c(-1, 0), container = f1)
+  glabel(text = strings$STR_LBL_SCALE, anchor = c(-1, 0), container = f1)
   f1_scale_opt <- gradio(
-    items = c(strOptYmax, strOptYind),
+    items = c(strings$STR_OPT_YMAX, strings$STR_OPT_YIND),
     selected = 2, horizontal = FALSE, container = f1
   )
 
   # Layout --------------------------------------------------------------------
   f1g1 <- glayout(container = f1, spacing = 1)
 
-  f1g1[1, 1] <- glabel(text = strLblAT, container = f1g1)
+  f1g1[1, 1] <- glabel(text = strings$STR_LBL_AT, container = f1g1)
   f1g1[1, 2] <- f1_at_spb <- gspinbutton(
     from = 0, to = 1000, by = 10, value = 0,
     container = f1g1
   )
 
-  f1g1[2, 1] <- glabel(text = strLblST, container = f1g1)
+  f1g1[2, 1] <- glabel(text = strings$STR_LBL_ST, container = f1g1)
   f1g1[2, 2] <- f1_st_spb <- gspinbutton(
     from = 0, to = 10000, by = 100, value = 0,
     container = f1g1
@@ -333,20 +257,20 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
-  save_btn <- gbutton(text = strBtnSaveObject, container = save_frame)
+  save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = save_frame)
 
   addHandlerChanged(save_btn, handler = function(h, ...) {
     val_name <- svalue(save_edt)
 
     # Change button.
     blockHandlers(save_btn)
-    svalue(save_btn) <- strBtnProcessing
+    svalue(save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(save_btn)
     enabled(save_btn) <- FALSE
 
@@ -358,14 +282,14 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
     # Change button.
     blockHandlers(save_btn)
-    svalue(save_btn) <- strBtnObjectSaved
+    svalue(save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(save_btn)
   })
 
   # BUTTON ####################################################################
 
 
-  plot_epg_btn <- gbutton(text = strBtnPlot, container = gv)
+  plot_epg_btn <- gbutton(text = strings$STR_BTN_PLOT, container = gv)
 
   addHandlerClicked(plot_epg_btn, handler = function(h, ...) {
     val_name <- svalue(save_edt)
@@ -385,7 +309,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     }
 
     if (!is.null(val_data)) {
-      if (val_sample != strDrpSample) {
+      if (val_sample != strings$STR_DRP_SAMPLE) {
         # Subset selected sample.
         val_data <- val_data[val_data$Sample.Name == val_sample, ]
 
@@ -406,7 +330,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
       # Change button.
       blockHandlers(plot_epg_btn)
-      svalue(plot_epg_btn) <- strBtnProcessing
+      svalue(plot_epg_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(plot_epg_btn)
       enabled(plot_epg_btn) <- FALSE
 
@@ -420,13 +344,13 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
 
       # Change button.
       blockHandlers(plot_epg_btn)
-      svalue(plot_epg_btn) <- strBtnPlot
+      svalue(plot_epg_btn) <- strings$STR_BTN_PLOT
       unblockHandlers(plot_epg_btn)
       enabled(plot_epg_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error",
         parent = w
       )
@@ -447,7 +371,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       blockHandler(sample_drp)
 
       # Populate drop list and select first item.
-      sample_drp[] <- c(strDrpSample, dfs)
+      sample_drp[] <- c(strings$STR_DRP_SAMPLE, dfs)
       svalue(sample_drp, index = TRUE) <- 1
 
       unblockHandler(sample_drp)

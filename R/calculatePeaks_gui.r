@@ -49,103 +49,36 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Calculate peaks"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Sample dataset:"
-  strDrpDefault <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strFrmOptions <- "Options"
-  strChkExcludeOL <- "Exclude off-ladder peaks (OL alleles)."
-  strRadBySample <- "Count peaks by sample"
-  strRadByMarker <- "Count peaks by marker"
-  strLblGroups <- "Define group labels (separated by comma):"
-  strTipGroups <- "Number labels must be one more than the number of cut-off points. The last group is defined by > than the last cut-off point."
-  strLblCutOff <- "Define cut-off points (<=) for the groups (separated by comma):"
-  strTipCutOff <- "Number of cut-off points must be one less than the number of group labels. The last group is defined by > than the last cut-off point."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
-  strMsgDataset <- "A sample dataset must be selected."
-  strMsgTitleDataset <- "Dataset not selected"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Calculate peaks",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Sample dataset:",
+    STR_DRP_DEFAULT         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_EXCLUDE_OL      = "Exclude off-ladder peaks (OL alleles).",
+    STR_RAD_BY_SAMPLE       = "Count peaks by sample",
+    STR_RAD_BY_MARKER       = "Count peaks by marker",
+    STR_LBL_GROUPS          = "Define group labels (separated by comma):",
+    STR_TIP_GROUPS          = "Number labels must be one more than the number of cut-off points. The last group is defined by > than the last cut-off point.",
+    STR_LBL_CUT_OFF         = "Define cut-off points (<=) for the groups (separated by comma):",
+    STR_TIP_CUT_OFF         = "Number of cut-off points must be one less than the number of group labels. The last group is defined by > than the last cut-off point.",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_DATASET         = "A sample dataset must be selected.",
+    STR_MSG_TITLE_DATASET   = "Dataset not selected"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strDrpDefault"]$value
-    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkExcludeOL"]$value
-    strChkExcludeOL <- ifelse(is.na(strtmp), strChkExcludeOL, strtmp)
-
-    strtmp <- dtStrings["strRadBySample"]$value
-    strRadBySample <- ifelse(is.na(strtmp), strRadBySample, strtmp)
-
-    strtmp <- dtStrings["strRadByMarker"]$value
-    strRadByMarker <- ifelse(is.na(strtmp), strRadByMarker, strtmp)
-
-    strtmp <- dtStrings["strLblGroups"]$value
-    strLblGroups <- ifelse(is.na(strtmp), strLblGroups, strtmp)
-
-    strtmp <- dtStrings["strTipGroups"]$value
-    strTipGroups <- ifelse(is.na(strtmp), strTipGroups, strtmp)
-
-    strtmp <- dtStrings["strLblCutOff"]$value
-    strLblCutOff <- ifelse(is.na(strtmp), strLblCutOff, strtmp)
-
-    strtmp <- dtStrings["strTipCutOff"]$value
-    strTipCutOff <- ifelse(is.na(strtmp), strTipCutOff, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -172,11 +105,11 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -186,7 +119,7 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -196,16 +129,16 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = g0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDefault,
+      strings$STR_DRP_DEFAULT,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -235,14 +168,14 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(samples_lbl) <- paste("", samples, strLblSamples)
+      svalue(samples_lbl) <- paste("", samples, strings$STR_LBL_SAMPLES)
       svalue(save_edt) <- paste(.gDataName, "_peaks", sep = "")
     } else {
       # Reset components.
       .gData <<- NULL
       .gDataName <<- NULL
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLES)
       svalue(save_edt) <- ""
     }
   })
@@ -250,48 +183,48 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   f1_no_ol_chk <- gcheckbox(
-    text = strChkExcludeOL,
+    text = strings$STR_CHK_EXCLUDE_OL,
     checked = FALSE, container = f1
   )
 
   f1_count_by_opt <- gradio(
-    items = c(strRadBySample, strRadByMarker),
+    items = c(strings$STR_RAD_BY_SAMPLE, strings$STR_RAD_BY_MARKER),
     selected = 1, container = f1
   )
 
   glabel(
-    text = strLblGroups,
+    text = strings$STR_LBL_GROUPS,
     container = f1, anchor = c(-1, 0)
   )
   f1_labels_edt <- gedit(
     text = "No contamination,Drop-in contamination,Gross contamination",
     width = 60, container = f1
   )
-  tooltip(f1_labels_edt) <- strTipGroups
+  tooltip(f1_labels_edt) <- strings$STR_TIP_GROUPS
 
-  glabel(text = strLblCutOff, container = f1, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_CUT_OFF, container = f1, anchor = c(-1, 0))
   f1_bins_edt <- gedit(text = "0,2", width = 60, container = f1)
-  tooltip(f1_bins_edt) <- strTipGroups
+  tooltip(f1_bins_edt) <- strings$STR_TIP_GROUPS
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
 
-  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
+  calculate_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     # Get values.
@@ -314,7 +247,7 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     if (!is.null(val_data)) {
       # Change button.
       blockHandlers(calculate_btn)
-      svalue(calculate_btn) <- strBtnProcessing
+      svalue(calculate_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
@@ -358,8 +291,8 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error",
         parent = w
       )

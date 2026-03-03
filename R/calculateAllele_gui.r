@@ -49,88 +49,33 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Calculate summary statistics for alleles"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Sample dataset:"
-  strDrpDefault <- "<Select dataset>"
-  strLblRows <- "rows"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strLblThreshold <- "Peak height threshold: "
-  strTipThreshold <- "Peaks with heights below this value will be removed."
-  strChkSexMarkers <- "Remove sex markers defined in kit."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strMsgNotDf <- "Data set must be a data.frame!"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Calculate summary statistics for alleles",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Sample dataset:",
+    STR_DRP_DEFAULT         = "<Select dataset>",
+    STR_LBL_ROWS            = "rows",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_THRESHOLD       = "Peak height threshold: ",
+    STR_TIP_THRESHOLD       = "Peaks with heights below this value will be removed.",
+    STR_CHK_SEX_MARKERS     = "Remove sex markers defined in kit.",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_MSG_NOT_DF          = "Data set must be a data.frame!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDefault"]$value
-    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
-
-    strtmp <- dtStrings["strLblRows"]$value
-    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblThreshold"]$value
-    strLblThreshold <- ifelse(is.na(strtmp), strLblThreshold, strtmp)
-
-    strtmp <- dtStrings["strTipThreshold"]$value
-    strTipThreshold <- ifelse(is.na(strtmp), strTipThreshold, strtmp)
-
-    strtmp <- dtStrings["strChkSexMarkers"]$value
-    strChkSexMarkers <- ifelse(is.na(strtmp), strChkSexMarkers, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strMsgNotDf"]$value
-    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # ---------------------------------------------------------------------------
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -157,11 +102,11 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -171,7 +116,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv,
@@ -183,16 +128,16 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strings$STR_LBL_DATASET, container = f0g0)
 
   f0g0_data_col_lbl <- glabel(
-    text = paste(" 0", strLblRows),
+    text = paste(" 0", strings$STR_LBL_ROWS),
     container = f0g0
   )
 
   f0g0_data_drp <- gcombobox(
     items = c(
-      strDrpDefault,
+      strings$STR_DRP_DEFAULT,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -221,7 +166,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
 
-      svalue(f0g0_data_col_lbl) <- paste(" ", nrow(.gData), strLblRows)
+      svalue(f0g0_data_col_lbl) <- paste(" ", nrow(.gData), strings$STR_LBL_ROWS)
       svalue(save_edt) <- paste(.gDataName, "allele", sep = "_")
 
       # Autodetect kit.
@@ -232,7 +177,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
     } else {
       .gData <<- NULL
       .gDataName <<- NULL
-      svalue(f0g0_data_col_lbl) <- paste(" 0", strLblRows)
+      svalue(f0g0_data_col_lbl) <- paste(" 0", strings$STR_LBL_ROWS)
       svalue(save_edt) <- ""
     }
   })
@@ -241,7 +186,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = f0g2)
+  glabel(text = strings$STR_LBL_KIT, container = f0g2)
 
   kit_drp <- gcombobox(
     items = getKit(),
@@ -255,22 +200,22 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   # OPTIONS ###################################################################
 
-  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 1, container = gv)
+  f1 <- gframe(text = strings$STR_FRM_OPTIONS, horizontal = FALSE, spacing = 1, container = gv)
 
   f1g1 <- ggroup(container = f1, spacing = 1, expand = TRUE, fill = "x")
 
   f1_threshold_lbl <- glabel(
-    text = strLblThreshold,
+    text = strings$STR_LBL_THRESHOLD,
     container = f1g1
   )
 
   f1_threshold_edt <- gedit(text = "", width = 10, container = f1g1)
-  tooltip(f1_threshold_edt) <- strTipThreshold
+  tooltip(f1_threshold_edt) <- strings$STR_TIP_THRESHOLD
 
   f1g2 <- ggroup(container = f1, spacing = 1, expand = TRUE, fill = "x")
 
   f1_sex_chk <- gcheckbox(
-    text = strChkSexMarkers,
+    text = strings$STR_CHK_SEX_MARKERS,
     checked = FALSE, container = f1g2
   )
 
@@ -280,15 +225,15 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  button_btn <- gbutton(text = strBtnCalculate, container = gv)
+  button_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerChanged(button_btn, handler = function(h, ...) {
     val_data <- .gData
@@ -342,8 +287,8 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       dispose(w)
     } else {
       gmessage(
-        msg = strMsgNotDf,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NOT_DF,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }

@@ -42,91 +42,33 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Add dye to dataset"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset and kit"
-  strLblDataset <- "Sample dataset:"
-  strDrpDefault <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strChkIgnore <- "Ignore case in marker name"
-  strChkDye <- "Add dye information"
-  strChkColor <- "Add color information"
-  strChkR <- "Add R color information"
-  strChkMarker <- "Add marker order"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnAdd <- "Add"
-  strBtnProcessing <- "Processing..."
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Add dye to dataset",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset and kit",
+    STR_LBL_DATASET         = "Sample dataset:",
+    STR_DRP_DEFAULT         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_IGNORE          = "Ignore case in marker name",
+    STR_CHK_DYE             = "Add dye information",
+    STR_CHK_COLOR           = "Add color information",
+    STR_CHK_R               = "Add R color information",
+    STR_CHK_MARKER          = "Add marker order",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_ADD             = "Add",
+    STR_BTN_PROCESSING      = "Processing..."
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDefault"]$value
-    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkIgnore"]$value
-    strChkIgnore <- ifelse(is.na(strtmp), strChkIgnore, strtmp)
-
-    strtmp <- dtStrings["strChkDye"]$value
-    strChkDye <- ifelse(is.na(strtmp), strChkDye, strtmp)
-
-    strtmp <- dtStrings["strChkColor"]$value
-    strChkColor <- ifelse(is.na(strtmp), strChkColor, strtmp)
-
-    strtmp <- dtStrings["strChkR"]$value
-    strChkR <- ifelse(is.na(strtmp), strChkR, strtmp)
-
-    strtmp <- dtStrings["strChkMarker"]$value
-    strChkMarker <- ifelse(is.na(strtmp), strChkMarker, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnAdd"]$value
-    strBtnAdd <- ifelse(is.na(strtmp), strBtnAdd, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # ---------------------------------------------------------------------------
 
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -153,11 +95,11 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -167,7 +109,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -175,16 +117,16 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strings$STR_LBL_DATASET, container = f0g0)
 
   dataset_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = f0g0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDefault,
+      strings$STR_DRP_DEFAULT,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -214,7 +156,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(dataset_samples_lbl) <- paste(" ", samples, strLblSamples)
+      svalue(dataset_samples_lbl) <- paste(" ", samples, strings$STR_LBL_SAMPLES)
       .gKit <<- detectKit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
       svalue(save_edt) <- paste(.gDataName, sep = "")
@@ -222,7 +164,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
-      svalue(dataset_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(dataset_samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLES)
       svalue(save_edt) <- ""
     }
   })
@@ -231,7 +173,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = f0g1)
+  glabel(text = strings$STR_LBL_KIT, container = f0g1)
 
   kit_drp <- gcombobox(
     items = getKit(),
@@ -245,44 +187,44 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
   # FRAME 1 ###################################################################
 
-  f1 <- gframe(text = strFrmOptions, horizontal = FALSE, spacing = 1, container = gv)
+  f1 <- gframe(text = strings$STR_FRM_OPTIONS, horizontal = FALSE, spacing = 1, container = gv)
 
   f1_ignore_chk <- gcheckbox(
-    text = strChkIgnore,
+    text = strings$STR_CHK_IGNORE,
     checked = FALSE, container = f1
   )
 
   f1_dye_chk <- gcheckbox(
-    text = strChkDye,
+    text = strings$STR_CHK_DYE,
     checked = TRUE, container = f1
   )
 
   f1_color_chk <- gcheckbox(
-    text = strChkColor,
+    text = strings$STR_CHK_COLOR,
     checked = FALSE, container = f1
   )
 
   f1_r_chk <- gcheckbox(
-    text = strChkR,
+    text = strings$STR_CHK_R,
     checked = FALSE, container = f1
   )
 
   f1_order_chk <- gcheckbox(
-    text = strChkMarker,
+    text = strings$STR_CHK_MARKER,
     checked = FALSE, container = f1
   )
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  add_btn <- gbutton(text = strBtnAdd, container = gv)
+  add_btn <- gbutton(text = strings$STR_BTN_ADD, container = gv)
 
   addHandlerClicked(add_btn, handler = function(h, ...) {
     # Get values.
@@ -327,7 +269,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Change button.
     blockHandlers(add_btn)
-    svalue(add_btn) <- strBtnProcessing
+    svalue(add_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(add_btn)
     enabled(add_btn) <- FALSE
 

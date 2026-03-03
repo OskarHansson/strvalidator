@@ -67,168 +67,53 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot groups"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblDataset <- "Dataset:"
-  strLblColumn <- "Flat data by:"
-  strLblGroup <- "Group data by:"
-  strLblPlot <- "Plot data by:"
-  strDrpDataset <- "<Select dataset>"
-  strDrpColumn <- "<Select column>"
-  strDrpGroup <- "<Select group>"
-  strLblRows <- "rows"
-  strFrmOptions <- "Options"
-  strChkOverride <- "Override automatic titles"
-  strLblTitlePlot <- "Plot title:"
-  strLblTitleX <- "X title:"
-  strLblTitleY <- "Y title:"
-  strLblLabels <- "Group labels:"
-  strTipLabels <- "Separate by comma"
-  strLblTheme <- "Plot theme:"
-  strExpAxes <- "Axes"
-  strLblNB <- "NB! Must provide both min and max value."
-  strLblLimitY <- "Limit Y axis (min-max)"
-  strLblLimitX <- "Limit X axis (min-max)"
-  strBtnPlot <- "Plot"
-  strTipPlot <- "Empirical cumulative distribution function"
-  strBtnProcessing <- "Processing..."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
-  strBtnObjectSaved <- "Object saved"
-  strLblMainTitle <- "Empirical cumulative distribution function"
-  strLblObservations <- "observations"
-  strMsgColumn <- "A data column must be specified!"
-  strMsgNotDf <- "Data set must be a data.frame!"
-  strMsgTitleError <- "Error"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot groups",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_DATASET         = "Dataset:",
+    STR_LBL_COLUMN          = "Flat data by:",
+    STR_LBL_GROUP           = "Group data by:",
+    STR_LBL_PLOT            = "Plot data by:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_DRP_COLUMN          = "<Select column>",
+    STR_DRP_GROUP           = "<Select group>",
+    STR_LBL_ROWS            = "rows",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_OVERRIDE        = "Override automatic titles",
+    STR_LBL_TITLE_PLOT      = "Plot title:",
+    STR_LBL_TITLE_X         = "X title:",
+    STR_LBL_TITLE_Y         = "Y title:",
+    STR_LBL_LABELS          = "Group labels:",
+    STR_TIP_LABELS          = "Separate by comma",
+    STR_LBL_THEME           = "Plot theme:",
+    STR_EXP_AXES            = "Axes",
+    STR_LBL_NB              = "NB! Must provide both min and max value.",
+    STR_LBL_LIMIT_Y         = "Limit Y axis (min-max)",
+    STR_LBL_LIMIT_X         = "Limit X axis (min-max)",
+    STR_BTN_PLOT            = "Plot",
+    STR_TIP_PLOT            = "Empirical cumulative distribution function",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_SAVE_IMAGE      = "Save as image",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_LBL_MAIN_TITLE      = "Empirical cumulative distribution function",
+    STR_LBL_OBSERVATIONS    = "observations",
+    STR_MSG_COLUMN          = "A data column must be specified!",
+    STR_MSG_NOT_DF          = "Data set must be a data.frame!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strLblColumn"]$value
-    strLblColumn <- ifelse(is.na(strtmp), strLblColumn, strtmp)
-
-    strtmp <- dtStrings["strLblGroup"]$value
-    strLblGroup <- ifelse(is.na(strtmp), strLblGroup, strtmp)
-
-    strtmp <- dtStrings["strLblPlot"]$value
-    strLblPlot <- ifelse(is.na(strtmp), strLblPlot, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpColumn"]$value
-    strDrpColumn <- ifelse(is.na(strtmp), strDrpColumn, strtmp)
-
-    strtmp <- dtStrings["strDrpGroup"]$value
-    strDrpGroup <- ifelse(is.na(strtmp), strDrpGroup, strtmp)
-
-    strtmp <- dtStrings["strLblRows"]$value
-    strLblRows <- ifelse(is.na(strtmp), strLblRows, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkOverride"]$value
-    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
-
-    strtmp <- dtStrings["strLblTitlePlot"]$value
-    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-
-    strtmp <- dtStrings["strLblTitleX"]$value
-    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-
-    strtmp <- dtStrings["strLblTitleY"]$value
-    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
-
-    strtmp <- dtStrings["strLblLabels"]$value
-    strLblLabels <- ifelse(is.na(strtmp), strLblLabels, strtmp)
-
-    strtmp <- dtStrings["strTipLabels"]$value
-    strTipLabels <- ifelse(is.na(strtmp), strTipLabels, strtmp)
-
-    strtmp <- dtStrings["strLblTheme"]$value
-    strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
-
-    strtmp <- dtStrings["strExpAxes"]$value
-    strExpAxes <- ifelse(is.na(strtmp), strExpAxes, strtmp)
-
-    strtmp <- dtStrings["strLblNB"]$value
-    strLblNB <- ifelse(is.na(strtmp), strLblNB, strtmp)
-
-    strtmp <- dtStrings["strLblLimitY"]$value
-    strLblLimitY <- ifelse(is.na(strtmp), strLblLimitY, strtmp)
-
-    strtmp <- dtStrings["strLblLimitX"]$value
-    strLblLimitX <- ifelse(is.na(strtmp), strLblLimitX, strtmp)
-
-    strtmp <- dtStrings["strBtnPlot"]$value
-    strBtnPlot <- ifelse(is.na(strtmp), strBtnPlot, strtmp)
-
-    strtmp <- dtStrings["strTipPlot"]$value
-    strTipPlot <- ifelse(is.na(strtmp), strTipPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitle"]$value
-    strLblMainTitle <- ifelse(is.na(strtmp), strLblMainTitle, strtmp)
-
-    strtmp <- dtStrings["strLblObservations"]$value
-    strLblObservations <- ifelse(is.na(strtmp), strLblObservations, strtmp)
-
-    strtmp <- dtStrings["strMsgColumn"]$value
-    strMsgColumn <- ifelse(is.na(strtmp), strMsgColumn, strtmp)
-
-    strtmp <- dtStrings["strMsgNotDf"]$value
-    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -253,13 +138,13 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
   savegui_chk <- gcheckbox(
-    text = strChkGui, checked = FALSE,
+    text = strings$STR_CHK_GUI, checked = FALSE,
     container = gh
   )
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -268,22 +153,22 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # FRAME 0 ###################################################################
 
-  f0 <- gframe(text = strFrmDataset, horizontal = FALSE, spacing = 1, container = gv)
+  f0 <- gframe(text = strings$STR_FRM_DATASET, horizontal = FALSE, spacing = 1, container = gv)
 
   # Dataset -------------------------------------------------------------------
 
   f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strings$STR_LBL_DATASET, container = f0g0)
 
   samples_lbl <- glabel(
-    text = paste(" 0 ", strLblRows, sep = ""),
+    text = paste(" 0 ", strings$STR_LBL_ROWS, sep = ""),
     container = f0g0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -298,10 +183,10 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblColumn, container = f0g1)
+  glabel(text = strings$STR_LBL_COLUMN, container = f0g1)
 
   flat_drp <- gcombobox(
-    items = strDrpColumn, selected = 1,
+    items = strings$STR_DRP_COLUMN, selected = 1,
     container = f0g1, ellipsize = "none",
     expand = TRUE, fill = "x"
   )
@@ -310,10 +195,10 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   f0g2 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblGroup, container = f0g2)
+  glabel(text = strings$STR_LBL_GROUP, container = f0g2)
 
   group_drp <- gcombobox(
-    items = strDrpGroup, selected = 1,
+    items = strings$STR_DRP_GROUP, selected = 1,
     container = f0g2, ellipsize = "none",
     expand = TRUE, fill = "x"
   )
@@ -322,10 +207,10 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   f0g3 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblPlot, container = f0g3)
+  glabel(text = strings$STR_LBL_PLOT, container = f0g3)
 
   axis_drp <- gcombobox(
-    items = strDrpColumn, selected = 1,
+    items = strings$STR_DRP_COLUMN, selected = 1,
     container = f0g3, ellipsize = "none",
     expand = TRUE, fill = "x"
   )
@@ -355,7 +240,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
       # Get number of observations.
       svalue(samples_lbl) <- paste(" ", nrow(.gData), " ",
-        strLblRows,
+        strings$STR_LBL_ROWS,
         sep = ""
       )
 
@@ -365,7 +250,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       # Reset components.
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
-      svalue(samples_lbl) <- paste(" 0 ", strLblRows, sep = "")
+      svalue(samples_lbl) <- paste(" 0 ", strings$STR_LBL_ROWS, sep = "")
     }
   })
 
@@ -383,12 +268,12 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions, horizontal = FALSE, spacing = 1,
+    text = strings$STR_FRM_OPTIONS, horizontal = FALSE, spacing = 1,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = strChkOverride,
+    text = strings$STR_CHK_OVERRIDE,
     checked = FALSE, container = f1
   )
 
@@ -403,65 +288,65 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   )
 
   # Legends
-  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_PLOT, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_X, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_Y, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
 
   f1g2 <- ggroup(container = f1, spacing = 1, horizontal = TRUE, expand = TRUE)
 
-  glabel(text = strLblLabels, container = f1g2)
+  glabel(text = strings$STR_LBL_LABELS, container = f1g2)
   f1_labels_edt <- gedit(expand = TRUE, fill = TRUE, container = f1g2)
-  tooltip(f1_labels_edt) <- strTipLabels
+  tooltip(f1_labels_edt) <- strings$STR_TIP_LABELS
 
   f1g3 <- glayout(container = f1, spacing = 1, expand = TRUE)
 
-  f1g3[1, 1] <- glabel(text = strLblTheme, anchor = c(-1, 0), container = f1g3)
+  f1g3[1, 1] <- glabel(text = strings$STR_LBL_THEME, anchor = c(-1, 0), container = f1g3)
 
   f1g3[1, 2] <- f1_theme_drp <- gcombobox(
     items = .theme, selected = 1,
     container = f1g3, ellipsize = "none", expand = TRUE
   )
 
-  f1e4 <- gexpandgroup(text = strExpAxes, horizontal = FALSE, container = f1)
+  f1e4 <- gexpandgroup(text = strings$STR_EXP_AXES, horizontal = FALSE, container = f1)
 
   # Start collapsed.
   visible(f1e4) <- FALSE
 
   glabel(
-    text = strLblNB,
+    text = strings$STR_LBL_NB,
     anchor = c(-1, 0), container = f1e4
   )
 
   f1g6 <- glayout(container = f1e4, spacing = 1)
-  f1g6[1, 1:2] <- glabel(text = strLblLimitY, container = f1g6)
+  f1g6[1, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_Y, container = f1g6)
   f1g6[2, 1] <- f1g6_y_min_edt <- gedit(text = "", width = 5, container = f1g6)
   f1g6[2, 2] <- f1g6_y_max_edt <- gedit(text = "", width = 5, container = f1g6)
 
-  f1g6[3, 1:2] <- glabel(text = strLblLimitX, container = f1g6)
+  f1g6[3, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_X, container = f1g6)
   f1g6[4, 1] <- f1g6_x_min_edt <- gedit(text = "", width = 5, container = f1g6)
   f1g6[4, 2] <- f1g6_x_max_edt <- gedit(text = "", width = 5, container = f1g6)
 
   # BUTTON ####################################################################
 
   plot_ecdf_btn <- gbutton(
-    text = strBtnPlot,
+    text = strings$STR_BTN_PLOT,
     container = gv
   )
-  tooltip(plot_ecdf_btn) <- strTipPlot
+  tooltip(plot_ecdf_btn) <- strings$STR_TIP_PLOT
 
   addHandlerChanged(plot_ecdf_btn, handler = function(h, ...) {
     val_column <- svalue(axis_drp)
 
-    if (val_column == strDrpColumn) {
+    if (val_column == strings$STR_DRP_COLUMN) {
       gmessage(
-        msg = strMsgColumn,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_COLUMN,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     } else {
@@ -473,22 +358,22 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
   # FRAME 5 ###################################################################
 
-  f5 <- gframe(text = strFrmSave, horizontal = TRUE, spacing = 1, container = gv)
+  f5 <- gframe(text = strings$STR_FRM_SAVE, horizontal = TRUE, spacing = 1, container = gv)
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strings$STR_LBL_SAVE, container = f5)
 
   f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
+  f5_save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
+  f5_ggsave_btn <- gbutton(text = strings$STR_BTN_SAVE_IMAGE, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnProcessing
+    svalue(f5_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -500,7 +385,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnObjectSaved
+    svalue(f5_save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(f5_save_btn)
   })
 
@@ -658,8 +543,8 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       } else {
         message("Default titles.")
 
-        mainTitle <- paste(strLblMainTitle, " (",
-          nb, " ", strLblObservations, ")",
+        mainTitle <- paste(strings$STR_LBL_MAIN_TITLE, " (",
+          nb, " ", strings$STR_LBL_OBSERVATIONS, ")",
           sep = ""
         )
 
@@ -718,12 +603,12 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
       .gPlot <<- gp
 
       # Change save button.
-      svalue(f5_save_btn) <- strBtnSaveObject
+      svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
       enabled(f5_save_btn) <- TRUE
     } else {
       gmessage(
-        msg = strMsgNotDf,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NOT_DF,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }
@@ -756,14 +641,14 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
 
     if (!is.null(columns)) {
       # Populate drop list.
-      group_drp[] <- c(strDrpGroup, columns)
-      axis_drp[] <- c(strDrpColumn, columns)
-      flat_drp[] <- c(strDrpColumn, columns)
+      group_drp[] <- c(strings$STR_DRP_GROUP, columns)
+      axis_drp[] <- c(strings$STR_DRP_COLUMN, columns)
+      flat_drp[] <- c(strings$STR_DRP_COLUMN, columns)
     } else {
       # Reset drop list and select first item.
-      group_drp[] <- c(strDrpGroup)
-      axis_drp[] <- c(strDrpColumn)
-      flat_drp[] <- c(strDrpColumn)
+      group_drp[] <- c(strings$STR_DRP_GROUP)
+      axis_drp[] <- c(strings$STR_DRP_COLUMN)
+      flat_drp[] <- c(strings$STR_DRP_COLUMN)
     }
 
     # Select helpful text.

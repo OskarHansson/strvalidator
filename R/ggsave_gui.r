@@ -65,107 +65,34 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Save as image"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmOptions <- "Options"
-  strLblFileName <- "File name and extension:"
-  strChkOverwrite <- "Overwrite existing file"
-  strChkSize <- "Load size from plot device"
-  strBtnSize <- "Get size from plot device"
-  strLblSettings <- "Image settings:"
-  strLblUnit <- "Unit:"
-  strLblWidth <- "Width:"
-  strLblPixels <- "pixels"
-  strLblHeight <- "Height:"
-  strLblRes <- "Resolution:"
-  strLblScale <- "Scaling factor"
-  strLblPath <- "Save file to path:"
-  strBtnSave <- "Save"
-  strBtnProcessing <- "Processing..."
-  strMsgPath <- "File path must be provided!\n\nThis error may also occur the first time the function is used.\nPlease locate the folder using the [file] button."
-  strMsgName <- "File name must be provided!"
-  strMsgTitleError <- "Error"
-  strMsgTitleSaveError <- "Save error"
-  strMsgFileExist <- "The file already exist!\n\nClick [Yes] to overwrite or [No] to cancel and type a new name."
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Save as image",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_FILE_NAME       = "File name and extension:",
+    STR_CHK_OVERWRITE       = "Overwrite existing file",
+    STR_CHK_SIZE            = "Load size from plot device",
+    STR_BTN_SIZE            = "Get size from plot device",
+    STR_LBL_SETTINGS        = "Image settings:",
+    STR_LBL_UNIT            = "Unit:",
+    STR_LBL_WIDTH           = "Width:",
+    STR_LBL_PIXELS          = "pixels",
+    STR_LBL_HEIGHT          = "Height:",
+    STR_LBL_RES             = "Resolution:",
+    STR_LBL_SCALE           = "Scaling factor",
+    STR_LBL_PATH            = "Save file to path:",
+    STR_BTN_SAVE            = "Save",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_PATH            = "File path must be provided!\n\nThis error may also occur the first time the function is used.\nPlease locate the folder using the [file] button.",
+    STR_MSG_NAME            = "File name must be provided!",
+    STR_MSG_TITLE_ERROR     = "Error",
+    STR_MSG_TITLE_SAVE_ERROR= "Save error",
+    STR_MSG_FILE_EXIST      = "The file already exist!\n\nClick [Yes] to overwrite or [No] to cancel and type a new name."
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblFileName"]$value
-    strLblFileName <- ifelse(is.na(strtmp), strLblFileName, strtmp)
-
-    strtmp <- dtStrings["strChkOverwrite"]$value
-    strChkOverwrite <- ifelse(is.na(strtmp), strChkOverwrite, strtmp)
-
-    strtmp <- dtStrings["strChkSize"]$value
-    strChkSize <- ifelse(is.na(strtmp), strChkSize, strtmp)
-
-    strtmp <- dtStrings["strBtnSize"]$value
-    strBtnSize <- ifelse(is.na(strtmp), strBtnSize, strtmp)
-
-    strtmp <- dtStrings["strLblSettings"]$value
-    strLblSettings <- ifelse(is.na(strtmp), strLblSettings, strtmp)
-
-    strtmp <- dtStrings["strLblUnit"]$value
-    strLblUnit <- ifelse(is.na(strtmp), strLblUnit, strtmp)
-
-    strtmp <- dtStrings["strLblWidth"]$value
-    strLblWidth <- ifelse(is.na(strtmp), strLblWidth, strtmp)
-
-    strtmp <- dtStrings["strLblPixels"]$value
-    strLblPixels <- ifelse(is.na(strtmp), strLblPixels, strtmp)
-
-    strtmp <- dtStrings["strLblHeight"]$value
-    strLblHeight <- ifelse(is.na(strtmp), strLblHeight, strtmp)
-
-    strtmp <- dtStrings["strLblRes"]$value
-    strLblRes <- ifelse(is.na(strtmp), strLblRes, strtmp)
-
-    strtmp <- dtStrings["strLblScale"]$value
-    strLblScale <- ifelse(is.na(strtmp), strLblScale, strtmp)
-
-    strtmp <- dtStrings["strLblPath"]$value
-    strLblPath <- ifelse(is.na(strtmp), strLblPath, strtmp)
-
-    strtmp <- dtStrings["strBtnSave"]$value
-    strBtnSave <- ifelse(is.na(strtmp), strBtnSave, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgPath"]$value
-    strMsgPath <- ifelse(is.na(strtmp), strMsgPath, strtmp)
-
-    strtmp <- dtStrings["strMsgName"]$value
-    strMsgName <- ifelse(is.na(strtmp), strMsgName, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleSaveError"]$value
-    strMsgTitleSaveError <- ifelse(is.na(strtmp), strMsgTitleSaveError, strtmp)
-
-    strtmp <- dtStrings["strMsgFileExist"]$value
-    strMsgFileExist <- ifelse(is.na(strtmp), strMsgFileExist, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
@@ -179,7 +106,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
   # Main window.
   w <- gwindow(
-    title = strWinTitle,
+    title = strings$STR_WIN_TITLE,
     visible = FALSE
   )
 
@@ -209,11 +136,11 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -223,14 +150,14 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   glabel(
-    text = strLblFileName, container = f1, anchor = c(-1, 0),
+    text = strings$STR_LBL_FILE_NAME, container = f1, anchor = c(-1, 0),
     expand = TRUE
   )
 
@@ -247,16 +174,16 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   )
 
   f1_replace_chk <- gcheckbox(
-    text = strChkOverwrite, checked = TRUE,
+    text = strings$STR_CHK_OVERWRITE, checked = TRUE,
     container = f1
   )
 
   f1_load_chk <- gcheckbox(
-    text = strChkSize, checked = TRUE,
+    text = strings$STR_CHK_SIZE, checked = TRUE,
     container = f1
   )
 
-  f1_get_btn <- gbutton(text = strBtnSize, container = f1)
+  f1_get_btn <- gbutton(text = strings$STR_BTN_SIZE, container = f1)
 
   addHandlerChanged(f1_load_chk, handler = function(h, ...) {
     val <- svalue(f1_load_chk)
@@ -279,12 +206,12 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   f1g2 <- glayout(container = f1, spacing = 1)
 
   f1g2[1, 1] <- glabel(
-    text = strLblSettings,
+    text = strings$STR_LBL_SETTINGS,
     container = f1g2, anchor = c(-1, 0)
   )
 
   f1g2[2, 1] <- glabel(
-    text = strLblUnit,
+    text = strings$STR_LBL_UNIT,
     container = f1g2,
     anchor = c(-1, 0)
   )
@@ -301,7 +228,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     .readSize()
   })
 
-  f1g2[3, 1] <- glabel(text = strLblWidth, container = f1g2, anchor = c(-1, 0))
+  f1g2[3, 1] <- glabel(text = strings$STR_LBL_WIDTH, container = f1g2, anchor = c(-1, 0))
 
   f1g2[3, 2] <- f1g2_width_edt <- gedit(
     text = "",
@@ -311,11 +238,11 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   )
 
   f1g2[3, 3] <- f1g2_width_lbl <- glabel(
-    text = paste(" NA", strLblPixels),
+    text = paste(" NA", strings$STR_LBL_PIXELS),
     container = f1g2, anchor = c(-1, 0)
   )
 
-  f1g2[4, 1] <- glabel(text = strLblHeight, container = f1g2, anchor = c(-1, 0))
+  f1g2[4, 1] <- glabel(text = strings$STR_LBL_HEIGHT, container = f1g2, anchor = c(-1, 0))
 
   f1g2[4, 2] <- f1g2_height_edt <- gedit(
     text = "",
@@ -325,11 +252,11 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   )
 
   f1g2[4, 3] <- f1g2_height_lbl <- glabel(
-    text = paste(" NA", strLblPixels),
+    text = paste(" NA", strings$STR_LBL_PIXELS),
     container = f1g2, anchor = c(-1, 0)
   )
 
-  f1g2[5, 1] <- glabel(text = strLblRes, container = f1g2, anchor = c(-1, 0))
+  f1g2[5, 1] <- glabel(text = strings$STR_LBL_RES, container = f1g2, anchor = c(-1, 0))
 
   f1g2[5, 2] <- f1g2_res_edt <- gedit(
     text = "300",
@@ -338,7 +265,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     container = f1g2
   )
 
-  f1g2[6, 1] <- glabel(text = strLblScale, container = f1g2, anchor = c(-1, 0))
+  f1g2[6, 1] <- glabel(text = strings$STR_LBL_SCALE, container = f1g2, anchor = c(-1, 0))
 
   f1g2[6, 2] <- f1g2_scale_edt <- gedit(
     text = "1",
@@ -358,7 +285,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     pixels <- .toPixel(unit = val_u, val = val_w, dpi = val_d, scale = val_s)
 
     # Update label.
-    svalue(f1g2_width_lbl) <- paste(" ", pixels, strLblPixels)
+    svalue(f1g2_width_lbl) <- paste(" ", pixels, strings$STR_LBL_PIXELS)
   })
 
   addHandlerKeystroke(f1g2_height_edt, handler = function(h, ...) {
@@ -371,7 +298,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     # Convert to pixel.
     pixels <- .toPixel(unit = val_u, val = val_h, dpi = val_d, scale = val_s)
 
-    svalue(f1g2_height_lbl) <- paste(" ", pixels, strLblPixels)
+    svalue(f1g2_height_lbl) <- paste(" ", pixels, strings$STR_LBL_PIXELS)
   })
 
   addHandlerChanged(f1g2_width_edt, handler = function(h, ...) {
@@ -385,7 +312,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     pixels <- .toPixel(unit = val_u, val = val_w, dpi = val_d, scale = val_s)
 
     # Update label.
-    svalue(f1g2_width_lbl) <- paste(" ", pixels, strLblPixels)
+    svalue(f1g2_width_lbl) <- paste(" ", pixels, strings$STR_LBL_PIXELS)
   })
 
   addHandlerChanged(f1g2_height_edt, handler = function(h, ...) {
@@ -397,7 +324,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     # Convert to pixel.
     pixels <- .toPixel(unit = val_u, val = val_h, dpi = val_d, scale = val_s)
 
-    svalue(f1g2_height_lbl) <- paste(" ", pixels, strLblPixels)
+    svalue(f1g2_height_lbl) <- paste(" ", pixels, strings$STR_LBL_PIXELS)
   })
 
   addHandlerKeystroke(f1g2_res_edt, handler = function(h, ...) {
@@ -413,8 +340,8 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     pixels_h <- .toPixel(unit = val_u, val = val_h, dpi = val_d, scale = val_s)
 
     # Update label.
-    svalue(f1g2_width_lbl) <- paste(" ", pixels_w, strLblPixels)
-    svalue(f1g2_height_lbl) <- paste(" ", pixels_h, strLblPixels)
+    svalue(f1g2_width_lbl) <- paste(" ", pixels_w, strings$STR_LBL_PIXELS)
+    svalue(f1g2_height_lbl) <- paste(" ", pixels_h, strings$STR_LBL_PIXELS)
   })
 
   addHandlerChanged(f1g2_res_edt, handler = function(h, ...) {
@@ -430,8 +357,8 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     pixels_h <- .toPixel(unit = val_u, val = val_h, dpi = val_d, scale = val_s)
 
     # Update label.
-    svalue(f1g2_width_lbl) <- paste(" ", pixels_w, strLblPixels)
-    svalue(f1g2_height_lbl) <- paste(" ", pixels_h, strLblPixels)
+    svalue(f1g2_width_lbl) <- paste(" ", pixels_w, strings$STR_LBL_PIXELS)
+    svalue(f1g2_height_lbl) <- paste(" ", pixels_h, strings$STR_LBL_PIXELS)
   })
 
   addHandlerKeystroke(f1g2_scale_edt, handler = function(h, ...) {
@@ -447,8 +374,8 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     pixels_h <- .toPixel(unit = val_u, val = val_h, dpi = val_d, scale = val_s)
 
     # Update label.
-    svalue(f1g2_width_lbl) <- paste(" ", pixels_w, strLblPixels)
-    svalue(f1g2_height_lbl) <- paste(" ", pixels_h, strLblPixels)
+    svalue(f1g2_width_lbl) <- paste(" ", pixels_w, strings$STR_LBL_PIXELS)
+    svalue(f1g2_height_lbl) <- paste(" ", pixels_h, strings$STR_LBL_PIXELS)
   })
 
   addHandlerChanged(f1g2_scale_edt, handler = function(h, ...) {
@@ -464,8 +391,8 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
     pixels_h <- .toPixel(unit = val_u, val = val_h, dpi = val_d, scale = val_s)
 
     # Update label.
-    svalue(f1g2_width_lbl) <- paste(" ", pixels_w, strLblPixels)
-    svalue(f1g2_height_lbl) <- paste(" ", pixels_h, strLblPixels)
+    svalue(f1g2_width_lbl) <- paste(" ", pixels_w, strings$STR_LBL_PIXELS)
+    svalue(f1g2_height_lbl) <- paste(" ", pixels_h, strings$STR_LBL_PIXELS)
   })
 
   # GRID 3 --------------------------------------------------------------------
@@ -482,7 +409,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   #                                             expand=TRUE,
   #                                             initial.dir=getwd())
 
-  glabel(text = strLblPath, container = f1, anchor = c(-1, 0), expand = TRUE)
+  glabel(text = strings$STR_LBL_PATH, container = f1, anchor = c(-1, 0), expand = TRUE)
 
   f1g3_save_brw <- gfilebrowse(
     text = getwd(), quote = FALSE, type = "selectdir",
@@ -491,7 +418,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
   # BUTTON ####################################################################
 
-  g_save_btn <- gbutton(text = strBtnSave, container = gv)
+  g_save_btn <- gbutton(text = strings$STR_BTN_SAVE, container = gv)
 
   # HANDLERS ##################################################################
 
@@ -500,7 +427,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
   addHandlerChanged(g_save_btn, handler = function(h, ...) {
     # Change button label.
     blockHandlers(g_save_btn)
-    svalue(g_save_btn) <- strBtnProcessing
+    svalue(g_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(g_save_btn)
 
     # Get values.
@@ -548,8 +475,8 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
       message("val_path=NA or length(val_path)=0")
 
       gmessage(
-        msg = strMsgPath,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_PATH,
+        title = strings$STR_MSG_TITLE_ERROR,
         parent = w,
         icon = "error"
       )
@@ -559,8 +486,8 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
       message("val_name=NA or length(val_name)=0")
 
       gmessage(
-        msg = strMsgName,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NAME,
+        title = strings$STR_MSG_TITLE_ERROR,
         parent = w,
         icon = "error"
       )
@@ -600,7 +527,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
           # Create modal confirm dialog (YES/NO).
           okToSave <- gconfirm(
-            title = strMsgTitleSaveError, msg = strMsgFileExist, parent = w
+            title = strings$STR_MSG_TITLE_SAVE_ERROR, msg = strings$STR_MSG_FILE_EXIST, parent = w
           )
 
           message("Overwrite? ", okToSave)
@@ -635,7 +562,7 @@ ggsave_gui <- function(ggplot = NULL, name = "", env = parent.frame(),
 
     # Change button label.
     blockHandlers(g_save_btn)
-    svalue(g_save_btn) <- strBtnSave
+    svalue(g_save_btn) <- strings$STR_BTN_SAVE
     unblockHandlers(g_save_btn)
   })
 

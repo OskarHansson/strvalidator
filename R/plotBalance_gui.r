@@ -77,276 +77,80 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Plot balance"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset and kit"
-  strLblDataset <- "Balance dataset:"
-  strDrpDataset <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strChkOverride <- "Override automatic titles"
-  strLblTitlePlot <- "Plot title:"
-  strLblTitleX <- "X title:"
-  strLblTitleY <- "Y title:"
-  strLblTheme <- "Plot theme:"
-  strChkSex <- "Exclude sex markers"
-  strChkLog <- "Log (balance)"
-  strRadNone <- "Do not facet or wrap"
-  strRadWrap <- "Wrap by Dye"
-  strRadFacetWrap <- "Facet by Marker and wrap by Dye"
-  strExpPoints <- "Data points"
-  strLblShape <- "Shape:"
-  strLblAlpha <- "Alpha:"
-  strLblJitter <- "Jitter (width):"
-  strExpAxes <- "Axes"
-  strChkScaleLog <- "Use log10 scale at Y axis"
-  strLblLimitY <- "Limit Y axis (min-max)"
-  strLblLimitX <- "Limit X axis (min-max)"
-  strLblScales <- "Scales:"
-  strExpLabels <- "X labels"
-  strLblSize <- "Text size (pts):"
-  strLblAngle <- "Angle:"
-  strLblJustification <- "Justification (v/h):"
-  strFrmPlot <- "Plot balance data"
-  strBtnHbVsHeight <- "Hb vs. Height"
-  strTipHbVsHeight <- "Plot heterozygote balance by mean marker peak height"
-  strBtnHbVsDelta <- "Hb vs. Delta"
-  strTipHbVsDelta <- "Plot heterozygote balance by allele repeat difference"
-  strBtnHbVsH <- "Hb vs. 'H'"
-  strTipHbVsH <- "Plot heterozygote balance by average profile peak height"
-  strBtnHbVsMarker <- "Hb vs. Marker"
-  strTipHbVsMarker <- "Plot heterozygote balance by marker"
-  strBtnLbVsHeight <- "Lb vs. Height"
-  strTipLbVsHeight <- "Plot locus balance by mean marker peak height"
-  strBtnLbVsH <- "Lb vs. 'H'"
-  strTipLbVsH <- "Plot locus balance by average profile peak height"
-  strBtnLbVsMarker <- "Lb vs. Marker"
-  strTipLbVsMarker <- "Plot locus balance by marker"
-  strBtnProcessing <- "Processing..."
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnSaveObject <- "Save as object"
-  strBtnSaveImage <- "Save as image"
-  strBtnObjectSaved <- "Object saved"
-  strLblMainTitleHb <- "Heterozygous balance"
-  strLblMainTitleLb <- "Locus balance"
-  strLblXTitleMean <- "Mean peak height (RFU)"
-  strLblXTitleDelta <- "Repeat difference"
-  strLblXTitleAverage <- "Average peak height 'H' (RFU)"
-  strLblXTitleLocus <- "Locus"
-  strLblXTitleLocusHeight <- "Locus peak height (RFU)"
-  strLblYTitleLog <- "Log(Ratio)"
-  strLblYTitle <- "Ratio"
-  strMsgNotDf <- "Data set must be a data.frame!"
-  strMsgTitleError <- "Error"
-
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strChkOverride"]$value
-    strChkOverride <- ifelse(is.na(strtmp), strChkOverride, strtmp)
-
-    strtmp <- dtStrings["strLblTitlePlot"]$value
-    strLblTitlePlot <- ifelse(is.na(strtmp), strLblTitlePlot, strtmp)
-
-    strtmp <- dtStrings["strLblTitleX"]$value
-    strLblTitleX <- ifelse(is.na(strtmp), strLblTitleX, strtmp)
-
-    strtmp <- dtStrings["strLblTitleY"]$value
-    strLblTitleY <- ifelse(is.na(strtmp), strLblTitleY, strtmp)
-
-    strtmp <- dtStrings["strLblTheme"]$value
-    strLblTheme <- ifelse(is.na(strtmp), strLblTheme, strtmp)
-
-    strtmp <- dtStrings["strChkSex"]$value
-    strChkSex <- ifelse(is.na(strtmp), strChkSex, strtmp)
-
-    strtmp <- dtStrings["strChkLog"]$value
-    strChkLog <- ifelse(is.na(strtmp), strChkLog, strtmp)
-
-    strtmp <- dtStrings["strRadNone"]$value
-    strRadNone <- ifelse(is.na(strtmp), strRadNone, strtmp)
-
-    strtmp <- dtStrings["strRadWrap"]$value
-    strRadWrap <- ifelse(is.na(strtmp), strRadWrap, strtmp)
-
-    strtmp <- dtStrings["strRadFacetWrap"]$value
-    strRadFacetWrap <- ifelse(is.na(strtmp), strRadFacetWrap, strtmp)
-
-    strtmp <- dtStrings["strExpPoints"]$value
-    strExpPoints <- ifelse(is.na(strtmp), strExpPoints, strtmp)
-
-    strtmp <- dtStrings["strLblShape"]$value
-    strLblShape <- ifelse(is.na(strtmp), strLblShape, strtmp)
-
-    strtmp <- dtStrings["strLblAlpha"]$value
-    strLblAlpha <- ifelse(is.na(strtmp), strLblAlpha, strtmp)
-
-    strtmp <- dtStrings["strLblJitter"]$value
-    strLblJitter <- ifelse(is.na(strtmp), strLblJitter, strtmp)
-
-    strtmp <- dtStrings["strExpAxes"]$value
-    strExpAxes <- ifelse(is.na(strtmp), strExpAxes, strtmp)
-
-    strtmp <- dtStrings["strChkScaleLog"]$value
-    strChkScaleLog <- ifelse(is.na(strtmp), strChkScaleLog, strtmp)
-
-    strtmp <- dtStrings["strLblLimitY"]$value
-    strLblLimitY <- ifelse(is.na(strtmp), strLblLimitY, strtmp)
-
-    strtmp <- dtStrings["strLblLimitX"]$value
-    strLblLimitX <- ifelse(is.na(strtmp), strLblLimitX, strtmp)
-
-    strtmp <- dtStrings["strLblScales"]$value
-    strLblScales <- ifelse(is.na(strtmp), strLblScales, strtmp)
-
-    strtmp <- dtStrings["strExpLabels"]$value
-    strExpLabels <- ifelse(is.na(strtmp), strExpLabels, strtmp)
-
-    strtmp <- dtStrings["strLblSize"]$value
-    strLblSize <- ifelse(is.na(strtmp), strLblSize, strtmp)
-
-    strtmp <- dtStrings["strLblAngle"]$value
-    strLblAngle <- ifelse(is.na(strtmp), strLblAngle, strtmp)
-
-    strtmp <- dtStrings["strLblJustification"]$value
-    strLblJustification <- ifelse(is.na(strtmp), strLblJustification, strtmp)
-
-    strtmp <- dtStrings["strFrmPlot"]$value
-    strFrmPlot <- ifelse(is.na(strtmp), strFrmPlot, strtmp)
-
-    strtmp <- dtStrings["strBtnHbVsHeight"]$value
-    strBtnHbVsHeight <- ifelse(is.na(strtmp), strBtnHbVsHeight, strtmp)
-
-    strtmp <- dtStrings["strTipHbVsHeight"]$value
-    strTipHbVsHeight <- ifelse(is.na(strtmp), strTipHbVsHeight, strtmp)
-
-    strtmp <- dtStrings["strBtnHbVsDelta"]$value
-    strBtnHbVsDelta <- ifelse(is.na(strtmp), strBtnHbVsDelta, strtmp)
-
-    strtmp <- dtStrings["strTipHbVsDelta"]$value
-    strTipHbVsDelta <- ifelse(is.na(strtmp), strTipHbVsDelta, strtmp)
-
-    strtmp <- dtStrings["strBtnHbVsH"]$value
-    strBtnHbVsH <- ifelse(is.na(strtmp), strBtnHbVsH, strtmp)
-
-    strtmp <- dtStrings["strTipHbVsH"]$value
-    strTipHbVsH <- ifelse(is.na(strtmp), strTipHbVsH, strtmp)
-
-    strtmp <- dtStrings["strBtnHbVsMarker"]$value
-    strBtnHbVsMarker <- ifelse(is.na(strtmp), strBtnHbVsMarker, strtmp)
-
-    strtmp <- dtStrings["strTipHbVsMarker"]$value
-    strTipHbVsMarker <- ifelse(is.na(strtmp), strTipHbVsMarker, strtmp)
-
-    strtmp <- dtStrings["strBtnLbVsHeight"]$value
-    strBtnLbVsHeight <- ifelse(is.na(strtmp), strBtnLbVsHeight, strtmp)
-
-    strtmp <- dtStrings["strTipLbVsHeight"]$value
-    strTipLbVsHeight <- ifelse(is.na(strtmp), strTipLbVsHeight, strtmp)
-
-    strtmp <- dtStrings["strBtnLbVsH"]$value
-    strBtnLbVsH <- ifelse(is.na(strtmp), strBtnLbVsH, strtmp)
-
-    strtmp <- dtStrings["strTipLbVsH"]$value
-    strTipLbVsH <- ifelse(is.na(strtmp), strTipLbVsH, strtmp)
-
-    strtmp <- dtStrings["strBtnLbVsMarker"]$value
-    strBtnLbVsMarker <- ifelse(is.na(strtmp), strBtnLbVsMarker, strtmp)
-
-    strtmp <- dtStrings["strTipLbVsMarker"]$value
-    strTipLbVsMarker <- ifelse(is.na(strtmp), strTipLbVsMarker, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveObject"]$value
-    strBtnSaveObject <- ifelse(is.na(strtmp), strBtnSaveObject, strtmp)
-
-    strtmp <- dtStrings["strBtnSaveImage"]$value
-    strBtnSaveImage <- ifelse(is.na(strtmp), strBtnSaveImage, strtmp)
-
-    strtmp <- dtStrings["strBtnObjectSaved"]$value
-    strBtnObjectSaved <- ifelse(is.na(strtmp), strBtnObjectSaved, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitleHb"]$value
-    strLblMainTitleHb <- ifelse(is.na(strtmp), strLblMainTitleHb, strtmp)
-
-    strtmp <- dtStrings["strLblMainTitleLb"]$value
-    strLblMainTitleLb <- ifelse(is.na(strtmp), strLblMainTitleLb, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleMean"]$value
-    strLblXTitleMean <- ifelse(is.na(strtmp), strLblXTitleMean, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleDelta"]$value
-    strLblXTitleDelta <- ifelse(is.na(strtmp), strLblXTitleDelta, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleAverage"]$value
-    strLblXTitleAverage <- ifelse(is.na(strtmp), strLblXTitleAverage, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleLocus"]$value
-    strLblXTitleLocus <- ifelse(is.na(strtmp), strLblXTitleLocus, strtmp)
-
-    strtmp <- dtStrings["strLblXTitleLocusHeight"]$value
-    strLblXTitleLocusHeight <- ifelse(is.na(strtmp), strLblXTitleLocusHeight, strtmp)
-
-    strtmp <- dtStrings["strLblYTitleLog"]$value
-    strLblYTitleLog <- ifelse(is.na(strtmp), strLblYTitleLog, strtmp)
-
-    strtmp <- dtStrings["strLblYTitle"]$value
-    strLblYTitle <- ifelse(is.na(strtmp), strLblYTitle, strtmp)
-
-    strtmp <- dtStrings["strMsgNotDf"]$value
-    strMsgNotDf <- ifelse(is.na(strtmp), strMsgNotDf, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-  }
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Plot balance",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset and kit",
+    STR_LBL_DATASET         = "Balance dataset:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_CHK_OVERRIDE        = "Override automatic titles",
+    STR_LBL_TITLE_PLOT      = "Plot title:",
+    STR_LBL_TITLE_X         = "X title:",
+    STR_LBL_TITLE_Y         = "Y title:",
+    STR_LBL_THEME           = "Plot theme:",
+    STR_CHK_SEX             = "Exclude sex markers",
+    STR_CHK_LOG             = "Log (balance)",
+    STR_RAD_NONE            = "Do not facet or wrap",
+    STR_RAD_WRAP            = "Wrap by Dye",
+    STR_RAD_FACET_WRAP      = "Facet by Marker and wrap by Dye",
+    STR_EXP_POINTS          = "Data points",
+    STR_LBL_SHAPE           = "Shape:",
+    STR_LBL_ALPHA           = "Alpha:",
+    STR_LBL_JITTER          = "Jitter (width):",
+    STR_EXP_AXES            = "Axes",
+    STR_CHK_SCALE_LOG       = "Use log10 scale at Y axis",
+    STR_LBL_LIMIT_Y         = "Limit Y axis (min-max)",
+    STR_LBL_LIMIT_X         = "Limit X axis (min-max)",
+    STR_LBL_SCALES          = "Scales:",
+    STR_EXP_LABELS          = "X labels",
+    STR_LBL_SIZE            = "Text size (pts):",
+    STR_LBL_ANGLE           = "Angle:",
+    STR_LBL_JUSTIFICATION   = "Justification (v/h):",
+    STR_FRM_PLOT            = "Plot balance data",
+    STR_BTN_HB_VS_HEIGHT    = "Hb vs. Height",
+    STR_TIP_HB_VS_HEIGHT    = "Plot heterozygote balance by mean marker peak height",
+    STR_BTN_HB_VS_DELTA     = "Hb vs. Delta",
+    STR_TIP_HB_VS_DELTA     = "Plot heterozygote balance by allele repeat difference",
+    STR_BTN_HB_VS_H         = "Hb vs. 'H'",
+    STR_TIP_HB_VS_H         = "Plot heterozygote balance by average profile peak height",
+    STR_BTN_HB_VS_MARKER    = "Hb vs. Marker",
+    STR_TIP_HB_VS_MARKER    = "Plot heterozygote balance by marker",
+    STR_BTN_LB_VS_HEIGHT    = "Lb vs. Height",
+    STR_TIP_LB_VS_HEIGHT    = "Plot locus balance by mean marker peak height",
+    STR_BTN_LB_VS_H         = "Lb vs. 'H'",
+    STR_TIP_LB_VS_H         = "Plot locus balance by average profile peak height",
+    STR_BTN_LB_VS_MARKER    = "Lb vs. Marker",
+    STR_TIP_LB_VS_MARKER    = "Plot locus balance by marker",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_SAVE_OBJECT     = "Save as object",
+    STR_BTN_SAVE_IMAGE      = "Save as image",
+    STR_BTN_OBJECT_SAVED    = "Object saved",
+    STR_LBL_MAIN_TITLE_HB   = "Heterozygous balance",
+    STR_LBL_MAIN_TITLE_LB   = "Locus balance",
+    STR_LBL_X_TITLE_MEAN    = "Mean peak height (RFU)",
+    STR_LBL_X_TITLE_DELTA   = "Repeat difference",
+    STR_LBL_X_TITLE_AVERAGE = "Average peak height 'H' (RFU)",
+    STR_LBL_X_TITLE_LOCUS   = "Locus",
+    STR_LBL_X_TITLE_LOCUS_HEIGHT= "Locus peak height (RFU)",
+    STR_LBL_Y_TITLE_LOG     = "Log(Ratio)",
+    STR_LBL_Y_TITLE         = "Ratio",
+    STR_MSG_NOT_DF          = "Data set must be a data.frame!",
+    STR_MSG_TITLE_ERROR     = "Error"
+  )
+
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -374,11 +178,11 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -388,7 +192,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 2,
     container = gv
@@ -398,16 +202,16 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = g0)
+  glabel(text = strings$STR_LBL_DATASET, container = g0)
 
   samples_lbl <- glabel(
-    text = paste(" 0 ", strLblSamples, sep = ""),
+    text = paste(" 0 ", strings$STR_LBL_SAMPLES, sep = ""),
     container = g0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -425,7 +229,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = g1)
+  glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
     items = getKit(),
@@ -459,7 +263,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
       svalue(samples_lbl) <- paste(" ",
         length(unique(.gData$Sample.Name)),
-        " ", strLblSamples,
+        " ", strings$STR_LBL_SAMPLES,
         sep = ""
       )
 
@@ -479,21 +283,21 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gData <<- NULL
       svalue(f5_save_edt) <- ""
       svalue(dataset_drp, index = TRUE) <- 1
-      svalue(samples_lbl) <- paste(" 0 ", strLblSamples, sep = "")
+      svalue(samples_lbl) <- paste(" 0 ", strings$STR_LBL_SAMPLES, sep = "")
     }
   })
 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 2,
     container = gv
   )
 
   titles_chk <- gcheckbox(
-    text = strChkOverride,
+    text = strings$STR_CHK_OVERRIDE,
     checked = FALSE, container = f1
   )
 
@@ -507,18 +311,18 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   )
 
   # Legends
-  glabel(text = strLblTitlePlot, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_PLOT, container = titles_group, anchor = c(-1, 0))
   title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleX, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_X, container = titles_group, anchor = c(-1, 0))
   x_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
-  glabel(text = strLblTitleY, container = titles_group, anchor = c(-1, 0))
+  glabel(text = strings$STR_LBL_TITLE_Y, container = titles_group, anchor = c(-1, 0))
   y_title_edt <- gedit(expand = TRUE, fill = TRUE, container = titles_group)
 
 
   f1g2 <- glayout(container = f1)
-  f1g2[1, 1] <- glabel(text = strLblTheme, anchor = c(-1, 0), container = f1g2)
+  f1g2[1, 1] <- glabel(text = strings$STR_LBL_THEME, anchor = c(-1, 0), container = f1g2)
   items_theme <- c(
     "theme_grey()", "theme_bw()", "theme_linedraw()",
     "theme_light()", "theme_dark()", "theme_minimal()",
@@ -531,47 +335,47 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     ellipsize = "none"
   )
 
-  f1_drop_chk <- gcheckbox(text = strChkSex, checked = FALSE, container = f1)
+  f1_drop_chk <- gcheckbox(text = strings$STR_CHK_SEX, checked = FALSE, container = f1)
 
   f1_logHb_chk <- gcheckbox(
-    text = strChkLog, checked = FALSE,
+    text = strings$STR_CHK_LOG, checked = FALSE,
     container = f1
   )
 
   f1_wrap_opt <- gradio(
-    items = c(strRadNone, strRadWrap, strRadFacetWrap),
+    items = c(strings$STR_RAD_NONE, strings$STR_RAD_WRAP, strings$STR_RAD_FACET_WRAP),
     horizontal = FALSE, container = f1
   )
 
   # FRAME 7 ###################################################################
 
   f7 <- gframe(
-    text = strFrmPlot,
+    text = strings$STR_FRM_PLOT,
     horizontal = TRUE,
     container = gv,
     spacing = 2
   )
 
-  plot_hb_btn <- gbutton(text = strBtnHbVsHeight, container = f7)
-  tooltip(plot_hb_btn) <- strTipHbVsHeight
+  plot_hb_btn <- gbutton(text = strings$STR_BTN_HB_VS_HEIGHT, container = f7)
+  tooltip(plot_hb_btn) <- strings$STR_TIP_HB_VS_HEIGHT
 
-  plot_hb_d_btn <- gbutton(text = strBtnHbVsDelta, container = f7)
-  tooltip(plot_hb_d_btn) <- strTipHbVsDelta
+  plot_hb_d_btn <- gbutton(text = strings$STR_BTN_HB_VS_DELTA, container = f7)
+  tooltip(plot_hb_d_btn) <- strings$STR_TIP_HB_VS_DELTA
 
-  plot_hb_h_btn <- gbutton(text = strBtnHbVsH, container = f7)
-  tooltip(plot_hb_h_btn) <- strTipHbVsH
+  plot_hb_h_btn <- gbutton(text = strings$STR_BTN_HB_VS_H, container = f7)
+  tooltip(plot_hb_h_btn) <- strings$STR_TIP_HB_VS_H
 
-  plot_hb_m_btn <- gbutton(text = strBtnHbVsMarker, container = f7)
-  tooltip(plot_hb_m_btn) <- strTipHbVsMarker
+  plot_hb_m_btn <- gbutton(text = strings$STR_BTN_HB_VS_MARKER, container = f7)
+  tooltip(plot_hb_m_btn) <- strings$STR_TIP_HB_VS_MARKER
 
-  plot_lb_btn <- gbutton(text = strBtnLbVsHeight, container = f7)
-  tooltip(plot_lb_btn) <- strTipLbVsHeight
+  plot_lb_btn <- gbutton(text = strings$STR_BTN_LB_VS_HEIGHT, container = f7)
+  tooltip(plot_lb_btn) <- strings$STR_TIP_LB_VS_HEIGHT
 
-  plot_lb_h_btn <- gbutton(text = strBtnLbVsH, container = f7)
-  tooltip(plot_lb_h_btn) <- strTipLbVsH
+  plot_lb_h_btn <- gbutton(text = strings$STR_BTN_LB_VS_H, container = f7)
+  tooltip(plot_lb_h_btn) <- strings$STR_TIP_LB_VS_H
 
-  plot_lb_m_btn <- gbutton(text = strBtnLbVsMarker, container = f7)
-  tooltip(plot_lb_m_btn) <- strTipLbVsMarker
+  plot_lb_m_btn <- gbutton(text = strings$STR_BTN_LB_VS_MARKER, container = f7)
+  tooltip(plot_lb_m_btn) <- strings$STR_TIP_LB_VS_MARKER
 
   addHandlerChanged(plot_hb_btn, handler = function(h, ...) {
     val_obj <- svalue(dataset_drp)
@@ -695,26 +499,26 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 5 ###################################################################
 
   f5 <- gframe(
-    text = strFrmSave,
+    text = strings$STR_FRM_SAVE,
     horizontal = TRUE,
     spacing = 2,
     container = gv
   )
 
-  glabel(text = strLblSave, container = f5)
+  glabel(text = strings$STR_LBL_SAVE, container = f5)
 
   f5_save_edt <- gedit(container = f5, expand = TRUE, fill = TRUE)
 
-  f5_save_btn <- gbutton(text = strBtnSaveObject, container = f5)
+  f5_save_btn <- gbutton(text = strings$STR_BTN_SAVE_OBJECT, container = f5)
 
-  f5_ggsave_btn <- gbutton(text = strBtnSaveImage, container = f5)
+  f5_ggsave_btn <- gbutton(text = strings$STR_BTN_SAVE_IMAGE, container = f5)
 
   addHandlerClicked(f5_save_btn, handler = function(h, ...) {
     val_name <- svalue(f5_save_edt)
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnProcessing
+    svalue(f5_save_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(f5_save_btn)
     enabled(f5_save_btn) <- FALSE
 
@@ -726,7 +530,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
     # Change button.
     blockHandlers(f5_save_btn)
-    svalue(f5_save_btn) <- strBtnObjectSaved
+    svalue(f5_save_btn) <- strings$STR_BTN_OBJECT_SAVED
     unblockHandlers(f5_save_btn)
   })
 
@@ -743,7 +547,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # ADVANCED OPTIONS ##########################################################
 
   e2 <- gexpandgroup(
-    text = strExpPoints,
+    text = strings$STR_EXP_POINTS,
     horizontal = FALSE,
     container = f1
   )
@@ -753,27 +557,27 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid2 <- glayout(container = e2)
 
-  grid2[1, 1] <- glabel(text = strLblShape, container = grid2)
+  grid2[1, 1] <- glabel(text = strings$STR_LBL_SHAPE, container = grid2)
   grid2[1, 2] <- e2_shape_spb <- gspinbutton(
     from = 0, to = 25,
     by = 1, value = 18,
     container = grid2
   )
 
-  grid2[1, 3] <- glabel(text = strLblAlpha, container = grid2)
+  grid2[1, 3] <- glabel(text = strings$STR_LBL_ALPHA, container = grid2)
   grid2[1, 4] <- e2_alpha_spb <- gspinbutton(
     from = 0, to = 1,
     by = 0.01, value = 0.60,
     container = grid2
   )
 
-  grid2[1, 5] <- glabel(text = strLblJitter, container = grid2)
+  grid2[1, 5] <- glabel(text = strings$STR_LBL_JITTER, container = grid2)
   grid2[1, 6] <- e2_jitter_edt <- gedit(text = "0", width = 4, container = grid2)
 
   # FRAME 3 ###################################################################
 
   e3 <- gexpandgroup(
-    text = strExpAxes,
+    text = strings$STR_EXP_AXES,
     horizontal = FALSE,
     container = f1
   )
@@ -783,17 +587,17 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid3 <- glayout(container = e3, spacing = 1)
 
-  grid3[1, 1:2] <- glabel(text = strLblLimitY, container = grid3)
+  grid3[1, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_Y, container = grid3)
   grid3[2, 1] <- e3_y_min_edt <- gedit(text = "", width = 5, container = grid3)
   grid3[2, 2] <- e3_y_max_edt <- gedit(text = "", width = 5, container = grid3)
 
-  grid3[3, 1:2] <- glabel(text = strLblLimitX, container = grid3)
+  grid3[3, 1:2] <- glabel(text = strings$STR_LBL_LIMIT_X, container = grid3)
   grid3[4, 1] <- e3_x_min_edt <- gedit(text = "", width = 5, container = grid3)
   grid3[4, 2] <- e3_x_max_edt <- gedit(text = "", width = 5, container = grid3)
 
   grid3[1, 3] <- glabel(text = "    ", container = grid3) # Add some space.
 
-  grid3[1, 4] <- glabel(text = strLblScales, container = grid3)
+  grid3[1, 4] <- glabel(text = strings$STR_LBL_SCALES, container = grid3)
   grid3[2:4, 4] <- e3_scales_opt <- gradio(
     items = c("fixed", "free_x", "free_y", "free"),
     selected = 1,
@@ -804,7 +608,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   # FRAME 4 ###################################################################
 
   e4 <- gexpandgroup(
-    text = strExpLabels,
+    text = strings$STR_EXP_LABELS,
     horizontal = FALSE,
     container = f1
   )
@@ -814,17 +618,17 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
   grid4 <- glayout(container = e4)
 
-  grid4[1, 1] <- glabel(text = strLblSize, container = grid4)
+  grid4[1, 1] <- glabel(text = strings$STR_LBL_SIZE, container = grid4)
   grid4[1, 2] <- e4_size_edt <- gedit(text = "10", width = 4, container = grid4)
 
-  grid4[1, 3] <- glabel(text = strLblAngle, container = grid4)
+  grid4[1, 3] <- glabel(text = strings$STR_LBL_ANGLE, container = grid4)
   grid4[1, 4] <- e4_angle_spb <- gspinbutton(
     from = 0, to = 360, by = 1,
     value = 270,
     container = grid4
   )
 
-  grid4[2, 1] <- glabel(text = strLblJustification, container = grid4)
+  grid4[2, 1] <- glabel(text = strings$STR_LBL_JUSTIFICATION, container = grid4)
   grid4[2, 2] <- e4_vjust_spb <- gspinbutton(
     from = 0, to = 1, by = 0.1,
     value = 0.5,
@@ -1018,60 +822,60 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         }
 
         if (what == "Hb") {
-          mainTitle <- strLblMainTitleHb
-          xTitle <- strLblXTitleMean
+          mainTitle <- strings$STR_LBL_MAIN_TITLE_HB
+          xTitle <- strings$STR_LBL_X_TITLE_MEAN
           if (val_log) {
-            yTitle <- strLblYTitleLog
+            yTitle <- strings$STR_LBL_Y_TITLE_LOG
           } else {
-            yTitle <- strLblYTitle
+            yTitle <- strings$STR_LBL_Y_TITLE
           }
         } else if (what == "Hb_D") {
-          mainTitle <- strLblMainTitleHb
-          xTitle <- strLblXTitleDelta
+          mainTitle <- strings$STR_LBL_MAIN_TITLE_HB
+          xTitle <- strings$STR_LBL_X_TITLE_DELTA
           if (val_log) {
-            yTitle <- strLblYTitleLog
+            yTitle <- strings$STR_LBL_Y_TITLE_LOG
           } else {
-            yTitle <- strLblYTitle
+            yTitle <- strings$STR_LBL_Y_TITLE
           }
         } else if (what == "Hb_H") {
-          mainTitle <- strLblMainTitleHb
-          xTitle <- strLblXTitleAverage
+          mainTitle <- strings$STR_LBL_MAIN_TITLE_HB
+          xTitle <- strings$STR_LBL_X_TITLE_AVERAGE
           if (val_log) {
-            yTitle <- strLblYTitleLog
+            yTitle <- strings$STR_LBL_Y_TITLE_LOG
           } else {
-            yTitle <- strLblYTitle
+            yTitle <- strings$STR_LBL_Y_TITLE
           }
         } else if (what == "Hb_M") {
-          mainTitle <- strLblMainTitleHb
-          xTitle <- strLblXTitleLocus
+          mainTitle <- strings$STR_LBL_MAIN_TITLE_HB
+          xTitle <- strings$STR_LBL_X_TITLE_LOCUS
           if (val_log) {
-            yTitle <- strLblYTitleLog
+            yTitle <- strings$STR_LBL_Y_TITLE_LOG
           } else {
-            yTitle <- strLblYTitle
+            yTitle <- strings$STR_LBL_Y_TITLE
           }
         } else if (what == "Lb") {
-          mainTitle <- strLblMainTitleLb
-          xTitle <- strLblXTitleLocusHeight
+          mainTitle <- strings$STR_LBL_MAIN_TITLE_LB
+          xTitle <- strings$STR_LBL_X_TITLE_LOCUS_HEIGHT
           if (val_log) {
-            yTitle <- strLblYTitleLog
+            yTitle <- strings$STR_LBL_Y_TITLE_LOG
           } else {
-            yTitle <- strLblYTitle
+            yTitle <- strings$STR_LBL_Y_TITLE
           }
         } else if (what == "Lb_H") {
-          mainTitle <- strLblMainTitleLb
-          xTitle <- strLblXTitleAverage
+          mainTitle <- strings$STR_LBL_MAIN_TITLE_LB
+          xTitle <- strings$STR_LBL_X_TITLE_AVERAGE
           if (val_log) {
-            yTitle <- strLblYTitleLog
+            yTitle <- strings$STR_LBL_Y_TITLE_LOG
           } else {
-            yTitle <- strLblYTitle
+            yTitle <- strings$STR_LBL_Y_TITLE
           }
         } else if (what == "Lb_M") {
-          mainTitle <- strLblMainTitleLb
-          xTitle <- strLblXTitleLocus
+          mainTitle <- strings$STR_LBL_MAIN_TITLE_LB
+          xTitle <- strings$STR_LBL_X_TITLE_LOCUS
           if (val_log) {
-            yTitle <- strLblYTitleLog
+            yTitle <- strings$STR_LBL_Y_TITLE_LOG
           } else {
-            yTitle <- strLblYTitle
+            yTitle <- strings$STR_LBL_Y_TITLE
           }
         } else {
           stop(paste("what =", what, "not implemented for create title!"))
@@ -1242,7 +1046,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         print(gp)
 
         # Change save button.
-        svalue(f5_save_btn) <- strBtnSaveObject
+        svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
         enabled(f5_save_btn) <- TRUE
       } else if (complex) {
         # Complex plot, unequal number of markers per dye.
@@ -1462,7 +1266,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         gp <- gridExtra::arrangeGrob(g)
 
         # Change save button.
-        svalue(f5_save_btn) <- strBtnSaveObject
+        svalue(f5_save_btn) <- strings$STR_BTN_SAVE_OBJECT
         enabled(f5_save_btn) <- FALSE
       } # End if(complex)
 
@@ -1470,8 +1274,8 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       .gPlot <<- gp
     } else {
       gmessage(
-        msg = strMsgNotDf,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_NOT_DF,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     }

@@ -59,80 +59,31 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Combine datasets"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset"
-  strLblSet1 <- "Dataset 1:"
-  strDrpDataset <- "<Select dataset>"
-  strLblColumns <- "columns"
-  strLblSet2 <- "Dataset 2:"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Combine"
-  strMsgColumns <- "Datasets must have identical column names!"
-  strMsgTitleError <- "Error"
-  strMsgDataset <- "Two datasets must be selected."
-  strMsgTitleDataset <- "Dataset not selected"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Combine datasets",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset",
+    STR_LBL_SET1            = "Dataset 1:",
+    STR_DRP_DATASET         = "<Select dataset>",
+    STR_LBL_COLUMNS         = "columns",
+    STR_LBL_SET2            = "Dataset 2:",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Combine",
+    STR_MSG_COLUMNS         = "Datasets must have identical column names!",
+    STR_MSG_TITLE_ERROR     = "Error",
+    STR_MSG_DATASET         = "Two datasets must be selected.",
+    STR_MSG_TITLE_DATASET   = "Dataset not selected"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblSet1"]$value
-    strLblSet1 <- ifelse(is.na(strtmp), strLblSet1, strtmp)
-
-    strtmp <- dtStrings["strDrpDataset"]$value
-    strDrpDataset <- ifelse(is.na(strtmp), strDrpDataset, strtmp)
-
-    strtmp <- dtStrings["strLblColumns"]$value
-    strLblColumns <- ifelse(is.na(strtmp), strLblColumns, strtmp)
-
-    strtmp <- dtStrings["strLblSet2"]$value
-    strLblSet2 <- ifelse(is.na(strtmp), strLblSet2, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strMsgColumns"]$value
-    strMsgColumns <- ifelse(is.na(strtmp), strMsgColumns, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleError"]$value
-    strMsgTitleError <- ifelse(is.na(strtmp), strMsgTitleError, strtmp)
-
-    strtmp <- dtStrings["strMsgDataset"]$value
-    strMsgDataset <- ifelse(is.na(strtmp), strMsgDataset, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleDataset"]$value
-    strMsgTitleDataset <- ifelse(is.na(strtmp), strMsgTitleDataset, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -160,11 +111,11 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -174,7 +125,7 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
   # DATASET ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset,
+    text = strings$STR_FRM_DATASET,
     horizontal = FALSE,
     spacing = 1,
     container = gv
@@ -185,16 +136,16 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
   f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblSet1, container = f0g0)
+  glabel(text = strings$STR_LBL_SET1, container = f0g0)
 
   data1_col_lbl <- glabel(
-    text = paste(" 0", strLblColumns),
+    text = paste(" 0", strings$STR_LBL_COLUMNS),
     container = f0g0
   )
 
   data1_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -222,12 +173,12 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       .gData1 <<- get(val_obj, envir = env)
       .gData1Name <<- val_obj
 
-      svalue(data1_col_lbl) <- paste(" ", ncol(.gData1), strLblColumns)
+      svalue(data1_col_lbl) <- paste(" ", ncol(.gData1), strings$STR_LBL_COLUMNS)
       svalue(save_edt) <- paste(.gData1Name, .gData2Name, sep = "_")
     } else {
       .gData1 <<- NULL
       .gData1Name <<- NULL
-      svalue(data1_col_lbl) <- paste(" 0", strLblColumns)
+      svalue(data1_col_lbl) <- paste(" 0", strings$STR_LBL_COLUMNS)
       svalue(save_edt) <- ""
     }
   })
@@ -236,16 +187,16 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
   f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblSet2, container = f0g1)
+  glabel(text = strings$STR_LBL_SET2, container = f0g1)
 
   data2_col_lbl <- glabel(
-    text = paste(" 0", strLblColumns),
+    text = paste(" 0", strings$STR_LBL_COLUMNS),
     container = f0g1
   )
 
   data2_drp <- gcombobox(
     items = c(
-      strDrpDataset,
+      strings$STR_DRP_DATASET,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -266,12 +217,12 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       .gData2 <<- get(val_obj, envir = env)
       .gData2Name <<- val_obj
 
-      svalue(data2_col_lbl) <- paste(" ", ncol(.gData2), strLblColumns)
+      svalue(data2_col_lbl) <- paste(" ", ncol(.gData2), strings$STR_LBL_COLUMNS)
       svalue(save_edt) <- paste(.gData1Name, .gData2Name, sep = "_")
     } else {
       .gData2 <<- NULL
       .gData1Name <<- NULL
-      svalue(data2_col_lbl) <- paste(" 0", strLblColumns)
+      svalue(data2_col_lbl) <- paste(" 0", strings$STR_LBL_COLUMNS)
       svalue(save_edt) <- ""
     }
   })
@@ -284,15 +235,15 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
-  combine_btn <- gbutton(text = strBtnCalculate, container = gv)
+  combine_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerChanged(combine_btn, handler = function(h, ...) {
     datOk <- all(!is.null(.gData1), !is.null(.gData2))
@@ -330,14 +281,14 @@ combine_gui <- function(env = parent.frame(), debug = FALSE, parent = NULL) {
       dispose(w)
     } else if (!colOk) {
       gmessage(
-        msg = strMsgColumns,
-        title = strMsgTitleError,
+        msg = strings$STR_MSG_COLUMNS,
+        title = strings$STR_MSG_TITLE_ERROR,
         icon = "error"
       )
     } else if (!datOk) {
       gmessage(
-        msg = strMsgDataset,
-        title = strMsgTitleDataset,
+        msg = strings$STR_MSG_DATASET,
+        title = strings$STR_MSG_TITLE_DATASET,
         icon = "error"
       )
     }

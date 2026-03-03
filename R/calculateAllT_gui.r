@@ -44,83 +44,31 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Calculate stochastic thresholds"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmDataset <- "Dataset and kit"
-  strLblDataset <- "Sample dataset:"
-  strDrpDefault <- "<Select dataset>"
-  strLblSamples <- "samples"
-  strLblKit <- "Kit:"
-  strFrmOptions <- "Options"
-  strLblT <- "Calculate point estimates at P(dropout)="
-  strLblTcons <- "Calculate conservative point estimates at P(dropout>"
-  strChkSexMarkers <- "Remove sex markers"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Calculate stochastic thresholds",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_DATASET         = "Dataset and kit",
+    STR_LBL_DATASET         = "Sample dataset:",
+    STR_DRP_DEFAULT         = "<Select dataset>",
+    STR_LBL_SAMPLES         = "samples",
+    STR_LBL_KIT             = "Kit:",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_T               = "Calculate point estimates at P(dropout)=",
+    STR_LBL_TCONS           = "Calculate conservative point estimates at P(dropout>",
+    STR_CHK_SEX_MARKERS     = "Remove sex markers",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_BTN_PROCESSING      = "Processing..."
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmDataset"]$value
-    strFrmDataset <- ifelse(is.na(strtmp), strFrmDataset, strtmp)
-
-    strtmp <- dtStrings["strLblDataset"]$value
-    strLblDataset <- ifelse(is.na(strtmp), strLblDataset, strtmp)
-
-    strtmp <- dtStrings["strDrpDefault"]$value
-    strDrpDefault <- ifelse(is.na(strtmp), strDrpDefault, strtmp)
-
-    strtmp <- dtStrings["strLblSamples"]$value
-    strLblSamples <- ifelse(is.na(strtmp), strLblSamples, strtmp)
-
-    strtmp <- dtStrings["strLblKit"]$value
-    strLblKit <- ifelse(is.na(strtmp), strLblKit, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblT"]$value
-    strLblT <- ifelse(is.na(strtmp), strLblT, strtmp)
-
-    strtmp <- dtStrings["strLblTcons"]$value
-    strLblTcons <- ifelse(is.na(strtmp), strLblTcons, strtmp)
-
-    strtmp <- dtStrings["strChkSexMarkers"]$value
-    strChkSexMarkers <- ifelse(is.na(strtmp), strChkSexMarkers, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # ---------------------------------------------------------------------------
 
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -145,13 +93,13 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
   savegui_chk <- gcheckbox(
-    text = strChkGui,
+    text = strings$STR_CHK_GUI,
     checked = FALSE, container = gh
   )
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -161,7 +109,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmDataset, horizontal = FALSE,
+    text = strings$STR_FRM_DATASET, horizontal = FALSE,
     spacing = 1, expand = FALSE, fill = "x", container = gv
   )
 
@@ -169,16 +117,16 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   f0g0 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblDataset, container = f0g0)
+  glabel(text = strings$STR_LBL_DATASET, container = f0g0)
 
   dataset_samples_lbl <- glabel(
-    text = paste(" 0", strLblSamples),
+    text = paste(" 0", strings$STR_LBL_SAMPLES),
     container = f0g0
   )
 
   dataset_drp <- gcombobox(
     items = c(
-      strDrpDefault,
+      strings$STR_DRP_DEFAULT,
       listObjects(
         env = env,
         obj.class = "data.frame"
@@ -211,7 +159,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gData <<- get(val_obj, envir = env)
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
-      svalue(dataset_samples_lbl) <- paste(" ", samples, strLblSamples)
+      svalue(dataset_samples_lbl) <- paste(" ", samples, strings$STR_LBL_SAMPLES)
       .gKit <<- detectKit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
       svalue(f2_save_edt) <- paste(.gDataName, "_t", sep = "")
@@ -219,7 +167,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       # Reset components.
       .gData <<- data.frame(No.Data = NA)
       .gDataName <<- NULL
-      svalue(dataset_samples_lbl) <- paste(" 0", strLblSamples)
+      svalue(dataset_samples_lbl) <- paste(" 0", strings$STR_LBL_SAMPLES)
       svalue(f2_save_edt) <- ""
     }
   })
@@ -228,7 +176,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
 
-  glabel(text = strLblKit, container = f0g1)
+  glabel(text = strings$STR_LBL_KIT, container = f0g1)
 
   kit_drp <- gcombobox(
     items = getKit(), selected = 1, editable = FALSE,
@@ -238,13 +186,13 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions, horizontal = FALSE,
+    text = strings$STR_FRM_OPTIONS, horizontal = FALSE,
     spacing = 1, container = gv, expand = FALSE, fill = "x"
   )
   f1g1 <- ggroup(container = f1, horizontal = TRUE)
   f1g2 <- ggroup(container = f1, horizontal = TRUE)
 
-  glabel(text = strLblT, container = f1g1)
+  glabel(text = strings$STR_LBL_T, container = f1g1)
   f1_p_dropout <- gspinbutton(
     from = 0, to = 1, by = 0.01,
     value = 0.01, container = f1g1
@@ -252,7 +200,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   label_init <- svalue(f1_p_dropout)
   label_conservative <- glabel(
-    text = paste(strLblTcons, label_init,
+    text = paste(strings$STR_LBL_TCONS, label_init,
       ")<",
       sep = ""
     ),
@@ -264,13 +212,13 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   )
 
   f1_sex_chk <- gcheckbox(
-    text = strChkSexMarkers, checked = TRUE,
+    text = strings$STR_CHK_SEX_MARKERS, checked = TRUE,
     container = f1
   )
 
   addHandlerChanged(f1_p_dropout, handler = function(h, ...) {
     label_p <- svalue(f1_p_dropout)
-    svalue(label_conservative) <- paste(strLblTcons, label_p,
+    svalue(label_conservative) <- paste(strings$STR_LBL_TCONS, label_p,
       ")<",
       sep = ""
     )
@@ -278,15 +226,15 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
   # FRAME 2 ###################################################################
 
-  f2 <- gframe(text = strFrmSave, horizontal = TRUE, spacing = 1, container = gv)
+  f2 <- gframe(text = strings$STR_FRM_SAVE, horizontal = TRUE, spacing = 1, container = gv)
 
-  glabel(text = strLblSave, container = f2)
+  glabel(text = strings$STR_LBL_SAVE, container = f2)
 
   f2_save_edt <- gedit(text = "", container = f2, expand = TRUE, fill = TRUE)
 
   # BUTTON ####################################################################
 
-  calculate_btn <- gbutton(text = strBtnCalculate, container = gv)
+  calculate_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(calculate_btn, handler = function(h, ...) {
     # Get values.
@@ -313,7 +261,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
     # Change button.
     blockHandlers(calculate_btn)
-    svalue(calculate_btn) <- strBtnProcessing
+    svalue(calculate_btn) <- strings$STR_BTN_PROCESSING
     unblockHandlers(calculate_btn)
     enabled(calculate_btn) <- FALSE
 

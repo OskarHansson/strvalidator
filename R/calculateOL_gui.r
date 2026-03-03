@@ -53,77 +53,31 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     print(paste("IN:", fnc))
   }
 
-  # Default strings.
-  strWinTitle <- "Analyse off-ladder alleles"
-  strChkGui <- "Save GUI settings"
-  strBtnHelp <- "Help"
-  strFrmKits <- "Select kits"
-  strFrmOptions <- "Options"
-  strLblDatabase <- "Select allele frequency database:"
-  strChkVirtual <- "Include virtual bins in analysis"
-  strTipVirtual <- "NB! Not all vendors specify which alleles are virtual in the bins file. This can be done manually in the kit.txt file."
-  strChkLowFreq <- "Limit small frequencies to 5/2N"
-  strFrmSave <- "Save as"
-  strLblSave <- "Name for result:"
-  strBtnCalculate <- "Calculate"
-  strBtnProcessing <- "Processing..."
-  strMsgKit <- "At least one kit must be selected."
-  strMsgTitleKit <- "No kit selected"
+  lng_strings <- get_strings(gui = fnc)
+  default_strings <- list(
+    STR_WIN_TITLE           = "Analyse off-ladder alleles",
+    STR_CHK_GUI             = "Save GUI settings",
+    STR_BTN_HELP            = "Help",
+    STR_FRM_KITS            = "Select kits",
+    STR_FRM_OPTIONS         = "Options",
+    STR_LBL_DATABASE        = "Select allele frequency database:",
+    STR_CHK_VIRTUAL         = "Include virtual bins in analysis",
+    STR_TIP_VIRTUAL         = "NB! Not all vendors specify which alleles are virtual in the bins file. This can be done manually in the kit.txt file.",
+    STR_CHK_LOW_FREQ        = "Limit small frequencies to 5/2N",
+    STR_FRM_SAVE            = "Save as",
+    STR_LBL_SAVE            = "Name for result:",
+    STR_BTN_CALCULATE       = "Calculate",
+    STR_BTN_PROCESSING      = "Processing...",
+    STR_MSG_KIT             = "At least one kit must be selected.",
+    STR_MSG_TITLE_KIT       = "No kit selected"
+  )
 
-  # Get strings from language file.
-  dtStrings <- get_strings(gui = fnc)
-
-  # If language file is found.
-  if (!is.null(dtStrings)) {
-    # Get language strings, use default if not found.
-
-    strtmp <- dtStrings["strWinTitle"]$value
-    strWinTitle <- ifelse(is.na(strtmp), strWinTitle, strtmp)
-
-    strtmp <- dtStrings["strChkGui"]$value
-    strChkGui <- ifelse(is.na(strtmp), strChkGui, strtmp)
-
-    strtmp <- dtStrings["strBtnHelp"]$value
-    strBtnHelp <- ifelse(is.na(strtmp), strBtnHelp, strtmp)
-
-    strtmp <- dtStrings["strFrmKits"]$value
-    strFrmKits <- ifelse(is.na(strtmp), strFrmKits, strtmp)
-
-    strtmp <- dtStrings["strFrmOptions"]$value
-    strFrmOptions <- ifelse(is.na(strtmp), strFrmOptions, strtmp)
-
-    strtmp <- dtStrings["strLblDatabase"]$value
-    strLblDatabase <- ifelse(is.na(strtmp), strLblDatabase, strtmp)
-
-    strtmp <- dtStrings["strChkVirtual"]$value
-    strChkVirtual <- ifelse(is.na(strtmp), strChkVirtual, strtmp)
-
-    strtmp <- dtStrings["strTipVirtual"]$value
-    strTipVirtual <- ifelse(is.na(strtmp), strTipVirtual, strtmp)
-
-    strtmp <- dtStrings["strFrmSave"]$value
-    strFrmSave <- ifelse(is.na(strtmp), strFrmSave, strtmp)
-
-    strtmp <- dtStrings["strLblSave"]$value
-    strLblSave <- ifelse(is.na(strtmp), strLblSave, strtmp)
-
-    strtmp <- dtStrings["strBtnCalculate"]$value
-    strBtnCalculate <- ifelse(is.na(strtmp), strBtnCalculate, strtmp)
-
-    strtmp <- dtStrings["strBtnProcessing"]$value
-    strBtnProcessing <- ifelse(is.na(strtmp), strBtnProcessing, strtmp)
-
-    strtmp <- dtStrings["strMsgKit"]$value
-    strMsgKit <- ifelse(is.na(strtmp), strMsgKit, strtmp)
-
-    strtmp <- dtStrings["strMsgTitleKit"]$value
-    strMsgTitleKit <- ifelse(is.na(strtmp), strMsgTitleKit, strtmp)
-  }
+  strings <- update_strings_with_language_file(default_strings, lng_strings$value)
 
   # WINDOW ####################################################################
 
   # Main window.
-  w <- gwindow(title = strWinTitle, visible = FALSE)
+  w <- gwindow(title = strings$STR_WIN_TITLE, visible = FALSE)
 
   # Runs when window is closed.
   addHandlerUnrealize(w, handler = function(h, ...) {
@@ -150,11 +104,11 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   # Help button group.
   gh <- ggroup(container = gv, expand = FALSE, fill = "both")
 
-  savegui_chk <- gcheckbox(text = strChkGui, checked = FALSE, container = gh)
+  savegui_chk <- gcheckbox(text = strings$STR_CHK_GUI, checked = FALSE, container = gh)
 
   addSpring(gh)
 
-  help_btn <- gbutton(text = strBtnHelp, container = gh)
+  help_btn <- gbutton(text = strings$STR_BTN_HELP, container = gh)
 
   addHandlerChanged(help_btn, handler = function(h, ...) {
     # Open help page for function.
@@ -164,7 +118,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   # FRAME 0 ###################################################################
 
   f0 <- gframe(
-    text = strFrmKits,
+    text = strings$STR_FRM_KITS,
     horizontal = TRUE,
     spacing = 1,
     container = gv,
@@ -220,14 +174,14 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   # FRAME 1 ###################################################################
 
   f1 <- gframe(
-    text = strFrmOptions,
+    text = strings$STR_FRM_OPTIONS,
     horizontal = FALSE,
     spacing = 1,
     container = gv
   )
 
   glabel(
-    text = strLblDatabase,
+    text = strings$STR_LBL_DATABASE,
     anchor = c(-1, 0), container = f1
   )
 
@@ -239,30 +193,30 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   )
 
   f1_virtual_chk <- gcheckbox(
-    text = strChkVirtual,
+    text = strings$STR_CHK_VIRTUAL,
     checked = TRUE,
     container = f1
   )
-  tooltip(f1_virtual_chk) <- strTipVirtual
+  tooltip(f1_virtual_chk) <- strings$STR_TIP_VIRTUAL
 
   f1_limit_chk <- gcheckbox(
-    text = strChkLowFreq,
+    text = strings$STR_CHK_LOW_FREQ,
     checked = TRUE,
     container = f1
   )
 
   # SAVE ######################################################################
 
-  save_frame <- gframe(text = strFrmSave, container = gv)
+  save_frame <- gframe(text = strings$STR_FRM_SAVE, container = gv)
 
-  glabel(text = strLblSave, container = save_frame)
+  glabel(text = strings$STR_LBL_SAVE, container = save_frame)
 
   save_edt <- gedit(expand = TRUE, fill = TRUE, container = save_frame)
 
   # BUTTON ####################################################################
 
 
-  analyse_btn <- gbutton(text = strBtnCalculate, container = gv)
+  analyse_btn <- gbutton(text = strings$STR_BTN_CALCULATE, container = gv)
 
   addHandlerClicked(analyse_btn, handler = function(h, ...) {
     val_name <- svalue(save_edt)
@@ -276,7 +230,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     if (length(val_kits) > 0) {
       # Change button.
       blockHandlers(analyse_btn)
-      svalue(analyse_btn) <- strBtnProcessing
+      svalue(analyse_btn) <- strings$STR_BTN_PROCESSING
       unblockHandlers(analyse_btn)
       enabled(analyse_btn) <- FALSE
 
@@ -332,8 +286,8 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       dispose(w)
     } else {
       gmessage(
-        mmsg = strMsgKit,
-        title = strMsgTitleKit,
+        mmsg = strings$STR_MSG_KIT,
+        title = strings$STR_MSG_TITLE_KIT,
         icon = "error",
         parent = w
       )
