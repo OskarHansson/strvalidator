@@ -389,39 +389,3 @@ calculate_concordance <- function(data, kit_name = NA,
   return(res)
 }
 
-################################################################################
-#' @rdname calculate_concordance
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [calculate_concordance()] instead.
-################################################################################
-
-calculateConcordance <- function(data, 
-                                 kit.name = NA, 
-                                 no.marker = "[MISSING MARKER]",
-                                 no.sample = "[MISSING SAMPLE]",
-                                 delimiter = ",",
-                                 list.all = FALSE,
-                                 known.profile = NULL, 
-                                 debug = FALSE,
-                                 ...) {
-  
-  .Deprecated("calculate_concordance", package = "strvalidator")
-  
-  # Remap arguments
-  calculate_concordance(
-    data = data,
-    kit_name = kit.name,
-    no_marker = no.marker,
-    no_sample = no.sample,
-    delimiter = delimiter,
-    list_all = list.all,
-    known_profile = known.profile,
-    debug = debug,
-    ...
-  )
-}
-

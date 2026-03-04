@@ -18,7 +18,7 @@
 #'
 #' @seealso \code{\link{guessProfile}}
 
-guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+guess_profile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -119,9 +119,9 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -227,17 +227,17 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       unblockHandlers(check_btn)
       enabled(check_btn) <- FALSE
 
-      datanew <- guessProfile(
+      datanew <- guess_profile(
         data = val_data,
         ratio = val_ratio,
         height = val_height,
         na.rm = val_NA,
-        ol.rm = val_OL,
+        ol_rm = val_OL,
         debug = debug
       )
 
       # Create key-value pairs to log.
-      keys <- list("data", "ratio", "height", "na.rm", "ol.rm")
+      keys <- list("data", "ratio", "height", "na.rm", "ol_rm")
 
       values <- list(val_name_data, val_ratio, val_height, val_NA, val_OL)
 
@@ -249,7 +249,7 @@ guessProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(datanew)

@@ -24,7 +24,7 @@
 #' @seealso \code{\link{export}}
 
 
-export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", "ggplot")),
+export_gui <- function(obj = list_objects(env = env, obj_class = c("data.frame", "ggplot")),
                        env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Language ------------------------------------------------------------------
 
@@ -324,7 +324,7 @@ export_gui <- function(obj = listObjects(env = env, obj.class = c("data.frame", 
 
       repeat{
         fail <- export(
-          object = val_object, name = val_name, use.object.name = val_use_obj,
+          object = val_object, name = val_name, use_object_name = val_use_obj,
           env = env, path = val_path,
           ext = val_ext, delim = val_delimiter,
           width = val_w, height = val_h, res = val_r,

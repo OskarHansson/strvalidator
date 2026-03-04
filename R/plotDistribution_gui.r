@@ -30,7 +30,7 @@
 #' @seealso \code{\link{log}}, \code{\link[ggplot2:geom_density]{geom_density}}
 
 
-plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_distribution_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -181,9 +181,9 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -538,7 +538,7 @@ plotDistribution_gui <- function(env = parent.frame(), savegui = NULL, debug = F
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )

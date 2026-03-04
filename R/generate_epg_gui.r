@@ -134,7 +134,7 @@ generate_epg_gui <- function(env = parent.frame(),
     container = g0
   )
   
-  dfs <- c(strings$strDrpDataset, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$strDrpDataset, list_objects(env = env, obj_class = "data.frame"))
   data_drp <- gcombobox(
     items     = dfs,
     selected  = 1,
@@ -150,7 +150,7 @@ generate_epg_gui <- function(env = parent.frame(),
   glabel(text = strings$strLblKit, container = g1)
   
   kit_drp <- gcombobox(
-    items     = getKit(),
+    items     = get_kit(),
     selected  = 1,
     editable  = FALSE,
     container = g1,
@@ -203,7 +203,7 @@ generate_epg_gui <- function(env = parent.frame(),
         strings$strLblSamples
       )
       
-      kit_index <- detectKit(.g_data, index = TRUE)
+      kit_index <- detect_kit(.g_data, index = TRUE)
       svalue(kit_drp, index = TRUE) <- kit_index
       
       .refresh_sample_drp()
@@ -384,7 +384,7 @@ generate_epg_gui <- function(env = parent.frame(),
     unblockHandlers(save_btn)
     enabled(save_btn) <- FALSE
     
-    saveObject(
+    save_object(
       name   = val_name,
       object = .g_plot,
       parent = w,
@@ -574,29 +574,3 @@ generate_epg_gui <- function(env = parent.frame(),
   invisible(TRUE)
 }
 
-################################################################################
-#' @rdname generate_epg_gui
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [generate_epg_gui()] instead.
-################################################################################
-
-generateEPG_gui <- function(env = parent.frame(),
-                            savegui = NULL,
-                            debug = FALSE,
-                            parent = NULL,
-                            ...) {
-  
-  .Deprecated("generate_epg_gui", package = "strvalidator")
-  
-  generate_epg_gui(
-    env     = env,
-    savegui = savegui,
-    debug   = debug,
-    parent  = parent,
-    ...
-  )
-}

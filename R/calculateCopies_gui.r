@@ -20,7 +20,7 @@
 #'
 #' @seealso \code{\link{calculateCopies}}
 
-calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_copies_gui <- function(env = parent.frame(), savegui = NULL,
                                 debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -123,9 +123,9 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1, editable = FALSE, container = f0,
@@ -212,7 +212,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateCopies(
+      datanew <- calculate_copies(
         data = val_data, observed = val_obs,
         copies = val_cop, heterozygous = val_het,
         debug = debug
@@ -231,7 +231,7 @@ calculateCopies_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(datanew)

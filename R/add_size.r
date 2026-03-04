@@ -1,27 +1,3 @@
-# ---------------------------------------------------------------------------
-# Deprecated wrapper
-# ---------------------------------------------------------------------------
-
-addSize <- function(data,
-                    kit = NA,
-                    bins = TRUE,
-                    ignore.case = FALSE,
-                    debug = FALSE) {
-  .Deprecated("add_size", package = "strvalidator")
-  
-  if (!missing(bins)) {
-    message("Argument 'bins' is deprecated and ignored. ",
-            "Allele-specific sizes from 'kit' are always used when available.")
-  }
-  
-  add_size(
-    data        = data,
-    kit         = kit,
-    ignore_case = ignore.case,
-    debug       = debug
-  )
-}
-
 #' @title Add Size Information
 #'
 #' @description

@@ -23,7 +23,7 @@
 #'
 #' @seealso \code{\link{calculateOL}}
 
-calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
+calculate_ol_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
@@ -118,7 +118,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
   size(scroll_view) <- c(100, 150)
 
   kit_checkbox_group <- gcheckboxgroup(
-    items = getKit(),
+    items = get_kit(),
     checked = FALSE,
     horizontal = FALSE,
     container = scroll_view
@@ -165,7 +165,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
     anchor = c(-1, 0), container = f1
   )
 
-  f1_db_names <- getDb()
+  f1_db_names <- get_db()
 
   f1_db_drp <- gcombobox(
     items = f1_db_names, fill = FALSE,
@@ -216,12 +216,12 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
 
       # Get kits.
       for (k in seq(along = val_kits)) {
-        tmp <- getKit(val_kits[k])
+        tmp <- get_kit(val_kits[k])
         val_kitData <- rbind(val_kitData, tmp)
       }
 
       # Get allele frequency database.
-      val_db <- getDb(val_db_selected)
+      val_db <- get_db(val_db_selected)
 
       if (debug) {
         print("val_kits")
@@ -233,7 +233,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       }
 
       # Analyse bins overlap.
-      datanew <- calculateOL(
+      datanew <- calculate_ol(
         kit = val_kitData,
         db = val_db,
         virtual = val_virtual,
@@ -254,7 +254,7 @@ calculateOL_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, 
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(str(datanew))

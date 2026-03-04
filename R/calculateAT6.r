@@ -35,7 +35,7 @@
 #' If NULL 'data' must contain a column 'Amount'.
 #' @param weighted logical to calculate weighted linear regression (weight=1/se^2).
 #' @param alpha numeric [0,1] significance level for the t-statistic.
-#' @param ignore.case logical to indicate if sample matching should ignore case.
+#' @param ignore_case logical to indicate if sample matching should ignore case.
 #' @param debug logical to indicate if debug information should be printed.
 #'
 #' @return data.frame with columns 'Amount', 'Height', 'Sd', 'Weight', 'N',
@@ -58,8 +58,8 @@
 #'
 #'
 
-calculateAT6 <- function(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05,
-                         ignore.case = TRUE, debug = FALSE) {
+calculate_at6 <- function(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05,
+                         ignore_case = TRUE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -73,8 +73,8 @@ calculateAT6 <- function(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05
     print(weighted)
     print("alpha")
     print(alpha)
-    print("ignore.case")
-    print(ignore.case)
+    print("ignore_case")
+    print(ignore_case)
   }
 
   # Check data ----------------------------------------------------------------
@@ -153,8 +153,8 @@ calculateAT6 <- function(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05
     )
   }
 
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical",
+  if (!is.logical(ignore_case)) {
+    stop("'ignore_case' must be logical",
       call. = TRUE
     )
   }
@@ -162,27 +162,27 @@ calculateAT6 <- function(data, ref, amount = NULL, weighted = TRUE, alpha = 0.05
   # Prepare -------------------------------------------------------------------
 
   # Calculate the average peak height.
-  dfHeight <- calculateHeight(
-    data = data, ref = ref, na.replace = 0,
-    add = FALSE, exclude = NULL, sex.rm = FALSE,
-    qs.rm = FALSE, kit = NULL,
-    ignore.case = ignore.case,
+  dfHeight <- calculate_height(
+    data = data, ref = ref, na_replace = 0,
+    add = FALSE, exclude = NULL, sex_rm = FALSE,
+    qs_rm = FALSE, kit = NULL,
+    ignore_case = ignore_case,
     exact = FALSE, debug = debug
   )
 
 
   # Add amount to data.
   if (is.null(amount)) {
-    dfHeight <- addData(
-      data = dfHeight, new.data = data, by.col = "Sample.Name",
-      then.by.col = NULL, exact = TRUE, ignore.case = ignore.case,
+    dfHeight <- add_data(
+      data = dfHeight, new_data = data, by_col = "Sample.Name",
+      then_by_col = NULL, exact = TRUE, ignore_case = ignore_case,
       what = "Amount", debug = debug
     )
     message("Amount added to 'data'.")
   } else {
-    dfHeight <- addData(
-      data = dfHeight, new.data = amount, by.col = "Sample.Name",
-      then.by.col = NULL, exact = TRUE, ignore.case = ignore.case,
+    dfHeight <- add_data(
+      data = dfHeight, new_data = amount, by_col = "Sample.Name",
+      then_by_col = NULL, exact = TRUE, ignore_case = ignore_case,
       what = "Amount", debug = debug
     )
     message("Amount added to 'data'.")

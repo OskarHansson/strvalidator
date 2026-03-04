@@ -27,7 +27,7 @@
 #'
 #' @seealso \code{\link{calculateOverlap}}
 
-calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
+calculate_overlap_gui <- function(env = parent.frame(), savegui = NULL, debug = TRUE, parent = NULL) {
   # Language ------------------------------------------------------------------
 
   # Get this functions name from call.
@@ -126,7 +126,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
   size(scroll_view) <- c(100, 150)
 
   kit_checkbox_group <- gcheckboxgroup(
-    items = getKit(),
+    items = get_kit(),
     checked = FALSE,
     horizontal = FALSE,
     container = scroll_view
@@ -147,7 +147,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     if (length(val_kits) > 0) {
       # Get selected kits.
       for (k in seq(along = val_kits)) {
-        kit <- getKit(val_kits[k], what = "Color")
+        kit <- get_kit(val_kits[k], what = "Color")
         kitColor[k] <- list(unique(kit$Color))
       }
 
@@ -243,7 +243,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
     container = f1
   )
 
-  f1_db_names <- getDb()
+  f1_db_names <- get_db()
 
   f1_db_drp <- gcombobox(
     items = f1_db_names, fill = FALSE, selected = 1,
@@ -364,13 +364,13 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
       # Get kits.
       for (k in seq(along = val_kits)) {
-        tmp <- getKit(val_kits[k])
+        tmp <- get_kit(val_kits[k])
         val_kitData <- rbind(val_kitData, tmp)
       }
 
       # Get allele frequency database.
       if (val_db_chk) {
-        val_db <- getDb(val_db_selected)
+        val_db <- get_db(val_db_selected)
       } else {
         val_db <- NULL
       }
@@ -411,7 +411,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
       }
 
       # Analyse bins overlap.
-      datanew <- calculateOverlap(
+      datanew <- calculate_overlap(
         data = val_kitData,
         db = val_db,
         penalty = val_penalty,
@@ -434,7 +434,7 @@ calculateOverlap_gui <- function(env = parent.frame(), savegui = NULL, debug = T
 
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(datanew)

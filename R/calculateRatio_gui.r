@@ -21,7 +21,7 @@
 #'
 #' @seealso \code{link{calculateRatio}}, \code{link{check_subset}}
 
-calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_ratio_gui <- function(env = parent.frame(), savegui = NULL,
                                debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -137,7 +137,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
     container = g0
   )
 
-  dfs <- c(strings$STR_DRP_DATASET, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DATASET, list_objects(env = env, obj_class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -469,19 +469,19 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateRatio(
+      datanew <- calculate_ratio(
         data = val_data, ref = val_ref,
         numerator = val_numerator,
         denominator = val_denominator,
-        group = val_group, ol.rm = val_ol,
-        ignore.case = val_ignore, word = val_word,
+        group = val_group, ol_rm = val_ol,
+        ignore_case = val_ignore, word = val_word,
         exact = val_exact, debug = debug
       )
 
       # Create key-value pairs to log.
       keys <- list(
         "data", "ref", "numerator",
-        "denominator", "group", "ol", "ignore.case", "word",
+        "denominator", "group", "ol", "ignore_case", "word",
         "exact"
       )
 
@@ -499,7 +499,7 @@ calculateRatio_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(str(datanew))

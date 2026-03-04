@@ -14,7 +14,7 @@
 #' @param name string, list or vector containing file names.
 #' Multiple names as string must be separated by pipe '|' or comma ','.
 #' If not equal number of names as objects, first name will be used to construct names.
-#' @param use.object.name logical, if TRUE file name will be the same as object name.
+#' @param use_object_name logical, if TRUE file name will be the same as object name.
 #' @param env environment where the objects exists.
 #' @param path string specifying the destination folder exported objects.
 #' @param ext string specifying file extension.
@@ -38,7 +38,7 @@
 #' @importFrom graphics plot
 #'
 
-export <- function(object, name = NA, use.object.name = is.na(name),
+export <- function(object, name = NA, use_object_name = is.na(name),
                    env = parent.frame(), path = NA,
                    ext = "auto", delim = "\t",
                    width = 3000, height = 2000, res = 250,
@@ -49,8 +49,8 @@ export <- function(object, name = NA, use.object.name = is.na(name),
     print(object)
     print("name")
     print(name)
-    print("use.object.name")
-    print(use.object.name)
+    print("use_object_name")
+    print(use_object_name)
     print("env")
     print(environmentName(env))
     print("path")
@@ -132,7 +132,7 @@ export <- function(object, name = NA, use.object.name = is.na(name),
       # Replace empty string with 'NA'.
       name <- NA
     }
-  } else if (!use.object.name) {
+  } else if (!use_object_name) {
     stop("'name' is required",
       call. = TRUE
     )
@@ -144,8 +144,8 @@ export <- function(object, name = NA, use.object.name = is.na(name),
     )
   }
 
-  if (!is.logical(use.object.name)) {
-    stop("'use.object.name' must be logical",
+  if (!is.logical(use_object_name)) {
+    stop("'use_object_name' must be logical",
       call. = TRUE
     )
   }
@@ -182,7 +182,7 @@ export <- function(object, name = NA, use.object.name = is.na(name),
 
   # Create file names.
   nbObj <- length(object)
-  if (use.object.name) {
+  if (use_object_name) {
     # Copy object names to name variable.
     name <- object
 

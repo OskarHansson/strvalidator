@@ -22,7 +22,7 @@
 #'
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
-plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_at_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -143,9 +143,9 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -279,7 +279,7 @@ plotAT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )

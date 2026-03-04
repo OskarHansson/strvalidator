@@ -20,7 +20,7 @@
 #'
 #' @seealso \code{\link{calculateAllT}}
 
-calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+calculate_all_t_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- data.frame(No.Data = NA)
   .gDataName <- NULL
@@ -118,9 +118,9 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -151,7 +151,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(dataset_samples_lbl) <- paste(" ", samples, strings$STR_LBL_SAMPLES)
-      .gKit <<- detectKit(.gData, index = TRUE)
+      .gKit <<- detect_kit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
       svalue(f2_save_edt) <- paste(.gDataName, "_t", sep = "")
     } else {
@@ -170,7 +170,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   glabel(text = strings$STR_LBL_KIT, container = f0g1)
 
   kit_drp <- gcombobox(
-    items = getKit(), selected = 1, editable = FALSE,
+    items = get_kit(), selected = 1, editable = FALSE,
     container = f0g1, ellipsize = "none", expand = TRUE, fill = "x"
   )
 
@@ -257,9 +257,9 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     enabled(calculate_btn) <- FALSE
 
     # Calculate stochastic thresholds.
-    datanew <- calculateAllT(
-      data = val_data, kit = val_kit, p.dropout = val_p,
-      p.conservative = val_pcons, rm.sex = val_sex,
+    datanew <- calculate_all_t(
+      data = val_data, kit = val_kit, p_dropout = val_p,
+      p_conservative = val_pcons, rm_sex = val_sex,
       debug = debug
     )
 
@@ -268,7 +268,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     attr(datanew, which = "kit") <- val_kit
 
     # Create key-value pairs to log.
-    keys <- list("data", "kit", "p.dropout", "p.conservative", "rm.sex")
+    keys <- list("data", "kit", "p_dropout", "p_conservative", "rm_sex")
 
     values <- list(val_data_name, val_kit, val_p, val_pcons, val_sex)
 
@@ -280,7 +280,7 @@ calculateAllT_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     )
 
     # Save data.
-    saveObject(name = val_name, object = datanew, parent = w, env = env)
+    save_object(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
     .saveSettings()

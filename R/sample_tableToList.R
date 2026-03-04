@@ -5,7 +5,7 @@
 #' @return outL A data list
 #' @export
 
-sample_tableToList <- function(table) {
+sample_table_to_list <- function(table) {
   colname <- colnames(table) # colnames in file
   lind <- grep("marker", tolower(colname), fixed = TRUE) # locus col-ind
   if (length(lind) == 0) lind <- grep("loc", tolower(colname), fixed = TRUE) # try another name

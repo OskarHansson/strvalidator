@@ -44,8 +44,8 @@
 #' @param forward integer for the maximal number of forward stutters
 #'  (max size difference 1 = n+1 repeats).
 #' @param interference integer specifying accepted level of allowed overlap.
-#' @param replace.val numeric vector with 'false' stutters to replace.
-#' @param by.val numeric vector with correct stutters.
+#' @param replace_val numeric vector with 'false' stutters to replace.
+#' @param by_val numeric vector with correct stutters.
 #' @param debug logical indicating printing debug information.
 #'
 #' @export
@@ -54,8 +54,8 @@
 #'
 
 
-calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
-                             replace.val = NULL, by.val = NULL, debug = FALSE) {
+calculate_stutter <- function(data, ref, back = 2, forward = 1, interference = 0,
+                             replace_val = NULL, by_val = NULL, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -638,9 +638,9 @@ calculateStutter <- function(data, ref, back = 2, forward = 1, interference = 0,
     print(unique(stutterRatio$Type))
   }
 
-  if (!is.null(replace.val) & !is.null(by.val)) {
-    for (i in seq(along = replace.val)) {
-      stutterRatio$Type[stutterRatio$Type == replace.val[i]] <- by.val[i]
+  if (!is.null(replace_val) & !is.null(by_val)) {
+    for (i in seq(along = replace_val)) {
+      stutterRatio$Type[stutterRatio$Type == replace_val[i]] <- by_val[i]
     }
     if (debug) {
       print(unique(stutterRatio$Type))

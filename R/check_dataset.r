@@ -159,39 +159,3 @@ check_dataset <- function(
   return(TRUE)
 }
 
-################################################################################
-#' @rdname check_dataset
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [check_dataset()] instead.
-################################################################################
-
-checkDataset <- function(name,
-                         reqcol = NULL,
-                         slim = FALSE,
-                         slimcol = NULL,
-                         string = NULL,
-                         stringcol = NULL,
-                         env = parent.frame(),
-                         parent = NULL,
-                         debug = FALSE,
-                         ...) {
-  
-  .Deprecated("check_dataset", package = "strvalidator")
-  
-  check_dataset(
-    name      = name,
-    reqcol    = reqcol,
-    slim      = slim,
-    slimcol   = slimcol,
-    string    = string,
-    stringcol = stringcol,
-    env       = env,
-    parent    = parent,
-    debug     = debug,
-    ...
-  )
-}

@@ -7,7 +7,7 @@
 #' @details
 #' An audit trail entry is appended each time the function is called,
 #' logging timestamp, function label, optional function arguments,
-#' package versions, and custom key–value pairs.
+#' package versions, and custom key-value pairs.
 #'
 #' The audit trail is stored in the object attribute \code{"audit trail"}.
 #'
@@ -17,7 +17,7 @@
 #' @param value Character vector of values corresponding to \code{key}.
 #' @param label Optional label. If omitted, the function name is extracted
 #'   from \code{f_call}.
-#' @param arguments Logical. If TRUE, the function’s formal arguments
+#' @param arguments Logical. If TRUE, the function's formal arguments
 #'   are logged.
 #' @param exact Logical, passed to \code{attr(exact=)}.
 #' @param remove Logical. If TRUE, the audit trail attribute is removed.
@@ -30,7 +30,7 @@
 #' The modified object with updated audit trail attributes.
 #'
 #' @seealso
-#' \code{\link{auditTrail}} – deprecated wrapper for backwards compatibility.
+#' \\code{\\link{auditTrail}} - deprecated wrapper for backwards compatibility.
 #'
 #' @export
 #' 
@@ -132,7 +132,7 @@ audit_trail <- function(
   }
   
   # -------------------------------------------------------------------------
-  # CUSTOM KEY–VALUE ENTRIES
+  # CUSTOM KEY-VALUE ENTRIES
   # -------------------------------------------------------------------------
   if (length(key) > 0) {
     for (i in seq_along(key)) {
@@ -158,43 +158,3 @@ audit_trail <- function(
   obj
 }
 
-################################################################################
-#' @rdname audit_trail
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [audit_trail()] instead.
-################################################################################
-
-auditTrail <- function(obj,
-                       f.call    = NULL,
-                       key       = NULL,
-                       value     = NULL,
-                       label     = NULL,
-                       arguments = TRUE,
-                       exact     = TRUE,
-                       remove    = FALSE,
-                       package   = NULL,
-                       rversion  = TRUE,
-                       timestamp = TRUE,
-                       ...) {
-  
-  .Deprecated("audit_trail", package = "strvalidator")
-  
-  audit_trail(
-    obj       = obj,
-    f_call    = f.call,
-    key       = key,
-    value     = value,
-    label     = label,
-    arguments = arguments,
-    exact     = exact,
-    remove    = remove,
-    package   = package,
-    r_version = rversion,
-    timestamp = timestamp,
-    ...
-  )
-}

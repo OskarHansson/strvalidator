@@ -21,7 +21,7 @@
 #'
 #' @seealso \code{\link{plotEPG2}}
 
-plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_epg2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gPlot <- NULL
@@ -123,7 +123,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     container = g0
   )
 
-  dfs <- c(strings$STR_DRP_DATASET, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DATASET, list_objects(env = env, obj_class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -142,7 +142,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+    items = get_kit(), selected = 1,
     editable = FALSE, container = g1,
     ellipsize = "none", expand = TRUE, fill = "x"
   )
@@ -189,7 +189,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       )
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
 
@@ -267,7 +267,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     enabled(save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )
@@ -317,7 +317,7 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
         }
 
         # Convert the data.
-        val_data <- sample_tableToList(val_data)
+        val_data <- sample_table_to_list(val_data)
       }
 
       # Change button.
@@ -326,9 +326,9 @@ plotEPG2_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
       unblockHandlers(plot_epg_btn)
       enabled(plot_epg_btn) <- FALSE
 
-      gp <- plotEPG2(
-        mixData = val_data, kit = val_kit,
-        AT = val_at, ST = val_st, dyeYmax = val_scale
+      gp <- plot_epg2(
+        mix_data = val_data, kit = val_kit,
+        at = val_at, st = val_st, dye_ymax = val_scale
       )
 
       # Store in global variable.

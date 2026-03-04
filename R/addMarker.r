@@ -13,7 +13,7 @@
 #'
 #' @param data data.frame or vector with sample names.
 #' @param marker vector with marker names.
-#' @param ignore.case logical. TRUE ignores case in marker names.
+#' @param ignore_case logical. TRUE ignores case in marker names.
 #' @param debug logical indicating printing debug information.
 #'
 #' @importFrom plyr rbind.fill
@@ -24,7 +24,7 @@
 #' @return data.frame.
 #'
 
-addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
+add_marker <- function(data, marker, ignore_case = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -32,8 +32,8 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
     print(head(data))
     print("marker")
     print(marker)
-    print("ignore.case")
-    print(ignore.case)
+    print("ignore_case")
+    print(ignore_case)
   }
 
   # Initiate variables.
@@ -69,7 +69,7 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
     data <- data.frame(Sample.Name = data)
   }
 
-  if (ignore.case) {
+  if (ignore_case) {
     marker <- toupper(marker)
   }
 
@@ -93,7 +93,7 @@ addMarker <- function(data, marker, ignore.case = FALSE, debug = FALSE) {
 
     # Get current sample marker names.
     cMarker <- unique(cSample$Marker)
-    if (ignore.case) {
+    if (ignore_case) {
       cMarker <- toupper(cMarker)
     }
 

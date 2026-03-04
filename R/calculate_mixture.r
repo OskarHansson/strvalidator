@@ -34,7 +34,7 @@
 #' Bright, Jo-Anne, Jnana Turkington, and John Buckleton.
 #' "Examination of the Variability in Mixed DNA Profile Parameters for the
 #' Identifiler Multiplex."
-#' Forensic Science International: Genetics 4(2), 2010: 111–114.
+#' Forensic Science International: Genetics 4(2), 2010: 111-114.
 #' \doi{10.1016/j.fsigen.2009.07.002}
 #'
 #' @param data data.frame in slim format with columns
@@ -357,39 +357,3 @@ calculate_mixture <- function(
   return(res)
 }
 
-################################################################################
-#' @rdname calculate_mixture
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [calculate_mixture()] instead.
-################################################################################
-
-calculateMixture <- function(data, 
-                             ref1, 
-                             ref2, 
-                             ol.rm = TRUE,
-                             ignore.dropout = TRUE, 
-                             debug = FALSE,
-                             ...) {
-  
-  .Deprecated("calculate_mixture", package = "strvalidator")
-  
-  # Remap arguments
-  calculate_mixture(
-    data = data,
-    ref_profiles_df = rbind(ref1, ref2),
-    threshold = 0,
-    dropout_pseudo_rfu = NULL,
-    include_dropout = ignore.dropout,
-    match_case = FALSE,
-    ol_rm = ol.rm,
-    ol_str = "OL",
-    auto_minor_from_mx = FALSE,
-    output_level = c("marker", "sample"),
-    debug = debug,
-    ...
-  )
-}

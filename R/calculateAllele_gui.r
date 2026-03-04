@@ -20,7 +20,7 @@
 #' @return TRUE
 
 
-calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+calculate_allele_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -123,9 +123,9 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   f0g0_data_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -155,7 +155,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       svalue(save_edt) <- paste(.gDataName, "allele", sep = "_")
 
       # Autodetect kit.
-      svalue(kit_drp) <- detectKit(
+      svalue(kit_drp) <- detect_kit(
         data = .gData, index = FALSE,
         debug = debug
       )[1]
@@ -174,7 +174,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   glabel(text = strings$STR_LBL_KIT, container = f0g2)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = f0g2,
@@ -239,9 +239,9 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
         val_threshold <- NULL
       }
 
-      datanew <- calculateAllele(
+      datanew <- calculate_allele(
         data = val_data, threshold = val_threshold,
-        sex.rm = val_sex, kit = val_kit, debug = debug
+        sex_rm = val_sex, kit = val_kit, debug = debug
       )
 
       # Add attributes to result.
@@ -260,7 +260,7 @@ calculateAllele_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(datanew)

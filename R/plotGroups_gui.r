@@ -28,7 +28,7 @@
 #' @seealso \code{\link[ggplot2:stat_ecdf]{stat_ecdf}}
 
 
-plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_groups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -159,9 +159,9 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1, editable = FALSE,
@@ -368,7 +368,7 @@ plotGroups_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, 
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )

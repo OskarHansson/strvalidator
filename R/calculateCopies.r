@@ -35,7 +35,7 @@
 #' @importFrom data.table data.table :=
 #'
 
-calculateCopies <- function(data, observed = FALSE, copies = TRUE,
+calculate_copies <- function(data, observed = FALSE, copies = TRUE,
                             heterozygous = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -62,11 +62,11 @@ calculateCopies <- function(data, observed = FALSE, copies = TRUE,
     message("'data' must be in 'slim' format. Attempt to auto slim:")
 
     # Autodetect column names to keep fixed.
-    fixCol <- colNames(data = data, slim = TRUE, numbered = TRUE, concatenate = "|")
+    fixCol <- col_names(data = data, slim = TRUE, numbered = TRUE, concatenate = "|")
     message("Fix columns:", fixCol)
 
     # Autodetect column names to stack.
-    stackCol <- colNames(data = data, slim = FALSE, numbered = TRUE, concatenate = "|")
+    stackCol <- col_names(data = data, slim = FALSE, numbered = TRUE, concatenate = "|")
     message("Stack columns:", stackCol)
 
     # Slim require a vector of strings.
@@ -76,7 +76,7 @@ calculateCopies <- function(data, observed = FALSE, copies = TRUE,
     # Slim data.
     data <- slim(
       data = data, fix = fixCol, stack = stackCol,
-      keep.na = TRUE, debug = debug
+      keep_na = TRUE, debug = debug
     )
     message("Auto slim completed.")
   }

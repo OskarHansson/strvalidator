@@ -956,7 +956,7 @@ strvalidator <- function(debug = FALSE) {
       datanew <- get(objectName, envir = .strvalidator_env)
 
       # Save data.
-      saveObject(
+      save_object(
         name = NULL, object = datanew, suggest = objectName,
         parent = w, remove = objectName, env = .strvalidator_env,
         debug = debug
@@ -1368,9 +1368,9 @@ strvalidator <- function(debug = FALSE) {
   ws_r_drp <- gcombobox(
     items = c(
       strings$STR_DRP_OBJECT,
-      listObjects(
+      list_objects(
         env = .strvalidator_env,
-        obj.class = .object_classes_import
+        obj_class = .object_classes_import
       )
     ),
     selected = 1,
@@ -1395,7 +1395,7 @@ strvalidator <- function(debug = FALSE) {
 
     if (!is.na(val_name) && !is.null(val_name)) {
       # Load dataset.
-      saveObject(
+      save_object(
         name = val_name, object = get(val_name),
         parent = w, env = .strvalidator_env, debug = debug
       )
@@ -1424,7 +1424,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(dry_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -1480,17 +1480,17 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(dry_plot_kit_btn, handler = function(h, ...) {
     # Open GUI.
-    plotKit_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    plot_kit_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   addHandlerChanged(dry_bins_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateOverlap_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    calculate_overlap_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   addHandlerChanged(dry_ol_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateOL_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    calculate_ol_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # TOOLS  ####################################################################
@@ -1512,7 +1512,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(tools_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = TRUE, debug = debug, parent = w
     )
@@ -1571,7 +1571,7 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(tools_filter_btn, handler = function(h, ...) {
-    filterProfile_gui(env = .strvalidator_env, savegui = .save_gui, parent = w)
+    filter_profile_gui(env = .strvalidator_env, savegui = .save_gui, parent = w)
   })
 
   # CROP ----------------------------------------------------------------------
@@ -1590,7 +1590,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(tools_crop_btn, handler = function(h, ...) {
     # Open GUI.
-    cropData_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    crop_data_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # GUESS ---------------------------------------------------------------------
@@ -1608,7 +1608,7 @@ strvalidator <- function(debug = FALSE) {
 
 
   addHandlerChanged(tools_guess_btn, handler = function(h, ...) {
-    guessProfile_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    guess_profile_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # DYE -----------------------------------------------------------------------
@@ -1626,7 +1626,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(tools_addDye_btn, handler = function(h, ...) {
     # Open GUI.
-    addDye_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    add_dye_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # ADD MARKER ----------------------------------------------------------------
@@ -1644,7 +1644,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(tools_addMarker_btn, handler = function(h, ...) {
     # Open GUI.
-    addMarker_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    add_marker_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # ADD SIZE ------------------------------------------------------------------
@@ -1680,7 +1680,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(tools_addData_btn, handler = function(h, ...) {
     # Open GUI.
-    addData_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    add_data_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # CHECK SUBSET --------------------------------------------------------------
@@ -1755,7 +1755,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(tools_copies_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateCopies_gui(
+    calculate_copies_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -1794,7 +1794,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(tools_epg2_btn, handler = function(h, ...) {
     # Open GUI.
-    plotEPG2_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    plot_epg2_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # AT  #######################################################################
@@ -1813,7 +1813,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(at_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui =
         .save_gui, edit = FALSE, debug = debug, parent = w
     )
@@ -1833,7 +1833,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(at_calculate_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateAT_gui(
+    calculate_at_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -1853,7 +1853,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(at6_calculate_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateAT6_gui(
+    calculate_at6_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -1870,7 +1870,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(at_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotAT_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
+    plot_at_gui(env = .strvalidator_env, savegui = .save_gui, debug = debug, parent = w)
   })
 
   # STUTTER  ##################################################################
@@ -1894,7 +1894,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(stutter_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -1915,7 +1915,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(stutter_calculate_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateStutter_gui(
+    calculate_stutter_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -1935,7 +1935,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(stutter_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotStutter_gui(
+    plot_stutter_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -1955,13 +1955,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(stutter_stats_global_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Ratio"),
       group = NULL, count = c("Allele"), quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
@@ -1983,13 +1983,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(stutter_stats_marker_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Ratio"),
       group = c("Marker"), count = c("Allele"), quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2011,13 +2011,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(stutter_stats_stutter_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Ratio"),
       group = c("Marker", "Type"), count = c("Allele"), quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2046,7 +2046,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -2077,7 +2077,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_hb_calc_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateHb_gui(
+    calculate_hb_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2097,7 +2097,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_hb_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotBalance_gui(
+    plot_balance_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2117,13 +2117,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_stats_global_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Hb"),
       group = NULL, count = NULL, quant = 0.05,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2145,13 +2145,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_stats_marker_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Hb"),
       group = c("Marker"), count = NULL, quant = 0.05,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2183,7 +2183,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_lb_calc_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateLb_gui(
+    calculate_lb_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2203,7 +2203,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_lb_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotBalance_gui(
+    plot_balance_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2223,13 +2223,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_stats_global_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Lb"),
       group = NULL, count = NULL, quant = 0.5,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2251,13 +2251,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_stats_marker_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Lb"),
       group = c("Marker"), count = NULL, quant = 0.5,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2279,13 +2279,13 @@ strvalidator <- function(debug = FALSE) {
   
   addHandlerChanged(balance_stats_dye_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
     
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Lb"),
       group = c("Dye"), count = NULL, quant = 0.5,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2318,7 +2318,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g3_calc_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateCapillary_gui(
+    calculate_capillary_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2338,7 +2338,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g3_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotCapillary_gui(
+    plot_capillary_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2358,13 +2358,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g3_stats_cap_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Mean.Height"),
       group = c("Capillary"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2386,13 +2386,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g3_stats_inj_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Mean.Height"),
       group = c("Injection"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2414,13 +2414,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g3_stats_row_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Mean.Height"),
       group = c("Well"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2442,13 +2442,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g3_stats_run_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Mean.Height"),
       group = c("Run"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2470,13 +2470,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g3_stats_ins_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Mean.Height"),
       group = c("Instrument"), count = NULL, quant = 0.75,
       env = .strvalidator_env, savegui = .save_gui,
@@ -2507,7 +2507,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g4_calc_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateRatio_gui(
+    calculate_ratio_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2527,7 +2527,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(balance_g4_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotRatio_gui(
+    plot_ratio_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2553,7 +2553,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(conc_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -2600,7 +2600,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(drop_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -2622,7 +2622,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(drop_score_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateDropout_gui(
+    calculate_dropout_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2644,7 +2644,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(drop_calculate_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateAllT_gui(
+    calculate_all_t_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2664,7 +2664,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(drop_model_btn, handler = function(h, ...) {
     # Open GUI.
-    modelDropout_gui(
+    model_dropout_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2684,7 +2684,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(drop_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotDropout_gui(
+    plot_dropout_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2713,7 +2713,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(mix_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -2764,7 +2764,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -2796,7 +2796,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g1_calc_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateResultType_gui(
+    calculate_result_type_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2816,7 +2816,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g1_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotResultType_gui(
+    plot_result_type_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2847,7 +2847,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g2_calc_btn, handler = function(h, ...) {
     # Open GUI.
-    calculatePeaks_gui(
+    calculate_peaks_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2867,7 +2867,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g2_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotPeaks_gui(
+    plot_peaks_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2897,7 +2897,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g3_height_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateHeight_gui(
+    calculate_height_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2917,7 +2917,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g3_stats_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2947,7 +2947,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g4_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotDistribution_gui(
+    plot_distribution_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2967,7 +2967,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g4_group_btn, handler = function(h, ...) {
     # Open GUI.
-    plotGroups_gui(
+    plot_groups_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -2999,7 +2999,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g5_calc_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateSpike_gui(
+    calculate_spike_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3019,7 +3019,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g5_filter_btn, handler = function(h, ...) {
     # Open GUI.
-    removeSpike_gui(
+    remove_spike_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3039,7 +3039,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g5_allele_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateAllele_gui(
+    calculate_allele_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3059,7 +3059,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g5_artefact_btn, handler = function(h, ...) {
     # Open GUI.
-    removeArtefact_gui(
+    remove_artefact_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3079,7 +3079,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g5_cont_btn, handler = function(h, ...) {
     # Open GUI.
-    plotContamination_gui(
+    plot_contamination_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3110,7 +3110,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g6_calc_btn, handler = function(h, ...) {
     # Open GUI.
-    calculateSlope_gui(
+    calculate_slope_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3130,7 +3130,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(result_g6_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotSlope_gui(
+    plot_slope_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3156,7 +3156,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(precision_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -3218,13 +3218,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(precision_stats_size_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Size"),
       group = c("Marker", "Allele"), count = NULL, quant = 0.50,
       env = .strvalidator_env, savegui = .save_gui,
@@ -3247,13 +3247,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(precision_stats_dp_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Data.Point"),
       group = c("Marker", "Allele"), count = NULL, quant = 0.50,
       env = .strvalidator_env, savegui = .save_gui,
@@ -3276,13 +3276,13 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(precision_stats_height_btn, handler = function(h, ...) {
     # Get most recent object.
-    tmp <- listObjects(
-      env = .strvalidator_env, obj.class = "data.frame",
+    tmp <- list_objects(
+      env = .strvalidator_env, obj_class = "data.frame",
       sort = "time", decreasing = TRUE, debug = debug
     )
 
     # Open GUI.
-    calculateStatistics_gui(
+    calculate_statistics_gui(
       data = tmp[1], target = c("Height"),
       group = c("Marker", "Allele"), count = NULL, quant = 0.95,
       env = .strvalidator_env, savegui = .save_gui,
@@ -3309,7 +3309,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(pull_view_btn, handler = function(h, ...) {
     # Open GUI.
-    editData_gui(
+    edit_data_gui(
       env = .strvalidator_env, savegui = .save_gui,
       edit = FALSE, debug = debug, parent = w
     )
@@ -3330,7 +3330,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(pull_calculate_btn, handler = function(h, ...) {
     # Open GUI.
-    calculatePullup_gui(
+    calculate_pullup_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3350,7 +3350,7 @@ strvalidator <- function(debug = FALSE) {
 
   addHandlerChanged(pull_plot_btn, handler = function(h, ...) {
     # Open GUI.
-    plotPullup_gui(
+    plot_pullup_gui(
       env = .strvalidator_env, savegui = .save_gui,
       debug = debug, parent = w
     )
@@ -3467,7 +3467,7 @@ strvalidator <- function(debug = FALSE) {
 
   .refreshWs <- function() {
     # Get data frames in global workspace.
-    dfs <- listObjects(env = .GlobalEnv, obj.class = .object_classes_import)
+    dfs <- list_objects(env = .GlobalEnv, obj_class = .object_classes_import)
 
     # Get current list in dropdown.
     cList <- svalue(ws_r_drp)
@@ -3492,7 +3492,7 @@ strvalidator <- function(debug = FALSE) {
     }
 
     # Get list of objects.
-    dfs <- listObjects(env = .strvalidator_env, obj.class = .object_classes_view)
+    dfs <- list_objects(env = .strvalidator_env, obj_class = .object_classes_view)
 
     # Get size of objects.
     dfsSize <- sapply(dfs, function(x) object.size(get(x, envir = .strvalidator_env)))

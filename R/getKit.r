@@ -25,8 +25,8 @@
 #' Not case sensitive. Possible values: "Index", "Panel", "Short.Name", "Full.Name",
 #' "Marker, "Allele", "Size", "Virtual", "Color", "Repeat", "Range", "Offset", "Sex.Marker",
 #' "Quality.Sensor". An unsupported value returns NA and a warning.
-#' @param show.messages logical, default TRUE for printing messages to the R prompt.
-#' @param .kit.info data frame, run function on a data frame instead of the kits.txt file.
+#' @param show_messages logical, default TRUE for printing messages to the R prompt.
+#' @param kit_info data frame, run function on a data frame instead of the kits.txt file.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return data.frame with kit information.
@@ -38,8 +38,8 @@
 #'
 #' @examples
 #' # Show all information stored for kit with short name 'ESX17'.
-#' getKit("ESX17")
-getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NULL, debug = FALSE) {
+#' get_kit("ESX17")
+get_kit <- function(kit = NULL, what = NA, show_messages = FALSE, kit_info = NULL, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -48,7 +48,7 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
 
   # LOAD KIT INFO  ############################################################
 
-  if (is.null(.kit.info)) {
+  if (is.null(kit_info)) {
     # Get package path (works after installation)
     packagePath <- path.package("strvalidator", quiet = TRUE)
     subFolder <- "extdata"
@@ -78,7 +78,7 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
       stop(sprintf("Cannot locate '%s' in package or source directory.", fileName))
     }
     
-    .kit.info <- read.delim(
+    kit_info <- read.delim(
       file = filePath, header = TRUE, sep = "\t", quote = "\"",
       dec = ".", fill = TRUE, stringsAsFactors = FALSE
     )
@@ -86,12 +86,12 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
   }
 
   # Available kits. Must match else if construct.
-  kits <- unique(.kit.info$Short.Name)
+  kits <- unique(kit_info$Short.Name)
 
   # Check if NULL
   if (is.null(kit)) {
     # Print available kits
-    if (show.messages) {
+    if (show_messages) {
       message("Available kits:")
     }
     res <- kits
@@ -110,7 +110,7 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
     # No matching kit.
     if (any(is.na(index))) {
       # Print available kits
-      if (show.messages) {
+      if (show_messages) {
         message(paste(
           "No matching kit! \nAvailable kits:",
           paste(kits, collapse = ", ")
@@ -120,7 +120,7 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
 
       # Assign matching kit information.
     } else {
-      currentKit <- .kit.info[.kit.info$Short.Name %in% kits[index], ]
+      currentKit <- kit_info[kit_info$Short.Name %in% kits[index], ]
 
       res <- data.frame(
         Panel = currentKit$Panel,
@@ -224,7 +224,7 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
     } else if (toupper(what) == "COLOR") {
       # Return markers and their color as strings.
 
-      marker <- getKit(kit, what = "Marker")
+      marker <- get_kit(kit, what = "Marker")
       color <- NA
 
       for (m in seq(along = marker)) {
@@ -241,7 +241,7 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
     } else if (toupper(what) == "REPEAT") {
       # Return markers and their repeat unit length in base pair.
 
-      marker <- getKit(kit, what = "Marker")
+      marker <- get_kit(kit, what = "Marker")
       offset <- NA
       repeatUnit <- NA
 
@@ -259,7 +259,7 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
     } else if (toupper(what) == "RANGE") {
       # Return markers and their range (min and max) in base pair.
 
-      marker <- getKit(kit, what = "Marker")
+      marker <- get_kit(kit, what = "Marker")
       markerMin <- NA
       markerMax <- NA
       color <- NA
@@ -286,7 +286,7 @@ getKit <- function(kit = NULL, what = NA, show.messages = FALSE, .kit.info = NUL
     } else if (toupper(what) == "OFFSET") {
       # Return markers and their estimated offset in base pair.
 
-      marker <- getKit(kit, what = "Marker")
+      marker <- get_kit(kit, what = "Marker")
       offset <- NA
       repeatUnit <- NA
 

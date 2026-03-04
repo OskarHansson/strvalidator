@@ -37,7 +37,7 @@
 #'
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
-plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_balance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -187,9 +187,9 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -207,7 +207,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = g1,
@@ -243,7 +243,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       )
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
 
@@ -498,7 +498,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )
@@ -693,7 +693,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         message("'Dye' is missing. Dye information added!")
       }
       # Sort by marker in kit
-      .gData <- sortMarker(
+      .gData <- sort_marker(
         data = .gData,
         kit = val_kit,
         add.missing.levels = TRUE
@@ -702,7 +702,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Drop sex markers.
       if (val_drop) {
         # Get sex marker.
-        sexMarkers <- getKit(val_kit, what = "Sex.Marker")
+        sexMarkers <- get_kit(val_kit, what = "Sex.Marker")
 
         # Check if sexMarkers was found.
         if (length(sexMarkers) > 0) {
@@ -761,7 +761,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       }
 
       # Make palette.
-      val_palette <- unique(getKit(val_kit, what = "Color")$Color)
+      val_palette <- unique(get_kit(val_kit, what = "Color")$Color)
       val_palette <- add_color(val_palette, have = "Color", need = "R.Color")
 
       if (debug) {
@@ -1043,7 +1043,7 @@ plotBalance_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         }
 
         # Get kit colors and convert to dyes.
-        dyes <- unique(getKit(val_kit, what = "Color")$Color)
+        dyes <- unique(get_kit(val_kit, what = "Color")$Color)
         dyes <- add_color(dyes, have = "Color", need = "Dye")
         # Number of dyes.
         noDyes <- length(dyes)

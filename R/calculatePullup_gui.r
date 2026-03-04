@@ -23,7 +23,7 @@
 #'
 
 
-calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_pullup_gui <- function(env = parent.frame(), savegui = NULL,
                                 debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -141,7 +141,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
     container = g0
   )
 
-  dfs <- c(strings$STR_DRP_DEFAULT, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DEFAULT, list_objects(env = env, obj_class = "data.frame"))
 
   g0_data_drp <- gcombobox(
     items = dfs,
@@ -179,7 +179,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(save_edt) <- paste(val_obj, "_pullup", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -356,7 +356,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
   glabel(text = strings$STR_LBL_KIT, container = save_frame)
 
   kit_drp <- gcombobox(
-    items = getKit(), container = save_frame,
+    items = get_kit(), container = save_frame,
     ellipsize = "none"
   )
 
@@ -412,13 +412,13 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         unblockHandlers(calculate_btn)
         enabled(calculate_btn) <- FALSE
 
-        datanew <- calculatePullup(
+        datanew <- calculate_pullup(
           data = val_data,
           ref = val_ref,
-          pullup.range = val_pullup,
-          block.range = val_block,
-          ol.rm = val_ol,
-          ignore.case = val_ignore,
+          pullup_range = val_pullup,
+          block_range = val_block,
+          ol_rm = val_ol,
+          ignore_case = val_ignore,
           word = val_word,
           discard = val_discard,
           limit = val_limit,
@@ -430,8 +430,8 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Create key-value pairs to log.
         keys <- list(
-          "data", "ref", "pullup.range", "block.range", "ol.rm",
-          "ignore.case", "word", "discard", "limit"
+          "data", "ref", "pullup_range", "block_range", "ol_rm",
+          "ignore_case", "word", "discard", "limit"
         )
 
         values <- list(
@@ -447,7 +447,7 @@ calculatePullup_gui <- function(env = parent.frame(), savegui = NULL,
         )
 
         # Save data.
-        saveObject(name = val_name, object = datanew, parent = w, env = env)
+        save_object(name = val_name, object = datanew, parent = w, env = env)
 
         if (debug) {
           print(str(datanew))

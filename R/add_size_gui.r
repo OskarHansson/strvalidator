@@ -109,7 +109,7 @@ add_size_gui <- function(env = parent.frame(),
                                 container = g0)
   
   dataset_drp <- gcombobox(
-    items     = c(strings$STR_DRP_DEFAULT, listObjects(env, "data.frame")),
+    items     = c(strings$STR_DRP_DEFAULT, list_objects(env, "data.frame")),
     selected  = 1,
     editable  = FALSE,
     ellipsize = "none",
@@ -123,7 +123,7 @@ add_size_gui <- function(env = parent.frame(),
   glabel(strings$STR_LBL_KIT, container = g1)
   
   kit_drp <- gcombobox(
-    items     = getKit(),
+    items     = get_kit(),
     selected  = 1,
     editable  = FALSE,
     ellipsize = "none",
@@ -154,7 +154,7 @@ add_size_gui <- function(env = parent.frame(),
       samples <- length(unique(.g_data$Sample.Name))
       svalue(dataset_samples_lbl) <- paste(samples, strings$STR_LBL_SAMPLES)
       
-      .g_kit <- detectKit(.g_data, index = TRUE)
+      .g_kit <- detect_kit(.g_data, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .g_kit
       
       svalue(save_edt) <- paste0(.g_data_name, "_size")
@@ -212,8 +212,8 @@ add_size_gui <- function(env = parent.frame(),
     enabled(add_btn) <- FALSE
     
     # Merge Size + Offset/Repeat into one kit table for add_size()
-    kit_size   <- getKit(val_kit, what = "Size")
-    kit_offset <- getKit(val_kit, what = "Offset")
+    kit_size   <- get_kit(val_kit, what = "Size")
+    kit_offset <- get_kit(val_kit, what = "Offset")
     kit_small  <- unique(kit_offset[, c("Marker", "Offset", "Repeat")])
     kit_merged <- merge(kit_size, kit_small, by = "Marker", all.x = TRUE)
     
@@ -239,7 +239,7 @@ add_size_gui <- function(env = parent.frame(),
     )
     
     # Save result
-    saveObject(val_name, datanew, parent = w, env = env)
+    save_object(val_name, datanew, parent = w, env = env)
     
     # Close GUI
     .save_settings()
@@ -281,29 +281,3 @@ add_size_gui <- function(env = parent.frame(),
   invisible(TRUE)
 }
 
-################################################################################
-#' @rdname add_size_gui
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [add_size_gui()] instead.
-################################################################################
-
-addSize_gui <- function(env = parent.frame(), 
-                        savegui = NULL,
-                        debug = FALSE, 
-                        parent = NULL,
-                        ...) {
-  
-  .Deprecated("add_size_gui", package = "strvalidator")
-  
-  add_size_gui(
-    env     = env,
-    savegui = savegui,
-    debug   = debug,
-    parent  = parent,
-    ...
-  )
-}

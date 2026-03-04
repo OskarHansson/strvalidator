@@ -14,8 +14,8 @@
 #' @param data a data frame containing at least 'Sample.Name', 'Marker', 'Allele', Height'.
 #' @param ratio numeric giving the peak height ratio threshold.
 #' @param height numeric giving the minimum peak height.
-#' @param na.rm logical indicating if rows with no peak should be discarded.
-#' @param ol.rm logical indicating if off-ladder alleles should be discarded.
+#' @param na_rm logical indicating if rows with no peak should be discarded.
+#' @param ol_rm logical indicating if off-ladder alleles should be discarded.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return data.frame 'data' with genotype rows only.
@@ -28,9 +28,9 @@
 #' # Load an example dataset.
 #' data(set2)
 #' # Filter out probable profile with criteria at least 70% Hb.
-#' guessProfile(data = set2, ratio = 0.7)
-guessProfile <- function(data, ratio = 0.6, height = 50,
-                         na.rm = FALSE, ol.rm = TRUE, debug = FALSE) {
+#' guess_profile(data = set2, ratio = 0.7)
+guess_profile <- function(data, ratio = 0.6, height = 50,
+                         na_rm = FALSE, ol_rm = TRUE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -76,7 +76,7 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
   keepRows <- rep(FALSE, nrow(data))
 
   # NAs will be preserved but low peak heights wil be discarded.
-  if (!na.rm) {
+  if (!na_rm) {
     # NB! Alleles must be replaced first!
     data$Allele[data$Height < height] <- NA
     data$Height[data$Height < height] <- NA
@@ -86,7 +86,7 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
   }
 
   # Discard off-ladder alleles.
-  if (ol.rm) {
+  if (ol_rm) {
     data$Height[data$Allele == "OL"] <- NA
     if (debug) {
       print("Replaced Heights where Alleles is 'OL' with NA")
@@ -121,7 +121,7 @@ guessProfile <- function(data, ratio = 0.6, height = 50,
         # NA.
 
         # Keep / remove NA.
-        if (na.rm) {
+        if (na_rm) {
           genotype <- NULL # NA %in% NULL = FALSE
         } else {
           genotype <- NA # NA %in% NA = TRUE

@@ -25,7 +25,7 @@
 #'
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
-plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_ratio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -144,9 +144,9 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -297,7 +297,7 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )
@@ -376,13 +376,13 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
             if (val_titles) {
               gp <- .applyPlotSettings(
-                gp = gp, theme = val_theme, main.title = val_title,
-                x.title = val_xtitle, y.title = val_ytitle
+                gp = gp, theme = val_theme, main_title = val_title,
+                x_title = val_xtitle, y_title = val_ytitle
               )
             } else {
               gp <- .applyPlotSettings(
-                gp = gp, theme = val_theme, main.title = strings$STR_LBL_MAIN_TITLE,
-                x.title = vecColNames[i], y.title = strings$STR_LBL_Y_TITLE
+                gp = gp, theme = val_theme, main_title = strings$STR_LBL_MAIN_TITLE,
+                x_title = vecColNames[i], y_title = strings$STR_LBL_Y_TITLE
               )
             }
           } else {
@@ -391,13 +391,13 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
             if (val_titles) {
               gp <- .applyPlotSettings(
-                gp = gp, theme = val_theme, main.title = val_title,
-                x.title = val_xtitle, y.title = val_ytitle
+                gp = gp, theme = val_theme, main_title = val_title,
+                x_title = val_xtitle, y_title = val_ytitle
               )
             } else {
               gp <- .applyPlotSettings(
-                gp = gp, theme = val_theme, main.title = strings$STR_LBL_MAIN_TITLE,
-                x.title = strings$STR_LBL_X_TITLE_MARKER, y.title = strings$STR_LBL_Y_TITLE
+                gp = gp, theme = val_theme, main_title = strings$STR_LBL_MAIN_TITLE,
+                x_title = strings$STR_LBL_X_TITLE_MARKER, y_title = strings$STR_LBL_Y_TITLE
               )
             }
           }
@@ -423,13 +423,13 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
           if (val_titles) {
             gp <- .applyPlotSettings(
-              gp = gp, theme = val_theme, main.title = val_title,
-              x.title = val_xtitle, y.title = val_ytitle
+              gp = gp, theme = val_theme, main_title = val_title,
+              x_title = val_xtitle, y_title = val_ytitle
             )
           } else {
             gp <- .applyPlotSettings(
-              gp = gp, theme = val_theme, main.title = strings$STR_LBL_MAIN_TITLE,
-              x.title = NULL, y.title = strings$STR_LBL_Y_TITLE
+              gp = gp, theme = val_theme, main_title = strings$STR_LBL_MAIN_TITLE,
+              x_title = NULL, y_title = strings$STR_LBL_Y_TITLE
             )
           }
         } else {
@@ -443,13 +443,13 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
 
           if (val_titles) {
             gp <- .applyPlotSettings(
-              gp = gp, theme = val_theme, main.title = val_title,
-              x.title = val_xtitle, y.title = val_ytitle
+              gp = gp, theme = val_theme, main_title = val_title,
+              x_title = val_xtitle, y_title = val_ytitle
             )
           } else {
             gp <- .applyPlotSettings(
-              gp = gp, theme = val_theme, main.title = strings$STR_LBL_MAIN_TITLE,
-              x.title = strings$STR_LBL_X_TITLE_PAIR, y.title = strings$STR_LBL_Y_TITLE
+              gp = gp, theme = val_theme, main_title = strings$STR_LBL_MAIN_TITLE,
+              x_title = strings$STR_LBL_X_TITLE_PAIR, y_title = strings$STR_LBL_Y_TITLE
             )
           }
         }
@@ -486,14 +486,14 @@ plotRatio_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   }
 
   .applyPlotSettings <- function(gp, theme = "theme_grey()",
-                                 main.title = NULL, x.title = NULL, y.title = NULL) {
+                                 main_title = NULL, x_title = NULL, y_title = NULL) {
     # Apply theme.
     gp <- gp + eval(parse(text = theme))
 
     # Apply titles.
-    gp <- gp + labs(title = main.title)
-    gp <- gp + xlab(x.title)
-    gp <- gp + ylab(y.title)
+    gp <- gp + labs(title = main_title)
+    gp <- gp + xlab(x_title)
+    gp <- gp + ylab(y_title)
 
     return(gp)
   }

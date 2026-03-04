@@ -19,7 +19,7 @@
 #' @seealso \code{\link{calculateAT6}}, \code{\link{calculateAT}},
 #'  \code{\link{calculateAT_gui}}, \code{\link{check_subset}}
 
-calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_at6_gui <- function(env = parent.frame(), savegui = NULL,
                              debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -133,9 +133,9 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -187,9 +187,9 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   refset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -237,9 +237,9 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
   amset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -391,20 +391,20 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateAT6(
+      datanew <- calculate_at6(
         data = .gData,
         ref = .gRef,
         amount = .gAm,
         weighted = val_weighted,
         alpha = val_alpha,
-        ignore.case = val_ignore_case,
+        ignore_case = val_ignore_case,
         debug = debug
       )
 
       # Create key-value pairs to log.
       keys <- list(
         "data", "ref", "amount",
-        "weighted", "alpha", "ignore.case"
+        "weighted", "alpha", "ignore_case"
       )
 
       values <- list(
@@ -420,7 +420,7 @@ calculateAT6_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(paste("EXIT:", fnc))

@@ -30,7 +30,7 @@
 #' @importFrom dplyr mutate across %>%
 #'
 
-calculateStatistics <- function(data, target, quant = 0.95,
+calculate_statistics <- function(data, target, quant = 0.95,
                                 group = NULL, count = NULL,
                                 decimals = -1, debug = FALSE) {
   message("General function to calculate summary statistics.")

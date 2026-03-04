@@ -50,10 +50,10 @@
 #' @param method character vector, specifying which scoring method(s) to use.
 #' Method 'X' for random allele, '1' or '2' for the low/high molecular weight allele,
 #' and 'L' for the locus method (the option is case insensitive).
-#' @param ignore.case logical, default TRUE for case insensitive.
-#' @param sex.rm logical, default FALSE to include sex markers in the analysis.
-#' @param qs.rm logical, default TRUE to exclude quality sensors from the analysis.
-#' @param kit character, required if sex.rm=TRUE or qs.rm=TRUE to define the kit.
+#' @param ignore_case logical, default TRUE for case insensitive.
+#' @param sex_rm logical, default FALSE to include sex markers in the analysis.
+#' @param qs_rm logical, default TRUE to exclude quality sensors from the analysis.
+#' @param kit character, required if sex_rm=TRUE or qs_rm=TRUE to define the kit.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return data.frame with columns 'Sample.Name', 'Marker', 'Allele', 'Height', 'Dropout',
@@ -88,9 +88,9 @@
 #' @examples
 #' data(set4)
 #' data(ref4)
-#' drop <- calculateDropout(data = set4, ref = ref4, kit = "ESX17", ignore.case = TRUE)
-calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "X", "L"),
-                             ignore.case = TRUE, sex.rm = FALSE, qs.rm = TRUE,
+#' drop <- calculate_dropout(data = set4, ref = ref4, kit = "ESX17", ignore_case = TRUE)
+calculate_dropout <- function(data, ref, threshold = NULL, method = c("1", "2", "X", "L"),
+                             ignore_case = TRUE, sex_rm = FALSE, qs_rm = TRUE,
                              kit = NULL, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -202,19 +202,19 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
   }
 
   # Check logical arguments.
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical.")
+  if (!is.logical(ignore_case)) {
+    stop("'ignore_case' must be logical.")
   }
-  if (!is.logical(sex.rm)) {
-    stop("'sex.rm' must be logical.")
+  if (!is.logical(sex_rm)) {
+    stop("'sex_rm' must be logical.")
   }
-  if (!is.logical(qs.rm)) {
-    stop("'qs.rm' must be logical.")
+  if (!is.logical(qs_rm)) {
+    stop("'qs_rm' must be logical.")
   }
 
   # Check kit.
   if (!is.null(kit)) {
-    if (is.null(nrow(getKit(kit = kit)))) {
+    if (is.null(nrow(get_kit(kit = kit)))) {
       stop("'kit' was not found in the kit definition file.")
     }
   }
@@ -222,18 +222,18 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
   # PREPARE -------------------------------------------------------------------
 
   # Remove sex markers and quality sensors from dataset.
-  if (sex.rm || qs.rm) {
+  if (sex_rm || qs_rm) {
     message("Removing gender markers and/or quality sensors from dataset...")
-    data <- filterProfile(
-      data = data, filter.allele = FALSE,
-      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+    data <- filter_profile(
+      data = data, filter_allele = FALSE,
+      sex_rm = sex_rm, qs_rm = qs_rm, kit = kit,
       debug = debug
     )
 
     message("Removing gender markers and/or quality sensors from reference dataset...")
-    ref <- filterProfile(
-      data = ref, filter.allele = FALSE,
-      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+    ref <- filter_profile(
+      data = ref, filter_allele = FALSE,
+      sex_rm = sex_rm, qs_rm = qs_rm, kit = kit,
       debug = debug
     )
   }
@@ -288,7 +288,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
   # Loop through all reference samples.
   for (r in seq(along = sampleNamesRef)) {
     # Select current subsets.
-    if (ignore.case) {
+    if (ignore_case) {
       selectedSamples <- grepl(
         toupper(sampleNamesRef[r]),
         toupper(data$Sample.Name)
@@ -577,7 +577,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                   } else if (observed == 2) {
                     methodLTmp[1] <- 1
                     methodLTmp[2] <- NA
-                    methodLPh[1] <- max(peakHeight[selA1], peakHeight[selA2], rm.na = TRUE)
+                    methodLPh[1] <- max(peakHeight[selA1], peakHeight[selA2], na.rm = TRUE)
                     methodLPh[2] <- NA
                   } else {
                     stop(
@@ -645,7 +645,7 @@ calculateDropout <- function(data, ref, threshold = NULL, method = c("1", "2", "
                 # Save one or two entries.
                 if (observed == 1) {
                   methodLTmp <- 1
-                  methodLPh <- max(peakHeight[selA1], peakHeight[selA2], rm.na = TRUE)
+                  methodLPh <- max(peakHeight[selA1], peakHeight[selA2], na.rm = TRUE)
                 } else if (observed == 2) {
                   methodLTmp[1] <- 0
                   methodLTmp[2] <- NA

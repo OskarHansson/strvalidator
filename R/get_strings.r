@@ -1,7 +1,7 @@
 #' @title Get Language Strings
 #'
 #' @description
-#' Returns language-specific strings for a given GUI or key from the package’s
+#' Returns language-specific strings for a given GUI or key from the package'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s'
 #' localization files.
 #'
 #' @details
@@ -29,11 +29,11 @@
 get_strings <- function(language = NA, gui = NA, key = NA,
                         encoding = NA, about = FALSE, debug = FALSE) {
   if (is.na(language)) {
-    language <- getSetting("language")
+    language <- get_setting("language")
   }
 
   if (is.na(encoding)) {
-    encoding <- getSetting("encoding")
+    encoding <- get_setting("encoding")
   }
 
   scope <- NULL
@@ -166,37 +166,5 @@ get_gui_scope <- function(default = "default") {
   }
   
   return(gui_name)
-}
-
-################################################################################
-#' @rdname get_strings
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [get_strings()] instead.
-################################################################################
-
-getStrings <- function(language = NA, 
-                        gui = NA, 
-                        key = NA,
-                        encoding = NA, 
-                        about = FALSE, 
-                        debug = FALSE,
-                        ...) {
-  
-  .Deprecated("get_strings", package = "strvalidator")
-  
-  # Remap arguments
-  get_strings(
-    language = language,
-    gui = gui,
-    key = key,
-    encoding = encoding,
-    about = about,
-    debug = debug,
-    ...
-  )
 }
 

@@ -21,7 +21,7 @@
 #' @return integer or string indicating the detected kit.
 #'
 
-detectKit <- function(data, index = FALSE, debug = FALSE) {
+detect_kit <- function(data, index = FALSE, debug = FALSE) {
   if (is.data.frame(data)) {
     if (!"Marker" %in% colnames(data)) {
       stop("Data frame must contain a column 'Marker'")
@@ -41,10 +41,10 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
   if (!is.null(attribute)) {
     if (!index) {
       # Get kit name.
-      detectedKit <- getKit(attribute, what = "Short.Name")
+      detectedKit <- get_kit(attribute, what = "Short.Name")
     } else {
       # Get kit index.
-      detectedKit <- getKit(attribute, what = "Index")
+      detectedKit <- get_kit(attribute, what = "Index")
     }
 
     # Check if a match was returned.
@@ -87,7 +87,7 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
   # Get markers from kit ------------------------------------------------------
 
   # Get available kits.
-  kits <- getKit()
+  kits <- get_kit()
 
   kitMarkers <- list()
   score <- vector()
@@ -95,7 +95,7 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
 
   # Get markers for available kits.
   for (k in seq(along = kits)) {
-    kitMarkers[[k]] <- getKit(kits[k], what = "Marker")
+    kitMarkers[[k]] <- get_kit(kits[k], what = "Marker")
   }
 
   if (debug) {
@@ -371,7 +371,7 @@ detectKit <- function(data, index = FALSE, debug = FALSE) {
 
   if (!index) {
     # Get kit name.
-    detectedKit <- getKit(detectedKit, what = "Short.Name")
+    detectedKit <- get_kit(detectedKit, what = "Short.Name")
   }
 
   # Write message.

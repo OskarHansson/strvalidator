@@ -18,7 +18,7 @@
 #'
 #' @seealso \code{\link{calculateSlope}}
 
-calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+calculate_slope_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   .gData <- NULL
   .gRef <- NULL
   .gDataName <- NULL
@@ -132,9 +132,9 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -166,7 +166,7 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       svalue(f1_groups_lbl) <- paste(strings$STR_LBL_GROUPS, unique(.gData$Group))
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(f1_kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -193,9 +193,9 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   refset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -316,7 +316,7 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   tooltip(f1_auto_chk) <- strings$STR_TIP_KIT
 
   f1g1[3, 2] <- f1_kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+    items = get_kit(), selected = 1,
     editable = FALSE, container = f1g1,
     ellipsize = "none"
   )
@@ -394,17 +394,17 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
         val_kit <- NULL
       }
 
-      datanew <- calculateSlope(
+      datanew <- calculate_slope(
         data = val_data, ref = val_ref, conf = val_conf,
         kit = val_kit,
-        ignore.case = val_ignore, exact = val_exact,
+        ignore_case = val_ignore, exact = val_exact,
         word = val_word, debug = debug
       )
 
       # Create key-value pairs to log.
       keys <- list(
         "data", "ref", "conf", "kit", "auto",
-        "ignore.case", "word", "exact"
+        "ignore_case", "word", "exact"
       )
 
       values <- list(
@@ -420,7 +420,7 @@ calculateSlope_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(str(datanew))

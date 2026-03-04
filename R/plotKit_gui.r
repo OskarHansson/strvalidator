@@ -20,7 +20,7 @@
 #'  scale_y_reverse theme element_blank labs element_text
 #'
 
-plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_kit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gPlot <- NULL
 
@@ -130,7 +130,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   size(scroll_view) <- c(100, 150)
 
   kit_checkbox_group <- gcheckboxgroup(
-    items = getKit(),
+    items = get_kit(),
     checked = FALSE,
     horizontal = FALSE,
     container = scroll_view
@@ -269,7 +269,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )
@@ -339,7 +339,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
 
       for (k in seq(along = selectedKits)) {
         # Get current kit.
-        kit <- getKit(selectedKits[k], what = "Range")
+        kit <- get_kit(selectedKits[k], what = "Range")
 
         # Calculate text and rectangle coordinates.
         kit$Xtxt <- (kit$Marker.Min + kit$Marker.Max) / 2
@@ -355,7 +355,7 @@ plotKit_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
         kitData <- rbind(kitData, kit)
 
         # Get full name.
-        kitTitle$Name <- getKit(selectedKits[k], what = "Full.Name")
+        kitTitle$Name <- get_kit(selectedKits[k], what = "Full.Name")
         kitTitle$X <- 50
         kitTitle$Y <- min(kit$Ymin) - val_markerheight
         kitName <- rbind(kitName, kitTitle)

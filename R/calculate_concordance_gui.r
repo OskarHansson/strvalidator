@@ -129,7 +129,7 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
     container = f0g0
   )
   
-  f0_list <- c(strings$STR_DRP_DEFAULT, listObjects(env = env, obj.class = "data.frame"))
+  f0_list <- c(strings$STR_DRP_DEFAULT, list_objects(env = env, obj_class = "data.frame"))
   
   dataset_drp <- gcombobox(
     items = f0_list, selected = 1,
@@ -144,7 +144,7 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
   glabel(text = strings$STR_LBL_KIT, container = f0g1)
   
   kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+    items = get_kit(), selected = 1,
     editable = FALSE, container = f0g1,
     ellipsize = "none", expand = TRUE,
     fill = "x"
@@ -176,7 +176,7 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
       )
       
       # Detect kit.
-      kitIndex <- detectKit(.g_data, index = TRUE)
+      kitIndex <- detect_kit(.g_data, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -407,8 +407,8 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name1, object = datanew[[1]], parent = w, env = env)
-      saveObject(name = val_name2, object = datanew[[2]], parent = w, env = env)
+      save_object(name = val_name1, object = datanew[[1]], parent = w, env = env)
+      save_object(name = val_name2, object = datanew[[2]], parent = w, env = env)
 
       if (debug) {
         print(str(datanew))
@@ -522,30 +522,3 @@ calculate_concordance_gui <- function(env = parent.frame(), savegui = NULL,
   focus(w)
 }
 
-################################################################################
-#' @rdname calculate_concordance_gui
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [calculate_concordance_gui()] instead.
-################################################################################
-
-calculateConcordance_gui <- function(env = parent.frame(),
-                                     savegui = NULL,
-                                     debug = FALSE, 
-                                     parent = NULL, 
-                                     ...) {
-  
-  .Deprecated("calculate_concordance_gui", package = "strvalidator")
-  
-  # Remap arguments
-  calculate_concordance_gui(
-    env = env,
-    savegui = savegui,
-    debug = debug,
-    parent = parent,
-    ...
-  )
-}

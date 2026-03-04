@@ -9,7 +9,7 @@
 #' Returns a list of objects of the specified class in the environment.
 #'
 #' @param env environment in which to search for objects.
-#' @param obj.class character string or vector specifying the object class.
+#' @param obj_class character string or vector specifying the object class.
 #' @param sort character string "time", "alpha", "size" specifying the sorting order. Default = NULL.
 #' @param decreasing logical used to indicate order when sorting is not NULL. Default = TRUE.
 #' @param debug logical indicating printing debug information.
@@ -21,12 +21,12 @@
 #' @examples
 #' \dontrun{
 #' # List data frames in the workspace.
-#' listObjects(obj.class = "data.frame")
+#' list_objects(obj_class = "data.frame")
 #' # List functions in the workspace.
-#' listObjects(obj.class = "function")
+#' list_objects(obj_class = "function")
 #' }
 #'
-listObjects <- function(env = parent.frame(), obj.class = NULL,
+list_objects <- function(env = parent.frame(), obj_class = NULL,
                         sort = NULL, decreasing = TRUE,
                         debug = FALSE) {
   if (debug) {
@@ -42,12 +42,12 @@ listObjects <- function(env = parent.frame(), obj.class = NULL,
   if (debug) {
     print("Objects:")
     print(wsObj)
-    print("obj.class:")
-    print(obj.class)
+    print("obj_class:")
+    print(obj_class)
   }
 
   # Check if specified object class.
-  if (!is.null(obj.class)) {
+  if (!is.null(obj_class)) {
     classes <- list()
 
     # Loop to save all class information.
@@ -57,9 +57,9 @@ listObjects <- function(env = parent.frame(), obj.class = NULL,
     }
 
     # Filter objects with specified classes.
-    for (c in seq(along = obj.class)) {
+    for (c in seq(along = obj_class)) {
       for (i in seq(along = classes)) {
-        if (obj.class[c] %in% classes[[i]]) {
+        if (obj_class[c] %in% classes[[i]]) {
           res <- c(res, wsObj[i])
         }
       }

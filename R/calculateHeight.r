@@ -35,15 +35,15 @@
 #'
 #' @param data data.frame with at least columns 'Sample.Name' and 'Height'.
 #' @param ref data.frame with at least columns 'Sample.Name' and 'Allele'.
-#' @param na.replace replaces NA values in the final result.
+#' @param na_replace replaces NA values in the final result.
 #' @param exclude character vector (case sensitive) e.g. "OL" excludes rows with
 #'  "OL" in the 'Allele' column (not necessary when a reference dataset is provided).
 #' @param add logical default is TRUE which will add or overwrite columns
 #' 'TPH', 'Peaks', 'H', and 'Proportion' in the provided 'data'.
-#' @param sex.rm logical, default FALSE to include sex markers in the analysis.
-#' @param qs.rm logical, default TRUE to exclude quality sensors from the analysis.
-#' @param kit character, required if sex.rm=TRUE or qs.rm=TRUE to define the kit.
-#' @param ignore.case logical TRUE ignores case in sample name matching.
+#' @param sex_rm logical, default FALSE to include sex markers in the analysis.
+#' @param qs_rm logical, default TRUE to exclude quality sensors from the analysis.
+#' @param kit character, required if sex_rm=TRUE or qs_rm=TRUE to define the kit.
+#' @param ignore_case logical TRUE ignores case in sample name matching.
 #' @param exact logical TRUE for exact sample name matching.
 #' @param word logical TRUE to add word boundaries to sample name matching.
 #' @param debug logical indicating printing debug information.
@@ -80,8 +80,8 @@
 #' @importFrom data.table data.table :=
 
 
-calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exclude = NULL,
-                            sex.rm = FALSE, qs.rm = FALSE, kit = NULL, ignore.case = TRUE,
+calculate_height <- function(data, ref = NULL, na_replace = NULL, add = TRUE, exclude = NULL,
+                            sex_rm = FALSE, qs_rm = FALSE, kit = NULL, ignore_case = TRUE,
                             exact = FALSE, word = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -121,8 +121,8 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
   }
 
   # Check na.
-  if (length(na.replace) > 1) {
-    stop("'na.replace' must be of length 1.", call. = TRUE)
+  if (length(na_replace) > 1) {
+    stop("'na_replace' must be of length 1.", call. = TRUE)
   }
 
   # Check logical arguments.
@@ -130,23 +130,23 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     stop("'add' must be logical.", call. = TRUE)
   }
 
-  if (!is.logical(sex.rm)) {
-    stop("'sex.rm' must logical.", call. = TRUE)
+  if (!is.logical(sex_rm)) {
+    stop("'sex_rm' must logical.", call. = TRUE)
   }
 
-  if (!is.logical(qs.rm)) {
-    stop("'qs.rm' must be logical.", call. = TRUE)
+  if (!is.logical(qs_rm)) {
+    stop("'qs_rm' must be logical.", call. = TRUE)
   }
 
   # Check dependencies.
-  if (sex.rm) {
+  if (sex_rm) {
     if (is.null(kit)) {
-      stop("'kit' can't be NULL if sex.rm=TRUE.")
+      stop("'kit' can't be NULL if sex_rm=TRUE.")
     }
   }
-  if (qs.rm) {
+  if (qs_rm) {
     if (is.null(kit)) {
-      stop("'kit' can't be NULL if qs.rm=TRUE.")
+      stop("'kit' can't be NULL if qs_rm=TRUE.")
     }
   }
 
@@ -176,19 +176,19 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
   if (!is.null(ref)) {
     # Filter dataset.
     message("Extracting known alleles from dataset...")
-    data <- filterProfile(
+    data <- filter_profile(
       data = data, ref = ref,
-      add.missing.loci = FALSE, keep.na = TRUE, invert = FALSE,
-      ignore.case = ignore.case, exact = exact, word = word,
-      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug
+      add_missing_loci = FALSE, keep_na = TRUE, invert = FALSE,
+      ignore_case = ignore_case, exact = exact, word = word,
+      sex_rm = sex_rm, qs_rm = qs_rm, kit = kit, debug = debug
     )
 
     # Remove sex markers and quality sensors from reference dataset.
-    if (sex.rm || qs.rm) {
+    if (sex_rm || qs_rm) {
       message("Removing gender markers and/or quality sensors from reference dataset...")
-      ref <- filterProfile(
-        data = ref, filter.allele = FALSE,
-        sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+      ref <- filter_profile(
+        data = ref, filter_allele = FALSE,
+        sex_rm = sex_rm, qs_rm = qs_rm, kit = kit,
         debug = debug
       )
     }
@@ -205,7 +205,7 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
 
     if (!"Copies" %in% names(ref)) {
       # Add
-      ref <- calculateCopies(data = ref)
+      ref <- calculate_copies(data = ref)
       message("Number of allele copies added to reference dataset.")
     }
 
@@ -219,9 +219,9 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     DTref[, Expected := .N, by = list(Sample.Name)]
 
     # Add to dataset.
-    data <- addData(
-      data = data, new.data = DTref,
-      by.col = "Sample.Name", then.by.col = "Marker",
+    data <- add_data(
+      data = data, new_data = DTref,
+      by_col = "Sample.Name", then_by_col = "Marker",
       what = c("Copies", "Expected"), exact = exact,
       debug = debug
     )
@@ -230,12 +230,12 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
     message("Reference dataset not provided.")
 
     # Filter quality sensors and sex markers.
-    data <- filterProfile(
+    data <- filter_profile(
       data = data, ref = NULL,
-      add.missing.loci = FALSE, keep.na = TRUE, invert = FALSE,
-      ignore.case = ignore.case, exact = exact, word = word,
-      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
-      filter.allele = FALSE, debug = debug
+      add_missing_loci = FALSE, keep_na = TRUE, invert = FALSE,
+      ignore_case = ignore_case, exact = exact, word = word,
+      sex_rm = sex_rm, qs_rm = qs_rm, kit = kit,
+      filter_allele = FALSE, debug = debug
     )
   }
 
@@ -332,38 +332,38 @@ calculateHeight <- function(data, ref = NULL, na.replace = NULL, add = TRUE, exc
   # FINALIZE ------------------------------------------------------------------
 
   # Replace NA:s
-  if (!is.null(na.replace)) {
-    # Check if NA:s and change to 'na.replace'.
+  if (!is.null(na_replace)) {
+    # Check if NA:s and change to 'na_replace'.
 
     if ("TPH" %in% names(res)) {
       if (any(is.na(res$TPH))) {
         n <- sum(is.na(res$TPH))
-        res[is.na(res$TPH), ]$TPH <- na.replace
-        message("Replaced ", n, " NA's in 'TPH' with '", na.replace, "'.")
+        res[is.na(res$TPH), ]$TPH <- na_replace
+        message("Replaced ", n, " NA's in 'TPH' with '", na_replace, "'.")
       }
     }
 
     if ("Peaks" %in% names(res)) {
       if (any(is.na(res$Peaks))) {
         n <- sum(is.na(res$Peaks))
-        res[is.na(res$Peaks), ]$Peaks <- na.replace
-        message("Replaced ", n, " NA's in 'Peaks' with '", na.replace, "'.")
+        res[is.na(res$Peaks), ]$Peaks <- na_replace
+        message("Replaced ", n, " NA's in 'Peaks' with '", na_replace, "'.")
       }
     }
 
     if ("H" %in% names(res)) {
       if (any(is.na(res$H))) {
         n <- sum(is.na(res$H))
-        res[is.na(res$H), ]$H <- na.replace
-        message("Replaced ", n, " NA's in 'H' with '", na.replace, "'.")
+        res[is.na(res$H), ]$H <- na_replace
+        message("Replaced ", n, " NA's in 'H' with '", na_replace, "'.")
       }
     }
 
     if ("Proportion" %in% names(res)) {
       if (any(is.na(res$Proportion))) {
         n <- sum(is.na(res$Proportion))
-        res[is.na(res$Proportion), ]$Proportion <- na.replace
-        message("Replaced ", n, " NA's in 'Proportion' with '", na.replace, "'.")
+        res[is.na(res$Proportion), ]$Proportion <- na_replace
+        message("Replaced ", n, " NA's in 'Proportion' with '", na_replace, "'.")
       }
     }
   }

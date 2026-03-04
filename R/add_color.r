@@ -14,7 +14,7 @@
 #'
 #' This function can add missing color columns to a data frame based on another
 #' color column, convert between schemes, or derive colors from a kit
-#' definition via `getKit()`. Conversions are case insensitive and missing or
+#' definition via `get_kit()`. Conversions are case insensitive and missing or
 #' unrecognized values will be mapped to `NA`.
 #'
 #' A small set of common aliases is accepted for the `Color` scheme (e.g.,
@@ -27,7 +27,7 @@
 #'
 #' @note
 #' Kit definition files contain only color information. This function therefore
-#' always calls `getKit(kit, what = "Color")` when a kit is provided, even if
+#' always calls `get_kit(kit, what = "Color")` when a kit is provided, even if
 #' `need = "Dye"`. The `Dye` and `R.Color` columns are derived internally from
 #' the `Color` values according to a fixed lookup table.
 #'
@@ -181,7 +181,7 @@ add_color <- function(data, kit = NA, have = NA, need = NA,
     if (is.na(have) && !is.na(kit)) {
       # Always derive Color from kit if overwrite = TRUE or Color is missing
       if (!"COLOR" %in% toupper(names(data)) || overwrite) {
-        kit_info <- getKit(kit, what = "Color")
+        kit_info <- get_kit(kit, what = "Color")
         marker  <- kit_info$Marker
         m_color  <- tolower(kit_info$Color)
         if (debug) {
@@ -300,36 +300,3 @@ add_color <- function(data, kit = NA, have = NA, need = NA,
   return(data)
 }
 
-################################################################################
-#' @rdname add_color
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [add_color()] instead.
-################################################################################
-
-addColor <- function(data, 
-                     kit = NA, 
-                     have = NA, 
-                     need = NA,
-                     overwrite = FALSE, 
-                     ignore.case = FALSE, 
-                     debug = FALSE,
-                     ...) {
-  
-  .Deprecated("add_color", package = "strvalidator")
-  
-  # Remap arguments
-  add_color(
-    data = data,
-    kit = kit,
-    have = have,
-    need = need,
-    overwrite = overwrite,
-    ignore_case = ignore.case,
-    debug = debug,
-    ...
-  )
-}

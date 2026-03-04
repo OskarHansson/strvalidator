@@ -29,7 +29,7 @@
 #' @importFrom utils str
 #'
 
-colNames <- function(data, slim = TRUE, concatenate = NULL, numbered = TRUE, debug = FALSE) {
+col_names <- function(data, slim = TRUE, concatenate = NULL, numbered = TRUE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")

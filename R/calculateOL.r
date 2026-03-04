@@ -24,7 +24,7 @@
 #' @importFrom utils head str
 #'
 
-calculateOL <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
+calculate_ol <- function(kit, db, virtual = TRUE, limit = TRUE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("kit:")

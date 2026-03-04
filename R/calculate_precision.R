@@ -1,7 +1,7 @@
 # Internal helper: population standard deviation (Excel STDEV.P)
 #' @noRd
-sd_pop <- function(x, na.rm = FALSE) {
-  if (na.rm) x <- x[!is.na(x)]
+sd_pop <- function(x, na_rm = FALSE) {
+  if (na_rm) x <- x[!is.na(x)]
   n <- length(x)
   if (n <= 1) return(NA_real_)
   m <- mean(x)
@@ -15,7 +15,7 @@ sd_pop <- function(x, na.rm = FALSE) {
 #' reproducibility (across-injection variability) for STR alleles.
 #'
 #' Measured allele sizes are compared against expected allele sizes from the
-#' kit specification (e.g. using `getKit(kit, what = "Size")`). The function
+#' kit specification (e.g. using `get_kit(kit, what = "Size")`). The function
 #' optionally includes or excludes the true allelic ladder wells.
 #' 
 #' @details
@@ -96,7 +96,7 @@ sd_pop <- function(x, na.rm = FALSE) {
 #' @examples
 #' \dontrun{
 #' gm <- read.delim("Plate1_GMexport.txt", check.names = FALSE)
-#' kit <- getKit("Fusion 6C", what = "Size")
+#' kit <- get_kit("Fusion 6C", what = "Size")
 #' res <- calculate_precision(gm, kit)
 #' head(res$within)
 #' head(res$across)
@@ -185,7 +185,7 @@ calculate_precision <- function(data,
       Min.Dev  = min(abs(.data$Deviation), na.rm = TRUE),
       Max.Dev  = max(abs(.data$Deviation), na.rm = TRUE),
       Mean.Size = mean(.data$Size, na.rm = TRUE),
-      SD        = sd_pop(.data$Size, na.rm = TRUE),
+      SD        = sd_pop(.data$Size, na_rm = TRUE),
       Min.Size  = min(.data$Size, na.rm = TRUE),
       Max.Size  = max(.data$Size, na.rm = TRUE),
       .groups = "drop"
@@ -258,7 +258,7 @@ calculate_precision <- function(data,
     dplyr::summarise(
       N.Runs  = dplyr::n_distinct(.data$Run.Name),
       Mean.Size.Mean = mean(.data$Mean.Size, na.rm = TRUE),
-      Mean.Size.SD   = sd_pop(.data$Mean.Size, na.rm = TRUE),  # reproducibility
+      Mean.Size.SD   = sd_pop(.data$Mean.Size, na_rm = TRUE),  # reproducibility
       Mean.Size.Min  = min(.data$Mean.Size, na.rm = TRUE),
       Mean.Size.Max  = max(.data$Mean.Size, na.rm = TRUE),
       .groups = "drop"

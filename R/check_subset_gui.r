@@ -131,9 +131,9 @@ check_subset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -180,9 +180,9 @@ check_subset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   dataset_ref_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -402,33 +402,4 @@ check_subset_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
 visible(w) <- TRUE
 focus(w)
 } # End of GUI
-
-################################################################################
-#' @rdname check_subset_gui
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [check_subset_gui()] instead.
-################################################################################
-
-checkSubset_gui <- function(env = parent.frame(),
-                            savegui = NULL, 
-                            debug = FALSE,
-                            parent = NULL,
-                            ...) {
-  
-  .Deprecated("check_subset_gui", package = "strvalidator")
-  
-  # Remap arguments
-  check_subset_gui(
-    env = env,
-    savegui = savegui,
-    debug = debug,
-    parent = parent,
-    ...
-  )
-}
-
 

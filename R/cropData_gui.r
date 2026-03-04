@@ -26,7 +26,7 @@
 #' @seealso \code{\link{trim_gui}}, \code{\link{editData_gui}}, \code{\link{combine_gui}}
 
 
-cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+crop_data_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -153,9 +153,9 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -601,7 +601,7 @@ cropData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pa
     }
 
     # Save data.
-    saveObject(name = val_name, object = datanew, parent = w, env = env)
+    save_object(name = val_name, object = datanew, parent = w, env = env)
     blockHandlers(save_btn)
     svalue(save_btn) <- strings$STR_BTN_SAVED
     unblockHandlers(save_btn)

@@ -20,7 +20,7 @@
 #'
 #' @seealso \code{\link{addMarker}}
 
-addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+add_marker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- data.frame(No.Data = NA)
   .gDataName <- NULL
@@ -119,9 +119,9 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -152,7 +152,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(dataset_samples_lbl) <- paste(" ", samples, strings$STR_LBL_SAMPLES)
-      .gKit <<- detectKit(.gData, index = TRUE)
+      .gKit <<- detect_kit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
       svalue(save_edt) <- paste(.gDataName, "_marker", sep = "")
     } else {
@@ -171,7 +171,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   glabel(text = strings$STR_LBL_KIT, container = f0g2)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = f0g2,
@@ -229,17 +229,17 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     unblockHandlers(add_btn)
     enabled(add_btn) <- FALSE
 
-    datanew <- addMarker(
+    datanew <- add_marker(
       data = val_data,
-      marker = getKit(val_kit, what = "Marker"),
-      ignore.case = val_ignore, debug = debug
+      marker = get_kit(val_kit, what = "Marker"),
+      ignore_case = val_ignore, debug = debug
     )
 
     # Add attributes to result.
     attr(datanew, which = "kit") <- val_kit
 
     # Create key-value pairs to log.
-    keys <- list("data", "kit", "ignore.case")
+    keys <- list("data", "kit", "ignore_case")
 
     values <- list(val_data_name, val_kit, val_ignore)
 
@@ -251,7 +251,7 @@ addMarker_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     )
 
     # Save data.
-    saveObject(name = val_name, object = datanew, parent = w, env = env)
+    save_object(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
     .saveSettings()

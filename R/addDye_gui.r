@@ -5,7 +5,7 @@
 #'
 #' @details
 #' Convenience GUI for the use of \code{\link{add_color}} and
-#' \code{\link{addOrder}} to add 'Dye', 'Color', 'R.Color', and marker 'Order'
+#' \code{\link{add_order}} to add 'Dye', 'Color', 'R.Color', and marker 'Order'
 #' to a dataset.
 #' 'Dye' is the one letter abbreviations for the fluorophores commonly used
 #' to label primers in forensic STR typing kits (e.g. R and Y),
@@ -27,7 +27,7 @@
 #'
 #' @seealso \code{\link{add_color}}
 
-addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+add_dye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- data.frame(No.Data = NA)
   .gDataName <- NULL
@@ -127,9 +127,9 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -157,7 +157,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
       .gDataName <<- val_obj
       samples <- length(unique(.gData$Sample.Name))
       svalue(dataset_samples_lbl) <- paste(" ", samples, strings$STR_LBL_SAMPLES)
-      .gKit <<- detectKit(.gData, index = TRUE)
+      .gKit <<- detect_kit(.gData, index = TRUE)
       svalue(kit_drp, index = TRUE) <- .gKit
       svalue(save_edt) <- paste(.gDataName, sep = "")
     } else {
@@ -176,7 +176,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
   glabel(text = strings$STR_LBL_KIT, container = f0g1)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = f0g1,
@@ -287,9 +287,9 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     }
 
     if (val_order) {
-      val_data <- addOrder(
+      val_data <- add_order(
         data = val_data, kit = val_kit, overwrite = TRUE,
-        ignore.case = val_ignore, debug = debug
+        ignore_case = val_ignore, debug = debug
       )
     }
 
@@ -301,7 +301,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
 
     # Create key-value pairs to log.
     keys <- list(
-      "data", "kit", "ignore.case", "dye", "color",
+      "data", "kit", "ignore_case", "dye", "color",
       "r.color", "order"
     )
 
@@ -318,7 +318,7 @@ addDye_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
     )
 
     # Save data.
-    saveObject(name = val_name, object = datanew, parent = w, env = env)
+    save_object(name = val_name, object = datanew, parent = w, env = env)
 
     # Close GUI.
     .saveSettings()

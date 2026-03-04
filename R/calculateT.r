@@ -6,17 +6,17 @@
 #' @details
 #' Given a data.frame with observed values for the dependent variable
 #' (column 'Dep') and explanatory values (column 'Exp') point estimates
-#' corresponding to a risk level of \code{p.dropout} are calculated
+#' corresponding to a risk level of \code{p_dropout} are calculated
 #' using logistic regression: \code{glm(Dep~Exp, family=binomial("logit")}.
-#' A conservative estimate is calculated from the \code{pred.int}.
+#' A conservative estimate is calculated from the \code{pred_int}.
 #' In addition the model parameters B0 (intercept) and B1 (slope),
 #' Hosmer-Lemeshow test statistic (p-value), and the number of observed
 #' and dropped out alleles is returned.
 #'
 #' @param data data.frame with dependent and explanatory values in columns named 'Dep' and 'Exp'.
-#' @param log.model logical indicating if data should be log transformed. Default=FALSE.
-#' @param p.dropout numeric accepted risk to calculate point estimate for. Default=0.01.
-#' @param pred.int numeric prediction interval. Default=0.95.
+#' @param log_model logical indicating if data should be log transformed. Default=FALSE.
+#' @param p_dropout numeric accepted risk to calculate point estimate for. Default=0.01.
+#' @param pred_int numeric prediction interval. Default=0.95.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return vector with named parameters
@@ -30,21 +30,21 @@
 #'  \code{\link{modelDropout_gui}}, \code{\link{plotDropout_gui}}
 
 
-calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.95, debug = FALSE) {
+calculate_t <- function(data, log_model = FALSE, p_dropout = 0.01, pred_int = 0.95, debug = FALSE) {
   # Calculate alpha for prediction interval.
-  pred.int.alpha <- 1 - pred.int
+  pred_int_alpha <- 1 - pred_int
 
   if (debug) {
     print("data")
     print(str(data))
-    print("log.model")
-    print(log.model)
-    print("p.dropout")
-    print(p.dropout)
-    print("pred.int")
-    print(pred.int)
-    print("pred.int.alpha")
-    print(pred.int.alpha)
+    print("log_model")
+    print(log_model)
+    print("p_dropout")
+    print(p_dropout)
+    print("pred_int")
+    print(pred_int)
+    print("pred_int_alpha")
+    print(pred_int_alpha)
   }
 
   message("Calculate point estimate for stochastic threshold.")
@@ -65,32 +65,32 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   }
 
   # Check logical arguments.
-  if (!is.logical(log.model)) {
-    stop("'log.model' must be logical.")
+  if (!is.logical(log_model)) {
+    stop("'log_model' must be logical.")
   }
 
   # Check numeric arguments.
-  if (length(p.dropout) != 1) {
-    stop("'p.dropout' must be of length 1.", call. = TRUE)
+  if (length(p_dropout) != 1) {
+    stop("'p_dropout' must be of length 1.", call. = TRUE)
   }
-  if (length(pred.int) != 1) {
-    stop("'pred.int' must be of length 1.", call. = TRUE)
-  }
-
-  # Check numeric arguments.
-  if (!is.numeric(p.dropout)) {
-    stop("'p.dropout' must be numeric.", call. = TRUE)
-  }
-  if (!is.numeric(pred.int)) {
-    stop("'pred.int' must be numeric.", call. = TRUE)
+  if (length(pred_int) != 1) {
+    stop("'pred_int' must be of length 1.", call. = TRUE)
   }
 
   # Check numeric arguments.
-  if (!0 <= p.dropout && p.dropout <= 1) {
-    stop("'p.dropout' must be numeric [0,1].", call. = TRUE)
+  if (!is.numeric(p_dropout)) {
+    stop("'p_dropout' must be numeric.", call. = TRUE)
   }
-  if (!0 <= pred.int && pred.int <= 1) {
-    stop("'pred.int' must be numeric [0,1].", call. = TRUE)
+  if (!is.numeric(pred_int)) {
+    stop("'pred_int' must be numeric.", call. = TRUE)
+  }
+
+  # Check numeric arguments.
+  if (!0 <= p_dropout && p_dropout <= 1) {
+    stop("'p_dropout' must be numeric [0,1].", call. = TRUE)
+  }
+  if (!0 <= pred_int && pred_int <= 1) {
+    stop("'pred_int' must be numeric [0,1].", call. = TRUE)
   }
 
   # PREPARE -------------------------------------------------------------------
@@ -126,7 +126,7 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   message("Observations without dropout n=", n_obs)
 
   # Convert to log values.
-  if (log.model) {
+  if (log_model) {
     data$Exp <- log(data$Exp)
     predRange$Exp <- log(predRange$Exp)
   }
@@ -153,11 +153,11 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   ypred <- predict(dropoutModel, predRange, type = "link", se.fit = TRUE)
 
   # Calculate the prediction interval.
-  ylower <- plogis(ypred$fit - qnorm(1 - pred.int.alpha / 2) * ypred$se) # Lower confidence limit.
-  yupper <- plogis(ypred$fit + qnorm(1 - pred.int.alpha / 2) * ypred$se) # Upper confidence limit.
+  ylower <- plogis(ypred$fit - qnorm(1 - pred_int_alpha / 2) * ypred$se) # Lower confidence limit.
+  yupper <- plogis(ypred$fit + qnorm(1 - pred_int_alpha / 2) * ypred$se) # Upper confidence limit.
 
   # Calculate conservative prediction values.
-  yconservative <- plogis(ypred$fit + qnorm(1 - pred.int.alpha) * ypred$se)
+  yconservative <- plogis(ypred$fit + qnorm(1 - pred_int_alpha) * ypred$se)
 
   # Calculate y values for plot.
   yplot <- plogis(ypred$fit)
@@ -166,14 +166,14 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   predictionDf <- data.frame(Exp = xplot, Prob = yplot, yupper = yupper, ylower = ylower)
 
   # Calculate dropout threshold T.
-  if (log.model) {
-    drop_py <- log(p.dropout) - log(1 - p.dropout)
+  if (log_model) {
+    drop_py <- log(p_dropout) - log(1 - p_dropout)
     t_dropout <- exp((drop_py - b0) / b1)
   } else {
-    t_dropout <- (log(p.dropout / (1 - p.dropout)) - b0) / b1
+    t_dropout <- (log(p_dropout / (1 - p_dropout)) - b0) / b1
   }
 
-  if (!log.model) {
+  if (!log_model) {
     if (t_dropout < 0) {
       if (debug) {
         print("t_dropout < 0 -> NA")
@@ -183,7 +183,7 @@ calculateT <- function(data, log.model = FALSE, p.dropout = 0.01, pred.int = 0.9
   }
 
   # Calculate conservative threshold at P(D).
-  t_dropout_cons <- xplot[min(which(yconservative < p.dropout))]
+  t_dropout_cons <- xplot[min(which(yconservative < p_dropout))]
 
   # Create result.
   res <- c(T = t_dropout, Tc = t_dropout_cons, p = hos$p.value, B0 = b0, B1 = b1, obs = n_obs, drop = n_drop)

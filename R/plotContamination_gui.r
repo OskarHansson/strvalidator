@@ -32,7 +32,7 @@
 #'  Pages 6-19, ISSN 1872-4973, 10.1016/j.fsigen.2015.09.011.
 #' \doi{10.1016/j.fsigen.2015.09.011}
 
-plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_contamination_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gPlot <- NULL
@@ -138,9 +138,9 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -276,7 +276,7 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )
@@ -379,19 +379,19 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
       if (val_titles) {
         # User defined titles.
 
-        gp <- .applyPlotSettings(
+        gp <- .apply_plot_settings(
           gp = gp, theme = val_theme,
-          main.title = val_title,
-          x.title = val_xtitle, y.title = val_ytitle
+          main_title = val_title,
+          x_title = val_xtitle, y_title = val_ytitle
         )
       } else {
         # Automatic titles.
 
-        gp <- .applyPlotSettings(
+        gp <- .apply_plot_settings(
           gp = gp, theme = val_theme,
-          main.title = title,
-          x.title = strings$STR_LBL_X_TITLE,
-          y.title = strings$STR_LBL_Y_TITLE
+          main_title = title,
+          x_title = strings$STR_LBL_X_TITLE,
+          y_title = strings$STR_LBL_Y_TITLE
         )
       }
 
@@ -425,16 +425,16 @@ plotContamination_gui <- function(env = parent.frame(), savegui = NULL, debug = 
     }
   }
 
-  .applyPlotSettings <- function(gp, theme = "theme_grey()",
-                                 main.title = NULL, x.title = NULL, y.title = NULL) {
+  .apply_plot_settings <- function(gp, theme = "theme_grey()",
+                                   main_title = NULL, x_title = NULL, y_title = NULL) {
     # Apply theme.
     gp <- gp + eval(parse(text = theme))
     gp <- gp + theme(legend.justification = c(1, 1), legend.position = c(1, 1))
 
     # Apply titles.
-    gp <- gp + labs(title = main.title)
-    gp <- gp + xlab(x.title)
-    gp <- gp + ylab(y.title)
+    gp <- gp + labs(title = main_title)
+    gp <- gp + xlab(x_title)
+    gp <- gp + ylab(y_title)
 
     return(gp)
   }

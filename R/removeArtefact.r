@@ -19,7 +19,7 @@
 #' @param allele character vector with allele names paired with values in 'marker'.
 #' @param threshold numeric value defining a minimum proportion for artefacts.
 #'  Requires 'artefacts' including the column 'Allele.Proportion'.
-#' @param na.rm logical TRUE to preserve Allele=NA in 'data'.
+#' @param na_rm logical TRUE to preserve Allele=NA in 'data'.
 #' @param debug logical indicating printing debug information.
 #'
 #' @export
@@ -29,8 +29,8 @@
 #' @return data.frame with spikes removed.
 #'
 
-removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
-                           threshold = NULL, na.rm = FALSE, debug = FALSE) {
+remove_artefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
+                           threshold = NULL, na_rm = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
@@ -110,8 +110,8 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
     )
   }
 
-  if (!is.logical(na.rm)) {
-    stop("'na.rm' must be logical.", call. = TRUE)
+  if (!is.logical(na_rm)) {
+    stop("'na_rm' must be logical.", call. = TRUE)
   }
 
   # PREPARE -------------------------------------------------------------------
@@ -153,7 +153,7 @@ removeArtefact <- function(data, artefact = NULL, marker = NULL, allele = NULL,
   }
 
   # Check if NA's should be removed.
-  if (na.rm) {
+  if (na_rm) {
     n1 <- nrow(data)
     data <- data[!is.na(data$Allele), ]
     n2 <- nrow(data)

@@ -23,7 +23,7 @@
 #'
 #' @seealso \code{\link{filterProfile}}, \code{\link{check_subset}}
 
-filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+filter_profile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   .gData <- NULL
   .gDataName <- NULL
   .gRef <- NULL
@@ -152,9 +152,9 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   g0_dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -185,7 +185,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       svalue(save_edt) <- paste(.gDataName, "_filter", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -212,9 +212,9 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   refset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -258,7 +258,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   kit_lbl <- glabel(text = strings$STR_LBL_KIT, container = g2)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = g2,
@@ -437,7 +437,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     # Check if filter by kit bins.
     if (val_filter == 2) {
       # Get markers, bins and flag for virtual bins.
-      val_ref <- getKit(kit = val_kit, what = "VIRTUAL")
+      val_ref <- get_kit(kit = val_kit, what = "VIRTUAL")
 
       if (val_exclude) {
         # Remove virtual bins.
@@ -452,17 +452,17 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       unblockHandlers(filter_btn)
       enabled(filter_btn) <- FALSE
 
-      datanew <- filterProfile(
+      datanew <- filter_profile(
         data = val_data,
         ref = val_ref,
-        add.missing.loci = val_add_missing_loci,
-        keep.na = val_keep_na,
-        ignore.case = val_ignore_case,
+        add_missing_loci = val_add_missing_loci,
+        keep_na = val_keep_na,
+        ignore_case = val_ignore_case,
         exact = val_exact,
         word = val_word,
         invert = val_invert,
-        sex.rm = val_sex,
-        qs.rm = val_qs,
+        sex_rm = val_sex,
+        qs_rm = val_qs,
         kit = val_kit,
         debug = debug
       )
@@ -472,8 +472,8 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
 
       # Create key-value pairs to log.
       keys <- list(
-        "data", "ref", "add.missing.loci",
-        "keep.na", "ignore.case", "exact", "word",
+        "data", "ref", "add_missing_loci",
+        "keep_na", "ignore_case", "exact", "word",
         "invert", "sex", "qs", "kit"
       )
 
@@ -491,7 +491,7 @@ filterProfile_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(str(datanew))

@@ -8,7 +8,7 @@
 #' the file database.txt in the package directory.
 #' It returns the specified allele frequency database.
 #'
-#' @param db.name.or.index string or integer specifying the database.
+#' @param db_name_or_index string or integer specifying the database.
 #' If NULL a vector of available databases is returned.
 #' @param debug logical indicating printing debug information.
 #'
@@ -25,8 +25,8 @@
 #'
 #' @examples
 #' # Show available allele frequency databases.
-#' getDb()
-getDb <- function(db.name.or.index = NULL, debug = FALSE) {
+#' get_db()
+get_db <- function(db_name_or_index = NULL, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
@@ -73,18 +73,18 @@ getDb <- function(db.name.or.index = NULL, debug = FALSE) {
   databases <- unique(.db$Database)
 
   # Check if NULL
-  if (is.null(db.name.or.index)) {
+  if (is.null(db_name_or_index)) {
     db <- databases
 
     # String provided.
   } else {
     # Check if number or string.
-    if (is.numeric(db.name.or.index)) {
+    if (is.numeric(db_name_or_index)) {
       # Set index to number.
-      index <- db.name.or.index
+      index <- db_name_or_index
     } else {
       # Find matching database index (case insensitive)
-      index <- match(toupper(db.name.or.index), toupper(databases))
+      index <- match(toupper(db_name_or_index), toupper(databases))
     }
 
     # No matching database.

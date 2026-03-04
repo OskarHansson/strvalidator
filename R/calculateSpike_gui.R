@@ -16,7 +16,7 @@
 #'
 #' @seealso \code{\link{calculateSpike}}
 
-calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+calculate_spike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   .gData <- NULL
   .gDataName <- NULL
 
@@ -117,9 +117,9 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -137,7 +137,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = g1,
@@ -166,7 +166,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       svalue(f2_save_edt) <- paste(.gDataName, "_spikes", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -241,7 +241,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateSpike(
+      datanew <- calculate_spike(
         data = val_data,
         threshold = val_threshold,
         tolerance = val_tolerance,
@@ -272,7 +272,7 @@ calculateSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(str(datanew))

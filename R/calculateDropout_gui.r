@@ -18,7 +18,7 @@
 #'
 #' @seealso \code{\link{calculateDropout}}, \code{\link{check_subset}}
 
-calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_dropout_gui <- function(env = parent.frame(), savegui = NULL,
                                  debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -137,9 +137,9 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -173,7 +173,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f2_save_edt) <- paste(val_obj, "_dropout", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -198,9 +198,9 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   refset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -242,7 +242,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
   glabel(text = strings$STR_LBL_KIT, container = g2)
 
   kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+    items = get_kit(), selected = 1,
     editable = FALSE, container = g2,
     ellipsize = "none",
     expand = TRUE,
@@ -437,14 +437,14 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(dropout_btn)
       enabled(dropout_btn) <- FALSE
 
-      datanew <- calculateDropout(
+      datanew <- calculate_dropout(
         data = val_data,
         ref = val_ref,
         threshold = val_threshold,
         method = val_method,
-        ignore.case = val_ignore_case,
-        sex.rm = val_sex,
-        qs.rm = val_qs,
+        ignore_case = val_ignore_case,
+        sex_rm = val_sex,
+        qs_rm = val_qs,
         kit = val_kit,
         debug = debug
       )
@@ -455,7 +455,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       # Create key-value pairs to log.
       keys <- list(
         "data", "ref", "threshold", "method",
-        "ignore.case", "sex.rm", "qs.rm", "kit", "calculate.h"
+        "ignore_case", "sex_rm", "qs_rm", "kit", "calculate.h"
       )
 
       values <- list(
@@ -475,21 +475,21 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
         message("User selected to add average peak height...")
 
         # Calculate average peak height.
-        dfH <- calculateHeight(
-          data = val_data, ref = val_ref, na.replace = 0,
-          add = FALSE, exclude = "OL", sex.rm = val_sex,
-          qs.rm = val_qs, kit = val_kit,
-          ignore.case = val_ignore_case, exact = FALSE,
+        dfH <- calculate_height(
+          data = val_data, ref = val_ref, na_replace = 0,
+          add = FALSE, exclude = "OL", sex_rm = val_sex,
+          qs_rm = val_qs, kit = val_kit,
+          ignore_case = val_ignore_case, exact = FALSE,
           debug = debug
         )
 
         message("Average peak height calculated.")
 
         # Add average peak height to dataset.
-        datanew <- addData(
-          data = datanew, new.data = dfH,
-          by.col = "Sample.Name", then.by.col = NULL,
-          exact = TRUE, ignore.case = val_ignore_case,
+        datanew <- add_data(
+          data = datanew, new_data = dfH,
+          by_col = "Sample.Name", then_by_col = NULL,
+          exact = TRUE, ignore_case = val_ignore_case,
           debug = debug
         )
 
@@ -497,7 +497,7 @@ calculateDropout_gui <- function(env = parent.frame(), savegui = NULL,
       }
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(head(datanew))

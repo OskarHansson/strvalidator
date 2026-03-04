@@ -21,7 +21,7 @@
 #'
 #' @seealso \code{\link{calculateStutter}}, \code{\link{check_subset}}
 
-calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+calculate_stutter_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gRef <- NULL
@@ -140,9 +140,9 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f0_dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -171,7 +171,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       svalue(f0_samples_lbl) <- paste("", samples, strings$STR_LBL_SAMPLES)
       svalue(save_edt) <- paste(val_obj, "_stutter", sep = "")
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -196,9 +196,9 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   f0_refset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -241,7 +241,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
   glabel(text = strings$STR_LBL_KIT, container = f0g2)
 
   kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+    items = get_kit(), selected = 1,
     editable = FALSE, container = f0g2,
     ellipsize = "none",
     expand = TRUE,
@@ -427,12 +427,12 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       enabled(calculate_btn) <- FALSE
 
       # Calculate stutter.
-      datanew <- calculateStutter(
+      datanew <- calculate_stutter(
         data = val_data, ref = val_ref,
         back = val_back, forward = val_forward,
         interference = val_interference,
-        replace.val = val_replace,
-        by.val = val_by,
+        replace_val = val_replace,
+        by_val = val_by,
         debug = debug
       )
 
@@ -442,7 +442,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       # Create key-value pairs to log.
       keys <- list(
         "data", "ref", "back", "forward",
-        "interference", "replace.val", "by.val"
+        "interference", "replace_val", "by_val"
       )
 
       values <- list(
@@ -458,7 +458,7 @@ calculateStutter_gui <- function(env = parent.frame(), savegui = NULL, debug = F
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print("datanew")

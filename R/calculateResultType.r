@@ -12,19 +12,19 @@
 #' Defined types are: 'No result', 'Mixture', 'Partial', and 'Complete'.
 #' Subtypes can be defined by parameters.
 #' An integer passed to 'threshold' defines a subtype of 'Complete' "Complete profile all peaks >threshold".
-#' An integer or vector passed to 'mixture.limits' define subtypes of 'Mixture' "> [mixture.limits] markers".
-#' An integer or vector passed to 'partial.limits' define subtypes of 'Partial' "> [partial.limits] peaks".
-#' A string with marker names separated by pipe (|) passed to 'marker.subset' and
-#'  a string 'subset.name' defines a subtype of 'Partial' "Complete [subset.name]".
+#' An integer or vector passed to 'mixture_limits' define subtypes of 'Mixture' "> [mixture_limits] markers".
+#' An integer or vector passed to 'partial_limits' define subtypes of 'Partial' "> [partial_limits] peaks".
+#' A string with marker names separated by pipe (|) passed to 'marker_subset' and
+#'  a string 'subset_name' defines a subtype of 'Partial' "Complete [subset_name]".
 #'
 #' @param data a data frame containing at least the column 'Sample.Name'.
 #' @param kit character string or integer defining the kit.
-#' @param add.missing.marker logical, default is TRUE which adds missing markers.
+#' @param add_missing_marker logical, default is TRUE which adds missing markers.
 #' @param threshold integer indicating the dropout threshold.
-#' @param mixture.limits integer or vector indicating subtypes of 'Mixture'.
-#' @param partial.limits integer or vector indicating subtypes of 'Partial'.
-#' @param subset.name string naming the subset of 'Complete'.
-#' @param marker.subset string with marker names defining the subset of 'Complete'.
+#' @param mixture_limits integer or vector indicating subtypes of 'Mixture'.
+#' @param partial_limits integer or vector indicating subtypes of 'Partial'.
+#' @param subset_name string naming the subset of 'Complete'.
+#' @param marker_subset string with marker names defining the subset of 'Complete'.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return data.frame with columns 'Sample.Name','Type', and 'Subtype'.
@@ -34,10 +34,10 @@
 #' @importFrom utils head
 #'
 
-calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
-                                threshold = NULL, mixture.limits = NULL,
-                                partial.limits = NULL, subset.name = NA,
-                                marker.subset = NULL, debug = FALSE) {
+calculate_result_type <- function(data, kit = NULL, add_missing_marker = TRUE,
+                                threshold = NULL, mixture_limits = NULL,
+                                partial_limits = NULL, subset_name = NA,
+                                marker_subset = NULL, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -45,14 +45,14 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
     print(head(data))
     print("threshold")
     print(threshold)
-    print("mixture.limits")
-    print(mixture.limits)
-    print("partial.limits")
-    print(partial.limits)
-    print("subset.name")
-    print(subset.name)
-    print("marker.subset")
-    print(marker.subset)
+    print("mixture_limits")
+    print(mixture_limits)
+    print("partial_limits")
+    print(partial_limits)
+    print("subset_name")
+    print(subset_name)
+    print("marker_subset")
+    print(marker_subset)
   }
 
   # CHECK DATA ----------------------------------------------------------------
@@ -82,16 +82,16 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
     )
   }
 
-  if (add.missing.marker) {
+  if (add_missing_marker) {
     if (is.null(kit)) {
-      stop("'kit' must be provided if 'add.missing.marker' is TRUE",
+      stop("'kit' must be provided if 'add_missing_marker' is TRUE",
         call. = TRUE
       )
     } else {
-      if (is.na(getKit(kit = kit, what = "Short.Name"))) {
+      if (is.na(get_kit(kit = kit, what = "Short.Name"))) {
         stop(paste(
           "'kit' does not exist", "\nAvailable kits:",
-          paste(getKit(), collapse = ", ")
+          paste(get_kit(), collapse = ", ")
         ), call. = TRUE)
       }
     }
@@ -99,10 +99,10 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
 
   # PREPARE -------------------------------------------------------------------
 
-  if (add.missing.marker) {
+  if (add_missing_marker) {
     # Add missing markers to samples.
-    markers <- getKit(kit = kit, what = "Marker")
-    data <- addMarker(data = data, marker = markers, ignore.case = TRUE, debug = debug)
+    markers <- get_kit(kit = kit, what = "Marker")
+    data <- add_marker(data = data, marker = markers, ignore_case = TRUE, debug = debug)
   }
 
   if (!is.numeric(data$Height)) {
@@ -147,12 +147,12 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
       # Mixture.
 
       markers <- length(unique(sampleData$Marker[!is.na(sampleData$Allele)]))
-      if (!is.null(mixture.limits)) {
-        for (t in rev(seq(along = mixture.limits))) {
-          if (markers <= mixture.limits[t]) {
-            subtype <- paste("<=", mixture.limits[t], "markers")
-          } else if (markers > mixture.limits[length(mixture.limits)]) {
-            subtype <- paste(">", mixture.limits[length(mixture.limits)], "markers")
+      if (!is.null(mixture_limits)) {
+        for (t in rev(seq(along = mixture_limits))) {
+          if (markers <= mixture_limits[t]) {
+            subtype <- paste("<=", mixture_limits[t], "markers")
+          } else if (markers > mixture_limits[length(mixture_limits)]) {
+            subtype <- paste(">", mixture_limits[length(mixture_limits)], "markers")
           }
         }
       } else {
@@ -163,12 +163,12 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
       # Partial profile.
 
       alleles <- sum(!is.na(sampleData$Allele))
-      if (!is.null(partial.limits)) {
-        for (t in rev(seq(along = partial.limits))) {
-          if (alleles <= partial.limits[t]) {
-            subtype <- paste("<=", partial.limits[t], "peaks")
-          } else if (alleles > partial.limits[length(partial.limits)]) {
-            subtype <- paste(">", partial.limits[length(partial.limits)], "peaks")
+      if (!is.null(partial_limits)) {
+        for (t in rev(seq(along = partial_limits))) {
+          if (alleles <= partial_limits[t]) {
+            subtype <- paste("<=", partial_limits[t], "peaks")
+          } else if (alleles > partial_limits[length(partial_limits)]) {
+            subtype <- paste(">", partial_limits[length(partial_limits)], "peaks")
           }
         }
       } else {
@@ -177,12 +177,12 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
       res[s, ] <- c(sampleNames[s], "Partial", subtype)
 
       # Check for subset.
-      if (!is.null(marker.subset)) {
+      if (!is.null(marker_subset)) {
         # Subset data.
-        selectedMarkers <- grepl(marker.subset, sampleData$Marker)
+        selectedMarkers <- grepl(marker_subset, sampleData$Marker)
         if (all(!is.na(sampleData$Allele[selectedMarkers]))) {
           # Full subset profile.
-          res[s, ] <- c(sampleNames[s], "Partial", paste("Complete", subset.name))
+          res[s, ] <- c(sampleNames[s], "Partial", paste("Complete", subset_name))
         }
       }
     } else if (!any(is.na(sampleData$Allele))) {
@@ -215,27 +215,27 @@ calculateResultType <- function(data, kit = NULL, add.missing.marker = TRUE,
 
   # Partial Labels.
 
-  if (!is.null(marker.subset)) {
-    partialLabelsSub <- c(partialLabelsSub, paste("Complete", subset.name))
+  if (!is.null(marker_subset)) {
+    partialLabelsSub <- c(partialLabelsSub, paste("Complete", subset_name))
   }
-  if (!is.null(partial.limits)) {
-    for (t in rev(seq(along = partial.limits))) {
-      if (t == length(partial.limits)) {
-        partialLabelsSub <- c(partialLabelsSub, paste(">", partial.limits[t], "peaks"))
+  if (!is.null(partial_limits)) {
+    for (t in rev(seq(along = partial_limits))) {
+      if (t == length(partial_limits)) {
+        partialLabelsSub <- c(partialLabelsSub, paste(">", partial_limits[t], "peaks"))
       }
-      partialLabelsSub <- c(partialLabelsSub, paste("<=", partial.limits[t], "peaks"))
+      partialLabelsSub <- c(partialLabelsSub, paste("<=", partial_limits[t], "peaks"))
     }
   }
   partialLabels <- "Partial"
   partialLabelsSub <- c("Partial", partialLabelsSub)
 
   # Mixture Labels.
-  if (!is.null(mixture.limits)) {
-    for (t in rev(seq(along = mixture.limits))) {
-      if (t == length(mixture.limits)) {
-        mixtureLabelsSub <- c(mixtureLabelsSub, paste(">", mixture.limits[t], "markers"))
+  if (!is.null(mixture_limits)) {
+    for (t in rev(seq(along = mixture_limits))) {
+      if (t == length(mixture_limits)) {
+        mixtureLabelsSub <- c(mixtureLabelsSub, paste(">", mixture_limits[t], "markers"))
       }
-      mixtureLabelsSub <- c(mixtureLabelsSub, paste("<=", mixture.limits[t], "markers"))
+      mixtureLabelsSub <- c(mixtureLabelsSub, paste("<=", mixture_limits[t], "markers"))
     }
   }
   mixtureLabels <- "Mixture"

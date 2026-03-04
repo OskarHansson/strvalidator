@@ -167,9 +167,9 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -509,14 +509,14 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
 
       datanew <- trim(
         data = val_data, samples = sample_val, columns = column_val,
-        word = word_val, ignore.case = case_val, invert.s = sample_opt_val, invert.c = column_opt_val,
-        rm.na.col = na_val, rm.empty.col = empty_val, missing = na_edt_val, debug = debug
+        word = word_val, ignore_case = case_val, invert_s = sample_opt_val, invert_c = column_opt_val,
+        rm_na_col = na_val, rm_empty_col = empty_val, missing = na_edt_val, debug = debug
       )
 
       # Create key-value pairs to log.
       keys <- list(
-        "data", "samples", "columns", "word", "ignore.case",
-        "invert.s", "invert.c", "rm.na.col", "rm.empty.col",
+        "data", "samples", "columns", "word", "ignore_case",
+        "invert_s", "invert_c", "rm_na_col", "rm_empty_col",
         "missing"
       )
 
@@ -534,7 +534,7 @@ trim_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       # Close GUI.
       .saveSettings()

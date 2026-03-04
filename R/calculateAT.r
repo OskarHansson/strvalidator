@@ -10,7 +10,7 @@
 #' recommended in the reference by analyzing the background signal (noise).
 #' In addition method 7, a log-normal version of method 1 has been implemented.
 #' Method 1: The average signal + 'k' * the standard deviation.
-#' Method 2: The percentile rank method. The percentage of noise peaks below 'rank.t'.
+#' Method 2: The percentile rank method. The percentage of noise peaks below 'rank_t'.
 #' Method 4: Utilize the mean and standard deviation and the critical value obtained
 #' from the t-distribution for confidence interval 'alpha' (one-sided) and observed
 #' peaks analyzed (i.e. not masked) minus one as degrees of freedom, and the number
@@ -31,22 +31,22 @@
 #'  'Sample.File.Name', 'Marker', 'Allele', 'Height', and 'Data.Point'.
 #' @param ref a data frame containing at least
 #'  'Sample.Name', 'Marker', 'Allele'.
-#' @param mask.height logical to indicate if high peaks should be masked.
+#' @param mask_height logical to indicate if high peaks should be masked.
 #' @param height integer for global lower peak height threshold for peaks
-#' to be excluded from the analysis. Active if 'mask.peak=TRUE.
-#' @param mask.sample logical to indicate if sample allelic peaks should be masked.
-#' @param per.dye logical TRUE if sample peaks should be masked per dye channel.
+#' to be excluded from the analysis. Active if 'mask_height=TRUE.
+#' @param mask_sample logical to indicate if sample allelic peaks should be masked.
+#' @param per_dye logical TRUE if sample peaks should be masked per dye channel.
 #' FALSE if sample peaks should be masked globally across dye channels.
-#' @param range.sample integer to specify the masking range in (+/-) data points.
-#' Active if mask.sample=TRUE.
-#' @param mask.ils logical to indicate if internal lane standard peaks should be masked.
-#' @param range.ils integer to specify the masking range in (+/-) data points.
-#' Active if mask.ils=TRUE.
+#' @param range_sample integer to specify the masking range in (+/-) data points.
+#' Active if mask_sample=TRUE.
+#' @param mask_ils logical to indicate if internal lane standard peaks should be masked.
+#' @param range_ils integer to specify the masking range in (+/-) data points.
+#' Active if mask_ils=TRUE.
 #' @param k numeric factor for the desired confidence level (method AT1).
 #' @param alpha numeric one-sided confidence interval to obtain the
 #' critical value from the t-distribution (method AT4).
-#' @param rank.t numeric percentile rank threshold (method AT2).
-#' @param ignore.case logical to indicate if sample matching should ignore case.
+#' @param rank_t numeric percentile rank threshold (method AT2).
+#' @param ignore_case logical to indicate if sample matching should ignore case.
 #' @param word logical to indicate if word boundaries should be added before sample matching.
 #' @param debug logical to indicate if debug information should be printed.
 #'
@@ -73,11 +73,11 @@
 #'
 #'
 
-calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
-                        mask.sample = TRUE, per.dye = TRUE, range.sample = 20,
-                        mask.ils = TRUE, range.ils = 10,
-                        k = 3, rank.t = 0.99, alpha = 0.01,
-                        ignore.case = TRUE, word = FALSE, debug = FALSE) {
+calculate_at <- function(data, ref = NULL, mask_height = TRUE, height = 500,
+                        mask_sample = TRUE, per_dye = TRUE, range_sample = 20,
+                        mask_ils = TRUE, range_ils = 10,
+                        k = 3, rank_t = 0.99, alpha = 0.01,
+                        ignore_case = TRUE, word = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -85,28 +85,28 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     print(str(data))
     print("ref")
     print(str(ref))
-    print("mask.height")
-    print(mask.height)
+    print("mask_height")
+    print(mask_height)
     print("height")
     print(height)
-    print("mask.sample")
-    print(mask.sample)
-    print("per.dye")
-    print(per.dye)
-    print("range.sample")
-    print(range.sample)
-    print("mask.ils")
-    print(mask.ils)
-    print("range.ils")
-    print(range.ils)
+    print("mask_sample")
+    print(mask_sample)
+    print("per_dye")
+    print(per_dye)
+    print("range_sample")
+    print(range_sample)
+    print("mask_ils")
+    print(mask_ils)
+    print("range_ils")
+    print(range_ils)
     print("k")
     print(k)
-    print("rank.t")
-    print(rank.t)
+    print("rank_t")
+    print(rank_t)
     print("alpha")
     print(alpha)
-    print("ignore.case")
-    print(ignore.case)
+    print("ignore_case")
+    print(ignore_case)
     print("word")
     print(word)
   }
@@ -178,8 +178,8 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   }
 
   # Check parameters.
-  if (!is.logical(mask.height)) {
-    stop("'mask.height' must be logical",
+  if (!is.logical(mask_height)) {
+    stop("'mask_height' must be logical",
       call. = TRUE
     )
   }
@@ -190,32 +190,32 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     )
   }
 
-  if (!is.logical(mask.sample)) {
-    stop("'mask.sample' must be logical",
+  if (!is.logical(mask_sample)) {
+    stop("'mask_sample' must be logical",
       call. = TRUE
     )
   }
 
-  if (!is.logical(per.dye)) {
-    stop("'per.dye' must be logical",
+  if (!is.logical(per_dye)) {
+    stop("'per_dye' must be logical",
       call. = TRUE
     )
   }
 
-  if (!is.numeric(range.sample)) {
-    stop("'range.sample' must be numeric",
+  if (!is.numeric(range_sample)) {
+    stop("'range_sample' must be numeric",
       call. = TRUE
     )
   }
 
-  if (!is.logical(mask.ils)) {
-    stop("'mask.ils' must be logical",
+  if (!is.logical(mask_ils)) {
+    stop("'mask_ils' must be logical",
       call. = TRUE
     )
   }
 
-  if (!is.numeric(range.ils)) {
-    stop("'range.ils' must be numeric",
+  if (!is.numeric(range_ils)) {
+    stop("'range_ils' must be numeric",
       call. = TRUE
     )
   }
@@ -226,8 +226,8 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     )
   }
 
-  if (!is.numeric(rank.t)) {
-    stop("'rank.t' must be numeric",
+  if (!is.numeric(rank_t)) {
+    stop("'rank_t' must be numeric",
       call. = TRUE
     )
   }
@@ -238,8 +238,8 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     )
   }
 
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical",
+  if (!is.logical(ignore_case)) {
+    stop("'ignore_case' must be logical",
       call. = TRUE
     )
   }
@@ -261,11 +261,11 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   if (!all(c("Masked", "Dye") %in% names(data))) {
     # Mask data for AT calculation
     # (need to be separate function to enable control plots in GUI).
-    data <- maskAT(
-      data = data, ref = ref, mask.height = mask.height, height = height,
-      mask.sample = mask.sample, per.dye = per.dye, range.sample = range.sample,
-      mask.ils = mask.ils, range.ils = range.ils,
-      ignore.case = ignore.case, word = word, debug = debug
+    data <- mask_at(
+      data = data, ref = ref, mask_height = mask_height, height = height,
+      mask_sample = mask_sample, per_dye = per_dye, range_sample = range_sample,
+      mask_ils = mask_ils, range_ils = range_ils,
+      ignore_case = ignore_case, word = word, debug = debug
     )
   }
 
@@ -311,7 +311,7 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     Dye.Mean.ln = mean(log(Height), na.rm = TRUE),
     Dye.Sd.ln = sd(log(Height), na.rm = TRUE),
     Dye.Peaks = sum(Masked == FALSE),
-    Dye.AT2 = rankThreshold(Height, rank.t)
+    Dye.AT2 = rankThreshold(Height, rank_t)
   ),
   by = list(Sample.File.Name, Dye)
   ]
@@ -327,7 +327,7 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     Mean.ln = mean(log(Height), na.rm = TRUE),
     Sd.ln = sd(log(Height), na.rm = TRUE),
     Peaks = sum(Masked == FALSE),
-    AT2 = rankThreshold(Height, rank.t)
+    AT2 = rankThreshold(Height, rank_t)
   ),
   by = list(Dye)
   ]
@@ -339,7 +339,7 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     Mean.ln = mean(log(Height), na.rm = TRUE),
     Sd.ln = sd(log(Height), na.rm = TRUE),
     Peaks = sum(Masked == FALSE),
-    AT2 = rankThreshold(Height, rank.t)
+    AT2 = rankThreshold(Height, rank_t)
   ),
   by = list(Sample.File.Name)
   ]
@@ -362,7 +362,7 @@ calculateAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     Peaks = sum(Masked == FALSE),
     Mean.ln = mean(log(Height), na.rm = TRUE),
     Sd.ln = sd(log(Height), na.rm = TRUE),
-    AT2 = rankThreshold(Height, rank.t)
+    AT2 = rankThreshold(Height, rank_t)
   )]
 
   # Join the result.

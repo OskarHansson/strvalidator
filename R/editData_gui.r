@@ -27,7 +27,7 @@
 #'
 #' @seealso \code{\link{trim_gui}}, \code{\link{cropData_gui}}, \code{\link{combine_gui}}
 
-editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
+edit_data_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
                          name = NULL, edit = TRUE, debug = FALSE, parent = NULL) {
   .gData <- data
   .gDataName <- name
@@ -171,9 +171,9 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -376,7 +376,7 @@ editData_gui <- function(env = parent.frame(), savegui = NULL, data = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env, debug = debug)
+      save_object(name = val_name, object = datanew, parent = w, env = env, debug = debug)
 
       # Change button.
       blockHandlers(save_btn)

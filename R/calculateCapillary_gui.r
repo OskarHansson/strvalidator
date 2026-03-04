@@ -1,10 +1,10 @@
 #' @title Calculate Capillary Balance
 #'
 #' @description
-#' GUI wrapper for the \code{\link{calculateCapillary}} function.
+#' GUI wrapper for the \code{\link{calculate_capillary}} function.
 #'
 #' @details
-#' Simplifies the use of the \code{\link{calculateCapillary}} function by providing
+#' Simplifies the use of the \code{\link{calculate_capillary}} function by providing
 #' a graphical user interface.
 #'
 #' @param env environment in which to search for data frames and save result.
@@ -18,9 +18,9 @@
 #'
 #' @importFrom utils help head
 #'
-#' @seealso \code{\link{calculateCapillary}}
+#' @seealso \code{\link{calculate_capillary}}
 
-calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_capillary_gui <- function(env = parent.frame(), savegui = NULL,
                                    debug = FALSE, parent = NULL) {
   # Global variables.
   .gSamples <- NULL
@@ -120,7 +120,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
 
   glabel(text = strings$STR_LBL_DATA_SAMPLE, container = g0)
 
-  dfs <- c(strings$STR_DRP_DEFAULT, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DEFAULT, list_objects(env = env, obj_class = "data.frame"))
 
   g0_data_samples_lbl <- glabel(
     text = paste(" 0", strings$STR_LBL_SAMPLES),
@@ -295,16 +295,16 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateCapillary(
-        samples.table = val_samples,
-        plot.table = val_plot,
+      datanew <- calculate_capillary(
+        samples_table = val_samples,
+        plot_table = val_plot,
         sq = val_sq,
         run = val_run,
         debug = debug
       )
 
       # Create key-value pairs to log.
-      keys <- list("sample.table", "plot.table", "sq", "run")
+      keys <- list("samples_table", "plot_table", "sq", "run")
 
       values <- list(val_name_samples, val_name_plot, val_sq, val_run)
 
@@ -316,7 +316,7 @@ calculateCapillary_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(head(datanew))

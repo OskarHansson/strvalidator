@@ -177,8 +177,8 @@ generate_epg <- function(
   # KIT INFORMATION
   # ---------------------------------------------------------------------------
 
-  kit_range <- getKit(kit, what = "Range") # Marker shading
-  kit_size <- getKit(kit, what = "Size") # Size table
+  kit_range <- get_kit(kit, what = "Range") # Marker shading
+  kit_size <- get_kit(kit, what = "Size") # Size table
 
   if (ignore_case) {
     kit_range$Marker <- toupper(kit_range$Marker)
@@ -247,18 +247,18 @@ generate_epg <- function(
   # ---------------------------------------------------------------------------
 
   if (debug) {
-    message("Marker levels before sortMarker():")
+    message("Marker levels before sort_marker():")
     print(levels(raw_data$Marker))
-    message("Dye levels before sortMarker():")
+    message("Dye levels before sort_marker():")
     print(levels(raw_data$Dye))
   }
 
   raw_data <- sort_markers(data = raw_data, kit = kit)
 
   if (debug) {
-    message("Marker levels after sortMarker():")
+    message("Marker levels after sort_marker():")
     print(levels(raw_data$Marker))
-    message("Dye levels after sortMarker():")
+    message("Dye levels after sort_marker():")
     print(levels(raw_data$Dye))
   }
 
@@ -419,8 +419,8 @@ generate_epg <- function(
     kit_range_dye$y_top[is.na(kit_range_dye$y_top)] <- global_y_top
 
     # Decide header height logic depending on user scale settings
-    # free_y → panel-specific headers
-    # free/free_x/fixed → global header height
+    # free_y -> panel-specific headers
+    # free/free_x/fixed -> global header height
     if (scale == "free_y") {
       ref_y <- kit_range_dye$y_top
     } else {
@@ -540,54 +540,3 @@ generate_epg <- function(
   return(gp)
 }
 
-################################################################################
-#' @rdname generate_epg
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [generate_epg()] instead.
-################################################################################
-
-generateEPG <- function(data,
-                        kit,
-                        title = NULL,
-                        wrap = TRUE,
-                        boxplot = FALSE,
-                        peaks = TRUE,
-                        collapse = TRUE,
-                        silent = FALSE,
-                        ignore.case = TRUE,
-                        at = 0,
-                        scale = "free",
-                        limit.x = TRUE,
-                        label.size = 3,
-                        label.angle = 0,
-                        label.vjust = 1,
-                        label.hjust = 0.5,
-                        expand = 0.1,
-                        debug = FALSE) {
-  .Deprecated("generate_epg", package = "strvalidator")
-
-  generate_epg(
-    data = data,
-    kit = kit,
-    title = title,
-    wrap = wrap,
-    boxplot = boxplot,
-    peaks = peaks,
-    sum_profiles = collapse,
-    silent = silent,
-    ignore_case = ignore.case,
-    at = at,
-    scale = scale,
-    limit_x = limit.x,
-    label_size = label.size,
-    label_angle = label.angle,
-    label_vjust = label.vjust,
-    label_hjust = label.hjust,
-    expand = expand,
-    debug = debug
-  )
-}

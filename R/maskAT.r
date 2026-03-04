@@ -17,18 +17,18 @@
 #'  'Sample.File.Name', 'Marker', 'Allele', 'Height', and 'Data.Point'.
 #' @param ref a data frame containing at least
 #'  'Sample.Name', 'Marker', 'Allele'.
-#' @param mask.height logical to indicate if high peaks should be masked.
+#' @param mask_height logical to indicate if high peaks should be masked.
 #' @param height integer for global lower peak height threshold for peaks
-#' to be excluded from the analysis. Active if 'mask.peak=TRUE.
-#' @param mask.sample logical to indicate if sample allelic peaks should be masked.
-#' @param per.dye logical TRUE if sample peaks should be masked per dye channel.
+#' to be excluded from the analysis. Active if 'mask_height=TRUE.
+#' @param mask_sample logical to indicate if sample allelic peaks should be masked.
+#' @param per_dye logical TRUE if sample peaks should be masked per dye channel.
 #' FALSE if sample peaks should be masked globally across dye channels.
-#' @param range.sample integer to specify the masking range in (+/-) data points.
-#' Active if mask.sample=TRUE.
-#' @param mask.ils logical to indicate if internal lane standard peaks should be masked.
-#' @param range.ils integer to specify the masking range in (+/-) data points.
-#' Active if mask.ils=TRUE.
-#' @param ignore.case logical to indicate if sample matching should ignore case.
+#' @param range_sample integer to specify the masking range in (+/-) data points.
+#' Active if mask_sample=TRUE.
+#' @param mask_ils logical to indicate if internal lane standard peaks should be masked.
+#' @param range_ils integer to specify the masking range in (+/-) data points.
+#' Active if mask_ils=TRUE.
+#' @param ignore_case logical to indicate if sample matching should ignore case.
 #' @param word logical to indicate if word boundaries should be added before sample matching.
 #' @param debug logical to indicate if debug information should be printed.
 #'
@@ -41,10 +41,10 @@
 #' @seealso \code{\link{calculateAT}}
 
 
-maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
-                   mask.sample = TRUE, per.dye = TRUE, range.sample = 20,
-                   mask.ils = TRUE, range.ils = 10,
-                   ignore.case = TRUE, word = FALSE, debug = FALSE) {
+mask_at <- function(data, ref = NULL, mask_height = TRUE, height = 500,
+                   mask_sample = TRUE, per_dye = TRUE, range_sample = 20,
+                   mask_ils = TRUE, range_ils = 10,
+                   ignore_case = TRUE, word = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -52,18 +52,18 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     print(str(data))
     print("ref")
     print(str(ref))
-    print("mask.sample")
-    print(mask.sample)
-    print("per.dye")
-    print(per.dye)
-    print("range.sample")
-    print(range.sample)
-    print("mask.ils")
-    print(mask.ils)
-    print("range.ils")
-    print(range.ils)
-    print("ignore.case")
-    print(ignore.case)
+    print("mask_sample")
+    print(mask_sample)
+    print("per_dye")
+    print(per_dye)
+    print("range_sample")
+    print(range_sample)
+    print("mask_ils")
+    print(mask_ils)
+    print("range_ils")
+    print(range_ils)
+    print("ignore_case")
+    print(ignore_case)
     print("word")
     print(word)
   }
@@ -118,8 +118,8 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   }
 
   # Check parameters.
-  if (!is.logical(mask.height)) {
-    stop("'mask.height' must be logical",
+  if (!is.logical(mask_height)) {
+    stop("'mask_height' must be logical",
       call. = TRUE
     )
   }
@@ -130,38 +130,38 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     )
   }
 
-  if (!is.logical(mask.sample)) {
-    stop("'mask.sample' must be logical",
+  if (!is.logical(mask_sample)) {
+    stop("'mask_sample' must be logical",
       call. = TRUE
     )
   }
 
-  if (!is.logical(per.dye)) {
-    stop("'per.dye' must be logical",
+  if (!is.logical(per_dye)) {
+    stop("'per_dye' must be logical",
       call. = TRUE
     )
   }
 
-  if (!is.numeric(range.sample)) {
-    stop("'range.sample' must be numeric",
+  if (!is.numeric(range_sample)) {
+    stop("'range_sample' must be numeric",
       call. = TRUE
     )
   }
 
-  if (!is.logical(mask.ils)) {
-    stop("'mask.ils' must be logical",
+  if (!is.logical(mask_ils)) {
+    stop("'mask_ils' must be logical",
       call. = TRUE
     )
   }
 
-  if (!is.numeric(range.ils)) {
-    stop("'range.ils' must be numeric",
+  if (!is.numeric(range_ils)) {
+    stop("'range_ils' must be numeric",
       call. = TRUE
     )
   }
 
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical",
+  if (!is.logical(ignore_case)) {
+    stop("'ignore_case' must be logical",
       call. = TRUE
     )
   }
@@ -194,12 +194,12 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     data$Data.Point <- suppressWarnings(as.numeric(data$Data.Point))
   }
 
-  if (!is.numeric(height) & mask.height) {
-    mask.height <- FALSE
+  if (!is.numeric(height) & mask_height) {
+    mask_height <- FALSE
     message(paste(
       "No valid threshold for peak height was provided (",
       height, ")\n",
-      "Setting mask.height to FALSE"
+      "Setting mask_height to FALSE"
     ))
   }
 
@@ -254,10 +254,10 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
   # Mask ---------------------------------------------------------------------
 
   # Mask ILS peak range in all dyes per sample.
-  if (mask.ils) {
+  if (mask_ils) {
     message(paste(
       "Masking internal lane standard (ILS) +/-",
-      range.ils, "data points."
+      range_ils, "data points."
     ))
 
     # Add columns for masking range.
@@ -265,8 +265,8 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     data$ILS.Max <- NA
 
     # Calculate and add range.
-    data[data$ILS, ]$ILS.Min <- data[data$ILS, ]$Data.Point - range.ils
-    data[data$ILS, ]$ILS.Max <- data[data$ILS, ]$Data.Point + range.ils
+    data[data$ILS, ]$ILS.Min <- data[data$ILS, ]$Data.Point - range_ils
+    data[data$ILS, ]$ILS.Max <- data[data$ILS, ]$Data.Point + range_ils
 
     # Loop over all samples.
     for (s in seq(along = sample)) {
@@ -295,11 +295,11 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
         data$I.Mask[selection] <- data$I.Mask[selection] | maskVec
       } # End element loop.
     } # End sample loop.
-  } # End mask.ils if.
+  } # End mask_ils if.
 
   # Mask sample peak range per sample.
-  if (mask.sample & !is.null(ref)) {
-    message(paste("Masking sample alleles +/-", range.sample, "data points."))
+  if (mask_sample & !is.null(ref)) {
+    message(paste("Masking sample alleles +/-", range_sample, "data points."))
 
     # Get data into temporary vectors.
     sVec <- data$Sample.File.Name
@@ -313,7 +313,7 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
     # Loop over all reference samples.
     for (r in seq(along = grepNames)) {
       # Select samples containing reference name.
-      selSample <- grepl(grepNames[r], sVec, ignore.case = ignore.case)
+      selSample <- grepl(grepNames[r], sVec, ignore.case = ignore_case)
 
       # Show progress.
       message(paste(
@@ -348,8 +348,8 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
         sel <- selSample & selMarker & selAlleles
 
         # Calculate min and max data point to mask.
-        minVec[sel] <- pVec[sel] - range.sample
-        maxVec[sel] <- pVec[sel] + range.sample
+        minVec[sel] <- pVec[sel] - range_sample
+        maxVec[sel] <- pVec[sel] + range_sample
       } # End marker loop.
     } # End reference loop.
 
@@ -367,7 +367,7 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
         print(head(data[selSample, ]))
       }
 
-      if (per.dye) {
+      if (per_dye) {
         # Mask sample peaks per dye.
 
         for (d in seq(along = dyesKit)) {
@@ -425,10 +425,10 @@ maskAT <- function(data, ref = NULL, mask.height = TRUE, height = 500,
         } # End element for loop.
       } # End mask sample if.
     } # End sample loop.
-  } # End mask.sample if.
+  } # End mask_sample if.
 
   # Mask sample peak range per sample.
-  if (mask.height) {
+  if (mask_height) {
     message(paste("Masking peaks >", height, "RFU."))
 
     # Mask peaks.
