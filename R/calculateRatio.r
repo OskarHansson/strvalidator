@@ -25,8 +25,8 @@
 #' @param numerator character vector with marker names.
 #' @param denominator character vector with marker names.
 #' @param group character column name to group by.
-#' @param ol.rm logical indicating if off-ladder 'OL' alleles should be removed.
-#' @param ignore.case logical indicating if sample matching should ignore case.
+#' @param ol_rm logical indicating if off-ladder 'OL' alleles should be removed.
+#' @param ignore_case logical indicating if sample matching should ignore case.
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param exact logical indicating if exact sample matching should be used.
 #' @param debug logical indicating printing debug information.
@@ -43,12 +43,12 @@
 #' # Calculate ratio between the shortest and longest marker in each dye.
 #' numerator <- c("D3S1358", "AMEL", "D19S433")
 #' denominator <- c("D2S1338", "D18S51", "FGA")
-#' calculateRatio(data = set2, numerator = numerator, denominator = denominator)
-#' calculateRatio(data = set2, numerator = NULL, denominator = "AMEL")
-#' calculateRatio(data = set2, numerator = c("AMEL", "TH01"), denominator = NULL)
-#' calculateRatio(data = set2, numerator = NULL, denominator = NULL)
-calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NULL, group = NULL,
-                           ol.rm = TRUE, ignore.case = TRUE, word = FALSE, exact = FALSE, debug = FALSE) {
+#' calculate_ratio(data = set2, numerator = numerator, denominator = denominator)
+#' calculate_ratio(data = set2, numerator = NULL, denominator = "AMEL")
+#' calculate_ratio(data = set2, numerator = c("AMEL", "TH01"), denominator = NULL)
+#' calculate_ratio(data = set2, numerator = NULL, denominator = NULL)
+calculate_ratio <- function(data, ref = NULL, numerator = NULL, denominator = NULL, group = NULL,
+                           ol_rm = TRUE, ignore_case = TRUE, word = FALSE, exact = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -62,10 +62,10 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
     print(denominator)
     print("group")
     print(group)
-    print("ol.rm")
-    print(ol.rm)
-    print("ignore.case")
-    print(ignore.case)
+    print("ol_rm")
+    print(ol_rm)
+    print("ignore_case")
+    print(ignore_case)
     print("word")
     print(word)
     print("exact")
@@ -130,12 +130,12 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
     }
   }
 
-  if (!is.logical(ol.rm)) {
-    stop("'ol.rm' must be logical!")
+  if (!is.logical(ol_rm)) {
+    stop("'ol_rm' must be logical!")
   }
 
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical!")
+  if (!is.logical(ignore_case)) {
+    stop("'ignore_case' must be logical!")
   }
 
   if (!is.logical(word)) {
@@ -150,7 +150,7 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
 
   message("Preparing to calculate marker ratios.")
 
-  if (ol.rm) {
+  if (ol_rm) {
     tmp1 <- nrow(data)
 
     # Remove off-ladder alleles.
@@ -221,9 +221,9 @@ calculateRatio <- function(data, ref = NULL, numerator = NULL, denominator = NUL
     message("Filter data")
 
     # Convert to numeric.
-    data <- filterProfile(
-      data = data, ref = ref, add.missing.loci = TRUE,
-      keep.na = FALSE, ignore.case = ignore.case,
+    data <- filter_profile(
+      data = data, ref = ref, add_missing_loci = TRUE,
+      keep_na = FALSE, ignore_case = ignore_case,
       exact = exact, invert = FALSE, debug = debug
     )
   }

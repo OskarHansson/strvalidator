@@ -21,7 +21,7 @@
 #'
 #' @seealso \code{link{calculateHb}}, \code{link{check_subset}}
 
-calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_hb_gui <- function(env = parent.frame(), savegui = NULL,
                             debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -137,7 +137,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
   dfs <- c(
     strings$STR_DRP_DEFAULT,
-    listObjects(env = env, obj.class = "data.frame")
+    list_objects(env = env, obj_class = "data.frame")
   )
 
   g0_data_drp <- gcombobox(
@@ -171,7 +171,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f4_save_edt) <- paste(val_obj, "_hb", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(f4_kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -340,7 +340,7 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
   glabel(text = strings$STR_LBL_KIT, container = f4)
 
   f4_kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+    items = get_kit(), selected = 1,
     editable = FALSE, container = f4, ellipsize = "none"
   )
 
@@ -373,10 +373,10 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateHb(
+      datanew <- calculate_hb(
         data = val_data, ref = val_ref, hb = val_hb,
-        kit = val_kit, sex.rm = val_sex, qs.rm = val_qs,
-        ignore.case = val_ignore, exact = val_exact,
+        kit = val_kit, sex_rm = val_sex, qs_rm = val_qs,
+        ignore_case = val_ignore, exact = val_exact,
         word = val_word, debug = debug
       )
 
@@ -385,8 +385,8 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Create key-value pairs to log.
       keys <- list(
-        "data", "ref", "sex.rm", "qs.rm", "hb",
-        "kit", "ignore.case", "word", "exact", "calculate.h"
+        "data", "ref", "sex_rm", "qs_rm", "hb",
+        "kit", "ignore_case", "word", "exact", "calculate.h"
       )
 
       values <- list(
@@ -406,11 +406,11 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
         message("Calculating average peak height...")
 
         # Calculate average peak height.
-        dfH <- calculateHeight(
-          data = val_data, ref = val_ref, na.replace = 0,
-          add = FALSE, exclude = "OL", sex.rm = val_sex,
-          qs.rm = val_qs, kit = val_kit,
-          ignore.case = val_ignore, exact = val_exact,
+        dfH <- calculate_height(
+          data = val_data, ref = val_ref, na_replace = 0,
+          add = FALSE, exclude = "OL", sex_rm = val_sex,
+          qs_rm = val_qs, kit = val_kit,
+          ignore_case = val_ignore, exact = val_exact,
           debug = debug
         )
 
@@ -418,16 +418,16 @@ calculateHb_gui <- function(env = parent.frame(), savegui = NULL,
         message("Adding average peak height to result...")
 
         # Add average peak height to dataset.
-        datanew <- addData(
-          data = datanew, new.data = dfH,
-          by.col = "Sample.Name", then.by.col = NULL,
-          exact = TRUE, ignore.case = val_ignore,
+        datanew <- add_data(
+          data = datanew, new_data = dfH,
+          by_col = "Sample.Name", then_by_col = NULL,
+          exact = TRUE, ignore_case = val_ignore,
           debug = debug
         )
       }
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(str(datanew))

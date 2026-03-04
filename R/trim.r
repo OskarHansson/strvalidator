@@ -16,15 +16,15 @@
 #' @param columns string giving column names separated by pipe (|).
 #' @param word logical indicating if a word boundary should be added to
 #'  \code{samples} and \code{columns}.
-#' @param ignore.case logical, TRUE ignore case in sample names.
-#' @param invert.s logical, TRUE to remove matching samples from 'data',
+#' @param ignore_case logical, TRUE ignore case in sample names.
+#' @param invert_s logical, TRUE to remove matching samples from 'data',
 #' FALSE to remove samples NOT matching (i.e. keep matching samples).
-#' @param invert.c logical, TRUE to remove matching columns from 'data',
+#' @param invert_c logical, TRUE to remove matching columns from 'data',
 #' FALSE to remove columns NOT matching (i.e. keep matching columns).
 #' while TRUE will remove columns NOT given.
-#' @param rm.na.col logical, TRUE columns with only NA are removed from 'data'
+#' @param rm_na_col logical, TRUE columns with only NA are removed from 'data'
 #' while FALSE will preserve the columns.
-#' @param rm.empty.col logical, TRUE columns with no values are removed from 'data'
+#' @param rm_empty_col logical, TRUE columns with no values are removed from 'data'
 #' while FALSE will preserve the columns.
 #' @param missing value to replace missing values with.
 #' @param debug logical indicating printing debug information.
@@ -38,8 +38,8 @@
 
 
 trim <- function(data, samples = NULL, columns = NULL,
-                 word = FALSE, ignore.case = TRUE, invert.s = FALSE, invert.c = FALSE,
-                 rm.na.col = TRUE, rm.empty.col = TRUE, missing = NA, debug = FALSE) {
+                 word = FALSE, ignore_case = TRUE, invert_s = FALSE, invert_c = FALSE,
+                 rm_na_col = TRUE, rm_empty_col = TRUE, missing = NA, debug = FALSE) {
   # Variables.
   colNames <- columns
 
@@ -54,21 +54,21 @@ trim <- function(data, samples = NULL, columns = NULL,
     print("word:")
     print(word)
     print("ignore.case:")
-    print(ignore.case)
-    print("invert.s:")
-    print(invert.s)
-    print("invert.c:")
-    print(invert.c)
-    print("rm.na.col:")
-    print(rm.na.col)
-    print("rm.empty.col:")
-    print(rm.empty.col)
+    print(ignore_case)
+    print("invert_s:")
+    print(invert_s)
+    print("invert_c:")
+    print(invert_c)
+    print("rm_na_col:")
+    print(rm_na_col)
+    print("rm_empty_col:")
+    print(rm_empty_col)
     print("missing:")
     print(missing)
   }
 
   # Ignore case. NB! Must be before add word boundary.
-  if (ignore.case) {
+  if (ignore_case) {
     # Convert to upper case.
     samples <- toupper(samples)
     columns <- toupper(columns)
@@ -125,7 +125,7 @@ trim <- function(data, samples = NULL, columns = NULL,
   # Check if column 'Sample.Name' exist.
   if ("Sample.Name" %in% names(data)) {
     # Grab rows.
-    if (ignore.case) {
+    if (ignore_case) {
       sampleNames <- toupper(as.character(data$Sample.Name))
     } else {
       sampleNames <- as.character(data$Sample.Name)
@@ -146,7 +146,7 @@ trim <- function(data, samples = NULL, columns = NULL,
       rows <- grepl(samples, sampleNames, fixed = FALSE)
 
       # Invert selection of samples.
-      if (invert.s) {
+      if (invert_s) {
         rows <- !rows
       }
     }
@@ -154,7 +154,7 @@ trim <- function(data, samples = NULL, columns = NULL,
     # Check if column 'Sample.File.Name' exist.
   } else if ("Sample.File.Name" %in% names(data)) {
     # Grab rows.
-    if (ignore.case) {
+    if (ignore_case) {
       sampleNames <- toupper(as.character(data$Sample.File.Name))
     } else {
       sampleNames <- as.character(data$Sample.File.Name)
@@ -175,7 +175,7 @@ trim <- function(data, samples = NULL, columns = NULL,
       rows <- grepl(samples, sampleNames, fixed = FALSE)
 
       # Invert selection of samples.
-      if (invert.s) {
+      if (invert_s) {
         rows <- !rows
       }
     }
@@ -186,7 +186,7 @@ trim <- function(data, samples = NULL, columns = NULL,
     sampleCol <- names(data)[grep("SAMPLE", names(data), ignore.case = TRUE)[1]]
 
     # Grab rows.
-    if (ignore.case) {
+    if (ignore_case) {
       sampleNames <- toupper(as.character(data[, sampleCol]))
     } else {
       sampleNames <- as.character(data[, sampleCol])
@@ -207,7 +207,7 @@ trim <- function(data, samples = NULL, columns = NULL,
       rows <- grepl(samples, sampleNames, fixed = FALSE)
 
       # Invert selection of samples.
-      if (invert.s) {
+      if (invert_s) {
         rows <- !rows
       }
     }
@@ -222,7 +222,7 @@ trim <- function(data, samples = NULL, columns = NULL,
 
   # Grab columns --------------------------------------------------------------
 
-  if (ignore.case) {
+  if (ignore_case) {
     columnNames <- toupper(names(data))
   } else {
     columnNames <- names(data)
@@ -244,7 +244,7 @@ trim <- function(data, samples = NULL, columns = NULL,
     columns <- grepl(columns, columnNames, fixed = FALSE)
 
     # Invert selection of columns.
-    if (invert.c) {
+    if (invert_c) {
       columns <- !columns
     }
   }
@@ -261,13 +261,13 @@ trim <- function(data, samples = NULL, columns = NULL,
     data[data == ""] <- missing
   }
 
-  if (rm.empty.col) {
+  if (rm_empty_col) {
     if (!is.null(ncol(data))) {
       data <- data[, colSums(data == "") != nrow(data) | colSums(is.na(data)) > 0]
     }
   }
 
-  if (rm.na.col) {
+  if (rm_na_col) {
     if (!is.null(ncol(data))) {
       data <- data[, colSums(is.na(data)) < nrow(data)]
     }

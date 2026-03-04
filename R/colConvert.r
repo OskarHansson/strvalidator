@@ -13,7 +13,7 @@
 #' @param columns character string containing a regular expression
 #'  (or character string for fixed = TRUE) to be matched in the given
 #'  character vector (separate multiple column names by | in reg.exp).
-#' @param ignore.case logical TRUE to ignore case in matching.
+#' @param ignore_case logical TRUE to ignore case in matching.
 #' @param fixed logical TRUE if columns is a string to be matched as is.
 #' @param debug logical indicating printing debug information.
 #'
@@ -22,8 +22,8 @@
 #' @export
 #'
 
-colConvert <- function(data, columns = "Height|Size|Data.Point",
-                       ignore.case = TRUE, fixed = FALSE, debug = FALSE) {
+col_convert <- function(data, columns = "Height|Size|Data.Point",
+                       ignore_case = TRUE, fixed = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("Parameters:")
@@ -34,7 +34,7 @@ colConvert <- function(data, columns = "Height|Size|Data.Point",
   }
 
   # Get all known numeric columns.
-  selected <- grep(columns, names(data), ignore.case = ignore.case, fixed = fixed)
+  selected <- grep(columns, names(data), ignore.case = ignore_case, fixed = fixed)
 
   # Loop over all columns to change to numeric.
   for (c in seq(along = selected)) {

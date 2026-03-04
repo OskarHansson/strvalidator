@@ -161,7 +161,7 @@ read_gene_marker_kit_gui <- function(env = parent.frame(),
           # Use input filename as name for datasest.
           val_name <- tools::file_path_sans_ext(basename(selected_file))
           # Save kitinfo to the environment.
-          saveObject(
+          save_object(
             name = val_name, object = panel_data,
             parent = window, env = env
           )

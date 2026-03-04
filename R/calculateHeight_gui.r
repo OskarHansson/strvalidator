@@ -28,7 +28,7 @@
 #'
 #' @seealso \code{\link{calculateHeight}}
 
-calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+calculate_height_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -147,9 +147,9 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1, editable = FALSE,
@@ -181,7 +181,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       svalue(save_edt) <- paste(val_obj, "_height", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(data = .gData, index = TRUE)
+      kitIndex <- detect_kit(data = .gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -208,9 +208,9 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   refset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1, editable = FALSE,
@@ -252,7 +252,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
   glabel(text = strings$STR_LBL_KIT, container = f0g2)
 
   kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+    items = get_kit(), selected = 1,
     editable = FALSE, container = f0g2,
     ellipsize = "none", expand = TRUE, fill = "x"
   )
@@ -418,11 +418,11 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateHeight(
-        data = val_data, ref = val_ref, na.replace = val_na,
-        add = val_add, sex.rm = val_sex, qs.rm = val_qs,
+      datanew <- calculate_height(
+        data = val_data, ref = val_ref, na_replace = val_na,
+        add = val_add, sex_rm = val_sex, qs_rm = val_qs,
         kit = val_kit, exclude = val_ex,
-        ignore.case = val_ignore, exact = val_exact,
+        ignore_case = val_ignore, exact = val_exact,
         debug = debug
       )
 
@@ -431,8 +431,8 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
       # Create key-value pairs to log.
       keys <- list(
-        "data", "ref", "na.replace", "add", "sex.rm",
-        "qs.rm", "kit", "exclude", "ignore.case", "exact"
+        "data", "ref", "na_replace", "add", "sex_rm",
+        "qs_rm", "kit", "exclude", "ignore_case", "exact"
       )
 
       values <- list(
@@ -449,7 +449,7 @@ calculateHeight_gui <- function(env = parent.frame(), savegui = NULL, debug = FA
 
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(datanew)

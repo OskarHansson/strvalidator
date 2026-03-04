@@ -19,26 +19,26 @@
 #' FALSE only selected file will be imported.
 #' @param suffix string, only files with specified suffix will be imported.
 #' @param prefix string, only files with specified prefix will be imported.
-#' @param import.file string if file name is provided file will be imported
+#' @param import_file string if file name is provided file will be imported
 #' without showing the file open dialogue.
-#' @param folder.name string if folder name is provided files in folder
+#' @param folder_name string if folder name is provided files in folder
 #' will be imported without showing the select folder dialogue.
 #' @param extension string providing the file extension.
-#' @param file.name logical if TRUE the file name is written in a column 'File.Name'.
+#' @param file_name logical if TRUE the file name is written in a column 'File.Name'.
 #' NB! Any existing 'File.Name' column is overwritten.
-#' @param time.stamp logical if TRUE the file modified time stamp is written
+#' @param time_stamp logical if TRUE the file modified time stamp is written
 #' in a column 'Time'.
 #' NB! Any existing 'Time' column is overwritten.
 #' @param separator character for the delimiter used to separate columns
 #'  (see 'sep' in \code{\link{read.table}} for details).
-#' @param ignore.case logical indicating if case should be ignored. Only applies
+#' @param ignore_case logical indicating if case should be ignored. Only applies
 #' to multiple file import option.
-#' @param auto.trim logical indicating if dataset should be trimmed.
-#' @param trim.samples character vector with sample names to trim.
-#' @param trim.invert logical to keep (TRUE) or remove (FALSE) samples.
-#' @param auto.slim logical indicating if dataset should be slimmed.
-#' @param slim.na logical indicating if rows without data should remain.
-#' @param na.strings character vector with strings to be replaced by NA.
+#' @param auto_trim logical indicating if dataset should be trimmed.
+#' @param trim_samples character vector with sample names to trim.
+#' @param trim_invert logical to keep (TRUE) or remove (FALSE) samples.
+#' @param auto_slim logical indicating if dataset should be slimmed.
+#' @param slim_na logical indicating if rows without data should remain.
+#' @param na_strings character vector with strings to be replaced by NA.
 #' @param debug logical indicating printing debug information.
 #'
 #'
@@ -56,13 +56,13 @@
 
 import <- function(folder = TRUE, extension = "txt",
                    suffix = NA, prefix = NA,
-                   import.file = NA, folder.name = NA,
-                   file.name = TRUE, time.stamp = TRUE,
-                   separator = "\t", ignore.case = TRUE,
-                   auto.trim = FALSE, trim.samples = NULL,
-                   trim.invert = FALSE,
-                   auto.slim = FALSE, slim.na = TRUE,
-                   na.strings = c("NA", ""),
+                   import_file = NA, folder_name = NA,
+                   file_name = TRUE, time_stamp = TRUE,
+                   separator = "\t", ignore_case = TRUE,
+                   auto_trim = FALSE, trim_samples = NULL,
+                   trim_invert = FALSE,
+                   auto_slim = FALSE, slim_na = TRUE,
+                   na_strings = c("NA", ""),
                    debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -77,23 +77,23 @@ import <- function(folder = TRUE, extension = "txt",
     print(suffix)
     print("prefix")
     print(prefix)
-    print("import.file")
-    print(import.file)
-    print("folder.name")
-    print(folder.name)
-    print("file.name")
-    print(file.name)
-    print("time.stamp")
-    print(time.stamp)
-    print("ignore.case")
-    print(ignore.case)
+    print("import_file")
+    print(import_file)
+    print("folder_name")
+    print(folder_name)
+    print("file_name")
+    print(file_name)
+    print("time_stamp")
+    print(time_stamp)
+    print("ignore_case")
+    print(ignore_case)
   }
 
   # Check data ----------------------------------------------------------------
 
   # Check data.
-  if (is.na(import.file) && is.na(folder.name)) {
-    stop("Either 'import.file' or 'folder.name' must be provided")
+  if (is.na(import_file) && is.na(folder_name)) {
+    stop("Either 'import_file' or 'folder_name' must be provided")
   }
 
   # Import --------------------------------------------------------------------
@@ -104,7 +104,7 @@ import <- function(folder = TRUE, extension = "txt",
   # Check if result files in folder.
   if (folder) {
     # Get path.
-    folder <- folder.name
+    folder <- folder_name
 
     # Check if folder is specified.
     if (!is.na(folder)) {
@@ -133,75 +133,75 @@ import <- function(folder = TRUE, extension = "txt",
       }
 
       # Get list of files.
-      import.file <- list.files(
+      import_file <- list.files(
         path = folder, pattern = fileFilter,
         full.names = TRUE, recursive = FALSE,
-        ignore.case = ignore.case, include.dirs = FALSE
+        ignore.case = ignore_case, include.dirs = FALSE
       )
     }
   }
 
   if (debug) {
-    print("import.file")
-    print(import.file)
+    print("import_file")
+    print(import_file)
   }
 
   # Check if files are specified.
-  if (any(length(import.file) > 0, !is.na(import.file))) {
+  if (any(length(import_file) > 0, !is.na(import_file))) {
     # Autotrim message (function inside loop).
-    if (auto.trim) {
+    if (auto_trim) {
       message(paste(
-        "Auto trim samples:", trim.samples,
-        " invert =", trim.invert
+        "Auto trim samples:", trim_samples,
+        " invert =", trim_invert
       ))
     }
 
     # Read files.
-    for (f in seq(along = import.file)) {
-      # Should change to more efficient and simpler 'fread' but
+    for (f in seq(along = import_file)) {
+      # TODO: Should change to more efficient and simpler 'fread' but
       # problem is that autodetection of colClasses does not always work
       # and it is not possible(?) to set all to character.
       # Use read.table for the time being.
       # Read a file.
-      # tmpdf <- data.table::fread(import.file[f], data.table=FALSE)
+      # tmpdf <- data.table::fread(import_file[f], data.table=FALSE)
 
       # Ensures column names are identical as when read.table was used.
       # Needed since many functions specify columns by name.
       # names(tmpdf) <- make.names(colnames(tmpdf))
 
       # Read a file.
-      tmpdf <- read.table(import.file[f],
+      tmpdf <- read.table(import_file[f],
         header = TRUE,
         sep = separator, fill = TRUE,
-        na.strings = na.strings,
+        na_strings = na_strings,
         colClasses = "character",
         stringsAsFactors = FALSE
       )
 
       # Autotrim datset (message before loop).
-      if (auto.trim) {
+      if (auto_trim) {
         tmpdf <- trim(
-          data = tmpdf, samples = trim.samples,
-          invert.s = trim.invert, debug = debug
+          data = tmpdf, samples = trim_samples,
+          invert_s = trim_invert, debug = debug
         )
       }
 
       # Show progress.
-      message(paste("Importing (", f, " of ", length(import.file), "): ",
-        import.file[f],
+      message(paste("Importing (", f, " of ", length(import_file), "): ",
+        import_file[f],
         sep = ""
       ))
 
       # Check if file path should be saved.
-      if (file.name) {
+      if (file_name) {
         # Add column and save file name.
-        tmpdf$File.Name <- basename(import.file[f])
+        tmpdf$File.Name <- basename(import_file[f])
       }
 
       # Check if time stamp should be saved.
-      if (time.stamp) {
+      if (time_stamp) {
         # Add column and save file name.
-        tmptime <- file.info(import.file[f])
+        tmptime <- file.info(import_file[f])
         tmpdf$File.Time <- as.character(tmptime$mtime)
       }
 
@@ -216,12 +216,12 @@ import <- function(folder = TRUE, extension = "txt",
     }
 
     # Autoslim dataset.
-    if (auto.slim) {
+    if (auto_slim) {
       # Autodetect column names to keep fixed.
-      fixCol <- colNames(data = res, slim = TRUE, numbered = TRUE, concatenate = "|")
+      fixCol <- col_names(data = res, slim = TRUE, numbered = TRUE, concatenate = "|")
 
       # Autodetect column names to stack.
-      stackCol <- colNames(data = res, slim = FALSE, numbered = TRUE, concatenate = "|")
+      stackCol <- col_names(data = res, slim = FALSE, numbered = TRUE, concatenate = "|")
 
       # Progress.
       message("Auto slim dataset...")
@@ -235,7 +235,7 @@ import <- function(folder = TRUE, extension = "txt",
       # Slim data.
       res <- slim(
         data = res, fix = fixCol, stack = stackCol,
-        keep.na = slim.na, debug = debug
+        keep_na = slim_na, debug = debug
       )
     }
   }
@@ -244,7 +244,7 @@ import <- function(folder = TRUE, extension = "txt",
   res <- audit_trail(obj = res, f_call = match.call(), package = "strvalidator")
 
   # Convert common known numeric columns.
-  res <- colConvert(data = res)
+  res <- col_convert(data = res)
 
   return(res)
 }

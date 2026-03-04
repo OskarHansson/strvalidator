@@ -22,7 +22,7 @@
 #' @return data.frame with changes in 'Allele' column.
 #'
 
-scrambleAlleles <- function(data, db = "ESX 17 Hill") {
+scramble_alleles <- function(data, db = "ESX 17 Hill") {
   if (!"Sample.Name" %in% names(data)) {
     stop("Sample.Name is a required column in 'data'")
   }
@@ -43,12 +43,12 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
   dfMarker <- unique(data$Marker)
 
   # Remove sex markers.
-  kit <- detectKit(data = dfMarker)[1]
-  sex <- getKit(kit = kit, what = "Sex.Marker")
+  kit <- detect_kit(data = dfMarker)[1]
+  sex <- get_kit(kit = kit, what = "Sex.Marker")
   dfMarker <- dfMarker[dfMarker != sex]
 
   # Get frequency database.
-  dfDb <- getDb(db.name.or.index = db)
+  dfDb <- get_db(db_name_or_index = db)
 
   # Get first and last marker column.
   first <- grep("Allele", names(dfDb), fixed = TRUE) + 1
@@ -125,7 +125,7 @@ scrambleAlleles <- function(data, db = "ESX 17 Hill") {
     # Calculate size for the new alleles.
     data <- add_size(
       data = data,
-      kit = getKit(kit = kit, what = "Offset"),
+      kit = get_kit(kit = kit, what = "Offset"),
       ignore_case = TRUE
     )
 

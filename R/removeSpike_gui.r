@@ -19,7 +19,7 @@
 #' @return TRUE
 
 
-removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+remove_spike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -122,9 +122,9 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   data_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -174,9 +174,9 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   spike_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -243,7 +243,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     val_invert <- svalue(f1_invert_chk)
 
     if (is.data.frame(val_data) & is.data.frame(val_spike)) {
-      datanew <- removeSpike(
+      datanew <- remove_spike(
         data = val_data, spike = val_spike,
         invert = val_invert, debug = debug
       )
@@ -261,7 +261,7 @@ removeSpike_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(datanew)

@@ -24,7 +24,7 @@
 #'  labs geom_text theme
 #'
 
-plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_peaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -143,9 +143,9 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -297,7 +297,7 @@ plotPeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, p
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )

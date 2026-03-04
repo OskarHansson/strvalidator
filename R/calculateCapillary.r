@@ -7,12 +7,12 @@
 #'
 #' @details
 #' Calculates the inter capillary balance for the internal lane standard (ILS).
-#' Require information from both the 'samples.table' and the 'plot.table'.
+#' Require information from both the 'samples_table' and the 'plot_table'.
 #'
-#' @param samples.table data frame containing at least the columns
+#' @param samples_table data frame containing at least the columns
 #'  'Sample.File', 'Sample.Name', 'Size.Standard', 'Instrument.Type',
 #'  'Instrument.ID', 'Cap', 'Well', and 'SQ'.
-#' @param plot.table data frame containing at least the columns
+#' @param plot_table data frame containing at least the columns
 #'  'Sample.File.Name', 'Size', and 'Height'.
 #' @param sq numeric threshold for 'Sizing Quality' (SQ).
 #' @param run character string for run name.
@@ -27,60 +27,60 @@
 #' @importFrom graphics title
 #'
 
-calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debug = FALSE) {
+calculate_capillary <- function(samples_table, plot_table, sq = 0, run = "", debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
   }
 
-  # Check samples.table ---------------------------------------------------------
+  # Check samples_table ---------------------------------------------------------
 
-  if (is.null(samples.table$Sample.File)) {
+  if (is.null(samples_table$Sample.File)) {
     stop("'Sample.File' does not exist!")
   }
 
-  if (is.null(samples.table$Sample.Name)) {
+  if (is.null(samples_table$Sample.Name)) {
     stop("'Sample.Name' does not exist!")
   }
 
-  if (is.null(samples.table$Size.Standard)) {
+  if (is.null(samples_table$Size.Standard)) {
     stop("'Size.Standard' does not exist!")
   }
 
-  if (is.null(samples.table$Instrument.Type)) {
+  if (is.null(samples_table$Instrument.Type)) {
     stop("'Instrument.Type' does not exist!")
   }
 
-  if (is.null(samples.table$Instrument.ID)) {
+  if (is.null(samples_table$Instrument.ID)) {
     stop("'Instrument.ID' does not exist!")
   }
 
-  if (is.null(samples.table$Cap)) {
+  if (is.null(samples_table$Cap)) {
     stop("'Cap' does not exist!")
   }
 
-  if (is.null(samples.table$Well)) {
+  if (is.null(samples_table$Well)) {
     stop("'Well' does not exist!")
   }
 
-  if (is.null(samples.table$SQ)) {
+  if (is.null(samples_table$SQ)) {
     stop("'SQ' does not exist!")
   }
 
-  # Check plot.table ------------------------------------------------------------
+  # Check plot_table ------------------------------------------------------------
 
-  if (is.null(plot.table$Sample.File.Name)) {
+  if (is.null(plot_table$Sample.File.Name)) {
     stop("'Sample.File.Name' does not exist!")
   }
 
-  if (is.null(plot.table$Size)) {
+  if (is.null(plot_table$Size)) {
     stop("'Size' does not exist!")
   }
 
-  if (is.null(plot.table$Height)) {
+  if (is.null(plot_table$Height)) {
     stop("'Height' does not exist!")
   }
 
-  #  if(is.null(plot.table$Data.Point)){
+  #  if(is.null(plot_table$Data.Point)){
   #    stop("'Data.Point' does not exist!")
   #  }
 
@@ -88,7 +88,7 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
 
   .separator <- .Platform$file.sep # Platform dependent path separator.
 
-  ilsName <- unique(samples.table$Size.Standard)
+  ilsName <- unique(samples_table$Size.Standard)
 
   if (!is.null(ilsName) && length(ilsName) == 1) {
     # Get package path.
@@ -120,25 +120,25 @@ calculateCapillary <- function(samples.table, plot.table, sq = 0, run = "", debu
   # NB! This mean that it is not possible to distinguish between re-injections (runs)!
   # NB! The only option if re-injections are used is to use positional information.
   # NB!  i.e. firs re-injection comes first followed by the second and so on...
-  if (!"Sample.File" %in% names(plot.table)) {
-    if ("Sample.File.Name" %in% names(plot.table)) {
+  if (!"Sample.File" %in% names(plot_table)) {
+    if ("Sample.File.Name" %in% names(plot_table)) {
       if (debug) {
         print("Change column names from:")
-        print(names(plot.table))
+        print(names(plot_table))
       }
 
       # Change column name.
-      colnames(plot.table)[which(colnames(plot.table) == "Sample.File.Name")] <- "Sample.File"
+      colnames(plot_table)[which(colnames(plot_table) == "Sample.File.Name")] <- "Sample.File"
 
       if (debug) {
         print("To:")
-        print(names(plot.table))
+        print(names(plot_table))
       }
     }
   }
 
   # Merge data frames.
-  df <- merge(plot.table, samples.table, by = "Sample.File")
+  df <- merge(plot_table, samples_table, by = "Sample.File")
 
   # Prepare -------------------------------------------------------------------
 

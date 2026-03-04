@@ -38,7 +38,7 @@
 #'
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 
-plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_dropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataColumns <- NULL
@@ -171,9 +171,9 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -191,7 +191,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
   glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = g1,
@@ -221,7 +221,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       # Suggest name.
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
 
@@ -468,7 +468,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )
@@ -605,7 +605,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
       }
 
       # Sort by marker in kit
-      .gData <- sortMarker(
+      .gData <- sort_marker(
         data = .gData,
         kit = val_kit,
         add.missing.levels = TRUE
@@ -1007,7 +1007,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
         }
 
         # Create plot.
-        plotColor <- getKit(kit = val_kit, what = "Color")
+        plotColor <- get_kit(kit = val_kit, what = "Color")
         plotColor <- unique(plotColor$Color)
         plotColor <- add_color(plotColor, need = "R.Color", have = "Color")
 
@@ -1075,7 +1075,7 @@ plotDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE,
 
         # Mx data SGM Plus.
         # .gData<-add_color()
-        # .gData<-sortMarker(.gData,"SGM Plus")
+        # .gData<-sort_marker(.gData,"SGM Plus")
 
         # Mx Data:
         # xlabels<-.gData[!duplicated(.gData[, c("Sample.Name", "Ratio")]), ]$Ratio

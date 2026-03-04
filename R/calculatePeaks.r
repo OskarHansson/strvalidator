@@ -33,9 +33,9 @@
 #' @param bins numeric vector containing the cut-off points defined as
 #' maximum number of peaks for all but the last label, which is anything
 #' above final cut-off. Must be sorted in ascending order.
-#' @param ol.rm logical if TRUE, off-ladder alleles 'OL' peaks will be discarded.
+#' @param ol_rm logical if TRUE, off-ladder alleles 'OL' peaks will be discarded.
 #' if FALSE, all peaks will be included in the calculations.
-#' @param by.marker logical if TRUE, peaks will counted per marker.
+#' @param by_marker logical if TRUE, peaks will counted per marker.
 #' if FALSE, peaks will counted per sample.
 #' @param debug logical indicating printing debug information.
 #'
@@ -46,8 +46,8 @@
 #' @importFrom utils str
 #'
 
-calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
-                           ol.rm = FALSE, by.marker = FALSE, debug = FALSE) {
+calculate_peaks <- function(data, bins = c(0, 2, 3), labels = NULL,
+                           ol_rm = FALSE, by_marker = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
@@ -56,10 +56,10 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
     print(bins)
     print("labels:")
     print(labels)
-    print("ol.rm:")
-    print(ol.rm)
-    print("by.marker:")
-    print(by.marker)
+    print("ol_rm:")
+    print(ol_rm)
+    print("by_marker:")
+    print(by_marker)
   }
 
   # Check parameters ----------------------------------------------------------
@@ -68,12 +68,12 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
     stop("'bins' must be a vector of length 1 less than 'labels'!")
   }
 
-  if (!is.logical(ol.rm)) {
-    stop("'ol.rm' must be logical!")
+  if (!is.logical(ol_rm)) {
+    stop("'ol_rm' must be logical!")
   }
 
-  if (!is.logical(by.marker)) {
-    stop("'by.marker' must be logical!")
+  if (!is.logical(by_marker)) {
+    stop("'by_marker' must be logical!")
   }
 
   # Check data ----------------------------------------------------------------
@@ -86,7 +86,7 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
     stop("'data' must contain a column 'Height'.")
   }
 
-  if (by.marker) {
+  if (by_marker) {
     if (!"Marker" %in% names(data)) {
       stop("'data' must contain a column 'Marker'.")
     }
@@ -103,7 +103,7 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
 
   # Prepare -------------------------------------------------------------------
 
-  if (ol.rm) {
+  if (ol_rm) {
     # Discard off-ladder peaks but keep NA's.
     data <- data[data$Allele != "OL" | is.na(data$Allele), ]
   }
@@ -151,7 +151,7 @@ calculatePeaks <- function(data, bins = c(0, 2, 3), labels = NULL,
   # Convert to data.table.
   DT <- data.table::data.table(data)
 
-  if (by.marker) {
+  if (by_marker) {
     message("Counting number of peaks by marker...")
 
     DT[, Peaks := sum(!is.na(Height), na.rm = TRUE), by = list(Id, Marker)]

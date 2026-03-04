@@ -450,18 +450,18 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         extension = extension_val,
         suffix = suffix_val,
         prefix = prefix_val,
-        import.file = file_val,
-        folder.name = folder_val,
-        file.name = get_file_val,
-        time.stamp = get_time_val,
+        import_file = file_val,
+        folder_name = folder_val,
+        file_name = get_file_val,
+        time_stamp = get_time_val,
         separator = val_delimiter,
-        ignore.case = ignore_val,
-        auto.trim = trim_val,
-        trim.samples = trim_what_val,
-        trim.invert = trim_invert_val,
-        auto.slim = slim_val,
-        slim.na = slim_fix_val,
-        na.strings = val_na,
+        ignore_case = ignore_val,
+        auto_trim = trim_val,
+        trim_samples = trim_what_val,
+        trim_invert = trim_invert_val,
+        auto_slim = slim_val,
+        slim_na = slim_fix_val,
+        na_strings = val_na,
         debug = debug
       )
 
@@ -483,9 +483,9 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         # Create key-value pairs to log.
         keys <- list(
           "folder", "extension", "suffix", "prefix",
-          "import.file", "folder.name", "file.name", "time.stamp",
-          "ignore.case", "auto.trim", "trim.samples", "trim.invert",
-          "auto.slim", "slim.na", "separator", "na.strings"
+          "import_file", "folder_name", "file_name", "time_stamp",
+          "ignore_case", "auto_trim", "trim_samples", "trim_invert",
+          "auto_slim", "slim_na", "separator", "na_strings"
         )
 
         values <- list(
@@ -503,7 +503,7 @@ import_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, pare
         )
 
         # Save data.
-        saveObject(
+        save_object(
           name = val_name, object = datanew, parent = w,
           env = env, debug = debug
         )

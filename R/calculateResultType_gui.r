@@ -19,7 +19,7 @@
 #'
 #' @seealso \code{\link{calculateResultType}}
 
-calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_result_type_gui <- function(env = parent.frame(), savegui = NULL,
                                     debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -133,9 +133,9 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -153,7 +153,7 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
   glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = g1,
@@ -181,7 +181,7 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(save_edt) <- paste(val_obj, "_type", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -229,7 +229,7 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
   glabel(text = strings$STR_LBL_FULL_KIT, container = f1, anchor = c(-1, 0))
 
   f1_kit_drp <- gcombobox(
-    items = c(strings$STR_DRP_KIT, getKit()),
+    items = c(strings$STR_DRP_KIT, get_kit()),
     selected = 1,
     editable = FALSE,
     container = f1,
@@ -309,9 +309,9 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
     }
 
     # Check if kit is provided and available.
-    if (val_subkit %in% getKit()) {
+    if (val_subkit %in% get_kit()) {
       # Get marker names and create string.
-      val_marker <- paste(getKit(kit = val_subkit, what = "Marker"), collapse = "|")
+      val_marker <- paste(get_kit(kit = val_subkit, what = "Marker"), collapse = "|")
     } else {
       # Set to NA.
       val_subkit <- NA
@@ -342,15 +342,15 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateResultType(
+      datanew <- calculate_result_type(
         data = val_data,
         kit = val_kit,
-        add.missing.marker = val_add,
+        add_missing_marker = val_add,
         threshold = val_threshold,
-        mixture.limits = val_mix,
-        partial.limits = val_par,
-        subset.name = val_subkit,
-        marker.subset = val_marker,
+        mixture_limits = val_mix,
+        partial_limits = val_par,
+        subset_name = val_subkit,
+        marker_subset = val_marker,
         debug = debug
       )
 
@@ -359,8 +359,8 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Create key-value pairs to log.
       keys <- list(
-        "data", "add.missing.marker", "threshold", "mixture.limits",
-        "partial.limits", "subset.name", "marker.subset"
+        "data", "add_missing_marker", "threshold", "mixture_limits",
+        "partial_limits", "subset_name", "marker_subset"
       )
 
       values <- list(
@@ -376,7 +376,7 @@ calculateResultType_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(paste("EXIT:", fnc))

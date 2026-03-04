@@ -19,7 +19,7 @@
 #'
 #' @seealso  \code{\link{addData}}
 
-addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+add_data_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gDataDest <- NULL
   .gDataDestName <- NULL
@@ -126,9 +126,9 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -198,9 +198,9 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   refset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -412,20 +412,20 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       unblockHandlers(add_btn)
       enabled(add_btn) <- FALSE
 
-      datanew <- addData(
+      datanew <- add_data(
         data = .gDataDest,
-        new.data = .gDataSource,
+        new_data = .gDataSource,
         exact = val_exact,
-        by.col = val_key,
-        then.by.col = val_key2,
+        by_col = val_key,
+        then_by_col = val_key2,
         what = val_what,
-        ignore.case = val_ignore
+        ignore_case = val_ignore
       )
 
       # Create key-value pairs to log.
       keys <- list(
-        "data", "new.data", "exact", "by.col", "then.by.col",
-        "what", "ignore.case"
+        "data", "new_data", "exact", "by_col", "then_by_col",
+        "what", "ignore_case"
       )
 
       values <- list(
@@ -441,7 +441,7 @@ addData_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(datanew)

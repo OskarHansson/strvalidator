@@ -472,7 +472,7 @@ manage_kits_gui <- function(env = parent.frame(), savegui = NULL,
     # Validate short names and check for duplicates
     if (!any(short_name[!remove_kit] == "")) {
       if (kit_append) { # Append new kits
-        existing_short_names <- short_name[!remove_kit] %in% getKit()
+        existing_short_names <- short_name[!remove_kit] %in% get_kit()
       } else { # Overwrite or save as new data frame
         existing_short_names <- duplicated(toupper(short_name[!remove_kit]))
       }
@@ -826,30 +826,3 @@ manage_kits_gui <- function(env = parent.frame(), savegui = NULL,
   if (debug) message("GUI ready for interaction.")
 }
 
-################################################################################
-#' @rdname manage_kits_gui
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [manage_kits_gui()] instead.
-################################################################################
-
-manageKits_gui <- function(env = parent.frame(),
-                           savegui = NULL,
-                           debug = FALSE, 
-                           parent = NULL,
-                           ...) {
-  
-  .Deprecated("manage_kits_gui", package = "strvalidator")
-  
-  # Remap arguments
-  manage_kits_gui(
-    env = env,
-    savegui = savegui,
-    debug = debug,
-    parent = parent,
-    ...
-  )
-}

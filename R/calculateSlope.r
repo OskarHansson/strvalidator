@@ -40,7 +40,7 @@
 #'
 #' @export
 
-calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, ...) {
+calculate_slope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, ...) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data")
@@ -133,9 +133,9 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
   group <- unique(data$Group)
 
   # Filter known profile.
-  data <- filterProfile(
+  data <- filter_profile(
     data = data, ref = ref,
-    add.missing.loci = FALSE, keep.na = FALSE,
+    add_missing_loci = FALSE, keep_na = FALSE,
     debug = debug, ...
   )
 
@@ -155,7 +155,7 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
       # Loop over groups.
       for (g in seq(along = group)) {
         # Auto detect kit. If multiple matches, use the first.
-        kit[g] <- detectKit(
+        kit[g] <- detect_kit(
           data = data[data$Group == group[g], ],
           debug = debug
         )[1]
@@ -173,7 +173,7 @@ calculateSlope <- function(data, ref, conf = 0.975, kit = NULL, debug = FALSE, .
     # Loop over groups.
     for (g in seq(along = group)) {
       # Get kit information.
-      kitData <- getKit(kit = kit[g])
+      kitData <- get_kit(kit = kit[g])
 
       # Add size in base pair.
       data.tmp <- add_size(

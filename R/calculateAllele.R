@@ -16,7 +16,7 @@
 #'  optionally 'Height' and 'Size'.
 #' @param threshold numeric if not NULL only peak heights above 'threshold'
 #'  will be considered.
-#' @param sex.rm logical TRUE removes all sex markers. Requires 'kit'.
+#' @param sex_rm logical TRUE removes all sex markers. Requires 'kit'.
 #' @param kit character for the DNA typing kit defining the sex markers.
 #' @param debug logical indicating printing debug information.
 #'
@@ -32,7 +32,7 @@
 #' @seealso \code{\link[data.table:data.table]{data.table}}
 
 
-calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
+calculate_allele <- function(data, threshold = NULL, sex_rm = FALSE, kit = NULL,
                             debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -73,8 +73,8 @@ calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
   }
 
   # Check logical.
-  if (!is.logical(sex.rm)) {
-    stop("'sex.rm' must be logical!")
+  if (!is.logical(sex_rm)) {
+    stop("'sex_rm' must be logical!")
   }
 
   # Check character.
@@ -101,19 +101,19 @@ calculateAllele <- function(data, threshold = NULL, sex.rm = FALSE, kit = NULL,
     }
   }
 
-  if (sex.rm) {
+  if (sex_rm) {
     # Remove sex markers.
 
     if (is.null(kit)) {
       # Kit is not provided.
 
       message("'kit' is not provided. Autodetect kit...")
-      kit <- detectKit(data = data, index = FALSE, debug = debug)[1]
+      kit <- detect_kit(data = data, index = FALSE, debug = debug)[1]
       message("Using first detected kit '", kit, "' to define sex markers.")
     }
 
     # Get sex markes.
-    sexMarker <- getKit(kit = kit, what = "Sex.Marker")
+    sexMarker <- get_kit(kit = kit, what = "Sex.Marker")
     message("Defined markers: ", paste(sexMarker, collapse = ", "))
 
     for (m in seq(along = sexMarker)) {

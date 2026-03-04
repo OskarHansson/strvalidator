@@ -29,7 +29,7 @@
 #' @return data.frame with spikes removed.
 #'
 
-removeSpike <- function(data, spike, invert = FALSE, debug = FALSE) {
+remove_spike <- function(data, spike, invert = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")

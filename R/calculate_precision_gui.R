@@ -147,7 +147,7 @@ calculate_precision_gui <- function(env = parent.frame(), savegui = NULL,
   
   rows_lbl <- glabel(text = paste("0", strings$STR_LBL_ROWS), container = f0g0)
   
-  dataset_list <- c(strings$STR_DRP_DEFAULT, listObjects(env = env, obj.class = "data.frame"))
+  dataset_list <- c(strings$STR_DRP_DEFAULT, list_objects(env = env, obj_class = "data.frame"))
   dataset_drp <- gcombobox(
     items = dataset_list,
     selected = 1,
@@ -162,7 +162,7 @@ calculate_precision_gui <- function(env = parent.frame(), savegui = NULL,
   f0g1 <- ggroup(container = f0, spacing = 1, expand = TRUE, fill = "x")
   glabel(text = strings$STR_LBL_KIT, container = f0g1)
   
-  kit_items <- getKit()
+  kit_items <- get_kit()
   kit_drp <- gcombobox(
     items = kit_items,
     selected = 1,
@@ -270,7 +270,7 @@ calculate_precision_gui <- function(env = parent.frame(), savegui = NULL,
     
     # Detect kit (best-effort)
     kit_index <- tryCatch(
-      detectKit(.g_data, index = TRUE, debug = debug),
+      detect_kit(.g_data, index = TRUE, debug = debug),
       error = function(e) NA_integer_
     )
     
@@ -320,7 +320,7 @@ calculate_precision_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(calc_btn) <- old_label
     }, add = TRUE)
     
-    kit_sizes <- getKit(chosen_kit, what = "Size")
+    kit_sizes <- get_kit(chosen_kit, what = "Size")
     
     res <- tryCatch(
       calculate_precision(
@@ -342,8 +342,8 @@ calculate_precision_gui <- function(env = parent.frame(), savegui = NULL,
     
     # Save as two separate data frames
     if (exists("saveObject", mode = "function", inherits = TRUE)) {
-      saveObject(name = out_within, object = res$within, parent = w, env = env)
-      saveObject(name = out_across, object = res$across, parent = w, env = env)
+      save_object(name = out_within, object = res$within, parent = w, env = env)
+      save_object(name = out_across, object = res$across, parent = w, env = env)
     } else {
       assign(out_within, res$within, envir = env)
       assign(out_across, res$across, envir = env)

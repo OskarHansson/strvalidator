@@ -17,7 +17,7 @@
 #'
 #' @seealso \code{\link{calculatePeaks}}
 
-calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+calculate_peaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   .gData <- NULL
   .gDataName <- NULL
 
@@ -120,9 +120,9 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DEFAULT,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -232,19 +232,19 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculatePeaks(
+      datanew <- calculate_peaks(
         data = val_data,
         bins = val_bins,
         labels = val_labels,
-        ol.rm = val_no_ol,
-        by.marker = val_per_marker,
+        ol_rm = val_no_ol,
+        by_marker = val_per_marker,
         debug = debug
       )
 
       # Create key-value pairs to log.
       keys <- list(
-        "data", "bins", "labels", "ol.rm",
-        "by.marker"
+        "data", "bins", "labels", "ol_rm",
+        "by_marker"
       )
 
       values <- list(
@@ -260,7 +260,7 @@ calculatePeaks_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(str(datanew))

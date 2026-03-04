@@ -19,11 +19,11 @@
 #' @param hb numerical, definition of heterozygote balance. Default is hb=1.
 #'  hb=1: HMW/LMW, hb=2: LMW/HMW, hb=3; min(Ph)/max(Ph).
 #' @param kit character defining the kit used. If NULL automatic detection is attempted.
-#' @param ignore.case logical indicating if sample matching should ignore case.
+#' @param ignore_case logical indicating if sample matching should ignore case.
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param exact logical indicating if exact sample matching should be used.
-#' @param sex.rm logical TRUE removes sex markers defined by 'kit'.
-#' @param qs.rm logical TRUE removes quality sensors defined by 'kit'.
+#' @param sex_rm logical TRUE removes sex markers defined by 'kit'.
+#' @param qs_rm logical TRUE removes quality sensors defined by 'kit'.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return data.frame with with columns 'Sample.Name', 'Marker', 'Delta', 'Hb', 'MPH'.
@@ -37,9 +37,9 @@
 #' data(ref2)
 #' data(set2)
 #' # Calculate average balances.
-#' calculateHb(data = set2, ref = ref2)
-calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = FALSE,
-                        ignore.case = TRUE, exact = FALSE, word = FALSE,
+#' calculate_hb(data = set2, ref = ref2)
+calculate_hb <- function(data, ref, hb = 1, kit = NULL, sex_rm = FALSE, qs_rm = FALSE,
+                        ignore_case = TRUE, exact = FALSE, word = FALSE,
                         debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -50,8 +50,8 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
     print(str(ref))
     print("hb")
     print(hb)
-    print("ignore.case")
-    print(ignore.case)
+    print("ignore_case")
+    print(ignore_case)
     print("word")
     print(word)
   }
@@ -105,7 +105,7 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
   # Check if 'kit' is provided.
   if (is.null(kit)) {
     message("'kit' not provided. Attempting auto detection.")
-    kit <- detectKit(data = data, debug = debug)
+    kit <- detect_kit(data = data, debug = debug)
   }
 
   # Check data type of Height.
@@ -117,19 +117,19 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
 
   # Filter dataset.
   message("Extracting known alleles from dataset...")
-  data <- filterProfile(
+  data <- filter_profile(
     data = data, ref = ref,
-    add.missing.loci = FALSE, keep.na = FALSE, invert = FALSE,
-    ignore.case = ignore.case, exact = exact, word = word,
-    sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug
+    add_missing_loci = FALSE, keep_na = FALSE, invert = FALSE,
+    ignore_case = ignore_case, exact = exact, word = word,
+    sex_rm = sex_rm, qs_rm = qs_rm, kit = kit, debug = debug
   )
 
   # Remove sex markers and quality sensors from reference dataset.
-  if (sex.rm || qs.rm) {
+  if (sex_rm || qs_rm) {
     message("Removing gender markers and/or quality sensors from reference dataset...")
-    ref <- filterProfile(
-      data = ref, filter.allele = FALSE,
-      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
+    ref <- filter_profile(
+      data = ref, filter_allele = FALSE,
+      sex_rm = sex_rm, qs_rm = qs_rm, kit = kit,
       debug = debug
     )
   }
@@ -140,12 +140,12 @@ calculateHb <- function(data, ref, hb = 1, kit = NULL, sex.rm = FALSE, qs.rm = F
       message("Estimating size of alleles...")
 
       # Get size information.
-      kitSize <- getKit(kit = kit)
+      kitSize <- get_kit(kit = kit)
 
       # Add estimated size to data.
       data <- add_size(
         data = data, kit = kitSize,
-        ignore_case = ignore.case, debug = debug
+        ignore_case = ignore_case, debug = debug
       )
     } else {
       # Size not needed.

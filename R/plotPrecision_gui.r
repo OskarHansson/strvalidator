@@ -32,7 +32,7 @@
 #' @seealso \url{https://ggplot2.tidyverse.org/} for details on plot settings.
 #'
 
-plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+plot_precision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables and constants.
   .gData <- NULL
   .gDataName <- NULL
@@ -182,9 +182,9 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -202,7 +202,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
   glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = g1,
@@ -230,7 +230,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
 
@@ -594,7 +594,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )
@@ -943,7 +943,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
       }
 
       # Sort by marker in kit
-      val_data <- sortMarker(
+      val_data <- sort_marker(
         data = val_data,
         kit = val_kit,
         add.missing.levels = TRUE
@@ -1157,7 +1157,7 @@ plotPrecision_gui <- function(env = parent.frame(), savegui = NULL, debug = FALS
         }
 
         # Get kit colors and convert to dyes.
-        dyes <- unique(getKit(val_kit, what = "Color")$Color)
+        dyes <- unique(get_kit(val_kit, what = "Color")$Color)
         dyes <- add_color(dyes, have = "Color", need = "Dye")
         # Number of dyes.
         noDyes <- length(dyes)

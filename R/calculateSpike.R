@@ -38,7 +38,7 @@
 #' @seealso \code{\link[data.table:data.table]{data.table}}
 
 
-calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
+calculate_spike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
                            quick = FALSE, debug = FALSE) {
   # Parameters that are changed by the function must be saved first.
   attr_kit <- substitute(kit)
@@ -88,13 +88,13 @@ calculateSpike <- function(data, threshold = NULL, tolerance = 2, kit = NULL,
 
   if (is.null(kit)) {
     # Detect kit.
-    kit <- detectKit(data = DT, index = FALSE, debug = debug)
+    kit <- detect_kit(data = DT, index = FALSE, debug = debug)
     kit <- kit[1]
     message(paste("Using kit:", kit))
   }
 
   # Getdye channels.
-  kitColors <- unique(getKit(kit = kit, what = "Color", debug = debug)$Color)
+  kitColors <- unique(get_kit(kit = kit, what = "Color", debug = debug)$Color)
   kitDyes <- add_color(data = kitColors, have = "Color", need = "Dye")
 
   if (is.null(threshold)) {

@@ -14,7 +14,7 @@
 #' @param kit string representing the forensic STR kit used.
 #' Default is NULL and automatic detection of kit will be attempted.
 #' @param overwrite logical if TRUE and column exist it will be overwritten.
-#' @param ignore.case logical if TRUE case in marker names will be ignored.
+#' @param ignore_case logical if TRUE case in marker names will be ignored.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return data.frame with additional numeric column 'Order'.
@@ -27,8 +27,8 @@
 #' # Load a dataset containing two samples.
 #' data("set2")
 #' # Add marker order when kit is known.
-#' addOrder(data = set2, kit = "SGMPlus")
-addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
+#' add_order(data = set2, kit = "SGMPlus")
+add_order <- function(data, kit = NULL, overwrite = FALSE, ignore_case = FALSE,
                      debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -41,8 +41,8 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
     print(kit)
     print("overwrite")
     print(overwrite)
-    print("ignore.case")
-    print(ignore.case)
+    print("ignore_case")
+    print(ignore_case)
   }
 
   # Initialise 'ok' to add marker order.
@@ -73,19 +73,19 @@ addOrder <- function(data, kit = NULL, overwrite = FALSE, ignore.case = FALSE,
 
     # Check kit and auto detect if not provided.
     if (is.null(kit)) {
-      kit <- detectKit(data = data)[1]
+      kit <- detect_kit(data = data)[1]
       message("No kit provided. Detected: ", kit)
     }
 
     # Get markers and their color.
-    kitInfo <- getKit(kit, what = "Color")
+    kitInfo <- get_kit(kit, what = "Color")
     marker <- kitInfo$Marker
 
     message("Adding marker order according to kit: ", kit)
 
     # Loop over all markers.
     for (m in seq(along = marker)) {
-      if (ignore.case) {
+      if (ignore_case) {
         # Add order by marker.
         data$Order[toupper(data$Marker) == toupper(marker[m])] <- m
       } else {

@@ -31,19 +31,19 @@
 #' @param option character: 'prop' for proportional Lb, 'norm' for normalized
 #' LB, 'cent' for centred Lb, 'marker' for the min and max marker peak height ratio,
 #' .and 'peak' for the min and max peak height ratio.
-#' @param by.dye logical. Default is FALSE for global Lb, if TRUE Lb is calculated
+#' @param by_dye logical. Default is FALSE for global Lb, if TRUE Lb is calculated
 #' within each dye channel.
-#' @param ol.rm logical. Default is TRUE indicating that off-ladder 'OL' alleles
+#' @param ol_rm logical. Default is TRUE indicating that off-ladder 'OL' alleles
 #' will be removed.
-#' @param sex.rm logical. Default is FALSE indicating that all markers will be
+#' @param sex_rm logical. Default is FALSE indicating that all markers will be
 #' considered. If TRUE sex markers will be removed.
-#' @param qs.rm logical. Default is TRUE indicating that all quality sensors
+#' @param qs_rm logical. Default is TRUE indicating that all quality sensors
 #' will be removed.
 #' @param na numeric. Numeric to replace NA values e.g. locus dropout can be
 #' given a peak height equal to the limit of detection threshold, or zero.
 #' Default is NULL indicating that NA will be treated as missing values.
 #' @param kit character providing the kit name. Attempt to auto detect if NULL.
-#' @param ignore.case logical indicating if sample matching should ignore case.
+#' @param ignore_case logical indicating if sample matching should ignore case.
 #' Only used if 'ref' is provided and 'data' is filtered.
 #' @param word logical indicating if word boundaries should be added before
 #' sample matching. Only used if 'ref' is provided and 'data' is filtered.
@@ -72,11 +72,11 @@
 #' data(set2)
 #'
 #' # Calculate inter-locus balance.
-#' res <- calculateLb(data = set2)
+#' res <- calculate_lb(data = set2)
 #' print(res)
-calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
-                        ol.rm = TRUE, sex.rm = FALSE, qs.rm = FALSE,
-                        na = NULL, kit = NULL, ignore.case = TRUE,
+calculate_lb <- function(data, ref = NULL, option = "prop", by_dye = FALSE,
+                        ol_rm = TRUE, sex_rm = FALSE, qs_rm = FALSE,
+                        na = NULL, kit = NULL, ignore_case = TRUE,
                         word = FALSE, exact = FALSE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -87,20 +87,20 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     print(str(ref))
     print("option")
     print(option)
-    print("by.dye")
-    print(by.dye)
-    print("ol.rm")
-    print(ol.rm)
-    print("sex.rm")
-    print(sex.rm)
-    print("qs.rm")
-    print(qs.rm)
+    print("by_dye")
+    print(by_dye)
+    print("ol_rm")
+    print(ol_rm)
+    print("sex_rm")
+    print(sex_rm)
+    print("qs_rm")
+    print(qs_rm)
     print("na")
     print(na)
     print("kit")
     print(kit)
-    print("ignore.case")
-    print(ignore.case)
+    print("ignore_case")
+    print(ignore_case)
     print("word")
     print(word)
     print("exact")
@@ -149,28 +149,28 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     }
   }
 
-  if (!is.logical(by.dye)) {
-    stop("'by.dye' must be logical!")
+  if (!is.logical(by_dye)) {
+    stop("'by_dye' must be logical!")
   }
 
-  if (!is.logical(ol.rm)) {
-    stop("'ol.rm' must be logical!")
+  if (!is.logical(ol_rm)) {
+    stop("'ol_rm' must be logical!")
   }
 
-  if (!is.logical(sex.rm)) {
-    stop("'sex.rm' must be logical!")
+  if (!is.logical(sex_rm)) {
+    stop("'sex_rm' must be logical!")
   }
 
-  if (!is.logical(qs.rm)) {
-    stop("'qs.rm' must be logical!")
+  if (!is.logical(qs_rm)) {
+    stop("'qs_rm' must be logical!")
   }
 
   if (!is.null(na) & !is.numeric(na)) {
     stop("'na' must be numeric or NULL!")
   }
 
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical!")
+  if (!is.logical(ignore_case)) {
+    stop("'ignore_case' must be logical!")
   }
 
   if (!is.logical(word)) {
@@ -190,13 +190,13 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     message("'kit' not provided. Attempting automatic detection.")
 
     # Detect kit if not provided.
-    kit <- detectKit(data = data, index = FALSE, debug = debug)[1]
+    kit <- detect_kit(data = data, index = FALSE, debug = debug)[1]
 
     message(kit, " detected.")
   }
 
   # Remove off-ladder alleles.
-  if (ol.rm) {
+  if (ol_rm) {
     tmp1 <- nrow(data)
 
     # Remove off-ladder alleles.
@@ -213,10 +213,10 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       message("Missing markers detected.")
 
       # Get kit markers.
-      marker <- getKit(kit = kit, what = "Marker")
+      marker <- get_kit(kit = kit, what = "Marker")
 
       # Add missing markers.
-      data <- addMarker(data = data, marker = marker, ignore.case = ignore.case, debug = debug)
+      data <- add_marker(data = data, marker = marker, ignore_case = ignore_case, debug = debug)
 
     }
   }
@@ -226,17 +226,17 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     message("Extracting known profiles and adding missing loci.")
 
     # Filter dataset.
-    data <- filterProfile(
+    data <- filter_profile(
       data = data, ref = ref,
-      add.missing.loci = TRUE, keep.na = TRUE, invert = FALSE,
-      ignore.case = ignore.case, exact = exact, word = word,
-      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit, debug = debug
+      add_missing_loci = TRUE, keep_na = TRUE, invert = FALSE,
+      ignore_case = ignore_case, exact = exact, word = word,
+      sex_rm = sex_rm, qs_rm = qs_rm, kit = kit, debug = debug
     )
 
     # Add number of allele copies per peak.
     if (option == "peak") {
       if (is.null((data$Copies))) {
-        data <- calculateCopies(
+        data <- calculate_copies(
           data = data, observed = FALSE, copies = TRUE,
           heterozygous = FALSE, debug = FALSE
         )
@@ -248,12 +248,12 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     message("Reference dataset not provided.")
 
     # Filter dataset.
-    data <- filterProfile(
-      data = data, ref = NULL, add.missing.loci = FALSE,
-      keep.na = TRUE, invert = FALSE,
-      ignore.case = ignore.case, exact = exact, word = word,
-      sex.rm = sex.rm, qs.rm = qs.rm, kit = kit,
-      filter.allele = FALSE, debug = debug
+    data <- filter_profile(
+      data = data, ref = NULL, add_missing_loci = FALSE,
+      keep_na = TRUE, invert = FALSE,
+      ignore_case = ignore_case, exact = exact, word = word,
+      sex_rm = sex_rm, qs_rm = qs_rm, kit = kit,
+      filter_allele = FALSE, debug = debug
     )
   }
 
@@ -292,7 +292,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
     
     data <- add_color(
       data = data, kit = kit, need = "Dye",
-      ignore_case = ignore.case, overwrite = TRUE, debug = debug
+      ignore_case = ignore_case, overwrite = TRUE, debug = debug
     )
   }
 
@@ -308,7 +308,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       by = list(Sample.Name, Marker)
     ]
 
-    if (by.dye) {
+    if (by_dye) {
       message("Calculating total profile peak height by sample and dye.")
       res[, TPPH := sum(TPH), by = list(Sample.Name, Dye)]
 
@@ -327,7 +327,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       by = list(Sample.Name, Marker)
     ]
 
-    if (by.dye) {
+    if (by_dye) {
       message("Calculating maximum total peak height by sample and dye.")
       res[, MTPH := max(TPH), by = list(Sample.Name, Dye)]
 
@@ -346,7 +346,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       by = list(Sample.Name, Marker)
     ]
 
-    if (by.dye) {
+    if (by_dye) {
       message("Calculating mean total peak height by sample and dye.")
       res[, MPH := mean(TPH), by = list(Sample.Name, Dye)]
 
@@ -360,7 +360,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
       res[, Lb := (TPH - MPH) / sqrt(MPH), by = list(Sample.Name, Marker)]
     }
   } else if (option == "peak") {
-    if (by.dye) {
+    if (by_dye) {
       message("Calculating minimum and maximum peak height by sample and dye.")
       res <- DT[, list(Min.Height = min(Height / Copies), Max.Height = max(Height / Copies), Peaks = .N),
         by = list(Sample.Name, Dye)
@@ -384,7 +384,7 @@ calculateLb <- function(data, ref = NULL, option = "prop", by.dye = FALSE,
               by = list(Sample.Name, Marker)
     ]
     
-    if (by.dye) {
+    if (by_dye) {
       message("Calculating number of peaks for each sample and dye.")
       peaks_count <- DT[, list(Peaks = .N),
                         by = list(Sample.Name, Dye)

@@ -17,7 +17,7 @@
 #' @param ignore_case logical; if \code{TRUE}, case-insensitive matching is used.
 #' @param word logical; if \code{TRUE}, only word matching (regex word boundaries).
 #' @param exact logical; if \code{TRUE}, requires an exact match.
-#' @param reverse logical; if \code{TRUE}, reverses direction to data→ref matching.
+#' @param reverse logical; if \code{TRUE}, reverses direction to dataÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ref matching.
 #' @param debug logical indicating printing of debug information.
 #'
 #' @return If \code{console = TRUE}, prints results to the console.
@@ -113,38 +113,3 @@ check_subset <- function(data, ref, console = TRUE, ignore_case = TRUE,
   if (console) cat(txt, sep = "\n") else return(txt)
 }
 
-################################################################################
-#' @rdname check_subset
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [check_subset()] instead.
-################################################################################
-
-checkSubset <- function(data, 
-                        ref, 
-                        console = TRUE, 
-                        ignore.case = TRUE,
-                        word = FALSE, 
-                        exact = FALSE, 
-                        reverse = FALSE,
-                        debug = FALSE,
-                        ...) {
-  
-  .Deprecated("check_subset", package = "strvalidator")
-  
-  # Remap arguments
-  check_subset(
-    data = data,
-    ref = ref,
-    console = console,
-    ignore_case = ignore.case,
-    word = word,
-    exact = exact,
-    reverse = reverse,
-    debug = debug,
-    ...
-  )
-}

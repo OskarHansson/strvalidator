@@ -28,7 +28,7 @@
 #'
 #' @seealso \code{link{quantile}}, \code{link{min}}, \code{link{max}}, \code{link{mean}}, \code{link{sd}}
 
-calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
+calculate_statistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
                                     group = NULL, count = NULL, decimals = 4,
                                     env = parent.frame(), savegui = NULL,
                                     debug = FALSE, parent = NULL) {
@@ -133,7 +133,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
     container = data_frm
   )
 
-  dfs <- c(strings$STR_DRP_DATASET, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DATASET, list_objects(env = env, obj_class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -324,7 +324,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
         unblockHandlers(calculate_btn)
         enabled(calculate_btn) <- FALSE
 
-        datanew <- calculateStatistics(
+        datanew <- calculate_statistics(
           data = val_data,
           target = val_target,
           group = val_group,
@@ -347,7 +347,7 @@ calculateStatistics_gui <- function(data = NULL, target = NULL, quant = 0.95,
         )
 
         # Save data.
-        saveObject(name = val_name, object = datanew, parent = w, env = env)
+        save_object(name = val_name, object = datanew, parent = w, env = env)
 
         if (debug) {
           print(str(datanew))

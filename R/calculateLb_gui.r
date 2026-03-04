@@ -22,7 +22,7 @@
 #' @seealso \code{link{calculateLb}}, \code{link{check_subset}}
 #'
 
-calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_lb_gui <- function(env = parent.frame(), savegui = NULL,
                             debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -148,7 +148,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
     container = g0
   )
 
-  dfs <- c(strings$STR_DRP_DATASET, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DATASET, list_objects(env = env, obj_class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -186,7 +186,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(save_edt) <- paste(val_obj, "_lb", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(data = .gData, index = TRUE)
+      kitIndex <- detect_kit(data = .gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -263,7 +263,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
   glabel(text = strings$STR_LBL_KIT, container = g2)
 
   kit_drp <- gcombobox(
-    items = getKit(), selected = 1,
+    items = get_kit(), selected = 1,
     editable = FALSE, container = g2,
     ellipsize = "none",
     expand = TRUE,
@@ -516,17 +516,17 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
         unblockHandlers(calculate_btn)
         enabled(calculate_btn) <- FALSE
 
-        datanew <- calculateLb(
+        datanew <- calculate_lb(
           data = val_data,
           ref = val_ref,
           option = val_option,
-          by.dye = val_dye,
-          ol.rm = val_ol,
-          sex.rm = val_sex,
-          qs.rm = val_qs,
+          by_dye = val_dye,
+          ol_rm = val_ol,
+          sex_rm = val_sex,
+          qs_rm = val_qs,
           na = val_na,
           kit = val_kit,
-          ignore.case = val_ignore,
+          ignore_case = val_ignore,
           word = val_word,
           exact = val_exact,
           debug = debug
@@ -537,8 +537,8 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Create key-value pairs to log.
         keys <- list(
-          "data", "ref", "option", "by.dye",
-          "ol.rm", "sex.rm", "qs.rm", "na", "kit", "ignore.case",
+          "data", "ref", "option", "by_dye",
+          "ol_rm", "sex_rm", "qs_rm", "na", "kit", "ignore_case",
           "word", "exact", "calculate.h"
         )
 
@@ -558,22 +558,22 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
         # Calculate and add average peak height.
         if (val_h) {
           # Calculate average peak height.
-          dfH <- calculateHeight(
+          dfH <- calculate_height(
             data = val_data, ref = val_ref,
-            na.replace = 0, add = FALSE,
-            exclude = val_exclude, sex.rm = val_sex,
-            qs.rm = val_qs, kit = val_kit,
-            ignore.case = val_ignore, exact = FALSE,
+            na_replace = 0, add = FALSE,
+            exclude = val_exclude, sex_rm = val_sex,
+            qs_rm = val_qs, kit = val_kit,
+            ignore_case = val_ignore, exact = FALSE,
             debug = debug
           )
 
           message("Average peak height calculated.")
 
           # Add average peak height to dataset.
-          datanew <- addData(
-            data = datanew, new.data = dfH,
-            by.col = "Sample.Name", then.by.col = NULL,
-            exact = TRUE, ignore.case = val_ignore,
+          datanew <- add_data(
+            data = datanew, new_data = dfH,
+            by_col = "Sample.Name", then_by_col = NULL,
+            exact = TRUE, ignore_case = val_ignore,
             debug = debug
           )
 
@@ -581,7 +581,7 @@ calculateLb_gui <- function(env = parent.frame(), savegui = NULL,
         }
 
         # Save data.
-        saveObject(name = val_name, object = datanew, parent = w, env = env)
+        save_object(name = val_name, object = datanew, parent = w, env = env)
 
         if (debug) {
           print(str(datanew))

@@ -10,25 +10,25 @@
 #' as reference for all samples in 'data'. The 'invert' option filters out
 #' peaks NOT matching the reference (e.g. drop-in peaks). Sex markers and
 #' quality sensors can be removed.
-#' NB! add.missing.loci overrides keep.na.
+#' NB! add_missing_loci overrides keep_na.
 #' Returns data where allele names match/not match 'ref' allele names.
 #' Required columns are: 'Sample.Name', 'Marker', and 'Allele'.
 #'
 #' @param data data frame with genotype data in 'slim' format.
 #' @param ref data frame with reference profile in 'slim' format.
-#' @param keep.na logical. FALSE discards NA alleles.
+#' @param keep_na logical. FALSE discards NA alleles.
 #'  TRUE keep loci/sample even if no matching allele.
-#' @param add.missing.loci logical. TRUE add loci present in ref but not in data.
-#' Overrides keep.na=FALSE.
-#' @param ignore.case logical TRUE ignore case.
+#' @param add_missing_loci logical. TRUE add loci present in ref but not in data.
+#' Overrides keep_na=FALSE.
+#' @param ignore_case logical TRUE ignore case.
 #' @param word logical TRUE adds word boundaries when matching sample names.
 #' @param exact logical TRUE use exact matching of sample names.
 #' @param invert logical TRUE filter peaks NOT matching the reference.
-#' @param sex.rm logical TRUE removes sex markers defined by 'kit'.
-#' @param qs.rm logical TRUE removes quality sensors defined by 'kit'.
+#' @param sex_rm logical TRUE removes sex markers defined by 'kit'.
+#' @param qs_rm logical TRUE removes quality sensors defined by 'kit'.
 #' @param kit character string defining the kit used.
 #' If NULL automatic detection will be attempted.
-#' @param filter.allele logical TRUE filter known alleles. FALSE increase the
+#' @param filter_allele logical TRUE filter known alleles. FALSE increase the
 #' performance if only sex markers or quality sensors should be removed.
 #' @param debug logical indicating printing debug information.
 #'
@@ -41,32 +41,32 @@
 #' @return data.frame with extracted result.
 #'
 
-filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = FALSE,
-                          ignore.case = TRUE, exact = FALSE, word = FALSE,
-                          invert = FALSE, sex.rm = FALSE, qs.rm = FALSE, kit = NULL,
-                          filter.allele = TRUE, debug = FALSE) {
+filter_profile <- function(data, ref = NULL, add_missing_loci = FALSE, keep_na = FALSE,
+                          ignore_case = TRUE, exact = FALSE, word = FALSE,
+                          invert = FALSE, sex_rm = FALSE, qs_rm = FALSE, kit = NULL,
+                          filter_allele = TRUE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data:")
     print(str(data))
     print("ref:")
     print(str(ref))
-    print("add.missing.loci:")
-    print(add.missing.loci)
-    print("keep.na:")
-    print(keep.na)
-    print("ignore.case:")
-    print(ignore.case)
+    print("add_missing_loci:")
+    print(add_missing_loci)
+    print("keep_na:")
+    print(keep_na)
+    print("ignore_case:")
+    print(ignore_case)
     print("exact:")
     print(exact)
     print("invert:")
     print(invert)
     print("word:")
     print(word)
-    print("sex.rm:")
-    print(sex.rm)
-    print("qs.rm:")
-    print(qs.rm)
+    print("sex_rm:")
+    print(sex_rm)
+    print("qs_rm:")
+    print(qs_rm)
     print("kit:")
     print(kit)
   }
@@ -90,7 +90,7 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     stop("'data' must contain a column 'Marker'.", call. = TRUE)
   }
 
-  if (filter.allele) {
+  if (filter_allele) {
     if (!"Allele" %in% names(data)) {
       stop("'data' must contain a column 'Allele'.", call. = TRUE)
     }
@@ -111,14 +111,14 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
   }
 
   # Check logical flags.
-  if (!is.logical(add.missing.loci)) {
-    stop("'add.missing.loci' must be logical.", call. = TRUE)
+  if (!is.logical(add_missing_loci)) {
+    stop("'add_missing_loci' must be logical.", call. = TRUE)
   }
-  if (!is.logical(keep.na)) {
-    stop("'keep.na' must be logical.", call. = TRUE)
+  if (!is.logical(keep_na)) {
+    stop("'keep_na' must be logical.", call. = TRUE)
   }
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical.", call. = TRUE)
+  if (!is.logical(ignore_case)) {
+    stop("'ignore_case' must be logical.", call. = TRUE)
   }
   if (!is.logical(exact)) {
     stop("'exact' must be logical.", call. = TRUE)
@@ -129,14 +129,14 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
   if (!is.logical(word)) {
     stop("'word' must be logical.", call. = TRUE)
   }
-  if (!is.logical(sex.rm)) {
-    stop("'sex.rm' must be logical.", call. = TRUE)
+  if (!is.logical(sex_rm)) {
+    stop("'sex_rm' must be logical.", call. = TRUE)
   }
-  if (!is.logical(qs.rm)) {
-    stop("'qs.rm' must be logical.", call. = TRUE)
+  if (!is.logical(qs_rm)) {
+    stop("'qs_rm' must be logical.", call. = TRUE)
   }
-  if (!is.logical(filter.allele)) {
-    stop("'filter.allele' must be logical.", call. = TRUE)
+  if (!is.logical(filter_allele)) {
+    stop("'filter_allele' must be logical.", call. = TRUE)
   }
 
   # PREPARE -------------------------------------------------------------------
@@ -159,29 +159,29 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
   }
 
   # Check conflicting options.
-  if (!filter.allele & add.missing.loci) {
-    message("'filter.allele' overrides 'add.missing.loci'. Setting add.missing.loci=FALSE")
-    add.missing.loci <- FALSE
+  if (!filter_allele & add_missing_loci) {
+    message("'filter_allele' overrides 'add_missing_loci'. Setting add_missing_loci=FALSE")
+    add_missing_loci <- FALSE
   }
   # Check conflicting options.
-  if (add.missing.loci & !keep.na) {
-    message("'add.missing.loci' overrides 'keep.na'. Setting keep.na=TRUE")
+  if (add_missing_loci & !keep_na) {
+    message("'add_missing_loci' overrides 'keep_na'. Setting keep_na=TRUE")
 
-    keep.na <- TRUE
+    keep_na <- TRUE
   }
   # Check conflicting options.
-  if (is.null(ref) & filter.allele) {
-    message("'ref' cannot be NULL if 'filter.allele=TRUE'. Setting filter.allele=FALSE")
-    filter.allele <- FALSE
+  if (is.null(ref) & filter_allele) {
+    message("'ref' cannot be NULL if 'filter_allele=TRUE'. Setting filter_allele=FALSE")
+    filter_allele <- FALSE
   }
 
   # Remove sex markers.
-  if (sex.rm) {
+  if (sex_rm) {
     # Check if kit is provided.
     if (is.null(kit)) {
       message("No kit defined. Attempt to auto detect:")
 
-      kit <- detectKit(data)[1]
+      kit <- detect_kit(data)[1]
 
       message("Using kit=", kit)
 
@@ -194,7 +194,7 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     message("Removing sex markers defined in kit: ", kit, ".")
 
     # Get sex markers.
-    sexMarkers <- getKit(kit = kit, what = "Sex.Marker")
+    sexMarkers <- get_kit(kit = kit, what = "Sex.Marker")
 
     if (debug) {
       print("Sex markers:")
@@ -235,12 +235,12 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
   } # End remove sex markers.
 
   # Remove quality sensors.
-  if (qs.rm) {
+  if (qs_rm) {
     # Check if kit is provided.
     if (is.null(kit)) {
       message("No kit defined. Attempt to auto detect:")
 
-      kit <- detectKit(data)[1]
+      kit <- detect_kit(data)[1]
 
       message("Using kit=", kit)
 
@@ -253,7 +253,7 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
     message("Removing quality sensors defined in kit: ", kit, ".")
 
     # Get quality sensors.
-    qsMarkers <- getKit(kit = kit, what = "Quality.Sensor")
+    qsMarkers <- get_kit(kit = kit, what = "Quality.Sensor")
 
     if (debug) {
       print("Quality sensors:")
@@ -295,11 +295,11 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
 
   # FILTER --------------------------------------------------------------------
 
-  if (filter.allele) {
+  if (filter_allele) {
     # SELECT METHOD -------------------------------------------------------------
 
-    if (!add.missing.loci & !keep.na & !invert) {
-      # Fast method cannot be used if add.missingloci/keep.na/invert is TRUE.
+    if (!add_missing_loci & !keep_na & !invert) {
+      # Fast method cannot be used if add.missingloci/keep_na/invert is TRUE.
 
       # 'FAST' METHOD -----------------------------------------------------------
       # NB! Discards all NA alleles/loci/samples.
@@ -363,14 +363,14 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
         if ("Sample.Name" %in% names(ref)) {
           # Get current reference subset.
           selection <- grepl(refSampleNames[s], ref$Sample.Name,
-            ignore.case = ignore.case
+            ignore.case = ignore_case
           )
           currentRef <- ref[selection, ]
         }
 
         # Select matching samples.
         selectedSamples <- grepl(refSampleNames[s], data$Sample.Name,
-          ignore.case = ignore.case
+          ignore.case = ignore_case
         )
 
         if (debug) {
@@ -451,14 +451,14 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
         if ("Sample.Name" %in% names(ref)) {
           # Get current reference subset.
           selection <- grepl(refSampleNames[r], ref$Sample.Name,
-            ignore.case = ignore.case
+            ignore.case = ignore_case
           )
           currentRef <- ref[selection, ]
         }
 
         # Select matching samples.
         selectedSamples <- grepl(refSampleNames[r], data$Sample.Name,
-          ignore.case = ignore.case
+          ignore.case = ignore_case
         )
 
         if (debug) {
@@ -492,7 +492,7 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
             tmpDf <- currentData[selection, ]
 
             # dataAlleles is of length 0 if no matching marker.
-            if (nrow(tmpDf) == 0 & add.missing.loci) {
+            if (nrow(tmpDf) == 0 & add_missing_loci) {
               # Add missing marker, allele will become NA in rbind.fill.
               tmpDf <- data.frame(
                 Sample.Name = dataSampleNames[s],
@@ -541,7 +541,7 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
               tmpDf <- currentData[selection, ]
 
               # matching is of length 0 if no matching allele.
-              if (nrow(tmpDf) == 0 & keep.na) {
+              if (nrow(tmpDf) == 0 & keep_na) {
                 # Add missing marker, allele will become NA in rbind.fill.
                 tmpDf <- data.frame(
                   Sample.Name = dataSampleNames[s],
@@ -597,7 +597,7 @@ filterProfile <- function(data, ref = NULL, add.missing.loci = FALSE, keep.na = 
       if (is.null(kit)) {
         message("No kit defined. Attempt to auto detect:")
 
-        kit <- detectKit(data)[1]
+        kit <- detect_kit(data)[1]
 
         message("Using kit=", kit)
 

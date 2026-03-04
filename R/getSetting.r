@@ -16,7 +16,7 @@
 #' @return character the retrieved value or NA if not found.
 #'
 
-getSetting <- function(key) {
+get_setting <- function(key) {
   # Constants
   fileName <- "settings.txt" # Name of settings file with file extension.
   subFolder <- "extdata" # Sub folder in addition to package path.

@@ -28,7 +28,7 @@
 #'  \code{\link{check_subset}}
 
 
-calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
+calculate_at_gui <- function(env = parent.frame(), savegui = NULL,
                             debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
@@ -158,7 +158,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   )
 
   # Create default dropdown.
-  dfs <- c(strings$STR_DRP_DEFAULT, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DEFAULT, list_objects(env = env, obj_class = "data.frame"))
 
   g0_data_drp <- gcombobox(
     items = dfs,
@@ -202,7 +202,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(f4_save3_edt) <- paste(val_obj, "_masked", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(data = .gData, index = TRUE, debug = debug)
+      kitIndex <- detect_kit(data = .gData, index = TRUE, debug = debug)
       # Select in dropdown.
       svalue(g2_kit_drp, index = TRUE) <- kitIndex
     } else {
@@ -270,7 +270,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
   glabel(text = strings$STR_LBL_KIT, container = g2)
 
   g2_kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = g2,
@@ -467,16 +467,16 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
     enabled(f3_sample_drp) <- FALSE
 
     # Prepare data.
-    .gDataPrep <<- maskAT(
+    .gDataPrep <<- mask_at(
       data = val_data, ref = val_ref,
-      mask.height = val_mask_h,
+      mask_height = val_mask_h,
       height = val_height,
-      mask.sample = val_mask,
-      per.dye = val_mask_d,
-      range.sample = val_range,
-      mask.ils = val_mask_ils,
-      range.ils = val_range_ils,
-      ignore.case = val_ignore,
+      mask_sample = val_mask,
+      per_dye = val_mask_d,
+      range_sample = val_range,
+      mask_ils = val_mask_ils,
+      range_ils = val_range_ils,
+      ignore_case = val_ignore,
       word = val_word,
       debug = debug
     )
@@ -534,7 +534,7 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
         # Get all dyes.
         dyes <- as.character(unique(val_data$Dye))
-        colorsKit <- unique(getKit(val_kit, what = "Color")$Color)
+        colorsKit <- unique(get_kit(val_kit, what = "Color")$Color)
         dyesKit <- add_color(colorsKit, have = "Color", need = "Dye")
         dyeILS <- setdiff(dyes, dyesKit)
 
@@ -780,20 +780,20 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       unblockHandlers(calculate_btn)
       enabled(calculate_btn) <- FALSE
 
-      datanew <- calculateAT(
+      datanew <- calculate_at(
         data = val_data,
         ref = val_ref,
-        mask.height = val_mask_h,
+        mask_height = val_mask_h,
         height = val_height,
-        mask.sample = val_mask,
-        per.dye = val_mask_d,
-        range.sample = val_range,
-        mask.ils = val_mask_ils,
-        range.ils = val_range_ils,
+        mask_sample = val_mask,
+        per_dye = val_mask_d,
+        range_sample = val_range,
+        mask_ils = val_mask_ils,
+        range_ils = val_range_ils,
         k = val_k,
-        rank.t = val_t,
+        rank_t = val_t,
         alpha = val_a,
-        ignore.case = val_ignore,
+        ignore_case = val_ignore,
         word = val_word,
         debug = debug
       )
@@ -801,9 +801,9 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
 
       # Create key-value pairs to log.
       keys <- list(
-        "data", "ref", "k", "rank.t", "alpha",
-        "mask.height", "height", "mask", "range.sample",
-        "mask.ils", "range.ils", "per.dye", "ignore.case",
+        "data", "ref", "k", "rank_t", "alpha",
+        "mask_height", "height", "mask", "range_sample",
+        "mask_ils", "range_ils", "per_dye", "ignore_case",
         "word"
       )
 
@@ -834,9 +834,9 @@ calculateAT_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name1, object = datanew[[1]], parent = w, env = env)
-      saveObject(name = val_name2, object = datanew[[2]], parent = w, env = env)
-      saveObject(name = val_name3, object = datanew[[3]], parent = w, env = env)
+      save_object(name = val_name1, object = datanew[[1]], parent = w, env = env)
+      save_object(name = val_name2, object = datanew[[2]], parent = w, env = env)
+      save_object(name = val_name3, object = datanew[[3]], parent = w, env = env)
 
       if (debug) {
         print(str(datanew))

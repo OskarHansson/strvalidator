@@ -23,7 +23,7 @@
 #' @return logical TRUE if object was saved FALSE if not.
 #'
 
-saveObject <- function(name = NULL, object, parent = NULL, suggest = "",
+save_object <- function(name = NULL, object, parent = NULL, suggest = "",
                        env = parent.frame(), remove = NULL, debug = FALSE) {
   # Language ------------------------------------------------------------------
 

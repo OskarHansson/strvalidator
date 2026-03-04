@@ -4,7 +4,7 @@
 #' @description
 #' Sort factor levels for `Marker` and `Dye` so they follow the natural
 #' electropherogram (EPG) order defined by the provided kit. This function
-#' replaces `sortMarker()` and includes improved validation, an `ignore_case`
+#' replaces `sort_marker()` and includes improved validation, an `ignore_case`
 #' option, better mismatch reporting, and predictable factor behavior.
 #'
 #' @details
@@ -21,7 +21,7 @@
 #'   Must contain column `Marker`. If present, column `Dye` will also be sorted.
 #'
 #' @param kit character or integer  
-#'   Kit name as used by `getKit()`.
+#'   Kit name as used by `get_kit()`.
 #'
 #' @param add_missing_levels logical  
 #'   If `TRUE`, missing kit markers/dyes are added as unused factor levels.
@@ -42,7 +42,7 @@
 #'
 #' @export
 #'
-#' @seealso [generate_epg()], [add_color()], [getKit()]
+#' @seealso [generate_epg()], [add_color()], [get_kit()]
 #'
 ################################################################################
 
@@ -65,15 +65,15 @@ sort_markers <- function(data,
     stop("'data' must contain a 'Marker' column")
   
   # Confirm kit exists
-  if (!toupper(kit) %in% toupper(getKit()))
+  if (!toupper(kit) %in% toupper(get_kit()))
     stop("Unknown kit: ", kit,
-         "\nAvailable kits: ", paste(getKit(), collapse = ", "))
+         "\nAvailable kits: ", paste(get_kit(), collapse = ", "))
   
   # ---------------------------------------------------------------------------
   # FETCH KIT TABLES
   # ---------------------------------------------------------------------------
-  kit_markers <- getKit(kit, what = "Marker")
-  kit_colors  <- getKit(kit, what = "Color")  # includes dye information
+  kit_markers <- get_kit(kit, what = "Marker")
+  kit_colors  <- get_kit(kit, what = "Color")  # includes dye information
   
   # Normalize case if needed
   if (ignore_case) {
@@ -174,29 +174,3 @@ sort_markers <- function(data,
   return(data)
 }
 
-################################################################################
-#' @rdname sort_markers
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [sort_markers()] instead.
-################################################################################
-
-sortMarker <- function(data,
-                       kit,
-                       add.missing.levels = FALSE,
-                       debug = FALSE,
-                       ...) {
-  
-  .Deprecated("sort_markers", package = "strvalidator")
-  
-  sort_markers(
-    data                = data,
-    kit                 = kit,
-    add_missing_levels  = add.missing.levels,
-    debug               = debug,
-    ...
-  )
-}

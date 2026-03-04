@@ -21,13 +21,13 @@
 #' 'Allele', 'Dye', 'Data.Point' and 'Size'.
 #' @param ref a data frame containing at least
 #'  'Sample.Name', 'Marker', 'Allele'.
-#' @param pullup.range numeric to set the analysis window to look for pull-up
-#'  peaks (known allele data point +- pullup.range/2)
-#' @param block.range numeric to set blocking range to check for known allele overlap
-#'  (known allele data point +- block.range/2).
-#' @param ol.rm logical TRUE if off-ladder peaks should be excluded from analysis.
+#' @param pullup_range numeric to set the analysis window to look for pull-up
+#'  peaks (known allele data point +- pullup_range/2)
+#' @param block_range numeric to set blocking range to check for known allele overlap
+#'  (known allele data point +- block_range/2).
+#' @param ol_rm logical TRUE if off-ladder peaks should be excluded from analysis.
 #'  Default is FALSE to include off-ladder peaks.
-#' @param ignore.case logical indicating if sample matching should ignore case.
+#' @param ignore_case logical indicating if sample matching should ignore case.
 #' @param word logical indicating if word boundaries should be added before sample matching.
 #' @param discard logical TRUE if known alleles with no detected pull-up should
 #'  be discarded from the result. Default is FALSE to include alleles not causing pull-up.
@@ -44,8 +44,8 @@
 #' @importFrom utils head str tail
 #'
 
-calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
-                            ol.rm = FALSE, ignore.case = TRUE, word = FALSE,
+calculate_pullup <- function(data, ref, pullup_range = 6, block_range = 12,
+                            ol_rm = FALSE, ignore_case = TRUE, word = FALSE,
                             discard = FALSE, limit = 1, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
@@ -54,12 +54,12 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
     print(str(data))
     print("ref")
     print(str(ref))
-    print("pullup.range")
-    print(pullup.range)
-    print("ol.rm")
-    print(ol.rm)
-    print("ignore.case")
-    print(ignore.case)
+    print("pullup_range")
+    print(pullup_range)
+    print("ol_rm")
+    print(ol_rm)
+    print("ignore_case")
+    print(ignore_case)
     print("word")
     print(word)
   }
@@ -115,11 +115,11 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
   }
 
   # Check flags.
-  if (!is.logical(ol.rm)) {
-    stop("'ol.rm' must be logical.", call. = TRUE)
+  if (!is.logical(ol_rm)) {
+    stop("'ol_rm' must be logical.", call. = TRUE)
   }
-  if (!is.logical(ignore.case)) {
-    stop("'ignore.case' must be logical.", call. = TRUE)
+  if (!is.logical(ignore_case)) {
+    stop("'ignore_case' must be logical.", call. = TRUE)
   }
   if (!is.logical(word)) {
     stop("'word' must be logical.", call. = TRUE)
@@ -129,11 +129,11 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
   }
 
   # Check numeric.
-  if (!is.numeric(pullup.range)) {
-    stop("'pullup.range' must be numeric.", call. = TRUE)
+  if (!is.numeric(pullup_range)) {
+    stop("'pullup_range' must be numeric.", call. = TRUE)
   }
-  if (!is.numeric(block.range)) {
-    stop("'block.range' must be numeric.", call. = TRUE)
+  if (!is.numeric(block_range)) {
+    stop("'block_range' must be numeric.", call. = TRUE)
   }
   if (!is.numeric(limit)) {
     stop("'limit' must be numeric.", call. = TRUE)
@@ -171,7 +171,7 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
   }
 
   # Remove OL's.
-  if (ol.rm) {
+  if (ol_rm) {
     tmp1 <- nrow(data)
     data <- data[data$Allele != "OL", ]
     tmp2 <- nrow(data)
@@ -215,7 +215,7 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
   # Loop over all reference names.
   for (r in seq(along = grepNames)) {
     # Select samples containing reference name.
-    selSample <- grepl(grepNames[r], data$Sample.Name, ignore.case = ignore.case)
+    selSample <- grepl(grepNames[r], data$Sample.Name, ignore.case = ignore_case)
 
     # Get current reference markers.
     marker <- unique(ref$Marker[ref$Sample.Name == grepNames[r]])
@@ -241,8 +241,8 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
         selection <- selSample & selMarker & selAllele
 
         # Mark as occupied with reference allele by setting min and max data point.
-        data[selection, "Min"] <- data[selection, "Data.Point"] - (pullup.range / 2)
-        data[selection, "Max"] <- data[selection, "Data.Point"] + (pullup.range / 2)
+        data[selection, "Min"] <- data[selection, "Data.Point"] - (pullup_range / 2)
+        data[selection, "Max"] <- data[selection, "Data.Point"] + (pullup_range / 2)
       }
     }
   }
@@ -284,7 +284,7 @@ calculatePullup <- function(data, ref, pullup.range = 6, block.range = 12,
       seqVec <- seq(start[e], end[e])
 
       # Create a sequence of data points to check for known allele overlap.
-      blockVec <- seq(start[e] - (block.range / 2), end[e] + (block.range / 2))
+      blockVec <- seq(start[e] - (block_range / 2), end[e] + (block_range / 2))
 
       # Check if any overlap in block range.
       maskedMin <- start %in% blockVec

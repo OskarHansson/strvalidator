@@ -2,13 +2,13 @@
 #' @author Oyvind Bleka
 #' @description EPG data visualizer (interactive)
 #' @details Plots peak height with corresponding allele for sample(s) for a given kit.
-#' @param mixData List of mixData[[ss]][[loc]] =list(adata,hdata), with samplenames ss, loci names loc, allele vector adata (can be strings or numeric), intensity vector hdata (must be numeric)
-#' @param kit Short name of kit: See supported kits with getKit()
-#' @param refData List of refData[[rr]][[loc]] or refData[[loc]][[rr]] to label references (flexible). Visualizer will show dropout alleles.
-#' @param AT A detection threshold can be shown in a dashed line in the plot (constant). Possibly a vector with locus column names
-#' @param ST A stochastic threshold can be shown in a dashed line in the plot (constant). Possibly a vector with locus column names
-#' @param dyeYmax Whether Y-axis should be same for all markers (FALSE) or not (TRUE this is default)
-#' @param plotRepsOnly Whether only replicate-plot is shown in case of multiple samples (TRUE is default)
+#' @param mix_data List of mix_data[[ss]][[loc]] =list(adata,hdata), with samplenames ss, loci names loc, allele vector adata (can be strings or numeric), intensity vector hdata (must be numeric)
+#' @param kit Short name of kit: See supported kits with get_kit()
+#' @param ref_data List of ref_data[[rr]][[loc]] or ref_data[[loc]][[rr]] to label references (flexible). Visualizer will show dropout alleles.
+#' @param at A detection threshold can be shown in a dashed line in the plot (constant). Possibly a vector with locus column names
+#' @param st A stochastic threshold can be shown in a dashed line in the plot (constant). Possibly a vector with locus column names
+#' @param dye_ymax Whether Y-axis should be same for all markers (FALSE) or not (TRUE this is default)
+#' @param plot_reps_only Whether only replicate-plot is shown in case of multiple samples (TRUE is default)
 #' @param options A list of possible plot configurations. See comments below
 #' @return sub A plotly widget
 #' @export
@@ -17,19 +17,19 @@
 #' @importFrom stats aggregate na.omit
 #'
 
-plotEPG2 <- function(mixData, kit, refData = NULL, AT = NULL, ST = NULL, dyeYmax = TRUE, plotRepsOnly = TRUE, options = NULL) {
-  # AT (analyitcal threshold),ST (stochastic threshold). Can be given marker/dye specific
+plot_epg2 <- function(mix_data, kit, ref_data = NULL, at = NULL, st = NULL, dye_ymax = TRUE, plot_reps_only = TRUE, options = NULL) {
+  # at (analyitcal threshold),st (stochastic threshold). Can be given marker/dye specific
 
-  sn <- names(mixData) # get samples names
+  sn <- names(mix_data) # get samples names
   nS <- length(sn) # number of replicates
-  locs <- names(mixData[[1]]) # get locus names
+  locs <- names(mix_data[[1]]) # get locus names
 
-  locFirst <- FALSE # boolean of refData[[loc]][[rr]] (or refData[[rr]][[loc]])
+  locFirst <- FALSE # boolean of ref_data[[loc]][[rr]] (or ref_data[[rr]][[loc]])
   nrefs <- 0
-  if (!is.null(refData)) {
-    refn <- names(refData) # default structure (same as old)
+  if (!is.null(ref_data)) {
+    refn <- names(ref_data) # default structure (same as old)
     if (any(refn %in% locs)) { # convert data structure of reference
-      refn <- names(refData[[1]])
+      refn <- names(ref_data[[1]])
       locFirst <- TRUE
     }
     nrefs <- length(refn)
@@ -37,9 +37,9 @@ plotEPG2 <- function(mixData, kit, refData = NULL, AT = NULL, ST = NULL, dyeYmax
 
   # GRAPHICAL SETUP BASED ON SELECTED KIT:
   # Original line of code.
-  # kitinfo = euroformix::getKit(kit) #names(kitinfo)
+  # kitinfo = euroformix::get_kit(kit) #names(kitinfo)
   # Modified line of code to use strvalidator package function.
-  kitinfo <- getKit(kit) # names(kitinfo)
+  kitinfo <- get_kit(kit) # names(kitinfo)
   if (is.na(kitinfo)[1]) {
     print("The kit name was not recognized by getKit!")
     return()
@@ -100,12 +100,12 @@ plotEPG2 <- function(mixData, kit, refData = NULL, AT = NULL, ST = NULL, dyeYmax
       # ss=sn[1]
       for (loc in locs) {
         # loc=locs[2]
-        edat <- mixData[[ss]][[loc]] # get evid data
-        if (is.null(refData)) {
+        edat <- mix_data[[ss]][[loc]] # get evid data
+        if (is.null(ref_data)) {
           rdat <- NULL
         } else {
-          if (locFirst) rdat <- refData[[loc]] # get ref data (list) #get ref data (list)
-          if (!locFirst) rdat <- lapply(refData, function(x) x[[loc]]) # get ref data (list)
+          if (locFirst) rdat <- ref_data[[loc]] # get ref data (list) #get ref data (list)
+          if (!locFirst) rdat <- lapply(ref_data, function(x) x[[loc]]) # get ref data (list)
         }
         av <- edat$adata
         if (is.null(edat) && is.null(rdat)) next # skip if no data (evid or ref)
@@ -154,7 +154,7 @@ plotEPG2 <- function(mixData, kit, refData = NULL, AT = NULL, ST = NULL, dyeYmax
   ymax1 <- ymaxscale * max(minY, df$Height) # global max y
 
   # SEPARATE PLOTS
-  if (nS == 1 || !plotRepsOnly) { # plot separate plot only in this case
+  if (nS == 1 || !plot_reps_only) { # plot separate plot only in this case
 
     for (ss in sn) { # create a seperate EPG plot for each samples
       # ss =sn[1]
@@ -168,13 +168,13 @@ plotEPG2 <- function(mixData, kit, refData = NULL, AT = NULL, ST = NULL, dyeYmax
         locs <- toupper(as.character(loctab[, 1])) # get locs
         poslocs <- loctab[, 2] # get corresponding positions
 
-        AT1 <- AT # temporary on analytical threshold
-        ST1 <- ST # temporary on stochastic threshold
-        if (!is.null(AT) && length(AT) > 1) AT1 <- AT[toupper(names(AT)) %in% locs][1] # extract dye specific AT
-        if (!is.null(ST) && length(ST) > 1) ST1 <- ST[toupper(names(ST)) %in% locs][1] # extract dye specific ST
+        AT1 <- at # temporary on analytical threshold
+        ST1 <- st # temporary on stochastic threshold
+        if (!is.null(at) && length(at) > 1) AT1 <- at[toupper(names(at)) %in% locs][1] # extract dye specific at
+        if (!is.null(st) && length(st) > 1) ST1 <- st[toupper(names(st)) %in% locs][1] # extract dye specific st
 
         dfs <- df[df$Sample == ss & df$Marker %in% locs, ] # extract subset
-        if (dyeYmax) ymax1 <- ymaxscale * max(na.omit(c(minY, AT1, ST1, dfs$Height))) # get max
+        if (dye_ymax) ymax1 <- ymaxscale * max(na.omit(c(minY, AT1, ST1, dfs$Height))) # get max
 
 
         p <- plotly::plot_ly(colors = dye2, mode = "lines", height = h0) # df,x = ~bp,y=~Height,type="scatter",mode="markers",colors=dye2,name=~Allele)
@@ -211,16 +211,16 @@ plotEPG2 <- function(mixData, kit, refData = NULL, AT = NULL, ST = NULL, dyeYmax
     loctab <- POS[POS[, 1] == dye, -1, drop = FALSE]
     locs <- toupper(as.character(loctab[, 1])) # get locs
 
-    AT1 <- AT # temporary on analytical threshold
-    ST1 <- ST # temporary on stochastic threshold
-    if (!is.null(AT) && length(AT) > 1) AT1 <- AT[toupper(names(AT)) %in% locs][1] # extract dye specific AT
-    if (!is.null(ST) && length(ST) > 1) ST1 <- ST[toupper(names(ST)) %in% locs][1] # extract dye specific ST
+    AT1 <- at # temporary on analytical threshold
+    ST1 <- st # temporary on stochastic threshold
+    if (!is.null(at) && length(at) > 1) AT1 <- at[toupper(names(at)) %in% locs][1] # extract dye specific at
+    if (!is.null(st) && length(st) > 1) ST1 <- st[toupper(names(st)) %in% locs][1] # extract dye specific st
 
     poslocs <- loctab[, 2] # get corresponding positions
     dfs <- df[df$Marker %in% locs, ] # extract subset
     dfs1 <- unique(subset(dfs, select = c("Marker", "Allele", "bp", "reftxt"))) # extract unique info (to label loci/alleles etc)
 
-    if (dyeYmax) ymax1 <- ymaxscale * max(na.omit(c(minY, AT1, ST1, dfs$Height))) # get max
+    if (dye_ymax) ymax1 <- ymaxscale * max(na.omit(c(minY, AT1, ST1, dfs$Height))) # get max
     p <- plotly::plot_ly(dfs, type = "bar", height = h0, colors = repcols, showlegend = FALSE)
     if (!is.null(AT1)) p <- plotly::add_segments(p, x = bprng[1], xend = bprng[2], y = AT1, yend = AT1, color = I(dye2), line = list(dash = "dot", width = 2)) # ,inherit=FALSE)
     if (!is.null(ST1)) p <- plotly::add_lines(p, x = bprng, y = rep(ST1, 2), color = factor(1), line = list(dash = "dash", width = 2), showlegend = FALSE)

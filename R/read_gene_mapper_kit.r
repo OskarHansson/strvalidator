@@ -64,13 +64,13 @@ detect_gm_version <- function(lines) {
 #' A \code{data.frame} containing kit information with at least the following
 #' columns:
 #' \itemize{
-#'   \item \code{Panel} – panel name
-#'   \item \code{Marker} – marker name
-#'   \item \code{Allele} – allele designation
-#'   \item \code{Size}, \code{Size.Min}, \code{Size.Max} – size information
-#'   \item \code{Color} – dye color channel
-#'   \item \code{Repeat} – repeat unit length
-#'   \item \code{Offset} – estimated marker offset
+#'   \item \code{Panel} - panel name
+#'   \item \code{Marker} - marker name
+#'   \item \code{Allele} - allele designation
+#'   \item \code{Size}, \code{Size.Min}, \code{Size.Max} - size information
+#'   \item \code{Color} - dye color channel
+#'   \item \code{Repeat} - repeat unit length
+#'   \item \code{Offset} - estimated marker offset
 #' }
 #'
 #' @seealso
@@ -303,8 +303,8 @@ read_gene_mapper_kit <- function(bin_files = NULL, panel_files = NULL,
 #' unified kit definition table used by STR-validator.
 #'
 #' @details
-#' This function takes two data frames — one from a GeneMapper bins file and one
-#' from a panels file — and merges them based on shared panel and marker names.
+#' This function takes two data frames - one from a GeneMapper bins file and one
+#' from a panels file - and merges them based on shared panel and marker names.
 #' It adds color channel, repeat unit, and marker range information from the
 #' panels file to the bins data, and estimates an offset value for each marker.
 #'
@@ -324,10 +324,10 @@ read_gene_mapper_kit <- function(bin_files = NULL, panel_files = NULL,
 #' A merged \code{data.frame} containing the full kit definition with added
 #' columns:
 #' \itemize{
-#'   \item \code{Color} – dye color channel
-#'   \item \code{Repeat} – repeat unit length
-#'   \item \code{Marker.Min}, \code{Marker.Max} – marker range
-#'   \item \code{Offset} – calculated size offset
+#'   \item \code{Color} - dye color channel
+#'   \item \code{Repeat} - repeat unit length
+#'   \item \code{Marker.Min}, \code{Marker.Max} - marker range
+#'   \item \code{Offset} - calculated size offset
 #' }
 #'
 #' @seealso
@@ -442,7 +442,7 @@ combine_bins_and_panels <- function(bin, panel) {
   # Estimate marker offset using the smallest non-virtual ladder fragment
   # Round this to an integer
   # Subtract the number of base pair for that repeat
-  # Microvariants: allele .1/.2/.3 correspond to 1–3 extra base pairs
+  # Microvariants: allele .1/.2/.3 correspond to 1-3 extra base pairs
   #
   # Offset is only estimated for markers with numeric allele designations.
   # If the smallest allele is non-numeric (e.g. X/Y or letter-based systems),

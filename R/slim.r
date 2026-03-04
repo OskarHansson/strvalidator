@@ -20,7 +20,7 @@
 #' @param data data.frame.
 #' @param fix vector of strings with column names to keep fixed.
 #' @param stack vector of strings with column names to slim.
-#' @param keep.na logical, keep a row even if no data.
+#' @param keep_na logical, keep a row even if no data.
 #' @param debug logical indicating printing debug information.
 #'
 #' @return data.frame
@@ -32,7 +32,7 @@
 
 
 slim <- function(data, fix = NULL, stack = NULL,
-                 keep.na = TRUE, debug = FALSE) {
+                 keep_na = TRUE, debug = FALSE) {
   if (debug) {
     print(paste("IN:", match.call()[[1]]))
     print("data")
@@ -41,15 +41,15 @@ slim <- function(data, fix = NULL, stack = NULL,
     print(fix)
     print("stack")
     print(stack)
-    print("keep.na")
-    print(keep.na)
+    print("keep_na")
+    print(keep_na)
   }
   
   # Check data ----------------------------------------------------------------
   
   # Check parameters.
-  if (!is.logical(keep.na)) {
-    stop("'keep.na' must be logical",
+  if (!is.logical(keep_na)) {
+    stop("'keep_na' must be logical",
          call. = TRUE
     )
   }
@@ -122,7 +122,7 @@ slim <- function(data, fix = NULL, stack = NULL,
         # Transpose and vectorize.
         vectorStack <- c(t(matrixStack))
         
-        if (keep.na) {
+        if (keep_na) {
           # Keep one value per fixed row.
           values <- replace(values, values == 0, 1)
           

@@ -12,8 +12,8 @@ trim(
   ignore.case = TRUE,
   invert.s = FALSE,
   invert.c = FALSE,
-  rm.na.col = TRUE,
-  rm.empty.col = TRUE,
+  rm_na_col = TRUE,
+  rm_empty_col = TRUE,
   missing = NA,
   debug = FALSE
 )
@@ -37,10 +37,10 @@ FALSE to remove samples NOT matching (i.e. keep matching samples).}
 FALSE to remove columns NOT matching (i.e. keep matching columns).
 while TRUE will remove columns NOT given.}
 
-\item{rm.na.col}{logical, TRUE columns with only NA are removed from 'data'
+\item{rm_na_col}{logical, TRUE columns with only NA are removed from 'data'
 while FALSE will preserve the columns.}
 
-\item{rm.empty.col}{logical, TRUE columns with no values are removed from 'data'
+\item{rm_empty_col}{logical, TRUE columns with no values are removed from 'data'
 while FALSE will preserve the columns.}
 
 \item{missing}{value to replace missing values with.}

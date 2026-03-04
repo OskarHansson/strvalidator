@@ -123,9 +123,9 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
   data_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -330,7 +330,7 @@ columns_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, par
     )
 
     # Save data.
-    saveObject(name = val_name, object = datanew, parent = w, env = env)
+    save_object(name = val_name, object = datanew, parent = w, env = env)
 
     if (debug) {
       print(datanew)

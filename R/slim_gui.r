@@ -166,9 +166,9 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -223,13 +223,13 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       svalue(save_edt) <- paste(val_obj, "_slim", sep = "")
 
       # Guess column names to keep fixed.
-      svalue(fix_edt) <- colNames(
+      svalue(fix_edt) <- col_names(
         data = .gData, slim = TRUE,
         numbered = TRUE, concatenate = "|"
       )
 
       # Guess column names to stack.
-      svalue(stack_edt) <- colNames(
+      svalue(stack_edt) <- col_names(
         data = .gData, slim = FALSE,
         numbered = TRUE, concatenate = "|"
       )
@@ -428,11 +428,11 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
 
       datanew <- slim(
         data = val_data, fix = fix_val, stack = stack_val,
-        keep.na = keep_val, debug = debug
+        keep_na = keep_val, debug = debug
       )
 
       # Create key-value pairs to log.
-      keys <- list("data", "fix", "stack", "keep.na")
+      keys <- list("data", "fix", "stack", "keep_na")
 
       values <- list(val_data_name, fix_val, stack_val, keep_val)
 
@@ -444,7 +444,7 @@ slim_gui <- function(env = parent.frame(), savegui = NULL,
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(paste("EXIT:", fnc))

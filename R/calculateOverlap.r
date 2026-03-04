@@ -31,7 +31,7 @@
 
 
 
-calculateOverlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, debug = FALSE) {
+calculate_overlap <- function(data, db = NULL, penalty = NULL, virtual = TRUE, debug = FALSE) {
   # BIN OVERLAP.
 
   if (debug) {

@@ -114,7 +114,7 @@
 #'
 #' @seealso \code{\link{calculateDropout}}, \code{\link{plotDropout_gui}}, \code{\link[ResourceSelection]{hoslem.test}}
 
-modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+model_dropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gPlot <- NULL
@@ -268,9 +268,9 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   dataset_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -288,7 +288,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
   glabel(text = strings$STR_LBL_KIT, container = g1)
 
   kit_drp <- gcombobox(
-    items = getKit(),
+    items = get_kit(),
     selected = 1,
     editable = FALSE,
     container = g1,
@@ -328,7 +328,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
       svalue(f5_save_edt) <- paste(val_obj, "_ggplot", sep = "")
 
       # Detect kit.
-      kitIndex <- detectKit(.gData, index = TRUE)
+      kitIndex <- detect_kit(.gData, index = TRUE)
       # Select in dropdown.
       svalue(kit_drp, index = TRUE) <- kitIndex
 
@@ -492,7 +492,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     enabled(f5_save_btn) <- FALSE
 
     # Save data.
-    saveObject(
+    save_object(
       name = val_name, object = .gPlot,
       parent = w, env = env, debug = debug
     )
@@ -887,7 +887,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
     # Remove sex markers.
     if (val_sex) {
       n0 <- nrow(obsData)
-      sexMarkers <- getKit(kit = svalue(kit_drp), what = "Sex.Marker")
+      sexMarkers <- get_kit(kit = svalue(kit_drp), what = "Sex.Marker")
       for (m in seq(along = sexMarkers)) {
         obsData <- obsData[obsData$Marker != sexMarkers[m], ]
       }
@@ -939,7 +939,7 @@ modelDropout_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE
         "Expected", "Proportion", "Dep", "Exp"
       )
       selected <- names(modData) %in% sel_col_names
-      saveObject(name = "model_data_dump", object = modData[, selected], parent = w, env = env)
+      save_object(name = "model_data_dump", object = modData[, selected], parent = w, env = env)
     }
 
     # Convert to log values.

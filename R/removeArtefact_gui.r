@@ -20,7 +20,7 @@
 #' @return TRUE
 
 
-removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
+remove_artefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FALSE, parent = NULL) {
   # Global variables.
   .gData <- NULL
   .gDataName <- NULL
@@ -123,9 +123,9 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   data_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -175,9 +175,9 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
   spike_drp <- gcombobox(
     items = c(
       strings$STR_DRP_DATASET,
-      listObjects(
+      list_objects(
         env = env,
-        obj.class = "data.frame"
+        obj_class = "data.frame"
       )
     ),
     selected = 1,
@@ -250,14 +250,14 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
     val_threshold <- svalue(f1_threshold_spn)
 
     if (is.data.frame(val_data) & is.data.frame(val_artefact)) {
-      datanew <- removeArtefact(
+      datanew <- remove_artefact(
         data = val_data, artefact = val_artefact,
-        na.rm = val_na, threshold = val_threshold,
+        na_rm = val_na, threshold = val_threshold,
         debug = debug
       )
 
       # Create key-value pairs to log.
-      keys <- list("data", "artefact", "na.rm", "threshold")
+      keys <- list("data", "artefact", "na_rm", "threshold")
 
       values <- list(val_name_data, val_name_spike, val_na, val_threshold)
 
@@ -269,7 +269,7 @@ removeArtefact_gui <- function(env = parent.frame(), savegui = NULL, debug = FAL
       )
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(datanew)

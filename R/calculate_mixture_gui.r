@@ -138,7 +138,7 @@ calculate_mixture_gui <- function(env = parent.frame(), savegui = NULL,
     container = g0
   )
 
-  dfs <- c(strings$STR_DRP_DEFAULT, listObjects(env = env, obj.class = "data.frame"))
+  dfs <- c(strings$STR_DRP_DEFAULT, list_objects(env = env, obj_class = "data.frame"))
 
   data_drp <- gcombobox(
     items = dfs,
@@ -441,7 +441,7 @@ calculate_mixture_gui <- function(env = parent.frame(), savegui = NULL,
 
 
       # Save data.
-      saveObject(name = val_name, object = datanew, parent = w, env = env)
+      save_object(name = val_name, object = datanew, parent = w, env = env)
 
       if (debug) {
         print(str(datanew))
@@ -557,30 +557,3 @@ calculate_mixture_gui <- function(env = parent.frame(), savegui = NULL,
   focus(w)
 }
 
-################################################################################
-#' @rdname calculate_mixture_gui
-#' @export
-#' @usage NULL
-#' @keywords internal
-#'
-#' @description
-#' **Deprecated.** Use [calculate_mixture_gui()] instead.
-################################################################################
-
-calculateMixture_gui <- function(env = parent.frame(),
-                                 savegui = NULL,
-                                 debug = FALSE, 
-                                 parent = NULL, 
-                                 ...) {
-  
-  .Deprecated("calculate_mixture_gui", package = "strvalidator")
-  
-  # Remap arguments
-  calculate_mixture_gui(
-    env = env,
-    savegui = savegui,
-    debug = debug,
-    parent = parent,
-    ...
-  )
-}
